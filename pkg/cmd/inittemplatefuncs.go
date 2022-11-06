@@ -34,14 +34,18 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 	return value
 }
 
-func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...bool) bool {
+func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, path any, prompt string, args ...bool) bool {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
 
+	nestedMap, lastKey, err := nestedMapAtPath(m, path)
+	if err != nil {
+		panic(err)
+	}
 	if !c.init.forcePromptOnce {
-		if value, ok := m[key]; ok {
+		if value, ok := nestedMap[lastKey]; ok {
 			if boolValue, ok := value.(bool); ok {
 				return boolValue
 			}
@@ -68,14 +72,18 @@ func (c *Config) promptIntInitTemplateFunc(prompt string, args ...int64) int64 {
 	return value
 }
 
-func (c *Config) promptIntOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...int64) int64 {
+func (c *Config) promptIntOnceInitTemplateFunc(m map[string]any, path any, prompt string, args ...int64) int64 {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
 
+	nestedMap, lastKey, err := nestedMapAtPath(m, path)
+	if err != nil {
+		panic(err)
+	}
 	if !c.init.forcePromptOnce {
-		if value, ok := m[key]; ok {
+		if value, ok := nestedMap[lastKey]; ok {
 			if intValue, ok := value.(int64); ok {
 				return intValue
 			}
@@ -102,14 +110,18 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 	return value
 }
 
-func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...string) string {
+func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, path any, prompt string, args ...string) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
 
+	nestedMap, lastKey, err := nestedMapAtPath(m, path)
+	if err != nil {
+		panic(err)
+	}
 	if !c.init.forcePromptOnce {
-		if value, ok := m[key]; ok {
+		if value, ok := nestedMap[lastKey]; ok {
 			if stringValue, ok := value.(string); ok {
 				return stringValue
 			}

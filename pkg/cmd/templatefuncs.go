@@ -459,6 +459,21 @@ func keysFromPath(path any) ([]string, string, error) {
 	}
 }
 
+func nestedMapAtPath(m map[string]any, path any) (map[string]any, string, error) {
+	keys, lastKey, err := keysFromPath(path)
+	if err != nil {
+		return nil, "", err
+	}
+	for _, key := range keys {
+		nestedMap, ok := m[key].(map[string]any)
+		if !ok {
+			return nil, "", nil
+		}
+		m = nestedMap
+	}
+	return m, lastKey, nil
+}
+
 func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 	// Write keys in order and accumulate subsections.
 	type subsection struct {
