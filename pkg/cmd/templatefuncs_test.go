@@ -380,6 +380,73 @@ func TestKeysFromPath(t *testing.T) {
 	}
 }
 
+func TestNestedMapAtPath(t *testing.T) {
+	for _, tc := range []struct {
+		name            string
+		m               map[string]any
+		path            any
+		expectedMap     map[string]any
+		expectedLastKey string
+		expectedErr     error
+	}{
+		{
+			name: "simple",
+			m: map[string]any{
+				"key": "value",
+			},
+			path: "key",
+			expectedMap: map[string]any{
+				"key": "value",
+			},
+			expectedLastKey: "key",
+		},
+		{
+			name: "nested_map",
+			m: map[string]any{
+				"key1": map[string]any{
+					"key2": "value",
+				},
+			},
+			path: "key1.key2",
+			expectedMap: map[string]any{
+				"key2": "value",
+			},
+			expectedLastKey: "key2",
+		},
+		{
+			name: "not_a_map",
+			m: map[string]any{
+				"key1": "value",
+			},
+			path: "key1.key2",
+		},
+		{
+			name: "nested_not_a_map",
+			m: map[string]any{
+				"key1": map[string]any{
+					"key2": "value",
+				},
+			},
+			path: "key1.key2.key3",
+		},
+		{
+			name:        "empty_path",
+			expectedErr: errEmptyPath,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actualMap, actualLastKey, err := nestedMapAtPath(tc.m, tc.path)
+			if tc.expectedErr != nil {
+				assert.Equal(t, tc.expectedErr, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expectedMap, actualMap)
+				assert.Equal(t, tc.expectedLastKey, actualLastKey)
+			}
+		})
+	}
+}
+
 func TestToIniTemplateFunc(t *testing.T) {
 	for i, tc := range []struct {
 		data     map[string]any

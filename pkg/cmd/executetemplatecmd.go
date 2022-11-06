@@ -77,8 +77,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptBoolOnceInitTemplateFunc := func(m map[string]any, key, field string, args ...bool) bool {
-			if value, ok := m[key]; ok {
+		promptBoolOnceInitTemplateFunc := func(m map[string]any, path any, field string, args ...bool) bool {
+			nestedMap, lastKey, err := nestedMapAtPath(m, path)
+			if err != nil {
+				panic(err)
+			}
+			if value, ok := nestedMap[lastKey]; ok {
 				if boolValue, ok := value.(bool); ok {
 					return boolValue
 				}
@@ -101,8 +105,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptIntOnceInitTemplateFunc := func(m map[string]any, key, field string, args ...int64) int64 {
-			if value, ok := m[key]; ok {
+		promptIntOnceInitTemplateFunc := func(m map[string]any, path any, field string, args ...int64) int64 {
+			nestedMap, lastKey, err := nestedMapAtPath(m, path)
+			if err != nil {
+				panic(err)
+			}
+			if value, ok := nestedMap[lastKey]; ok {
 				if intValue, ok := value.(int64); ok {
 					return intValue
 				}
@@ -128,8 +136,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptStringOnceInitTemplateFunc := func(m map[string]any, key, field string, args ...string) string {
-			if value, ok := m[key]; ok {
+		promptStringOnceInitTemplateFunc := func(m map[string]any, path any, field string, args ...string) string {
+			nestedMap, lastKey, err := nestedMapAtPath(m, path)
+			if err != nil {
+				panic(err)
+			}
+			if value, ok := nestedMap[lastKey]; ok {
 				if stringValue, ok := value.(string); ok {
 					return stringValue
 				}
