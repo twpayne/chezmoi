@@ -29,29 +29,37 @@ func (c *Config) newCompletionCmd() *cobra.Command {
 }
 
 func (c *Config) runCompletionCmd(cmd *cobra.Command, args []string) error {
+	completion, err := completion(cmd, args[0])
+	if err != nil {
+		return err
+	}
+	return c.writeOutputString(completion)
+}
+
+func completion(cmd *cobra.Command, shell string) (string, error) {
 	builder := strings.Builder{}
 	builder.Grow(16384)
-	switch args[0] {
+	switch shell {
 	case "bash":
 		includeDesc := true
 		if err := cmd.Root().GenBashCompletionV2(&builder, includeDesc); err != nil {
-			return err
+			return "", err
 		}
 	case "fish":
 		includeDesc := true
 		if err := cmd.Root().GenFishCompletion(&builder, includeDesc); err != nil {
-			return err
+			return "", err
 		}
 	case "powershell":
 		if err := cmd.Root().GenPowerShellCompletion(&builder); err != nil {
-			return err
+			return "", err
 		}
 	case "zsh":
 		if err := cmd.Root().GenZshCompletion(&builder); err != nil {
-			return err
+			return "", err
 		}
 	default:
-		return fmt.Errorf("%s: unsupported shell", args[0])
+		return "", fmt.Errorf("%s: unsupported shell", shell)
 	}
-	return c.writeOutputString(builder.String())
+	return builder.String(), nil
 }

@@ -335,12 +335,14 @@ func newConfig(options ...configOption) (*Config, error) {
 	}
 
 	for key, value := range map[string]any{
-		"awsSecretsManager":        c.awsSecretsManagerTemplateFunc,
-		"awsSecretsManagerRaw":     c.awsSecretsManagerRawTemplateFunc,
-		"bitwarden":                c.bitwardenTemplateFunc,
-		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
-		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
-		"comment":                  c.commentTemplateFunc,
+		"awsSecretsManager":    c.awsSecretsManagerTemplateFunc,
+		"awsSecretsManagerRaw": c.awsSecretsManagerRawTemplateFunc,
+		"bitwarden":            c.bitwardenTemplateFunc,
+		"bitwardenAttachment":  c.bitwardenAttachmentTemplateFunc,
+		"bitwardenFields":      c.bitwardenFieldsTemplateFunc,
+		"comment":              c.commentTemplateFunc,
+		// The completion template function is added in persistentPreRunRootE as
+		// it needs a *cobra.Command, which we don't yet have.
 		"decrypt":                  c.decryptTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
 		"eqFold":                   c.eqFoldTemplateFunc,
@@ -1602,6 +1604,16 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 // persistentPreRunRootE performs pre-run actions for the root command.
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
 	annotations := getAnnotations(cmd)
+
+	// Add the completion template function. This needs cmd, so we can't do it
+	// in newConfig.
+	c.addTemplateFunc("completion", func(shell string) string {
+		completion, err := completion(cmd, shell)
+		if err != nil {
+			panic(err)
+		}
+		return completion
+	})
 
 	// Enable CPU profiling if configured.
 	if !c.cpuProfile.Empty() {
