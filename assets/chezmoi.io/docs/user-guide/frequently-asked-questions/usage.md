@@ -115,3 +115,19 @@ Chezmoi will make sure to execute it before templating other files.
 
     You can [use `scriptEnv` to inject data into your scripts through environment
     variables](../../user-guide/use-scripts-to-perform-actions.md#set-environment-variables).
+
+## How do I enable shell completions?
+
+chezmoi includes shell completions for
+[`bash`](https://www.gnu.org/software/bash/), [Fig](https://fig.io/),
+[`fish`](https://fishshell.com/),
+[PowerShell](https://learn.microsoft.com/en-us/powershell/), and
+[`zsh`](https://zsh.sourceforge.io/). If you have installed chezmoi via your
+package manager then the shell completion should already be installed. Please
+[open an issue](https://github.com/twpayne/chezmoi/issues/new/choose) if this
+is not working correctly.
+
+chezmoi provides a `completion` command and a `completion` template function
+which return the shell completions for the given shell. These can be used
+either as a one-off or as part of your dotfiles repo. The details of how to use
+these depend on your shell.

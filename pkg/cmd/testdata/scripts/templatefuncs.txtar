@@ -8,6 +8,10 @@ exec chezmoi execute-template '{{ "line1\nline2" | comment "# " }}'
 rmfinalnewline golden/comment
 cmp stdout golden/comment
 
+# test completion template function
+exec chezmoi execute-template '{{ completion "zsh" }}'
+stdout '^# zsh completion for chezmoi'
+
 # test eqFold template function
 exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
 stdout '^true$'
