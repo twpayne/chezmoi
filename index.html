@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://chezmoi.io/">
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -26,7 +26,7 @@
       <link rel="stylesheet" href="assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -115,6 +115,7 @@
         
           
           
+          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
@@ -122,6 +123,7 @@
             </label>
           
         
+          
           
           
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
@@ -2051,6 +2053,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_9">
@@ -2115,6 +2121,20 @@
     <li class="md-nav__item">
       <a href="reference/commands/cat/" class="md-nav__link">
         cat
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/commands/cat-config/" class="md-nav__link">
+        cat-config
       </a>
     </li>
   
@@ -2227,6 +2247,20 @@
     <li class="md-nav__item">
       <a href="reference/commands/dump/" class="md-nav__link">
         dump
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/commands/dump-config/" class="md-nav__link">
+        dump-config
       </a>
     </li>
   
@@ -2838,6 +2872,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -2868,6 +2906,20 @@
     <li class="md-nav__item">
       <a href="reference/templates/functions/comment/" class="md-nav__link">
         comment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/templates/functions/completion/" class="md-nav__link">
+        completion
       </a>
     </li>
   
@@ -3092,6 +3144,20 @@
     <li class="md-nav__item">
       <a href="reference/templates/functions/replaceAllRegex/" class="md-nav__link">
         replaceAllRegex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/templates/functions/setValueAtPath/" class="md-nav__link">
+        setValueAtPath
       </a>
     </li>
   
@@ -4784,22 +4850,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-to-start-with-chezmoi" class="md-nav__link">
-    How to start with chezmoi?
+  <a href="#how-do-i-start-with-chezmoi" class="md-nav__link">
+    How do I start with chezmoi?
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#not-sure-if-you-should-use-chezmoi" class="md-nav__link">
-    Not sure if you should use chezmoi?
+  <a href="#should-i-use-chezmoi" class="md-nav__link">
+    Should I use chezmoi?
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#like-chezmoi-and-want-to-say-thanks" class="md-nav__link">
-    Like chezmoi and want to say thanks?
+  <a href="#i-like-chezmoi-how-do-i-say-thanks" class="md-nav__link">
+    I like chezmoi. How do I say thanks?
   </a>
   
 </li>
@@ -4826,7 +4892,7 @@
 
 <h1 id="chezmoi">chezmoi</h1>
 <p>Manage your dotfiles across multiple diverse machines, securely.</p>
-<p>The latest version of chezmoi is 2.26.0 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.26.0">release notes</a>, <a href="/reference/release-history">release history</a>).</p>
+<p>The latest version of chezmoi is 2.27.0 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.27.0">release notes</a>, <a href="/reference/release-history">release history</a>).</p>
 <p>chezmoi helps you manage your personal configuration files (dotfiles, like
 <code>~/.gitconfig</code>) across multiple machines.</p>
 <p>chezmoi provides many features beyond symlinking or using a bare git repo
@@ -4844,19 +4910,20 @@ favorite package manager</a>.</p>
 <p>Updating your dotfiles on any machine is a single command:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi update
 </code></pre></div>
-<h2 id="how-to-start-with-chezmoi">How to start with chezmoi?</h2>
+<h2 id="how-do-i-start-with-chezmoi">How do I start with chezmoi?</h2>
 <p><a href="/install/">Install chezmoi</a> then read the <a href="/quick-start/">quick start guide</a>.
 The <a href="/user-guide/setup/">user guide</a> covers most common tasks. For a full
 description, consult the <a href="/reference/">reference</a>.</p>
-<h2 id="not-sure-if-you-should-use-chezmoi">Not sure if you should use chezmoi?</h2>
-<p><a href="/links/articles-podcasts-and-videos/">Read articles, listen to podcasts, and watch videos about
-chezmoi</a> and <a href="/comparison-table/">compare chezmoi to other
-dotfile managers</a>.</p>
-<p>See how other people use chezmoi by <a href="https://github.com/topics/chezmoi?o=desc&amp;s=updated">browsing chezmoi dotfile repos on
+<h2 id="should-i-use-chezmoi">Should I use chezmoi?</h2>
+<p>See what other people think about chezmoi by <a href="/links/articles-podcasts-and-videos/">reading articles, listening to
+podcasts, and watching videos about
+chezmoi</a>. Read <a href="/comparison-table/">how chezmoi compares to
+other dotfile managers</a>. Explore other people's dotfile
+repos that use chezmoi <a href="https://github.com/topics/chezmoi?o=desc&amp;s=updated">on
 GitHub</a>,
 <a href="https://gitlab.com/explore/projects?topic=chezmoi">GitLab</a>, and
 <a href="https://codeberg.org/explore/repos?sort=recentupdate&amp;q=chezmoi&amp;tab=">Codeberg</a>.</p>
-<h2 id="like-chezmoi-and-want-to-say-thanks">Like chezmoi and want to say thanks?</h2>
+<h2 id="i-like-chezmoi-how-do-i-say-thanks">I like chezmoi. How do I say thanks?</h2>
 <p>Please <a href="https://github.com/twpayne/chezmoi/stargazers">give chezmoi a star on
 GitHub</a>.</p>
 <p><a href="/links/articles-podcasts-and-videos/">Share chezmoi</a> and, if you're happy to
@@ -4866,8 +4933,8 @@ share your public dotfiles repo, then <a href="https://github.com/topics/chezmoi
 <a href="https://github.com/twpayne/chezmoi/issues/new/choose">bug report, support request, and feature
 request</a> helps make
 chezmoi better. Thank you :)</p>
-<p>If you would like to make a financial contribution, please instead make a
-donation to a charity or cause of your choice.</p>
+<p>chezmoi does not accept financial contributions. Instead, please make a donation
+to a charity or cause of your choice.</p>
 
 
 
@@ -4938,7 +5005,7 @@ donation to a charity or cause of your choice.</p>
     <script id="__config" type="application/json">{"base": ".", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.8492ddcf.min.js"></script>
+      <script src="assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
         <script src="extra/refresh_on_toggle_dark_light.js"></script>
       

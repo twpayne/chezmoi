@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://chezmoi.io/reference/release-history/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.9">
     
     
       
@@ -26,7 +26,7 @@
       <link rel="stylesheet" href="../../assets/stylesheets/main.20d9efc8.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.08040f6c.min.css">
         
       
       
@@ -115,6 +115,7 @@
         
           
           
+          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
@@ -122,6 +123,7 @@
             </label>
           
         
+          
           
           
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
@@ -2051,6 +2053,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_3_9">
@@ -2115,6 +2121,20 @@
     <li class="md-nav__item">
       <a href="../commands/cat/" class="md-nav__link">
         cat
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/cat-config/" class="md-nav__link">
+        cat-config
       </a>
     </li>
   
@@ -2227,6 +2247,20 @@
     <li class="md-nav__item">
       <a href="../commands/dump/" class="md-nav__link">
         dump
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/dump-config/" class="md-nav__link">
+        dump-config
       </a>
     </li>
   
@@ -2838,6 +2872,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -2868,6 +2906,20 @@
     <li class="md-nav__item">
       <a href="../templates/functions/comment/" class="md-nav__link">
         comment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/completion/" class="md-nav__link">
+        completion
       </a>
     </li>
   
@@ -3092,6 +3144,20 @@
     <li class="md-nav__item">
       <a href="../templates/functions/replaceAllRegex/" class="md-nav__link">
         replaceAllRegex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/setValueAtPath/" class="md-nav__link">
+        setValueAtPath
       </a>
     </li>
   
@@ -4482,6 +4548,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#2270-2022-11-09" class="md-nav__link">
+    2.27.0 (2022-11-09)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-contributors" class="md-nav__link">
+    New Contributors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#2260-2022-10-31" class="md-nav__link">
     2.26.0 (2022-10-31)
   </a>
@@ -5819,6 +5899,20 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#2270-2022-11-09" class="md-nav__link">
+    2.27.0 (2022-11-09)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-contributors" class="md-nav__link">
+    New Contributors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#2260-2022-10-31" class="md-nav__link">
     2.26.0 (2022-10-31)
   </a>
@@ -6840,6 +6934,35 @@
 
 
 <h1 id="release-history">Release history</h1>
+<h2 id="2270-2022-11-09"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.27.0">2.27.0</a> (2022-11-09)</h2>
+<ul>
+<li>fix: Revert cpina/github-action-push-to-another-repository version bump by <a href="https://github.com/bradenhilton"><strong>@bradenhilton</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2527">#2527</a></li>
+<li>chore: Install Go in test-website and deploy-website jobs by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2528">#2528</a></li>
+<li>feat: Suppress newlines from <code>onepasswordRead</code> by <a href="https://github.com/halostatue"><strong>@halostatue</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2532">#2532</a></li>
+<li>chore(deps): bump golangci/golangci-lint-action from 3.2.0 to 3.3.0 by <a href="https://github.com/dependabot"><strong>@dependabot</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2533">#2533</a></li>
+<li>feat: Allow modify_ scripts to be executed as templates by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2529">#2529</a></li>
+<li>chore: Blacklist buggy version of github.com/bmatcuk/doublestar/v4 by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2537">#2537</a></li>
+<li>chore: Build with Go 1.19.3 by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2541">#2541</a></li>
+<li>feat: Add line ending template directive by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2540">#2540</a></li>
+<li>feat: Add setValueAtPath template function by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2542">#2542</a></li>
+<li>fix: Don't merge non-files in merge-all command by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2543">#2543</a></li>
+<li>feat: Add --script-contents flag to diff command by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2544">#2544</a></li>
+<li>docs: Add line endings directive documentation by <a href="https://github.com/bradenhilton"><strong>@bradenhilton</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2547">#2547</a></li>
+<li>docs: Fix typos in Sourcehut repo patterns by <a href="https://github.com/kjerstadius"><strong>@kjerstadius</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2552">#2552</a></li>
+<li>chore: Better handle errors when globbing by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2538">#2538</a></li>
+<li>feat: Add cat-config and dump-config commands by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2553">#2553</a></li>
+<li>chore: Remove unused field by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2554">#2554</a></li>
+<li>chore: Refactor handling of annotations by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2555">#2555</a></li>
+<li>feat: Allow prompt*Once template functions to take paths by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2557">#2557</a></li>
+<li>fix: Fix exclusion of externals by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2558">#2558</a></li>
+<li>chore: Update dependencies by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2559">#2559</a></li>
+<li>feat: Add completion template function by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2560">#2560</a></li>
+</ul>
+<h2 id="new-contributors">New Contributors</h2>
+<ul>
+<li><a href="https://github.com/kjerstadius"><strong>@kjerstadius</strong></a> made their first contribution in <a href="https://github.com/twpayne/chezmoi/pull/2552">#2552</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/twpayne/chezmoi/compare/v2.26.0...v2.27.0"><code>v2.26.0...v2.27.0</code></a></p>
 <h2 id="2260-2022-10-31"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.26.0">2.26.0</a> (2022-10-31)</h2>
 <ul>
 <li>feat: Improve handling of include and exclude for externals and encrypted files by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2451">#2451</a></li>
@@ -7029,27 +7152,7 @@
 </ul>
 <h2 id="2180-2022-06-20"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.18.0">2.18.0</a> (2022-06-20)</h2>
 <ul>
-<li><a href="https://github.com/twpayne/chezmoi/commit/817d3e7f"><code>817d3e7f</code></a> feat: Stop building snaps</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/ab6bc8d9"><code>ab6bc8d9</code></a> feat: Make add command add empty files, remove --empty flag</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/755e02f4"><code>755e02f4</code></a> fix: Don't return an error when the user chooses quit from a prompt</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/b5543295"><code>b5543295</code></a> feat: Implement documented add --prompt flag</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/b95449f8"><code>b95449f8</code></a> docs: Remove stray whitespace</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/ebeebcb0"><code>ebeebcb0</code></a> docs: Add extra documentation to autotemplate</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/991a6307"><code>991a6307</code></a> docs: Clarify what 'source state' means</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/2421da82"><code>2421da82</code></a> fix: Check .chezmoiversion in init command</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/25b32fbf"><code>25b32fbf</code></a> feat: Give more context in Windows errors</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/9605e40f"><code>9605e40f</code></a> feat: Make --autotemplate escape template markers</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/2c895411"><code>2c895411</code></a> feat: Support determining FQDN via /etc/myname</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/281e770a"><code>281e770a</code></a> feat: Support multiple GPG recipients</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/cbed7199"><code>cbed7199</code></a> feat: Include git working tree state in doctor output</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/87c1a915"><code>87c1a915</code></a> docs: Use modeline to set filetype in VIM</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/1af05761"><code>1af05761</code></a> feat: Include last modified time of config file in doctor output</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/44762fdf"><code>44762fdf</code></a> feat: Add quoteList template function</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/2bf12108"><code>2bf12108</code></a> feat: Add textconv configuration for friendlier binary diffs</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/814f1f20"><code>814f1f20</code></a> docs: Refactor Windows chassisType template</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/7199cb29"><code>7199cb29</code></a> docs: Add link to blog</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/d29344f0"><code>d29344f0</code></a> fix: Improve quality of POSIX shell scripts</li>
-<li><a href="https://github.com/twpayne/chezmoi/commit/f2f8d87a"><code>f2f8d87a</code></a> docs: Add link to blog post</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/817d3e7f"><code>817d3e7f</code></a> feat: Stop building snaps\n<em> <a href="https://github.com/twpayne/chezmoi/commit/ab6bc8d9"><code>ab6bc8d9</code></a> feat: Make add command add empty files, remove --empty flag\n</em> <a href="https://github.com/twpayne/chezmoi/commit/755e02f4"><code>755e02f4</code></a> fix: Don't return an error when the user chooses quit from a prompt\n<em> <a href="https://github.com/twpayne/chezmoi/commit/b5543295"><code>b5543295</code></a> feat: Implement documented add --prompt flag\n</em> <a href="https://github.com/twpayne/chezmoi/commit/b95449f8"><code>b95449f8</code></a> docs: Remove stray whitespace\n<em> <a href="https://github.com/twpayne/chezmoi/commit/ebeebcb0"><code>ebeebcb0</code></a> docs: Add extra documentation to autotemplate\n</em> <a href="https://github.com/twpayne/chezmoi/commit/991a6307"><code>991a6307</code></a> docs: Clarify what 'source state' means\n<em> <a href="https://github.com/twpayne/chezmoi/commit/2421da82"><code>2421da82</code></a> fix: Check .chezmoiversion in init command\n</em> <a href="https://github.com/twpayne/chezmoi/commit/25b32fbf"><code>25b32fbf</code></a> feat: Give more context in Windows errors\n<em> <a href="https://github.com/twpayne/chezmoi/commit/9605e40f"><code>9605e40f</code></a> feat: Make --autotemplate escape template markers\n</em> <a href="https://github.com/twpayne/chezmoi/commit/2c895411"><code>2c895411</code></a> feat: Support determining FQDN via /etc/myname\n<em> <a href="https://github.com/twpayne/chezmoi/commit/281e770a"><code>281e770a</code></a> feat: Support multiple GPG recipients\n</em> <a href="https://github.com/twpayne/chezmoi/commit/cbed7199"><code>cbed7199</code></a> feat: Include git working tree state in doctor output\n<em> <a href="https://github.com/twpayne/chezmoi/commit/87c1a915"><code>87c1a915</code></a> docs: Use modeline to set filetype in VIM\n</em> <a href="https://github.com/twpayne/chezmoi/commit/1af05761"><code>1af05761</code></a> feat: Include last modified time of config file in doctor output\n<em> <a href="https://github.com/twpayne/chezmoi/commit/44762fdf"><code>44762fdf</code></a> feat: Add quoteList template function\n</em> <a href="https://github.com/twpayne/chezmoi/commit/2bf12108"><code>2bf12108</code></a> feat: Add textconv configuration for friendlier binary diffs\n<em> <a href="https://github.com/twpayne/chezmoi/commit/814f1f20"><code>814f1f20</code></a> docs: Refactor Windows chassisType template\n</em> <a href="https://github.com/twpayne/chezmoi/commit/7199cb29"><code>7199cb29</code></a> docs: Add link to blog\n<em> <a href="https://github.com/twpayne/chezmoi/commit/d29344f0"><code>d29344f0</code></a> fix: Improve quality of POSIX shell scripts\n</em> <a href="https://github.com/twpayne/chezmoi/commit/f2f8d87a"><code>f2f8d87a</code></a> docs: Add link to blog post\n</li>
 </ul>
 <h2 id="2171-2022-05-30"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.17.1">2.17.1</a> (2022-05-30)</h2>
 <ul>
@@ -9302,7 +9405,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.8492ddcf.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
       
         <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
       
