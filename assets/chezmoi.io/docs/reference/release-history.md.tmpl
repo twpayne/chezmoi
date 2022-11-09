@@ -6,6 +6,8 @@
 {{ $release.Body
    | replaceAllRegex "(?m)^## What's Changed$" ""
    | replaceAllRegex "(?m)^## Changelog\\r?$" ""
+   | replaceAllRegex "(?m)^## (New Contributors)\\r?$" "$1\n"
+   | replaceAllRegex "\\*\\*(Full Changelog)\\*\\*" "$1"
    | replaceAllRegex "(https://github\\.com/twpayne/chezmoi/compare/(\\S+))" "[`$2`]($1)"
    | replaceAllRegex "@(\\S+)" "[**$0**](https://github.com/$1)"
    | replaceAllRegex "pull request #(\\d+)" "pull request https://github.com/twpayne/chezmoi/pull/$1"
