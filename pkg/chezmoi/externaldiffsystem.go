@@ -163,8 +163,12 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	if s.filter.IncludeEntryTypeBits(EntryTypeScripts) {
+func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+	bits := EntryTypeScripts
+	if options.Condition == ScriptConditionAlways {
+		bits |= EntryTypeAlways
+	}
+	if s.filter.IncludeEntryTypeBits(bits) {
 		tempDirAbsPath, err := s.tempDir()
 		if err != nil {
 			return err
@@ -184,7 +188,7 @@ func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []b
 			return err
 		}
 	}
-	return s.system.RunScript(scriptname, dir, data, interpreter)
+	return s.system.RunScript(scriptname, dir, data, options)
 }
 
 // Stat implements System.Stat.

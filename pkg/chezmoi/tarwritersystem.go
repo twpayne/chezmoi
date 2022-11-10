@@ -43,7 +43,7 @@ func (s *TarWriterSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *TarWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+func (s *TarWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 

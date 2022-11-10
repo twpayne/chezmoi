@@ -13,6 +13,11 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+type RunScriptOptions struct {
+	Interpreter *Interpreter
+	Condition   ScriptCondition
+}
+
 // A System reads from and writes to a filesystem, runs scripts, and persists
 // state.
 type System interface { //nolint:interfacebloat
@@ -30,7 +35,7 @@ type System interface { //nolint:interfacebloat
 	RemoveAll(name AbsPath) error
 	Rename(oldpath, newpath AbsPath) error
 	RunCmd(cmd *exec.Cmd) error
-	RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error
+	RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error
 	Stat(name AbsPath) (fs.FileInfo, error)
 	UnderlyingFS() vfs.FS
 	WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error
@@ -84,7 +89,7 @@ func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	panic("update to no update system")
 }
 

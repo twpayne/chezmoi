@@ -41,7 +41,8 @@ anotherdir/script.sh
   "anotherdir/script.sh": {
     "type": "script",
     "name": "anotherdir/script.sh",
-    "contents": "#!/bin/sh\n\npwd\n"
+    "contents": "#!/bin/sh\n\npwd\n",
+    "condition": "always"
   },
   "dir": {
     "type": "dir",
@@ -51,7 +52,8 @@ anotherdir/script.sh
   "dir/script.sh": {
     "type": "script",
     "name": "dir/script.sh",
-    "contents": "#!/bin/sh\n\npwd\n"
+    "contents": "#!/bin/sh\n\npwd\n",
+    "condition": "always"
   },
   "otherdir": {
     "type": "dir",
@@ -61,7 +63,8 @@ anotherdir/script.sh
   "otherdir/script.sh": {
     "type": "script",
     "name": "otherdir/script.sh",
-    "contents": "#!/bin/sh\n\npwd\n"
+    "contents": "#!/bin/sh\n\npwd\n",
+    "condition": "always"
   }
 }
 -- home/user/.local/share/chezmoi/anotherdir/run_after_script.sh --

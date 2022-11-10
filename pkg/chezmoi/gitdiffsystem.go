@@ -201,8 +201,12 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	if s.filter.IncludeEntryTypeBits(EntryTypeScripts) {
+func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+	bits := EntryTypeScripts
+	if options.Condition == ScriptConditionAlways {
+		bits |= EntryTypeAlways
+	}
+	if s.filter.IncludeEntryTypeBits(bits) {
 		fromData, toData := []byte(nil), data
 		fromMode, toMode := fs.FileMode(0), fs.FileMode(filemode.Executable)
 		if !s.scriptContents {
@@ -220,7 +224,7 @@ func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, 
 			return err
 		}
 	}
-	return s.system.RunScript(scriptname, dir, data, interpreter)
+	return s.system.RunScript(scriptname, dir, data, options)
 }
 
 // Stat implements System.Stat.

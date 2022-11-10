@@ -21,7 +21,8 @@ script.cmd
   "script.cmd": {
     "type": "script",
     "name": "script.cmd",
-    "contents": "echo evidence\n"
+    "contents": "echo evidence\n",
+    "condition": "always"
   }
 }
 -- golden/managed --
