@@ -7,13 +7,13 @@ By default, if *repo* is given, chezmoi will guess the full git repo URL, using
 HTTPS by default, or SSH if the `--ssh` option is specified, according to the
 following patterns:
 
-| Pattern            | HTTPS Repo                             | SSH repo                           |
-| ------------------ | -------------------------------------- | ---------------------------------- |
-| `user`             | `https://github.com/user/dotfiles.git` | `git@github.com:user/dotfiles.git` |
-| `user/repo`        | `https://github.com/user/repo.git`     | `git@github.com:user/repo.git`     |
-| `site/user/repo`   | `https://site/user/repo.git`           | `git@site:user/repo.git`           |
-| `sr.ht/~user`      | `https://git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
-| `sr.ht/~user/repo` | `https://git.sr.ht/~user/repo`         | `git@git.sr.ht:~user/repo.git`    |
+| Pattern            | HTTPS Repo                                  | SSH repo                           |
+| ------------------ | ------------------------------------------- | ---------------------------------- |
+| `user`             | `https://user@github.com/user/dotfiles.git` | `git@github.com:user/dotfiles.git` |
+| `user/repo`        | `https://user@github.com/user/repo.git`     | `git@github.com:user/repo.git`     |
+| `site/user/repo`   | `https://user@site/user/repo.git`           | `git@site:user/repo.git`           |
+| `sr.ht/~user`      | `https://user@git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
+| `sr.ht/~user/repo` | `https://user@git.sr.ht/~user/repo`         | `git@git.sr.ht:~user/repo.git`     |
 
 To disable git repo URL guessing pass the `--guess-repo-url=false` option.
 
