@@ -319,7 +319,10 @@ func (t *TargetStateScript) Apply(
 	}
 	runAt := time.Now().UTC()
 	if !isEmpty(contents) {
-		if err := system.RunScript(t.name, actualStateEntry.Path().Dir(), contents, t.interpreter); err != nil {
+		if err := system.RunScript(t.name, actualStateEntry.Path().Dir(), contents, RunScriptOptions{
+			Condition:   t.condition,
+			Interpreter: t.interpreter,
+		}); err != nil {
 			return false, err
 		}
 	}

@@ -31,7 +31,8 @@ dir/script.sh
   "dir/script.sh": {
     "type": "script",
     "name": "dir/script.sh",
-    "contents": "#!/bin/sh\n\npwd\n"
+    "contents": "#!/bin/sh\n\npwd\n",
+    "condition": "always"
   }
 }
 -- home/user/.local/share/chezmoi/dir/run_script.sh --

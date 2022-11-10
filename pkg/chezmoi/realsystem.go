@@ -83,7 +83,7 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) (err error) {
+func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) (err error) {
 	// Create the script temporary directory, if needed.
 	s.createScriptTempDirOnce.Do(func() {
 		if !s.scriptTempDir.Empty() {
@@ -118,7 +118,7 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, int
 		return
 	}
 
-	cmd := interpreter.ExecCommand(f.Name())
+	cmd := options.Interpreter.ExecCommand(f.Name())
 	cmd.Dir, err = s.getScriptWorkingDir(dir)
 	if err != nil {
 		return err

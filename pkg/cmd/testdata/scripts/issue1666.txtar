@@ -1,0 +1,16 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi apply --verbose does not display scripts that are run always, but does run them
+exec chezmoi apply --verbose
+cmp stdout golden/apply
+! stderr .
+
+-- golden/apply --
+script
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    exclude = ["always"]
+-- home/user/.local/share/chezmoi/run_script.sh --
+#!/bin/sh
+
+echo script

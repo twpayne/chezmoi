@@ -35,7 +35,8 @@ anotherdir/script.cmd
   "anotherdir/script.cmd": {
     "type": "script",
     "name": "anotherdir/script.cmd",
-    "contents": "@echo %cd%\n"
+    "contents": "@echo %cd%\n",
+    "condition": "always"
   },
   "dir": {
     "type": "dir",
@@ -45,7 +46,8 @@ anotherdir/script.cmd
   "dir/script.cmd": {
     "type": "script",
     "name": "dir/script.cmd",
-    "contents": "@echo %cd%\n"
+    "contents": "@echo %cd%\n",
+    "condition": "always"
   },
   "otherdir": {
     "type": "dir",
@@ -55,7 +57,8 @@ anotherdir/script.cmd
   "otherdir/script.cmd": {
     "type": "script",
     "name": "otherdir/script.cmd",
-    "contents": "@echo %cd%\n"
+    "contents": "@echo %cd%\n",
+    "condition": "always"
   }
 }
 -- home/user/.local/share/chezmoi/anotherdir/run_after_script.cmd --

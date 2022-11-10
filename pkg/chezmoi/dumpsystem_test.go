@@ -66,9 +66,10 @@ func TestDumpSystem(t *testing.T) {
 				Perm:     0o666 &^ chezmoitest.Umask,
 			},
 			"script": &scriptData{
-				Type:     dataTypeScript,
-				Name:     NewAbsPath("script"),
-				Contents: "# contents of script\n",
+				Type:      dataTypeScript,
+				Name:      NewAbsPath("script"),
+				Contents:  "# contents of script\n",
+				Condition: "always",
 			},
 			"symlink": &symlinkData{
 				Type:     dataTypeSymlink,

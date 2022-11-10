@@ -95,7 +95,7 @@ func (s *ErrorOnWriteSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ErrorOnWriteSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+func (s *ErrorOnWriteSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	return s.err
 }
 

@@ -53,6 +53,7 @@ type scriptData struct {
 	Type        dataType     `json:"type" yaml:"type"`
 	Name        AbsPath      `json:"name" yaml:"name"`
 	Contents    string       `json:"contents" yaml:"contents"`
+	Condition   string       `json:"condition" yaml:"condition"`
 	Interpreter *Interpreter `json:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 }
 
@@ -97,15 +98,18 @@ func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	scriptnameStr := scriptname.String()
 	scriptData := &scriptData{
 		Type:     dataTypeScript,
 		Name:     NewAbsPath(scriptnameStr),
 		Contents: string(data),
 	}
-	if !interpreter.None() {
-		scriptData.Interpreter = interpreter
+	if options.Condition != ScriptConditionNone {
+		scriptData.Condition = string(options.Condition)
+	}
+	if !options.Interpreter.None() {
+		scriptData.Interpreter = options.Interpreter
 	}
 	return s.setData(scriptnameStr, scriptData)
 }

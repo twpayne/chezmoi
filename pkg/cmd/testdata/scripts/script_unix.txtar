@@ -64,7 +64,8 @@ index 0000000000000000000000000000000000000000..f9103e018df1bbc178e66b46d8f133f4
   "script.sh": {
     "type": "script",
     "name": "script.sh",
-    "contents": "#!/bin/sh\n\npwd\n"
+    "contents": "#!/bin/sh\n\npwd\n",
+    "condition": "always"
   }
 }
 -- golden/managed --
