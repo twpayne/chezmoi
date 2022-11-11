@@ -1,34 +1,35 @@
 {{- $name := "chezmoi" -}}
 {{- $filename := printf "%s.exe" $name -}}
 
-{{- /* Get the current year using the Magical Reference Date format */ -}}
-{{- $currentYear := now | date "2006" -}}
-
-{{- $commitHash := output "git" "rev-parse" "HEAD" | trim -}}
-{{- if ne "" (output "git" "diff" "--stat" | trim) -}}
-{{-   $commitHash = printf "%s-dirty" $commitHash -}}
+{{- $comments := "" -}}
+{{- if exists ".git" -}}
+{{-   $commitHash := output "git" "rev-parse" "HEAD" | trim -}}
+{{-   if ne "" (output "git" "diff" "--stat" | trim) -}}
+{{-     $commitHash = printf "%s-dirty" $commitHash -}}
+{{-   end -}}
+{{-   $comments = printf "commit: %s" $commitHash -}}
 {{- end -}}
 
-{{- $version := semver (output "git" "describe" "--abbrev=0" "--tags" | trim) -}}
-{{- $versionDict := (dict
-    "Major" $version.Major
-    "Minor" $version.Minor
-    "Patch" $version.Patch
-    "Build" 0)
--}}
+{{- $versionStr := "v0.0.0" -}}
+{{- if and (exists ".git") (output "git" "tag" "--list" | trim) -}}
+{{-   $versionStr = output "git" "describe" "--abbrev=0" "--tags" | trim -}}
+{{- end -}}
+{{- $versionDict := dict -}}
+{{- with semver $versionStr -}}
+{{-   $versionDict = (dict "Major" .Major "Minor" .Minor "Patch" .Patch "Build" 0) -}}
+{{- end -}}
 
 {{- dict
-    "FixedFileInfo" (dict
+      "FixedFileInfo" (dict
         "FileVersion" $versionDict
         "ProductVersion" $versionDict)
-    "StringFileInfo" (dict
-        "Comments" (printf "commit: %s" $commitHash)
+      "StringFileInfo" (dict
+        "Comments" $comments
         "FileDescription" "Manage your dotfiles across multiple diverse machines, securely."
-        "FileVersion" $version.Original
+        "FileVersion" $versionStr
         "InternalName" $filename
-        "LegalCopyright" (printf "Copyright (c) 2018-%s Tom Payne" $currentYear)
+        "LegalCopyright" (printf "Copyright (c) 2018-%s Tom Payne" (now | date "2006"))
         "OriginalFilename" $filename
         "ProductName" $name
-        "ProductVersion" $version.Original)
-    | toPrettyJson
-}}
+        "ProductVersion" $versionStr)
+      | toPrettyJson }}
