@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"flag"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -98,6 +100,16 @@ func run() error {
 	buffer := &bytes.Buffer{}
 	funcMap := sprig.TxtFuncMap()
 	gitHubClient := newGitHubClient(context.Background())
+	funcMap["exists"] = func(name string) bool {
+		switch _, err := os.Stat(name); {
+		case err == nil:
+			return true
+		case errors.Is(err, fs.ErrNotExist):
+			return false
+		default:
+			panic(err)
+		}
+	}
 	funcMap["gitHubLatestRelease"] = gitHubClient.gitHubLatestRelease
 	funcMap["gitHubListReleases"] = gitHubClient.gitHubListReleases
 	funcMap["gitHubTimestampFormat"] = func(layout string, timestamp github.Timestamp) string {
