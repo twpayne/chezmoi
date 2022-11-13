@@ -1,1735 +1,4992 @@
 
-<!DOCTYPE html>
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Manage your dotfiles across multiple machines, securely.">
+      
+      
+        <meta name="author" content="Tom Payne">
+      
+      
+        <link rel="canonical" href="https://chezmoi.io/user-guide/manage-different-types-of-file/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>Manage different types of file - chezmoi</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.472b142f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.08040f6c.min.css">
+        
+      
+      
 
-<html class="no-js" lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
-<meta content="Manage your dotfiles across multiple machines, securely." name="description"/>
-<meta content="Tom Payne" name="author"/>
-<link href="https://chezmoi.io/user-guide/manage-different-types-of-file/" rel="canonical"/>
-<link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.7" name="generator"/>
-<title>Manage different types of file - chezmoi</title>
-<link href="../../assets/stylesheets/main.cd566b2a.min.css" rel="stylesheet"/>
-<link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
-<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
-</head>
-<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
-<script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
-<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
-<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
-<label class="md-overlay" for="__drawer"></label>
-<div data-md-component="skip">
-<a class="md-skip" href="#manage-different-types-of-file">
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#manage-different-types-of-file" class="md-skip">
           Skip to content
         </a>
-</div>
-<div data-md-component="announce">
-</div>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
 <header class="md-header" data-md-component="header">
-<nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="chezmoi" class="md-header__button md-logo" data-md-component="logo" href="../.." title="chezmoi">
-<img alt="logo" src="../../logo.svg"/>
-</a>
-<label class="md-header__button md-icon" for="__drawer">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"></path></svg>
-</label>
-<div class="md-header__title" data-md-component="header-title">
-<div class="md-header__ellipsis">
-<div class="md-header__topic">
-<span class="md-ellipsis">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
+      
+  <img src="../../logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
             chezmoi
           </span>
-</div>
-<div class="md-header__topic" data-md-component="header-topic">
-<span class="md-ellipsis">
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
             
               Manage different types of file
             
           </span>
-</div>
-</div>
-</div>
-<form class="md-header__option" data-md-component="palette">
-<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
-<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"></path></svg>
-</label>
-<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
-<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg>
-</label>
-</form>
-<label class="md-header__button md-icon" for="__search">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"></path></svg>
-</label>
-<div class="md-search" data-md-component="search" role="dialog">
-<label class="md-search__overlay" for="__search"></label>
-<div class="md-search__inner" role="search">
-<form class="md-search__form" name="search">
-<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
-<label class="md-search__icon md-icon" for="__search">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"></path></svg>
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
-</label>
-<nav aria-label="Search" class="md-search__options">
-<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" type="reset">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path></svg>
-</button>
-</nav>
-</form>
-<div class="md-search__output">
-<div class="md-search__scrollwrap" data-md-scrollfix="">
-<div class="md-search-result" data-md-component="search-result">
-<div class="md-search-result__meta">
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+          
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
             Initializing search
           </div>
-<ol class="md-search-result__list"></ol>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="md-header__source">
-<a class="md-source" data-md-component="source" href="https://github.com/twpayne/chezmoi/" title="Go to repository">
-<div class="md-source__icon md-icon">
-<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
-</div>
-<div class="md-source__repository">
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/twpayne/chezmoi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
     twpayne/chezmoi
   </div>
 </a>
-</div>
-</nav>
+      </div>
+    
+  </nav>
+  
 </header>
-<div class="md-container" data-md-component="container">
-<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
-<div class="md-tabs__inner md-grid">
-<ul class="md-tabs__list">
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../..">
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
         Home
       </a>
-</li>
-<li class="md-tabs__item">
-<a class="md-tabs__link md-tabs__link--active" href="../command-overview/">
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../command-overview/" class="md-tabs__link md-tabs__link--active">
         User guide
       </a>
-</li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../../reference/">
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../reference/" class="md-tabs__link">
         Reference
       </a>
-</li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../../developer/developing-locally/">
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../developer/developing-locally/" class="md-tabs__link">
         Developer
       </a>
-</li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../../links/articles-podcasts-and-videos/">
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../links/articles-podcasts-and-videos/" class="md-tabs__link">
         Links
       </a>
-</li>
-<li class="md-tabs__item">
-<a class="md-tabs__link" href="../../license/">
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../license/" class="md-tabs__link">
       License
     </a>
-</li>
-</ul>
-</div>
+  </li>
+
+      
+    </ul>
+  </div>
 </nav>
-<main class="md-main" data-md-component="main">
-<div class="md-main__inner md-grid">
-<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
-<div class="md-sidebar__scrollwrap">
-<div class="md-sidebar__inner">
-<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
-<label class="md-nav__title" for="__drawer">
-<a aria-label="chezmoi" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="chezmoi">
-<img alt="logo" src="../../logo.svg"/>
-</a>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
+      
+  <img src="../../logo.svg" alt="logo">
+
+    </a>
     chezmoi
   </label>
-<div class="md-nav__source">
-<a class="md-source" data-md-component="source" href="https://github.com/twpayne/chezmoi/" title="Go to repository">
-<div class="md-source__icon md-icon">
-<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
-</div>
-<div class="md-source__repository">
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/twpayne/chezmoi" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
     twpayne/chezmoi
   </div>
 </a>
-</div>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_1" id="__nav_1" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../..">Home</a>
-<label for="__nav_1">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Home" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_1">
-<span class="md-nav__icon md-icon"></span>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../..">Home</a>
+          
+            <label for="__nav_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
           Home
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../install/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../install/" class="md-nav__link">
         Install
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../quick-start/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quick-start/" class="md-nav__link">
         Quick start
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../what-does-chezmoi-do/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../what-does-chezmoi-do/" class="md-nav__link">
         What does chezmoi do?
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../why-use-chezmoi/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why-use-chezmoi/" class="md-nav__link">
         Why use chezmoi?
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../comparison-table/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../comparison-table/" class="md-nav__link">
         Comparison table
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../migrating-from-another-dotfile-manager/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrating-from-another-dotfile-manager/" class="md-nav__link">
         Migrating from another dotfile manager
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--active md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" id="__nav_2" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2">
           User guide
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="User guide" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_2">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="User guide" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
           User guide
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../command-overview/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../command-overview/" class="md-nav__link">
         Command overview
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../setup/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
         Setup
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../daily-operations/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../daily-operations/" class="md-nav__link">
         Daily operations
       </a>
-</li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<label class="md-nav__link md-nav__link--active" for="__toc">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
           Manage different types of file
           <span class="md-nav__icon md-icon"></span>
-</label>
-<a class="md-nav__link md-nav__link--active" href="./">
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Manage different types of file
       </a>
-<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#have-chezmoi-create-a-directory-but-ignore-its-contents">
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#have-chezmoi-create-a-directory-but-ignore-its-contents" class="md-nav__link">
     Have chezmoi create a directory, but ignore its contents
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#ensure-that-a-target-is-removed">
+      
+        <li class="md-nav__item">
+  <a href="#ensure-that-a-target-is-removed" class="md-nav__link">
     Ensure that a target is removed
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#manage-part-but-not-all-of-a-file">
+      
+        <li class="md-nav__item">
+  <a href="#manage-part-but-not-all-of-a-file" class="md-nav__link">
     Manage part, but not all, of a file
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#manage-a-files-permissions-but-not-its-contents">
+      
+        <li class="md-nav__item">
+  <a href="#manage-a-files-permissions-but-not-its-contents" class="md-nav__link">
     Manage a file's permissions, but not its contents
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#handle-configuration-files-which-are-externally-modified">
+      
+        <li class="md-nav__item">
+  <a href="#handle-configuration-files-which-are-externally-modified" class="md-nav__link">
     Handle configuration files which are externally modified
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
+      
+        <li class="md-nav__item">
+  <a href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github" class="md-nav__link">
     Populate ~/.ssh/authorized_keys with your public SSH keys from GitHub
   </a>
+  
 </li>
-</ul>
+      
+    </ul>
+  
 </nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../include-files-from-elsewhere/">
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../include-files-from-elsewhere/" class="md-nav__link">
         Include files from elsewhere
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../manage-machine-to-machine-differences/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manage-machine-to-machine-differences/" class="md-nav__link">
         Manage machine-to-machine differences
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../use-scripts-to-perform-actions/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../use-scripts-to-perform-actions/" class="md-nav__link">
         Use scripts to perform actions
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../templating/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templating/" class="md-nav__link">
         Templating
       </a>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2_9" id="__nav_2_9" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_9">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_9" type="checkbox" id="__nav_2_9" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_9">
           Tools
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Tools" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_2_9">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tools" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_9">
+          <span class="md-nav__icon md-icon"></span>
           Tools
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../tools/editor/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools/editor/" class="md-nav__link">
         Editor
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../tools/diff/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools/diff/" class="md-nav__link">
         Diff
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../tools/merge/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools/merge/" class="md-nav__link">
         Merge
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../tools/http-or-socks5-proxy/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tools/http-or-socks5-proxy/" class="md-nav__link">
         HTTP or SOCKS5 proxy
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2_10" id="__nav_2_10" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../password-managers/">Password managers</a>
-<label for="__nav_2_10">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Password managers" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_2_10">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_10" type="checkbox" id="__nav_2_10" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../password-managers/">Password managers</a>
+          
+            <label for="__nav_2_10">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Password managers" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_10">
+          <span class="md-nav__icon md-icon"></span>
           Password managers
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/1password/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/1password/" class="md-nav__link">
         1Password
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/aws-secrets-manager/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/aws-secrets-manager/" class="md-nav__link">
         AWS Secrets Manager
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/bitwarden/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/bitwarden/" class="md-nav__link">
         Bitwarden
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/gopass/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/gopass/" class="md-nav__link">
         gopass
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/keepassxc/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/keepassxc/" class="md-nav__link">
         KeePassXC
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/keychain-and-windows-credentials-manager/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/keychain-and-windows-credentials-manager/" class="md-nav__link">
         Keychain and Windows Credentials Manager
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/keeper/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/keeper/" class="md-nav__link">
         Keeper
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/lastpass/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/lastpass/" class="md-nav__link">
         LastPass
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/pass/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/pass/" class="md-nav__link">
         pass
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/passhole/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/passhole/" class="md-nav__link">
         passhole
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/vault/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/vault/" class="md-nav__link">
         Vault
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../password-managers/custom/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../password-managers/custom/" class="md-nav__link">
         Custom
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2_11" id="__nav_2_11" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../encryption/">Encryption</a>
-<label for="__nav_2_11">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Encryption" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_2_11">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_11" type="checkbox" id="__nav_2_11" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../encryption/">Encryption</a>
+          
+            <label for="__nav_2_11">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Encryption" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_11">
+          <span class="md-nav__icon md-icon"></span>
           Encryption
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../encryption/age/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryption/age/" class="md-nav__link">
         age
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../encryption/gpg/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryption/gpg/" class="md-nav__link">
         gpg
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2_12" id="__nav_2_12" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_12">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_12" type="checkbox" id="__nav_2_12" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_12">
           Machines
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Machines" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_2_12">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Machines" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_12">
+          <span class="md-nav__icon md-icon"></span>
           Machines
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../machines/general/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machines/general/" class="md-nav__link">
         General
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../machines/linux/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machines/linux/" class="md-nav__link">
         Linux
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../machines/macos/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machines/macos/" class="md-nav__link">
         macOS
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../machines/windows/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machines/windows/" class="md-nav__link">
         Windows
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../machines/containers-and-vms/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../machines/containers-and-vms/" class="md-nav__link">
         Containers and VMs
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2_13" id="__nav_2_13" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_13">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_13" type="checkbox" id="__nav_2_13" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_13">
           Advanced
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Advanced" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_2_13">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Advanced" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_13">
+          <span class="md-nav__icon md-icon"></span>
           Advanced
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../advanced/customize-your-source-directory/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/customize-your-source-directory/" class="md-nav__link">
         Customize your source directory
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../advanced/use-chezmoi-with-watchman/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/use-chezmoi-with-watchman/" class="md-nav__link">
         Use chezmoi with Watchman
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../advanced/migrate-away-from-chezmoi/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/migrate-away-from-chezmoi/" class="md-nav__link">
         Migrate away from chezmoi
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2_14" id="__nav_2_14" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_14">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_14" type="checkbox" id="__nav_2_14" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_2_14">
           Frequently asked questions
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Frequently asked questions" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_2_14">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Frequently asked questions" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_14">
+          <span class="md-nav__icon md-icon"></span>
           Frequently asked questions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../frequently-asked-questions/usage/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frequently-asked-questions/usage/" class="md-nav__link">
         Usage
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../frequently-asked-questions/encryption/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frequently-asked-questions/encryption/" class="md-nav__link">
         Encryption
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../frequently-asked-questions/troubleshooting/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frequently-asked-questions/troubleshooting/" class="md-nav__link">
         Troubleshooting
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../frequently-asked-questions/design/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frequently-asked-questions/design/" class="md-nav__link">
         Design
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../frequently-asked-questions/general/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frequently-asked-questions/general/" class="md-nav__link">
         General
       </a>
-</li>
-</ul>
-</nav>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3" id="__nav_3" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/">Reference</a>
-<label for="__nav_3">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Reference" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_3">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/">Reference</a>
+          
+            <label for="__nav_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
           Reference
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/concepts/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/concepts/" class="md-nav__link">
         Concepts
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/source-state-attributes/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/source-state-attributes/" class="md-nav__link">
         Source state attributes
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/target-types/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/target-types/" class="md-nav__link">
         Target types
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/application-order/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/application-order/" class="md-nav__link">
         Application order
       </a>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_6" id="__nav_3_6" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/command-line-flags/">Command line flags</a>
-<label for="__nav_3_6">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Command line flags" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_3_6">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_6" type="checkbox" id="__nav_3_6" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/command-line-flags/">Command line flags</a>
+          
+            <label for="__nav_3_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Command line flags" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_6">
+          <span class="md-nav__icon md-icon"></span>
           Command line flags
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/command-line-flags/global/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/command-line-flags/global/" class="md-nav__link">
         Global
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/command-line-flags/common/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/command-line-flags/common/" class="md-nav__link">
         Common
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/command-line-flags/developer/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/command-line-flags/developer/" class="md-nav__link">
         Developer
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_7" id="__nav_3_7" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/configuration-file/">Configuration file</a>
-<label for="__nav_3_7">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Configuration file" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_3_7">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_7" type="checkbox" id="__nav_3_7" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/configuration-file/">Configuration file</a>
+          
+            <label for="__nav_3_7">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Configuration file" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_7">
+          <span class="md-nav__icon md-icon"></span>
           Configuration file
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/configuration-file/variables/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration-file/variables/" class="md-nav__link">
         Variables
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/configuration-file/editor/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration-file/editor/" class="md-nav__link">
         Editor
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/configuration-file/pinentry/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration-file/pinentry/" class="md-nav__link">
         pinentry
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/configuration-file/textconv/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration-file/textconv/" class="md-nav__link">
         textconv
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/configuration-file/umask/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration-file/umask/" class="md-nav__link">
         umask
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/configuration-file/warnings/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/configuration-file/warnings/" class="md-nav__link">
         Warnings
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_8" id="__nav_3_8" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/special-files-and-directories/">Special files and directories</a>
-<label for="__nav_3_8">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Special files and directories" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_3_8">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_8" type="checkbox" id="__nav_3_8" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/special-files-and-directories/">Special files and directories</a>
+          
+            <label for="__nav_3_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Special files and directories" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_8">
+          <span class="md-nav__icon md-icon"></span>
           Special files and directories
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoi-format-tmpl/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoi-format-tmpl/" class="md-nav__link">
         .chezmoi.&lt;format&gt;.tmpl
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoidata-format/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoidata-format/" class="md-nav__link">
         .chezmoidata.&lt;format&gt;
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoiexternal-format/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoiexternal-format/" class="md-nav__link">
         .chezmoiexternal.&lt;format&gt;
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoiignore/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoiignore/" class="md-nav__link">
         .chezmoiignore
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoiremove/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoiremove/" class="md-nav__link">
         .chezmoiremove
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoiroot/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoiroot/" class="md-nav__link">
         .chezmoiroot
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoiscripts/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoiscripts/" class="md-nav__link">
         .chezmoiscripts
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoitemplates/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoitemplates/" class="md-nav__link">
         .chezmoitemplates
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/special-files-and-directories/chezmoiversion/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/special-files-and-directories/chezmoiversion/" class="md-nav__link">
         .chezmoiversion
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_9" id="__nav_3_9" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_9">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_9" type="checkbox" id="__nav_3_9" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_9">
           Commands
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Commands" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_3_9">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Commands" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_9">
+          <span class="md-nav__icon md-icon"></span>
           Commands
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/add/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/add/" class="md-nav__link">
         add
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/apply/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/apply/" class="md-nav__link">
         apply
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/archive/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/archive/" class="md-nav__link">
         archive
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/cat/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/cat/" class="md-nav__link">
         cat
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/cat-config/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/cat-config/" class="md-nav__link">
         cat-config
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/cd/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/cd/" class="md-nav__link">
         cd
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/chattr/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/chattr/" class="md-nav__link">
         chattr
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/completion/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/completion/" class="md-nav__link">
         completion
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/data/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/data/" class="md-nav__link">
         data
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/decrypt/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/decrypt/" class="md-nav__link">
         decrypt
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/diff/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/diff/" class="md-nav__link">
         diff
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/doctor/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/doctor/" class="md-nav__link">
         doctor
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/dump/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/dump/" class="md-nav__link">
         dump
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/dump-config/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/dump-config/" class="md-nav__link">
         dump-config
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/edit/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/edit/" class="md-nav__link">
         edit
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/edit-config/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/edit-config/" class="md-nav__link">
         edit-config
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/encrypt/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/encrypt/" class="md-nav__link">
         encrypt
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/execute-template/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/execute-template/" class="md-nav__link">
         execute-template
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/forget/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/forget/" class="md-nav__link">
         forget
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/generate/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/generate/" class="md-nav__link">
         generate
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/git/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/git/" class="md-nav__link">
         git
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/help/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/help/" class="md-nav__link">
         help
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/init/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/init/" class="md-nav__link">
         init
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/import/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/import/" class="md-nav__link">
         import
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/ignored/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/ignored/" class="md-nav__link">
         ignored
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/license/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/license/" class="md-nav__link">
         license
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/list/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/list/" class="md-nav__link">
         list
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/manage/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/manage/" class="md-nav__link">
         manage
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/managed/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/managed/" class="md-nav__link">
         managed
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/merge/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/merge/" class="md-nav__link">
         merge
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/merge-all/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/merge-all/" class="md-nav__link">
         merge-all
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/purge/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/purge/" class="md-nav__link">
         purge
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/remove/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/remove/" class="md-nav__link">
         remove
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/re-add/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/re-add/" class="md-nav__link">
         re-add
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/rm/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/rm/" class="md-nav__link">
         rm
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/secret/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/secret/" class="md-nav__link">
         secret
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/source-path/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/source-path/" class="md-nav__link">
         source-path
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/state/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/state/" class="md-nav__link">
         state
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/status/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/status/" class="md-nav__link">
         status
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/target-path/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/target-path/" class="md-nav__link">
         target-path
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/unmanage/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/unmanage/" class="md-nav__link">
         unmanage
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/unmanaged/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/unmanaged/" class="md-nav__link">
         unmanaged
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/update/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/update/" class="md-nav__link">
         update
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/upgrade/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/upgrade/" class="md-nav__link">
         upgrade
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/commands/verify/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/verify/" class="md-nav__link">
         verify
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10" id="__nav_3_10" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/">Templates</a>
-<label for="__nav_3_10">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Templates" class="md-nav" data-md-level="2">
-<label class="md-nav__title" for="__nav_3_10">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10" type="checkbox" id="__nav_3_10" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/">Templates</a>
+          
+            <label for="__nav_3_10">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Templates" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_10">
+          <span class="md-nav__icon md-icon"></span>
           Templates
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/variables/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/variables/" class="md-nav__link">
         Variables
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/directives/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/directives/" class="md-nav__link">
         Directives
       </a>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_4" id="__nav_3_10_4" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/functions/">Functions</a>
-<label for="__nav_3_10_4">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_4">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_4" type="checkbox" id="__nav_3_10_4" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/functions/">Functions</a>
+          
+            <label for="__nav_3_10_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_4">
+          <span class="md-nav__icon md-icon"></span>
           Functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/comment/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/comment/" class="md-nav__link">
         comment
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/completion/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/completion/" class="md-nav__link">
         completion
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/decrypt/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/decrypt/" class="md-nav__link">
         decrypt
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/encrypt/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/encrypt/" class="md-nav__link">
         encrypt
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/eqFold/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/eqFold/" class="md-nav__link">
         eqFold
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/fromIni/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/fromIni/" class="md-nav__link">
         fromIni
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/fromToml/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/fromToml/" class="md-nav__link">
         fromToml
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/fromYaml/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/fromYaml/" class="md-nav__link">
         fromYaml
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/glob/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/include/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/include/" class="md-nav__link">
         include
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/includeTemplate/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/includeTemplate/" class="md-nav__link">
         includeTemplate
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/ioreg/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/ioreg/" class="md-nav__link">
         ioreg
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/joinPath/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/joinPath/" class="md-nav__link">
         joinPath
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/lookPath/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/lookPath/" class="md-nav__link">
         lookPath
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/mozillaInstallHash/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/mozillaInstallHash/" class="md-nav__link">
         mozillaInstallHash
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/output/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/output/" class="md-nav__link">
         output
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/quoteList/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/quoteList/" class="md-nav__link">
         quoteList
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/replaceAllRegex/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/replaceAllRegex/" class="md-nav__link">
         replaceAllRegex
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/setValueAtPath/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/setValueAtPath/" class="md-nav__link">
         setValueAtPath
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/stat/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/stat/" class="md-nav__link">
         stat
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/toIni/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/toIni/" class="md-nav__link">
         toIni
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/toToml/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/toToml/" class="md-nav__link">
         toToml
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/functions/toYaml/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/toYaml/" class="md-nav__link">
         toYaml
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_5" id="__nav_3_10_5" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/github-functions/">GitHub functions</a>
-<label for="__nav_3_10_5">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="GitHub functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_5">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_5" type="checkbox" id="__nav_3_10_5" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/github-functions/">GitHub functions</a>
+          
+            <label for="__nav_3_10_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="GitHub functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_5">
+          <span class="md-nav__icon md-icon"></span>
           GitHub functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/github-functions/gitHubKeys/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/github-functions/gitHubKeys/" class="md-nav__link">
         gitHubKeys
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/github-functions/gitHubLatestRelease/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/github-functions/gitHubLatestRelease/" class="md-nav__link">
         gitHubLatestRelease
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/github-functions/gitHubLatestTag/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/github-functions/gitHubLatestTag/" class="md-nav__link">
         gitHubLatestTag
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_6" id="__nav_3_10_6" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/init-functions/">Init functions</a>
-<label for="__nav_3_10_6">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Init functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_6">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_6" type="checkbox" id="__nav_3_10_6" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/init-functions/">Init functions</a>
+          
+            <label for="__nav_3_10_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Init functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_6">
+          <span class="md-nav__icon md-icon"></span>
           Init functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/exit/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/exit/" class="md-nav__link">
         exit
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/promptBool/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/promptBool/" class="md-nav__link">
         promptBool
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/promptBoolOnce/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/promptBoolOnce/" class="md-nav__link">
         promptBoolOnce
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/promptInt/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/promptInt/" class="md-nav__link">
         promptInt
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/promptIntOnce/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/promptIntOnce/" class="md-nav__link">
         promptIntOnce
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/promptString/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/promptString/" class="md-nav__link">
         promptString
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/promptStringOnce/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/promptStringOnce/" class="md-nav__link">
         promptStringOnce
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/stdinIsATTY/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
         stdinIsATTY
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/init-functions/writeToStdout/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/init-functions/writeToStdout/" class="md-nav__link">
         writeToStdout
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_7" id="__nav_3_10_7" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/1password-functions/">1Password functions</a>
-<label for="__nav_3_10_7">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="1Password functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_7">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_7" type="checkbox" id="__nav_3_10_7" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/1password-functions/">1Password functions</a>
+          
+            <label for="__nav_3_10_7">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="1Password functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_7">
+          <span class="md-nav__icon md-icon"></span>
           1Password functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/1password-functions/onepassword/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/1password-functions/onepassword/" class="md-nav__link">
         onepassword
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/1password-functions/onepasswordDocument/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/1password-functions/onepasswordDocument/" class="md-nav__link">
         onepasswordDocument
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/1password-functions/onepasswordDetailsFields/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/1password-functions/onepasswordDetailsFields/" class="md-nav__link">
         onepasswordDetailsFields
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/1password-functions/onepasswordItemFields/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/1password-functions/onepasswordItemFields/" class="md-nav__link">
         onepasswordItemFields
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/1password-functions/onepasswordRead/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/1password-functions/onepasswordRead/" class="md-nav__link">
         onepasswordRead
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_8" id="__nav_3_10_8" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/aws-secrets-manager-functions/">AWS Secrets Manager functions</a>
-<label for="__nav_3_10_8">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="AWS Secrets Manager functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_8">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_8" type="checkbox" id="__nav_3_10_8" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/aws-secrets-manager-functions/">AWS Secrets Manager functions</a>
+          
+            <label for="__nav_3_10_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="AWS Secrets Manager functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_8">
+          <span class="md-nav__icon md-icon"></span>
           AWS Secrets Manager functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/aws-secrets-manager-functions/awsSecretsManager/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/aws-secrets-manager-functions/awsSecretsManager/" class="md-nav__link">
         awsSecretsManager
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw/" class="md-nav__link">
         awsSecretsManagerRaw
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_9" id="__nav_3_10_9" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/bitwarden-functions/">Bitwarden functions</a>
-<label for="__nav_3_10_9">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Bitwarden functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_9">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_9" type="checkbox" id="__nav_3_10_9" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/bitwarden-functions/">Bitwarden functions</a>
+          
+            <label for="__nav_3_10_9">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Bitwarden functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_9">
+          <span class="md-nav__icon md-icon"></span>
           Bitwarden functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/bitwarden-functions/bitwarden/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/bitwarden-functions/bitwarden/" class="md-nav__link">
         bitwarden
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/bitwarden-functions/bitwardenAttachment/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/bitwarden-functions/bitwardenFields/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
         bitwardenFields
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_10" id="__nav_3_10_10" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/gopass-functions/">gopass functions</a>
-<label for="__nav_3_10_10">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="gopass functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_10">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_10" type="checkbox" id="__nav_3_10_10" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/gopass-functions/">gopass functions</a>
+          
+            <label for="__nav_3_10_10">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="gopass functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_10">
+          <span class="md-nav__icon md-icon"></span>
           gopass functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/gopass-functions/gopass/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/gopass-functions/gopass/" class="md-nav__link">
         gopass
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/gopass-functions/gopassRaw/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/gopass-functions/gopassRaw/" class="md-nav__link">
         gopassRaw
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_11" id="__nav_3_10_11" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/keepassxc-functions/">KeePassXC functions</a>
-<label for="__nav_3_10_11">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="KeePassXC functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_11">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_11" type="checkbox" id="__nav_3_10_11" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/keepassxc-functions/">KeePassXC functions</a>
+          
+            <label for="__nav_3_10_11">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="KeePassXC functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_11">
+          <span class="md-nav__icon md-icon"></span>
           KeePassXC functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keepassxc-functions/keepassxc/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keepassxc-functions/keepassxc/" class="md-nav__link">
         keepassxc
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keepassxc-functions/keepassxcAttachment/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keepassxc-functions/keepassxcAttachment/" class="md-nav__link">
         keepassxcAttachment
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keepassxc-functions/keepassxcAttribute/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keepassxc-functions/keepassxcAttribute/" class="md-nav__link">
         keepassxcAttribute
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_12" id="__nav_3_10_12" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/keeper-functions/">Keeper functions</a>
-<label for="__nav_3_10_12">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Keeper functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_12">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_12" type="checkbox" id="__nav_3_10_12" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/keeper-functions/">Keeper functions</a>
+          
+            <label for="__nav_3_10_12">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Keeper functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_12">
+          <span class="md-nav__icon md-icon"></span>
           Keeper functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keeper-functions/keeper/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keeper-functions/keeper/" class="md-nav__link">
         keeper
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keeper-functions/keeperDataFields/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keeper-functions/keeperDataFields/" class="md-nav__link">
         keeperDataFields
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keeper-functions/keeperFindPassword/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keeper-functions/keeperFindPassword/" class="md-nav__link">
         keeperFindPassword
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_13" id="__nav_3_10_13" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_10_13">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_13" type="checkbox" id="__nav_3_10_13" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_13">
           Keyring functions
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Keyring functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_13">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Keyring functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_13">
+          <span class="md-nav__icon md-icon"></span>
           Keyring functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/keyring-functions/keyring/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/keyring-functions/keyring/" class="md-nav__link">
         keyring
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_14" id="__nav_3_10_14" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/lastpass-functions/">LastPass functions</a>
-<label for="__nav_3_10_14">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="LastPass functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_14">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_14" type="checkbox" id="__nav_3_10_14" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/lastpass-functions/">LastPass functions</a>
+          
+            <label for="__nav_3_10_14">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="LastPass functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_14">
+          <span class="md-nav__icon md-icon"></span>
           LastPass functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/lastpass-functions/lastpass/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/lastpass-functions/lastpass/" class="md-nav__link">
         lastpass
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/lastpass-functions/lastpassRaw/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/lastpass-functions/lastpassRaw/" class="md-nav__link">
         lastpassRaw
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_15" id="__nav_3_10_15" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/pass-functions/">pass functions</a>
-<label for="__nav_3_10_15">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="pass functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_15">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_15" type="checkbox" id="__nav_3_10_15" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/pass-functions/">pass functions</a>
+          
+            <label for="__nav_3_10_15">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="pass functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_15">
+          <span class="md-nav__icon md-icon"></span>
           pass functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/pass-functions/pass/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/pass-functions/pass/" class="md-nav__link">
         pass
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/pass-functions/passFields/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/pass-functions/passFields/" class="md-nav__link">
         passFields
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/pass-functions/passRaw/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/pass-functions/passRaw/" class="md-nav__link">
         passRaw
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_16" id="__nav_3_10_16" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/passhole-functions/">Passhole functions</a>
-<label for="__nav_3_10_16">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Passhole functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_16">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/passhole-functions/">Passhole functions</a>
+          
+            <label for="__nav_3_10_16">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Passhole functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_16">
+          <span class="md-nav__icon md-icon"></span>
           Passhole functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/passhole-functions/passhole/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/passhole-functions/passhole/" class="md-nav__link">
         passhole
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_17" id="__nav_3_10_17" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_10_17">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" type="checkbox" id="__nav_3_10_17" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_17">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Vault functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_17">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Vault functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_17">
+          <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/vault-functions/vault/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/vault-functions/vault/" class="md-nav__link">
         vault
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_18" id="__nav_3_10_18" type="checkbox"/>
-<div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/secret-functions/">Generic secret functions</a>
-<label for="__nav_3_10_18">
-<span class="md-nav__icon md-icon"></span>
-</label>
-</div>
-<nav aria-label="Generic secret functions" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_18">
-<span class="md-nav__icon md-icon"></span>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_18" type="checkbox" id="__nav_3_10_18" checked>
+      
+      
+      
+        
+          
+            
+          
+        
+          
+        
+          
+        
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../reference/templates/secret-functions/">Generic secret functions</a>
+          
+            <label for="__nav_3_10_18">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Generic secret functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_18">
+          <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/secret-functions/secret/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/secret-functions/secret/" class="md-nav__link">
         secret
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/templates/secret-functions/secretJSON/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/secret-functions/secretJSON/" class="md-nav__link">
         secretJSON
       </a>
-</li>
-</ul>
-</nav>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../reference/release-history/">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/release-history/" class="md-nav__link">
         Release history
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
-<label class="md-nav__link" for="__nav_4">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_4">
           Developer
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Developer" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_4">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Developer" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
           Developer
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/developing-locally/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/developing-locally/" class="md-nav__link">
         Developing locally
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/contributing-changes/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/contributing-changes/" class="md-nav__link">
         Contributing changes
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/website/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/website/" class="md-nav__link">
         Website
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/install-script/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/install-script/" class="md-nav__link">
         Install script
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/using-make/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/using-make/" class="md-nav__link">
         Using make
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/releases/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/releases/" class="md-nav__link">
         Releases
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/packaging/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/packaging/" class="md-nav__link">
         Packaging
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/security/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/security/" class="md-nav__link">
         Security
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/architecture/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/architecture/" class="md-nav__link">
         Architecture
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../developer/building-on-top-of-chezmoi/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/building-on-top-of-chezmoi/" class="md-nav__link">
         Building on top of chezmoi
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_5" id="__nav_5" type="checkbox"/>
-<label class="md-nav__link" for="__nav_5">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" checked>
+      
+      
+      
+        
+          
+        
+          
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_5">
           Links
           <span class="md-nav__icon md-icon"></span>
-</label>
-<nav aria-label="Links" class="md-nav" data-md-level="1">
-<label class="md-nav__title" for="__nav_5">
-<span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Links" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
           Links
         </label>
-<ul class="md-nav__list" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../links/articles-podcasts-and-videos/">
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../links/articles-podcasts-and-videos/" class="md-nav__link">
         Articles, podcasts, and videos
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../links/dotfile-repos-using-chezmoi/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../links/dotfile-repos-using-chezmoi/" class="md-nav__link">
         Dotfile repos using chezmoi
       </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../links/related-software/">
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../links/related-software/" class="md-nav__link">
         Related software
       </a>
-</li>
-</ul>
-</nav>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../license/">
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
         License
       </a>
-</li>
-</ul>
+    </li>
+  
+
+    
+  </ul>
 </nav>
-</div>
-</div>
-</div>
-<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
-<div class="md-sidebar__scrollwrap">
-<div class="md-sidebar__inner">
-<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#have-chezmoi-create-a-directory-but-ignore-its-contents">
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#have-chezmoi-create-a-directory-but-ignore-its-contents" class="md-nav__link">
     Have chezmoi create a directory, but ignore its contents
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#ensure-that-a-target-is-removed">
+      
+        <li class="md-nav__item">
+  <a href="#ensure-that-a-target-is-removed" class="md-nav__link">
     Ensure that a target is removed
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#manage-part-but-not-all-of-a-file">
+      
+        <li class="md-nav__item">
+  <a href="#manage-part-but-not-all-of-a-file" class="md-nav__link">
     Manage part, but not all, of a file
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#manage-a-files-permissions-but-not-its-contents">
+      
+        <li class="md-nav__item">
+  <a href="#manage-a-files-permissions-but-not-its-contents" class="md-nav__link">
     Manage a file's permissions, but not its contents
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#handle-configuration-files-which-are-externally-modified">
+      
+        <li class="md-nav__item">
+  <a href="#handle-configuration-files-which-are-externally-modified" class="md-nav__link">
     Handle configuration files which are externally modified
   </a>
+  
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
+      
+        <li class="md-nav__item">
+  <a href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github" class="md-nav__link">
     Populate ~/.ssh/authorized_keys with your public SSH keys from GitHub
   </a>
+  
 </li>
-</ul>
+      
+    </ul>
+  
 </nav>
-</div>
-</div>
-</div>
-<div class="md-content" data-md-component="content">
-<article class="md-content__inner md-typeset">
-<a class="md-content__button md-icon" href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/user-guide/manage-different-types-of-file.md" title="Edit this page">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
-</a>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <a href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/user-guide/manage-different-types-of-file.md" title="Edit this page" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
 <h1 id="manage-different-types-of-file">Manage different types of file</h1>
 <h2 id="have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</h2>
 <p>If you want chezmoi to create a directory, but ignore its contents, say
@@ -1770,11 +5027,11 @@ example using <code>sed</code>.</p>
 standard input to a temporary file, modify the temporary file, and then
 write the temporary file to the standard output, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
-<span class="nv">tempfile</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>mktemp<span class="k">)</span><span class="s2">"</span>
-<span class="nb">trap</span> <span class="s1">'rm -rf "${tempfile}"'</span> EXIT
-cat &gt; <span class="s2">"</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">"</span>
+<span class="nv">tempfile</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>mktemp<span class="k">)</span><span class="s2">&quot;</span>
+<span class="nb">trap</span> <span class="s1">&#39;rm -rf &quot;${tempfile}&quot;&#39;</span> EXIT
+cat &gt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="c1"># modify ${tempfile}</span>
-cat <span class="s2">"</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">"</span>
+cat <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -1792,19 +5049,23 @@ contents of the file.</p>
 <p>To replace the string <code>old</code> with <code>new</code> in a file while leaving the rest of
 the file unchanged, use the modify script:</p>
 <div class="highlight"><pre><span></span><code>{{- /* chezmoi:modify-template */ -}}
-{{- .chezmoi.stdin | replaceAllRegex "old" "new" }}
+{{- .chezmoi.stdin | replaceAllRegex &quot;old&quot; &quot;new&quot; }}
 </code></pre></div>
 <p>To set individual values in JSON, TOML, and YAML files you can use the
 <code>setValueAtPath</code> template function, for example:</p>
 <div class="highlight"><pre><span></span><code>{{- /* chezmoi:modify-template */ -}}
-{{ fromJson .chezmoi.stdin | setValueAtPath "key.nestedKey" "value" | toPrettyJson }}
+{{ fromJson .chezmoi.stdin | setValueAtPath &quot;key.nestedKey&quot; &quot;value&quot; | toPrettyJson }}
 </code></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Modify templates must not have a <code>.tmpl</code> extension.</p>
 </div>
 <p>Secondly, if only a small part of the file changes then consider using a
 template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be
 substituted with:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_kube/config.tmpl</span><pre><span></span><code>current-context: {{ output "kubectl" "config" "current-context" | trim }}
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_kube/config.tmpl</span><pre><span></span><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -1830,10 +5091,10 @@ a <code>run_</code> script. For example, create a file in your source state call
 <code>run_set_kube_config_permissions.sh</code> containing:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
-<span class="nv">FILE</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.kube/config"</span>
-<span class="k">if</span> <span class="o">[</span> -f <span class="s2">"</span><span class="nv">$FILE</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="k">$(</span>stat -c %a <span class="s2">"</span><span class="nv">$FILE</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span> !<span class="o">=</span> <span class="s2">"600"</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
-        chmod <span class="m">600</span> <span class="s2">"</span><span class="nv">$FILE</span><span class="s2">"</span>
+<span class="nv">FILE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.kube/config&quot;</span>
+<span class="k">if</span> <span class="o">[</span> -f <span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="k">$(</span>stat -c %a <span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span> !<span class="o">=</span> <span class="s2">&quot;600&quot;</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
+        chmod <span class="m">600</span> <span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span>
     <span class="k">fi</span>
 <span class="k">fi</span>
 </code></pre></div>
@@ -1852,7 +5113,7 @@ example for VSCode's <code>settings.json</code> on Linux:</p>
 <p>Tell chezmoi that <code>~/.config/Code/User/settings.json</code> should be a symlink to
 the file in your source directory:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdir -p <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/private_dot_config/private_Code/User
-<span class="gp">$ </span><span class="nb">echo</span> -n <span class="s2">"{{ .chezmoi.sourceDir }}/settings.json"</span> &gt; <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+<span class="gp">$ </span><span class="nb">echo</span> -n <span class="s2">&quot;{{ .chezmoi.sourceDir }}/settings.json&quot;</span> &gt; <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/private_dot_config/private_Code/User/symlink_settings.json.tmpl
 </code></pre></div>
 <p>The prefix <code>private_</code> is used because the <code>~/.config</code> and <code>~/.config/Code</code>
 directories are private by default.</p>
@@ -1865,69 +5126,99 @@ in the source state instead.</p>
 <p>chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
 populating your <code>~/.ssh/authorized_keys</code>. Put the following in your
 <code>~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl</code>:</p>
-<div class="highlight"><pre><span></span><code>{{ range gitHubKeys "$GITHUB_USERNAME" -}}
+<div class="highlight"><pre><span></span><code>{{ range gitHubKeys &quot;$GITHUB_USERNAME&quot; -}}
 {{   .Key }}
 {{ end -}}
 </code></pre></div>
-</article>
-</div>
-</div>
-<a class="md-top md-icon" data-md-component="top" data-md-state="hidden" href="#">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path></svg>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
             Back to top
           </a>
-</main>
-<footer class="md-footer">
-<nav aria-label="Footer" class="md-footer__inner md-grid">
-<a aria-label="Previous: Daily operations" class="md-footer__link md-footer__link--prev" href="../daily-operations/" rel="prev">
-<div class="md-footer__button md-icon">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
-</div>
-<div class="md-footer__title">
-<div class="md-ellipsis">
-<span class="md-footer__direction">
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../daily-operations/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Daily operations" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
                 Previous
               </span>
               Daily operations
             </div>
-</div>
-</a>
-<a aria-label="Next: Include files from elsewhere" class="md-footer__link md-footer__link--next" href="../include-files-from-elsewhere/" rel="next">
-<div class="md-footer__title">
-<div class="md-ellipsis">
-<span class="md-footer__direction">
+          </div>
+        </a>
+      
+      
+        
+        <a href="../include-files-from-elsewhere/" class="md-footer__link md-footer__link--next" aria-label="Next: Include files from elsewhere" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
                 Next
               </span>
               Include files from elsewhere
             </div>
-</div>
-<div class="md-footer__button md-icon">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"></path></svg>
-</div>
-</a>
-</nav>
-<div class="md-footer-meta md-typeset">
-<div class="md-footer-meta__inner md-grid">
-<div class="md-copyright">
-<div class="md-copyright__highlight">
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
       Copyright © Tom Payne 2018-2022
     </div>
   
   
     Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
       Material for MkDocs
     </a>
+  
 </div>
-</div>
-</div>
+      
+    </div>
+  </div>
 </footer>
-</div>
-<div class="md-dialog" data-md-component="dialog">
-<div class="md-dialog__inner md-typeset"></div>
-</div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../assets/javascripts/bundle.01de222e.min.js"></script>
-<script src="../../extra/refresh_on_toggle_dark_light.js"></script>
-</body>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d6c3db9e.min.js"></script>
+      
+        <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
+      
+    
+  </body>
 </html>
