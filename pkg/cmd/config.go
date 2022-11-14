@@ -1669,6 +1669,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	if c.force && c.interactive {
+		return errors.New("the --force and --interactive flags are mutually exclusive")
+	}
+
 	// Configure the logger.
 	log.Logger = log.Output(zerolog.NewConsoleWriter(
 		func(w *zerolog.ConsoleWriter) {
