@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"fmt"
 	"io/fs"
 	"sort"
 
@@ -49,6 +50,7 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 	})
 	sort.Sort(targetRelPaths)
 
+TARGETRELPATH:
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateFile, ok := sourceStateEntries[targetRelPath].(*chezmoi.SourceStateFile)
 		if !ok {
@@ -91,6 +93,41 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 		}
 		if bytes.Equal(actualContents, targetContents) && actualStateFile.Perm() == targetStateFile.Perm(c.Umask) {
 			continue
+		}
+
+		if c.interactive {
+			prompt := fmt.Sprintf("Re-add %s", targetRelPath)
+			var choices []string
+			if actualContents != nil || targetContents != nil {
+				choices = append(choices, "diff")
+			}
+			choices = append(choices, choicesYesNoAllQuit...)
+		FOR:
+			for {
+				switch choice, err := c.promptChoice(prompt, choices); {
+				case err != nil:
+					return err
+				case choice == "diff":
+					if err := c.diffFile(
+						targetRelPath,
+						targetContents, targetStateFile.Perm(c.Umask),
+						actualContents, actualStateFile.Perm(),
+					); err != nil {
+						return err
+					}
+				case choice == "yes":
+					break FOR
+				case choice == "no":
+					continue TARGETRELPATH
+				case choice == "all":
+					c.interactive = false
+					break FOR
+				case choice == "quit":
+					return chezmoi.ExitCodeError(0)
+				default:
+					panic(fmt.Sprintf("%s: unexpected choice", choice))
+				}
+			}
 		}
 
 		destAbsPathInfos := map[chezmoi.AbsPath]fs.FileInfo{
