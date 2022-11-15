@@ -172,10 +172,11 @@ func TestFileAttr(t *testing.T) {
 		TargetName: targetNames,
 	}))
 	for _, fileAttr := range fileAttrs {
-		actualSourceName := fileAttr.SourceName("")
-		actualFileAttr := parseFileAttr(actualSourceName, "")
+		encryption := NoEncryption{}
+		actualSourceName := fileAttr.SourceName(encryption)
+		actualFileAttr := parseFileAttr(actualSourceName, encryption)
 		assert.Equal(t, fileAttr, actualFileAttr)
-		assert.Equal(t, actualSourceName, actualFileAttr.SourceName(""))
+		assert.Equal(t, actualSourceName, actualFileAttr.SourceName(encryption))
 	}
 }
 
@@ -197,17 +198,20 @@ func TestFileAttrEncryptedSuffix(t *testing.T) {
 			expectedTargetName: "file.asc",
 		},
 	} {
-		fa := parseFileAttr(tc.sourceName, ".asc")
+		encryption := GPGEncryption{
+			Suffix: ".asc",
+		}
+		fa := parseFileAttr(tc.sourceName, &encryption)
 		assert.Equal(t, tc.expectedTargetName, fa.TargetName)
 	}
 }
 
 func TestFileAttrLiteral(t *testing.T) {
 	for _, tc := range []struct {
-		sourceName      string
-		encryptedSuffix string
-		fileAttr        FileAttr
-		nonCanonical    bool
+		sourceName   string
+		encryption   Encryption
+		fileAttr     FileAttr
+		nonCanonical bool
 	}{
 		{
 			sourceName: "dot_file",
@@ -286,9 +290,9 @@ func TestFileAttrLiteral(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
-			assert.Equal(t, tc.fileAttr, parseFileAttr(tc.sourceName, tc.encryptedSuffix))
+			assert.Equal(t, tc.fileAttr, parseFileAttr(tc.sourceName, tc.encryption))
 			if !tc.nonCanonical {
-				assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryptedSuffix))
+				assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryption))
 			}
 		})
 	}

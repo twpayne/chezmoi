@@ -163,7 +163,7 @@ func (da DirAttr) perm() fs.FileMode {
 }
 
 // parseFileAttr parses a source file name in the source state.
-func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
+func parseFileAttr(sourceName string, encryption Encryption) FileAttr {
 	var (
 		sourceFileType = SourceFileTypeFile
 		name           = sourceName
@@ -271,7 +271,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		name = name[len(literalPrefix):]
 	}
 	if encrypted {
-		name = strings.TrimSuffix(name, encryptedSuffix)
+		name = strings.TrimSuffix(name, encryption.EncryptedSuffix())
 	}
 	switch {
 	case strings.HasSuffix(name, literalSuffix):
@@ -313,7 +313,7 @@ func (fa FileAttr) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // SourceName returns fa's source name.
-func (fa FileAttr) SourceName(encryptedSuffix string) string {
+func (fa FileAttr) SourceName(encryption Encryption) string {
 	sourceName := ""
 	switch fa.Type {
 	case SourceFileTypeCreate:
@@ -394,7 +394,7 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		sourceName += TemplateSuffix
 	}
 	if fa.Encrypted {
-		sourceName += encryptedSuffix
+		sourceName += encryption.EncryptedSuffix()
 	}
 	return sourceName
 }

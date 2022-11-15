@@ -667,9 +667,9 @@ func (c *suspiciousEntriesCheck) Name() string {
 
 func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	// FIXME include user-defined suffixes from age and gpg configs
-	encryptedSuffixes := []string{
-		defaultAgeEncryptionConfig.Suffix,
-		defaultGPGEncryptionConfig.Suffix,
+	encryptions := []chezmoi.Encryption{
+		&chezmoi.AgeEncryption{},
+		&chezmoi.GPGEncryption{},
 	}
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
@@ -677,7 +677,7 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezm
 		if err != nil {
 			return err
 		}
-		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo, encryptedSuffixes) {
+		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo, encryptions) {
 			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil

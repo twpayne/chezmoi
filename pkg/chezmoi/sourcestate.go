@@ -854,7 +854,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return nil
 		case fileInfo.IsDir():
 			da := parseDirAttr(sourceName.String())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption).JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
 				return vfs.SkipDir
 			}
@@ -867,8 +867,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
-			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
+			fa := parseFileAttr(sourceName.String(), s.encryption)
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}
@@ -1131,7 +1131,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 		return err
 	}
 	parentSourceRelPath := NewSourceRelDirPath(parentRelPath.String())
-	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
+	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption)
 
 	format, err := FormatFromAbsPath(sourceAbsPath)
 	if err != nil {
@@ -1172,7 +1172,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	s.Lock()
 	defer s.Unlock()
 
-	dir := sourceRelPath.Dir().TargetRelPath("")
+	dir := sourceRelPath.Dir().TargetRelPath(NoEncryption{})
 	scanner := bufio.NewScanner(bytes.NewReader(data))
 	lineNumber := 0
 	for scanner.Scan() {
@@ -1789,7 +1789,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 		}
 	}
 	lazyContents := newLazyContents(contents)
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption)))
 	return &SourceStateFile{
 		Attr:          fileAttr,
 		origin:        actualStateFile,
@@ -1840,7 +1840,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 		Type:       SourceFileTypeSymlink,
 		Template:   template,
 	}
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption)))
 	return &SourceStateFile{
 		Attr:          fileAttr,
 		sourceRelPath: sourceRelPath,
@@ -1993,7 +1993,7 @@ func (s *SourceState) readExternalArchive(
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
-			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
+			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption))
 			targetStateEntry := &TargetStateFile{
 				lazyContents: lazyContents,
 				empty:        fileAttr.Empty,
@@ -2014,7 +2014,7 @@ func (s *SourceState) readExternalArchive(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeSymlink,
 			}
-			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
+			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption))
 			targetStateEntry := &TargetStateSymlink{
 				lazyLinkname: newLazyLinkname(linkname),
 				sourceAttr: SourceAttr{
@@ -2061,7 +2061,7 @@ func (s *SourceState) readExternalFile(
 	}
 	sourceStateEntry := &SourceStateFile{
 		origin:           external,
-		sourceRelPath:    parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
+		sourceRelPath:    parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption))),
 		targetStateEntry: targetStateEntry,
 	}
 	return map[RelPath][]SourceStateEntry{
@@ -2121,11 +2121,11 @@ func (s *SourceState) readScriptsDir(
 		case fileInfo.IsDir():
 			return nil
 		case fileInfo.Mode().IsRegular():
-			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
+			fa := parseFileAttr(sourceName.String(), s.encryption)
 			if fa.Type != SourceFileTypeScript {
 				return fmt.Errorf("%s: not a script", sourceAbsPath)
 			}
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}

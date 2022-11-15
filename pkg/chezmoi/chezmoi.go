@@ -190,14 +190,14 @@ func SHA256Sum(data []byte) []byte {
 }
 
 // SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
-func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffixes []string) bool {
+func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptions []Encryption) bool {
 	switch fileInfo.Mode().Type() {
 	case 0:
 		if strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base) {
 			return true
 		}
-		for _, encryptedSuffix := range encryptedSuffixes {
-			if fileAttr := parseFileAttr(fileInfo.Name(), encryptedSuffix); knownTargetFiles.contains(fileAttr.TargetName) {
+		for _, encryption := range encryptions {
+			if fileAttr := parseFileAttr(fileInfo.Name(), encryption); knownTargetFiles.contains(fileAttr.TargetName) {
 				return true
 			}
 		}

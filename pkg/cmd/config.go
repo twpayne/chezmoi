@@ -1284,7 +1284,7 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	}
 	funcMap := maps.Clone(sprig.TxtFuncMap())
 	funcMap["targetRelPath"] = func(source string) string {
-		return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
+		return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption).String()
 	}
 	templateOptions := chezmoi.TemplateOptions{
 		Options: append([]string(nil), c.Template.Options...),

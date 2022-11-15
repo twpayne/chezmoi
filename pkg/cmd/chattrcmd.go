@@ -153,7 +153,6 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 	// directories.
 	sort.Sort(targetRelPaths)
 
-	encryptedSuffix := sourceState.Encryption().EncryptedSuffix()
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
@@ -172,7 +171,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 			}
 		case *chezmoi.SourceStateFile:
 			newAttr := m.modifyFileAttr(sourceStateEntry.Attr)
-			newBaseNameRelPath := chezmoi.NewRelPath(newAttr.SourceName(encryptedSuffix))
+			newBaseNameRelPath := chezmoi.NewRelPath(newAttr.SourceName(c.encryption))
 			oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
 			newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
 			switch encryptedBefore, encryptedAfter := sourceStateEntry.Attr.Encrypted, newAttr.Encrypted; {
