@@ -271,6 +271,7 @@ type AddOptions struct {
 	AutoTemplate     bool             // Automatically create templates, if possible.
 	Create           bool             // Add create_ entries instead of normal entries.
 	Encrypt          bool             // Encrypt files.
+	EncryptName      bool             // Encrypt names.
 	EncryptedSuffix  string           // Suffix for encrypted files.
 	Exact            bool             // Add the exact_ attribute to added directories.
 	Filter           *EntryTypeFilter // Entry type filter.
@@ -853,7 +854,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return nil
 		case fileInfo.IsDir():
-			da := parseDirAttr(sourceName.String())
+			da := parseDirAttr(sourceName.String(), s.encryption)
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption).JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
 				return vfs.SkipDir
@@ -1731,12 +1732,13 @@ func (s *SourceState) newSourceStateDirEntry(
 	actualStateDir *ActualStateDir, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
 ) (SourceStateEntry, error) {
 	dirAttr := DirAttr{
-		TargetName: fileInfo.Name(),
-		Exact:      options.Exact,
-		Private:    isPrivate(fileInfo),
-		ReadOnly:   isReadOnly(fileInfo),
+		TargetName:    fileInfo.Name(),
+		EncryptedName: options.EncryptName,
+		Exact:         options.Exact,
+		Private:       isPrivate(fileInfo),
+		ReadOnly:      isReadOnly(fileInfo),
 	}
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName(s.encryption)))
 	return &SourceStateDir{
 		Attr:          dirAttr,
 		origin:        actualStateDir,
@@ -1756,12 +1758,13 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 	actualStateFile *ActualStateFile, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
 ) (SourceStateEntry, error) {
 	fileAttr := FileAttr{
-		TargetName: fileInfo.Name(),
-		Encrypted:  options.Encrypt,
-		Executable: isExecutable(fileInfo),
-		Private:    isPrivate(fileInfo),
-		ReadOnly:   isReadOnly(fileInfo),
-		Template:   options.Template,
+		TargetName:    fileInfo.Name(),
+		Encrypted:     options.Encrypt,
+		EncryptedName: options.EncryptName,
+		Executable:    isExecutable(fileInfo),
+		Private:       isPrivate(fileInfo),
+		ReadOnly:      isReadOnly(fileInfo),
+		Template:      options.Template,
 	}
 	if options.Create {
 		fileAttr.Type = SourceFileTypeCreate
@@ -1895,7 +1898,7 @@ func (s *SourceState) readExternalArchive(
 	sourceStateDir := &SourceStateDir{
 		Attr:          dirAttr,
 		origin:        external,
-		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
+		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName(s.encryption))),
 		targetStateEntry: &TargetStateDir{
 			perm: fs.ModePerm &^ s.umask,
 			sourceAttr: SourceAttr{
@@ -1976,7 +1979,7 @@ func (s *SourceState) readExternalArchive(
 			sourceStateEntry = &SourceStateDir{
 				Attr:             dirAttr,
 				origin:           external,
-				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName(s.encryption))),
 				targetStateEntry: targetStateEntry,
 			}
 		case fileInfo.Mode()&fs.ModeType == 0:

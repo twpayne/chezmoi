@@ -122,7 +122,7 @@ func (n *sourceStateEntryTreeNode) MkdirAll(
 			targetStateDir := &TargetStateDir{
 				perm: dirAttr.perm() &^ umask,
 			}
-			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName()))
+			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName(NoEncryption{})))
 			sourceStateDir = &SourceStateDir{
 				Attr:             dirAttr,
 				origin:           origin,
@@ -136,7 +136,7 @@ func (n *sourceStateEntryTreeNode) MkdirAll(
 			if !ok {
 				return nil, fmt.Errorf("%s: not a directory", componentRelPaths[0].Join(componentRelPaths[1:i+1]...))
 			}
-			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(sourceStateDir.Attr.SourceName()))
+			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(sourceStateDir.Attr.SourceName(NoEncryption{})))
 		}
 	}
 	return sourceStateDir, nil

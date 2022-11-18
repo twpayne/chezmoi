@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"encoding/base64"
 	"io/fs"
 	"strings"
 
@@ -54,36 +55,40 @@ const (
 
 // DirAttr holds attributes parsed from a source directory name.
 type DirAttr struct {
-	TargetName string
-	Exact      bool
-	Private    bool
-	ReadOnly   bool
-	Remove     bool
+	TargetName    string
+	EncryptedName bool
+	Exact         bool
+	Private       bool
+	ReadOnly      bool
+	Remove        bool
 }
 
 // A FileAttr holds attributes parsed from a source file name.
 type FileAttr struct {
-	TargetName string
-	Type       SourceFileTargetType
-	Condition  ScriptCondition
-	Empty      bool
-	Encrypted  bool
-	Executable bool
-	Order      ScriptOrder
-	Private    bool
-	ReadOnly   bool
-	Template   bool
+	TargetName    string
+	Type          SourceFileTargetType
+	Condition     ScriptCondition
+	Empty         bool
+	Encrypted     bool
+	EncryptedName bool
+	Executable    bool
+	Order         ScriptOrder
+	Private       bool
+	ReadOnly      bool
+	Template      bool
 }
 
 // parseDirAttr parses a single directory name in the source state.
-func parseDirAttr(sourceName string) DirAttr {
+func parseDirAttr(sourceName string, encryption Encryption) DirAttr {
 	var (
-		name     = sourceName
-		exact    = false
-		private  = false
-		readOnly = false
-		remove   = false
+		name          = sourceName
+		encryptedName = false
+		exact         = false
+		private       = false
+		readOnly      = false
+		remove        = false
 	)
+	name, encryptedName = maybeDecryptName(name, encryption)
 	if strings.HasPrefix(name, removePrefix) {
 		name = mustTrimPrefix(name, removePrefix)
 		remove = true
@@ -107,11 +112,12 @@ func parseDirAttr(sourceName string) DirAttr {
 		name = name[len(literalPrefix):]
 	}
 	return DirAttr{
-		TargetName: name,
-		Exact:      exact,
-		Private:    private,
-		ReadOnly:   readOnly,
-		Remove:     remove,
+		TargetName:    name,
+		EncryptedName: encryptedName,
+		Exact:         exact,
+		Private:       private,
+		ReadOnly:      readOnly,
+		Remove:        remove,
 	}
 }
 
@@ -125,7 +131,7 @@ func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // SourceName returns da's source name.
-func (da DirAttr) SourceName() string {
+func (da DirAttr) SourceName(encryption Encryption) string {
 	sourceName := ""
 	if da.Remove {
 		sourceName += removePrefix
@@ -147,6 +153,9 @@ func (da DirAttr) SourceName() string {
 	default:
 		sourceName += da.TargetName
 	}
+	if da.EncryptedName {
+		sourceName = encryptName(sourceName, encryption)
+	}
 	return sourceName
 }
 
@@ -164,18 +173,21 @@ func (da DirAttr) perm() fs.FileMode {
 
 // parseFileAttr parses a source file name in the source state.
 func parseFileAttr(sourceName string, encryption Encryption) FileAttr {
+	// FIXME return errors
 	var (
 		sourceFileType = SourceFileTypeFile
 		name           = sourceName
 		condition      = ScriptConditionNone
 		empty          = false
 		encrypted      = false
+		encryptedName  = false
 		executable     = false
 		order          = ScriptOrderDuring
 		private        = false
 		readOnly       = false
 		template       = false
 	)
+	name, encryptedName = maybeDecryptName(name, encryption)
 	switch {
 	case strings.HasPrefix(name, createPrefix):
 		sourceFileType = SourceFileTypeCreate
@@ -284,16 +296,17 @@ func parseFileAttr(sourceName string, encryption Encryption) FileAttr {
 		}
 	}
 	return FileAttr{
-		TargetName: name,
-		Type:       sourceFileType,
-		Condition:  condition,
-		Empty:      empty,
-		Encrypted:  encrypted,
-		Executable: executable,
-		Order:      order,
-		Private:    private,
-		ReadOnly:   readOnly,
-		Template:   template,
+		TargetName:    name,
+		Type:          sourceFileType,
+		Condition:     condition,
+		Empty:         empty,
+		Encrypted:     encrypted,
+		EncryptedName: encryptedName,
+		Executable:    executable,
+		Order:         order,
+		Private:       private,
+		ReadOnly:      readOnly,
+		Template:      template,
 	}
 }
 
@@ -314,6 +327,7 @@ func (fa FileAttr) MarshalZerologObject(e *zerolog.Event) {
 
 // SourceName returns fa's source name.
 func (fa FileAttr) SourceName(encryption Encryption) string {
+	// FIXME return errors
 	sourceName := ""
 	switch fa.Type {
 	case SourceFileTypeCreate:
@@ -396,6 +410,9 @@ func (fa FileAttr) SourceName(encryption Encryption) string {
 	if fa.Encrypted {
 		sourceName += encryption.EncryptedSuffix()
 	}
+	if fa.EncryptedName {
+		sourceName = encryptName(sourceName, encryption)
+	}
 	return sourceName
 }
 
@@ -412,4 +429,24 @@ func (fa FileAttr) perm() fs.FileMode {
 		perm &^= 0o222
 	}
 	return perm
+}
+
+func encryptName(sourceName string, encryption Encryption) string {
+	if encryptedNameBytes, err := encryption.Encrypt([]byte(sourceName)); err == nil {
+		return encryptedNamePrefix + base64.RawURLEncoding.EncodeToString(encryptedNameBytes)
+	}
+	return sourceName
+}
+
+func maybeDecryptName(name string, encryption Encryption) (string, bool) {
+	if strings.HasPrefix(name, encryptedNamePrefix) {
+		encryptedNameBase64Str := mustTrimPrefix(name, encryptedNamePrefix)
+		encryptedNameBytes := make([]byte, len(encryptedNameBase64Str))
+		if n, err := base64.RawURLEncoding.Decode(encryptedNameBytes, []byte(encryptedNameBase64Str)); err == nil {
+			if plaintextNameBytes, err := encryption.Decrypt(encryptedNameBytes[:n]); err == nil {
+				return string(plaintextNameBytes), true
+			}
+		}
+	}
+	return name, false
 }

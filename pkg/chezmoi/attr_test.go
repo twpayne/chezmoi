@@ -11,11 +11,12 @@ import (
 
 func TestDirAttr(t *testing.T) {
 	testData := struct {
-		TargetName []string
-		Exact      []bool
-		Private    []bool
-		ReadOnly   []bool
-		Remove     []bool
+		TargetName    []string
+		EncryptedName []bool
+		Exact         []bool
+		Private       []bool
+		ReadOnly      []bool
+		Remove        []bool
 	}{
 		TargetName: []string{
 			".dir",
@@ -30,18 +31,20 @@ func TestDirAttr(t *testing.T) {
 			"run_once_dir",
 			"symlink_dir",
 		},
-		Exact:    []bool{false, true},
-		Private:  []bool{false, true},
-		ReadOnly: []bool{false, true},
-		Remove:   []bool{false, true},
+		EncryptedName: []bool{false, true},
+		Exact:         []bool{false, true},
+		Private:       []bool{false, true},
+		ReadOnly:      []bool{false, true},
+		Remove:        []bool{false, true},
 	}
 	var dirAttrs []DirAttr
 	require.NoError(t, combinator.Generate(&dirAttrs, testData))
 	for _, dirAttr := range dirAttrs {
-		actualSourceName := dirAttr.SourceName()
-		actualDirAttr := parseDirAttr(actualSourceName)
+		encryption := newXOREncryption()
+		actualSourceName := dirAttr.SourceName(encryption)
+		actualDirAttr := parseDirAttr(actualSourceName, encryption)
 		assert.Equal(t, dirAttr, actualDirAttr)
-		assert.Equal(t, actualSourceName, actualDirAttr.SourceName())
+		assert.Equal(t, actualSourceName, actualDirAttr.SourceName(encryption))
 	}
 }
 
@@ -71,8 +74,9 @@ func TestDirAttrLiteral(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
-			assert.Equal(t, tc.sourceName, tc.dirAttr.SourceName())
-			assert.Equal(t, tc.dirAttr, parseDirAttr(tc.sourceName))
+			encryption := newXOREncryption()
+			assert.Equal(t, tc.sourceName, tc.dirAttr.SourceName(encryption))
+			assert.Equal(t, tc.dirAttr, parseDirAttr(tc.sourceName, encryption))
 		})
 	}
 }
@@ -130,21 +134,23 @@ func TestFileAttr(t *testing.T) {
 		Template:   []bool{false, true},
 	}))
 	require.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
-		TargetName []string
-		Encrypted  []bool
-		Executable []bool
-		Private    []bool
-		ReadOnly   []bool
-		Template   []bool
+		Type          SourceFileTargetType
+		TargetName    []string
+		Encrypted     []bool
+		EncryptedName []bool
+		Executable    []bool
+		Private       []bool
+		ReadOnly      []bool
+		Template      []bool
 	}{
-		Type:       SourceFileTypeModify,
-		TargetName: targetNames,
-		Encrypted:  []bool{false, true},
-		Executable: []bool{false, true},
-		Private:    []bool{false, true},
-		ReadOnly:   []bool{false, true},
-		Template:   []bool{false, true},
+		Type:          SourceFileTypeModify,
+		TargetName:    targetNames,
+		Encrypted:     []bool{false, true},
+		EncryptedName: []bool{false, true},
+		Executable:    []bool{false, true},
+		Private:       []bool{false, true},
+		ReadOnly:      []bool{false, true},
+		Template:      []bool{false, true},
 	}))
 	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
@@ -172,7 +178,7 @@ func TestFileAttr(t *testing.T) {
 		TargetName: targetNames,
 	}))
 	for _, fileAttr := range fileAttrs {
-		encryption := NoEncryption{}
+		encryption := newXOREncryption()
 		actualSourceName := fileAttr.SourceName(encryption)
 		actualFileAttr := parseFileAttr(actualSourceName, encryption)
 		assert.Equal(t, fileAttr, actualFileAttr)

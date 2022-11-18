@@ -1,0 +1,18 @@
+[!exec:age] skip 'age not found in $PATH'
+
+mkageconfig -symmetric
+
+# test that chezmoi add --encrypt-name adds a file and encrypts its name in the source state
+cp golden/.file $HOME/.file
+exec chezmoi add --encrypt-name $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+exec chezmoi managed
+stdout \.file
+
+# test that chezmoi apply creates the file with the encrypted name
+rm $HOME${/}.file
+exec chemzoi apply --force
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+# contents of .file

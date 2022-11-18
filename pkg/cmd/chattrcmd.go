@@ -57,6 +57,7 @@ type modifier struct {
 	condition      conditionModifier
 	empty          boolModifier
 	encrypted      boolModifier
+	encryptedName  boolModifier
 	exact          boolModifier
 	executable     boolModifier
 	order          orderModifier
@@ -97,6 +98,7 @@ func (c *Config) chattrCmdValidArgs(
 			"create",
 			"empty",
 			"encrypted",
+			"encryptedname",
 			"exact",
 			"executable",
 			"modify",
@@ -161,7 +163,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 		fileRelPath := fileSourceRelPath.RelPath()
 		switch sourceStateEntry := sourceStateEntry.(type) {
 		case *chezmoi.SourceStateDir:
-			relPath := m.modifyDirAttr(sourceStateEntry.Attr).SourceName()
+			relPath := m.modifyDirAttr(sourceStateEntry.Attr).SourceName(c.encryption)
 			if newBaseNameRelPath := chezmoi.NewRelPath(relPath); newBaseNameRelPath != fileRelPath {
 				oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
 				newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
@@ -369,6 +371,8 @@ func parseModifier(s string) (*modifier, error) {
 			m.empty = bm
 		case "encrypted":
 			m.encrypted = bm
+		case "encryptedname":
+			m.encryptedName = bm
 		case "exact":
 			m.exact = bm
 		case "executable", "x":
@@ -426,11 +430,12 @@ func parseModifier(s string) (*modifier, error) {
 // modifyDirAttr returns the modified value of dirAttr.
 func (m *modifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
 	return chezmoi.DirAttr{
-		TargetName: dirAttr.TargetName,
-		Exact:      m.exact.modify(dirAttr.Exact),
-		Private:    m.private.modify(dirAttr.Private),
-		ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
-		Remove:     m.remove.modify(dirAttr.Remove),
+		TargetName:    dirAttr.TargetName,
+		EncryptedName: m.encryptedName.modify(dirAttr.EncryptedName),
+		Exact:         m.exact.modify(dirAttr.Exact),
+		Private:       m.private.modify(dirAttr.Private),
+		ReadOnly:      m.readOnly.modify(dirAttr.ReadOnly),
+		Remove:        m.remove.modify(dirAttr.Remove),
 	}
 }
 
@@ -439,14 +444,15 @@ func (m *modifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAttr {
 	switch m.sourceFileType.modify(fileAttr.Type) {
 	case chezmoi.SourceFileTypeFile:
 		return chezmoi.FileAttr{
-			TargetName: fileAttr.TargetName,
-			Type:       chezmoi.SourceFileTypeFile,
-			Empty:      m.empty.modify(fileAttr.Empty),
-			Encrypted:  m.encrypted.modify(fileAttr.Encrypted),
-			Executable: m.executable.modify(fileAttr.Executable),
-			Private:    m.private.modify(fileAttr.Private),
-			ReadOnly:   m.readOnly.modify(fileAttr.ReadOnly),
-			Template:   m.template.modify(fileAttr.Template),
+			TargetName:    fileAttr.TargetName,
+			Type:          chezmoi.SourceFileTypeFile,
+			Empty:         m.empty.modify(fileAttr.Empty),
+			Encrypted:     m.encrypted.modify(fileAttr.Encrypted),
+			EncryptedName: m.encryptedName.modify(fileAttr.EncryptedName),
+			Executable:    m.executable.modify(fileAttr.Executable),
+			Private:       m.private.modify(fileAttr.Private),
+			ReadOnly:      m.readOnly.modify(fileAttr.ReadOnly),
+			Template:      m.template.modify(fileAttr.Template),
 		}
 	case chezmoi.SourceFileTypeModify:
 		return chezmoi.FileAttr{
@@ -459,13 +465,14 @@ func (m *modifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAttr {
 		}
 	case chezmoi.SourceFileTypeCreate:
 		return chezmoi.FileAttr{
-			TargetName: fileAttr.TargetName,
-			Type:       chezmoi.SourceFileTypeCreate,
-			Encrypted:  m.encrypted.modify(fileAttr.Encrypted),
-			Executable: m.executable.modify(fileAttr.Executable),
-			Private:    m.private.modify(fileAttr.Private),
-			ReadOnly:   m.readOnly.modify(fileAttr.ReadOnly),
-			Template:   m.template.modify(fileAttr.Template),
+			TargetName:    fileAttr.TargetName,
+			Type:          chezmoi.SourceFileTypeCreate,
+			Encrypted:     m.encrypted.modify(fileAttr.Encrypted),
+			EncryptedName: m.encryptedName.modify(fileAttr.EncryptedName),
+			Executable:    m.executable.modify(fileAttr.Executable),
+			Private:       m.private.modify(fileAttr.Private),
+			ReadOnly:      m.readOnly.modify(fileAttr.ReadOnly),
+			Template:      m.template.modify(fileAttr.Template),
 		}
 	case chezmoi.SourceFileTypeScript:
 		return chezmoi.FileAttr{
@@ -476,9 +483,10 @@ func (m *modifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAttr {
 		}
 	case chezmoi.SourceFileTypeSymlink:
 		return chezmoi.FileAttr{
-			TargetName: fileAttr.TargetName,
-			Type:       chezmoi.SourceFileTypeSymlink,
-			Template:   m.template.modify(fileAttr.Template),
+			TargetName:    fileAttr.TargetName,
+			EncryptedName: m.encryptedName.modify(fileAttr.EncryptedName),
+			Type:          chezmoi.SourceFileTypeSymlink,
+			Template:      m.template.modify(fileAttr.Template),
 		}
 	default:
 		panic(fmt.Sprintf("%d: unknown source file type", fileAttr.Type))

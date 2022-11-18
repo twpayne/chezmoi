@@ -79,12 +79,12 @@ func (p SourceRelPath) TargetRelPath(encryption Encryption) RelPath {
 	relPathStrs := make([]string, 0, len(sourceNames))
 	if p.isDir {
 		for _, sourceName := range sourceNames {
-			dirAttr := parseDirAttr(sourceName)
+			dirAttr := parseDirAttr(sourceName, encryption)
 			relPathStrs = append(relPathStrs, dirAttr.TargetName)
 		}
 	} else {
 		for _, sourceName := range sourceNames[:len(sourceNames)-1] {
-			dirAttr := parseDirAttr(sourceName)
+			dirAttr := parseDirAttr(sourceName, encryption)
 			relPathStrs = append(relPathStrs, dirAttr.TargetName)
 		}
 		fileAttr := parseFileAttr(sourceNames[len(sourceNames)-1], encryption)

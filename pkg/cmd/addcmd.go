@@ -13,6 +13,7 @@ type addCmdConfig struct {
 	autoTemplate     bool
 	create           bool
 	encrypt          bool
+	encryptName      bool
 	exact            bool
 	filter           *chezmoi.EntryTypeFilter
 	follow           bool
@@ -42,6 +43,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates") //nolint:lll
 	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
 	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
+	flags.BoolVar(&c.Add.encryptName, "encrypt-name", c.Add.encryptName, "Encrypt names")
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
 	flags.VarP(c.Add.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
@@ -100,6 +102,9 @@ func (c *Config) defaultReplaceFunc(
 	if !newFile.Attr.Encrypted && oldFile.Attr.Encrypted {
 		removedAttributes = append(removedAttributes, "encrypted")
 	}
+	if !newFile.Attr.EncryptedName && oldFile.Attr.EncryptedName {
+		removedAttributes = append(removedAttributes, "encryptedname")
+	}
 	if !newFile.Attr.Private && oldFile.Attr.Private {
 		removedAttributes = append(removedAttributes, "private")
 	}
@@ -144,6 +149,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		AutoTemplate:     c.Add.autoTemplate,
 		Create:           c.Add.create,
 		Encrypt:          c.Add.encrypt,
+		EncryptName:      c.Add.encryptName,
 		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
 		Exact:            c.Add.exact,
 		Filter:           c.Add.filter,

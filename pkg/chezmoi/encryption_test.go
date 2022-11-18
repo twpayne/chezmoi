@@ -17,6 +17,12 @@ type xorEncryption struct {
 
 var _ Encryption = &xorEncryption{}
 
+func newXOREncryption() *xorEncryption {
+	return &xorEncryption{
+		key: byte(rand.Intn(254) + 1),
+	}
+}
+
 func (e *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	return e.xorWithKey(ciphertext), nil
 }
@@ -118,9 +124,7 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 }
 
 func TestXOREncryption(t *testing.T) {
-	testEncryption(t, &xorEncryption{
-		key: byte(rand.Int() + 1),
-	})
+	testEncryption(t, newXOREncryption())
 }
 
 func testEncryption(t *testing.T, encryption Encryption) {
