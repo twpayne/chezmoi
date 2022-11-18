@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/shell"
 )
 
@@ -13,12 +14,12 @@ type cdCmdConfig struct {
 
 func (c *Config) newCDCmd() *cobra.Command {
 	cdCmd := &cobra.Command{
-		Use:     "cd",
+		Use:     "cd [path]",
 		Short:   "Launch a shell in the source directory",
 		Long:    mustLongHelp("cd"),
 		Example: example("cd"),
 		RunE:    c.runCDCmd,
-		Args:    cobra.NoArgs,
+		Args:    cobra.MaximumNArgs(1),
 		Annotations: newAnnotations(
 			createSourceDirectoryIfNeeded,
 			doesNotRequireValidConfig,
@@ -35,7 +36,21 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.run(c.WorkingTreeAbsPath, cdCommand, cdArgs)
+	var dir chezmoi.AbsPath
+	if len(args) == 0 {
+		dir = c.WorkingTreeAbsPath
+	} else {
+		sourceState, err := c.getSourceState(cmd.Context())
+		if err != nil {
+			return err
+		}
+		sourceAbsPaths, err := c.sourceAbsPaths(sourceState, args)
+		if err != nil {
+			return err
+		}
+		dir = sourceAbsPaths[0]
+	}
+	return c.run(dir, cdCommand, cdArgs)
 }
 
 func (c *Config) cdCommand() (string, []string, error) {
