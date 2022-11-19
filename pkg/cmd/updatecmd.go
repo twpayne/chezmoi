@@ -10,7 +10,9 @@ import (
 )
 
 type updateCmdConfig struct {
-	RecurseSubmodules bool `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
+	Command           string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args              []string `json:"args" mapstructure:"args" yaml:"args"`
+	RecurseSubmodules bool     `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
 	apply             bool
 	filter            *chezmoi.EntryTypeFilter
 	init              bool
@@ -48,7 +50,12 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 }
 
 func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
-	if c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc) {
+	switch {
+	case c.Update.Command != "":
+		if err := c.run(c.WorkingTreeAbsPath, c.Update.Command, c.Update.Args); err != nil {
+			return err
+		}
+	case c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc):
 		rawWorkingTreeAbsPath, err := c.baseSystem.RawPath(c.WorkingTreeAbsPath)
 		if err != nil {
 			return err
@@ -66,7 +73,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		}); err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
 			return err
 		}
-	} else {
+	default:
 		args := []string{
 			"pull",
 			"--autostash",

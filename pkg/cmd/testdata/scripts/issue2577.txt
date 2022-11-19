@@ -1,0 +1,27 @@
+[windows] skip 'UNIX only'
+chmod 755 bin/fossil
+
+# test that chezmoi update runs a custom update command and applies changes
+exec chezmoi update
+cmp $HOME/.file golden/.file
+
+-- bin/fossil --
+#!/bin/sh
+
+case "$*" in
+"update")
+    echo "# contents of .file" > dot_file
+    ;;
+*)
+    echo fossil: unknown command: $*
+    echo fossil: use "help" for more information
+    exit 1
+    ;;
+esac
+-- golden/.file --
+# contents of .file
+-- home/user/.config/chezmoi/chezmoi.toml --
+[update]
+    command = "fossil"
+    args = ["update"]
+-- home/user/.local/share/chezmoi/.keep --
