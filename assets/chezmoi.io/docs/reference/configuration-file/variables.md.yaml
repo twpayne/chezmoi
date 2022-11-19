@@ -271,6 +271,11 @@ sections:
       default: '`vault`'
       description: Vault CLI command
   update:
+    args:
+      type: "[]string"
+      description: Extra args to update command
+    command:
+      description: Update command
     recurseSubmodules:
       type: bool
       default: '`true`'
