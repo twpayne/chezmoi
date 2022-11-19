@@ -28,3 +28,59 @@ need to move the relevant files in to the new root subdirectory manually. You
 do not need to move files that are ignored by chezmoi in all cases (i.e. are
 listed in `.chezmoiignore` when executed as a template on all machines), and
 you can afterwards remove their entries from `home/.chezmoiignore`.
+
+## Use a different version control system to git
+
+Although chezmoi is primarily designed to use a git repo for the source state,
+it does not require git and can be used with other version control systems, such
+as [fossil](https://www.fossil-scm.org/) or [pijul](https://pijul.org/).
+
+The version control system is used in only three places:
+
+* `chezmoi init` will use `git clone` to clone the source repo if it does not
+  already exist.
+* `chezmoi update` will use `git pull` by default to pull the latest changes.
+* chezmoi's auto add, commit, and push functionality use `git status`, `git
+  add`, `git commit` and `git push`.
+
+Using a different version control system (VCS) to git can be achieved in two
+ways.
+
+Firstly, if your VCS is compatible with git's CLI, then you can set the
+`git.command` configuration variable to your VCS command and set `useBuiltinGit`
+to `false`.
+
+Otherwise, you can use your VCS to create the source directory before running
+`chezmoi init`, for example:
+
+```console
+$ fossil clone https://dotfiles.example.com/ dotfiles.fossil
+$ mkdir -p .local/share/chezmoi/.git
+$ cd .local/share/chezmoi
+$ fossil open ~/dotfiles.fossil
+$ chezmoi init --apply
+```
+
+!!! note
+
+    The creation of an empty `.git` directory in the source directory is
+    required for chezmoi to be able to identify the work tree.
+
+For updates, you can set the `update.command` and `update.args` configuration
+variables and `chezmoi update` will use these instead of `git pull`, for example:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[update]
+    command = "fossil"
+    args = ["update"]
+```
+
+Currently, it is not possible to override the auto add, commit, and push
+behavior for non-git VCSs, so you will have to commit changes manually, for
+example:
+
+```console
+$ chezmoi cd
+$ fossil add .
+$ fossil commit
+```
