@@ -80,13 +80,13 @@ var dotfilesRepoGuesses = []struct {
 		sshRepoGuessRepl:      "git@$2:$3/$4.git",
 	},
 	{
-		rx:                    regexp.MustCompile(`\Asr\.ht/~([-0-9A-Za-z]+)\z`),
+		rx:                    regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
 		httpRepoGuessRepl:     "https://$1@git.sr.ht/~$1/dotfiles",
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@git.sr.ht:~$1/dotfiles",
 	},
 	{
-		rx:                    regexp.MustCompile(`\Asr\.ht/~([-0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
+		rx:                    regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl:     "https://$1@git.sr.ht/~$1/$2",
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@git.sr.ht:~$1/$2",
