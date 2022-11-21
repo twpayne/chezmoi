@@ -139,7 +139,7 @@ Script interpreters can be added or overridden with the
     ```yaml title="~/.config/chezmoi/chezmoi.yaml"
     interpreters:
       py:
-        command: 'C:\Python39\python3.exe'
+        command: "C:\Python39\python3.exe"
       tcl:
         command: "tclsh"
     ```
