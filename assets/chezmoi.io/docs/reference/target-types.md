@@ -113,13 +113,9 @@ The default script interpreters are:
 | `.ps1`    | `powershell` | `-NoLogo` |
 | `.rb`     | `ruby`       | *none*    |
 
-Script interpreters can be added or overridden with the
-`interpreters.`*extension* section in the configuration file.
-
-!!! note
-
-    The leading `.` is dropped from *extension*, for example to specify the
-    interpreter for `.pl` files you configure `interpreters.pl`.
+Script interpreters can be added or overridden by adding the corresponding
+extension (without the leading dot) as a key under the `interpreters`
+section of the configuration file.
 
 !!! example
 
@@ -127,14 +123,21 @@ Script interpreters can be added or overridden with the
     Tcl/Tk interpreter, include the following in your config file:
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [interpreters]
+    py = { command = 'C:\Python39\python3.exe' }
+    tcl = { command = "tclsh" }
+    ```
+
+    If using TOML, it's also possible to write it like this:
+    
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
     [interpreters.py]
         command = 'C:\Python39\python3.exe'
     [interpreters.tcl]
         command = "tclsh"
     ```
 
-    If using YAML for the config file, each extension should be a child node of
-    `interpreters`, like this:
+    Or if using YAML:
 
     ```yaml title="~/.config/chezmoi/chezmoi.yaml"
     interpreters:
