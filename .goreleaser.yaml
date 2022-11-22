@@ -131,6 +131,7 @@ nfpms:
   description: Manage your dotfiles across multiple diverse machines, securely.
   license: MIT
   formats:
+  - archlinux
   - deb
   - rpm
   dependencies:
