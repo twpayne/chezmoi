@@ -134,8 +134,15 @@ func (s *ExternalDiffSystem) Readlink(name AbsPath) (string, error) {
 // Remove implements System.Remove.
 func (s *ExternalDiffSystem) Remove(name AbsPath) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeRemove) {
-		if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+		switch fileInfo, err := s.system.Lstat(name); {
+		case errors.Is(err, fs.ErrNotExist):
+			// Do nothing.
+		case err != nil:
 			return err
+		case s.filter.IncludeFileInfo(fileInfo):
+			if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+				return err
+			}
 		}
 	}
 	return s.system.Remove(name)
@@ -144,8 +151,15 @@ func (s *ExternalDiffSystem) Remove(name AbsPath) error {
 // RemoveAll implements System.RemoveAll.
 func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeRemove) {
-		if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+		switch fileInfo, err := s.system.Lstat(name); {
+		case errors.Is(err, fs.ErrNotExist):
+			// Do nothing.
+		case err != nil:
 			return err
+		case s.filter.IncludeFileInfo(fileInfo):
+			if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+				return err
+			}
 		}
 	}
 	return s.system.RemoveAll(name)
