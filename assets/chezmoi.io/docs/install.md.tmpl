@@ -182,7 +182,7 @@ Download a package for your distribution and architecture.
 
 === "apk"
 
-{{ range $arch := list "386" "amd64" "arm" "arm64" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
+{{ range $arch := list "386" "amd64" "arm" "arm64" "loong64" "mips64_hardfloat" "mips64le_hardfloat" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.apk)
 {{- end }}
 
