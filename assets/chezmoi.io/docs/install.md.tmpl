@@ -186,6 +186,12 @@ Download a package for your distribution and architecture.
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.apk)
 {{- end }}
 
+=== "Arch Linux"
+
+{{ range $arch := list "386" "amd64" "arm" "arm64" "loong64" "mips64_hardfloat" "mips64le_hardfloat" "ppc64" "ppc64le" "riscv64" "s390x" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.pkg.tar.zst)
+{{- end }}
+
 ## Download a pre-built binary
 
 Download an archive for your operating system and architecture containing a
