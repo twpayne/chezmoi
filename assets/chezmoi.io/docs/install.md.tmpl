@@ -170,19 +170,19 @@ Download a package for your distribution and architecture.
 
 === "deb"
 
-{{ range $arch := list "amd64" "arm64" "armel" "i386" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
+{{ range $arch := list "amd64" "arm64" "armel" "i386" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.deb)
 {{- end }}
 
 === "rpm"
 
-{{ range $arch := list "aarch64" "armhfp" "i686" "mips64" "mips64le" "ppc64" "ppc64le" "s390x" "riscv64" "x86_64" }}
+{{ range $arch := list "aarch64" "armhfp" "i686" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "s390x" "riscv64" "x86_64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi-{{ $version }}-{{ $arch }}.rpm)
 {{- end }}
 
 === "apk"
 
-{{ range $arch := list "386" "amd64" "arm" "arm64" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
+{{ range $arch := list "386" "amd64" "arm" "arm64" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.apk)
 {{- end }}
 
