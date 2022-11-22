@@ -1,0 +1,17 @@
+[windows] skip 'UNIX only'
+chmod 755 bin/diff
+
+# test that chezmoi apply --verbose with an external diff command and dirs excluded does not run the diff command when a directory is removed
+exec chezmoi apply --verbose
+! stdout diff
+
+-- bin/diff --
+#!/bin/sh
+
+echo diff $*
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "diff"
+    exclude = ["dirs"]
+-- home/user/.dir/subdir/.keep --
+-- home/user/.local/share/chezmoi/exact_dot_dir/.keep --
