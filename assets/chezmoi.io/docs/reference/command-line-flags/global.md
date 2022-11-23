@@ -48,8 +48,7 @@ Do not use the pager.
 
 ## `--no-tty`
 
-Do not attempt to get a TTY to read input and passwords. Instead, read them
-from stdin.
+Do not attempt to get a TTY for prompts. Instead, read them from stdin.
 
 ## `-o`, `--output` *filename*
 
