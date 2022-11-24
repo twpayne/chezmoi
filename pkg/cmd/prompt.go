@@ -242,6 +242,6 @@ func runCancelableModel[M cancelableModel](initModel M) (M, error) { //nolint:ir
 
 func runModel[M tea.Model](initModel M) (M, error) { //nolint:ireturn,nolintlint
 	program := tea.NewProgram(initModel)
-	finalModel, err := program.StartReturningModel()
+	finalModel, err := program.Run()
 	return finalModel.(M), err //nolint:forcetypeassert
 }
