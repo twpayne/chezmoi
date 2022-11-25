@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cd" class="md-skip">
+        <a href="#cd-path" class="md-skip">
           Skip to content
         </a>
       
@@ -4873,11 +4873,13 @@
   </a>
 
 
-<h1 id="cd"><code>cd</code></h1>
+<h1 id="cd-path"><code>cd</code> [<em>path</em>]</h1>
 <p>Launch a shell in the working tree (typically the source directory). chezmoi
 will launch the command set by the <code>cd.command</code> configuration variable with any
 extra arguments specified by <code>cd.args</code>. If this is not set, chezmoi will
 attempt to detect your shell and finally fall back to an OS-specific default.</p>
+<p>If the optional argument <em>path</em> is present, the shell will be launched in the
+source directory corresponding to <em>path</em>.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>This does not change the current directory of the current shell. To do

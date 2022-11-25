@@ -4935,6 +4935,10 @@
 
 <h1 id="update"><code>update</code></h1>
 <p>Pull changes from the source repo and apply any changes.</p>
+<p>If <code>update.command</code> is set then chezmoi will run <code>update.command</code> with
+<code>update.args</code> in the working tree. Otherwise, chezmoi will run <code>git pull
+--autostash --rebase [--recurse-submodules]</code> , using chezmoi's builtin git if
+<code>useBuiltinGit</code> is <code>true</code> or if <code>git.command</code> cannot be found in <code>$PATH</code>.</p>
 <h2 id="-i-include-types"><code>-i</code>, <code>--include</code> <em>types</em></h2>
 <p>Only update entries of type <em>types</em>.</p>
 <h2 id="-recurse-submodules-bool"><code>--recurse-submodules</code> <em>bool</em></h2>

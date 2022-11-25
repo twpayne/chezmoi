@@ -5167,12 +5167,15 @@ extensions. Other extensions require an interpreter, which must be in your
 </tr>
 </tbody>
 </table>
-<p>Script interpreters can be added or overridden with the
-<code>interpreters.</code><em>extension</em> section in the configuration file.</p>
+<p>Script interpreters can be added or overridden by adding the corresponding
+extension (without the leading dot) as a key under the <code>interpreters</code>
+section of the configuration file.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The leading <code>.</code> is dropped from <em>extension</em>, for example to specify the
-interpreter for <code>.pl</code> files you configure <code>interpreters.pl</code>.</p>
+interpreter for <code>.pl</code> files you configure <code>interpreters.pl</code> (where <code>.</code>
+in this case just means "a child of" in the configuration file, however
+that is specified in your preferred format).</p>
 </div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -5182,6 +5185,20 @@ Tcl/Tk interpreter, include the following in your config file:</p>
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;C:\Python39\python3.exe&#39;</span><span class="w"></span>
 <span class="k">[interpreters.tcl]</span><span class="w"></span>
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"></span>
+</code></pre></div>
+<p>Or if using YAML:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">interpreters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">py</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C:\Python39</span><span class="err">\</span><span class="s">python3.exe&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">tcl</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"></span>
+</code></pre></div>
+<p>Note that the TOML version can also be written like this, which
+resembles the YAML version more and makes it clear that the key
+for each file extension should not have a leading <code>.</code>:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters]</span><span class="w"></span>
+<span class="n">py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;C:\Python39\python3.exe&#39;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="n">tcl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 </div>
 <div class="admonition note">

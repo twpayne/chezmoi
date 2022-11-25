@@ -1274,6 +1274,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#use-a-different-version-control-system-to-git" class="md-nav__link">
+    Use a different version control system to git
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4899,6 +4906,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#use-a-different-version-control-system-to-git" class="md-nav__link">
+    Use a different version control system to git
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4941,6 +4955,49 @@ need to move the relevant files in to the new root subdirectory manually. You
 do not need to move files that are ignored by chezmoi in all cases (i.e. are
 listed in <code>.chezmoiignore</code> when executed as a template on all machines), and
 you can afterwards remove their entries from <code>home/.chezmoiignore</code>.</p>
+<h2 id="use-a-different-version-control-system-to-git">Use a different version control system to git</h2>
+<p>Although chezmoi is primarily designed to use a git repo for the source state,
+it does not require git and can be used with other version control systems, such
+as <a href="https://www.fossil-scm.org/">fossil</a> or <a href="https://pijul.org/">pijul</a>.</p>
+<p>The version control system is used in only three places:</p>
+<ul>
+<li><code>chezmoi init</code> will use <code>git clone</code> to clone the source repo if it does not
+  already exist.</li>
+<li><code>chezmoi update</code> will use <code>git pull</code> by default to pull the latest changes.</li>
+<li>chezmoi's auto add, commit, and push functionality use <code>git status</code>, <code>git
+  add</code>, <code>git commit</code> and <code>git push</code>.</li>
+</ul>
+<p>Using a different version control system (VCS) to git can be achieved in two
+ways.</p>
+<p>Firstly, if your VCS is compatible with git's CLI, then you can set the
+<code>git.command</code> configuration variable to your VCS command and set <code>useBuiltinGit</code>
+to <code>false</code>.</p>
+<p>Otherwise, you can use your VCS to create the source directory before running
+<code>chezmoi init</code>, for example:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>fossil clone https://dotfiles.example.com/ dotfiles.fossil
+<span class="gp">$ </span>mkdir -p .local/share/chezmoi/.git
+<span class="gp">$ </span><span class="nb">cd</span> .local/share/chezmoi
+<span class="gp">$ </span>fossil open ~/dotfiles.fossil
+<span class="gp">$ </span>chezmoi init --apply
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The creation of an empty <code>.git</code> directory in the source directory is
+required for chezmoi to be able to identify the work tree.</p>
+</div>
+<p>For updates, you can set the <code>update.command</code> and <code>update.args</code> configuration
+variables and <code>chezmoi update</code> will use these instead of <code>git pull</code>, for example:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[update]</span><span class="w"></span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fossil&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;update&quot;</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+<p>Currently, it is not possible to override the auto add, commit, and push
+behavior for non-git VCSs, so you will have to commit changes manually, for
+example:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
+<span class="gp">$ </span>fossil add .
+<span class="gp">$ </span>fossil commit
+</code></pre></div>
 
 
 
