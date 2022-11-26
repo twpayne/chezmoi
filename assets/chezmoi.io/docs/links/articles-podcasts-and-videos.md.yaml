@@ -314,3 +314,7 @@ articles:
   title: 'Come installare Chezmoi: gestisci in modo sicuro i dotfile su più macchine'
   lang: IT
   url: https://grayguide.net/it/come-installare-chezmoi-gestisci-in-modo-sicuro-i-dotfile-su-piu-macchine
+- date: '2022-09-28'
+  version: 2.24.0
+  title: 'Shit Hot Dotfiles'
+  url: https://kolv.in/posts/dotfile-managment
