@@ -1,7 +1,7 @@
 # `stat` *name*
 
-`stat` runs `stat(2)` on *name*. If *name* exists it returns structured data.
-If *name* does not exist then it returns a false value. If `stat(2)` returns
+`stat` runs [`stat`](https://pkg.go.dev/os#File.Stat) on *name*. If *name* exists it returns structured data.
+If *name* does not exist then it returns a false value. If [`stat`](https://pkg.go.dev/os#File.Stat) returns
 any other error then it raises an error. The structured value returned if
 *name* exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`,
 and `isDir`.
