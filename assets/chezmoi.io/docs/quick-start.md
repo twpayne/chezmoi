@@ -94,7 +94,7 @@ Finally, exit the shell in the source directory to return to where you were:
 $ exit
 ```
 
-These commands are summarized this sequence diagram:
+These commands are summarized in this sequence diagram:
 
 ```mermaid
 sequenceDiagram
@@ -157,7 +157,7 @@ On any machine, you can pull and apply the latest changes from your repo with:
 $ chezmoi update -v
 ```
 
-These commands are summarized in the this sequence diagram:
+These commands are summarized in this sequence diagram:
 
 ```mermaid
 sequenceDiagram
@@ -188,7 +188,7 @@ shortened to:
 $ chezmoi init --apply $GITHUB_USERNAME
 ```
 
-This command is summarized in the this sequence diagram:
+This command is summarized in this sequence diagram:
 
 ```mermaid
 sequenceDiagram
