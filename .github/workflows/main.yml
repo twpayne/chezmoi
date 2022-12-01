@@ -380,7 +380,7 @@ jobs:
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
-    - uses: golangci/golangci-lint-action@07db5389c99593f11ad7b44463c2d4233066a9b1
+    - uses: golangci/golangci-lint-action@0ad9a0988b3973e851ab0a07adf248ec2e100376
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
