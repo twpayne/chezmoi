@@ -1500,6 +1500,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),
+		chezmoi.WithUmask(c.Umask),
 		chezmoi.WithVersion(c.version),
 	}, options...)...)
 

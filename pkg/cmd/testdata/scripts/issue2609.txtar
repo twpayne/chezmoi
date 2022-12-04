@@ -1,0 +1,10 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi apply uses the umask from the configuration file
+exec chezmoi apply
+cmpmod 600 $HOME/.file
+
+-- home/user/.config/chezmoi/chezmoi.yaml --
+umask: 0o077
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
