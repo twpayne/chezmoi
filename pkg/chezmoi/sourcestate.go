@@ -225,6 +225,13 @@ func WithTemplateOptions(templateOptions []string) SourceStateOption {
 	}
 }
 
+// WithUmask sets the umask.
+func WithUmask(umask fs.FileMode) SourceStateOption {
+	return func(s *SourceState) {
+		s.umask = umask
+	}
+}
+
 // WithVersion sets the version.
 func WithVersion(version semver.Version) SourceStateOption {
 	return func(s *SourceState) {
