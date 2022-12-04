@@ -366,6 +366,12 @@ func (t *TargetStateScript) Evaluate() error {
 
 // SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+	switch contents, err := t.Contents(); {
+	case err != nil:
+		return false, err
+	case len(contents) == 0:
+		return true, nil
+	}
 	switch t.condition {
 	case ScriptConditionAlways:
 		return false, nil

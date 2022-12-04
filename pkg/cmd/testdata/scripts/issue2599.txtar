@@ -1,0 +1,4 @@
+# test that chezmoi apply --interactive --verbose does not prompt for empty scripts
+exec chezmoi apply --interactive --no-tty --verbose
+
+-- home/user/.local/share/chezmoi/run_empty.sh --
