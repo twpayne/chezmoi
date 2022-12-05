@@ -4,6 +4,11 @@ List all managed entries in the destination directory under all *path*s in
 alphabetical order. When no *path*s are supplied, list all managed entries in
 the destination directory in alphabetical order.
 
+## `-p`, `--path-style` `absolute`|`relative`
+
+Print paths in the given style. Relative paths are relative to the destination
+directory. The default is `relative`.
+
 !!! example
 
     ```console
