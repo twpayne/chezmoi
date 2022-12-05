@@ -38,6 +38,9 @@ file in a temporary directory with the executable bit set, and then executes
 the contents with `exec(3)`. Consequently, the script's contents must either
 include a `#!` line or be an executable binary.
 
+By default chezmoi will copy your scripts to a target directory. Place them inside
+(`.chezmoiscripts`)[special-files-and-directories/chezmoiscripts] to disable this behavior.
+
 ## Set environment variables
 
 You can set extra environment variables for your scripts in the `scriptEnv`
