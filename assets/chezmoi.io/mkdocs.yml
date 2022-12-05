@@ -187,6 +187,7 @@ nav:
       - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
       - lookPath: reference/templates/functions/lookPath.md
+      - lstat: reference/templates/functions/lstat.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
       - output: reference/templates/functions/output.md
       - quoteList: reference/templates/functions/quoteList.md

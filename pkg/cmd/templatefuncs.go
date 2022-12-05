@@ -245,6 +245,17 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	}
 }
 
+func (c *Config) lstatTemplateFunc(name string) any {
+	switch fileInfo, err := c.fileSystem.Lstat(name); {
+	case err == nil:
+		return fileInfoToMap(fileInfo)
+	case errors.Is(err, fs.ErrNotExist):
+		return nil
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 	mozillaInstallHash, err := mozillainstallhash.MozillaInstallHash(path)
 	if err != nil {
@@ -345,14 +356,7 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 func (c *Config) statTemplateFunc(name string) any {
 	switch fileInfo, err := c.fileSystem.Stat(name); {
 	case err == nil:
-		return map[string]any{
-			"name":    fileInfo.Name(),
-			"size":    fileInfo.Size(),
-			"mode":    int(fileInfo.Mode()),
-			"perm":    int(fileInfo.Mode().Perm()),
-			"modTime": fileInfo.ModTime().Unix(),
-			"isDir":   fileInfo.IsDir(),
-		}
+		return fileInfoToMap(fileInfo)
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	default:
@@ -382,6 +386,18 @@ func (c *Config) toYamlTemplateFunc(data any) string {
 		panic(err)
 	}
 	return string(yaml)
+}
+
+func fileInfoToMap(fileInfo fs.FileInfo) map[string]any {
+	return map[string]any{
+		"name":    fileInfo.Name(),
+		"size":    fileInfo.Size(),
+		"mode":    int(fileInfo.Mode()),
+		"perm":    int(fileInfo.Mode().Perm()),
+		"modTime": fileInfo.ModTime().Unix(),
+		"isDir":   fileInfo.IsDir(),
+		"type":    chezmoi.FileModeTypeNames[fileInfo.Mode()&fs.ModeType],
+	}
 }
 
 func iniFileToMap(file *ini.File) map[string]any {

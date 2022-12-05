@@ -3,6 +3,8 @@
 [!windows] chmod 755 bin/ioreg
 [windows] unix2dos bin/chezmoi-output-test.cmd
 
+symlink $HOME/symlink -> dir
+
 # test comment template function
 exec chezmoi execute-template '{{ "line1\nline2" | comment "# " }}'
 rmfinalnewline golden/comment
@@ -52,6 +54,10 @@ stdout go$exe
 exec chezmoi execute-template '{{ lookPath "/non-existing-file" }}'
 ! stdout .
 
+# test lstat template function
+exec chezmoi execute-template '{{ (joinPath .chezmoi.homeDir "symlink" | lstat).type }}'
+stdout ^symlink$
+
 # test mozillaInstallHash template function
 exec chezmoi execute-template '{{ mozillaInstallHash "/Applications/Firefox.app/Contents/MacOS" }}'
 stdout 2656FF1E876E9973
@@ -79,7 +85,7 @@ exec chezmoi execute-template '{{ dict "key" "value" "section" (dict "subkey" "s
 cmp stdout golden/toIni
 
 # test stat template function
-exec chezmoi execute-template '{{ (stat ".").isDir }}'
+exec chezmoi execute-template '{{ (joinPath .chezmoi.homeDir "symlink" | stat).isDir }}'
 stdout true
 
 # test that the output template function returns a command's output
@@ -187,5 +193,6 @@ subkey = subvalue
 chezmoi:template:left-delimiter=[[ right-delimiter=]]
 [[ . ]]
 -- home/user/.local/share/chezmoi/template --
+-- home/user/dir/.keep --
 -- home/user/file1.txt --
 -- home/user/file2.txt --

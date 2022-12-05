@@ -115,7 +115,7 @@ var knownTargetFiles = newSet(
 	"chezmoistate.boltdb",
 )
 
-var modeTypeNames = map[fs.FileMode]string{
+var FileModeTypeNames = map[fs.FileMode]string{
 	0:                 "file",
 	fs.ModeDir:        "dir",
 	fs.ModeSymlink:    "symlink",
@@ -297,7 +297,7 @@ func isEmpty(data []byte) bool {
 
 // modeTypeName returns a string representation of mode.
 func modeTypeName(mode fs.FileMode) string {
-	if name, ok := modeTypeNames[mode.Type()]; ok {
+	if name, ok := FileModeTypeNames[mode.Type()]; ok {
 		return name
 	}
 	return fmt.Sprintf("0o%o: unknown type", mode.Type())
