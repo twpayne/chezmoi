@@ -60,6 +60,10 @@ cmp stdout golden/managed-with-nodir-args
 exec chezmoi managed $HOME${/}.dir $HOME${/}.non-exist
 cmp stdout golden/managed-with-absent-args
 
+# test chezmoi managed --path-style=absolute
+[!windows] exec chezmoi managed --path-style=absolute
+[!windows] cmpenv stdout golden/managed-absolute
+
 chhome home2/user
 
 # test that chezmoi managed does not evaluate templates
@@ -81,6 +85,21 @@ cmp stdout golden/managed2
 .remove
 .symlink
 .template
+-- golden/managed-absolute --
+$WORK/home/user/.create
+$WORK/home/user/.dir
+$WORK/home/user/.dir/file
+$WORK/home/user/.dir/subdir
+$WORK/home/user/.dir/subdir/file
+$WORK/home/user/.empty
+$WORK/home/user/.encrypted
+$WORK/home/user/.executable
+$WORK/home/user/.file
+$WORK/home/user/.private
+$WORK/home/user/.readonly
+$WORK/home/user/.remove
+$WORK/home/user/.symlink
+$WORK/home/user/.template
 -- golden/managed-exclude-encrypted --
 .create
 .dir

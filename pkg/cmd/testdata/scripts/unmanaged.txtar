@@ -27,8 +27,16 @@ cmp stdout golden/unmanaged-with-some-managed
 # test that chezmoi unmanaged with absent paths should fail
 ! exec chezmoi unmanaged $HOME${/}absent-path
 
+# test chezmoi unmanaged --path-style=absolute
+[!windows] exec chezmoi unmanaged --path-style=absolute
+[!windows] cmpenv stdout golden/unmanaged-absolute
+
 -- golden/unmanaged --
 .local
+-- golden/unmanaged-absolute --
+$WORK/home/user/.dir
+$WORK/home/user/.file
+$WORK/home/user/.local
 -- golden/unmanaged-dir --
 .dir
 .local

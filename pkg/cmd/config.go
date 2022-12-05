@@ -168,6 +168,7 @@ type Config struct {
 	remove          removeCmdConfig
 	secret          secretCmdConfig
 	state           stateCmdConfig
+	unmanaged       unmanagedCmdConfig
 	upgrade         upgradeCmdConfig
 
 	// Version information.
@@ -307,13 +308,17 @@ func newConfig(options ...configOption) (*Config, error) {
 			recurseSubmodules: true,
 		},
 		managed: managedCmdConfig{
-			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			pathStyle: pathStyleRelative,
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
 		},
 		reAdd: reAddCmdConfig{
 			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+		},
+		unmanaged: unmanagedCmdConfig{
+			pathStyle: pathStyleRelative,
 		},
 		upgrade: upgradeCmdConfig{
 			owner: gitHubOwner,
