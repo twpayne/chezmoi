@@ -161,7 +161,7 @@ section of the configuration file.
     If you intend to use PowerShell Core (`pwsh.exe`) as the `.ps1`
     interpreter, include the following in your config file:
 
-    ```toml title="~/.confg/chezmoi/chezmoi.toml"
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
     [interpreters.ps1]
         command = "pwsh"
         args = ["-NoLogo"]
