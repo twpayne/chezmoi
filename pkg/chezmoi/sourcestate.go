@@ -59,7 +59,16 @@ type External struct {
 	Encrypted  bool         `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
 	Exact      bool         `json:"exact" toml:"exact" yaml:"exact"`
 	Executable bool         `json:"executable" toml:"executable" yaml:"executable"`
-	Clone      struct {
+	Checksum   struct {
+		MD5       HexBytes `json:"md5" toml:"md5" yaml:"md5"`
+		RIPEMD160 HexBytes `json:"ripemd160" toml:"ripemd160" yaml:"ripemd160"`
+		SHA1      HexBytes `json:"sha1" toml:"sha1" yaml:"sha1"`
+		SHA256    HexBytes `json:"sha256" toml:"sha256" yaml:"sha256"`
+		SHA384    HexBytes `json:"sha384" toml:"sha384" yaml:"sha384"`
+		SHA512    HexBytes `json:"sha512" toml:"sha512" yaml:"sha512"`
+		Size      int      `json:"size" toml:"size" yaml:"size"`
+	} `json:"checksum" toml:"checksum" yaml:"checksum"`
+	Clone struct {
 		Args []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"clone" toml:"clone" yaml:"clone"`
 	Exclude []string `json:"exclude" toml:"exclude" yaml:"exclude"`
@@ -1369,6 +1378,59 @@ func (s *SourceState) getExternalData(
 	data, err := s.getExternalDataRaw(ctx, externalRelPath, external, options)
 	if err != nil {
 		return nil, err
+	}
+
+	if external.Checksum.Size != 0 {
+		if len(data) != external.Checksum.Size {
+			err = multierr.Append(err, fmt.Errorf("size mismatch: expected %d, got %d",
+				external.Checksum.Size, len(data)))
+		}
+	}
+
+	if external.Checksum.MD5 != nil {
+		if gotMD5Sum := md5Sum(data); !bytes.Equal(gotMD5Sum, external.Checksum.MD5) {
+			err = multierr.Append(err, fmt.Errorf("MD5 mismatch: expected %s, got %s",
+				external.Checksum.MD5, hex.EncodeToString(gotMD5Sum)))
+		}
+	}
+
+	if external.Checksum.RIPEMD160 != nil {
+		if gotRIPEMD160Sum := ripemd160Sum(data); !bytes.Equal(gotRIPEMD160Sum, external.Checksum.RIPEMD160) {
+			err = multierr.Append(err, fmt.Errorf("RIPEMD-160 mismatch: expected %s, got %s",
+				external.Checksum.RIPEMD160, hex.EncodeToString(gotRIPEMD160Sum)))
+		}
+	}
+
+	if external.Checksum.SHA1 != nil {
+		if gotSHA1Sum := sha1Sum(data); !bytes.Equal(gotSHA1Sum, external.Checksum.SHA1) {
+			err = multierr.Append(err, fmt.Errorf("SHA1 mismatch: expected %s, got %s",
+				external.Checksum.SHA1, hex.EncodeToString(gotSHA1Sum)))
+		}
+	}
+
+	if external.Checksum.SHA256 != nil {
+		if gotSHA256Sum := SHA256Sum(data); !bytes.Equal(gotSHA256Sum, external.Checksum.SHA256) {
+			err = multierr.Append(err, fmt.Errorf("SHA256 mismatch: expected %s, got %s",
+				external.Checksum.SHA256, hex.EncodeToString(gotSHA256Sum)))
+		}
+	}
+
+	if external.Checksum.SHA384 != nil {
+		if gotSHA384Sum := sha384Sum(data); !bytes.Equal(gotSHA384Sum, external.Checksum.SHA384) {
+			err = multierr.Append(err, fmt.Errorf("SHA384 mismatch: expected %s, got %s",
+				external.Checksum.SHA384, hex.EncodeToString(gotSHA384Sum)))
+		}
+	}
+
+	if external.Checksum.SHA512 != nil {
+		if gotSHA512Sum := sha512Sum(data); !bytes.Equal(gotSHA512Sum, external.Checksum.SHA512) {
+			err = multierr.Append(err, fmt.Errorf("SHA512 mismatch: expected %s, got %s",
+				external.Checksum.SHA512, hex.EncodeToString(gotSHA512Sum)))
+		}
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
 	}
 
 	if external.Encrypted {

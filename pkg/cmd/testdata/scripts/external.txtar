@@ -84,6 +84,19 @@ chhome home9/user
 # test that duplicate equivalent directories are allowed
 exec chezmoi apply --force
 
+chhome home10/user
+
+# test that checksums are verified
+exec chezmoi apply --force
+cp $HOME/.file golden/.file
+
+chhome home11/user
+
+# test that checksums detect corrupt files
+! exec chezmoi apply --force
+stderr 'MD5 mismatch'
+stderr 'SHA256 mismatch'
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -99,6 +112,24 @@ exec chezmoi apply --force
 [".file"]
     type = "file"
     url = "{{ env "HTTPD_URL" }}/.file"
+-- home10/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.file:
+    type: file
+    url: {{ env "HTTPD_URL" }}/.file
+    checksum:
+        size: 20
+        md5: 49fe9018f97349cdd0a0ac7b7f668b05
+        ripemd160: 2320636f6e74656e7473206f66202e66696c650a9c1185a5c5e9fc54612808977ee8f548b2258d31
+        sha1: cb91d72dc73f6d984b33ac5745f1cf6f76745bd2
+        sha256: 634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663
+        sha384: f8545bb66433eb514727bbc61c4e4939c436d38079767f39f12b8803d6472ca1dfcd101675b20cd525f7e3d02c368b61
+        sha512: a68814ec3d16e8bd28c9291bbc596f0282687c5ba5d1f4c26c4e427166666a03c11df1dab3577b4483142764c37d4887def77244c4a52cb9852a234fa8cb15ba
+-- home11/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/.corrupt-file"
+    checksum.md5 = "49fe9018f97349cdd0a0ac7b7f668b05"
+    checksum.sha256 = "634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"
 -- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
     type = "file"
@@ -157,5 +188,7 @@ subdir:
     stripComponents = 1
 -- home9/user/.local/share/chezmoi/dot_dir/file2 --
 # contents of .dir/file2
+-- www/.corrupt-file --
+# corrupt contents of .file
 -- www/.file --
 # contents of .file
