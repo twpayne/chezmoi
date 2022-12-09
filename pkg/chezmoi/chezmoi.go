@@ -4,7 +4,10 @@ package chezmoi
 import (
 	"bufio"
 	"bytes"
+	"crypto/md5"  //nolint:gosec
+	"crypto/sha1" //nolint:gosec
 	"crypto/sha256"
+	"crypto/sha512"
 	"fmt"
 	"io"
 	"io/fs"
@@ -17,6 +20,7 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
+	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
@@ -295,6 +299,12 @@ func isEmpty(data []byte) bool {
 	return len(bytes.TrimSpace(data)) == 0
 }
 
+// md5Sum returns the MD5 sum of data.
+func md5Sum(data []byte) []byte {
+	md5SumArr := md5.Sum(data) //nolint:gosec
+	return md5SumArr[:]
+}
+
 // modeTypeName returns a string representation of mode.
 func modeTypeName(mode fs.FileMode) string {
 	if name, ok := FileModeTypeNames[mode.Type()]; ok {
@@ -319,6 +329,29 @@ func mustTrimSuffix(s, suffix string) string {
 		panic(fmt.Sprintf("%s: not suffixed by %s", s, suffix))
 	}
 	return s[:len(s)-len(suffix)]
+}
+
+// ripemd160Sum returns the RIPEMD-160 sum of data.
+func ripemd160Sum(data []byte) []byte {
+	return ripemd160.New().Sum(data)
+}
+
+// sha1Sum returns the SHA1 sum of data.
+func sha1Sum(data []byte) []byte {
+	sha1SumArr := sha1.Sum(data) //nolint:gosec
+	return sha1SumArr[:]
+}
+
+// sha384Sum returns the SHA384 sum of data.
+func sha384Sum(data []byte) []byte {
+	sha384SumArr := sha512.Sum384(data)
+	return sha384SumArr[:]
+}
+
+// sha512Sum returns the SHA512 sum of data.
+func sha512Sum(data []byte) []byte {
+	sha512SumArr := sha512.Sum512(data)
+	return sha512SumArr[:]
 }
 
 // sortedKeys returns the keys of V in order.

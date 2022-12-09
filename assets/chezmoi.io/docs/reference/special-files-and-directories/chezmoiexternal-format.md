@@ -35,6 +35,14 @@ Entries may have the following fields:
 | `refreshPeriod`   | duration | `0`           | Refresh period                                                |
 | `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives |
 | `url`             | string   | *none*        | URL                                                           |
+| `checksum.sha256` | string   | *none*        | Expected SHA256 checksum of data                              |
+| `checksum.sha384` | string   | *none*        | Expected SHA384 checksum of data                              |
+| `checksum.sha512` | string   | *none*        | Expected SHA512 checksum of data                              |
+| `checksum.size`   | int      | *none*        | Expected size of data                                         |
+
+If any of the optional `checksum.sha256`, `checksum.sha384`, or
+`checksum.sha512` fields are set, chezmoi will verify that the downloaded data
+has the given checksum.
 
 The optional boolean `encrypted` field specifies whether the file or archive is
 encrypted.
