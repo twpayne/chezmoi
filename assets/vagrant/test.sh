@@ -3,7 +3,7 @@
 set -eufo pipefail
 
 for os in "$@"; do
-    echo ${os}
+    echo "${os}"
     if [ ! -f "${os}.Vagrantfile" ]; then
         echo "${os}.Vagrantfile not found"
         exit 1
