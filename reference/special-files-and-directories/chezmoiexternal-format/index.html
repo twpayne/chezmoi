@@ -2888,6 +2888,8 @@
         
           
         
+          
+        
       
       
         
@@ -3100,6 +3102,20 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/lookPath/" class="md-nav__link">
         lookPath
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/lstat/" class="md-nav__link">
+        lstat
       </a>
     </li>
   
@@ -4982,8 +4998,35 @@ them as regular directories.</p>
 <td><em>none</em></td>
 <td>URL</td>
 </tr>
+<tr>
+<td><code>checksum.sha256</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Expected SHA256 checksum of data</td>
+</tr>
+<tr>
+<td><code>checksum.sha384</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Expected SHA384 checksum of data</td>
+</tr>
+<tr>
+<td><code>checksum.sha512</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Expected SHA512 checksum of data</td>
+</tr>
+<tr>
+<td><code>checksum.size</code></td>
+<td>int</td>
+<td><em>none</em></td>
+<td>Expected size of data</td>
+</tr>
 </tbody>
 </table>
+<p>If any of the optional <code>checksum.sha256</code>, <code>checksum.sha384</code>, or
+<code>checksum.sha512</code> fields are set, chezmoi will verify that the downloaded data
+has the given checksum.</p>
 <p>The optional boolean <code>encrypted</code> field specifies whether the file or archive is
 encrypted.</p>
 <p>If optional string <code>filter.command</code> and array of strings <code>filter.args</code> are

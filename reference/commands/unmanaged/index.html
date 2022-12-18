@@ -2662,9 +2662,40 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          unmanaged
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         unmanaged
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-p-path-style-absoluterelative" class="md-nav__link">
+    -p, --path-style absolute|relative
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2840,6 +2871,8 @@
         
           
             
+          
+        
           
         
           
@@ -3100,6 +3133,20 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/lookPath/" class="md-nav__link">
         lookPath
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/lstat/" class="md-nav__link">
+        lstat
       </a>
     </li>
   
@@ -4855,6 +4902,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-p-path-style-absoluterelative" class="md-nav__link">
+    -p, --path-style absolute|relative
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4877,6 +4939,9 @@
 <p>List all unmanaged files in <em>path</em>s. When no <em>path</em>s are supplied, list all
 unmanaged files in the destination directory.</p>
 <p>It is an error to supply <em>path</em>s that are not found on the filesystem.</p>
+<h2 id="-p-path-style-absoluterelative"><code>-p</code>, <code>--path-style</code> <code>absolute</code>|<code>relative</code></h2>
+<p>Print paths in the given style. Relative paths are relative to the destination
+directory. The default is <code>relative</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi unmanaged

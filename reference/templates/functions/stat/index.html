@@ -2880,6 +2880,8 @@
         
           
         
+          
+        
       
       
         
@@ -3092,6 +3094,20 @@
     <li class="md-nav__item">
       <a href="../lookPath/" class="md-nav__link">
         lookPath
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lstat/" class="md-nav__link">
+        lstat
       </a>
     </li>
   
@@ -4880,7 +4896,7 @@
 exists it returns structured data. If <em>name</em> does not exist then it returns a
 false value. If <code>os.Stat</code> returns any other error then it raises an error. The
 structured value returned if <em>name</em> exists contains the fields <code>name</code>, <code>size</code>,
-<code>mode</code>, <code>perm</code>, <code>modTime</code>, and <code>isDir</code>.</p>
+<code>mode</code>, <code>perm</code>, <code>modTime</code>, <code>isDir</code>, and <code>type</code>.</p>
 <p><code>stat</code> is not hermetic: its return value depends on the state of the filesystem
 at the moment the template is executed. Exercise caution when using it in your
 templates.</p>
