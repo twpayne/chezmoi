@@ -159,6 +159,11 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 	return NewRelPath(p.absPath[len(dirAbsPath.absPath):]), nil
 }
 
+// TrimSuffix returns p with the optional suffix removed.
+func (p AbsPath) TrimSuffix(suffix string) AbsPath {
+	return NewAbsPath(strings.TrimSuffix(p.absPath, suffix))
+}
+
 // Type implements github.com/spf13/pflag.Value.Type.
 func (p AbsPath) Type() string {
 	return "path"

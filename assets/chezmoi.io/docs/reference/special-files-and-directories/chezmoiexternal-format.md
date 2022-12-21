@@ -1,9 +1,9 @@
-# `.chezmoiexternal.$FORMAT`
+# `.chezmoiexternal.$FORMAT{,.tmpl}`
 
-If a file called `.chezmoiexternal.$FORMAT` exists in the source state (either
-`~/.local/share/chezmoi` or directory defined inside `.chezmoiroot`), it is
-interpreted as a list of external files and archives to be included as if they
-were in the source state.
+If a file called `.chezmoiexternal.$FORMAT` (with an optional `.tmpl` extension)
+exists in the source state (either `~/.local/share/chezmoi` or directory defined
+inside `.chezmoiroot`), it is interpreted as a list of external files and
+archives to be included as if they were in the source state.
 
 `$FORMAT` must be one of chezmoi's supported configuration file formats, e.g.
 `json`, `toml`, or `yaml`.
