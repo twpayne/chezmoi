@@ -126,3 +126,12 @@ func isPrefixDotFormat(name, prefix string) bool {
 	}
 	return false
 }
+
+func isPrefixDotFormatDotTmpl(name, prefix string) bool {
+	for extension := range FormatsByExtension {
+		if name == prefix+"."+extension+TemplateSuffix {
+			return true
+		}
+	}
+	return false
+}

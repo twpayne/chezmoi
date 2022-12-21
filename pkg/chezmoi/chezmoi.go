@@ -97,10 +97,15 @@ var knownPrefixedFiles = newSet(
 	dataName+".toml",
 	dataName+".yaml",
 	externalName+".json",
+	externalName+".json"+TemplateSuffix,
 	externalName+".toml",
+	externalName+".toml"+TemplateSuffix,
 	externalName+".yaml",
+	externalName+".yaml"+TemplateSuffix,
 	ignoreName,
+	ignoreName+TemplateSuffix,
 	removeName,
+	removeName+TemplateSuffix,
 	VersionName,
 )
 

@@ -844,11 +844,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return vfs.SkipDir
 		case s.templateDataOnly:
 			return nil
-		case isPrefixDotFormat(fileInfo.Name(), externalName):
+		case isPrefixDotFormat(fileInfo.Name(), externalName) || isPrefixDotFormatDotTmpl(fileInfo.Name(), externalName):
 			return s.addExternal(sourceAbsPath)
-		case fileInfo.Name() == ignoreName:
+		case fileInfo.Name() == ignoreName || fileInfo.Name() == ignoreName+TemplateSuffix:
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
-		case fileInfo.Name() == removeName:
+		case fileInfo.Name() == removeName || fileInfo.Name() == removeName+TemplateSuffix:
 			return s.addPatterns(s.remove, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == scriptsDirName:
 			scriptsDirSourceStateEntries, err := s.readScriptsDir(ctx, sourceAbsPath)
@@ -1149,7 +1149,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	parentSourceRelPath := NewSourceRelDirPath(parentRelPath.String())
 	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 
-	format, err := FormatFromAbsPath(sourceAbsPath)
+	format, err := FormatFromAbsPath(sourceAbsPath.TrimSuffix(TemplateSuffix))
 	if err != nil {
 		return err
 	}

@@ -1,0 +1,34 @@
+httpd www
+
+# test that .chezmoiexternal.toml.tmpl is read
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+
+chhome home2/user
+
+# test that .chezmoignore.tmpl is read
+exec chezmoi apply
+! exists $HOME/.file
+
+chhome home3/user
+
+# test that .chezmoiremove.tmpl is read
+exec chezmoi apply
+! exists $HOME/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/.file"
+-- home2/user/.local/share/chezmoi/.chezmoiignore.tmpl --
+.file
+-- home2/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home3/user/.file --
+# contents of .file
+-- home3/user/.local/share/chezmoi/.chezmoiremove.tmpl --
+.file
+-- www/.file --
+# contents of .file
