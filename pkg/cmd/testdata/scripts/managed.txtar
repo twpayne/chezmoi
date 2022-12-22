@@ -64,6 +64,14 @@ cmp stdout golden/managed-with-absent-args
 [!windows] exec chezmoi managed --path-style=absolute
 [!windows] cmpenv stdout golden/managed-absolute
 
+# test chezmoi managed --path-style=source-absolute
+exec chezmoi managed --path-style=source-absolute
+cmpenv stdout golden/managed-source-absolute
+
+# test chezmoi managed --path-style=source-relative
+exec chezmoi managed --path-style=source-relative
+cmp stdout golden/managed-source-relative
+
 chhome home2/user
 
 # test that chezmoi managed does not evaluate templates
@@ -186,6 +194,36 @@ $WORK/home/user/.template
 .symlink
 -- golden/managed-include-templates --
 .template
+-- golden/managed-source-absolute --
+${CHEZMOISOURCEDIR}/create_dot_create
+${CHEZMOISOURCEDIR}/dot_dir
+${CHEZMOISOURCEDIR}/dot_dir/exact_subdir
+${CHEZMOISOURCEDIR}/dot_dir/exact_subdir/file
+${CHEZMOISOURCEDIR}/dot_dir/file
+${CHEZMOISOURCEDIR}/dot_file
+${CHEZMOISOURCEDIR}/dot_remove
+${CHEZMOISOURCEDIR}/dot_template.tmpl
+${CHEZMOISOURCEDIR}/empty_dot_empty
+${CHEZMOISOURCEDIR}/encrypted_dot_encrypted
+${CHEZMOISOURCEDIR}/executable_dot_executable
+${CHEZMOISOURCEDIR}/private_dot_private
+${CHEZMOISOURCEDIR}/readonly_dot_readonly
+${CHEZMOISOURCEDIR}/symlink_dot_symlink
+-- golden/managed-source-relative --
+create_dot_create
+dot_dir
+dot_dir/exact_subdir
+dot_dir/exact_subdir/file
+dot_dir/file
+dot_file
+dot_remove
+dot_template.tmpl
+empty_dot_empty
+encrypted_dot_encrypted
+executable_dot_executable
+private_dot_private
+readonly_dot_readonly
+symlink_dot_symlink
 -- golden/managed-with-absent-args --
 .dir
 .dir/file

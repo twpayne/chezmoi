@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
@@ -9,14 +10,18 @@ import (
 type pathStyle string
 
 const (
-	pathStyleAbsolute pathStyle = "absolute"
-	pathStyleRelative pathStyle = "relative"
+	pathStyleAbsolute       pathStyle = "absolute"
+	pathStyleRelative       pathStyle = "relative"
+	pathStyleSourceAbsolute pathStyle = "source-absolute"
+	pathStyleSourceRelative pathStyle = "source-relative"
 )
 
 var (
 	pathStyleStrings = []string{
 		pathStyleAbsolute.String(),
 		pathStyleRelative.String(),
+		pathStyleSourceAbsolute.String(),
+		pathStyleSourceRelative.String(),
 	}
 
 	pathStyleFlagCompletionFunc = chezmoi.FlagCompletionFunc(pathStyleStrings)
@@ -39,5 +44,5 @@ func (p pathStyle) String() string {
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (p pathStyle) Type() string {
-	return "absolute|relative"
+	return strings.Join(pathStyleStrings, "|")
 }
