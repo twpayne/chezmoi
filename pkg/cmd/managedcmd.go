@@ -53,7 +53,7 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 		}
 	}
 
-	var targetRelPaths chezmoi.RelPaths
+	var paths []string
 	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 		if !c.managed.filter.IncludeSourceStateEntry(sourceStateEntry) {
 			return nil
@@ -81,19 +81,25 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 			}
 		}
 
-		targetRelPaths = append(targetRelPaths, targetRelPath)
+		var path string
+		switch c.managed.pathStyle {
+		case pathStyleAbsolute:
+			path = c.DestDirAbsPath.Join(targetRelPath).String()
+		case pathStyleRelative:
+			path = targetRelPath.String()
+		case pathStyleSourceAbsolute:
+			path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()).String()
+		case pathStyleSourceRelative:
+			path = sourceStateEntry.SourceRelPath().RelPath().String()
+		}
+		paths = append(paths, path)
 		return nil
 	})
 
-	sort.Sort(targetRelPaths)
+	sort.Strings(paths)
 	builder := strings.Builder{}
-	for _, targetRelPath := range targetRelPaths {
-		switch c.managed.pathStyle {
-		case pathStyleAbsolute:
-			fmt.Fprintln(&builder, c.DestDirAbsPath.Join(targetRelPath))
-		case pathStyleRelative:
-			fmt.Fprintln(&builder, targetRelPath)
-		}
+	for _, path := range paths {
+		fmt.Fprintln(&builder, path)
 	}
 	return c.writeOutputString(builder.String())
 }
