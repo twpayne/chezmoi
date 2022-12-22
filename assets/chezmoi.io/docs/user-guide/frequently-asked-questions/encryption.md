@@ -62,17 +62,17 @@ EOF
 
 `age.recipient` must be your public key from above.
 
-When you run `chezmoi init --apply` to generate the chezmoi's config file, you
-will be prompted for your passphrase to decrypt the private key:
+Run `chezmoi init --apply` to generate the chezmoi's config file and decrypt the
+private key:
 
-```
+```console
 $ chezmoi init --apply
 Enter passphrase:
 ```
 
 At this stage everything is configured and `git status` should report:
 
-```
+```console
 $ git status
 On branch main
 Untracked files:
@@ -90,6 +90,10 @@ If you're happy with the changes you can commit them.
 Add files that you want to encrypt using the `--encrypt` argument to `chezmoi
 add`, for example:
 
-```
+```console
 $ chezmoi add --encrypt ~/.ssh/id_rsa
 ```
+
+When you run `chezmoi init` on a new machine you will be prompted to enter your
+passphrase once to decrypt `key.txt.age`. Your decrypted private key will be
+stored in `~/key.txt`.
