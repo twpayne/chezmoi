@@ -18,7 +18,8 @@ First, change to chezmoi's source directory:
 $ chezmoi cd
 ```
 
-Generate an age private key encrypted with a passphrase with the command:
+Generate an age private key encrypted with a passphrase in the file
+`key.txt.age` with the command:
 
 ```console
 $ age-keygen | age --passphrase > key.txt.age
@@ -85,7 +86,8 @@ Untracked files:
 nothing added to commit but untracked files present (use "git add" to track)
 ```
 
-If you're happy with the changes you can commit them.
+If you're happy with the changes you can commit them. All four files should be
+committed.
 
 Add files that you want to encrypt using the `--encrypt` argument to `chezmoi
 add`, for example:
