@@ -3,11 +3,11 @@ module github.com/twpayne/chezmoi/v2
 go 1.18
 
 require (
-	filippo.io/age v1.0.0
+	filippo.io/age v1.1.1
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/aws/aws-sdk-go-v2 v1.17.3
 	github.com/aws/aws-sdk-go-v2/config v1.18.7
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.10
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.11
 	github.com/bmatcuk/doublestar/v4 v4.4.0
 	github.com/bradenhilton/mozillainstallhash v1.0.0
 	github.com/charmbracelet/bubbles v0.14.0
