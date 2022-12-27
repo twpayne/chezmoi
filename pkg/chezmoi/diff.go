@@ -9,7 +9,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/twpayne/go-diff/diffmatchpatch"
 )
 
 var gitDiffOperation = map[diffmatchpatch.Operation]diff.Operation{
