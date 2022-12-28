@@ -5,15 +5,18 @@ chmod 755 bin/shell
 # test that chezmoi cd creates source directory if needed
 exec chezmoi cd
 exists $CHEZMOISOURCEDIR
-grep -count=1 ${CHEZMOISOURCEDIR@R} shell.log
+grep ${CHEZMOISOURCEDIR@R} shell.log
+rm shell.log
 
 # test that chezmoi cd changes into an existing directory
 exec chezmoi cd
-grep -count=2 ${CHEZMOISOURCEDIR@R} shell.log
+grep ${CHEZMOISOURCEDIR@R} shell.log
+rm shell.log
 
 # test chat chezmoi cd with an argument changes into the corresponding source directory
 exec chezmoi cd $HOME${/}.dir
 grep ${CHEZMOISOURCEDIR@R}/dot_dir shell.log
+rm shell.log
 
 # test that chezmoi cd works when $SHELL environment variable contains spaces
 env SHELL='shell arg1'
@@ -26,10 +29,19 @@ chhome home2/user
 exec chezmoi cd
 stdout '^shell arg2$'
 
+env SHELL=$WORK/bin/shell
+
+chhome home3/user
+
+# test that chezmoi cd $HOME with .chezmoiroot changes into .chezmoiroot
+exec chezmoi cd $HOME
+grep ${CHEZMOISOURCEDIR@R}/home shell.log
+rm shell.log
+
 -- bin/shell --
 #!/bin/sh
 
-pwd >> $WORK/shell.log
+pwd > $WORK/shell.log
 echo shell $*
 -- home/user/.dir/.keep --
 -- home/user/.local/share/chezmoi/dot_dir/.keep --
@@ -37,3 +49,6 @@ echo shell $*
 [cd]
     command = "shell"
     args = ["arg2"]
+-- home3/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home3/user/.local/share/chezmoi/home/.keep --

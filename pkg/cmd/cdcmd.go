@@ -39,6 +39,13 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 	var dir chezmoi.AbsPath
 	if len(args) == 0 {
 		dir = c.WorkingTreeAbsPath
+	} else if argAbsPath, err := chezmoi.NewAbsPathFromExtPath(args[0], c.homeDirAbsPath); err != nil { //nolint:gocritic
+		return err
+	} else if argAbsPath == c.DestDirAbsPath {
+		dir, err = c.getSourceDirAbsPath(nil)
+		if err != nil {
+			return err
+		}
 	} else {
 		sourceState, err := c.getSourceState(cmd.Context())
 		if err != nil {
