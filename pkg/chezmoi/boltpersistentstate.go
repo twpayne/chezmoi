@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"time"
@@ -225,7 +226,7 @@ func (b *BoltPersistentState) open() error {
 	}
 	db, err := bbolt.Open(b.path.String(), 0o600, &b.options)
 	if err != nil {
-		return err
+		return fmt.Errorf("open %s: %w", b.path, err)
 	}
 	b.empty = false
 	b.db = db
