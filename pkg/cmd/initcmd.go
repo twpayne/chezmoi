@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -198,15 +199,18 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						"--depth", strconv.Itoa(c.init.depth),
 					)
 				}
-				repoURL, err := url.Parse(repoURLStr)
-				if err != nil {
-					return err
-				}
-				if repoURL.User == nil {
-					repoURL.User = url.User(username)
+				if !strings.HasPrefix(repoURLStr, "file://") {
+					repoURL, err := url.Parse(repoURLStr)
+					if err != nil {
+						return err
+					}
+					if repoURL.User == nil {
+						repoURL.User = url.User(username)
+						repoURLStr = repoURL.String()
+					}
 				}
 				args = append(args,
-					repoURL.String(),
+					repoURLStr,
 					workingTreeRawPath.String(),
 				)
 				if err := c.run(chezmoi.EmptyAbsPath, c.Git.Command, args); err != nil {
