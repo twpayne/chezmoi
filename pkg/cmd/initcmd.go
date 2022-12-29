@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/url"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -45,49 +46,49 @@ var dotfilesRepoGuesses = []struct {
 }{
 	{
 		rx:                    regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://$1@github.com/$1/dotfiles.git",
+		httpRepoGuessRepl:     "https://github.com/$1/dotfiles.git",
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@github.com:$1/dotfiles.git",
 	},
 	{
 		rx:                    regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
-		httpRepoGuessRepl:     "https://$1@github.com/$1/$2.git",
+		httpRepoGuessRepl:     "https://github.com/$1/$2.git",
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@github.com:$1/$2.git",
 	},
 	{
 		rx:                    regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://$2@$1/$2/dotfiles.git",
+		httpRepoGuessRepl:     "https://$1/$2/dotfiles.git",
 		httpUsernameGuessRepl: "$2",
 		sshRepoGuessRepl:      "git@$1:$2/dotfiles.git",
 	},
 	{
 		rx:                    regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://$2@$1/$2/$3.git",
+		httpRepoGuessRepl:     "https://$1/$2/$3.git",
 		httpUsernameGuessRepl: "$2",
 		sshRepoGuessRepl:      "git@$1:$2/$3.git",
 	},
 	{
 		rx:                    regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
-		httpRepoGuessRepl:     "https://$2@$1/$2/$3.git",
+		httpRepoGuessRepl:     "https://$1/$2/$3.git",
 		httpUsernameGuessRepl: "$2",
 		sshRepoGuessRepl:      "git@$1:$2/$3.git",
 	},
 	{
 		rx:                    regexp.MustCompile(`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
-		httpRepoGuessRepl:     "$1$3@$2/$3/$4.git",
+		httpRepoGuessRepl:     "$1$2/$3/$4.git",
 		httpUsernameGuessRepl: "$3",
 		sshRepoGuessRepl:      "git@$2:$3/$4.git",
 	},
 	{
 		rx:                    regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
-		httpRepoGuessRepl:     "https://$1@git.sr.ht/~$1/dotfiles",
+		httpRepoGuessRepl:     "https://git.sr.ht/~$1/dotfiles",
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@git.sr.ht:~$1/dotfiles",
 	},
 	{
 		rx:                    regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://$1@git.sr.ht/~$1/$2",
+		httpRepoGuessRepl:     "https://git.sr.ht/~$1/$2",
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@git.sr.ht:~$1/$2",
 	},
@@ -197,8 +198,15 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						"--depth", strconv.Itoa(c.init.depth),
 					)
 				}
+				dotfilesRepoURL, err := url.Parse(dotfilesRepoURL)
+				if err != nil {
+					return err
+				}
+				if dotfilesRepoURL.User == nil {
+					dotfilesRepoURL.User = url.User(username)
+				}
 				args = append(args,
-					dotfilesRepoURL,
+					dotfilesRepoURL.String(),
 					workingTreeRawPath.String(),
 				)
 				if err := c.run(chezmoi.EmptyAbsPath, c.Git.Command, args); err != nil {
