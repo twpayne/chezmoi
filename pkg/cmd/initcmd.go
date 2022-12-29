@@ -38,59 +38,59 @@ type initCmdConfig struct {
 	ssh               bool
 }
 
-var dotfilesRepoGuesses = []struct {
-	rx                    *regexp.Regexp
-	httpRepoGuessRepl     string
-	httpUsernameGuessRepl string
-	sshRepoGuessRepl      string
+var repoGuesses = []struct {
+	rx                *regexp.Regexp
+	httpRepoGuessRepl string
+	sshRepoGuessRepl  string
+	usernameGuessRepl string
 }{
 	{
-		rx:                    regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://github.com/$1/dotfiles.git",
-		httpUsernameGuessRepl: "$1",
-		sshRepoGuessRepl:      "git@github.com:$1/dotfiles.git",
+		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
+		httpRepoGuessRepl: "https://github.com/$1/dotfiles.git",
+		sshRepoGuessRepl:  "git@github.com:$1/dotfiles.git",
+		usernameGuessRepl: "$1",
 	},
 	{
-		rx:                    regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
-		httpRepoGuessRepl:     "https://github.com/$1/$2.git",
-		httpUsernameGuessRepl: "$1",
-		sshRepoGuessRepl:      "git@github.com:$1/$2.git",
+		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
+		httpRepoGuessRepl: "https://github.com/$1/$2.git",
+		sshRepoGuessRepl:  "git@github.com:$1/$2.git",
+		usernameGuessRepl: "$1",
 	},
 	{
-		rx:                    regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://$1/$2/dotfiles.git",
-		httpUsernameGuessRepl: "$2",
-		sshRepoGuessRepl:      "git@$1:$2/dotfiles.git",
+		rx:                regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
+		httpRepoGuessRepl: "https://$1/$2/dotfiles.git",
+		sshRepoGuessRepl:  "git@$1:$2/dotfiles.git",
+		usernameGuessRepl: "$2",
 	},
 	{
-		rx:                    regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://$1/$2/$3.git",
-		httpUsernameGuessRepl: "$2",
-		sshRepoGuessRepl:      "git@$1:$2/$3.git",
+		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
+		httpRepoGuessRepl: "https://$1/$2/$3.git",
+		sshRepoGuessRepl:  "git@$1:$2/$3.git",
+		usernameGuessRepl: "$2",
 	},
 	{
-		rx:                    regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
-		httpRepoGuessRepl:     "https://$1/$2/$3.git",
-		httpUsernameGuessRepl: "$2",
-		sshRepoGuessRepl:      "git@$1:$2/$3.git",
+		rx:                regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
+		httpRepoGuessRepl: "https://$1/$2/$3.git",
+		sshRepoGuessRepl:  "git@$1:$2/$3.git",
+		usernameGuessRepl: "$2",
 	},
 	{
-		rx:                    regexp.MustCompile(`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
-		httpRepoGuessRepl:     "$1$2/$3/$4.git",
-		httpUsernameGuessRepl: "$3",
-		sshRepoGuessRepl:      "git@$2:$3/$4.git",
+		rx:                regexp.MustCompile(`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
+		httpRepoGuessRepl: "$1$2/$3/$4.git",
+		sshRepoGuessRepl:  "git@$2:$3/$4.git",
+		usernameGuessRepl: "$3",
 	},
 	{
-		rx:                    regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
-		httpRepoGuessRepl:     "https://git.sr.ht/~$1/dotfiles",
-		httpUsernameGuessRepl: "$1",
-		sshRepoGuessRepl:      "git@git.sr.ht:~$1/dotfiles",
+		rx:                regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
+		httpRepoGuessRepl: "https://git.sr.ht/~$1/dotfiles",
+		sshRepoGuessRepl:  "git@git.sr.ht:~$1/dotfiles",
+		usernameGuessRepl: "$1",
 	},
 	{
-		rx:                    regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
-		httpRepoGuessRepl:     "https://git.sr.ht/~$1/$2",
-		httpUsernameGuessRepl: "$1",
-		sshRepoGuessRepl:      "git@git.sr.ht:~$1/$2",
+		rx:                regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
+		httpRepoGuessRepl: "https://git.sr.ht/~$1/$2",
+		sshRepoGuessRepl:  "git@git.sr.ht:~$1/$2",
+		usernameGuessRepl: "$1",
 	},
 }
 
@@ -132,7 +132,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
 	flags.BoolVar(&c.init.recurseSubmodules, "recurse-submodules", c.init.recurseSubmodules, "Checkout submodules recursively") //nolint:lll
-	flags.BoolVar(&c.init.ssh, "ssh", c.init.ssh, "Use ssh instead of https when guessing dotfile repo URL")
+	flags.BoolVar(&c.init.ssh, "ssh", c.init.ssh, "Use ssh instead of https when guessing repo URL")
 
 	return initCmd
 }
@@ -169,14 +169,14 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				return err
 			}
 		} else {
-			var username, dotfilesRepoURL string
+			var username, repoURLStr string
 			if c.init.guessRepoURL {
-				username, dotfilesRepoURL = guessDotfilesRepoURL(args[0], c.init.ssh)
+				username, repoURLStr = guessRepoURL(args[0], c.init.ssh)
 			} else {
-				dotfilesRepoURL = args[0]
+				repoURLStr = args[0]
 			}
 			if useBuiltinGit {
-				if err := c.builtinGitClone(username, dotfilesRepoURL, workingTreeRawPath); err != nil {
+				if err := c.builtinGitClone(username, repoURLStr, workingTreeRawPath); err != nil {
 					return err
 				}
 			} else {
@@ -198,15 +198,15 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						"--depth", strconv.Itoa(c.init.depth),
 					)
 				}
-				dotfilesRepoURL, err := url.Parse(dotfilesRepoURL)
+				repoURL, err := url.Parse(repoURLStr)
 				if err != nil {
 					return err
 				}
-				if dotfilesRepoURL.User == nil {
-					dotfilesRepoURL.User = url.User(username)
+				if repoURL.User == nil {
+					repoURL.User = url.User(username)
 				}
 				args = append(args,
-					dotfilesRepoURL.String(),
+					repoURL.String(),
 					workingTreeRawPath.String(),
 				)
 				if err := c.run(chezmoi.EmptyAbsPath, c.Git.Command, args); err != nil {
@@ -259,8 +259,8 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 }
 
 // builtinGitClone clones a repo using the builtin git command.
-func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmoi.AbsPath) error {
-	endpoint, err := transport.NewEndpoint(url)
+func (c *Config) builtinGitClone(username, repoURLStr string, workingTreeRawPath chezmoi.AbsPath) error {
+	endpoint, err := transport.NewEndpoint(repoURLStr)
 	if err != nil {
 		return err
 	}
@@ -274,7 +274,7 @@ func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmo
 		referenceName = plumbing.NewBranchReferenceName(c.init.branch)
 	}
 	cloneOptions := git.CloneOptions{
-		URL:               url,
+		URL:               repoURLStr,
 		Depth:             c.init.depth,
 		ReferenceName:     referenceName,
 		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
@@ -291,7 +291,7 @@ func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmo
 			return err
 		}
 
-		if _, err := fmt.Fprintf(c.stdout, "chezmoi: %s: %v\n", url, err); err != nil {
+		if _, err := fmt.Fprintf(c.stdout, "chezmoi: %s: %v\n", repoURLStr, err); err != nil {
 			return err
 		}
 		var basicAuth http.BasicAuth
@@ -360,19 +360,19 @@ func (o loggableGitCloneOptions) MarshalZerologObject(e *zerolog.Event) {
 	}
 }
 
-// guessDotfilesRepoURL guesses the user's username and dotfile repo from arg.
-func guessDotfilesRepoURL(arg string, ssh bool) (username, repo string) {
-	for _, dotfileRepoGuess := range dotfilesRepoGuesses {
-		if !dotfileRepoGuess.rx.MatchString(arg) {
+// guessRepoURL guesses the user's username and repo from arg.
+func guessRepoURL(arg string, ssh bool) (username, repo string) {
+	for _, repoGuess := range repoGuesses {
+		if !repoGuess.rx.MatchString(arg) {
 			continue
 		}
 		switch {
-		case ssh && dotfileRepoGuess.sshRepoGuessRepl != "":
-			repo = dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.sshRepoGuessRepl)
+		case ssh && repoGuess.sshRepoGuessRepl != "":
+			repo = repoGuess.rx.ReplaceAllString(arg, repoGuess.sshRepoGuessRepl)
 			return
-		case !ssh && dotfileRepoGuess.httpRepoGuessRepl != "":
-			username = dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.httpUsernameGuessRepl)
-			repo = dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.httpRepoGuessRepl)
+		case !ssh && repoGuess.httpRepoGuessRepl != "":
+			username = repoGuess.rx.ReplaceAllString(arg, repoGuess.usernameGuessRepl)
+			repo = repoGuess.rx.ReplaceAllString(arg, repoGuess.httpRepoGuessRepl)
 			return
 		}
 	}
