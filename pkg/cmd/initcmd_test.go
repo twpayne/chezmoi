@@ -12,7 +12,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
-func TestGuessDotfilesRepoURL(t *testing.T) {
+func TestGuessRepoURL(t *testing.T) {
 	for _, tc := range []struct {
 		arg                  string
 		expectedHTTPRepoURL  string
@@ -99,12 +99,12 @@ func TestGuessDotfilesRepoURL(t *testing.T) {
 	} {
 		t.Run(tc.arg, func(t *testing.T) {
 			ssh := false
-			actualHTTPUsername, actualHTTPRepoURL := guessDotfilesRepoURL(tc.arg, ssh)
+			actualHTTPUsername, actualHTTPRepoURL := guessRepoURL(tc.arg, ssh)
 			assert.Equal(t, tc.expectedHTTPUsername, actualHTTPUsername, "HTTPUsername")
 			assert.Equal(t, tc.expectedHTTPRepoURL, actualHTTPRepoURL, "HTTPRepoURL")
 
 			ssh = true
-			actualSSHUsername, actualSSHRepoURL := guessDotfilesRepoURL(tc.arg, ssh)
+			actualSSHUsername, actualSSHRepoURL := guessRepoURL(tc.arg, ssh)
 			assert.Equal(t, "", actualSSHUsername, "SSHUsername")
 			assert.Equal(t, tc.expectedSSHRepoURL, actualSSHRepoURL, "SSHRepoURL")
 		})
