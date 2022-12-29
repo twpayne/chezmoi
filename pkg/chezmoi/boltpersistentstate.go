@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"syscall"
 	"time"
 
 	"go.etcd.io/bbolt"
@@ -224,11 +225,15 @@ func (b *BoltPersistentState) open() error {
 	if err := MkdirAll(b.system, b.path.Dir(), fs.ModePerm); err != nil {
 		return err
 	}
-	db, err := bbolt.Open(b.path.String(), 0o600, &b.options)
-	if err != nil {
+	switch db, err := bbolt.Open(b.path.String(), 0o600, &b.options); {
+	case errors.Is(err, syscall.EINVAL):
+		// Assume that any EINVAL error is because flock(2) failed.
+		return fmt.Errorf("open %s: failed to acquire lock: %w", b.path, err)
+	case err != nil:
 		return fmt.Errorf("open %s: %w", b.path, err)
+	default:
+		b.empty = false
+		b.db = db
+		return nil
 	}
-	b.empty = false
-	b.db = db
-	return nil
 }
