@@ -89,8 +89,7 @@ jobs:
     - uses: actions/cache@4723a57e26efda3a62cbde1812113b730952852d
       with:
         path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile')
-          }}
+        key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-debian-i386-
     - name: test
@@ -116,8 +115,7 @@ jobs:
     - uses: actions/cache@4723a57e26efda3a62cbde1812113b730952852d
       with:
         path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile')
-          }}
+        key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-freebsd13-
     - name: test
