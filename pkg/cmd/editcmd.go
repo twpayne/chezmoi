@@ -177,6 +177,13 @@ TARGETRELPATH:
 		}
 
 		if c.Edit.Apply || c.Edit.Watch {
+			// Reset the cached source state to ensure that we re-read any
+			// changed files.
+			//
+			// FIXME Be more precise in what we invalidate. Only the changed
+			// files need to be re-read, not the entire source state.
+			c.resetSourceState()
+
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 				filter:       c.Edit.filter,
 				init:         c.Edit.init,

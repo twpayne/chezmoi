@@ -2053,6 +2053,12 @@ func (c *Config) readConfig() error {
 	}
 }
 
+// resetSourceState clears the cached source state, if any.
+func (c *Config) resetSourceState() {
+	c.sourceState = nil
+	c.sourceStateErr = nil
+}
+
 // run runs name with args in dir.
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 	cmd := exec.Command(name, args...)
