@@ -21,7 +21,7 @@ jobs:
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - id: filter
       uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
       with:
@@ -44,7 +44,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
       with:
         fetch-depth: 1
     - uses: github/codeql-action/init@959cbb7472c4d4ad70cdfe6f4976053fe48ab394
@@ -54,7 +54,7 @@ jobs:
   misspell:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: reviewdog/action-misspell@fe8d5c98c3761ef40755a7bb95460b2a33f6b346
       with:
         locale: US
@@ -63,7 +63,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -74,7 +74,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -85,7 +85,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/cache@4723a57e26efda3a62cbde1812113b730952852d
       with:
         path: ~/.vagrant.d
@@ -100,7 +100,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -111,7 +111,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/cache@4723a57e26efda3a62cbde1812113b730952852d
       with:
         path: ~/.vagrant.d
@@ -126,7 +126,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
@@ -157,7 +157,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
@@ -183,7 +183,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
       with:
         fetch-depth: 0
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
@@ -242,7 +242,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
       with:
         fetch-depth: 0
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
@@ -288,7 +288,7 @@ jobs:
   test-website:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
@@ -304,7 +304,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2019
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
@@ -344,7 +344,7 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
@@ -371,7 +371,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
@@ -410,7 +410,7 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
       with:
         fetch-depth: 0
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
@@ -446,7 +446,7 @@ jobs:
     - release
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+    - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b
       with:
         fetch-depth: 0
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
