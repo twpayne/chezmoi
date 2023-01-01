@@ -22,6 +22,14 @@ stdout '^true$'
 exec chezmoi execute-template '{{ glob "*.txt" | join "\n" }}{{ "\n" }}'
 cmp stdout golden/glob
 
+# test hexDecode template function
+exec chezmoi execute-template '{{ "6578616d706c65" | hexDecode }}'
+stdout '^example$'
+
+# test hexEncode template function
+exec chezmoi execute-template '{{ "example" | hexEncode }}'
+stdout '^6578616d706c65$'
+
 # test ioreg template function
 [darwin] exec chezmoi execute-template '{{ index ioreg "IOKitBuildVersion" }}'
 [darwin] stdout 'Darwin Kernel Version'

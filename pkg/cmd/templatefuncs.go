@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -156,6 +157,18 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 		panic(err)
 	}
 	return matches
+}
+
+func (c *Config) hexDecodeTemplateFunc(s string) string {
+	result, err := hex.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+	return string(result)
+}
+
+func (c *Config) hexEncodeTemplateFunc(s string) string {
+	return hex.EncodeToString([]byte(s))
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {
