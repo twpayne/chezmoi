@@ -360,6 +360,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"glob":                     c.globTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,
+		"hexDecode":                c.hexDecodeTemplateFunc,
+		"hexEncode":                c.hexEncodeTemplateFunc,
 		"include":                  c.includeTemplateFunc,
 		"includeTemplate":          c.includeTemplateTemplateFunc,
 		"ioreg":                    c.ioregTemplateFunc,
