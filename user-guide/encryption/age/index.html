@@ -2935,6 +2935,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3077,6 +3081,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4966,32 +4998,32 @@
 <h1 id="age">age</h1>
 <p>chezmoi supports encrypting files with <a href="https://age-encryption.org/">age</a>.</p>
 <p>Generate a key using <code>age-keygen</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>age-keygen -o <span class="nv">$HOME</span>/key.txt
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>age-keygen<span class="w"> </span>-o<span class="w"> </span><span class="nv">$HOME</span>/key.txt
 <span class="go">Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p</span>
 </code></pre></div>
 <p>Specify age encryption in your configuration file, being sure to specify at
 least the identity and one recipient:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span><span class="w"></span>
-<span class="k">[age]</span><span class="w"></span>
-<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/home/user/key.txt&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span>
+<span class="k">[age]</span>
+<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/home/user/key.txt&quot;</span>
+<span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&quot;</span>
 </code></pre></div>
 <p>chezmoi supports multiple recipients and recipient files, and multiple
 identities.</p>
 <h2 id="symmetric-encryption">Symmetric encryption</h2>
 <p>To use age's symmetric encryption, specify a single identity and enable
 symmetric encryption in your config file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span><span class="w"></span>
-<span class="k">[age]</span><span class="w"></span>
-<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;~/.ssh/id_rsa&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">symmetric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span>
+<span class="k">[age]</span>
+<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;~/.ssh/id_rsa&quot;</span>
+<span class="w">    </span><span class="n">symmetric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <h2 id="symmetric-encryption-with-a-passphrase">Symmetric encryption with a passphrase</h2>
 <p>To use age's symmetric encryption with a passphrase, set <code>age.passphrase</code> to
 <code>true</code> in your config file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span><span class="w"></span>
-<span class="k">[age]</span><span class="w"></span>
-<span class="w">    </span><span class="n">passphrase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span>
+<span class="k">[age]</span>
+<span class="w">    </span><span class="n">passphrase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <p>You will be prompted for the passphrase whenever you run <code>chezmoi add
 --encrypt</code> and whenever chezmoi needs to decrypt the file, for example when you

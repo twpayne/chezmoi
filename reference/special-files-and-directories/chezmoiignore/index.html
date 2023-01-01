@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#chezmoiignore" class="md-skip">
+        <a href="#chezmoiignoretmpl" class="md-skip">
           Skip to content
         </a>
       
@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4889,17 +4921,18 @@
   </a>
 
 
-<h1 id="chezmoiignore"><code>.chezmoiignore</code></h1>
-<p>If a file called <code>.chezmoiignore</code> exists in the source state then it is
-interpreted as a set of patterns to ignore. Patterns are matched using
+<h1 id="chezmoiignoretmpl"><code>.chezmoiignore{,.tmpl}</code></h1>
+<p>If a file called <code>.chezmoiignore</code> (with an optional <code>.tmpl</code> extension) exists in
+the source state then it is interpreted as a set of patterns to ignore. Patterns
+are matched using
 <a href="https://pkg.go.dev/github.com/bmatcuk/doublestar/v4#Match"><code>doublestar.Match</code></a>
 and match against the target path, not the source path.</p>
 <p>Patterns can be excluded by prefixing them with a <code>!</code> character. All excludes
 take priority over all includes.</p>
 <p>Comments are introduced with the <code>#</code> character and run until the end of the
 line.</p>
-<p><code>.chezmoiignore</code> is interpreted as a template. This allows different files to
-be ignored on different machines.</p>
+<p><code>.chezmoiignore</code> is interpreted as a template, whether or not it has a <code>.tmpl</code>
+extension. This allows different files to be ignored on different machines.</p>
 <p><code>.chezmoiignore</code> files in subdirectories apply only to that subdirectory.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

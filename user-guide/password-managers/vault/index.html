@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4896,7 +4928,7 @@ template function.</p>
 <p>The vault CLI needs to be correctly configured on your machine, e.g. the
 <code>VAULT_ADDR</code> and <code>VAULT_TOKEN</code> environment variables must be set correctly.
 Verify that this is the case by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>vault kv get -format<span class="o">=</span>json <span class="nv">$KEY</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>vault<span class="w"> </span>kv<span class="w"> </span>get<span class="w"> </span>-format<span class="o">=</span>json<span class="w"> </span><span class="nv">$KEY</span>
 </code></pre></div>
 <p>The structured data from <code>vault kv get -format=json</code> is available as the
 <code>vault</code> template function. You can use the <code>.Field</code> syntax of the

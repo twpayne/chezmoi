@@ -2991,6 +2991,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3133,6 +3137,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5281,11 +5313,11 @@ have a number of options with some scripting around chezmoi.</p>
 <p>Firstly, you can run <code>chezmoi apply</code> with different arguments to the <code>--config</code>
 and <code>--source</code> flags which will apply to the same destination. So that you only
 have to type one command you can wrap this in a shell function, for example:</p>
-<div class="highlight"><pre><span></span><code>chezmoi-apply<span class="o">()</span> <span class="o">{</span>
-    chezmoi apply --config ~/.config/chezmoi-home/chezmoi.toml <span class="se">\</span>
-                  --source ~/.local/share/chezmoi-home <span class="o">&amp;&amp;</span> <span class="se">\</span>
-    chezmoi apply --config ~/.config/chezmoi-work/chezmoi.toml <span class="se">\</span>
-                  --source ~/.local/share/chezmoi-work
+<div class="highlight"><pre><span></span><code>chezmoi-apply<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>chezmoi<span class="w"> </span>apply<span class="w"> </span>--config<span class="w"> </span>~/.config/chezmoi-home/chezmoi.toml<span class="w"> </span><span class="se">\</span>
+<span class="w">                  </span>--source<span class="w"> </span>~/.local/share/chezmoi-home<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>chezmoi<span class="w"> </span>apply<span class="w"> </span>--config<span class="w"> </span>~/.config/chezmoi-work/chezmoi.toml<span class="w"> </span><span class="se">\</span>
+<span class="w">                  </span>--source<span class="w"> </span>~/.local/share/chezmoi-work
 <span class="o">}</span>
 </code></pre></div>
 <p>If you want to generate multiple configuration files with <code>chezmoi init</code> then
@@ -5297,18 +5329,18 @@ subdirectories of <code>~/.dotfiles</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
 <span class="c1"># create a combined source state in a temporary directory</span>
-<span class="nv">combined_source</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>mktemp -d<span class="k">)</span><span class="s2">&quot;</span>
+<span class="nv">combined_source</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>mktemp<span class="w"> </span>-d<span class="k">)</span><span class="s2">&quot;</span>
 
 <span class="c1"># remove the temporary source state on exit</span>
-<span class="nb">trap</span> <span class="s1">&#39;rm -rf -- &quot;${combined_source}&quot;&#39;</span> INT TERM
+<span class="nb">trap</span><span class="w"> </span><span class="s1">&#39;rm -rf -- &quot;${combined_source}&quot;&#39;</span><span class="w"> </span>INT<span class="w"> </span>TERM
 
 <span class="c1"># copy files from multiple sources into the temporary source state</span>
-<span class="k">for</span> <span class="nb">source</span> <span class="k">in</span> <span class="nv">$HOME</span>/.dotfiles/*<span class="p">;</span> <span class="k">do</span>
-    cp -r <span class="s2">&quot;</span><span class="si">${</span><span class="nv">source</span><span class="si">}</span><span class="s2">&quot;</span>/* <span class="s2">&quot;</span><span class="si">${</span><span class="nv">combined_source</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">for</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$HOME</span>/.dotfiles/*<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span>cp<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">source</span><span class="si">}</span><span class="s2">&quot;</span>/*<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">combined_source</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="k">done</span>
 
 <span class="c1"># apply the temporary source state</span>
-chezmoi apply --source <span class="s2">&quot;</span><span class="si">${</span><span class="nv">combined_source</span><span class="si">}</span><span class="s2">&quot;</span>
+chezmoi<span class="w"> </span>apply<span class="w"> </span>--source<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">combined_source</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
 <p>Thirdly, you can use a <code>run_</code> script to invoke a second instance of chezmoi,
 <a href="https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl">as used by
@@ -5316,8 +5348,8 @@ chezmoi apply --source <span class="s2">&quot;</span><span class="si">${</span><
 <h2 id="why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</h2>
 <p><code>chezmoi cd</code> spawns a shell because it is not possible for a program to change
 the working directory of its parent process. You can add a shell function instead:</p>
-<div class="highlight"><pre><span></span><code>chezmoi-cd<span class="o">()</span> <span class="o">{</span>
-    <span class="nb">cd</span> <span class="k">$(</span>chezmoi source-path<span class="k">)</span>
+<div class="highlight"><pre><span></span><code>chezmoi-cd<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>
 <span class="o">}</span>
 </code></pre></div>
 <p>Typing <code>chezmoi-cd</code> will then change the directory of your current shell to
@@ -5397,7 +5429,7 @@ grow beyond that, switch to a whole system configuration management tool.</p>
 my house" in French. It's seven letters long, which is an appropriate length for
 a command that is only run occasionally. If you prefer a shorter command, add an
 alias to your shell configuration, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="nb">alias</span> <span class="nv">cz</span><span class="o">=</span>chezmoi
+<div class="highlight"><pre><span></span><code><span class="nb">alias</span><span class="w"> </span><span class="nv">cz</span><span class="o">=</span>chezmoi
 </code></pre></div>
 
 

@@ -2935,6 +2935,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3077,6 +3081,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4977,12 +5009,12 @@ chezmoi will emit a warning if your editor command returns too quickly.</p>
 <p>In the specific case of using <a href="https://code.visualstudio.com/">VSCode</a> or
 <a href="https://vscodium.com/">Codium</a> as your editor, you must pass the <code>--wait</code>
 flag, for example, in your shell config:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span> <span class="nv">EDITOR</span><span class="o">=</span><span class="s2">&quot;code --wait&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">EDITOR</span><span class="o">=</span><span class="s2">&quot;code --wait&quot;</span>
 </code></pre></div>
 <p>Or in chezmoi's configuration file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[edit]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--wait&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[edit]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--wait&quot;</span><span class="p">]</span>
 </code></pre></div>
 <h2 id="configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile</h2>
 <p>Put the following in your <code>.vimrc</code>:</p>

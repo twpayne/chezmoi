@@ -2878,6 +2878,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3020,6 +3024,34 @@
     <li class="md-nav__item">
       <a href="reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4908,7 +4940,7 @@
 
 <h1 id="chezmoi">chezmoi</h1>
 <p>Manage your dotfiles across multiple diverse machines, securely.</p>
-<p>The latest version of chezmoi is 2.28.0 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.28.0">release notes</a>, <a href="/reference/release-history">release history</a>).</p>
+<p>The latest version of chezmoi is 2.29.0 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.29.0">release notes</a>, <a href="/reference/release-history">release history</a>).</p>
 <p>chezmoi helps you manage your personal configuration files (dotfiles, like
 <code>~/.gitconfig</code>) across multiple machines.</p>
 <p>chezmoi provides many features beyond symlinking or using a bare git repo
@@ -4919,12 +4951,12 @@ and running scripts (to handle everything else).</p>
 <p>With chezmoi, pronounced /ʃeɪ mwa/ (shay-moi), you can install chezmoi and your
 dotfiles from your GitHub dotfiles repo on a new, empty machine with a single
 command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh -c <span class="s2">&quot;</span><span class="k">$(</span>curl -fsLS get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span> -- init --apply <span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 <p>As well as the <code>curl | sh</code> installation, you can <a href="/install/">install chezmoi with your
 favorite package manager</a>.</p>
 <p>Updating your dotfiles on any machine is a single command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi update
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>update
 </code></pre></div>
 <h2 id="how-do-i-start-with-chezmoi">How do I start with chezmoi?</h2>
 <p><a href="/install/">Install chezmoi</a> then read the <a href="/quick-start/">quick start guide</a>.

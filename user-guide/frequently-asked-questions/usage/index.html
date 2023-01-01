@@ -2991,6 +2991,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3133,6 +3137,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5164,12 +5196,12 @@ to install it before chezmoi renders the template.</p>
 <p>To do so, use a <code>run_before</code> script that is <strong>not</strong> a template. Something like:</p>
 <div class="highlight"><span class="filename">run_before_00-install-pre-requisites.sh</span><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
-<span class="nb">set</span> -eu
+<span class="nb">set</span><span class="w"> </span>-eu
 
 <span class="c1"># Install curl if it&#39;s not already installed</span>
-<span class="k">if</span> ! <span class="nb">command</span> -v curl &gt;/dev/null<span class="p">;</span> <span class="k">then</span>
-  sudo apt update
-  sudo apt install -y curl
+<span class="k">if</span><span class="w"> </span>!<span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>curl<span class="w"> </span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+<span class="w">  </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl
 <span class="k">fi</span>
 </code></pre></div>
 <p>Chezmoi will make sure to execute it before templating other files.</p>

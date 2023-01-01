@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4979,11 +5011,11 @@ If you use the <code>-</code><em>modifier</em> form then you must put <em>modifi
 prevent chezmoi from interpreting <code>-</code><em>modifier</em> as an option.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi chattr template ~/.bashrc
-<span class="gp">$ </span>chezmoi chattr noempty ~/.profile
-<span class="gp">$ </span>chezmoi chattr private,template ~/.netrc
-<span class="gp">$ </span>chezmoi chattr -- -x ~/.zshrc
-<span class="gp">$ </span>chezmoi chattr +create,+private ~/.kube/config
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>chattr<span class="w"> </span>template<span class="w"> </span>~/.bashrc
+<span class="gp">$ </span>chezmoi<span class="w"> </span>chattr<span class="w"> </span>noempty<span class="w"> </span>~/.profile
+<span class="gp">$ </span>chezmoi<span class="w"> </span>chattr<span class="w"> </span>private,template<span class="w"> </span>~/.netrc
+<span class="gp">$ </span>chezmoi<span class="w"> </span>chattr<span class="w"> </span>--<span class="w"> </span>-x<span class="w"> </span>~/.zshrc
+<span class="gp">$ </span>chezmoi<span class="w"> </span>chattr<span class="w"> </span>+create,+private<span class="w"> </span>~/.kube/config
 </code></pre></div>
 </div>
 

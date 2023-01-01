@@ -1054,6 +1054,16 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/templates/functions/hexDecode/">
+        hexDecode
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/templates/functions/hexEncode/">
+        hexEncode
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../reference/templates/functions/include/">
         include
       </a>
@@ -1745,22 +1755,22 @@ of your choice (e.g. <a href="https://bitbucket.org">Bitbucket</a>,
 <a href="https://github.com/">GitHub</a>, or <a href="https://gitlab.com">GitLab</a>, many people call
 their repo <code>dotfiles</code>) and push the repo in the source directory here. For
 example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
-<span class="gp">$ </span>git remote add origin https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
-<span class="gp">$ </span>git push -u origin main
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
+<span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
 <span class="gp">$ </span><span class="nb">exit</span>
 </code></pre></div>
 <p>On another machine you can checkout this repo:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>You can then see what would be changed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi diff
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>diff
 </code></pre></div>
 <p>If you're happy with the changes then apply them:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi apply
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply
 </code></pre></div>
 <p>The above commands can be combined into a single init, checkout, and apply:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init --apply --verbose https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>--verbose<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>These commands are summarized this sequence diagram:</p>
 <div class="mermaid">sequenceDiagram
@@ -1807,13 +1817,13 @@ your initial config file.</p>
 if it is not already set in your <code>data</code>.</p>
 <p>To test this template, use <code>chezmoi execute-template</code> with the <code>--init</code> and
 <code>--promptString</code> flags, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi execute-template --init --promptString <span class="nv">email</span><span class="o">=</span>me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="nv">email</span><span class="o">=</span>me@home.org<span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre></div>
 <h2 id="re-create-your-config-file">Re-create your config file</h2>
 <p>If you change your config file template, chezmoi will warn you if your current
 config file was not generated from that template. You can re-generate your
 config file by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init
 </code></pre></div>
 <p>If you are using any <code>prompt*</code> template functions in your config file template
 you will be prompted again. However, you can avoid this with the following

@@ -2987,6 +2987,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3129,6 +3133,34 @@
     <li class="md-nav__item">
       <a href="../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5197,33 +5229,33 @@ that is specified in your preferred format).</p>
 <p class="admonition-title">Example</p>
 <p>To change the Python interpreter to <code>C:\Python39\python3.exe</code> and add a
 Tcl/Tk interpreter, include the following in your config file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.py]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;C:\Python39\python3.exe&#39;</span><span class="w"></span>
-<span class="k">[interpreters.tcl]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.py]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;C:\Python39\python3.exe&#39;</span>
+<span class="k">[interpreters.tcl]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span>
 </code></pre></div>
 <p>Or if using YAML:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">interpreters</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">py</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C:\Python39</span><span class="err">\</span><span class="s">python3.exe&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">tcl</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">interpreters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">py</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C:\Python39</span><span class="err">\</span><span class="s">python3.exe&quot;</span>
+<span class="w">  </span><span class="nt">tcl</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span>
 </code></pre></div>
 <p>Note that the TOML version can also be written like this, which
 resembles the YAML version more and makes it clear that the key
 for each file extension should not have a leading <code>.</code>:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters]</span><span class="w"></span>
-<span class="n">py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;C:\Python39\python3.exe&#39;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
-<span class="n">tcl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters]</span>
+<span class="n">py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#39;C:\Python39\python3.exe&#39;</span><span class="w"> </span><span class="p">}</span>
+<span class="n">tcl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you intend to use PowerShell Core (<code>pwsh.exe</code>) as the <code>.ps1</code>
 interpreter, include the following in your config file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.ps1]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pwsh&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-NoLogo&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.ps1]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pwsh&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-NoLogo&quot;</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <p>If the script in the source state is a template (with a <code>.tmpl</code> extension), then

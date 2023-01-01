@@ -2876,6 +2876,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3018,6 +3022,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5050,7 +5082,7 @@
 interested in contributing to chezmoi.</p>
 <p>You can generate Go documentation for chezmoi's source code with <code>go doc</code>, for
 example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go doc -all -u github.com/twpayne/chezmoi/v2/pkg/chezmoi
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>doc<span class="w"> </span>-all<span class="w"> </span>-u<span class="w"> </span>github.com/twpayne/chezmoi/v2/pkg/chezmoi
 </code></pre></div>
 <p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi's generated documentation
 online</a>.</p>
@@ -5198,7 +5230,7 @@ framework. End-to-end tests use
 <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
 with the test scripts themselves in <code>pkg/cmd/testdata/scripts/$TEST_NAME.txt</code>.</p>
 <p>You can run individual end-to-end tests with</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go <span class="nb">test</span> ./pkg/cmd -run<span class="o">=</span>TestScript/<span class="nv">$TEST_NAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./pkg/cmd<span class="w"> </span>-run<span class="o">=</span>TestScript/<span class="nv">$TEST_NAME</span>
 </code></pre></div>
 <p>Tests should, if at all possible, run unmodified on all operating systems
 tested in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need

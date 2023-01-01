@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4934,11 +4966,11 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 the <code>--source</code> argument passed in <code>chezmoi init</code>.</p>
 <p>Second, create an <code>install.sh</code> script that installs chezmoi and your dotfiles
 and add it to <code>.chezmoiignore</code> and your dotfiles repo:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi generate install.sh &gt; install.sh
-<span class="gp">$ </span>chmod a+x install.sh
-<span class="gp">$ </span><span class="nb">echo</span> install.sh &gt;&gt; .chezmoiignore
-<span class="gp">$ </span>git add install.sh .chezmoiignore
-<span class="gp">$ </span>git commit -m <span class="s2">&quot;Add install.sh&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>generate<span class="w"> </span>install.sh<span class="w"> </span>&gt;<span class="w"> </span>install.sh
+<span class="gp">$ </span>chmod<span class="w"> </span>a+x<span class="w"> </span>install.sh
+<span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>install.sh<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoiignore
+<span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>install.sh<span class="w"> </span>.chezmoiignore
+<span class="gp">$ </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add install.sh&quot;</span>
 </code></pre></div>
 <p>The generated script installs the latest version of chezmoi in <code>~/.local/bin</code> if
 needed, and then <code>chezmoi init ...</code> invokes chezmoi to create its configuration

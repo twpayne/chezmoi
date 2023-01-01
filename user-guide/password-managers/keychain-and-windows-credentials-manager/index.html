@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4894,13 +4926,13 @@
 FreeBSD), and Windows Credentials Manager (on Windows) via the
 <a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
 <p>Set values with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi secret keyring <span class="nb">set</span> --service<span class="o">=</span><span class="nv">$SERVICE</span> --user<span class="o">=</span><span class="nv">$USER</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>secret<span class="w"> </span>keyring<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--service<span class="o">=</span><span class="nv">$SERVICE</span><span class="w"> </span>--user<span class="o">=</span><span class="nv">$USER</span>
 <span class="go">Value: xxxxxxxx</span>
 </code></pre></div>
 <p>The value can then be used in templates using the <code>keyring</code> function which
 takes the service and user as arguments.</p>
 <p>For example, save a GitHub access token in keyring with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi secret keyring <span class="nb">set</span> --service<span class="o">=</span>github --user<span class="o">=</span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>secret<span class="w"> </span>keyring<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--service<span class="o">=</span>github<span class="w"> </span>--user<span class="o">=</span><span class="nv">$GITHUB_USERNAME</span>
 <span class="go">Value: xxxxxxxx</span>
 </code></pre></div>
 <p>and then include it in your <code>~/.gitconfig</code> file with:</p>
@@ -4909,7 +4941,7 @@ takes the service and user as arguments.</p>
     token = {{ keyring &quot;github&quot; .github.user | quote }}
 </code></pre></div>
 <p>You can query the keyring from the command line:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi secret keyring get --service<span class="o">=</span>github --user<span class="o">=</span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>secret<span class="w"> </span>keyring<span class="w"> </span>get<span class="w"> </span>--service<span class="o">=</span>github<span class="w"> </span>--user<span class="o">=</span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 
 

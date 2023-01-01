@@ -2876,6 +2876,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3018,6 +3022,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4892,11 +4924,11 @@
 <a href="https://github.com">GitHub</a>. chezmoi is a standard Go project, using standard
 Go tooling. chezmoi requires Go 1.18 or later.</p>
 <p>Checkout chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git clone https://github.com/twpayne/chezmoi.git
-<span class="gp">$ </span><span class="nb">cd</span> chezmoi
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/twpayne/chezmoi.git
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>chezmoi
 </code></pre></div>
 <p>Build chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go build
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>build
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -4906,17 +4938,17 @@ the error:</p>
 </code></pre></div>
 </div>
 <p>Run all tests:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go <span class="nb">test</span> ./...
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
 </code></pre></div>
 <p>chezmoi's tests include integration tests with other software. If the other
 software is not found in <code>$PATH</code> the tests will be skipped. Running the full
 set of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <code>gpg</code>, <code>perl</code>, <code>python3</code>,
 <code>ruby</code>, <code>sed</code>, <code>sha256sum</code>, <code>unzip</code>, <code>xz</code>, and <code>zip</code>.</p>
 <p>Run chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go run .
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>run<span class="w"> </span>.
 </code></pre></div>
 <p>Run a set of smoketests, including cross-compilation, tests, and linting:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make smoketest
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>smoketest
 </code></pre></div>
 
 

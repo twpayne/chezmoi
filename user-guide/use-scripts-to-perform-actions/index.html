@@ -2947,6 +2947,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3089,6 +3093,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5023,16 +5055,16 @@ include a <code>#!</code> line or be an executable binary.</p>
 <p>You can set extra environment variables for your scripts in the <code>scriptEnv</code>
 section of your config file. For example, to set the <code>$MY_VAR</code> environment
 variable to <code>my_value</code>, specify:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[scriptEnv]</span><span class="w"></span>
-<span class="w">    </span><span class="n">MY_VAR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my_value&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[scriptEnv]</span>
+<span class="w">    </span><span class="n">MY_VAR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my_value&quot;</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>By default, <code>chezmoi diff</code> will print the contents of scripts that would be
 run by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezmoi
 diff</code>, set <code>diff.exclude</code> in your configuration file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span><span class="w"></span>
-<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;scripts&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
+<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;scripts&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Similarly, <code>chezmoi status</code> will print the names of the scripts that it
 will execute with the status <code>R</code>. This can similarly disabled by setting
@@ -5041,12 +5073,12 @@ will execute with the status <code>R</code>. This can similarly disabled by sett
 <h2 id="install-packages-with-scripts">Install packages with scripts</h2>
 <p>Change to the source directory and create a file called
 <code>run_once_install-packages.sh</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
-<span class="gp">$ </span><span class="nv">$EDITOR</span> run_once_install-packages.sh
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
+<span class="gp">$ </span><span class="nv">$EDITOR</span><span class="w"> </span>run_once_install-packages.sh
 </code></pre></div>
 <p>In this file create your package installation script, e.g.</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
-sudo apt install ripgrep
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ripgrep
 </code></pre></div>
 <p>The next time you run <code>chezmoi apply</code> or <code>chezmoi update</code> this script will be
 run. As it has the <code>run_once_</code> prefix, it will not be run again unless its
@@ -5087,7 +5119,7 @@ does not create <code>dconf.ini</code> in your home directory.</p>
 <p>chezmoi stores whether and when <code>run_once_</code> scripts have been run in the
 <code>scriptState</code> bucket of its persistent state. To clear the state of <code>run_once_</code>
 scripts, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi state delete-bucket --bucket<span class="o">=</span>scriptState
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>scriptState
 </code></pre></div>
 
 

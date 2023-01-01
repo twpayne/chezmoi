@@ -2963,6 +2963,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3105,6 +3109,34 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5049,10 +5081,10 @@ pairs. If <code>promptString</code> is called with a <em>prompt</em> that does n
 <p>Simulate the <code>stdinIsATTY</code> function by returning <em>bool</em>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi execute-template <span class="s1">&#39;{{ .chezmoi.sourceDir }}&#39;</span>
-<span class="gp">$ </span>chezmoi execute-template <span class="s1">&#39;{{ .chezmoi.os }}&#39;</span> / <span class="s1">&#39;{{ .chezmoi.arch }}&#39;</span>
-<span class="gp">$ </span><span class="nb">echo</span> <span class="s1">&#39;{{ .chezmoi | toJson }}&#39;</span> <span class="p">|</span> chezmoi execute-template
-<span class="gp">$ </span>chezmoi execute-template --init --promptString <span class="nv">email</span><span class="o">=</span>me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.sourceDir }}&#39;</span>
+<span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.os }}&#39;</span><span class="w"> </span>/<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.arch }}&#39;</span>
+<span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{{ .chezmoi | toJson }}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
+<span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="nv">email</span><span class="o">=</span>me@home.org<span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre></div>
 </div>
 

@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4909,14 +4941,14 @@ with Watchman.</p>
 <ol>
 <li>
 <p>Tell watchman to watch your source directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>chezmoi source-path<span class="k">)</span><span class="s2">&quot;</span>
-<span class="gp">$ </span>watchman watch <span class="s2">&quot;</span><span class="si">${</span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span><span class="s2">&quot;</span>
+<span class="gp">$ </span>watchman<span class="w"> </span>watch<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Tell watchman to run <code>chezmoi apply --force</code> whenever your source directory
 changes:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>watchman -j &lt;&lt;EOT
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>watchman<span class="w"> </span>-j<span class="w"> </span>&lt;&lt;EOT
 <span class="go">[&quot;trigger&quot;, &quot;${CHEZMOI_SOURCE_PATH}&quot;, {</span>
 <span class="go">  &quot;name&quot;: &quot;chezmoi-apply&quot;,</span>
 <span class="go">  &quot;command&quot;: [&quot;chezmoi&quot;, &quot;apply&quot;, &quot;--force&quot;]</span>

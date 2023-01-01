@@ -1054,6 +1054,16 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../reference/templates/functions/hexDecode/">
+        hexDecode
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/templates/functions/hexEncode/">
+        hexEncode
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../reference/templates/functions/include/">
         include
       </a>
@@ -1736,17 +1746,17 @@ manual</a>.</p>
 <h2 id="start-using-chezmoi-on-your-current-machine">Start using chezmoi on your current machine</h2>
 <p>Assuming that you have already <a href="/install/">installed chezmoi</a>, initialize
 chezmoi with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init
 </code></pre></div>
 <p>This will create a new git local repository in <code>~/.local/share/chezmoi</code> where
 chezmoi will store its source state. By default, chezmoi only modifies files in
 the working copy.</p>
 <p>Manage your first file with chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi add ~/.bashrc
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>~/.bashrc
 </code></pre></div>
 <p>This will copy <code>~/.bashrc</code> to <code>~/.local/share/chezmoi/dot_bashrc</code>.</p>
 <p>Edit the source state:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi edit ~/.bashrc
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.bashrc
 </code></pre></div>
 <p>This will open <code>~/.local/share/chezmoi/dot_bashrc</code> in your <code>$EDITOR</code>. Make some
 changes and save the file.</p>
@@ -1757,25 +1767,25 @@ entry</a>
 for more details.</p>
 </div>
 <p>See what changes chezmoi would make:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi diff
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>diff
 </code></pre></div>
 <p>Apply the changes:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi -v apply
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>-v<span class="w"> </span>apply
 </code></pre></div>
 <p>All chezmoi commands accept the <code>-v</code> (verbose) flag to print out exactly what
 changes they will make to the file system, and the <code>-n</code> (dry run) flag to not
 make any actual changes. The combination <code>-n</code> <code>-v</code> is very useful if you want to
 see exactly what changes would be made.</p>
 <p>Next, open a shell in the source directory, to commit your changes:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
-<span class="gp">$ </span>git add .
-<span class="gp">$ </span>git commit -m <span class="s2">"Initial commit"</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
+<span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>.
+<span class="gp">$ </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Initial commit"</span>
 </code></pre></div>
 <p><a href="https://github.com/new">Create a new repository on GitHub</a> called <code>dotfiles</code>
 and then push your repo:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git remote add origin https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
-<span class="gp">$ </span>git branch -M main
-<span class="gp">$ </span>git push -u origin main
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<span class="gp">$ </span>git<span class="w"> </span>branch<span class="w"> </span>-M<span class="w"> </span>main
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -1807,26 +1817,26 @@ git hosting service.</p>
 </div>
 <h2 id="using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</h2>
 <p>On a second machine, initialize chezmoi with your dotfiles repo:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>This will check out the repo and any submodules and optionally create a chezmoi
 config file for you.</p>
 <p>Check what changes that chezmoi will make to your home directory by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi diff
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>diff
 </code></pre></div>
 <p>If you are happy with the changes that chezmoi will make then run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi apply -v
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply<span class="w"> </span>-v
 </code></pre></div>
 <p>If you are not happy with the changes to a file then either edit it with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi edit <span class="nv">$FILE</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span><span class="nv">$FILE</span>
 </code></pre></div>
 <p>Or, invoke a merge tool (by default <code>vimdiff</code>) to merge changes between the
 current contents of the file, the file in your working copy, and the computed
 contents of the file:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi merge <span class="nv">$FILE</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>merge<span class="w"> </span><span class="nv">$FILE</span>
 </code></pre></div>
 <p>On any machine, you can pull and apply the latest changes from your repo with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi update -v
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>update<span class="w"> </span>-v
 </code></pre></div>
 <p>These commands are summarized in this sequence diagram:</p>
 <div class="mermaid">sequenceDiagram
@@ -1843,11 +1853,11 @@ contents of the file:</p>
 </div>
 <h2 id="set-up-a-new-machine-with-a-single-command">Set up a new machine with a single command</h2>
 <p>You can install your dotfiles on new machine with a single command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init --apply https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>If you use GitHub and your dotfiles repo is called <code>dotfiles</code> then this can be
 shortened to:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init --apply <span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 <p>This command is summarized in this sequence diagram:</p>
 <div class="mermaid">sequenceDiagram
@@ -1859,7 +1869,7 @@ shortened to:</p>
 </div>
 <h2 id="next-steps">Next steps</h2>
 <p>For a full list of commands run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">help</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">help</span>
 </code></pre></div>
 <p>chezmoi has much more functionality. Good starting points are reading <a href="/links/articles-podcasts-and-videos/">articles
 about chezmoi</a> adding more dotfiles, and

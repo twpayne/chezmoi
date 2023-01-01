@@ -2953,6 +2953,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3095,6 +3099,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5011,18 +5043,18 @@ addresses, credentials, etc. chezmoi achieves this functionality by using
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> for the source state where
 needed.</p>
 <p>For example, your home <code>~/.gitconfig</code> on your personal machine might look like:</p>
-<div class="highlight"><span class="filename">~/.gitconfig</span><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.gitconfig</span><pre><span></span><code><span class="k">[user]</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span>
 </code></pre></div>
 <p>Whereas at work it might be:</p>
-<div class="highlight"><span class="filename">~/.gitconfig</span><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;firstname.lastname@company.com&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.gitconfig</span><pre><span></span><code><span class="k">[user]</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;firstname.lastname@company.com&quot;</span>
 </code></pre></div>
 <p>To handle this, on each machine create a configuration file called
 <code>~/.config/chezmoi/chezmoi.toml</code> defining variables that might vary from
 machine to machine. For example, for your home machine:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[data]</span><span class="w"></span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[data]</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span>
 </code></pre></div>
 <p>If you intend to store private data (e.g. access tokens) in
 <code>~/.config/chezmoi/chezmoi.toml</code>, make sure it has permissions <code>0600</code>.</p>
@@ -5032,15 +5064,15 @@ digits.</p>
 <p>Then, add <code>~/.gitconfig</code> to chezmoi using the <code>--autotemplate</code> flag to turn it
 into a template and automatically detect variables from the <code>data</code> section of
 your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi add --autotemplate ~/.gitconfig
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--autotemplate<span class="w"> </span>~/.gitconfig
 </code></pre></div>
 <p>You can then open the template (which will be saved in the file
 <code>~/.local/share/chezmoi/dot_gitconfig.tmpl</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi edit ~/.gitconfig
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.gitconfig
 </code></pre></div>
 <p>The file should look something like:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_gitconfig.tmpl</span><pre><span></span><code><span class="k">[user]</span><span class="w"></span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="w"> </span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="n">quote</span><span class="w"> </span><span class="p">}}</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_gitconfig.tmpl</span><pre><span></span><code><span class="k">[user]</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="w"> </span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="n">quote</span><span class="w"> </span><span class="p">}}</span>
 </code></pre></div>
 <p>To disable automatic variable detection, use the <code>--template</code> or <code>-T</code> option to
 <code>chezmoi add</code> instead of <code>--autotemplate</code>.</p>
@@ -5055,7 +5087,7 @@ export EDITOR=vi
 {{- end }}
 </code></pre></div>
 <p>For a full list of variables, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi data
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>data
 </code></pre></div>
 <p>For more advanced usage, you can use the full power of the
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> language. chezmoi includes
@@ -5064,7 +5096,7 @@ its own <a href="/reference/templates/functions/">functions for interacting with
 managers</a>.</p>
 <p>Templates can be executed directly from the command line, without the need to
 create a file on disk, with the <code>execute-template</code> command, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi execute-template <span class="s2">&quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;</span>
 </code></pre></div>
 <p>This is useful when developing or debugging templates.</p>
 <p>Some password managers allow you to store complete files. The files can be
@@ -5100,7 +5132,7 @@ by default, so we have to turn the logic around and instead write "ignore
 </code></pre></div>
 <p>will ignore all files beginning with an <code>f</code> except <code>foo</code>.</p>
 <p>You can see what files chezmoi ignores with the command</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi ignored
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>ignored
 </code></pre></div>
 <h2 id="handle-different-file-locations-on-different-systems-with-the-same-contents">Handle different file locations on different systems with the same contents</h2>
 <p>If you want to have the same file contents in different locations on different

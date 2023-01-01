@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#chezmoiremove" class="md-skip">
+        <a href="#chezmoiremovetmpl" class="md-skip">
           Skip to content
         </a>
       
@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4889,10 +4921,11 @@
   </a>
 
 
-<h1 id="chezmoiremove"><code>.chezmoiremove</code></h1>
-<p>If a file called <code>.chezmoiremove</code> exists in the source state then it is
-interpreted as a list of targets to remove. <code>.chezmoiremove</code> is interpreted as
-a template.</p>
+<h1 id="chezmoiremovetmpl"><code>.chezmoiremove{,.tmpl}</code></h1>
+<p>If a file called <code>.chezmoiremove</code> (with an optional <code>.tmpl</code> extension) exists in
+the source state then it is interpreted as a list of targets to remove.
+<code>.chezmoiremove</code> is interpreted as a template, whether or not it has a <code>.tmpl</code>
+extension.</p>
 
 
 

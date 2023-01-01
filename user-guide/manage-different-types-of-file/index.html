@@ -2954,6 +2954,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3096,6 +3100,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -5007,7 +5039,7 @@
 <h2 id="have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</h2>
 <p>If you want chezmoi to create a directory, but ignore its contents, say
 <code>~/src</code>, first run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdir -p <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/src
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/src
 </code></pre></div>
 <p>This creates the directory in the source state, which means that chezmoi will
 create it (if it does not already exist) when you run <code>chezmoi apply</code>.</p>
@@ -5015,7 +5047,7 @@ create it (if it does not already exist) when you run <code>chezmoi apply</code>
 file in the directory in the source state that will be seen by git (so git does
 not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
 in the target state):</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>touch <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/src/.keep
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>touch<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/src/.keep
 </code></pre></div>
 <p>chezmoi automatically creates <code>.keep</code> files when you add an empty directory
 with <code>chezmoi add</code>.</p>
@@ -5025,7 +5057,7 @@ of patterns of files to remove. chezmoi will remove anything in the target
 directory that matches the pattern. As this command is potentially dangerous,
 you should run chezmoi in verbose, dry-run mode beforehand to see what would be
 removed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi apply --dry-run --verbose
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply<span class="w"> </span>--dry-run<span class="w"> </span>--verbose
 </code></pre></div>
 <p><code>.chezmoiremove</code> is interpreted as a template, so you can remove different
 files on different machines. Negative matches (patterns prefixed with a <code>!</code>) or
@@ -5044,10 +5076,10 @@ standard input to a temporary file, modify the temporary file, and then
 write the temporary file to the standard output, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 <span class="nv">tempfile</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>mktemp<span class="k">)</span><span class="s2">&quot;</span>
-<span class="nb">trap</span> <span class="s1">&#39;rm -rf &quot;${tempfile}&quot;&#39;</span> EXIT
-cat &gt; <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="nb">trap</span><span class="w"> </span><span class="s1">&#39;rm -rf &quot;${tempfile}&quot;&#39;</span><span class="w"> </span>EXIT
+cat<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="c1"># modify ${tempfile}</span>
-cat <span class="s2">&quot;</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">&quot;</span>
+cat<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">tempfile</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -5108,10 +5140,10 @@ a <code>run_</code> script. For example, create a file in your source state call
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
 <span class="nv">FILE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.kube/config&quot;</span>
-<span class="k">if</span> <span class="o">[</span> -f <span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="k">$(</span>stat -c %a <span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span> !<span class="o">=</span> <span class="s2">&quot;600&quot;</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
-        chmod <span class="m">600</span> <span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span>
-    <span class="k">fi</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>stat<span class="w"> </span>-c<span class="w"> </span>%a<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;600&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$FILE</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
 <span class="k">fi</span>
 </code></pre></div>
 <h2 id="handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</h2>
@@ -5121,20 +5153,20 @@ apply</code>, any modifications made by the program will be lost.</p>
 in your source directory, which is under version control. Here is a worked
 example for VSCode's <code>settings.json</code> on Linux:</p>
 <p>Copy the configuration file to your source directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cp ~/.config/Code/User/settings.json <span class="k">$(</span>chezmoi source-path<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cp<span class="w"> </span>~/.config/Code/User/settings.json<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>
 </code></pre></div>
 <p>Tell chezmoi to ignore this file:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">echo</span> settings.json &gt;&gt; <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/.chezmoiignore
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>settings.json<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/.chezmoiignore
 </code></pre></div>
 <p>Tell chezmoi that <code>~/.config/Code/User/settings.json</code> should be a symlink to
 the file in your source directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdir -p <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/private_dot_config/private_Code/User
-<span class="gp">$ </span><span class="nb">echo</span> -n <span class="s2">&quot;{{ .chezmoi.sourceDir }}/settings.json&quot;</span> &gt; <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/private_dot_config/private_Code/User
+<span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;{{ .chezmoi.sourceDir }}/settings.json&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/private_dot_config/private_Code/User/symlink_settings.json.tmpl
 </code></pre></div>
 <p>The prefix <code>private_</code> is used because the <code>~/.config</code> and <code>~/.config/Code</code>
 directories are private by default.</p>
 <p>Apply the changes:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi apply -v
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply<span class="w"> </span>-v
 </code></pre></div>
 <p>Now, when the program modifies its configuration file it will modify the file
 in the source state instead.</p>

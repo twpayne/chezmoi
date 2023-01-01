@@ -2921,6 +2921,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3063,6 +3067,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4943,9 +4975,9 @@
 <code>.Source</code>, and <code>.Target</code> containing filenames of the file in the destination
 state, source state, and target state respectively. For example, to use
 <a href="https://neovim.io/doc/user/diff.html">neovim's diff mode</a>, specify:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[merge]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvim&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Source }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Target }}&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[merge]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvim&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Source }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Target }}&quot;</span><span class="p">]</span>
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>

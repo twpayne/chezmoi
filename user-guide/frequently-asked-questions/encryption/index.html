@@ -2921,6 +2921,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3063,6 +3067,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4947,10 +4979,11 @@
 <li>Add encrypted files.</li>
 </ol>
 <p>First, change to chezmoi's source directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
 </code></pre></div>
-<p>Generate an age private key encrypted with a passphrase with the command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>age-keygen <span class="p">|</span> age --passphrase &gt; key.txt.age
+<p>Generate an age private key encrypted with a passphrase in the file
+<code>key.txt.age</code> with the command:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>age-keygen<span class="w"> </span><span class="p">|</span><span class="w"> </span>age<span class="w"> </span>--passphrase<span class="w"> </span>&gt;<span class="w"> </span>key.txt.age
 <span class="go">Public key: age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl</span>
 <span class="go">Enter passphrase (leave empty to autogenerate a secure one):</span>
 <span class="go">Confirm passphrase:</span>
@@ -4958,10 +4991,10 @@
 <p>Use a strong passphrase and make a note of the public key
 (<code>age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl</code> in this case).</p>
 <p>Add <code>key.txt.age</code> to <code>.chezmoiignore</code> so that chezmoi does not try to create it:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">echo</span> key.txt.age &gt;&gt; .chezmoiignore
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>key.txt.age<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoiignore
 </code></pre></div>
 <p>Configure chezmoi to decrypt the passphrase-encrypted private key if needed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat &gt; run_once_before_decrypt-private-key.sh.tmpl &lt;&lt;EOF
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;<span class="w"> </span>run_once_before_decrypt-private-key.sh.tmpl<span class="w"> </span>&lt;&lt;EOF
 <span class="gp">#</span>!/bin/sh
 
 <span class="go">if [ ! -f &quot;${HOME}/key.txt&quot; ]; then</span>
@@ -4971,7 +5004,7 @@
 <span class="go">EOF</span>
 </code></pre></div>
 <p>Configure chezmoi to use the public and private key for encryption:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat &gt;&gt; .chezmoi.toml.tmpl &lt;&lt;EOF
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoi.toml.tmpl<span class="w"> </span>&lt;&lt;EOF
 <span class="go">encryption = &quot;age&quot;</span>
 <span class="go">[age]</span>
 <span class="go">    identity = &quot;~/key.txt&quot;</span>
@@ -4979,28 +5012,32 @@
 <span class="go">EOF</span>
 </code></pre></div>
 <p><code>age.recipient</code> must be your public key from above.</p>
-<p>When you run <code>chezmoi init --apply</code> to generate the chezmoi's config file, you
-will be prompted for your passphrase to decrypt the private key:</p>
-<div class="highlight"><pre><span></span><code>$ chezmoi init --apply
-Enter passphrase:
+<p>Run <code>chezmoi init --apply</code> to generate the chezmoi's config file and decrypt the
+private key:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply
+<span class="go">Enter passphrase:</span>
 </code></pre></div>
 <p>At this stage everything is configured and <code>git status</code> should report:</p>
-<div class="highlight"><pre><span></span><code>$ git status
-On branch main
-Untracked files:
-  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
-    .chezmoi.toml.tmpl
-    .chezmoiignore
-    key.txt.age
-    run_once_before_decrypt-private-key.sh.tmpl
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>status
+<span class="go">On branch main</span>
+<span class="go">Untracked files:</span>
+<span class="go">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span>
+<span class="go">    .chezmoi.toml.tmpl</span>
+<span class="go">    .chezmoiignore</span>
+<span class="go">    key.txt.age</span>
+<span class="go">    run_once_before_decrypt-private-key.sh.tmpl</span>
 
-nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+<span class="go">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span>
 </code></pre></div>
-<p>If you're happy with the changes you can commit them.</p>
+<p>If you're happy with the changes you can commit them. All four files should be
+committed.</p>
 <p>Add files that you want to encrypt using the <code>--encrypt</code> argument to <code>chezmoi
 add</code>, for example:</p>
-<div class="highlight"><pre><span></span><code>$ chezmoi add --encrypt ~/.ssh/id_rsa
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--encrypt<span class="w"> </span>~/.ssh/id_rsa
 </code></pre></div>
+<p>When you run <code>chezmoi init</code> on a new machine you will be prompted to enter your
+passphrase once to decrypt <code>key.txt.age</code>. Your decrypted private key will be
+stored in <code>~/key.txt</code>.</p>
 
 
 

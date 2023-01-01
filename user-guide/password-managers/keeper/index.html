@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4910,8 +4942,8 @@ examplePassword = {{ index (keeperDataFields &quot;$UID&quot;).password 0 }}
 </code></pre></div>
 <p>Extra arguments can be passed to the Keeper CLI command by setting the
 <code>keeper.args</code> variable in chezmoi's config file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[keeper]</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--config&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/config.json&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[keeper]</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--config&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/config.json&quot;</span><span class="p">]</span>
 </code></pre></div>
 
 

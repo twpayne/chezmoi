@@ -2942,6 +2942,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3084,6 +3088,34 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4994,9 +5026,9 @@ want to set the <code>--destination</code>, <code>--exact</code>, and <code>--re
 <p>Strip <em>n</em> leading components from paths.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>curl -s -L -o <span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
-<span class="gp">$ </span>mkdir -p <span class="k">$(</span>chezmoi source-path<span class="k">)</span>/dot_oh-my-zsh
-<span class="gp">$ </span>chezmoi import --strip-components <span class="m">1</span> --destination ~/.oh-my-zsh <span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz<span class="w"> </span>https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/dot_oh-my-zsh
+<span class="gp">$ </span>chezmoi<span class="w"> </span>import<span class="w"> </span>--strip-components<span class="w"> </span><span class="m">1</span><span class="w"> </span>--destination<span class="w"> </span>~/.oh-my-zsh<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
 </code></pre></div>
 </div>
 

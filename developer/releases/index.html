@@ -2876,6 +2876,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3018,6 +3022,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4966,15 +4998,15 @@
 <h2 id="testing">Testing</h2>
 <p>To build a test release, without publishing, (Ubuntu Linux only) first ensure
 that the <code>musl-tools</code> and <code>snapcraft</code> packages are installed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo apt-get install musl-tools snapcraft
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>musl-tools<span class="w"> </span>snapcraft
 </code></pre></div>
 <p>Then run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make test-release
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>test-release
 </code></pre></div>
 <h2 id="publishing">Publishing</h2>
 <p>Publish a new release by creating and pushing a tag, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git tag v1.2.3
-<span class="gp">$ </span>git push --tags
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>tag<span class="w"> </span>v1.2.3
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>--tags
 </code></pre></div>
 <p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a>
 that builds and publishes archives, packages, and snaps, creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
@@ -4987,7 +5019,7 @@ Release</a>, and deploys the
 secret</a>.</p>
 <p>Snapcraft store credentials periodically expire. Create new snapcraft store
 credentials by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>snapcraft export-login --snaps<span class="o">=</span>chezmoi --channels<span class="o">=</span>stable,candidate,beta,edge --acls<span class="o">=</span>package_upload -
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>snapcraft<span class="w"> </span>export-login<span class="w"> </span>--snaps<span class="o">=</span>chezmoi<span class="w"> </span>--channels<span class="o">=</span>stable,candidate,beta,edge<span class="w"> </span>--acls<span class="o">=</span>package_upload<span class="w"> </span>-
 </code></pre></div>
 </div>
 <div class="admonition note">
@@ -4997,7 +5029,7 @@ of chezmoi within a few hours and open a pull request in
 <a href="https://github.com/Homebrew/homebrew-core">github.com/Homebrew/homebrew-core</a>
 to bump the version.</p>
 <p>If needed, the pull request can be created with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>brew bump-formula-pr --tag<span class="o">=</span>v1.2.3 chezmoi
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>brew<span class="w"> </span>bump-formula-pr<span class="w"> </span>--tag<span class="o">=</span>v1.2.3<span class="w"> </span>chezmoi
 </code></pre></div>
 </div>
 <div class="admonition note">

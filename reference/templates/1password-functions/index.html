@@ -2880,6 +2880,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3022,6 +3026,34 @@
     <li class="md-nav__item">
       <a href="../functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4908,14 +4940,14 @@ multiple derived values from <code>op account list</code> that can be changed in
 appropriate 1Password <em>account-uuid</em>.</p>
 <h3 id="example">Example</h3>
 <p>If <code>op account list --format=json</code> returns the following structure:</p>
-<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
-<span class="w">  </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;account1.1password.ca&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my@email.com&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some-user-uuid&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;account_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some-account-uuid&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">]</span><span class="w"></span>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;account1.1password.ca&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my@email.com&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some-user-uuid&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;account_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some-account-uuid&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
 </code></pre></div>
 <p>The following values can be used in the <code>account</code> parameter and the value
 <code>some-account-uuid</code> will be passed as the <code>--account</code> parameter to <code>op</code>.</p>

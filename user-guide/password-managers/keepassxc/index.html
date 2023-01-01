@@ -2890,6 +2890,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3032,6 +3036,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4893,8 +4925,8 @@
 <p>chezmoi includes support for <a href="https://keepassxc.org">KeePassXC</a> using the
 KeePassXC CLI (<code>keepassxc-cli</code>) to expose data as a template function.</p>
 <p>Provide the path to your KeePassXC database in your configuration file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[keepassxc]</span><span class="w"></span>
-<span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/home/user/Passwords.kdbx&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[keepassxc]</span>
+<span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/home/user/Passwords.kdbx&quot;</span>
 </code></pre></div>
 <p>The structured data from <code>keepassxc-cli show $database</code> is available as the
 <code>keepassxc</code> template function in your config files, for example:</p>

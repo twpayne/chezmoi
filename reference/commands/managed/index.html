@@ -2505,8 +2505,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-p-path-style-absoluterelative" class="md-nav__link">
-    -p, --path-style absolute|relative
+  <a href="#-p-path-style-absoluterelativesource-absolutesource-relative" class="md-nav__link">
+    -p, --path-style absolute|relative|source-absolute|source-relative
   </a>
   
 </li>
@@ -2921,6 +2921,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3063,6 +3067,34 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4909,8 +4941,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#-p-path-style-absoluterelative" class="md-nav__link">
-    -p, --path-style absolute|relative
+  <a href="#-p-path-style-absoluterelativesource-absolutesource-relative" class="md-nav__link">
+    -p, --path-style absolute|relative|source-absolute|source-relative
   </a>
   
 </li>
@@ -4939,18 +4971,18 @@
 <p>List all managed entries in the destination directory under all <em>path</em>s in
 alphabetical order. When no <em>path</em>s are supplied, list all managed entries in
 the destination directory in alphabetical order.</p>
-<h2 id="-p-path-style-absoluterelative"><code>-p</code>, <code>--path-style</code> <code>absolute</code>|<code>relative</code></h2>
+<h2 id="-p-path-style-absoluterelativesource-absolutesource-relative"><code>-p</code>, <code>--path-style</code> <code>absolute</code>|<code>relative</code>|<code>source-absolute</code>|<code>source-relative</code></h2>
 <p>Print paths in the given style. Relative paths are relative to the destination
 directory. The default is <code>relative</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi managed
-<span class="gp">$ </span>chezmoi managed --include<span class="o">=</span>files
-<span class="gp">$ </span>chezmoi managed --include<span class="o">=</span>files,symlinks
-<span class="gp">$ </span>chezmoi managed -i <span class="nb">dirs</span>
-<span class="gp">$ </span>chezmoi managed -i dirs,files
-<span class="gp">$ </span>chezmoi managed -i files ~/.config
-<span class="gp">$ </span>chezmoi managed --exclude<span class="o">=</span>encrypted
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>managed
+<span class="gp">$ </span>chezmoi<span class="w"> </span>managed<span class="w"> </span>--include<span class="o">=</span>files
+<span class="gp">$ </span>chezmoi<span class="w"> </span>managed<span class="w"> </span>--include<span class="o">=</span>files,symlinks
+<span class="gp">$ </span>chezmoi<span class="w"> </span>managed<span class="w"> </span>-i<span class="w"> </span><span class="nb">dirs</span>
+<span class="gp">$ </span>chezmoi<span class="w"> </span>managed<span class="w"> </span>-i<span class="w"> </span>dirs,files
+<span class="gp">$ </span>chezmoi<span class="w"> </span>managed<span class="w"> </span>-i<span class="w"> </span>files<span class="w"> </span>~/.config
+<span class="gp">$ </span>chezmoi<span class="w"> </span>managed<span class="w"> </span>--exclude<span class="o">=</span>encrypted<span class="w"> </span>--path-style<span class="o">=</span>source-relative
 </code></pre></div>
 </div>
 

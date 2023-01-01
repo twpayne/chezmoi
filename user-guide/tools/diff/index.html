@@ -2949,6 +2949,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3091,6 +3095,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4999,9 +5031,9 @@ the <code>diff.command</code> and <code>diff.args</code> configuration variables
 <code>.Target</code> containing filenames of the file in the destination state and the
 target state respectively. For example, to use <a href="https://meldmerge.org/">meld</a>,
 specify:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;meld&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--diff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Target }}&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;meld&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--diff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Target }}&quot;</span><span class="p">]</span>
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -5014,8 +5046,8 @@ appear in your generated config file.</p>
 scripts that will be run. You can exclude scripts from the diff output by
 setting the <code>diff.exclude</code> configuration variable in your configuration file,
 for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span><span class="w"></span>
-<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;scripts&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
+<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;scripts&quot;</span><span class="p">]</span>
 </code></pre></div>
 <h2 id="dont-show-externals-in-the-diff-output">Don't show externals in the diff output</h2>
 <p>To exclude diffs from externals, either pass the <code>--exclude=externals</code> flag or
@@ -5024,8 +5056,8 @@ set <code>diff.exclude</code> to <code>["externals"]</code> in your config file.
 <p>You can change the diff format, and/or pipe the output into a pager of your
 choice by setting <code>diff.pager</code> configuration variable. For example, to use
 <a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span><span class="w"></span>
-<span class="w">    </span><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;diff-so-fancy&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
+<span class="w">    </span><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;diff-so-fancy&quot;</span>
 </code></pre></div>
 <p>The pager can be disabled using the <code>--no-pager</code> flag or by setting <code>diff.pager</code>
 to an empty string.</p>
@@ -5038,38 +5070,38 @@ configuration file:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">JSON</label><label for="__tabbed_1_2">TOML</label><label for="__tabbed_1_3">YAML</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;textconv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="s2">&quot;-&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="p">]</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;textconv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;-&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[[textconv]]</span><span class="w"></span>
-<span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;**/*.plist&quot;</span><span class="w"></span>
-<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;plutil&quot;</span><span class="w"></span>
-<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-convert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xml1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[[textconv]]</span>
+<span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;**/*.plist&quot;</span>
+<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;plutil&quot;</span>
+<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-convert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xml1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">textconv</span><span class="p">:</span><span class="w"></span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;**/*.plist&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plutil&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-convert&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;xml1&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-o&quot;</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="err">,</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">textconv</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;**/*.plist&quot;</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plutil&quot;</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-convert&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;xml1&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-o&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="err">,</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-&quot;</span>
 </code></pre></div>
 </div>
 </div>

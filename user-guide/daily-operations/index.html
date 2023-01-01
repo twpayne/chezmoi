@@ -1049,6 +1049,16 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/templates/functions/hexDecode/">
+        hexDecode
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/templates/functions/hexEncode/">
+        hexEncode
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../reference/templates/functions/include/">
         include
       </a>
@@ -1718,7 +1728,7 @@
 <h1 id="daily-operations">Daily operations</h1>
 <h2 id="pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</h2>
 <p>You can pull the changes from your repo and apply them in a single command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi update
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>update
 </code></pre></div>
 <p>This runs <code>git pull --autostash --rebase</code> in your source directory and then
 <code>chezmoi apply</code>.</p>
@@ -1731,13 +1741,13 @@
 </div>
 <h2 id="pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</h2>
 <p>Run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi git pull -- --autostash --rebase <span class="o">&amp;&amp;</span> chezmoi diff
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>git<span class="w"> </span>pull<span class="w"> </span>--<span class="w"> </span>--autostash<span class="w"> </span>--rebase<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chezmoi<span class="w"> </span>diff
 </code></pre></div>
 <p>This runs <code>git pull --autostash --rebase</code> in your source directory and <code>chezmoi
 diff</code> then shows the difference between the target state computed from your
 source directory and the actual state.</p>
 <p>If you're happy with the changes, then you can run</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi apply
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply
 </code></pre></div>
 <p>to apply them.</p>
 <div class="mermaid">sequenceDiagram
@@ -1753,9 +1763,9 @@ source directory and the actual state.</p>
 <p>chezmoi can automatically commit and push changes to your source directory to
 your repo. This feature is disabled by default. To enable it, add the following
 to your config file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[git]</span><span class="w"></span>
-<span class="w">    </span><span class="n">autoCommit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<span class="w">    </span><span class="n">autoPush</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[git]</span>
+<span class="w">    </span><span class="n">autoCommit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="n">autoPush</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <p>Whenever a change is made to your source directory, chezmoi will commit the
 changes with an automatically-generated commit message (if <code>autoCommit</code> is true)
@@ -1780,7 +1790,7 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 <code>github.com/$GITHUB_USERNAME/dotfiles</code> then installing chezmoi, running
 <code>chezmoi init</code>, and running <code>chezmoi apply</code> can be done in a single line of
 shell:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh -c <span class="s2">"</span><span class="k">$(</span>curl -fsLS get.chezmoi.io<span class="k">)</span><span class="s2">"</span> -- init --apply <span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 <p>If your dotfiles repo has a different name to <code>dotfiles</code>, or if you host your
 dotfiles on a different service, then see the <a href="/reference/commands/init/">reference manual for <code>chezmoi
@@ -1789,7 +1799,7 @@ init</code></a>.</p>
 can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh -c <span class="s2">"</span><span class="k">$(</span>curl -fsLS get.chezmoi.io<span class="k">)</span><span class="s2">"</span> -- init --one-shot <span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 </article>
 </div>

@@ -2880,6 +2880,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3022,6 +3026,34 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4885,7 +4917,7 @@ and <a href="https://www.gnupg.com/">gpg</a>. Encrypted files are stored in ASCI
 format in the source directory with the <code>encrypted_</code> attribute and are
 automatically decrypted when needed.</p>
 <p>Add files to be encrypted with the <code>--encrypt</code> flag, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi add --encrypt ~/.ssh/id_rsa
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--encrypt<span class="w"> </span>~/.ssh/id_rsa
 </code></pre></div>
 <p><code>chezmoi edit</code> will transparently decrypt the file before editing and
 re-encrypt it afterwards.</p>

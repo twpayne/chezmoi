@@ -2928,6 +2928,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -3070,6 +3074,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/glob/" class="md-nav__link">
         glob
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexDecode/" class="md-nav__link">
+        hexDecode
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/hexEncode/" class="md-nav__link">
+        hexEncode
       </a>
     </li>
   
@@ -4990,11 +5022,11 @@ ways.</p>
 to <code>false</code>.</p>
 <p>Otherwise, you can use your VCS to create the source directory before running
 <code>chezmoi init</code>, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>fossil clone https://dotfiles.example.com/ dotfiles.fossil
-<span class="gp">$ </span>mkdir -p .local/share/chezmoi/.git
-<span class="gp">$ </span><span class="nb">cd</span> .local/share/chezmoi
-<span class="gp">$ </span>fossil open ~/dotfiles.fossil
-<span class="gp">$ </span>chezmoi init --apply
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>fossil<span class="w"> </span>clone<span class="w"> </span>https://dotfiles.example.com/<span class="w"> </span>dotfiles.fossil
+<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>.local/share/chezmoi/.git
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>.local/share/chezmoi
+<span class="gp">$ </span>fossil<span class="w"> </span>open<span class="w"> </span>~/dotfiles.fossil
+<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5003,16 +5035,16 @@ required for chezmoi to be able to identify the work tree.</p>
 </div>
 <p>For updates, you can set the <code>update.command</code> and <code>update.args</code> configuration
 variables and <code>chezmoi update</code> will use these instead of <code>git pull</code>, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[update]</span><span class="w"></span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fossil&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;update&quot;</span><span class="p">]</span><span class="w"></span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[update]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fossil&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;update&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Currently, it is not possible to override the auto add, commit, and push
 behavior for non-git VCSs, so you will have to commit changes manually, for
 example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
-<span class="gp">$ </span>fossil add .
-<span class="gp">$ </span>fossil commit
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
+<span class="gp">$ </span>fossil<span class="w"> </span>add<span class="w"> </span>.
+<span class="gp">$ </span>fossil<span class="w"> </span>commit
 </code></pre></div>
 
 
