@@ -297,6 +297,8 @@ jobs:
       run: pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
     - name: build-website
       run: ( cd assets/chezmoi.io && mkdocs build )
+      env:
+        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -455,6 +457,8 @@ jobs:
       run: |
         pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
         ( cd assets/chezmoi.io && mkdocs build )
+      env:
+        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
     - name: push-chezmoi.io
       run: |
         ( cd assets/chezmoi.io && mkdocs gh-deploy )
