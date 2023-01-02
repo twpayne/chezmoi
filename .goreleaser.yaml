@@ -83,11 +83,18 @@ archives:
   - LICENSE
   - README.md
   - completions/*
-  replacements:
-    386: i386
+  name_template: >-
+    {{- .ProjectName }}_
+    {{- .Version }}_
+    {{- .Os }}_
+    {{- if eq .Arch "386" }}i386
+    {{- else if eq .Arch "mips64" }}mips64_hardfloat
+    {{- else if eq .Arch "mips64le" }}mips64le_hardfloat
+    {{- else }}{{ .Arch }}{{ end -}}
   format_overrides:
   - goos: windows
     format: zip
+  rlcp: true
 - id: glibc
   builds:
   - chezmoi-cgo-glibc
@@ -96,6 +103,7 @@ archives:
   - README.md
   - completions/*
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}'
+  rlcp: true
 - id: musl
   builds:
   - chezmoi-cgo-musl
@@ -104,6 +112,7 @@ archives:
   - README.md
   - completions/*
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}'
+  rlcp: true
 
 changelog:
   use: github-native
@@ -139,10 +148,13 @@ nfpms:
   bindir: /usr/bin
   overrides:
     deb:
-      file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-      replacements:
-        386: i386
-        arm: armel
+      file_name_template: >-
+        {{- .ProjectName }}_
+        {{- .Version }}_
+        {{- .Os }}_
+        {{- if eq .Arch "386" }}i386
+        {{- else if eq .Arch "arm" }}armel
+        {{- else }}{{ .Arch }}{{ end -}}
       contents:
       - src: completions/chezmoi-completion.bash
         dst: /usr/share/bash-completion/completions/chezmoi
@@ -151,12 +163,14 @@ nfpms:
       - src: completions/chezmoi.zsh
         dst: /usr/share/zsh/vendor-completions/_chezmoi
     rpm:
-      file_name_template: '{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}'
-      replacements:
-        amd64: x86_64
-        386: i686
-        arm: armhfp
-        arm64: aarch64
+      file_name_template: >-
+        {{- .ProjectName }}-
+        {{- .Version }}-
+        {{- if eq .Arch "amd64" }}x86_64
+        {{- else if eq .Arch "386" }}i686
+        {{- else if eq .Arch "arm" }}armhfp
+        {{- else if eq .Arch "arm64" }}aarch64
+        {{- else }}{{ .Arch }}{{ end -}}
       contents:
       - src: completions/chezmoi-completion.bash
         dst: /usr/share/bash-completion/completions/chezmoi
@@ -234,3 +248,4 @@ source:
   prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
   files:
   - COMMIT
+  rlcp: true
