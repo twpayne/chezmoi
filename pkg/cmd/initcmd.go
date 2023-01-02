@@ -199,7 +199,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						"--depth", strconv.Itoa(c.init.depth),
 					)
 				}
-				if !strings.HasPrefix(repoURLStr, "file://") {
+				if c.init.guessRepoURL && (strings.HasPrefix(repoURLStr, "http://") || strings.HasPrefix(repoURLStr, "https://")) {
 					repoURL, err := url.Parse(repoURLStr)
 					if err != nil {
 						return err
