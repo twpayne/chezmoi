@@ -31,6 +31,7 @@ jobs:
           - '**/*.ps1'
           - '**/*.tmpl'
           - '.github/workflows/**'
+          - '.goreleaser.yaml'
           - 'Makefile'
           - 'assets/docker/**'
           - 'assets/scripts/**'
