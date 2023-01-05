@@ -24,6 +24,7 @@ type keepassxcConfig struct {
 	Command         string          `json:"command" mapstructure:"command" yaml:"command"`
 	Database        chezmoi.AbsPath `json:"database" mapstructure:"database" yaml:"database"`
 	Args            []string        `json:"args" mapstructure:"args" yaml:"args"`
+	Prompt          bool            `json:"prompt" mapstructure:"prompt" yaml:"prompt"`
 	version         *semver.Version
 	cache           map[string]map[string]string
 	attachmentCache map[string]map[string]string
@@ -133,16 +134,19 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 		panic(errors.New("keepassxc.database not set"))
 	}
 
-	if c.Keepassxc.password == "" {
+	cmd := exec.Command(name, args...)
+	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
 		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
 		if err != nil {
 			return nil, err
 		}
 		c.Keepassxc.password = password
+		cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
+	} else {
+		cmd.Stdin = os.Stdin
 	}
-	cmd := exec.Command(name, args...)
-	cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
 	cmd.Stderr = os.Stderr
+
 	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)

@@ -2388,6 +2388,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Keepassxc: keepassxcConfig{
 			Command: "keepassxc-cli",
+			Prompt:  true,
 		},
 		Keeper: keeperConfig{
 			Command: "keeper",
