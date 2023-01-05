@@ -11,4 +11,5 @@ until chezmoi terminates.
 
 The command used can by changed by setting the `keepassxc.command`
 configuration variable, and extra arguments can be added by setting
-`keepassxc.args`.
+`keepassxc.args`. Also, you can disable the password prompt by setting
+`keepassxc.prompt` to `false`.
