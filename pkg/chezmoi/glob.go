@@ -28,7 +28,12 @@ func (s lstatFS) Stat(name string) (fs.FileInfo, error) {
 // Glob is like github.com/bmatcuk/doublestar/v4.Glob except that it does not
 // follow symlinks.
 func Glob(fileSystem vfs.FS, prefix string) ([]string, error) {
-	return doublestar.Glob(lstatFS{
-		wrapped: fileSystem,
-	}, prefix, doublestar.WithFailOnIOErrors())
+	return doublestar.Glob(
+		lstatFS{
+			wrapped: fileSystem,
+		},
+		prefix,
+		doublestar.WithFailOnIOErrors(),
+		doublestar.WithNoFollow(),
+	)
 }
