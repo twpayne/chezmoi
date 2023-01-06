@@ -2,7 +2,7 @@
 
 `gitHubLatestTag` calls the GitHub API to retrieve the latest tag for the given
 *owner-repo*, returning structured data as defined by the [GitHub Go API
-bindings](https://pkg.go.dev/github.com/google/go-github/v48/github#RepositoryTag).
+bindings](https://pkg.go.dev/github.com/google/go-github/v49/github#RepositoryTag).
 
 Calls to `gitHubLatestTag` are cached so calling `gitHubLatestTag` with the
 same *owner-repo* will only result in one call to the GitHub API.
