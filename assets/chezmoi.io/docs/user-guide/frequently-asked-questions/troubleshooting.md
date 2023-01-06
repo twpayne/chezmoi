@@ -151,6 +151,26 @@ Commands that take a write lock include `add`, `apply`, `edit`, `forget`,
 `import`, `init`, `state`, `unmanage`, and `update`. Commands that take a read
 lock include `diff`, `status`, and `verify`.
 
+## chezmoi reports `chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: exec format error` when executing a template script
+
+This error occurs when you have a newline before the `#!` in your script.
+Suppress the newline by including a `-` before the closing `}}` on the first
+line.
+
+For example, if your template script begins with
+
+```
+{{ if eq .chezmoi.os "linux" }}
+#!/bin/sh
+```
+
+change this to
+
+```
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+```
+
 ## chezmoi reports `chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: permission denied` when executing a script
 
 This error occurs when your temporary directory is mounted with the `noexec`
