@@ -2,7 +2,7 @@
 
 chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
 files are stored in the source state and automatically be decrypted when
-generating the target state or printing a file's contents with `chezmoi cat`.
+generating the target state or editing a file contents with `chezmoi edit`.
 
 ## Asymmetric (private/public-key) encryption
 
@@ -23,25 +23,6 @@ gpg --armor --recipient $RECIPIENT --encrypt
 
 and store the encrypted file in the source state. The file will automatically
 be decrypted when generating the target state.
-
-!!! hint
-
-    The `gpg.recipient` key must be ultimately trusted, otherwise encryption
-    will fail because gpg will prompt for input, which chezmoi does not handle.
-    You can check the trust level by running:
-
-    ```console
-    $ gpg --export-ownertrust
-    ```
-
-    The trust level for the recipient's key should be `6`. If it is not, you
-    can change the trust level by running:
-
-    ```console
-    $ gpg --edit-key $RECIPIENT
-    ```
-
-    Enter `trust` at the prompt and chose `5 = I trust ultimately`.
 
 ## Symmetric encryption
 
