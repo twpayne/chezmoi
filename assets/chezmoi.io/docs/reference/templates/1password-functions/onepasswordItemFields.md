@@ -37,7 +37,7 @@ interactively prompted to sign in.
         is equivalent to calling
 
         ```console
-        $ op get item abcdefghijklmnopqrstuvwxyz --fields exampleLabel
+        $ op item get abcdefghijklmnopqrstuvwxyz --fields exampleLabel
         ```
 
 !!! example
