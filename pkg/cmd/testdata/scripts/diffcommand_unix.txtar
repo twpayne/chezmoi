@@ -6,7 +6,8 @@ stdout ^${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 
 # test that chezmoi diff --use-builtin-diff uses the builtin diff even if diff.command is configured
 exec chezmoi diff --use-builtin-diff
-cmp stdout golden/diff.diff
+[umask:002] cmp stdout golden/diff-umask-002.diff
+[umask:022] cmp stdout golden/diff-umask-022.diff
 
 # test that chezmoi diff --reverse reverses the order of arguments
 exec chezmoi diff --reverse
@@ -38,7 +39,15 @@ chhome home4/user
 ! exec chezmoi diff
 stderr 'exit status 2'
 
--- golden/diff.diff --
+-- golden/diff-umask-002.diff --
+diff --git a/.file b/.file
+index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100664
+--- a/.file
++++ b/.file
+@@ -1 +1 @@
+-# destination contents of .file
++# target contents of .file
+-- golden/diff-umask-022.diff --
 diff --git a/.file b/.file
 index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100644
 --- a/.file

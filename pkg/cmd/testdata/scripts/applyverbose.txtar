@@ -1,6 +1,7 @@
 # test that chezmoi apply --dry-run --verbose does not show scripts when scripts are excluded from diffs
 exec chezmoi apply --dry-run --verbose
-[!windows] cmp stdout golden/apply.diff
+[!windows] [umask:002] cmp stdout golden/apply-umask-002.diff
+[!windows] [umask:022] cmp stdout golden/apply-umask-022.diff
 [windows] cmp stdout golden/apply-windows.diff
 
 chhome home2/user
@@ -9,17 +10,25 @@ chhome home2/user
 exec chezmoi apply --dry-run --force --verbose
 ! stdout .
 
--- golden/apply-windows.diff --
+-- golden/apply-umask-002.diff --
 diff --git a/.file b/.file
-new file mode 100666
+new file mode 100664
 index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
 --- /dev/null
 +++ b/.file
 @@ -0,0 +1 @@
 +# contents of .file
--- golden/apply.diff --
+-- golden/apply-umask-022.diff --
 diff --git a/.file b/.file
 new file mode 100644
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file
+-- golden/apply-windows.diff --
+diff --git a/.file b/.file
+new file mode 100666
 index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
 --- /dev/null
 +++ b/.file

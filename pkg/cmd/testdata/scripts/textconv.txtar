@@ -3,11 +3,13 @@
 
 # test that chezmoi diff uses textconv
 exec chezmoi diff
-cmp stdout golden/diff
+[umask:002] cmp stdout golden/diff-umask-002
+[umask:022] cmp stdout golden/diff-umask-022
 
 # test that chezmoi apply uses textconv
 exec chezmoi apply --verbose
-cmp stdout golden/diff
+[umask:002] cmp stdout golden/diff-umask-002
+[umask:022] cmp stdout golden/diff-umask-022
 cmp $HOME/file.txt golden/file.txt
 
 # test that chezmoi apply uses textconv in interactive diffs
@@ -17,7 +19,18 @@ exec chezmoi apply --no-tty
 stdout '^ # CONTENTS OF FILE.TXT'
 stdout '^-# EDITED'
 
--- golden/diff --
+-- golden/diff-overwrite --
+diff
+overwrite
+-- golden/diff-umask-002 --
+diff --git a/file.txt b/file.txt
+index b0ebb2af412bf3812b0bf8c5d7b950feb8a701be..4d977287915d918f15ef3df13146c1fa58914d30 100664
+--- a/file.txt
++++ b/file.txt
+@@ -1 +1 @@
+-# PREVIOUS CONTENTS OF FILE.TXT
++# CONTENTS OF FILE.TXT
+-- golden/diff-umask-022 --
 diff --git a/file.txt b/file.txt
 index b0ebb2af412bf3812b0bf8c5d7b950feb8a701be..4d977287915d918f15ef3df13146c1fa58914d30 100644
 --- a/file.txt
@@ -25,9 +38,6 @@ index b0ebb2af412bf3812b0bf8c5d7b950feb8a701be..4d977287915d918f15ef3df13146c1fa
 @@ -1 +1 @@
 -# PREVIOUS CONTENTS OF FILE.TXT
 +# CONTENTS OF FILE.TXT
--- golden/diff-overwrite --
-diff
-overwrite
 -- golden/file.txt --
 # contents of file.txt
 -- home/user/.config/chezmoi/chezmoi.yaml --
