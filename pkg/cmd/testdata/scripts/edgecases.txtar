@@ -1,30 +1,3 @@
-mkhomedir
-
-# test that chezmoi add --dry-run does not modify anything
-exec chezmoi add --dry-run $HOME${/}.file
-! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
-! exists $CHEZMOISOURCEDIR/dot_file
-
-# test that chezmoi add updates the persistent state
-exec chezmoi add $HOME${/}.file
-exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
-exists $CHEZMOISOURCEDIR/dot_file
-exec chezmoi state dump
-stdout 634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663 # sha256sum of "# contents of .file\n"
-
-# test that chezmoi apply updates the state if the target and destination states match, even if the last written state does not
-edit $CHEZMOISOURCEDIR/dot_file
-edit $HOME/.file
-cmp $HOME/.file $CHEZMOISOURCEDIR/dot_file
-exec chezmoi apply --dry-run $HOME${/}.file
-exec chezmoi state dump
-! stdout 2e9dd6a2a8c15b20d4b0882d4c0fb8c7eea4e8ece46818090b387132f9f84c34 # sha256sum of "# contents of .file\n# edited\n"
-exec chezmoi apply $HOME${/}.file
-exec chezmoi state dump
-stdout 2e9dd6a2a8c15b20d4b0882d4c0fb8c7eea4e8ece46818090b387132f9f84c34 # sha256sum of "# contents of .file\n# edited\n"
-
-chhome home2/user
-
 # test that the source directory can be a symlink to another directory
 symlink $HOME/.chezmoi -> $CHEZMOISOURCEDIR
 exec chezmoi apply --source=$HOME${/}.chezmoi
@@ -35,13 +8,13 @@ mkdir $HOME/.dir
 exec chezmoi add $HOME${/}.dir/
 ! exists $CHEZMOISOURCEDIR/dot_dir/dot_dir
 
-chhome home3/user
+chhome home2/user
 
 # test that chezmoi reports an inconsistent state error when a file should be both removed and present
 ! exec chezmoi apply
 stderr 'chezmoi: \.file: inconsistent state'
 
-chhome home4/user
+chhome home3/user
 
 # test that chezmoi reports an error if there is a .chezmoi* file in the .chezmoitemplates directory
 ! exec chezmoi status
@@ -56,7 +29,7 @@ stderr 'invalid or unsupported data format'
 stderr 'invalid or unsupported data format'
 
 skip 'FIXME make the following test pass'
-chhome home6/user
+chhome home5/user
 
 # test that chezmoi reports an inconsistent state error when a file should be both removed and present, even if the file is not already present
 ! exec chezmoi apply
@@ -64,16 +37,16 @@ stderr 'chezmoi: \.file: inconsistent state
 
 -- golden/.file --
 # contents of .file
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home2/user/.file --
+# contents of .file
+-- home2/user/.local/share/chezmoi/.chezmoiremove --
+.file
 -- home2/user/.local/share/chezmoi/dot_file --
 # contents of .file
--- home3/user/.file --
-# contents of .file
--- home3/user/.local/share/chezmoi/.chezmoiremove --
+-- home3/user/.local/share/chezmoi/.chezmoitemplates/.chezmoiignore --
+-- home4/user/.local/share/chezmoi/.chezmoiremove --
 .file
--- home3/user/.local/share/chezmoi/dot_file --
-# contents of .file
--- home4/user/.local/share/chezmoi/.chezmoitemplates/.chezmoiignore --
--- home5/user/.local/share/chezmoi/.chezmoiremove --
-.file
--- home6/user/.local/share/chezmoi/dot_file --
+-- home5/user/.local/share/chezmoi/dot_file --
 # contents of .file

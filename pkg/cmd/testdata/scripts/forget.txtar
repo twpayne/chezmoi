@@ -6,9 +6,11 @@ mksourcedir
 exec chezmoi apply --force
 exists $CHEZMOISOURCEDIR/dot_file
 exec chezmoi state get --bucket=entryState --key=$WORK/home/user/.dir
-cmp stdout golden/state-get-dir.json
+[umask:002] cmp stdout golden/state-get-dir-umask-002.json
+[umask:022] cmp stdout golden/state-get-dir-umask-022.json
 exec chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
-cmp stdout golden/state-get-file.json
+[umask:002] cmp stdout golden/state-get-file-umask-002.json
+[umask:022] cmp stdout golden/state-get-file-umask-022.json
 
 # test that chezmoi forget forgets a dir
 exists $CHEZMOISOURCEDIR/dot_dir
@@ -29,12 +31,23 @@ chhome home2/user
 exec chezmoi forget --force $HOME${/}.file
 ! exists $CHEZMOISOURCEDIR/home/dot_file
 
--- golden/state-get-dir.json --
+-- golden/state-get-dir-umask-002.json --
+{
+  "type": "dir",
+  "mode": 2147484157
+}
+-- golden/state-get-dir-umask-022.json --
 {
   "type": "dir",
   "mode": 2147484141
 }
--- golden/state-get-file.json --
+-- golden/state-get-file-umask-002.json --
+{
+  "type": "file",
+  "mode": 436,
+  "contentsSHA256": "634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"
+}
+-- golden/state-get-file-umask-022.json --
 {
   "type": "file",
   "mode": 420,

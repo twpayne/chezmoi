@@ -1,0 +1,26 @@
+[!umask:022] skip
+
+mkhomedir
+
+# test that chezmoi add --dry-run does not modify anything
+exec chezmoi add --dry-run $HOME${/}.file
+! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+! exists $CHEZMOISOURCEDIR/dot_file
+
+# test that chezmoi add updates the persistent state
+exec chezmoi add $HOME${/}.file
+exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+exists $CHEZMOISOURCEDIR/dot_file
+exec chezmoi state dump
+stdout 634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663 # sha256sum of "# contents of .file\n"
+
+# test that chezmoi apply updates the state if the target and destination states match, even if the last written state does not
+edit $CHEZMOISOURCEDIR/dot_file
+edit $HOME/.file
+cmp $HOME/.file $CHEZMOISOURCEDIR/dot_file
+exec chezmoi apply --dry-run $HOME${/}.file
+exec chezmoi state dump
+! stdout 2e9dd6a2a8c15b20d4b0882d4c0fb8c7eea4e8ece46818090b387132f9f84c34 # sha256sum of "# contents of .file\n# edited\n"
+exec chezmoi apply $HOME${/}.file
+exec chezmoi state dump
+stdout 2e9dd6a2a8c15b20d4b0882d4c0fb8c7eea4e8ece46818090b387132f9f84c34 # sha256sum of "# contents of .file\n# edited\n"

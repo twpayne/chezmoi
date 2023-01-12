@@ -267,13 +267,13 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -cover -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" -race ./...
+        go test -cover -ldflags="-X github.com/twpayne/chezmoi/v2/pkg/chezmoitest.umaskStr=0o022" -race ./...
     - name: test-umask-002
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -cover -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" -race ./...
+        go test -cover -ldflags="-X github.com/twpayne/chezmoi/v2/pkg/chezmoitest.umaskStr=0o002" -race ./...
     - name: test-install.sh
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |

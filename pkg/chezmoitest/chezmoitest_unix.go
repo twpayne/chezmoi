@@ -10,7 +10,7 @@ import (
 var (
 	// umaskStr is the umask used in tests represented as a string so it can be
 	// set with the
-	//   -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=..."
+	//   -ldflags="-X github.com/twpayne/chezmoi/v2/pkg/chezmoitest.umaskStr=..."
 	// option to go build and go test.
 	umaskStr = "0o022"
 
