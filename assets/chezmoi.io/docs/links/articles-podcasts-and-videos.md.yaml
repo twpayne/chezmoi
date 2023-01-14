@@ -318,3 +318,8 @@ articles:
   version: 2.24.0
   title: 'Shit Hot Dotfiles'
   url: https://kolv.in/posts/dotfile-managment
+- date: '2023-01-12'
+  version: 2.29.1
+  title: 'Chezmoiでかんたんクロスプラットフォームdotfiles管理のススメ'
+  lang: JP
+  url: https://deflis.hatenablog.com/entry/hatena-advent-calendar-2022-chezmoi-dotfiles
