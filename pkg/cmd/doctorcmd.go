@@ -152,8 +152,8 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 		Long:    mustLongHelp("doctor"),
 		RunE:    c.runDoctorCmd,
 		Annotations: newAnnotations(
-			doesNotRequireValidConfig,
 			runsCommands,
+			runsWithInvalidConfig,
 		),
 	}
 
