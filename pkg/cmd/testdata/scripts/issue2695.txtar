@@ -1,6 +1,7 @@
 # test that chezmoi status returns an error when the JSON config file is invalid
 ! exec chezmoi status
 stderr 'invalid config'
+! stderr 'json.*json'
 
 # check that chezmoi doctor warns about invalid JSON config files
 ! exec chezmoi doctor
@@ -11,6 +12,7 @@ chhome home2/user
 # test that chezmoi status returns an error when the TOML config file is invalid
 ! exec chezmoi status
 stderr 'invalid config'
+! stderr 'chezmoi\.toml.*chezmoi\.toml'
 
 # check that chezmoi doctor warns about invalid TOML config files
 ! exec chezmoi doctor
@@ -21,6 +23,7 @@ chhome home3/user
 # test that chezmoi status returns an error when the YAML config file is invalid
 ! exec chezmoi status
 stderr 'invalid config'
+! stderr 'chezmoi\.yaml.*chezmoi\.yaml'
 
 # check that chezmoi doctor warns about invalid YAML config files
 ! exec chezmoi doctor
