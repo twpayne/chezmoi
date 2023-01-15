@@ -29,7 +29,8 @@ const (
 var (
 	noArgs = []string(nil)
 
-	trailingSpaceRx = regexp.MustCompile(` +\n`)
+	deDuplicateErrorRx = regexp.MustCompile(`:\s+`)
+	trailingSpaceRx    = regexp.MustCompile(` +\n`)
 
 	helps = make(map[string]*help)
 )
@@ -109,10 +110,26 @@ func Main(versionInfo VersionInfo, args []string) int {
 		if errors.As(err, &errExitCode) {
 			return int(errExitCode)
 		}
-		fmt.Fprintf(os.Stderr, "chezmoi: %v\n", err)
+		fmt.Fprintf(os.Stderr, "chezmoi: %s\n", deDuplicateError(err))
 		return 1
 	}
 	return 0
+}
+
+// deDuplicateError returns err's human-readable string with duplicate components
+// removed.
+func deDuplicateError(err error) string {
+	components := deDuplicateErrorRx.Split(err.Error(), -1)
+	seenComponents := make(map[string]struct{}, len(components))
+	uniqueComponents := make([]string, 0, len(components))
+	for _, component := range components {
+		if _, ok := seenComponents[component]; ok {
+			continue
+		}
+		uniqueComponents = append(uniqueComponents, component)
+		seenComponents[component] = struct{}{}
+	}
+	return strings.Join(uniqueComponents, ": ")
 }
 
 // example returns command's example.
