@@ -490,7 +490,11 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		if filenameAbsPath != c.expected {
 			return checkResultFailed, fmt.Sprintf("found %s, expected %s", filenameAbsPath, c.expected)
 		}
-		if _, err := system.ReadFile(filenameAbsPath); err != nil {
+		config, err := newConfig()
+		if err != nil {
+			return checkResultError, err.Error()
+		}
+		if err := config.decodeConfigFile(filenameAbsPath, &config.ConfigFile); err != nil {
 			return checkResultError, fmt.Sprintf("%s: %v", filenameAbsPath, err)
 		}
 		fileInfo, err := system.Stat(filenameAbsPath)
