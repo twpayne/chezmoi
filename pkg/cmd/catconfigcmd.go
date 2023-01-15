@@ -11,8 +11,8 @@ func (c *Config) newCatConfigCmd() *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE:    c.runCatConfigCmd,
 		Annotations: newAnnotations(
-			doesNotRequireValidConfig,
 			requiresConfigDirectory,
+			runsWithInvalidConfig,
 		),
 	}
 

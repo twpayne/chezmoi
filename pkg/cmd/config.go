@@ -1659,7 +1659,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	})
 
 	// Read the config file.
-	if annotations.hasTag(doesNotRequireValidConfig) {
+	if annotations.hasTag(runsWithInvalidConfig) {
 		if c.configFileAbsPathErr == nil {
 			_ = c.readConfig()
 		}
