@@ -10,9 +10,6 @@ func (c *Config) newDumpConfigCmd() *cobra.Command {
 		Example: example("dump-config"),
 		Args:    cobra.NoArgs,
 		RunE:    c.runDumpConfigCmd,
-		Annotations: newAnnotations(
-			doesNotRequireValidConfig,
-		),
 	}
 
 	flags := dumpConfigCmd.Flags()
