@@ -14,14 +14,8 @@
       
         <link rel="canonical" href="https://chezmoi.io/user-guide/frequently-asked-questions/troubleshooting/">
       
-      
-        <link rel="prev" href="../encryption/">
-      
-      
-        <link rel="next" href="../design/">
-      
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.0">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
     
     
       
@@ -29,10 +23,11 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.f79797b0.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.975780f9.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.2505c338.min.css">
+        
       
       
 
@@ -119,6 +114,8 @@
       <form class="md-header__option" data-md-component="palette">
         
           
+          
+          
           <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
           
             <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
@@ -126,6 +123,8 @@
             </label>
           
         
+          
+          
           
           <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
           
@@ -1430,6 +1429,13 @@
         <li class="md-nav__item">
   <a href="#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock" class="md-nav__link">
     chezmoi reports chezmoi: timeout or chezmoi: timeout obtaining persistent state lock
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-exec-format-error-when-executing-a-template-script" class="md-nav__link">
+    chezmoi reports chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: exec format error when executing a template script
   </a>
   
 </li>
@@ -5061,6 +5067,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-exec-format-error-when-executing-a-template-script" class="md-nav__link">
+    chezmoi reports chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: exec format error when executing a template script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-permission-denied-when-executing-a-script" class="md-nav__link">
     chezmoi reports chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: permission denied when executing a script
   </a>
@@ -5102,15 +5115,16 @@
                 
                   
 
-  
-  
-
+  <a href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/user-guide/frequently-asked-questions/troubleshooting.md" title="Edit this page" class="md-content__button md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
 
 
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</h2>
 <p>Run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>doctor
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi doctor
 </code></pre></div>
 <p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
 the related feature, and anything <code>error</code> indicates a definite problem.</p>
@@ -5126,13 +5140,13 @@ many systems, but not all. If your pager does not pass through ANSI color escape
 sequences then you will see monochrome diff output with uninterpreted ANSI color
 escape sequences.</p>
 <p>This can typically by fixed by setting the environment variable</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">LESS</span><span class="o">=</span>-R
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span> <span class="nv">LESS</span><span class="o">=</span>-R
 </code></pre></div>
 <p>which instructs <code>less</code> to display "raw" control characters via the <code>-R</code> /
 <code>--RAW-CONTROL-CHARS</code> option.</p>
 <p>You can also set the <code>pager</code> configuration variable in your config file, for
 example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;less -R&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;less -R&quot;</span><span class="w"></span>
 </code></pre></div>
 <p>If you have set a different pager (via the <code>pager</code> configuration variable or
 <code>PAGER</code> environment variable) then you must ensure that it passes through raw
@@ -5196,7 +5210,7 @@ systems the default umask is <code>022</code> but some systems use <code>002</co
 that files and directories are group writeable by default.</p>
 <p>You can override this for chezmoi by setting the <code>umask</code> configuration variable
 in your configuration file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">umask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">o022</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">umask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">o022</span><span class="w"></span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -5227,6 +5241,18 @@ permits multiple simultaneous readers, but only one writer (with no readers).</p
 <p>Commands that take a write lock include <code>add</code>, <code>apply</code>, <code>edit</code>, <code>forget</code>,
 <code>import</code>, <code>init</code>, <code>state</code>, <code>unmanage</code>, and <code>update</code>. Commands that take a read
 lock include <code>diff</code>, <code>status</code>, and <code>verify</code>.</p>
+<h2 id="chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-exec-format-error-when-executing-a-template-script">chezmoi reports <code>chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: exec format error</code> when executing a template script</h2>
+<p>This error occurs when you have a newline before the <code>#!</code> in your script.
+Suppress the newline by including a <code>-</code> before the closing <code>}}</code> on the first
+line.</p>
+<p>For example, if your template script begins with</p>
+<div class="highlight"><pre><span></span><code>{{ if eq .chezmoi.os &quot;linux&quot; }}
+#!/bin/sh
+</code></pre></div>
+<p>change this to</p>
+<div class="highlight"><pre><span></span><code>{{ if eq .chezmoi.os &quot;linux&quot; -}}
+#!/bin/sh
+</code></pre></div>
 <h2 id="chezmoi-reports-chezmoi-forkexec-tmpxxxxxxxxxxxx-permission-denied-when-executing-a-script">chezmoi reports <code>chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: permission denied</code> when executing a script</h2>
 <p>This error occurs when your temporary directory is mounted with the <code>noexec</code>
 option.</p>
@@ -5236,7 +5262,7 @@ operating system. By default, chezmoi will use <code>$TMPDIR</code> for this.</p
 <p>You can change the temporary directory into which chezmoi writes and executes
 scripts with the <code>scriptTempDir</code> configuration variable. For example, to use a
 subdirectory of your home directory you can use:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">scriptTempDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;~/tmp&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">scriptTempDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;~/tmp&quot;</span><span class="w"></span>
 </code></pre></div>
 <h2 id="chezmoi-reports-chezmoi-mkdir-xxxxx-no-such-file-or-directory-when-trying-to-manage-file-or-directory">chezmoi reports <code>chezmoi: mkdir xxxxx: no such file or directory</code> when trying to manage file or directory</h2>
 <p>This error occurs when you try to add directory/file to be managed via chezmoi
@@ -5245,20 +5271,20 @@ but the same directory is only listed in <code>.chezmoiexternal.$FORMAT</code>.<
 directory in chezmoi source directory (typically <code>~/.local/share/chezmoi</code>) and
 create <code>.keep</code> file.</p>
 <p>For example, if <code>.chezmoiexternal.toml</code> has the configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[&quot;.config/nvim&quot;]</span>
-<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;git-repo&quot;</span>
-<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/NvChad/NvChad.git&quot;</span>
-<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span>
-<span class="w">    </span><span class="k">[&quot;.config/nvim&quot;.pull]</span>
-<span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--ff-only&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="k">[&quot;.config/nvim&quot;]</span><span class="w"></span>
+<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;git-repo&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/NvChad/NvChad.git&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="k">[&quot;.config/nvim&quot;.pull]</span><span class="w"></span>
+<span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--ff-only&quot;</span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 <p>Now <code>chezmoi add ~/.config/direnv/direnvrc</code> will raise the error:</p>
 <div class="highlight"><pre><span></span><code>chezmoi: mkdir /home/&lt;user&gt;/.local/share/chezmoi/dot_config/direnv: no such file or directory
 </code></pre></div>
 <p>But the workaround can be applied:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dot_config/
-<span class="gp">$ </span>touch<span class="w"> </span>dot_config/.keep
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
+<span class="gp">$ </span>mkdir -p dot_config/
+<span class="gp">$ </span>touch dot_config/.keep
 </code></pre></div>
 <p>Now once that done <code>chezmoi add ~/.config/direnv/direnvrc</code> should work. For
 reference see <a href="https://github.com/twpayne/chezmoi/issues/2006">this issue</a></p>
@@ -5269,14 +5295,14 @@ snap</a>.</p>
 <p>This is not a bug in chezmoi and there is nothing that chezmoi can do about
 this. However, there are two workarounds:</p>
 <p>Firstly, you can use alternatives to shell redirection. For standard input:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>&lt;<span class="nv">$FILENAME</span><span class="w">       </span><span class="c1"># fails</span>
-<span class="gp">$ </span>cat<span class="w"> </span><span class="nv">$FILENAME</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w">  </span><span class="c1"># succeeds</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nv">$COMMAND</span> &lt;<span class="nv">$FILENAME</span>       <span class="c1"># fails</span>
+<span class="gp">$ </span>cat <span class="nv">$FILENAME</span> <span class="p">|</span> chezmoi <span class="nv">$COMMAND</span>  <span class="c1"># succeeds</span>
 </code></pre></div>
 <p>For standard output:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>&gt;<span class="nv">$FILENAME</span><span class="w">                  </span><span class="c1"># fails</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$FILENAME</span><span class="w">                </span><span class="c1"># succeeds</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>--output<span class="o">=</span><span class="nv">$FILENAME</span><span class="w">          </span><span class="c1"># succeeds</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span><span class="nv">$FILENAME</span><span class="w"> </span>&gt;/dev/null<span class="w">  </span><span class="c1"># succeeds</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nv">$COMMAND</span> &gt;<span class="nv">$FILENAME</span>                  <span class="c1"># fails</span>
+<span class="gp">$ </span>chezmoi <span class="nv">$COMMAND</span> -o <span class="nv">$FILENAME</span>                <span class="c1"># succeeds</span>
+<span class="gp">$ </span>chezmoi <span class="nv">$COMMAND</span> --output<span class="o">=</span><span class="nv">$FILENAME</span>          <span class="c1"># succeeds</span>
+<span class="gp">$ </span>chezmoi <span class="nv">$COMMAND</span> <span class="p">|</span> tee <span class="nv">$FILENAME</span> &gt;/dev/null  <span class="c1"># succeeds</span>
 </code></pre></div>
 <p>Secondly, you can install chezmoi with any of the <a href="/install/">many supported install
 methods</a> instead of snap.</p>
@@ -5311,12 +5337,48 @@ template and use the <code>lookPath</code> template function, for example:</p>
       
         <footer class="md-footer">
   
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../encryption/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Encryption" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Encryption
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../design/" class="md-footer__link md-footer__link--next" aria-label="Next: Design" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Design
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2022
+      Copyright © Tom Payne 2018-2023
     </div>
   
   
@@ -5336,13 +5398,14 @@ template and use the <code>lookPath</code> template function, for example:</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.5cf534bf.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
+    
     
   </body>
 </html>
