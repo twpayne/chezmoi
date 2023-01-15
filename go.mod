@@ -7,7 +7,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/aws/aws-sdk-go-v2 v1.17.3
 	github.com/aws/aws-sdk-go-v2/config v1.18.8
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.18.0
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.18.1
 	github.com/bmatcuk/doublestar/v4 v4.6.0
 	github.com/bradenhilton/mozillainstallhash v1.0.0
 	github.com/charmbracelet/bubbles v0.14.0
@@ -25,7 +25,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.6
 	github.com/rogpeppe/go-internal v1.9.0
 	github.com/rs/zerolog v1.28.0
-	github.com/sergi/go-diff v1.1.0
+	github.com/sergi/go-diff v1.3.1
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
@@ -38,7 +38,7 @@ require (
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	go.uber.org/multierr v1.9.0
 	golang.org/x/crypto v0.5.0
-	golang.org/x/exp v0.0.0-20230111222715-75897c7a292a
+	golang.org/x/exp v0.0.0-20230113213754-f9f960f08ad4
 	golang.org/x/oauth2 v0.4.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.4.0
@@ -53,7 +53,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
-	github.com/ProtonMail/go-crypto v0.0.0-20230109192245-7efeeb08f296 // indirect
+	github.com/ProtonMail/go-crypto v0.0.0-20230113180642-068501e20d67 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
@@ -77,7 +77,7 @@ require (
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dlclark/regexp2 v1.7.0 // indirect
+	github.com/dlclark/regexp2 v1.8.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.4.0 // indirect
@@ -125,5 +125,3 @@ require (
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
-
-exclude github.com/sergi/go-diff v1.2.0 // https://github.com/sergi/go-diff/issues/123
