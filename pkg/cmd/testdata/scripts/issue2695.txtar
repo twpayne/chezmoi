@@ -1,0 +1,37 @@
+# test that chezmoi status returns an error when the JSON config file is invalid
+! exec chezmoi status
+stderr 'invalid config'
+
+# check that chezmoi doctor warns about invalid JSON config files
+! exec chezmoi doctor
+stdout 'error\s+config-file\s+.*invalid character'
+
+chhome home2/user
+
+# test that chezmoi status returns an error when the TOML config file is invalid
+! exec chezmoi status
+stderr 'invalid config'
+
+# check that chezmoi doctor warns about invalid TOML config files
+! exec chezmoi doctor
+stdout 'error\s+config-file\s+.*incomplete number'
+
+chhome home3/user
+
+# test that chezmoi status returns an error when the YAML config file is invalid
+! exec chezmoi status
+stderr 'invalid config'
+
+# check that chezmoi doctor warns about invalid YAML config files
+! exec chezmoi doctor
+stdout 'error\s+config-file\s+.*unmarshal errors'
+
+-- home/user/.config/chezmoi/chezmoi.json --
+{
+    "string": unquoted
+}
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[example]
+    string = unquoted
+-- home3/user/.config/chezmoi/chezmoi.yaml --
+string
