@@ -10,6 +10,10 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
+type chattrCmdConfig struct {
+	recursive bool
+}
+
 type boolModifier int
 
 const (
@@ -81,6 +85,9 @@ func (c *Config) newChattrCmd() *cobra.Command {
 		),
 	}
 
+	flags := chattrCmd.Flags()
+	flags.BoolVarP(&c.chattr.recursive, "recursive", "r", c.chattr.recursive, "Recurse into subdirectories")
+
 	return chattrCmd
 }
 
@@ -144,6 +151,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 
 	targetRelPaths, err := c.targetRelPaths(sourceState, args[1:], targetRelPathsOptions{
 		mustBeInSourceState: true,
+		recursive:           c.chattr.recursive,
 	})
 	if err != nil {
 		return err
@@ -151,7 +159,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 
 	// Sort targets in reverse so we update children before their parent
 	// directories.
-	sort.Sort(targetRelPaths)
+	sort.Sort(sort.Reverse(targetRelPaths))
 
 	encryptedSuffix := sourceState.Encryption().EncryptedSuffix()
 	for _, targetRelPath := range targetRelPaths {
