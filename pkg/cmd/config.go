@@ -157,6 +157,7 @@ type Config struct {
 	// Command configurations, not settable in the config file.
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
+	chattr          chattrCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	_import         importCmdConfig

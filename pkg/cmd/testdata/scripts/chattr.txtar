@@ -128,6 +128,13 @@ exists $CHEZMOISOURCEDIR/modify_private_readonly_executable_dot_modify.tmpl
 exec chezmoi chattr --dry-run --verbose +executable $HOME${/}.file
 cmp stdout golden/chattr-diff
 
+# test that chezmoi chattr --recursive noexact recurses into subdirectories
+exists $CHEZMOISOURCEDIR/exact_readonly_dot_dir
+exists $CHEZMOISOURCEDIR/exact_readonly_dot_dir/exact_subdir
+exec chezmoi chattr --recursive noexact $HOME${/}.dir
+exists $CHEZMOISOURCEDIR/readonly_dot_dir
+exists $CHEZMOISOURCEDIR/readonly_dot_dir/subdir
+
 -- golden/chattr-diff --
 diff --git a/dot_file b/executable_dot_file
 rename from dot_file
