@@ -323,3 +323,7 @@ articles:
   title: 'Chezmoiでかんたんクロスプラットフォームdotfiles管理のススメ'
   lang: JP
   url: https://deflis.hatenablog.com/entry/hatena-advent-calendar-2022-chezmoi-dotfiles
+- date: '2023-01-13'
+  version: 2.29.1
+  title: 'Making the most out of distrobox and toolbx'
+  url: https://www.ypsidanger.com/making-the-most-out-of-distrobox-and-toolbx/
