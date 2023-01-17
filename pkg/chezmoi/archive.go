@@ -132,10 +132,44 @@ func isTarArchive(r io.Reader) bool {
 	return err == nil
 }
 
+func implicitDirHeader(dir string, fileHeader *tar.Header) *tar.Header {
+	return &tar.Header{
+		Typeflag: tar.TypeDir,
+		Name:     dir,
+		Mode:     0o777,
+		Size:     0,
+		Uid:      fileHeader.Uid,
+		Gid:      fileHeader.Gid,
+		Uname:    fileHeader.Uname,
+		Gname:    fileHeader.Gname,
+		ModTime:  fileHeader.ModTime,
+	}
+}
+
 // walkArchiveTar walks over all the entries in a tar archive.
 func walkArchiveTar(r io.Reader, f WalkArchiveFunc) error {
 	tarReader := tar.NewReader(r)
 	var skippedDirPrefixes []string
+	seenDirs := newSet[string]()
+	processHeader := func(header *tar.Header, dir string) error {
+		for _, skippedDirPrefix := range skippedDirPrefixes {
+			if strings.HasPrefix(header.Name, skippedDirPrefix) {
+				return fs.SkipDir
+			}
+		}
+		if seenDirs.contains(dir) {
+			return nil
+		}
+		seenDirs.add(dir)
+		name := strings.TrimSuffix(header.Name, "/")
+		switch err := f(name, header.FileInfo(), tarReader, header.Linkname); {
+		case errors.Is(err, fs.SkipDir):
+			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
+		case err != nil:
+			return err
+		}
+		return nil
+	}
 HEADER:
 	for {
 		header, err := tarReader.Next()
@@ -145,24 +179,28 @@ HEADER:
 		case err != nil:
 			return err
 		}
-		for _, skippedDirPrefix := range skippedDirPrefixes {
-			if strings.HasPrefix(header.Name, skippedDirPrefix) {
-				continue HEADER
-			}
-		}
-		name := strings.TrimSuffix(header.Name, "/")
 		switch header.Typeflag {
-		case tar.TypeDir, tar.TypeReg:
-			switch err := f(name, header.FileInfo(), tarReader, ""); {
-			case errors.Is(err, fs.SkipDir):
-				skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
-			case errors.Is(err, Break):
-				return nil
-			case err != nil:
-				return err
+		case tar.TypeReg, tar.TypeDir, tar.TypeSymlink:
+			if header.Typeflag == tar.TypeReg {
+				dirs, _ := path.Split(header.Name)
+				dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
+				for i := range dirComponents {
+					dir := strings.Join(dirComponents[0:i+1], "/")
+					if len(dir) > 0 {
+						switch err := processHeader(implicitDirHeader(dir+"/", header), dir+"/"); {
+						case errors.Is(err, fs.SkipDir):
+							continue HEADER
+						case errors.Is(err, Break):
+							return nil
+						case err != nil:
+							return err
+						}
+					}
+				}
 			}
-		case tar.TypeSymlink:
-			switch err := f(name, header.FileInfo(), nil, header.Linkname); {
+			switch err := processHeader(header, header.Name); {
+			case errors.Is(err, fs.SkipDir):
+				continue HEADER
 			case errors.Is(err, Break):
 				return nil
 			case err != nil:
