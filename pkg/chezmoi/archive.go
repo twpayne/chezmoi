@@ -12,6 +12,7 @@ import (
 	"io/fs"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/ulikunitz/xz"
 )
@@ -132,17 +133,13 @@ func isTarArchive(r io.Reader) bool {
 	return err == nil
 }
 
-func implicitDirHeader(dir string, fileHeader *tar.Header) *tar.Header {
+func implicitDirHeader(dir string, modTime time.Time) *tar.Header {
 	return &tar.Header{
 		Typeflag: tar.TypeDir,
 		Name:     dir,
 		Mode:     0o777,
 		Size:     0,
-		Uid:      fileHeader.Uid,
-		Gid:      fileHeader.Gid,
-		Uname:    fileHeader.Uname,
-		Gname:    fileHeader.Gname,
-		ModTime:  fileHeader.ModTime,
+		ModTime:  modTime,
 	}
 }
 
@@ -187,7 +184,7 @@ HEADER:
 				for i := range dirComponents {
 					dir := strings.Join(dirComponents[0:i+1], "/")
 					if len(dir) > 0 {
-						switch err := processHeader(implicitDirHeader(dir+"/", header), dir+"/"); {
+						switch err := processHeader(implicitDirHeader(dir+"/", header.ModTime), dir+"/"); {
 						case errors.Is(err, fs.SkipDir):
 							continue HEADER
 						case errors.Is(err, Break):
@@ -221,6 +218,28 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 		return err
 	}
 	var skippedDirPrefixes []string
+	seenDirs := newSet[string]()
+	processHeader := func(fileInfo fs.FileInfo, dir string) error {
+		for _, skippedDirPrefix := range skippedDirPrefixes {
+			if strings.HasPrefix(dir, skippedDirPrefix) {
+				return fs.SkipDir
+			}
+		}
+		if seenDirs.contains(dir) {
+			return nil
+		}
+		seenDirs.add(dir)
+		name := strings.TrimSuffix(dir, "/")
+		dirFileInfo := implicitDirHeader(dir, fileInfo.ModTime()).FileInfo()
+		switch err := f(name, dirFileInfo, nil, ""); {
+		case errors.Is(err, fs.SkipDir):
+			skippedDirPrefixes = append(skippedDirPrefixes, dir)
+			return err
+		case err != nil:
+			return err
+		}
+		return nil
+	}
 FILE:
 	for _, zipFile := range zipReader.File {
 		zipFileReader, err := zipFile.Open()
@@ -241,9 +260,25 @@ FILE:
 
 		switch fileInfo := zipFile.FileInfo(); fileInfo.Mode() & fs.ModeType {
 		case 0:
+			dirs, _ := path.Split(name)
+			dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
+			for i := range dirComponents {
+				dir := strings.Join(dirComponents[0:i+1], "/")
+				if len(dir) > 0 {
+					switch err := processHeader(fileInfo, dir+"/"); {
+					case errors.Is(err, fs.SkipDir):
+						continue FILE
+					case errors.Is(err, Break):
+						return nil
+					case err != nil:
+						return err
+					}
+				}
+			}
+
 			err = f(name, fileInfo, zipFileReader, "")
 		case fs.ModeDir:
-			err = f(name, fileInfo, nil, "")
+			err = processHeader(fileInfo, name+"/")
 		case fs.ModeSymlink:
 			var linknameBytes []byte
 			linknameBytes, err = io.ReadAll(zipFileReader)
