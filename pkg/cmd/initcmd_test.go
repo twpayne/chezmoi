@@ -17,7 +17,6 @@ func TestGuessRepoURL(t *testing.T) {
 		arg                 string
 		expectedHTTPRepoURL string
 		expectedSSHRepoURL  string
-		expectedUsername    string
 	}{
 		{
 			arg:                 "git@github.com:user/dotfiles.git",
@@ -28,84 +27,70 @@ func TestGuessRepoURL(t *testing.T) {
 			arg:                 "codeberg.org/user",
 			expectedHTTPRepoURL: "https://codeberg.org/user/dotfiles.git",
 			expectedSSHRepoURL:  "git@codeberg.org:user/dotfiles.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "codeberg.org/user/dots",
 			expectedHTTPRepoURL: "https://codeberg.org/user/dots.git",
 			expectedSSHRepoURL:  "git@codeberg.org:user/dots.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "gitlab.com/user",
 			expectedHTTPRepoURL: "https://gitlab.com/user/dotfiles.git",
 			expectedSSHRepoURL:  "git@gitlab.com:user/dotfiles.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "gitlab.com/user/dots",
 			expectedHTTPRepoURL: "https://gitlab.com/user/dots.git",
 			expectedSSHRepoURL:  "git@gitlab.com:user/dots.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "gitlab.com/user/dots.git",
 			expectedHTTPRepoURL: "https://gitlab.com/user/dots.git",
 			expectedSSHRepoURL:  "git@gitlab.com:user/dots.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "http://gitlab.com/user/dots.git",
 			expectedHTTPRepoURL: "http://gitlab.com/user/dots.git",
 			expectedSSHRepoURL:  "git@gitlab.com:user/dots.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "https://gitlab.com/user/dots.git",
 			expectedHTTPRepoURL: "https://gitlab.com/user/dots.git",
 			expectedSSHRepoURL:  "git@gitlab.com:user/dots.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "sr.ht/~user_name",
 			expectedHTTPRepoURL: "https://git.sr.ht/~user_name/dotfiles",
 			expectedSSHRepoURL:  "git@git.sr.ht:~user_name/dotfiles",
-			expectedUsername:    "user_name",
 		},
 		{
 			arg:                 "sr.ht/~user_name/dots",
 			expectedHTTPRepoURL: "https://git.sr.ht/~user_name/dots",
 			expectedSSHRepoURL:  "git@git.sr.ht:~user_name/dots",
-			expectedUsername:    "user_name",
 		},
 		{
 			arg:                 "user",
 			expectedHTTPRepoURL: "https://github.com/user/dotfiles.git",
 			expectedSSHRepoURL:  "git@github.com:user/dotfiles.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "user/dots",
 			expectedHTTPRepoURL: "https://github.com/user/dots.git",
 			expectedSSHRepoURL:  "git@github.com:user/dots.git",
-			expectedUsername:    "user",
 		},
 		{
 			arg:                 "user/dots.git",
 			expectedHTTPRepoURL: "https://github.com/user/dots.git",
 			expectedSSHRepoURL:  "git@github.com:user/dots.git",
-			expectedUsername:    "user",
 		},
 	} {
 		t.Run(tc.arg, func(t *testing.T) {
 			ssh := false
-			actualHTTPUsername, actualHTTPRepoURL := guessRepoURL(tc.arg, ssh)
-			assert.Equal(t, tc.expectedUsername, actualHTTPUsername, "HTTPUsername")
+			actualHTTPRepoURL := guessRepoURL(tc.arg, ssh)
 			assert.Equal(t, tc.expectedHTTPRepoURL, actualHTTPRepoURL, "HTTPRepoURL")
 
 			ssh = true
-			actualSSHUsername, actualSSHRepoURL := guessRepoURL(tc.arg, ssh)
-			assert.Equal(t, "", actualSSHUsername, "SSHUsername")
+			actualSSHRepoURL := guessRepoURL(tc.arg, ssh)
 			assert.Equal(t, tc.expectedSSHRepoURL, actualSSHRepoURL, "SSHRepoURL")
 		})
 	}

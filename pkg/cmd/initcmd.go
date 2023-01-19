@@ -4,11 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"net/url"
 	"regexp"
 	"runtime"
 	"strconv"
-	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -43,55 +41,46 @@ var repoGuesses = []struct {
 	rx                *regexp.Regexp
 	httpRepoGuessRepl string
 	sshRepoGuessRepl  string
-	usernameGuessRepl string
 }{
 	{
 		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://github.com/$1/dotfiles.git",
 		sshRepoGuessRepl:  "git@github.com:$1/dotfiles.git",
-		usernameGuessRepl: "$1",
 	},
 	{
 		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
 		httpRepoGuessRepl: "https://github.com/$1/$2.git",
 		sshRepoGuessRepl:  "git@github.com:$1/$2.git",
-		usernameGuessRepl: "$1",
 	},
 	{
 		rx:                regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://$1/$2/dotfiles.git",
 		sshRepoGuessRepl:  "git@$1:$2/dotfiles.git",
-		usernameGuessRepl: "$2",
 	},
 	{
 		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://$1/$2/$3.git",
 		sshRepoGuessRepl:  "git@$1:$2/$3.git",
-		usernameGuessRepl: "$2",
 	},
 	{
 		rx:                regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
 		httpRepoGuessRepl: "https://$1/$2/$3.git",
 		sshRepoGuessRepl:  "git@$1:$2/$3.git",
-		usernameGuessRepl: "$2",
 	},
 	{
 		rx:                regexp.MustCompile(`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
 		httpRepoGuessRepl: "$1$2/$3/$4.git",
 		sshRepoGuessRepl:  "git@$2:$3/$4.git",
-		usernameGuessRepl: "$3",
 	},
 	{
 		rx:                regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
 		httpRepoGuessRepl: "https://git.sr.ht/~$1/dotfiles",
 		sshRepoGuessRepl:  "git@git.sr.ht:~$1/dotfiles",
-		usernameGuessRepl: "$1",
 	},
 	{
 		rx:                regexp.MustCompile(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://git.sr.ht/~$1/$2",
 		sshRepoGuessRepl:  "git@git.sr.ht:~$1/$2",
-		usernameGuessRepl: "$1",
 	},
 }
 
@@ -170,14 +159,14 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				return err
 			}
 		} else {
-			var username, repoURLStr string
+			var repoURLStr string
 			if c.init.guessRepoURL {
-				username, repoURLStr = guessRepoURL(args[0], c.init.ssh)
+				repoURLStr = guessRepoURL(args[0], c.init.ssh)
 			} else {
 				repoURLStr = args[0]
 			}
 			if useBuiltinGit {
-				if err := c.builtinGitClone(username, repoURLStr, workingTreeRawPath); err != nil {
+				if err := c.builtinGitClone(repoURLStr, workingTreeRawPath); err != nil {
 					return err
 				}
 			} else {
@@ -198,16 +187,6 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 					args = append(args,
 						"--depth", strconv.Itoa(c.init.depth),
 					)
-				}
-				if c.init.guessRepoURL && (strings.HasPrefix(repoURLStr, "http://") || strings.HasPrefix(repoURLStr, "https://")) {
-					repoURL, err := url.Parse(repoURLStr)
-					if err != nil {
-						return err
-					}
-					if repoURL.User == nil {
-						repoURL.User = url.User(username)
-						repoURLStr = repoURL.String()
-					}
 				}
 				args = append(args,
 					repoURLStr,
@@ -263,7 +242,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 }
 
 // builtinGitClone clones a repo using the builtin git command.
-func (c *Config) builtinGitClone(username, repoURLStr string, workingTreeRawPath chezmoi.AbsPath) error {
+func (c *Config) builtinGitClone(repoURLStr string, workingTreeRawPath chezmoi.AbsPath) error {
 	endpoint, err := transport.NewEndpoint(repoURLStr)
 	if err != nil {
 		return err
@@ -299,11 +278,8 @@ func (c *Config) builtinGitClone(username, repoURLStr string, workingTreeRawPath
 			return err
 		}
 		var basicAuth http.BasicAuth
-		if basicAuth.Username, err = c.readString("Username? ", &username); err != nil {
+		if basicAuth.Username, err = c.readString("Username? ", nil); err != nil {
 			return err
-		}
-		if basicAuth.Username == "" {
-			basicAuth.Username = username
 		}
 		if basicAuth.Password, err = c.readPassword("Password? "); err != nil {
 			return err
@@ -365,21 +341,16 @@ func (o loggableGitCloneOptions) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // guessRepoURL guesses the user's username and repo from arg.
-func guessRepoURL(arg string, ssh bool) (username, repo string) {
+func guessRepoURL(arg string, ssh bool) string {
 	for _, repoGuess := range repoGuesses {
-		if !repoGuess.rx.MatchString(arg) {
-			continue
-		}
 		switch {
+		case !repoGuess.rx.MatchString(arg):
+			continue
 		case ssh && repoGuess.sshRepoGuessRepl != "":
-			repo = repoGuess.rx.ReplaceAllString(arg, repoGuess.sshRepoGuessRepl)
-			return
+			return repoGuess.rx.ReplaceAllString(arg, repoGuess.sshRepoGuessRepl)
 		case !ssh && repoGuess.httpRepoGuessRepl != "":
-			username = repoGuess.rx.ReplaceAllString(arg, repoGuess.usernameGuessRepl)
-			repo = repoGuess.rx.ReplaceAllString(arg, repoGuess.httpRepoGuessRepl)
-			return
+			return repoGuess.rx.ReplaceAllString(arg, repoGuess.httpRepoGuessRepl)
 		}
 	}
-	repo = arg
-	return
+	return arg
 }
