@@ -141,6 +141,8 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 			return nil, err
 		}
 		c.Keepassxc.password = password
+	}
+	if c.Keepassxc.password != "" {
 		cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
 	} else {
 		cmd.Stdin = os.Stdin
