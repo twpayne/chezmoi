@@ -71,6 +71,12 @@ func TestWalkArchive(t *testing.T) {
 			archiveFormat: ArchiveFormatZip,
 		},
 		{
+			name:          "zip-flat",
+			root:          flatRoot,
+			dataFunc:      archivetest.NewZip,
+			archiveFormat: ArchiveFormatZip,
+		},
+		{
 			name:          "tar-flat",
 			root:          flatRoot,
 			dataFunc:      archivetest.NewTar,
