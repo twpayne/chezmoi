@@ -8,10 +8,12 @@
 <meta content="Manage your dotfiles across multiple machines, securely." name="description"/>
 <meta content="Tom Payne" name="author"/>
 <link href="https://chezmoi.io/user-guide/setup/" rel="canonical"/>
+<link href="../command-overview/" rel="prev"/>
+<link href="../daily-operations/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.4.2, mkdocs-material-8.5.10" name="generator"/>
+<meta content="mkdocs-1.4.2, mkdocs-material-9.0.6" name="generator"/>
 <title>Setup - chezmoi</title>
-<link href="../../assets/stylesheets/main.975780f9.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.558e4712.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.2505c338.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -88,7 +90,7 @@
 <div class="md-search-result__meta">
             Initializing search
           </div>
-<ol class="md-search-result__list"></ol>
+<ol class="md-search-result__list" role="presentation"></ol>
 </div>
 </div>
 </div>
@@ -167,7 +169,7 @@
 </div>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_1" id="__nav_1" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_1" id="__nav_1" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../..">Home</a>
 <label for="__nav_1">
@@ -215,7 +217,7 @@
 </li>
 <li class="md-nav__item md-nav__item--active md-nav__item--nested">
 <input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" id="__nav_2" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2">
+<label aria-expanded="true" class="md-nav__link" for="__nav_2" tabindex="0">
           User guide
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -304,8 +306,8 @@
       </a>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_9" id="__nav_2_9" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_9">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_9" id="__nav_2_9" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_2_9" tabindex="0">
           Tools
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -339,7 +341,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_10" id="__nav_2_10" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_10" id="__nav_2_10" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../password-managers/">Password managers</a>
 <label for="__nav_2_10">
@@ -416,7 +418,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_11" id="__nav_2_11" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_11" id="__nav_2_11" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../encryption/">Encryption</a>
 <label for="__nav_2_11">
@@ -443,8 +445,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_12" id="__nav_2_12" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_12">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_12" id="__nav_2_12" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_2_12" tabindex="0">
           Machines
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -483,8 +485,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_13" id="__nav_2_13" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_13">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_13" id="__nav_2_13" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_2_13" tabindex="0">
           Advanced
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -513,8 +515,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_14" id="__nav_2_14" type="checkbox"/>
-<label class="md-nav__link" for="__nav_2_14">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_14" id="__nav_2_14" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_2_14" tabindex="0">
           Frequently asked questions
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -556,7 +558,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3" id="__nav_3" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3" id="__nav_3" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/">Reference</a>
 <label for="__nav_3">
@@ -590,7 +592,7 @@
       </a>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_6" id="__nav_3_6" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_6" id="__nav_3_6" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/command-line-flags/">Command line flags</a>
 <label for="__nav_3_6">
@@ -622,7 +624,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_7" id="__nav_3_7" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_7" id="__nav_3_7" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/configuration-file/">Configuration file</a>
 <label for="__nav_3_7">
@@ -669,7 +671,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_8" id="__nav_3_8" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_8" id="__nav_3_8" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/special-files-and-directories/">Special files and directories</a>
 <label for="__nav_3_8">
@@ -731,8 +733,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_9" id="__nav_3_9" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_9">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_9" id="__nav_3_9" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_3_9" tabindex="0">
           Commands
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -971,7 +973,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10" id="__nav_3_10" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10" id="__nav_3_10" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/">Templates</a>
 <label for="__nav_3_10">
@@ -995,7 +997,7 @@
       </a>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_4" id="__nav_3_10_4" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_4" id="__nav_3_10_4" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/functions/">Functions</a>
 <label for="__nav_3_10_4">
@@ -1142,7 +1144,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_5" id="__nav_3_10_5" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_5" id="__nav_3_10_5" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/github-functions/">GitHub functions</a>
 <label for="__nav_3_10_5">
@@ -1174,7 +1176,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_6" id="__nav_3_10_6" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_6" id="__nav_3_10_6" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/init-functions/">Init functions</a>
 <label for="__nav_3_10_6">
@@ -1236,7 +1238,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_7" id="__nav_3_10_7" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_7" id="__nav_3_10_7" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/1password-functions/">1Password functions</a>
 <label for="__nav_3_10_7">
@@ -1278,7 +1280,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_8" id="__nav_3_10_8" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_8" id="__nav_3_10_8" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/aws-secrets-manager-functions/">AWS Secrets Manager functions</a>
 <label for="__nav_3_10_8">
@@ -1305,7 +1307,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_9" id="__nav_3_10_9" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_9" id="__nav_3_10_9" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/bitwarden-functions/">Bitwarden functions</a>
 <label for="__nav_3_10_9">
@@ -1337,7 +1339,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_10" id="__nav_3_10_10" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_10" id="__nav_3_10_10" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/gopass-functions/">gopass functions</a>
 <label for="__nav_3_10_10">
@@ -1364,7 +1366,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_11" id="__nav_3_10_11" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_11" id="__nav_3_10_11" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/keepassxc-functions/">KeePassXC functions</a>
 <label for="__nav_3_10_11">
@@ -1396,7 +1398,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_12" id="__nav_3_10_12" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_12" id="__nav_3_10_12" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/keeper-functions/">Keeper functions</a>
 <label for="__nav_3_10_12">
@@ -1428,8 +1430,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_13" id="__nav_3_10_13" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_10_13">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_13" id="__nav_3_10_13" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_3_10_13" tabindex="0">
           Keyring functions
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -1448,7 +1450,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_14" id="__nav_3_10_14" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_14" id="__nav_3_10_14" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/lastpass-functions/">LastPass functions</a>
 <label for="__nav_3_10_14">
@@ -1475,7 +1477,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_15" id="__nav_3_10_15" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_15" id="__nav_3_10_15" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/pass-functions/">pass functions</a>
 <label for="__nav_3_10_15">
@@ -1507,7 +1509,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" id="__nav_3_10_16" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" id="__nav_3_10_16" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/passhole-functions/">Passhole functions</a>
 <label for="__nav_3_10_16">
@@ -1529,8 +1531,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" id="__nav_3_10_17" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_10_17">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" id="__nav_3_10_17" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_3_10_17" tabindex="0">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -1549,7 +1551,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_18" id="__nav_3_10_18" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_18" id="__nav_3_10_18" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/secret-functions/">Generic secret functions</a>
 <label for="__nav_3_10_18">
@@ -1587,8 +1589,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
-<label class="md-nav__link" for="__nav_4">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_4" id="__nav_4" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_4" tabindex="0">
           Developer
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -1652,8 +1654,8 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_5" id="__nav_5" type="checkbox"/>
-<label class="md-nav__link" for="__nav_5">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_5" id="__nav_5" type="checkbox"/>
+<label aria-expanded="false" class="md-nav__link" for="__nav_5" tabindex="0">
           Links
           <span class="md-nav__icon md-icon"></span>
 </label>
@@ -1732,9 +1734,6 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<a class="md-content__button md-icon" href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/user-guide/setup.md" title="Edit this page">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"></path></svg>
-</a>
 <h1 id="setup">Setup</h1>
 <h2 id="understand-chezmois-files-and-directories">Understand chezmoi's files and directories</h2>
 <p>chezmoi generates your dotfiles for your local machine. It combines two main
@@ -1755,22 +1754,22 @@ of your choice (e.g. <a href="https://bitbucket.org">Bitbucket</a>,
 <a href="https://github.com/">GitHub</a>, or <a href="https://gitlab.com">GitLab</a>, many people call
 their repo <code>dotfiles</code>) and push the repo in the source directory here. For
 example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi <span class="nb">cd</span>
-<span class="gp">$ </span>git remote add origin https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
-<span class="gp">$ </span>git push -u origin main
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
+<span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
 <span class="gp">$ </span><span class="nb">exit</span>
 </code></pre></div>
 <p>On another machine you can checkout this repo:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>You can then see what would be changed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi diff
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>diff
 </code></pre></div>
 <p>If you're happy with the changes then apply them:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi apply
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply
 </code></pre></div>
 <p>The above commands can be combined into a single init, checkout, and apply:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init --apply --verbose https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>--verbose<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>These commands are summarized this sequence diagram:</p>
 <div class="mermaid">sequenceDiagram
@@ -1817,13 +1816,13 @@ your initial config file.</p>
 if it is not already set in your <code>data</code>.</p>
 <p>To test this template, use <code>chezmoi execute-template</code> with the <code>--init</code> and
 <code>--promptString</code> flags, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi execute-template --init --promptString <span class="nv">email</span><span class="o">=</span>me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="nv">email</span><span class="o">=</span>me@home.org<span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre></div>
 <h2 id="re-create-your-config-file">Re-create your config file</h2>
 <p>If you change your config file template, chezmoi will warn you if your current
 config file was not generated from that template. You can re-generate your
 config file by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi init
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init
 </code></pre></div>
 <p>If you are using any <code>prompt*</code> template functions in your config file template
 you will be prompted again. However, you can avoid this with the following
@@ -1844,34 +1843,6 @@ to <code>promptString</code> only if it is not set.</p>
           </a>
 </main>
 <footer class="md-footer">
-<nav aria-label="Footer" class="md-footer__inner md-grid">
-<a aria-label="Previous: Command overview" class="md-footer__link md-footer__link--prev" href="../command-overview/" rel="prev">
-<div class="md-footer__button md-icon">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
-</div>
-<div class="md-footer__title">
-<div class="md-ellipsis">
-<span class="md-footer__direction">
-                Previous
-              </span>
-              Command overview
-            </div>
-</div>
-</a>
-<a aria-label="Next: Daily operations" class="md-footer__link md-footer__link--next" href="../daily-operations/" rel="next">
-<div class="md-footer__title">
-<div class="md-ellipsis">
-<span class="md-footer__direction">
-                Next
-              </span>
-              Daily operations
-            </div>
-</div>
-<div class="md-footer__button md-icon">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"></path></svg>
-</div>
-</a>
-</nav>
 <div class="md-footer-meta md-typeset">
 <div class="md-footer-meta__inner md-grid">
 <div class="md-copyright">
@@ -1892,8 +1863,8 @@ to <code>promptString</code> only if it is not set.</p>
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
-<script src="../../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.e5c33ebb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.51d95adb.min.js"></script>
 <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
 <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script><script>mermaid.initialize({
     theme: (JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
