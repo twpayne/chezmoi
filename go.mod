@@ -25,7 +25,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.6
 	github.com/rogpeppe/go-internal v1.9.0
 	github.com/rs/zerolog v1.28.0
-	github.com/sergi/go-diff v1.3.1
+	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
@@ -124,4 +124,10 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
+)
+
+exclude (
+	github.com/sergi/go-diff v1.2.0 // https://github.com/sergi/go-diff/issues/123
+	github.com/sergi/go-diff v1.3.0
+	github.com/sergi/go-diff v1.3.1 // https://github.com/twpayne/chezmoi/issues/2706
 )
