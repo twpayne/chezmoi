@@ -1818,6 +1818,13 @@ git hosting service.</p>
 <p>On a second machine, initialize chezmoi with your dotfiles repo:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Private GitHub repos requires other
+<a href="https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls">authentication methods</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>git@github.com:<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+</code></pre></div>
+</div>
 <p>This will check out the repo and any submodules and optionally create a chezmoi
 config file for you.</p>
 <p>Check what changes that chezmoi will make to your home directory by running:</p>
@@ -1858,6 +1865,13 @@ contents of the file:</p>
 shortened to:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Private GitHub repos requires other
+<a href="https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls">authentication methods</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="go">chezmoi init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git</span>
+</code></pre></div>
+</div>
 <p>This command is summarized in this sequence diagram:</p>
 <div class="mermaid">sequenceDiagram
     participant H as home directory
