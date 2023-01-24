@@ -122,6 +122,15 @@ On a second machine, initialize chezmoi with your dotfiles repo:
 $ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
+!!! hint
+
+    Private GitHub repos requires other
+    [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
+
+    ```console
+    $ chezmoi init git@github.com:$GITHUB_USERNAME/dotfiles.git
+    ```
+
 This will check out the repo and any submodules and optionally create a chezmoi
 config file for you.
 
@@ -187,6 +196,15 @@ shortened to:
 ```console
 $ chezmoi init --apply $GITHUB_USERNAME
 ```
+
+!!! hint
+
+    Private GitHub repos requires other
+    [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
+
+    ```console
+    chezmoi init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git
+    ```
 
 This command is summarized in this sequence diagram:
 

@@ -155,6 +155,13 @@ with a single command:
     sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
     ```
 
+    Private GitHub repos requires other
+    [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
+
+    ```sh
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git
+    ```
+
 !!! hint
 
     To install the chezmoi binary in a different directory, use the `-b` option,
