@@ -304,6 +304,11 @@ articles:
   title: chezmoi で Linux と macOS 両方で使える dotfiles を作る
   lang: JP
   url: https://www.docswell.com/s/iosiftakakura/K2EXM5-2022-06-11-chezmoi
+- date: '2022-08-05'
+  version: 2.20.0
+  title: 使用chezmoi管理dotfiles
+  lang: CN
+  url: https://zhaohongxuan.github.io/2022/08/05/use-chezmoi-manage-dotfiles/
 - date: '2022-09-13'
   version: 2.22.1
   title: Using chezmoi to automate dotfiles / config files (+ my bashrc)
@@ -318,6 +323,11 @@ articles:
   version: 2.24.0
   title: 'Shit Hot Dotfiles'
   url: https://kolv.in/posts/dotfile-managment
+- date: '2023-01-05'
+  version: 2.29.1
+  title: 既存の dotfiles を chezmoi で管理する
+  lang: JP
+  url: https://zenn.dev/johnmanjiro13/articles/d14825f4ef3184
 - date: '2023-01-12'
   version: 2.29.1
   title: 'Chezmoiでかんたんクロスプラットフォームdotfiles管理のススメ'
@@ -327,3 +337,8 @@ articles:
   version: 2.29.1
   title: 'Making the most out of distrobox and toolbx'
   url: https://www.ypsidanger.com/making-the-most-out-of-distrobox-and-toolbx/
+- date: '2023-01-22'
+  version: 2.29.3
+  title: dotfile manager の chezmoi に移行してみる
+  lang: JP
+  url: https://blog.yamano.dev/posts/2023/01/chezmoi-setup/
