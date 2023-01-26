@@ -281,6 +281,7 @@ nav:
   - Articles, podcasts, and videos: links/articles-podcasts-and-videos.md
   - Dotfile repos using chezmoi: links/dotfile-repos-using-chezmoi.md
   - Related software: links/related-software.md
+  - Social media: links/social-media.md
 - License: license.md
 
 markdown_extensions:
