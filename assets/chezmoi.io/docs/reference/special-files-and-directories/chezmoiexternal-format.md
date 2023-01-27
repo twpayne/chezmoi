@@ -62,8 +62,8 @@ the directory and all subdirectories will be treated as exact directories, i.e.
 integer field `stripComponents` will remove leading path components from the
 members of archive. The optional string field `format` sets the archive format.
 The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
-`xz`, and `zip`. If `format` is not specified then chezmoi will guess the format
-using firstly the path of the URL and secondly its contents.
+`xz`, `.tar.zst`, and `zip`. If `format` is not specified then chezmoi will
+guess the format using firstly the path of the URL and secondly its contents.
 
 The optional `include` and `exclude` fields are lists of patterns specify which
 archive members to include or exclude respectively. Patterns match paths in the
