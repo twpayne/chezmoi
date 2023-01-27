@@ -1,0 +1,13 @@
+[(openbsd||windows)] skip 'tar does not support zstd compression'
+[!exec:zstd] skip 'zstd not found in $PATH'
+exec tar -c -f archive.tar.zst --use-compress-program zstd archive
+
+# test that chezmoi import imports a tar.zst archive
+exec chezmoi import --destination=$HOME${/}.dir --strip-components=1 archive.tar.zst
+cmp $CHEZMOISOURCEDIR/dot_dir/dir/file golden/dot_dir/dir/file
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/dot_dir/dir/file --
+# contents of dir/file
+-- home/user/.local/share/chezmoi/dot_dir/.keep --

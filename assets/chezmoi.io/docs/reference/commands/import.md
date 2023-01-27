@@ -6,7 +6,7 @@ exactly match the contents of a downloaded archive. You will generally always
 want to set the `--destination`, `--exact`, and `--remove-destination` flags.
 
 The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
-`xz`, and `zip`.
+`xz`, `.tar.zst`, and `zip`.
 
 ## `--destination` *directory*
 

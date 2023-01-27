@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/klauspost/compress/zstd"
 	"github.com/ulikunitz/xz"
 )
 
@@ -28,6 +29,7 @@ const (
 	ArchiveFormatTarBz2  ArchiveFormat = "tar.bz2"
 	ArchiveFormatTarGz   ArchiveFormat = "tar.gz"
 	ArchiveFormatTarXz   ArchiveFormat = "tar.xz"
+	ArchiveFormatTarZst  ArchiveFormat = "tar.zst"
 	ArchiveFormatTbz2    ArchiveFormat = "tbz2"
 	ArchiveFormatTgz     ArchiveFormat = "tgz"
 	ArchiveFormatTxz     ArchiveFormat = "txz"
@@ -73,6 +75,8 @@ func GuessArchiveFormat(path string, data []byte) ArchiveFormat {
 		return ArchiveFormatTarGz
 	case strings.HasSuffix(pathLower, ".tar.xz") || strings.HasSuffix(pathLower, ".txz"):
 		return ArchiveFormatTarXz
+	case strings.HasSuffix(pathLower, ".tar.zst"):
+		return ArchiveFormatTarZst
 	case strings.HasSuffix(pathLower, ".zip"):
 		return ArchiveFormatZip
 	}
@@ -84,6 +88,8 @@ func GuessArchiveFormat(path string, data []byte) ArchiveFormat {
 		return ArchiveFormatZip
 	case len(data) >= xz.HeaderLen && xz.ValidHeader(data):
 		return ArchiveFormatTarXz
+	case (&zstd.Header{}).Decode(data) == nil:
+		return ArchiveFormatTarZst
 	case isTarArchive(bytes.NewReader(data)):
 		return ArchiveFormatTar
 	case isTarArchive(bzip2.NewReader(bytes.NewReader(data))):
@@ -117,6 +123,13 @@ func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
 		// Decompress with xz.
 		var err error
 		r, err = xz.NewReader(r)
+		if err != nil {
+			return err
+		}
+	case ArchiveFormatTarZst:
+		// Decompress with zstd.
+		var err error
+		r, err = zstd.NewReader(r)
 		if err != nil {
 			return err
 		}
