@@ -163,7 +163,8 @@ integration tests use the
 [`github.com/stretchr/testify`](https://pkg.go.dev/github.com/stretchr/testify)
 framework. End-to-end tests use
 [`github.com/rogpeppe/go-internal/testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
-with the test scripts themselves in `pkg/cmd/testdata/scripts/$TEST_NAME.txt`.
+with the test scripts themselves in
+`pkg/cmd/testdata/scripts/$TEST_NAME.txtar`.
 
 You can run individual end-to-end tests with
 
