@@ -1,11 +1,12 @@
 package chezmoi
 
 import (
-	"archive/zip"
 	"io"
 	"io/fs"
 	"os/exec"
 	"time"
+
+	"github.com/klauspost/compress/zip"
 )
 
 // A ZIPWriterSystem is a System that writes to a ZIP archive.

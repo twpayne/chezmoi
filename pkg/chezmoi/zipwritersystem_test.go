@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"io"
@@ -10,6 +9,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/klauspost/compress/zip"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"

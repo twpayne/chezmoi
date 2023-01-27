@@ -1,10 +1,11 @@
 package archivetest
 
 import (
-	"archive/zip"
 	"bytes"
 	"fmt"
 	"io/fs"
+
+	"github.com/klauspost/compress/zip"
 )
 
 func NewZip(root map[string]any) ([]byte, error) {

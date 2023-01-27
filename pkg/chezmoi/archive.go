@@ -2,10 +2,8 @@ package chezmoi
 
 import (
 	"archive/tar"
-	"archive/zip"
 	"bytes"
 	"compress/bzip2"
-	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/klauspost/compress/gzip"
+	"github.com/klauspost/compress/zip"
 	"github.com/klauspost/compress/zstd"
 	"github.com/ulikunitz/xz"
 )
