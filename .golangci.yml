@@ -96,6 +96,8 @@ linters:
 linters-settings:
   forbidigo:
     forbid:
+    - ^archive/zip\.
+    - ^compress/gzip\.
     - ^fmt\.Print.*$
     - ^ioutil\..*$
     - ^os\.(DirEntry|FileInfo|FileMode|Is.*|Mode.*)$

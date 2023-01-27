@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"archive/tar"
-	"compress/gzip"
 	"os/user"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/klauspost/compress/gzip"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
