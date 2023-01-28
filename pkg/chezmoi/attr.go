@@ -122,6 +122,7 @@ func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Bool("exact", da.Exact)
 	e.Bool("private", da.Private)
 	e.Bool("readOnly", da.ReadOnly)
+	e.Bool("remove", da.Remove)
 }
 
 // SourceName returns da's source name.

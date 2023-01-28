@@ -800,8 +800,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
 	addSourceStateEntries := func(relPath RelPath, sourceStateEntries ...SourceStateEntry) {
 		allSourceStateEntriesMu.Lock()
+		defer allSourceStateEntriesMu.Unlock()
 		allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], sourceStateEntries...)
-		allSourceStateEntriesMu.Unlock()
 	}
 	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
