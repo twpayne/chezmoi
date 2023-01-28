@@ -57,6 +57,7 @@ func TestScript(t *testing.T) {
 			"edit":           cmdEdit,
 			"expandenv":      cmdExpandEnv,
 			"httpd":          cmdHTTPD,
+			"isdir":          cmdIsDir,
 			"issymlink":      cmdIsSymlink,
 			"lexists":        cmdLExists,
 			"mkfile":         cmdMkFile,
@@ -209,6 +210,23 @@ func cmdHTTPD(ts *testscript.TestScript, neg bool, args []string) {
 	dir := ts.MkAbs(args[0])
 	server := httptest.NewServer(http.FileServer(http.Dir(dir)))
 	ts.Setenv("HTTPD_URL", server.URL)
+}
+
+// cmdIsDir succeeds if all of its arguments are directories.
+func cmdIsDir(ts *testscript.TestScript, neg bool, args []string) {
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		fileInfo, err := os.Lstat(filename)
+		if err != nil {
+			ts.Fatalf("%s: %v", arg, err)
+		}
+		switch isDir := fileInfo.IsDir(); {
+		case isDir && neg:
+			ts.Fatalf("%s is a directory", arg)
+		case !isDir && !neg:
+			ts.Fatalf("%s is not a directory", arg)
+		}
+	}
 }
 
 // cmdIsSymlink succeeds if all of its arguments are symlinks.
