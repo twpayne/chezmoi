@@ -1,0 +1,35 @@
+symlink $CHEZMOISOURCEDIR/dot_vim/external_bundle/symlink -> executable_file
+
+# test that chezmoi ignores attributes in external_ dirs
+exec chezmoi apply
+
+# test that executable_ attributes are ignored and empty files are created
+cmp $HOME/.vim/bundle/executable_file $CHEZMOISOURCEDIR/dot_vim/external_bundle/executable_file
+
+# test that scripts are not run
+cmp $HOME/.vim/bundle/run_script.sh $CHEZMOISOURCEDIR/dot_vim/external_bundle/run_script.sh
+! stdout evil
+
+# test that private_ attributes are ignored and subdirectories are created
+isdir $HOME/.vim/bundle/private_subdir
+
+# test that files can be ignored
+! exists $HOME/.vim/bundle/private_subdir/.keep
+
+# test that symlinks are created
+issymlink $HOME/.vim/bundle/symlink
+
+# test that symlink_ attributes are ignored
+cmp $HOME/.vim/bundle/symlink_example $CHEZMOISOURCEDIR/dot_vim/external_bundle/symlink_example
+! issymlink $HOME/.vim/bundle/symlink_example
+
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+**/.keep
+-- home/user/.local/share/chezmoi/dot_vim/external_bundle/executable_file --
+-- home/user/.local/share/chezmoi/dot_vim/external_bundle/private_subdir/.keep --
+-- home/user/.local/share/chezmoi/dot_vim/external_bundle/run_script.sh --
+#!/bin/sh
+
+echo evil
+-- home/user/.local/share/chezmoi/dot_vim/external_bundle/symlink_example --
+# contents of .vim/bundle/symlink_example

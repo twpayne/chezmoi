@@ -16,6 +16,7 @@ modifiers and their abbreviations are:
 | `encrypted`        | *none*       |
 | `exact`            | *none*       |
 | `executable`       | `x`          |
+| `external`         | *none*       |
 | `once`             | `o`          |
 | `private`          | `p`          |
 | `readonly`         | `r`          |

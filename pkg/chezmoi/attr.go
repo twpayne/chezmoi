@@ -56,6 +56,7 @@ const (
 type DirAttr struct {
 	TargetName string
 	Exact      bool
+	External   bool
 	Private    bool
 	ReadOnly   bool
 	Remove     bool
@@ -80,10 +81,15 @@ func parseDirAttr(sourceName string) DirAttr {
 	var (
 		name     = sourceName
 		exact    = false
+		external = false
 		private  = false
 		readOnly = false
 		remove   = false
 	)
+	if strings.HasPrefix(name, externalPrefix) {
+		name = mustTrimPrefix(name, externalPrefix)
+		external = true
+	}
 	if strings.HasPrefix(name, removePrefix) {
 		name = mustTrimPrefix(name, removePrefix)
 		remove = true
@@ -109,6 +115,7 @@ func parseDirAttr(sourceName string) DirAttr {
 	return DirAttr{
 		TargetName: name,
 		Exact:      exact,
+		External:   external,
 		Private:    private,
 		ReadOnly:   readOnly,
 		Remove:     remove,
@@ -120,6 +127,7 @@ func parseDirAttr(sourceName string) DirAttr {
 func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("targetName", da.TargetName)
 	e.Bool("exact", da.Exact)
+	e.Bool("external", da.External)
 	e.Bool("private", da.Private)
 	e.Bool("readOnly", da.ReadOnly)
 	e.Bool("remove", da.Remove)
@@ -128,6 +136,9 @@ func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 // SourceName returns da's source name.
 func (da DirAttr) SourceName() string {
 	sourceName := ""
+	if da.External {
+		sourceName += externalPrefix
+	}
 	if da.Remove {
 		sourceName += removePrefix
 	}

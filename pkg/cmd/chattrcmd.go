@@ -63,6 +63,7 @@ type modifier struct {
 	encrypted      boolModifier
 	exact          boolModifier
 	executable     boolModifier
+	external       boolModifier
 	order          orderModifier
 	private        boolModifier
 	readOnly       boolModifier
@@ -106,6 +107,7 @@ func (c *Config) chattrCmdValidArgs(
 			"encrypted",
 			"exact",
 			"executable",
+			"external",
 			"modify",
 			"once",
 			"onchange",
@@ -382,6 +384,8 @@ func parseModifier(s string) (*modifier, error) {
 			m.exact = bm
 		case "executable", "x":
 			m.executable = bm
+		case "external":
+			m.external = bm
 		case "modify":
 			switch bm {
 			case boolModifierClear:
@@ -437,6 +441,7 @@ func (m *modifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
 	return chezmoi.DirAttr{
 		TargetName: dirAttr.TargetName,
 		Exact:      m.exact.modify(dirAttr.Exact),
+		External:   m.external.modify(dirAttr.External),
 		Private:    m.private.modify(dirAttr.Private),
 		ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
 		Remove:     m.remove.modify(dirAttr.Remove),

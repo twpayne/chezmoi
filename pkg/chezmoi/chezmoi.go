@@ -51,6 +51,7 @@ const (
 	encryptedPrefix  = "encrypted_"
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
+	externalPrefix   = "external_"
 	literalPrefix    = "literal_"
 	modifyPrefix     = "modify_"
 	oncePrefix       = "once_"

@@ -23,7 +23,7 @@ func TestChattrCmdValidArgs(t *testing.T) {
 		},
 		{
 			toComplete:                 "e",
-			expectedCompletions:        []string{"empty", "encrypted", "exact", "executable"},
+			expectedCompletions:        []string{"empty", "encrypted", "exact", "executable", "external"},
 			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
 		},
 		{
