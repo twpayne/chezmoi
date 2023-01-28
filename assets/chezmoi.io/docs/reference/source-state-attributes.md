@@ -19,6 +19,7 @@ to as "attributes":
 | `dot_`        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`                          |
 | `empty_`      | Ensure the file exists, even if is empty. By default, empty files are removed       |
 | `encrypted_`  | Encrypt the file in the source state                                                |
+| `external_`   | Ignore attributes in child entries                                                  |
 | `exact_`      | Remove anything not managed by chezmoi                                              |
 | `executable_` | Add executable permissions to the target file                                       |
 | `literal_`    | Stop parsing prefix attributes                                                      |
@@ -41,7 +42,7 @@ prefixes is important.
 
 | Target type   | Source type | Allowed prefixes in order                                               | Allowed suffixes |
 | ------------- | ----------- | ----------------------------------------------------------------------- | ---------------- |
-| Directory     | Directory   | `remove_`, `exact_`, `private_`, `readonly_`, `dot_`                    | *none*           |
+| Directory     | Directory   | `external_` or `remove_`, `exact_`, `private_`, `readonly_`, `dot_`     | *none*           |
 | Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                         | `.tmpl`          |
 | Create file   | File        | `create_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
 | Modify file   | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |

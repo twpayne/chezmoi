@@ -13,6 +13,7 @@ func TestDirAttr(t *testing.T) {
 	testData := struct {
 		TargetName []string
 		Exact      []bool
+		External   []bool
 		Private    []bool
 		ReadOnly   []bool
 		Remove     []bool
@@ -31,6 +32,7 @@ func TestDirAttr(t *testing.T) {
 			"symlink_dir",
 		},
 		Exact:    []bool{false, true},
+		External: []bool{false, true},
 		Private:  []bool{false, true},
 		ReadOnly: []bool{false, true},
 		Remove:   []bool{false, true},

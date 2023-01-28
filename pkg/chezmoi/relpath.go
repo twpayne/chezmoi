@@ -100,6 +100,16 @@ func (p RelPath) Slice(begin, end int) RelPath {
 	return NewRelPath(p.relPath[begin:end])
 }
 
+// SourceRelPath returns p as a SourceRelPath.
+func (p RelPath) SourceRelPath() SourceRelPath {
+	return NewSourceRelPath(p.relPath)
+}
+
+// SourceRelDirPath returns p as a directory SourceRelPath.
+func (p RelPath) SourceRelDirPath() SourceRelPath {
+	return NewSourceRelDirPath(p.relPath)
+}
+
 // Split returns p's directory and path.
 func (p RelPath) Split() (RelPath, RelPath) {
 	dir, file := path.Split(p.relPath)

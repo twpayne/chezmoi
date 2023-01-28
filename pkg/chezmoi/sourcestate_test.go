@@ -1309,6 +1309,88 @@ func TestSourceStateRead(t *testing.T) {
 			),
 		},
 		{
+			name: "external",
+			root: map[string]any{
+				"/home/user/.local/share/chezmoi": map[string]any{
+					"external_dir": map[string]any{
+						"dot_file": "# contents of dir/dot_file\n",
+						"subdir": map[string]any{
+							"empty_file": "",
+						},
+						"symlink": &vfst.Symlink{Target: "dot_file"},
+					},
+				},
+			},
+			expectedSourceState: NewSourceState(
+				withEntries(map[RelPath]SourceStateEntry{
+					NewRelPath("dir"): &SourceStateDir{
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir")),
+						sourceRelPath: NewSourceRelDirPath("external_dir"),
+						Attr: DirAttr{
+							TargetName: "dir",
+							External:   true,
+						},
+						targetStateEntry: &TargetStateDir{
+							perm: fs.ModePerm &^ chezmoitest.Umask,
+						},
+					},
+					NewRelPath("dir/dot_file"): &SourceStateFile{
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/dot_file")),
+						sourceRelPath: NewSourceRelPath("external_dir/dot_file"),
+						Attr: FileAttr{
+							TargetName: "dot_file",
+							Type:       SourceFileTypeFile,
+							Empty:      true,
+						},
+						lazyContents: newLazyContents([]byte("# contents of dir/dot_file\n")),
+						targetStateEntry: &TargetStateFile{
+							empty:        true,
+							perm:         0o666 &^ chezmoitest.Umask,
+							lazyContents: newLazyContents([]byte("# contents of dir/dot_file\n")),
+						},
+					},
+					NewRelPath("dir/subdir"): &SourceStateDir{
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/subdir")),
+						sourceRelPath: NewSourceRelDirPath("external_dir/subdir"),
+						Attr: DirAttr{
+							TargetName: "subdir",
+							Exact:      true,
+						},
+						targetStateEntry: &TargetStateDir{
+							perm: fs.ModePerm &^ chezmoitest.Umask,
+						},
+					},
+					NewRelPath("dir/subdir/empty_file"): &SourceStateFile{
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/subdir/empty_file")),
+						sourceRelPath: NewSourceRelPath("external_dir/subdir/empty_file"),
+						Attr: FileAttr{
+							TargetName: "empty_file",
+							Type:       SourceFileTypeFile,
+							Empty:      true,
+						},
+						lazyContents: newLazyContents([]byte{}),
+						targetStateEntry: &TargetStateFile{
+							empty:        true,
+							perm:         0o666 &^ chezmoitest.Umask,
+							lazyContents: newLazyContents([]byte{}),
+						},
+					},
+					NewRelPath("dir/symlink"): &SourceStateFile{
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/symlink")),
+						sourceRelPath: NewSourceRelPath("external_dir/symlink"),
+						Attr: FileAttr{
+							TargetName: "symlink",
+							Type:       SourceFileTypeFile,
+						},
+						lazyContents: newLazyContents([]byte("dot_file")),
+						targetStateEntry: &TargetStateSymlink{
+							lazyLinkname: newLazyLinkname("dot_file"),
+						},
+					},
+				}),
+			),
+		},
+		{
 			name: "chezmoitemplates",
 			root: map[string]any{
 				"/home/user/.local/share/chezmoi": map[string]any{

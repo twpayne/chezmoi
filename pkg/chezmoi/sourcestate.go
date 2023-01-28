@@ -876,6 +876,18 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			sourceStateDir := s.newSourceStateDir(sourceAbsPath, sourceRelPath, da)
 			addSourceStateEntries(targetRelPath, sourceStateDir)
+			if da.External {
+				sourceStateEntries, err := s.readExternalDir(sourceAbsPath, sourceRelPath, targetRelPath)
+				if err != nil {
+					return err
+				}
+				allSourceStateEntriesMu.Lock()
+				for relPath, entries := range sourceStateEntries {
+					allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], entries...)
+				}
+				allSourceStateEntriesMu.Unlock()
+				return fs.SkipDir
+			}
 			if sourceStateDir.Attr.Remove {
 				s.Lock()
 				s.removeDirs[targetRelPath] = struct{}{}
@@ -2105,6 +2117,98 @@ func (s *SourceState) readExternalArchive(
 		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 	}
 
+	return sourceStateEntries, nil
+}
+
+// ReadExternalDir returns all source state entries in an external_ dir.
+func (s *SourceState) readExternalDir(
+	rootSourceAbsPath AbsPath, rootSourceRelPath SourceRelPath, rootTargetRelPath RelPath,
+) (map[RelPath][]SourceStateEntry, error) {
+	sourceStateEntries := make(map[RelPath][]SourceStateEntry)
+	walkFunc := func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		switch {
+		case err != nil:
+			return err
+		case absPath == rootSourceAbsPath:
+			return nil
+		}
+		relPath := absPath.MustTrimDirPrefix(rootSourceAbsPath)
+		targetRelPath := rootTargetRelPath.Join(relPath)
+		if s.Ignore(targetRelPath) {
+			if fileInfo.IsDir() {
+				return fs.SkipDir
+			}
+			return nil
+		}
+		var sourceStateEntry SourceStateEntry
+		switch fileInfo.Mode().Type() {
+		case 0:
+			fileAttr := FileAttr{
+				TargetName: fileInfo.Name(),
+				Type:       SourceFileTypeFile,
+				Empty:      true,
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
+			}
+			lazyContents := newLazyContentsFunc(func() ([]byte, error) {
+				return s.system.ReadFile(absPath)
+			})
+			sourceStateEntry = &SourceStateFile{
+				lazyContents:  lazyContents,
+				origin:        SourceStateOriginAbsPath(absPath),
+				Attr:          fileAttr,
+				sourceRelPath: rootSourceRelPath.Join(relPath.SourceRelPath()),
+				targetStateEntry: &TargetStateFile{
+					lazyContents: lazyContents,
+					empty:        true,
+					perm:         fileAttr.perm() &^ s.umask,
+				},
+			}
+		case fs.ModeDir:
+			dirAttr := DirAttr{
+				TargetName: fileInfo.Name(),
+				Exact:      true,
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
+			}
+			sourceStateEntry = &SourceStateDir{
+				origin:        SourceStateOriginAbsPath(absPath),
+				sourceRelPath: rootSourceRelPath.Join(relPath.SourceRelDirPath()),
+				Attr:          dirAttr,
+				targetStateEntry: &TargetStateDir{
+					perm: dirAttr.perm() &^ s.umask,
+				},
+			}
+		case fs.ModeSymlink:
+			fileAttr := FileAttr{
+				TargetName: fileInfo.Name(),
+				Type:       SourceFileTypeFile,
+			}
+			lazyLinkname := newLazyLinknameFunc(func() (string, error) {
+				return s.system.Readlink(absPath)
+			})
+			sourceStateEntry = &SourceStateFile{
+				lazyContents: newLazyContentsFunc(func() ([]byte, error) {
+					linkname, err := lazyLinkname.Linkname()
+					if err != nil {
+						return nil, err
+					}
+					return []byte(linkname), nil
+				}),
+				origin:        SourceStateOriginAbsPath(absPath),
+				Attr:          fileAttr,
+				sourceRelPath: rootSourceRelPath.Join(relPath.SourceRelPath()),
+				targetStateEntry: &TargetStateSymlink{
+					lazyLinkname: lazyLinkname,
+				},
+			}
+		}
+		sourceStateEntries[targetRelPath] = append(sourceStateEntries[targetRelPath], sourceStateEntry)
+		return nil
+	}
+	if err := Walk(s.system, rootSourceAbsPath, walkFunc); err != nil {
+		return nil, err
+	}
 	return sourceStateEntries, nil
 }
 
