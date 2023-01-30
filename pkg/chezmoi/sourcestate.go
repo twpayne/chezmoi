@@ -1806,11 +1806,9 @@ func (s *SourceState) newSourceStateFile(
 }
 
 // newSourceStateDirEntry returns a SourceStateEntry constructed from a directory in s.
-//
-// We return a SourceStateEntry rather than a *SourceStateDir to simplify nil checks later.
 func (s *SourceState) newSourceStateDirEntry(
 	actualStateDir *ActualStateDir, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
-) (SourceStateEntry, error) {
+) *SourceStateDir {
 	dirAttr := DirAttr{
 		TargetName: fileInfo.Name(),
 		Exact:      options.Exact,
@@ -1825,17 +1823,14 @@ func (s *SourceState) newSourceStateDirEntry(
 		targetStateEntry: &TargetStateDir{
 			perm: fs.ModePerm &^ s.umask,
 		},
-	}, nil
+	}
 }
 
 // newSourceStateFileEntryFromFile returns a SourceStateEntry constructed from a
 // file in s.
-//
-// We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
-// checks later.
 func (s *SourceState) newSourceStateFileEntryFromFile(
 	actualStateFile *ActualStateFile, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
-) (SourceStateEntry, error) {
+) (*SourceStateFile, error) {
 	fileAttr := FileAttr{
 		TargetName: fileInfo.Name(),
 		Encrypted:  options.Encrypt,
@@ -1886,13 +1881,10 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 
 // newSourceStateFileEntryFromSymlink returns a SourceStateEntry constructed
 // from a symlink in s.
-//
-// We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
-// checks later.
 func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	actualStateSymlink *ActualStateSymlink, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath,
 	options *AddOptions,
-) (SourceStateEntry, error) {
+) (*SourceStateFile, error) {
 	linkname, err := actualStateSymlink.Linkname()
 	if err != nil {
 		return nil, err
@@ -2349,7 +2341,7 @@ func (s *SourceState) sourceStateEntry(
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)
 	case *ActualStateDir:
-		return s.newSourceStateDirEntry(actualStateEntry, fileInfo, parentSourceRelPath, options)
+		return s.newSourceStateDirEntry(actualStateEntry, fileInfo, parentSourceRelPath, options), nil
 	case *ActualStateFile:
 		return s.newSourceStateFileEntryFromFile(actualStateEntry, fileInfo, parentSourceRelPath, options)
 	case *ActualStateSymlink:
