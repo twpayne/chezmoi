@@ -40,7 +40,6 @@ linters:
   - misspell
   - nilerr
   - noctx
-  - nolintlint
   - nosprintfhostport
   - prealloc
   - predeclared
@@ -80,6 +79,7 @@ linters:
   - nestif
   - nilnil
   - nlreturn
+  - nolintlint
   - nonamedreturns
   - nosnakecase
   - paralleltest
