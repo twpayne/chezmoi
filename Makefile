@@ -151,7 +151,7 @@ ensure-goversioninfo:
 .PHONY: release
 release:
 	goreleaser release \
-		--rm-dist \
+		--clean \
 		${GORELEASER_FLAGS}
 
 .PHONY: shellcheck
@@ -161,7 +161,7 @@ shellcheck:
 .PHONY: test-release
 test-release:
 	goreleaser release \
-		--rm-dist \
+		--clean \
 		--skip-publish \
 		--skip-sign \
 		--snapshot \
