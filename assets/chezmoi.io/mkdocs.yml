@@ -307,20 +307,6 @@ plugins:
       on_pre_build: docs.hooks:on_pre_build
       on_files: docs.hooks:on_files
       on_post_build: docs.hooks:on_post_build
-- redirects:
-    redirect_maps:
-        # redirect links from previous Hugo-generated website
-      docs/architecture.md: developer/architecture.md
-      docs/comparison.md: comparison-table.md
-      docs/faq.md: user-guide/frequently-asked-questions/design.md
-      docs/how-to.md: user-guide/setup.md
-      docs/install.md: install.md
-      docs/media.md: links/articles-podcasts-and-videos.md
-      docs/quick-start.md: quick-start.md
-      docs/reference.md: reference/index.md
-      docs/related.md: links/related-software.md
-      docs/security.md: developer/security.md
-      docs/templating.md: user-guide/templating.md
 - search
 
 extra_javascript:
