@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -37,37 +38,70 @@ func (c *Config) newPurgeCmd() *cobra.Command {
 }
 
 func (c *Config) runPurgeCmd(cmd *cobra.Command, args []string) error {
-	return c.doPurge(&purgeOptions{
-		binary: c.purge.binary,
+	return c.doPurge(&doPurgeOptions{
+		binary:          c.purge.binary,
+		cache:           true,
+		config:          true,
+		persistentState: true,
+		sourceDir:       true,
+		workingTree:     true,
 	})
 }
 
 // doPurge is the core purge functionality. It removes all files and directories
 // associated with chezmoi.
-func (c *Config) doPurge(purgeOptions *purgeOptions) error {
-	if c.persistentState != nil {
-		if err := c.persistentState.Close(); err != nil {
-			return err
-		}
+func (c *Config) doPurge(options *doPurgeOptions) error {
+	// absPaths contains the list of paths to purge, in order. The order is
+	// assembled so that parent directories are purged before their children.
+	var absPaths []chezmoi.AbsPath
+
+	if options.cache {
+		absPaths = append(absPaths, c.CacheDirAbsPath)
 	}
 
-	persistentStateFileAbsPath, err := c.persistentStateFile()
-	if err != nil {
-		return err
+	if options.config {
+		absPaths = append(absPaths,
+			c.configFileAbsPath.Dir(),
+			c.configFileAbsPath,
+		)
 	}
-	absPaths := []chezmoi.AbsPath{
-		c.CacheDirAbsPath,
-		c.configFileAbsPath.Dir(),
-		c.configFileAbsPath,
-		persistentStateFileAbsPath,
-		c.WorkingTreeAbsPath,
-		c.SourceDirAbsPath,
+
+	if options.persistentState {
+		if c.persistentState != nil {
+			if err := c.persistentState.Close(); err != nil {
+				return err
+			}
+		}
+
+		persistentStateFileAbsPath, err := c.persistentStateFile()
+		if err != nil {
+			return err
+		}
+
+		absPaths = append(absPaths, persistentStateFileAbsPath)
 	}
-	if purgeOptions != nil && purgeOptions.binary {
-		executable, err := os.Executable()
-		// Special case: do not purge the binary if it is a test binary created
-		// by go test as this would break later tests.
-		if err == nil && !strings.Contains(executable, "test") {
+
+	if options.workingTree {
+		absPaths = append(absPaths, c.WorkingTreeAbsPath)
+	}
+
+	if options.sourceDir {
+		absPaths = append(absPaths, c.SourceDirAbsPath)
+	}
+
+	if options.binary {
+		switch executable, err := os.Executable(); {
+		case err != nil:
+			return err
+		case runtime.GOOS == "windows":
+			// On Windows the binary of a running process cannot be removed.
+			// Warn the user, but otherwise continue.
+			c.errorf("cannot purge binary (%s) on Windows", executable)
+		case strings.Contains(executable, "test"):
+			// Special case: do not purge the binary if it is a test binary created
+			// by go test as this will break later or concurrent tests.
+		default:
+			// Otherwise, remove the binary normally.
 			absPaths = append(absPaths, chezmoi.NewAbsPath(executable))
 		}
 	}
