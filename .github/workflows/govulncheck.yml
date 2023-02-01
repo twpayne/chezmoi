@@ -10,7 +10,7 @@ jobs:
     - name: go-version
       id: go-version
       run: |
-        echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml)" >> ${GITHUB_OUTPUT}
+        echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> ${GITHUB_OUTPUT}
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true

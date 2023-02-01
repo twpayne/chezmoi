@@ -155,6 +155,7 @@ check_goos_goarch() {
 	freebsd/amd64) return 0 ;;
 	freebsd/arm) return 0 ;;
 	freebsd/arm64) return 0 ;;
+	freebsd/riscv64) return 0 ;;
 	illumos/amd64) return 0 ;;
 	linux/386) return 0 ;;
 	linux/amd64) return 0 ;;
