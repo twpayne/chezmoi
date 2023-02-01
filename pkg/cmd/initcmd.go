@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"regexp"
-	"runtime"
 	"strconv"
 
 	"github.com/go-git/go-git/v5"
@@ -230,9 +229,14 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Purge.
-	if c.init.purge {
-		if err := c.doPurge(&purgeOptions{
-			binary: runtime.GOOS != "windows" && c.init.purgeBinary,
+	if c.init.purge || c.init.purgeBinary {
+		if err := c.doPurge(&doPurgeOptions{
+			binary:          c.init.purgeBinary,
+			cache:           c.init.purge,
+			config:          c.init.purge,
+			persistentState: c.init.purge,
+			sourceDir:       c.init.purge,
+			workingTree:     c.init.purge,
 		}); err != nil {
 			return err
 		}

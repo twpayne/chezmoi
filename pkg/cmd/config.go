@@ -61,8 +61,13 @@ const (
 	logComponentValueSystem          = "system"
 )
 
-type purgeOptions struct {
-	binary bool
+type doPurgeOptions struct {
+	binary          bool
+	cache           bool
+	config          bool
+	persistentState bool
+	sourceDir       bool
+	workingTree     bool
 }
 
 type templateConfig struct {
