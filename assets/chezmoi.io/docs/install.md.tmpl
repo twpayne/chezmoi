@@ -226,7 +226,7 @@ pre-built binary and shell completions.
 
 === "FreeBSD"
 
-{{ range $arch := list "amd64" "arm" "arm64" "i386" }}
+{{ range $arch := list "amd64" "arm" "arm64" "i386" "riscv64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_freebsd_{{ $arch }}.tar.gz)
 {{- end }}
 
