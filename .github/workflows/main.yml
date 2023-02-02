@@ -12,7 +12,7 @@ env:
   AGE_VERSION: 1.1.1
   GO_VERSION: '1.20'
   GOFUMPT_VERSION: 0.4.0
-  GOLANGCI_LINT_VERSION: 1.50.1
+  GOLANGCI_LINT_VERSION: 1.51.0
   GOVERSIONINFO_VERSION: 1.4.0
 jobs:
   changes:
@@ -370,7 +370,7 @@ jobs:
     - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568
       with:
         cache: true
-        go-version: 1.19.5 # FIXME ${{ env.GO_VERSION }}
+        go-version: ${{ env.GO_VERSION }}
     - uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
