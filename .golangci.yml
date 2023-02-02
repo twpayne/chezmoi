@@ -20,6 +20,7 @@ linters:
   - forcetypeassert
   - gci
   - gocritic
+  - gocheckcompilerdirectives
   - godot
   - goerr113
   - gofmt
@@ -40,6 +41,7 @@ linters:
   - misspell
   - nilerr
   - noctx
+  - nolintlint
   - nosprintfhostport
   - prealloc
   - predeclared
@@ -49,8 +51,8 @@ linters:
   - staticcheck
   - stylecheck
   - tagliatelle
-  - testableexamples
   - tenv
+  - testableexamples
   - thelper
   - typecheck
   - unconvert
@@ -64,6 +66,7 @@ linters:
   - exhaustivestruct
   - exhaustruct
   - funlen
+  - ginkgolinter
   - gochecknoglobals
   - gochecknoinits
   - gocognit
@@ -79,7 +82,6 @@ linters:
   - nestif
   - nilnil
   - nlreturn
-  - nolintlint
   - nonamedreturns
   - nosnakecase
   - paralleltest
