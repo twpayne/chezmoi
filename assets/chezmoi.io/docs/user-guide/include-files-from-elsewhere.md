@@ -198,3 +198,26 @@ $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my
     ```
 
     to update your destination directory.
+
+## Handle tar archives in an unsupported compression format
+
+chezmoi natively understands tar archives. tar archives can be uncompressed or
+compressed in the bzip2, gzip, xz, or zstd formats.
+
+If you have a tar archive in an unsupported compression format then you can use
+a filter to decompress it. For example, before chezmoi natively supported the
+zstd compression format, you could handle `.tar.zst` external archives with, for
+example:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+[".Software/anki/2.1.54-qt6"]
+    type = "archive"
+    url = "https://github.com/ankitects/anki/releases/download/2.1.54/anki-2.1.54-linux-qt6.tar.zst"
+    filter.command = "zstd"
+    filter.args = ["-d"]
+    format = "tar"
+```
+
+Here `filter.command` and `filter.args` together tell chezmoi to filter the
+downloaded data through `zstd -d`. The `format = "tar"` line tells chezmoi that
+output of the filter is an uncompressed tar archive.
