@@ -425,21 +425,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
         SCOOP_GITHUB_TOKEN: ${{ secrets.SCOOP_GITHUB_TOKEN }}
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    # The following is needed because chezmoi upgrade and
-    # assets/scripts/install.sh have inconsistently looked for
-    # chezmoi_${VERSION}_checksums.txt and checksums.txt. To ensure
-    # compatibility with all versions, upload checksums.txt as well.
-    #
-    # We need to use a different GitHub token as fine-grained personal access
-    # tokens do not allow access to the GraphQL API, which gh depends on. So, we
-    # use a normal PAT instead.
-    - name: upload-checksums.txt
-      run: |
-        VERSION=${GITHUB_REF##*/v}
-        cp dist/chezmoi_${VERSION}_checksums.txt dist/checksums.txt
-        gh release upload v${VERSION} dist/checksums.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
   deploy-website:
     needs:
     - release
