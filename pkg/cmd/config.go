@@ -1868,6 +1868,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	scriptEnv := os.Environ()
 	templateData := c.getTemplateData()
+	scriptEnv = append(scriptEnv, "CHEZMOI=1")
 	for key, value := range map[string]string{
 		"ARCH":          templateData.Arch,
 		"ARGS":          strings.Join(templateData.Args, " "),
