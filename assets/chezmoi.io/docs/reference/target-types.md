@@ -92,8 +92,9 @@ directory that exists and is a directory.
     A script in `~/.local/share/chezmoi/dir/run_script` will be run with a working
     directory of `~/dir`.
 
-The `scriptEnv` configuration variable specifies extra environment variables
-when running the script.
+chezmoi sets a number of `CHEZMOI*` environment variables when running scripts,
+corresponding to commonly-used template data variables. Extra environment
+variables can be set in the `scriptEnv` configuration variable.
 
 ### Scripts on Windows
 
