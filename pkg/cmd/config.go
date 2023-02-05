@@ -203,6 +203,7 @@ type Config struct {
 	sourceState         *chezmoi.SourceState
 	sourceStateErr      error
 	templateData        *templateData
+	runEnv              []string
 
 	stdin       io.Reader
 	stdout      io.Writer
@@ -1903,6 +1904,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	for key, value := range c.ScriptEnv {
 		scriptEnv = append(scriptEnv, key+"="+value)
 	}
+	c.runEnv = scriptEnv
 	realSystem.SetScriptEnv(scriptEnv)
 
 	return nil
@@ -2078,6 +2080,7 @@ func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 		}
 		cmd.Dir = dirRawAbsPath.String()
 	}
+	cmd.Env = c.runEnv
 	cmd.Stdin = c.stdin
 	cmd.Stdout = c.stdout
 	cmd.Stderr = c.stderr

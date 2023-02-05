@@ -8,6 +8,9 @@ attempt to detect your shell and finally fall back to an OS-specific default.
 If the optional argument *path* is present, the shell will be launched in the
 source directory corresponding to *path*.
 
+The shell will have various `CHEZMOI*` environment variables set, as for
+scripts.
+
 !!! hint
 
     This does not change the current directory of the current shell. To do
@@ -21,4 +24,6 @@ source directory corresponding to *path*.
 
     ```console
     $ chezmoi cd
+    $ chezmoi cd ~
+    $ chezmoi cd ~/.config
     ```
