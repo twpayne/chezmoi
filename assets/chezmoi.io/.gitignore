@@ -1,7 +1,9 @@
 __pycache__
 /docs/index.md
 /docs/install.md
-/docs/links/articles-podcasts-and-videos.md
+/docs/links/articles.md
+/docs/links/podcasts.md
+/docs/links/videos.md
 /docs/reference/configuration-file/variables.md
 /docs/reference/release-history.md
 /site

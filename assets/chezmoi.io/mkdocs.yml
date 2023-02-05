@@ -278,8 +278,10 @@ nav:
   - Architecture: developer/architecture.md
   - Building on top of chezmoi: developer/building-on-top-of-chezmoi.md
 - Links:
-  - Articles, podcasts, and videos: links/articles-podcasts-and-videos.md
-  - Dotfile repos using chezmoi: links/dotfile-repos-using-chezmoi.md
+  - Articles: links/articles.md
+  - Podcasts: links/podcasts.md
+  - Videos: links/videos.md
+  - Dotfile repos: links/dotfile-repos.md
   - Related software: links/related-software.md
   - Social media: links/social-media.md
 - License: license.md
