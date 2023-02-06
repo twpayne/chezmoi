@@ -26,6 +26,18 @@ import (
 var (
 	templateDataFilename = flag.String("data", "", "data filename")
 	outputFilename       = flag.String("output", "", "output filename")
+
+	countryFlags = map[string]string{
+		"CN": "🇨🇳",
+		"EN": "🇺🇸",
+		"ES": "🇪🇸",
+		"FR": "🇫🇷",
+		"IT": "🇮🇹",
+		"JP": "🇯🇵",
+		"PT": "🇵🇹",
+		"RU": "🇷🇺",
+		"TH": "🇹🇭",
+	}
 )
 
 type gitHubClient struct {
@@ -109,6 +121,13 @@ func run() error {
 		default:
 			panic(err)
 		}
+	}
+	funcMap["countryFlag"] = func(country string) string {
+		countryFlag, ok := countryFlags[country]
+		if !ok {
+			panic(fmt.Sprintf("%s: country flag not defined", country))
+		}
+		return countryFlag
 	}
 	funcMap["gitHubLatestRelease"] = gitHubClient.gitHubLatestRelease
 	funcMap["gitHubListReleases"] = gitHubClient.gitHubListReleases

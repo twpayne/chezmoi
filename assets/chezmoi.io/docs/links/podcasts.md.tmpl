@@ -8,6 +8,6 @@
 | ---- | ------- | ---- | ----- |
 {{- range mustReverse .articles }}
 {{-   if mustHas "audio" (index . "formats") }}
-| {{ .date }} | {{ .version }} | {{ .lang | default "EN" }} | [{{ .title }}]({{ .url }}) |
+| {{ .date }} | {{ .version }} | {{ .lang | default "EN" | countryFlag }} | [{{ .title }}]({{ .url }}) |
 {{-   end }}
 {{- end }}
