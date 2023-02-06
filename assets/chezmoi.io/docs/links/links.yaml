@@ -379,3 +379,10 @@ articles:
   title: dotfile manager の chezmoi に移行してみる
   lang: JP
   url: https://blog.yamano.dev/posts/2023/01/chezmoi-setup/
+- date: '2023-01-30'
+  version: 2.29.3
+  formats:
+  - audio
+  title: '459 - Soy un zoquete, otra vez hice un rm -rf'
+  lang: ES
+  url: https://atareao.es/podcast/soy-un-zoquete-otra-vez-hice-un-rm-rf/
