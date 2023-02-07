@@ -160,6 +160,39 @@ func TestDeleteValueAtPathTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestPruneEmptyDicts(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		dict     map[string]any
+		expected map[string]any
+	}{
+		{
+			name:     "nil",
+			dict:     nil,
+			expected: nil,
+		},
+		{
+			name:     "empty",
+			dict:     map[string]any{},
+			expected: map[string]any{},
+		},
+		{
+			name: "nested_empty",
+			dict: map[string]any{
+				"key1": map[string]any{},
+				"key2": 0,
+			},
+			expected: map[string]any{
+				"key2": 0,
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, (&Config{}).pruneEmptyDictsTemplateFunc(tc.dict))
+		})
+	}
+}
+
 func TestSetValueAtPathTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name        string
