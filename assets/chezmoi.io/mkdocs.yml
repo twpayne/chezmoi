@@ -199,6 +199,7 @@ nav:
       - setValueAtPath: reference/templates/functions/setValueAtPath.md
       - stat: reference/templates/functions/stat.md
       - toIni: reference/templates/functions/toIni.md
+      - toPrettyJson: reference/templates/functions/toPrettyJson.md
       - toToml: reference/templates/functions/toToml.md
       - toYaml: reference/templates/functions/toYaml.md
     - GitHub functions:

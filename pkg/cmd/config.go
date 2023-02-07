@@ -346,15 +346,19 @@ func newConfig(options ...configOption) (*Config, error) {
 		stderr: os.Stderr,
 	}
 
+	// Override sprig's toPrettyJson template function. Delete it from the
+	// template function map first to avoid a duplication function panic.
+	delete(c.templateFuncs, "toPrettyJson")
+
+	// The completion template function is added in persistentPreRunRootE as
+	// it needs a *cobra.Command, which we don't yet have.
 	for key, value := range map[string]any{
-		"awsSecretsManager":    c.awsSecretsManagerTemplateFunc,
-		"awsSecretsManagerRaw": c.awsSecretsManagerRawTemplateFunc,
-		"bitwarden":            c.bitwardenTemplateFunc,
-		"bitwardenAttachment":  c.bitwardenAttachmentTemplateFunc,
-		"bitwardenFields":      c.bitwardenFieldsTemplateFunc,
-		"comment":              c.commentTemplateFunc,
-		// The completion template function is added in persistentPreRunRootE as
-		// it needs a *cobra.Command, which we don't yet have.
+		"awsSecretsManager":        c.awsSecretsManagerTemplateFunc,
+		"awsSecretsManagerRaw":     c.awsSecretsManagerRawTemplateFunc,
+		"bitwarden":                c.bitwardenTemplateFunc,
+		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
+		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
+		"comment":                  c.commentTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"deleteValueAtPath":        c.deleteValueAtPathTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
@@ -404,6 +408,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"setValueAtPath":           c.setValueAtPathTemplateFunc,
 		"stat":                     c.statTemplateFunc,
 		"toIni":                    c.toIniTemplateFunc,
+		"toPrettyJson":             c.toPrettyJsonTemplateFunc,
 		"toToml":                   c.toTomlTemplateFunc,
 		"toYaml":                   c.toYamlTemplateFunc,
 		"vault":                    c.vaultTemplateFunc,

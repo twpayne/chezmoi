@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -408,6 +409,34 @@ func (c *Config) statTemplateFunc(name string) any {
 func (c *Config) toIniTemplateFunc(data map[string]any) string {
 	var builder strings.Builder
 	if err := writeIniMap(&builder, data, ""); err != nil {
+		panic(err)
+	}
+	return builder.String()
+}
+
+//nolint:revive,stylecheck
+func (c *Config) toPrettyJsonTemplateFunc(args ...any) string {
+	var (
+		indent = "  "
+		value  any
+	)
+	switch len(args) {
+	case 1:
+		value = args[0]
+	case 2:
+		var ok bool
+		indent, ok = args[0].(string)
+		if !ok {
+			panic(fmt.Errorf("arg 1: expected a string, got a %T", args[0]))
+		}
+		value = args[1]
+	default:
+		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
+	}
+	var builder strings.Builder
+	encoder := json.NewEncoder(&builder)
+	encoder.SetIndent("", indent)
+	if err := encoder.Encode(value); err != nil {
 		panic(err)
 	}
 	return builder.String()
