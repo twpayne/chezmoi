@@ -111,6 +111,10 @@ stdout '^value$'
 exec chezmoi execute-template '{{ dict "key" "value" | toToml }}'
 stdout '^key = .value.$'
 
+# test toPrettyJson template function
+exec chezmoi execute-template '{{ dict "a" (dict "b" "c") | toPrettyJson "    " }}'
+cmp stdout golden/toPrettyJson
+
 # test fromYaml template function
 exec chezmoi execute-template '{{ (fromYaml "key1: value1\nkey2: value2").key2 }}'
 stdout '^value2$'
@@ -191,6 +195,12 @@ key = value
 
 [section]
 subkey = subvalue
+-- golden/toPrettyJson --
+{
+    "a": {
+        "b": "c"
+    }
+}
 -- home/user/.include --
 # contents of .include
 -- home/user/.local/share/chezmoi/.chezmoitemplates/template --
