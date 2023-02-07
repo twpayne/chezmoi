@@ -312,6 +312,11 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	return string(output)
 }
 
+func (c *Config) pruneEmptyDictsTemplateFunc(dict map[string]any) map[string]any {
+	pruneEmptyMaps(dict)
+	return dict
+}
+
 func (c *Config) quoteListTemplateFunc(list []any) []string {
 	result := make([]string, 0, len(list))
 	for _, elem := range list {
@@ -585,6 +590,21 @@ func needsQuote(s string) bool {
 		return true
 	}
 	return false
+}
+
+// pruneEmptyMaps prunes all empty maps from m and returns if m is now empty
+// itself.
+func pruneEmptyMaps(m map[string]any) bool {
+	for key, value := range m {
+		nestedMap, ok := value.(map[string]any)
+		if !ok {
+			continue
+		}
+		if pruneEmptyMaps(nestedMap) {
+			delete(m, key)
+		}
+	}
+	return len(m) == 0
 }
 
 func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {

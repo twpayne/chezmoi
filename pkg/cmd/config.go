@@ -396,6 +396,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"passFields":               c.passFieldsTemplateFunc,
 		"passRaw":                  c.passRawTemplateFunc,
 		"passhole":                 c.passholeTemplateFunc,
+		"pruneEmptyDicts":          c.pruneEmptyDictsTemplateFunc,
 		"quoteList":                c.quoteListTemplateFunc,
 		"replaceAllRegex":          c.replaceAllRegexTemplateFunc,
 		"secret":                   c.secretTemplateFunc,

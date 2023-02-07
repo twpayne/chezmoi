@@ -84,6 +84,11 @@ stdout 2656FF1E876E9973
 [!(windows||illumos)] stderr 'error calling output: .*/false: exit status 1'
 [illumos] stderr 'error calling output: .*/false: exit status 255'
 
+# test pruneEmptyDicts template function
+exec chezmoi execute-template '{{ dict "key1" "value1" "key2" (dict) | pruneEmptyDicts | toJson }}'
+rmfinalnewline golden/pruneEmptyDicts
+cmp stdout golden/pruneEmptyDicts
+
 # test replaceAllRegex template function
 exec chezmoi execute-template '{{ "foo bar baz" | replaceAllRegex "ba" "BA" }}'
 stdout 'foo BAr BAz'
@@ -191,6 +196,8 @@ file2.txt
 # contents of .include
 -- golden/include-relpath --
 # contents of .local/share/chezmoi/.include
+-- golden/pruneEmptyDicts --
+{"key1":"value1"}
 -- golden/setValueAtPath --
 {"key1":{"key2":"value2"}}
 -- golden/toIni --
