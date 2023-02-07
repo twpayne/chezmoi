@@ -54,6 +54,112 @@ func TestCommentTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestDeleteValueAtPathTemplateFunc(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		dict        map[string]any
+		path        string
+		expected    any
+		expectedErr string
+	}{
+		{
+			name:        "empty",
+			expectedErr: "empty path",
+		},
+		{
+			name: "outer",
+			dict: map[string]any{
+				"key": "value",
+			},
+			path:     "key",
+			expected: map[string]any{},
+		},
+		{
+			name: "inner",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2a": "value2a",
+					"key2b": "value2b",
+				},
+			},
+			path: "key1.key2a",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2b": "value2b",
+				},
+			},
+		},
+		{
+			name: "missing",
+			dict: map[string]any{
+				"key": "value",
+			},
+			path: "missingKey",
+			expected: map[string]any{
+				"key": "value",
+			},
+		},
+		{
+			name: "missing_inner",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": 0,
+				},
+			},
+			path: "key1.key3",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": 0,
+				},
+			},
+		},
+		{
+			name: "missing_depth2",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": map[string]any{
+						"key3": 0,
+					},
+				},
+			},
+			path: "key1.key2.missingKey",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": map[string]any{
+						"key3": 0,
+					},
+				},
+			},
+		},
+		{
+			name: "not_an_inner_dict",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": 0,
+				},
+			},
+			path: "key1.key2.key3",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": 0,
+				},
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var c Config
+			if tc.expectedErr == "" {
+				actual := c.deleteValueAtPathTemplateFunc(tc.path, tc.dict)
+				assert.Equal(t, tc.expected, actual)
+			} else {
+				assert.PanicsWithError(t, tc.expectedErr, func() {
+					c.deleteValueAtPathTemplateFunc(tc.path, tc.dict)
+				})
+			}
+		})
+	}
+}
+
 func TestSetValueAtPathTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name        string

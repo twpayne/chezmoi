@@ -356,6 +356,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		// The completion template function is added in persistentPreRunRootE as
 		// it needs a *cobra.Command, which we don't yet have.
 		"decrypt":                  c.decryptTemplateFunc,
+		"deleteValueAtPath":        c.deleteValueAtPathTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
 		"eqFold":                   c.eqFoldTemplateFunc,
 		"fromIni":                  c.fromIniTemplateFunc,

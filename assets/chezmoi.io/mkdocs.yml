@@ -176,6 +176,7 @@ nav:
       - comment: reference/templates/functions/comment.md
       - completion: reference/templates/functions/completion.md
       - decrypt: reference/templates/functions/decrypt.md
+      - deleteValueAtPath: reference/templates/functions/deleteValueAtPath.md
       - encrypt: reference/templates/functions/encrypt.md
       - eqFold: reference/templates/functions/eqFold.md
       - fromIni: reference/templates/functions/fromIni.md

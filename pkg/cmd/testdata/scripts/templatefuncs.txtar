@@ -14,6 +14,11 @@ cmp stdout golden/comment
 exec chezmoi execute-template '{{ completion "zsh" }}'
 stdout '^# zsh completion for chezmoi'
 
+# test deleteValueAtPath template function
+exec chezmoi execute-template '{{ dict "a" (dict "b" (dict "c" 1 "d" 2)) | deleteValueAtPath "a.b.c" | toJson }}'
+rmfinalnewline golden/deleteValueAtPath
+cmp stdout golden/deleteValueAtPath
+
 # test eqFold template function
 exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
 stdout '^true$'
@@ -175,6 +180,8 @@ echo '</plist>'
 -- golden/comment --
 # line1
 # line2
+-- golden/deleteValueAtPath --
+{"a":{"b":{"d":2}}}
 -- golden/expected --
 255
 -- golden/glob --

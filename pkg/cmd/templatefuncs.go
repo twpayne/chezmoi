@@ -96,6 +96,29 @@ func (c *Config) commentTemplateFunc(prefix, s string) string {
 	return builder.String()
 }
 
+func (c *Config) deleteValueAtPathTemplateFunc(path string, dict map[string]any) any {
+	keys, lastKey, err := keysFromPath(path)
+	if err != nil {
+		panic(err)
+	}
+
+	currentMap := dict
+	for _, key := range keys {
+		value, ok := currentMap[key]
+		if !ok {
+			return dict
+		}
+		nestedMap, ok := value.(map[string]any)
+		if !ok {
+			return dict
+		}
+		currentMap = nestedMap
+	}
+	delete(currentMap, lastKey)
+
+	return dict
+}
+
 func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	if strings.EqualFold(first, second) {
 		return true
