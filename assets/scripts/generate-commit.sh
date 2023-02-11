@@ -16,5 +16,5 @@ fi
 if [ -z "${output}" ]; then
 	echo "${commit}"
 else
-	echo "${commit}" > "${output}"
+	echo "${commit}" >"${output}"
 fi

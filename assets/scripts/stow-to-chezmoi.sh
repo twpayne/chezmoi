@@ -38,24 +38,24 @@ trap 'rm -f -- "${work_file}" "${act_file}"' EXIT
 trap 'exit' INT TERM
 
 find "${BASEDIR}" \! -path '*
-*' \! -path "${BASEDIR}/${STOWDIR}*" -type l >"${work_file}" || \
+*' \! -path "${BASEDIR}/${STOWDIR}*" -type l >"${work_file}" ||
 	printf "Find skipped some files\n" >&2
 
 while read -r f; do
 	target="$("${READLINK}" -f -- "${f}" || :)"
 	case "${target}" in
-		"${BASEDIR}/${STOWDIR}/"*)
-			printf 'Add %s\n' "${f}" >&2
-			printf '%s\n' "${f}" >>"${act_file}"
-			;;
+	"${BASEDIR}/${STOWDIR}/"*)
+		printf 'Add %s\n' "${f}" >&2
+		printf '%s\n' "${f}" >>"${act_file}"
+		;;
 	esac
 done <"${work_file}"
 
 printf 'Migrate the above to chezmoi? y/N ' >&2
 read -r migrate
 case "${migrate}" in
-	[Yy]*) printf 'Migrating...\n' >&2 ;;
-	*) exit 1 ;;
+[Yy]*) printf 'Migrating...\n' >&2 ;;
+*) exit 1 ;;
 esac
 
 mkdir -p -- "${BASEDIR}/.local/share"
