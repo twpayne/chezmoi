@@ -87,7 +87,7 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	}
 	matchesSlice := allMatches.elements()
 	for i, match := range matchesSlice {
-		matchesSlice[i] = mustTrimPrefix(filepath.ToSlash(match), prefix)
+		matchesSlice[i] = filepath.ToSlash(match)[len(prefix):]
 	}
 	sort.Strings(matchesSlice)
 	return matchesSlice, nil
