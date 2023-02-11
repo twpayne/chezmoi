@@ -1,0 +1,10 @@
+[windows] skip 'uses forward slashes in paths'
+
+# test that chezmoi target-path does not include .chezmoiroot in the output
+exec chezmoi target-path $CHEZMOISOURCEDIR${/}home${/}dot_file
+stdout ${HOME@R}/\.file
+
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/home/dot_file --
+# contents of .file
