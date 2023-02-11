@@ -1,4 +1,4 @@
-//go:build !noupgrade && !windows
+//go:build !noupgrade
 
 package cmd
 
@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"runtime"
 	"strings"
@@ -29,59 +30,33 @@ import (
 )
 
 const (
-	upgradeMethodBrewUpgrade       = "brew-upgrade"
 	upgradeMethodReplaceExecutable = "replace-executable"
-	upgradeMethodSnapRefresh       = "snap-refresh"
-	upgradeMethodUpgradePackage    = "upgrade-package"
-	upgradeMethodSudoPrefix        = "sudo-"
-
-	libcTypeGlibc = "glibc"
-	libcTypeMusl  = "musl"
-
-	packageTypeNone = ""
-	packageTypeAPK  = "apk"
-	packageTypeAUR  = "aur"
-	packageTypeDEB  = "deb"
-	packageTypeRPM  = "rpm"
+	upgradeMethodWinGetUpgrade     = "winget-upgrade"
 )
 
-var (
-	packageTypeByID = map[string]string{
-		"alpine":   packageTypeAPK,
-		"amzn":     packageTypeRPM,
-		"arch":     packageTypeAUR,
-		"centos":   packageTypeRPM,
-		"fedora":   packageTypeRPM,
-		"opensuse": packageTypeRPM,
-		"debian":   packageTypeDEB,
-		"rhel":     packageTypeRPM,
-		"sles":     packageTypeRPM,
-		"ubuntu":   packageTypeDEB,
-	}
-
-	archReplacements = map[string]map[string]string{
-		packageTypeDEB: {
-			"386": "i386",
-			"arm": "armel",
-		},
-		packageTypeRPM: {
-			"amd64": "x86_64",
-			"386":   "i686",
-			"arm":   "armhfp",
-			"arm64": "aarch64",
-		},
-	}
-
-	checksumRx      = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
-	libcTypeGlibcRx = regexp.MustCompile(`(?i)glibc|gnu libc`)
-	libcTypeMuslRx  = regexp.MustCompile(`(?i)musl`)
-)
+var checksumRx = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
 
 type upgradeCmdConfig struct {
 	executable string
 	method     string
 	owner      string
 	repo       string
+}
+
+type InstallBehavior struct {
+	PortablePackageUserRoot    string `json:"portablePackageUserRoot"`
+	PortablePackageMachineRoot string `json:"portablePackageMachineRoot"`
+}
+
+func (ib *InstallBehavior) Values() []string {
+	return []string{
+		ib.PortablePackageUserRoot,
+		ib.PortablePackageMachineRoot,
+	}
+}
+
+type WinGetSettings struct {
+	InstallBehavior InstallBehavior `json:"installBehavior"`
 }
 
 func (c *Config) newUpgradeCmd() *cobra.Command {
@@ -176,26 +151,12 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 
 	// Replace the executable with the updated version.
 	switch method {
-	case upgradeMethodBrewUpgrade:
-		if err := c.brewUpgrade(); err != nil {
-			return err
-		}
 	case upgradeMethodReplaceExecutable:
 		if err := c.replaceExecutable(ctx, executableAbsPath, version, rr); err != nil {
 			return err
 		}
-	case upgradeMethodSnapRefresh:
-		if err := c.snapRefresh(); err != nil {
-			return err
-		}
-	case upgradeMethodUpgradePackage:
-		useSudo := false
-		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
-			return err
-		}
-	case upgradeMethodSudoPrefix + upgradeMethodUpgradePackage:
-		useSudo := true
-		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
+	case upgradeMethodWinGetUpgrade:
+		if err := c.winGetUpgrade(); err != nil {
 			return err
 		}
 	default:
@@ -218,10 +179,6 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	chezmoiVersionCmd.Stdout = os.Stdout
 	chezmoiVersionCmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdRun(chezmoiVersionCmd)
-}
-
-func (c *Config) brewUpgrade() error {
-	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 }
 
 func (c *Config) getChecksums(
@@ -282,87 +239,20 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	return data, nil
 }
 
-// getLibc attempts to determine the system's libc.
-func (c *Config) getLibc() (string, error) {
-	// First, try parsing the output of ldd --version. On glibc systems it
-	// writes to stdout and exits with code 0. On musl libc systems it writes to
-	// stderr and exits with code 1.
-	lddCmd := exec.Command("ldd", "--version")
-	switch output, _ := chezmoilog.LogCmdCombinedOutput(lddCmd); {
-	case libcTypeGlibcRx.Match(output):
-		return libcTypeGlibc, nil
-	case libcTypeMuslRx.Match(output):
-		return libcTypeMusl, nil
-	}
-
-	// Second, try getconf GNU_LIBC_VERSION.
-	getconfCmd := exec.Command("getconf", "GNU_LIBC_VERSION")
-	if output, _ := chezmoilog.LogCmdCombinedOutput(getconfCmd); libcTypeGlibcRx.Match(output) {
-		return libcTypeGlibc, nil
-	}
-
-	return "", errors.New("unable to determine libc")
-}
-
-func (c *Config) getPackageFilename(
-	packageType string,
-	version *semver.Version,
-	os, arch string,
-) (string, error) {
-	if archReplacement, ok := archReplacements[packageType][arch]; ok {
-		arch = archReplacement
-	}
-	switch packageType {
-	case packageTypeAPK:
-		return fmt.Sprintf("%s_%s_%s_%s.apk", c.upgrade.repo, version, os, arch), nil
-	case packageTypeDEB:
-		return fmt.Sprintf("%s_%s_%s_%s.deb", c.upgrade.repo, version, os, arch), nil
-	case packageTypeRPM:
-		return fmt.Sprintf("%s-%s-%s.rpm", c.upgrade.repo, version, arch), nil
-	default:
-		return "", fmt.Errorf("%s: unsupported package type", packageType)
-	}
-}
-
 func (c *Config) replaceExecutable(
 	ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version,
 	rr *github.RepositoryRelease,
 ) (err error) {
 	var archiveFormat chezmoi.ArchiveFormat
 	var archiveName string
-	switch {
-	case runtime.GOOS == "linux" && runtime.GOARCH == "amd64":
-		archiveFormat = chezmoi.ArchiveFormatTarGz
-		var libc string
-		if libc, err = c.getLibc(); err != nil {
-			return
-		}
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s-%s_%s.tar.gz",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-			libc,
-			runtime.GOARCH,
-		)
-	case runtime.GOOS == "linux" && runtime.GOARCH == "386":
-		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s_i386.tar.gz",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-		)
-	default:
-		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s_%s.tar.gz",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-			runtime.GOARCH,
-		)
-	}
+	archiveFormat = chezmoi.ArchiveFormatZip
+	archiveName = fmt.Sprintf(
+		"%s_%s_%s_%s.zip",
+		c.upgrade.repo,
+		releaseVersion,
+		runtime.GOOS,
+		runtime.GOARCH,
+	)
 	releaseAsset := getReleaseAssetByName(rr, archiveName)
 	if releaseAsset == nil {
 		err = fmt.Errorf("%s: cannot find release asset", archiveName)
@@ -380,7 +270,7 @@ func (c *Config) replaceExecutable(
 	// Extract the executable from the archive.
 	var executableData []byte
 	walkArchiveFunc := func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
-		if name == c.upgrade.repo {
+		if name == c.upgrade.repo+".exe" {
 			var err error
 			executableData, err = io.ReadAll(r)
 			if err != nil {
@@ -398,88 +288,13 @@ func (c *Config) replaceExecutable(
 		return
 	}
 
+	// Replace the executable.
+	if err = c.baseSystem.Rename(executableFilenameAbsPath, executableFilenameAbsPath.Append(".old")); err != nil {
+		return
+	}
 	err = c.baseSystem.WriteFile(executableFilenameAbsPath, executableData, 0o755)
 
 	return
-}
-
-func (c *Config) snapRefresh() error {
-	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", c.upgrade.repo})
-}
-
-func (c *Config) upgradePackage(
-	ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool,
-) error {
-	switch runtime.GOOS {
-	case "linux":
-		// Determine the package type and architecture.
-		packageType, err := getPackageType(c.baseSystem)
-		if err != nil {
-			return err
-		}
-
-		// chezmoi does not build and distribute AUR packages, so instead rely
-		// on pacman and the community package.
-		if packageType == packageTypeAUR {
-			var args []string
-			if useSudo {
-				args = append(args, "sudo")
-			}
-			args = append(args, "pacman", "-S", c.upgrade.repo)
-			return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
-		}
-
-		// Find the release asset.
-		packageFilename, err := c.getPackageFilename(
-			packageType,
-			version,
-			runtime.GOOS,
-			runtime.GOARCH,
-		)
-		if err != nil {
-			return err
-		}
-		releaseAsset := getReleaseAssetByName(rr, packageFilename)
-		if releaseAsset == nil {
-			return fmt.Errorf("%s: cannot find release asset", packageFilename)
-		}
-
-		// Create a temporary directory for the package.
-		tempDirAbsPath, err := c.tempDir("chezmoi")
-		if err != nil {
-			return err
-		}
-
-		data, err := c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL())
-		if err != nil {
-			return err
-		}
-		if err := c.verifyChecksum(ctx, rr, releaseAsset.GetName(), data); err != nil {
-			return err
-		}
-
-		packageAbsPath := tempDirAbsPath.JoinString(releaseAsset.GetName())
-		if err := c.baseSystem.WriteFile(packageAbsPath, data, 0o644); err != nil {
-			return err
-		}
-
-		// Install the package from disk.
-		var args []string
-		if useSudo {
-			args = append(args, "sudo")
-		}
-		switch packageType {
-		case packageTypeAPK:
-			args = append(args, "apk", "--allow-untrusted", packageAbsPath.String())
-		case packageTypeDEB:
-			args = append(args, "dpkg", "-i", packageAbsPath.String())
-		case packageTypeRPM:
-			args = append(args, "rpm", "-U", packageAbsPath.String())
-		}
-		return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
-	default:
-		return fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
-	}
 }
 
 func (c *Config) verifyChecksum(
@@ -508,14 +323,62 @@ func (c *Config) verifyChecksum(
 	return nil
 }
 
+// isWinGetInstall determines if executableAbsPath contains a WinGet installation path.
+func isWinGetInstall(fileSystem vfs.Stater, executableAbsPath string) (bool, error) {
+	realExecutableAbsPath := executableAbsPath
+	fi, err := os.Lstat(executableAbsPath)
+	if err != nil {
+		return false, err
+	}
+	if fi.Mode().Type() == fs.ModeSymlink {
+		realExecutableAbsPath, err = os.Readlink(executableAbsPath)
+		if err != nil {
+			return false, err
+		}
+	}
+	winGetSettings := WinGetSettings{
+		InstallBehavior: InstallBehavior{
+			PortablePackageUserRoot:    os.ExpandEnv(`${LOCALAPPDATA}\Microsoft\WinGet\Packages\`),
+			PortablePackageMachineRoot: os.ExpandEnv(`${PROGRAMFILES}\WinGet\Packages\`),
+		},
+	}
+	settingsPaths := []string{
+		os.ExpandEnv(`${LOCALAPPDATA}\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\settings.json`),
+		os.ExpandEnv(`${LOCALAPPDATA}\Microsoft\WinGet\Settings\settings.json`),
+	}
+	for _, settingsPath := range settingsPaths {
+		if _, err := os.Stat(settingsPath); err == nil {
+			winGetSettingsContents, err := os.ReadFile(settingsPath)
+			if err == nil {
+				if err := chezmoi.FormatJSONC.Unmarshal(winGetSettingsContents, &winGetSettings); err != nil {
+					return false, err
+				}
+			}
+		}
+	}
+	for _, path := range winGetSettings.InstallBehavior.Values() {
+		path = filepath.Clean(path)
+		if path == "." {
+			continue
+		}
+		if ok, _ := vfs.Contains(fileSystem, realExecutableAbsPath, path); ok {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (c *Config) winGetUpgrade() error {
+	return fmt.Errorf("upgrade command is not currently supported for WinGet installations. chezmoi can still be upgraded via WinGet by running `winget upgrade --id %s.%s --source winget`", c.upgrade.owner, c.upgrade.repo)
+}
+
 // getUpgradeMethod attempts to determine the method by which chezmoi can be
 // upgraded by looking at how it was installed.
 func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
-	switch {
-	case runtime.GOOS == "darwin" && strings.Contains(executableAbsPath.String(), "/homebrew/"):
-		return upgradeMethodBrewUpgrade, nil
-	case runtime.GOOS == "linux" && strings.Contains(executableAbsPath.String(), "/.linuxbrew/"):
-		return upgradeMethodBrewUpgrade, nil
+	if ok, err := isWinGetInstall(fileSystem, executableAbsPath.String()); err != nil {
+		return "", err
+	} else if ok {
+		return upgradeMethodWinGetUpgrade, nil
 	}
 
 	// If the executable is in the user's home directory, then always use
@@ -542,68 +405,7 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 		return upgradeMethodReplaceExecutable, nil
 	}
 
-	switch runtime.GOOS {
-	case "darwin":
-		return upgradeMethodReplaceExecutable, nil
-	case "freebsd":
-		return upgradeMethodReplaceExecutable, nil
-	case "linux":
-		if ok, _ := vfs.Contains(fileSystem, executableAbsPath.String(), "/snap"); ok {
-			return upgradeMethodSnapRefresh, nil
-		}
-		fileInfo, err := fileSystem.Stat(executableAbsPath.String())
-		if err != nil {
-			return "", err
-		}
-		uid := os.Getuid()
-		switch fileInfoUID(fileInfo) {
-		case 0:
-			method := upgradeMethodUpgradePackage
-			if uid != 0 {
-				if _, err := chezmoi.LookPath("sudo"); err == nil {
-					method = upgradeMethodSudoPrefix + method
-				}
-			}
-			return method, nil
-		case uid:
-			return upgradeMethodReplaceExecutable, nil
-		default:
-			return "", fmt.Errorf(
-				"%s: cannot upgrade executable owned by non-current non-root user",
-				executableAbsPath,
-			)
-		}
-	case "openbsd":
-		return upgradeMethodReplaceExecutable, nil
-	default:
-		return "", nil
-	}
-}
-
-// getPackageType returns the distributions package type based on is OS release.
-func getPackageType(system chezmoi.System) (string, error) {
-	osRelease, err := chezmoi.OSRelease(system.UnderlyingFS())
-	if err != nil {
-		return packageTypeNone, err
-	}
-	if id, ok := osRelease["ID"].(string); ok {
-		if packageType, ok := packageTypeByID[id]; ok {
-			return packageType, nil
-		}
-	}
-	if idLikes, ok := osRelease["ID_LIKE"].(string); ok {
-		for _, id := range strings.Split(idLikes, " ") {
-			if packageType, ok := packageTypeByID[id]; ok {
-				return packageType, nil
-			}
-		}
-	}
-	err = fmt.Errorf(
-		"could not determine package type (ID=%q, ID_LIKE=%q)",
-		osRelease["ID"],
-		osRelease["ID_LIKE"],
-	)
-	return packageTypeNone, err
+	return "", nil
 }
 
 // getReleaseAssetByName returns the release asset from rr with the given name.

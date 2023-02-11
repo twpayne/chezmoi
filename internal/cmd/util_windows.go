@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/fs"
 	"strings"
 
 	"golang.org/x/sys/windows/registry"
@@ -33,10 +32,6 @@ var defaultInterpreters = map[string]*chezmoi.Interpreter{
 	"rb": {
 		Command: "ruby",
 	},
-}
-
-func fileInfoUID(fs.FileInfo) int {
-	return 0
 }
 
 func windowsVersion() (map[string]any, error) {
