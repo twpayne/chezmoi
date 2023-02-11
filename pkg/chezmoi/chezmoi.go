@@ -319,24 +319,6 @@ func modeTypeName(mode fs.FileMode) string {
 	return fmt.Sprintf("0o%o: unknown type", mode.Type())
 }
 
-// mustTrimPrefix is like strings.TrimPrefix but panics if s is not prefixed by
-// prefix.
-func mustTrimPrefix(s, prefix string) string {
-	if !strings.HasPrefix(s, prefix) {
-		panic(fmt.Sprintf("%s: not prefixed by %s", s, prefix))
-	}
-	return s[len(prefix):]
-}
-
-// mustTrimSuffix is like strings.TrimSuffix but panics if s is not suffixed by
-// suffix.
-func mustTrimSuffix(s, suffix string) string {
-	if !strings.HasSuffix(s, suffix) {
-		panic(fmt.Sprintf("%s: not suffixed by %s", s, suffix))
-	}
-	return s[:len(s)-len(suffix)]
-}
-
 // ripemd160Sum returns the RIPEMD-160 sum of data.
 func ripemd160Sum(data []byte) []byte {
 	return ripemd160.New().Sum(data)

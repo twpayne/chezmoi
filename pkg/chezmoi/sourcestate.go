@@ -1212,9 +1212,9 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 			continue
 		}
 		include := patternSetInclude
-		if strings.HasPrefix(text, "!") {
+		text, ok := CutPrefix(text, "!")
+		if ok {
 			include = patternSetExclude
-			text = mustTrimPrefix(text, "!")
 		}
 		pattern := dir.JoinString(text).String()
 		if err := patternSet.add(pattern, include); err != nil {
