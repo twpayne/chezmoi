@@ -33,7 +33,7 @@ func (c *Config) runTargetPathCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		argRelPath, err := argAbsPath.TrimDirPrefix(c.SourceDirAbsPath)
+		argRelPath, err := argAbsPath.TrimDirPrefix(c.sourceDirAbsPath)
 		if err != nil {
 			return err
 		}
