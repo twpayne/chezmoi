@@ -59,6 +59,7 @@ chhome home3/user
 # test that chezmoi add respects .chezmoiignore
 exec chezmoi add $HOME${/}.dir
 exists $CHEZMOISOURCEDIR/dot_dir/file
+stderr 'warning: ignoring'
 ! exists $CHEZMOISOURCEDIR/dot_dir/ignore
 
 chhome home4/user

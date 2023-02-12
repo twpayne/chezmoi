@@ -17,6 +17,7 @@ type addCmdConfig struct {
 	filter           *chezmoi.EntryTypeFilter
 	follow           bool
 	prompt           bool
+	quiet            bool
 	recursive        bool
 	template         bool
 }
@@ -47,6 +48,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
 	flags.VarP(c.Add.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVarP(&c.Add.prompt, "prompt", "p", c.Add.prompt, "Prompt before adding each entry")
+	flags.BoolVarP(&c.Add.quiet, "quiet", "q", c.Add.quiet, "Suppress warnings")
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
 	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates") //nolint:lll
@@ -54,6 +56,12 @@ func (c *Config) newAddCmd() *cobra.Command {
 	registerExcludeIncludeFlagCompletionFuncs(addCmd)
 
 	return addCmd
+}
+
+func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
+	if !c.Add.quiet {
+		c.errorf("warning: ignoring %s", targetRelPath)
+	}
 }
 
 func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
@@ -147,6 +155,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
 		Exact:            c.Add.exact,
 		Filter:           c.Add.filter,
+		OnIgnoreFunc:     c.defaultOnIgnoreFunc,
 		PreAddFunc:       c.defaultPreAddFunc,
 		ReplaceFunc:      c.defaultReplaceFunc,
 		Template:         c.Add.template,

@@ -290,6 +290,7 @@ type AddOptions struct {
 	EncryptedSuffix  string           // Suffix for encrypted files.
 	Exact            bool             // Add the exact_ attribute to added directories.
 	Filter           *EntryTypeFilter // Entry type filter.
+	OnIgnoreFunc     func(RelPath)    // Function to call when a target is ignored.
 	PreAddFunc       PreAddFunc       // Function to be called before a source entry is added.
 	RemoveDir        RelPath          // Directory to remove before adding.
 	ReplaceFunc      ReplaceFunc      // Function to be called before a source entry is replaced.
@@ -325,6 +326,9 @@ DESTABSPATH:
 		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
 
 		if s.Ignore(targetRelPath) {
+			if options.OnIgnoreFunc != nil {
+				options.OnIgnoreFunc(targetRelPath)
+			}
 			continue
 		}
 
