@@ -493,7 +493,7 @@ DESTABSPATH:
 			}
 		}
 		if !sourceUpdate.destAbsPath.Empty() {
-			if err := persistentStateSet(
+			if err := PersistentStateSet(
 				persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState,
 			); err != nil {
 				return err
@@ -613,7 +613,7 @@ func (s *SourceState) Apply(
 	if options.PreApplyFunc != nil {
 		var lastWrittenEntryState *EntryState
 		var entryState EntryState
-		ok, err := persistentStateGet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), &entryState)
+		ok, err := PersistentStateGet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), &entryState)
 		if err != nil {
 			return err
 		}
@@ -633,7 +633,7 @@ func (s *SourceState) Apply(
 		// respect to the last written state, we record the effect of the last
 		// apply as the last written state.
 		if targetEntryState.Equivalent(actualEntryState) && !lastWrittenEntryState.Equivalent(actualEntryState) {
-			err := persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
+			err := PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 			if err != nil {
 				return err
 			}
@@ -652,7 +652,7 @@ func (s *SourceState) Apply(
 		return nil
 	}
 
-	return persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
+	return PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 }
 
 // Contains returns the source state entry for targetRelPath.

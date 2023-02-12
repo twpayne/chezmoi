@@ -7,13 +7,13 @@ var (
 	// EntryStateBucket is the bucket for recording the entry states.
 	EntryStateBucket = []byte("entryState")
 
-	// gitRepoExternalState is the bucket for recording the state of commands
+	// GitRepoExternalStateBucket is the bucket for recording the state of commands
 	// that modify directories.
-	gitRepoExternalState = []byte("gitRepoExternalState")
+	GitRepoExternalStateBucket = []byte("gitRepoExternalState")
 
-	// scriptStateBucket is the bucket for recording the state of run once
+	// ScriptStateBucket is the bucket for recording the state of run once
 	// scripts.
-	scriptStateBucket = []byte("scriptState")
+	ScriptStateBucket = []byte("scriptState")
 
 	stateFormat = formatJSON{}
 )
@@ -47,38 +47,20 @@ func PersistentStateBucketData(s PersistentState, bucket []byte) (map[string]any
 }
 
 // PersistentStateData returns the structured data in s.
-func PersistentStateData(s PersistentState) (any, error) {
-	configStateData, err := PersistentStateBucketData(s, ConfigStateBucket)
-	if err != nil {
-		return nil, err
+func PersistentStateData(s PersistentState, buckets map[string][]byte) (map[string]any, error) {
+	result := make(map[string]any)
+	for bucketName, bucketKey := range buckets {
+		stateData, err := PersistentStateBucketData(s, bucketKey)
+		if err != nil {
+			return nil, err
+		}
+		result[bucketName] = stateData
 	}
-	entryStateData, err := PersistentStateBucketData(s, EntryStateBucket)
-	if err != nil {
-		return nil, err
-	}
-	gitRepoExternalData, err := PersistentStateBucketData(s, gitRepoExternalState)
-	if err != nil {
-		return nil, err
-	}
-	scriptStateData, err := PersistentStateBucketData(s, scriptStateBucket)
-	if err != nil {
-		return nil, err
-	}
-	return struct {
-		ConfigState         any `json:"configState" yaml:"configState"`
-		EntryState          any `json:"entryState" yaml:"entryState"`
-		GitRepoExternalData any `json:"gitRepoExternalState" yaml:"gitRepoExternalState"`
-		ScriptState         any `json:"scriptState" yaml:"scriptState"`
-	}{
-		ConfigState:         configStateData,
-		EntryState:          entryStateData,
-		GitRepoExternalData: gitRepoExternalData,
-		ScriptState:         scriptStateData,
-	}, nil
+	return result, nil
 }
 
-// persistentStateGet gets the value associated with key in bucket in s, if it exists.
-func persistentStateGet(s PersistentState, bucket, key []byte, value any) (bool, error) {
+// PersistentStateGet gets the value associated with key in bucket in s, if it exists.
+func PersistentStateGet(s PersistentState, bucket, key []byte, value any) (bool, error) {
 	data, err := s.Get(bucket, key)
 	if err != nil {
 		return false, err
@@ -92,8 +74,8 @@ func persistentStateGet(s PersistentState, bucket, key []byte, value any) (bool,
 	return true, nil
 }
 
-// persistentStateSet sets the value associated with key in bucket in s.
-func persistentStateSet(s PersistentState, bucket, key []byte, value any) error {
+// PersistentStateSet sets the value associated with key in bucket in s.
+func PersistentStateSet(s PersistentState, bucket, key []byte, value any) error {
 	data, err := stateFormat.Marshal(value)
 	if err != nil {
 		return err
