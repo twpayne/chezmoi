@@ -86,6 +86,7 @@ type ConfigFile struct {
 	Data               map[string]any                  `json:"data" mapstructure:"data" yaml:"data"`
 	Format             writeDataFormat                 `json:"format" mapstructure:"format" yaml:"format"`
 	DestDirAbsPath     chezmoi.AbsPath                 `json:"destDir" mapstructure:"destDir" yaml:"destDir"`
+	GitHub             gitHubConfig                    `json:"gitHub" mapstructure:"gitHub" yaml:"gitHub"`
 	Interpreters       map[string]*chezmoi.Interpreter `json:"interpreters" mapstructure:"interpreters" yaml:"interpreters"` //nolint:lll
 	Mode               chezmoi.Mode                    `json:"mode" mapstructure:"mode" yaml:"mode"`
 	Pager              string                          `json:"pager" mapstructure:"pager" yaml:"pager"`
@@ -2450,6 +2451,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Format: writeDataFormatJSON,
 		Git: gitCmdConfig{
 			Command: "git",
+		},
+		GitHub: gitHubConfig{
+			RefreshPeriod: 1 * time.Minute,
 		},
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",

@@ -154,6 +154,11 @@ sections:
     command:
       default: '`git`'
       description: git CLI command
+  gitHub:
+    refreshPeriod:
+      type: duration
+      default: '`1m`'
+      description: Minimum duration between identical GitHub API requests
   gopass:
     command:
       default: '`gopass`'

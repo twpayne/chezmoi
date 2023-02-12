@@ -40,6 +40,9 @@ stdout runAt:
 -- golden/dump.yaml --
 configState: {}
 entryState: {}
+gitHubKeysState: {}
+gitHubLatestReleaseState: {}
+gitHubLatestTagState: {}
 gitRepoExternalState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/run_once_script.sh --
