@@ -67,6 +67,9 @@ configState:
     configState:
         configTemplateContentsSHA256: af43121a524340707b84e390f510c949731177e6f2a25b3b6b11b2fc656cf8f2
 entryState: {}
+gitHubKeysState: {}
+gitHubLatestReleaseState: {}
+gitHubLatestTagState: {}
 gitRepoExternalState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --

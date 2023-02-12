@@ -27,6 +27,9 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 		Long:    mustLongHelp("execute-template"),
 		Example: example("execute-template"),
 		RunE:    c.runExecuteTemplateCmd,
+		Annotations: newAnnotations(
+			persistentStateModeReadWrite,
+		),
 	}
 
 	flags := executeTemplateCmd.Flags()

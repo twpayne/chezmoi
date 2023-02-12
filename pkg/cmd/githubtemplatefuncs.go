@@ -4,10 +4,36 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/go-github/v50/github"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+)
+
+type gitHubConfig struct {
+	RefreshPeriod time.Duration `json:"refreshPeriod" mapstructure:"refreshPeriod" yaml:"refreshPeriod"`
+}
+
+type gitHubKeysState struct {
+	RequestedAt time.Time     `json:"requestedAt" yaml:"requestedAt"`
+	Keys        []*github.Key `json:"keys" yaml:"keys"`
+}
+
+type gitHubLatestReleaseState struct {
+	RequestedAt time.Time                 `json:"requestedAt" yaml:"requestedAt"`
+	Release     *github.RepositoryRelease `json:"release" yaml:"release"`
+}
+
+type gitHubLatestTagState struct {
+	RequestedAt time.Time             `json:"requestedAt" yaml:"requestedAt"`
+	Tag         *github.RepositoryTag `json:"tag" yaml:"tag"`
+}
+
+var (
+	gitHubKeysStateBucket          = []byte("gitHubLatestKeysState")
+	gitHubLatestReleaseStateBucket = []byte("gitHubLatestReleaseState")
+	gitHubLatestTagStateBucket     = []byte("gitHubLatestTagState")
 )
 
 type gitHubData struct {
@@ -21,6 +47,18 @@ type gitHubData struct {
 func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	if keys, ok := c.gitHub.keysCache[user]; ok {
 		return keys
+	}
+
+	now := time.Now()
+	gitHubKeysKey := []byte(user)
+	if c.GitHub.RefreshPeriod != 0 {
+		var gitHubKeysValue gitHubKeysState
+		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysValue); { //nolint:lll
+		case err != nil:
+			panic(err)
+		case ok && !now.After(gitHubKeysValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+			return gitHubKeysValue.Keys
+		}
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -47,10 +85,18 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 		opts.Page = resp.NextPage
 	}
 
+	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysState{
+		RequestedAt: now,
+		Keys:        allKeys,
+	}); err != nil {
+		panic(err)
+	}
+
 	if c.gitHub.keysCache == nil {
 		c.gitHub.keysCache = make(map[string][]*github.Key)
 	}
 	c.gitHub.keysCache[user] = allKeys
+
 	return allKeys
 }
 
@@ -64,6 +110,18 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 		return release
 	}
 
+	now := time.Now()
+	gitHubLatestReleaseKey := []byte(owner + "/" + repo)
+	if c.GitHub.RefreshPeriod != 0 {
+		var gitHubLatestReleaseStateValue gitHubLatestReleaseState
+		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseStateValue); { //nolint:lll
+		case err != nil:
+			panic(err)
+		case ok && !now.After(gitHubLatestReleaseStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+			return gitHubLatestReleaseStateValue.Release
+		}
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -74,6 +132,13 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 
 	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, owner, repo)
 	if err != nil {
+		panic(err)
+	}
+
+	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseState{ //nolint:lll
+		RequestedAt: now,
+		Release:     release,
+	}); err != nil {
 		panic(err)
 	}
 
@@ -98,6 +163,18 @@ func (c *Config) gitHubLatestTagTemplateFunc(userRepo string) *github.Repository
 		return tag
 	}
 
+	now := time.Now()
+	gitHubLatestTagKey := []byte(owner + "/" + repo)
+	if c.GitHub.RefreshPeriod != 0 {
+		var gitHubLatestTagValue gitHubLatestTagState
+		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestTagStateBucket, gitHubLatestTagKey, &gitHubLatestTagValue); { //nolint:lll
+		case err != nil:
+			panic(err)
+		case ok && !now.After(gitHubLatestTagValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+			return gitHubLatestTagValue.Tag
+		}
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -112,9 +189,16 @@ func (c *Config) gitHubLatestTagTemplateFunc(userRepo string) *github.Repository
 	if err != nil {
 		panic(err)
 	}
-	var firstTag *github.RepositoryTag
+	var tag *github.RepositoryTag
 	if len(tags) > 0 {
-		firstTag = tags[0]
+		tag = tags[0]
+	}
+
+	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubLatestTagStateBucket, gitHubLatestTagKey, &gitHubLatestTagState{ //nolint:lll
+		RequestedAt: now,
+		Tag:         tag,
+	}); err != nil {
+		panic(err)
 	}
 
 	if c.gitHub.latestTagCache == nil {
@@ -123,9 +207,9 @@ func (c *Config) gitHubLatestTagTemplateFunc(userRepo string) *github.Repository
 	if c.gitHub.latestTagCache[owner] == nil {
 		c.gitHub.latestTagCache[owner] = make(map[string]*github.RepositoryTag)
 	}
-	c.gitHub.latestTagCache[owner][repo] = firstTag
+	c.gitHub.latestTagCache[owner][repo] = tag
 
-	return firstTag
+	return tag
 }
 
 func (c *Config) getGitHubClient(ctx context.Context) (*github.Client, error) {
