@@ -37,6 +37,10 @@ Only add entries of type *types*.
 
 Interactively prompt before adding each file.
 
+## `-q`, `--quiet`
+
+Suppress warnings about adding ignored entries.
+
 ## `-r`, `--recursive`
 
 Recursively add all files, directories, and symlinks.
