@@ -90,8 +90,8 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 	}
 
 	modifyDirWithCmdStateKey := []byte(actualStateEntry.Path().String())
-	if err := persistentStateSet(
-		persistentState, gitRepoExternalState, modifyDirWithCmdStateKey, &modifyDirWithCmdState{
+	if err := PersistentStateSet(
+		persistentState, GitRepoExternalStateBucket, modifyDirWithCmdStateKey, &modifyDirWithCmdState{
 			Name:  actualStateEntry.Path(),
 			RunAt: runAt,
 		}); err != nil {
@@ -120,7 +120,7 @@ func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState,
 		return false, nil
 	}
 	modifyDirWithCmdKey := []byte(targetAbsPath.String())
-	switch modifyDirWithCmdStateBytes, err := persistentState.Get(gitRepoExternalState, modifyDirWithCmdKey); {
+	switch modifyDirWithCmdStateBytes, err := persistentState.Get(GitRepoExternalStateBucket, modifyDirWithCmdKey); {
 	case err != nil:
 		return false, err
 	case modifyDirWithCmdStateBytes == nil:
@@ -328,7 +328,7 @@ func (t *TargetStateScript) Apply(
 	}
 
 	scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
-	if err := persistentStateSet(persistentState, scriptStateBucket, scriptStateKey, &scriptState{
+	if err := PersistentStateSet(persistentState, ScriptStateBucket, scriptStateKey, &scriptState{
 		Name:  t.name,
 		RunAt: runAt,
 	}); err != nil {
@@ -336,7 +336,7 @@ func (t *TargetStateScript) Apply(
 	}
 
 	entryStateKey := actualStateEntry.Path().Bytes()
-	if err := persistentStateSet(persistentState, EntryStateBucket, entryStateKey, &EntryState{
+	if err := PersistentStateSet(persistentState, EntryStateBucket, entryStateKey, &EntryState{
 		Type:           EntryStateTypeScript,
 		ContentsSHA256: HexBytes(contentsSHA256),
 	}); err != nil {
@@ -381,7 +381,7 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbs
 			return false, err
 		}
 		scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
-		switch scriptState, err := persistentState.Get(scriptStateBucket, scriptStateKey); {
+		switch scriptState, err := persistentState.Get(ScriptStateBucket, scriptStateKey); {
 		case err != nil:
 			return false, err
 		case scriptState != nil:
