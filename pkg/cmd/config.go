@@ -90,7 +90,7 @@ type ConfigFile struct {
 	Mode               chezmoi.Mode                    `json:"mode" mapstructure:"mode" yaml:"mode"`
 	Pager              string                          `json:"pager" mapstructure:"pager" yaml:"pager"`
 	PINEntry           pinEntryConfig                  `json:"pinentry" mapstructure:"pinentry" yaml:"pinentry"`
-	Progress           bool                            `json:"progress" mapstructure:"progress" yaml:"progress"`
+	Progress           autoBool                        `json:"progress" mapstructure:"progress" yaml:"progress"`
 	Safe               bool                            `json:"safe" mapstructure:"safe" yaml:"safe"`
 	ScriptEnv          map[string]string               `json:"scriptEnv" mapstructure:"scriptEnv" yaml:"scriptEnv"`
 	ScriptTempDir      chezmoi.AbsPath                 `json:"scriptTempDir" mapstructure:"scriptTempDir" yaml:"scriptTempDir"` //nolint:lll
@@ -1372,7 +1372,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.persistentStateAbsPath, "persistent-state", "Set persistent state file")
-	persistentFlags.BoolVar(&c.Progress, "progress", c.Progress, "Display progress bars")
+	persistentFlags.Var(&c.Progress, "progress", "Display progress bars")
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
@@ -1944,6 +1944,14 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	return defaultConfigFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
 }
 
+// progressAutoFunc detects whether progress bars should be displayed.
+func (c *Config) progressAutoFunc() bool {
+	if stdout, ok := c.stdout.(*os.File); ok {
+		return term.IsTerminal(int(stdout.Fd()))
+	}
+	return false
+}
+
 func (c *Config) newTemplateData() *templateData {
 	// Determine the user's username and group, if possible.
 	//
@@ -2378,6 +2386,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Interpreters: defaultInterpreters,
 		Pager:        os.Getenv("PAGER"),
+		Progress: autoBool{
+			auto: true,
+		},
 		PINEntry: pinEntryConfig{
 			Options: pinEntryDefaultOptions,
 		},

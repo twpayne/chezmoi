@@ -60,9 +60,10 @@ Read and write the persistent state from *filename*. By default, chezmoi stores
 its persistent state in `chezmoistate.boltdb` in the same directory as its
 configuration file.
 
-## `--progress`
+## `--progress` *value*
 
-Show progress when downloading externals.
+Show progress when downloading externals. *value* can be `on`, `off`, or `auto`.
+The default is `auto` which shows progress bars when stdout is a terminal.
 
 ## `-R`, `--refresh-externals` [*value*]
 
