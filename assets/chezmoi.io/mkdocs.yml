@@ -233,6 +233,7 @@ nav:
       - reference/templates/bitwarden-functions/index.md
       - bitwarden: reference/templates/bitwarden-functions/bitwarden.md
       - bitwardenAttachment: reference/templates/bitwarden-functions/bitwardenAttachment.md
+      - bitwardenAttachmentByRef: reference/templates/bitwarden-functions/bitwardenAttachmentByRef.md
       - bitwardenFields: reference/templates/bitwarden-functions/bitwardenFields.md
     - gopass functions:
       - reference/templates/gopass-functions/index.md

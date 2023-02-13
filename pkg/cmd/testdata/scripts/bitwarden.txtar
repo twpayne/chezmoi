@@ -14,6 +14,10 @@ stdout ^hidden-value$
 exec chezmoi execute-template '{{ (bitwardenAttachment "filename" "item-id") }}'
 cmp stdout golden/bitwarden-attachment
 
+# test bitwardenAttachmentByRef template function
+exec chezmoi execute-template '{{ (bitwardenAttachmentByRef "filename" "item" "example.com") }}'
+cmp stdout golden/bitwarden-attachment
+
 -- bin/bw --
 #!/bin/sh
 
@@ -57,6 +61,11 @@ EOF
 hidden-file-value
 EOF
     ;;
+"get attachment filename --itemid bf22e4b4-ae4a-4d1c-8c98-ac620004b628 --raw")
+    cat <<EOF
+hidden-file-value
+EOF
+    ;;
 *)
     echo "Invalid command: $*"
     echo "See --help for a list of available commands."
@@ -96,6 +105,8 @@ IF "%*" == "get item example.com" (
     echo.  "revisionDate": "2020-10-28T00:21:02.690Z"
     echo.}
 ) ELSE IF "%*" == "get attachment filename --itemid item-id --raw" (
+    echo.hidden-file-value
+) ELSE IF "%*" == "get attachment filename --itemid bf22e4b4-ae4a-4d1c-8c98-ac620004b628 --raw" (
     echo.hidden-file-value
 ) ELSE (
     echo Invalid command: $*

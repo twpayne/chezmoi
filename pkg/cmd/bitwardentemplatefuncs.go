@@ -22,6 +22,22 @@ func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
 	return string(output)
 }
 
+func (c *Config) bitwardenAttachmentByRefTemplateFunc(name string, args ...string) string {
+	output, err := c.bitwardenOutput(args)
+	if err != nil {
+		panic(err)
+	}
+	var data map[string]interface{}
+	if err := json.Unmarshal(output, &data); err != nil {
+		panic(newParseCmdOutputError(c.Bitwarden.Command, args, output, err))
+	}
+	itemid, ok := data["id"].(string)
+	if !ok {
+		panic("bitwarden object has invalid id")
+	}
+	return c.bitwardenAttachmentTemplateFunc(name, itemid)
+}
+
 func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]any {
 	output, err := c.bitwardenOutput(args)
 	if err != nil {
