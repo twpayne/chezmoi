@@ -357,6 +357,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"awsSecretsManagerRaw":     c.awsSecretsManagerRawTemplateFunc,
 		"bitwarden":                c.bitwardenTemplateFunc,
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
+		"bitwardenAttachmentByRef": c.bitwardenAttachmentByRefTemplateFunc,
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"comment":                  c.commentTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
