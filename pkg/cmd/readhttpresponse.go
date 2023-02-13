@@ -114,7 +114,7 @@ func (m httpSpinnerModel) View() string {
 
 func (c *Config) readHTTPResponse(resp *http.Response) ([]byte, error) {
 	switch {
-	case c.noTTY || !c.Progress:
+	case c.noTTY || !c.Progress.Value(c.progressAutoFunc):
 		return io.ReadAll(resp.Body)
 
 	case resp.ContentLength >= 0:
