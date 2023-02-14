@@ -18,6 +18,7 @@ type executeTemplateCmdConfig struct {
 	promptString    map[string]string
 	stdinIsATTY     bool
 	templateOptions chezmoi.TemplateOptions
+	withStdin       bool
 }
 
 func (c *Config) newExecuteTemplateCmd() *cobra.Command {
@@ -40,6 +41,7 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
 	flags.StringVar(&c.executeTemplate.templateOptions.LeftDelimiter, "left-delimiter", c.executeTemplate.templateOptions.LeftDelimiter, "Set left template delimiter")     //nolint:lll
 	flags.StringVar(&c.executeTemplate.templateOptions.RightDelimiter, "right-delimiter", c.executeTemplate.templateOptions.RightDelimiter, "Set right template delimiter") //nolint:lll
+	flags.BoolVar(&c.executeTemplate.withStdin, "with-stdin", c.executeTemplate.withStdin, "Set .chezmoi.stdin to the contents of the standard input")                      //nolint:lll
 
 	return executeTemplateCmd
 }
@@ -50,6 +52,17 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	}
 	if c.executeTemplate.init {
 		options = append(options, chezmoi.WithReadTemplateData(false))
+	}
+	if c.executeTemplate.withStdin && len(args) > 0 {
+		stdin, err := io.ReadAll(c.stdin)
+		if err != nil {
+			return err
+		}
+		options = append(options, chezmoi.WithPriorityTemplateData(map[string]any{
+			"chezmoi": map[string]any{
+				"stdin": string(stdin),
+			},
+		}))
 	}
 	sourceState, err := c.newSourceState(cmd.Context(), options...)
 	if err != nil {

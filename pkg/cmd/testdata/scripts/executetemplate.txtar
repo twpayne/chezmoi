@@ -7,6 +7,11 @@ stdin golden/stdin.tmpl
 exec chezmoi execute-template
 stdout stdin-template
 
+# test reading from stdin with an argument
+stdin golden/stdin
+exec chezmoi execute-template --with-stdin '{{ .chezmoi.stdin | upper }}'
+stdout '# CONTENTS OF STDIN'
+
 # test partial templates work
 exec chezmoi execute-template '{{ template "partial" }}'
 stdout 'hello world'
@@ -77,6 +82,8 @@ stdout value
 exec chezmoi execute-template --init '{{ promptString "value" "default" }}'
 stdout default
 
+-- golden/stdin --
+# contents of stdin
 -- golden/stdin.tmpl --
 {{ "stdin-template" }}
 -- home/user/.config/chezmoi/chezmoi.toml --

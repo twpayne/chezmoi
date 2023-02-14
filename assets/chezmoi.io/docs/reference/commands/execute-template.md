@@ -42,6 +42,11 @@ Set the right template delimiter.
 
 Simulate the `stdinIsATTY` function by returning *bool*.
 
+## `--with-stdin`
+
+If run with arguments, then set `.chezmoi.stdin` to the contents of the standard
+input.
+
 !!! example
 
     ```console
