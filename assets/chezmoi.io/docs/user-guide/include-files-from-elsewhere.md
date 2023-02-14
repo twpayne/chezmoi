@@ -111,6 +111,73 @@ to include
     refreshPeriod = "168h"
 ```
 
+## Extract a single file from an archive
+
+You can extract a single file from an archive using the `$ENTRY.filter.command`
+and `$ENTRY.filter.args` variables in `.chezmoiexternal.$FORMAT`, for example:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+{{ $ageVersion := "1.0.0" -}}
+[".local/bin/age"]
+    type = "file"
+    url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+    executable = true
+    refreshPeriod = "168h"
+    [".local/bin/age".filter]
+        command = "tar"
+        args = ["--extract", "--file", "/dev/stdin", "--gzip", "--to-stdout", "age/age"]
+```
+
+This will extract the single archive member `age/age` from the given URL (which
+is computed for the current OS and architecture) to the target
+`./local/bin/age` and set its executable bit.
+
+## Import archives
+
+It is occasionally useful to import entire archives of configuration into your
+source state. The `import` command does this. For example, to import the latest
+version [`github.com/ohmyzsh/ohmyzsh`](https://github.com/ohmyzsh/ohmyzsh) to
+`~/.oh-my-zsh` run:
+
+```console
+$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
+$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
+```
+
+!!! note
+
+    This only updates the source state. You will need to run:
+
+    ```console
+    $ chezmoi apply
+    ```
+
+    to update your destination directory.
+
+## Handle tar archives in an unsupported compression format
+
+chezmoi natively understands tar archives. tar archives can be uncompressed or
+compressed in the bzip2, gzip, xz, or zstd formats.
+
+If you have a tar archive in an unsupported compression format then you can use
+a filter to decompress it. For example, before chezmoi natively supported the
+zstd compression format, you could handle `.tar.zst` external archives with, for
+example:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+[".Software/anki/2.1.54-qt6"]
+    type = "archive"
+    url = "https://github.com/ankitects/anki/releases/download/2.1.54/anki-2.1.54-linux-qt6.tar.zst"
+    filter.command = "zstd"
+    filter.args = ["-d"]
+    format = "tar"
+```
+
+Here `filter.command` and `filter.args` together tell chezmoi to filter the
+downloaded data through `zstd -d`. The `format = "tar"` line tells chezmoi that
+output of the filter is an uncompressed tar archive.
+
 ## Include a subdirectory from a git repository
 
 You can configure chezmoi to keep a git repository up to date in a subdirectory
@@ -182,70 +249,3 @@ submodules.
 You can stop chezmoi from handling git submodules by passing the
 `--recurse-submodules=false` flag or setting the `update.recurseSubmodules`
 configuration variable to `false`.
-
-## Extract a single file from an archive
-
-You can extract a single file from an archive using the `$ENTRY.filter.command`
-and `$ENTRY.filter.args` variables in `.chezmoiexternal.$FORMAT`, for example:
-
-```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
-{{ $ageVersion := "1.0.0" -}}
-[".local/bin/age"]
-    type = "file"
-    url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
-    executable = true
-    refreshPeriod = "168h"
-    [".local/bin/age".filter]
-        command = "tar"
-        args = ["--extract", "--file", "/dev/stdin", "--gzip", "--to-stdout", "age/age"]
-```
-
-This will extract the single archive member `age/age` from the given URL (which
-is computed for the current OS and architecture) to the target
-`./local/bin/age` and set its executable bit.
-
-## Import archives
-
-It is occasionally useful to import entire archives of configuration into your
-source state. The `import` command does this. For example, to import the latest
-version [`github.com/ohmyzsh/ohmyzsh`](https://github.com/ohmyzsh/ohmyzsh) to
-`~/.oh-my-zsh` run:
-
-```console
-$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
-$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
-```
-
-!!! note
-
-    This only updates the source state. You will need to run:
-
-    ```console
-    $ chezmoi apply
-    ```
-
-    to update your destination directory.
-
-## Handle tar archives in an unsupported compression format
-
-chezmoi natively understands tar archives. tar archives can be uncompressed or
-compressed in the bzip2, gzip, xz, or zstd formats.
-
-If you have a tar archive in an unsupported compression format then you can use
-a filter to decompress it. For example, before chezmoi natively supported the
-zstd compression format, you could handle `.tar.zst` external archives with, for
-example:
-
-```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
-[".Software/anki/2.1.54-qt6"]
-    type = "archive"
-    url = "https://github.com/ankitects/anki/releases/download/2.1.54/anki-2.1.54-linux-qt6.tar.zst"
-    filter.command = "zstd"
-    filter.args = ["-d"]
-    format = "tar"
-```
-
-Here `filter.command` and `filter.args` together tell chezmoi to filter the
-downloaded data through `zstd -d`. The `format = "tar"` line tells chezmoi that
-output of the filter is an uncompressed tar archive.
