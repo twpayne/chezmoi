@@ -130,6 +130,24 @@ the `refreshPeriod` is `168h` which is one week. The default `refreshPeriod` is
 zero, which disables refreshes. You can force a refresh (i.e. force a `git
 pull`) by passing the `--refresh-externals`/`-R` flag to `chezmoi apply`.
 
+!!! warning
+
+    chezmoi's support for `git-repo` externals is limited to running `git
+    clone` and/or `git pull` in a directory. You must have a `git` binary
+    in your `$PATH`.
+
+    Using a `git-repo` external delegates management of the
+    directory to git. chezmoi cannot manage any other files in that directory.
+
+    The contents of `git-repo` externals will not be manifested in commands
+    like `chezmoi archive` or `chezmoi dump`.
+
+!!! hint
+
+    If you need to manage extra files in a `git-repo` external, use an
+    `archive` external instead with the URL pointing to an archive of the git
+    repo's `master` or `main` branch.
+
 You can customize the arguments to `git clone` and `git pull` by setting the
 `$DIR.clone.args` and `$DIR.pull.args` variables in `.chezmoiexternal.$FORMAT`,
 for example:
@@ -142,18 +160,6 @@ for example:
     [".vim/pack/alker0/chezmoi.vim".pull]
         args = ["--ff-only"]
 ```
-
-!!! note
-
-    chezmoi's support for `git-repo` externals is limited to running `git
-    clone` and/or `git pull` in a directory. The contents of `git-repo`
-    externals are not manifested in commands like `chezmoi archive` or `chezmoi
-    dump`.
-
-!!! note
-
-    chezmoi's support for `git-repo` externals currently requires `git` to be
-    in your `$PATH`.
 
 ## Extract a single file from an archive
 
