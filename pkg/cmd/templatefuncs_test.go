@@ -7,7 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/ini.v1"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
@@ -370,9 +369,7 @@ func TestFromIniTemplateFunc(t *testing.T) {
 				`key = value`,
 			),
 			expected: map[string]any{
-				ini.DefaultSection: map[string]any{
-					"key": "value",
-				},
+				"key": "value",
 			},
 		},
 		{
@@ -381,7 +378,19 @@ func TestFromIniTemplateFunc(t *testing.T) {
 				`sectionKey = sectionValue`,
 			),
 			expected: map[string]any{
-				ini.DefaultSection: map[string]any{},
+				"section": map[string]any{
+					"sectionKey": "sectionValue",
+				},
+			},
+		},
+		{
+			text: chezmoitest.JoinLines(
+				`key = value`,
+				`[section]`,
+				`sectionKey = sectionValue`,
+			),
+			expected: map[string]any{
+				"key": "value",
 				"section": map[string]any{
 					"sectionKey": "sectionValue",
 				},

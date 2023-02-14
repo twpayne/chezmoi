@@ -473,7 +473,13 @@ func fileInfoToMap(fileInfo fs.FileInfo) map[string]any {
 func iniFileToMap(file *ini.File) map[string]any {
 	m := make(map[string]any)
 	for _, section := range file.Sections() {
-		m[section.Name()] = iniSectionToMap(section)
+		if section.Name() == ini.DefaultSection {
+			for _, k := range section.Keys() {
+				m[k.Name()] = k.Value()
+			}
+		} else {
+			m[section.Name()] = iniSectionToMap(section)
+		}
 	}
 	return m
 }
