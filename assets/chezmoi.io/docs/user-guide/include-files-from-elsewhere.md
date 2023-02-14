@@ -161,6 +161,28 @@ for example:
         args = ["--ff-only"]
 ```
 
+## Use git submodules in your source directory
+
+!!! important
+
+    If you use git submodules, then you should set the `external_` attribute on
+    the subdirectory containing the submodule.
+
+You can include git repos from elsewhere as git submodules in your source
+directory. `chezmoi init` and `chezmoi update` are aware of git submodules and
+will run git with the `--recurse-submodules` flag by default.
+
+chezmoi assumes that all files and directories in its source state are in
+chezmoi's format, i.e. their filenames include attributes like `private_` and
+`run_`.  Most git submodules are not in chezmoi's format and so files like
+`run_test.sh` will be be interpreted by chezmoi as a `run_` script. To avoid
+this problem, set the `external_` attribute on all subdirectories that contain
+submodules.
+
+You can stop chezmoi from handling git submodules by passing the
+`--recurse-submodules=false` flag or setting the `update.recurseSubmodules`
+configuration variable to `false`.
+
 ## Extract a single file from an archive
 
 You can extract a single file from an archive using the `$ENTRY.filter.command`
