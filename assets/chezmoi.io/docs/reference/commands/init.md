@@ -15,10 +15,10 @@ following patterns:
 | `sr.ht/~user`      | `https://user@git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
 | `sr.ht/~user/repo` | `https://user@git.sr.ht/~user/repo`         | `git@git.sr.ht:~user/repo.git`     |
 
-To disable git repo URL guessing pass the `--guess-repo-url=false` option.
+To disable git repo URL guessing, pass the `--guess-repo-url=false` option.
 
-First, if the source directory is not already contain a repository, then if
-*repo* is given it is checked out into the source directory, otherwise a new
+First, if the source directory does not already contain a repository, then if
+*repo* is given, it is checked out into the source directory; otherwise a new
 repository is initialized in the source directory.
 
 Second, if a file called `.chezmoi.$FORMAT.tmpl` exists, where `$FORMAT` is one
