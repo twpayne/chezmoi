@@ -1724,8 +1724,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-progress" class="md-nav__link">
-    --progress
+  <a href="#-progress-value" class="md-nav__link">
+    --progress value
   </a>
   
 </li>
@@ -4079,6 +4079,8 @@
         
           
         
+          
+        
       
       
         
@@ -4123,6 +4125,20 @@
     <li class="md-nav__item">
       <a href="../../templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+        bitwardenAttachmentByRef
       </a>
     </li>
   
@@ -5358,8 +5374,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-progress" class="md-nav__link">
-    --progress
+  <a href="#-progress-value" class="md-nav__link">
+    --progress value
   </a>
   
 </li>
@@ -5467,8 +5483,9 @@ changes that would be made without making them.</p>
 <p>Read and write the persistent state from <em>filename</em>. By default, chezmoi stores
 its persistent state in <code>chezmoistate.boltdb</code> in the same directory as its
 configuration file.</p>
-<h2 id="-progress"><code>--progress</code></h2>
-<p>Show progress when downloading externals.</p>
+<h2 id="-progress-value"><code>--progress</code> <em>value</em></h2>
+<p>Show progress when downloading externals. <em>value</em> can be <code>on</code>, <code>off</code>, or <code>auto</code>.
+The default is <code>auto</code> which shows progress bars when stdout is a terminal.</p>
 <h2 id="-r-refresh-externals-value"><code>-R</code>, <code>--refresh-externals</code> [<em>value</em>]</h2>
 <p>Control the refresh of the externals cache. <em>value</em> can be any of <code>always</code>,
 <code>auto</code>, or <code>never</code> and defaults to <code>always</code> if no <em>value</em> is specified. If no

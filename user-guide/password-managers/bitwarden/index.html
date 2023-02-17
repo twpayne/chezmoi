@@ -3908,6 +3908,8 @@
         
           
         
+          
+        
       
       
         
@@ -3952,6 +3954,20 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+        bitwardenAttachmentByRef
       </a>
     </li>
   
@@ -5117,6 +5133,12 @@ function.</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>bw<span class="w"> </span>unlock
 </code></pre></div>
 <p>Set the <code>BW_SESSION</code> environment variable, as instructed.</p>
+<div class="admonition tip">
+<p class="admonition-title">Bitwarden Session One-liner</p>
+<p>Set <code>BW_SESSION</code> automatically with:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span><span class="o">{</span>login,unlock<span class="o">}</span><span class="w"> </span>--raw<span class="k">)</span>
+</code></pre></div>
+</div>
 <p>The structured data from <code>bw get</code> is available as the <code>bitwarden</code> template
 function in your config files, for example:</p>
 <div class="highlight"><pre><span></span><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
@@ -5127,6 +5149,14 @@ example, if you have a custom field named <code>token</code> you can retrieve it
 with:</p>
 <div class="highlight"><pre><span></span><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
 </code></pre></div>
+<p>Attachments can be accessed with the <code>bitwardenAttachment</code> and
+<code>bitwardenAttachmentByRef</code> template function. For example, if you have an
+attachment named <code>id_rsa</code>, you can retrieve its value with:</p>
+<p><div class="highlight"><pre><span></span><code>{{ bitwardenAttachment &quot;id_rsa&quot; &quot;bf22e4b4-ae4a-4d1c-8c98-ac620004b628&quot; }}
+</code></pre></div>
+or
+<div class="highlight"><pre><span></span><code>{{ bitwardenAttachmentByRef &quot;id_rsa&quot; &quot;item&quot; &quot;example.com&quot; }}
+</code></pre></div></p>
 
 
 

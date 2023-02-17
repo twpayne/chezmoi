@@ -3898,6 +3898,8 @@
         
           
         
+          
+        
       
       
         
@@ -3942,6 +3944,20 @@
     <li class="md-nav__item">
       <a href="../bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+        bitwardenAttachmentByRef
       </a>
     </li>
   
@@ -5098,18 +5114,20 @@
 
 <h1 id="github-functions">GitHub functions</h1>
 <p>The <code>gitHub*</code> template functions return data from the GitHub API.</p>
-<p>By default, an anonymous GitHub API request will be made, which is subject to
+<p>By default, chezmoi makes anonymous GitHub API requests, which are subject to
 <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting">GitHub's rate
 limits</a>
-(currently 60 requests per hour per source IP address). If any of the
-environment variables <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>$GITHUB_ACCESS_TOKEN</code>, or
-<code>$GITHUB_TOKEN</code> are found, then the first one found will be used to authenticate
-the GitHub API request, with a higher rate limit (currently 5,000 requests per
-hour per user).</p>
-<p>In practice, GitHub API rate limits are high enough that you should rarely need
-to set a token, unless you are sharing a source IP address with many other
-GitHub users. If needed, the GitHub documentation describes how to <a href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">create a
-personal access
+(currently 60 requests per hour per source IP address). chezmoi caches results
+from identical GitHub API requests for the period defined in
+<code>gitHub.refreshPeriod</code> (default one minute).</p>
+<p>If any of the environment variables <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>,
+<code>$GITHUB_ACCESS_TOKEN</code>, or <code>$GITHUB_TOKEN</code> are found, then the first one found
+will be used to authenticate the GitHub API requests which have a higher rate
+limit (currently 5,000 requests per hour per user).</p>
+<p>In practice, GitHub API rate limits are high enough chezmoi's caching of results
+mean that you should rarely need to set a token, unless you are sharing a source
+IP address with many other GitHub users. If needed, the GitHub documentation
+describes how to <a href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">create a personal access
 token</a>.</p>
 
 

@@ -4037,6 +4037,8 @@
         
           
         
+          
+        
       
       
         
@@ -4081,6 +4083,20 @@
     <li class="md-nav__item">
       <a href="../../templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+        bitwardenAttachmentByRef
       </a>
     </li>
   
@@ -5390,9 +5406,9 @@ following patterns:</p>
 </tr>
 </tbody>
 </table>
-<p>To disable git repo URL guessing pass the <code>--guess-repo-url=false</code> option.</p>
-<p>First, if the source directory is not already contain a repository, then if
-<em>repo</em> is given it is checked out into the source directory, otherwise a new
+<p>To disable git repo URL guessing, pass the <code>--guess-repo-url=false</code> option.</p>
+<p>First, if the source directory does not already contain a repository, then if
+<em>repo</em> is given, it is checked out into the source directory; otherwise a new
 repository is initialized in the source directory.</p>
 <p>Second, if a file called <code>.chezmoi.$FORMAT.tmpl</code> exists, where <code>$FORMAT</code> is one
 of the supported file formats (e.g. <code>json</code>, <code>toml</code>, or <code>yaml</code>) then a new

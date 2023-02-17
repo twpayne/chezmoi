@@ -660,13 +660,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#include-a-subdirectory-from-a-git-repository" class="md-nav__link">
-    Include a subdirectory from a git repository
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract-a-single-file-from-an-archive" class="md-nav__link">
     Extract a single file from an archive
   </a>
@@ -683,6 +676,20 @@
         <li class="md-nav__item">
   <a href="#handle-tar-archives-in-an-unsupported-compression-format" class="md-nav__link">
     Handle tar archives in an unsupported compression format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#include-a-subdirectory-from-a-git-repository" class="md-nav__link">
+    Include a subdirectory from a git repository
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-git-submodules-in-your-source-directory" class="md-nav__link">
+    Use git submodules in your source directory
   </a>
   
 </li>
@@ -3981,6 +3988,8 @@
         
           
         
+          
+        
       
       
         
@@ -4025,6 +4034,20 @@
     <li class="md-nav__item">
       <a href="../../reference/templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+        bitwardenAttachmentByRef
       </a>
     </li>
   
@@ -5190,13 +5213,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#include-a-subdirectory-from-a-git-repository" class="md-nav__link">
-    Include a subdirectory from a git repository
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#extract-a-single-file-from-an-archive" class="md-nav__link">
     Extract a single file from an archive
   </a>
@@ -5213,6 +5229,20 @@
         <li class="md-nav__item">
   <a href="#handle-tar-archives-in-an-unsupported-compression-format" class="md-nav__link">
     Handle tar archives in an unsupported compression format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#include-a-subdirectory-from-a-git-repository" class="md-nav__link">
+    Include a subdirectory from a git repository
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-git-submodules-in-your-source-directory" class="md-nav__link">
+    Use git submodules in your source directory
   </a>
   
 </li>
@@ -5321,42 +5351,6 @@ to include
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&quot;</span>
 <span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span>
 </code></pre></div>
-<h2 id="include-a-subdirectory-from-a-git-repository">Include a subdirectory from a git repository</h2>
-<p>You can configure chezmoi to keep a git repository up to date in a subdirectory
-by using the external type <code>git-repo</code>, for example:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[&quot;.vim/pack/alker0/chezmoi.vim&quot;]</span>
-<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;git-repo&quot;</span>
-<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span>
-<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span>
-</code></pre></div>
-<p>If the directory does not exist then chezmoi will run <code>git clone</code> to clone it.
-If the directory does exist then chezmoi will run <code>git pull</code> to pull the latest
-changes, but not more often than every <code>refreshPeriod</code>. In the above example
-the <code>refreshPeriod</code> is <code>168h</code> which is one week. The default <code>refreshPeriod</code> is
-zero, which disables refreshes. You can force a refresh (i.e. force a <code>git
-pull</code>) by passing the <code>--refresh-externals</code>/<code>-R</code> flag to <code>chezmoi apply</code>.</p>
-<p>You can customize the arguments to <code>git clone</code> and <code>git pull</code> by setting the
-<code>$DIR.clone.args</code> and <code>$DIR.pull.args</code> variables in <code>.chezmoiexternal.$FORMAT</code>,
-for example:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[&quot;.vim/pack/alker0/chezmoi.vim&quot;]</span>
-<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;git-repo&quot;</span>
-<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span>
-<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span>
-<span class="w">    </span><span class="k">[&quot;.vim/pack/alker0/chezmoi.vim&quot;.pull]</span>
-<span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--ff-only&quot;</span><span class="p">]</span>
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>chezmoi's support for <code>git-repo</code> externals is limited to running <code>git
-clone</code> and/or <code>git pull</code> in a directory. The contents of <code>git-repo</code>
-externals are not manifested in commands like <code>chezmoi archive</code> or <code>chezmoi
-dump</code>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>chezmoi's support for <code>git-repo</code> externals currently requires <code>git</code> to be
-in your <code>$PATH</code>.</p>
-</div>
 <h2 id="extract-a-single-file-from-an-archive">Extract a single file from an archive</h2>
 <p>You can extract a single file from an archive using the <code>$ENTRY.filter.command</code>
 and <code>$ENTRY.filter.args</code> variables in <code>.chezmoiexternal.$FORMAT</code>, for example:</p>
@@ -5406,6 +5400,64 @@ example:</p>
 <p>Here <code>filter.command</code> and <code>filter.args</code> together tell chezmoi to filter the
 downloaded data through <code>zstd -d</code>. The <code>format = "tar"</code> line tells chezmoi that
 output of the filter is an uncompressed tar archive.</p>
+<h2 id="include-a-subdirectory-from-a-git-repository">Include a subdirectory from a git repository</h2>
+<p>You can configure chezmoi to keep a git repository up to date in a subdirectory
+by using the external type <code>git-repo</code>, for example:</p>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[&quot;.vim/pack/alker0/chezmoi.vim&quot;]</span>
+<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;git-repo&quot;</span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span>
+<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span>
+</code></pre></div>
+<p>If the directory does not exist then chezmoi will run <code>git clone</code> to clone it.
+If the directory does exist then chezmoi will run <code>git pull</code> to pull the latest
+changes, but not more often than every <code>refreshPeriod</code>. In the above example
+the <code>refreshPeriod</code> is <code>168h</code> which is one week. The default <code>refreshPeriod</code> is
+zero, which disables refreshes. You can force a refresh (i.e. force a <code>git
+pull</code>) by passing the <code>--refresh-externals</code>/<code>-R</code> flag to <code>chezmoi apply</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>chezmoi's support for <code>git-repo</code> externals is limited to running <code>git
+clone</code> and/or <code>git pull</code> in a directory. You must have a <code>git</code> binary
+in your <code>$PATH</code>.</p>
+<p>Using a <code>git-repo</code> external delegates management of the
+directory to git. chezmoi cannot manage any other files in that directory.</p>
+<p>The contents of <code>git-repo</code> externals will not be manifested in commands
+like <code>chezmoi archive</code> or <code>chezmoi dump</code>.</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you need to manage extra files in a <code>git-repo</code> external, use an
+<code>archive</code> external instead with the URL pointing to an archive of the git
+repo's <code>master</code> or <code>main</code> branch.</p>
+</div>
+<p>You can customize the arguments to <code>git clone</code> and <code>git pull</code> by setting the
+<code>$DIR.clone.args</code> and <code>$DIR.pull.args</code> variables in <code>.chezmoiexternal.$FORMAT</code>,
+for example:</p>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[&quot;.vim/pack/alker0/chezmoi.vim&quot;]</span>
+<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;git-repo&quot;</span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span>
+<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;168h&quot;</span>
+<span class="w">    </span><span class="k">[&quot;.vim/pack/alker0/chezmoi.vim&quot;.pull]</span>
+<span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--ff-only&quot;</span><span class="p">]</span>
+</code></pre></div>
+<h2 id="use-git-submodules-in-your-source-directory">Use git submodules in your source directory</h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If you use git submodules, then you should set the <code>external_</code> attribute on
+the subdirectory containing the submodule.</p>
+</div>
+<p>You can include git repos from elsewhere as git submodules in your source
+directory. <code>chezmoi init</code> and <code>chezmoi update</code> are aware of git submodules and
+will run git with the <code>--recurse-submodules</code> flag by default.</p>
+<p>chezmoi assumes that all files and directories in its source state are in
+chezmoi's format, i.e. their filenames include attributes like <code>private_</code> and
+<code>run_</code>.  Most git submodules are not in chezmoi's format and so files like
+<code>run_test.sh</code> will be be interpreted by chezmoi as a <code>run_</code> script. To avoid
+this problem, set the <code>external_</code> attribute on all subdirectories that contain
+submodules.</p>
+<p>You can stop chezmoi from handling git submodules by passing the
+<code>--recurse-submodules=false</code> flag or setting the <code>update.recurseSubmodules</code>
+configuration variable to <code>false</code>.</p>
 
 
 

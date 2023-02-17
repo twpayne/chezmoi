@@ -3898,6 +3898,8 @@
         
           
         
+          
+        
       
       
         
@@ -3942,6 +3944,20 @@
     <li class="md-nav__item">
       <a href="../templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         bitwardenAttachment
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+        bitwardenAttachmentByRef
       </a>
     </li>
   
@@ -4728,6 +4744,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#2310-2023-02-17" class="md-nav__link">
+    2.31.0 (2023-02-17)
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#2301-2023-02-11" class="md-nav__link">
@@ -6205,6 +6228,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#2310-2023-02-17" class="md-nav__link">
+    2.31.0 (2023-02-17)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#2301-2023-02-11" class="md-nav__link">
     2.30.1 (2023-02-11)
   </a>
@@ -7309,6 +7339,24 @@
 
 
 <h1 id="release-history">Release history</h1>
+<h2 id="2310-2023-02-17"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.31.0">2.31.0</a> (2023-02-17)</h2>
+<ul>
+<li>feat: Print a warning when chezmoi add is called with an ignored entry by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2762">#2762</a></li>
+<li>feat: Cache GitHub API results by default to stay under rate limit by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2763">#2763</a></li>
+<li>feat: Display progress bars by default when stdout is a TTY by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2767">#2767</a></li>
+<li>feat(bitwarden): Grab attachment by object name by <a href="https://github.com/cawaltrip"><strong>@cawaltrip</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2765">#2765</a></li>
+<li>fix: Eliminate [DEFAULT] section for <code>fromIni</code> map by <a href="https://github.com/halostatue"><strong>@halostatue</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2770">#2770</a></li>
+<li>chore: Update dependencies by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2772">#2772</a></li>
+<li>feat: Add --with-stdin flag to execute-template command by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2774">#2774</a></li>
+<li>docs: Fix typo, improve grammar in init doc page by <a href="https://github.com/bradenhilton"><strong>@bradenhilton</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2776">#2776</a></li>
+<li>docs: Improve documentation on externals by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2775">#2775</a></li>
+<li>chore: Update dependencies by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2781">#2781</a></li>
+</ul>
+<p>New Contributors</p>
+<ul>
+<li><a href="https://github.com/cawaltrip"><strong>@cawaltrip</strong></a> made their first contribution in <a href="https://github.com/twpayne/chezmoi/pull/2765">#2765</a></li>
+</ul>
+<p>Full Changelog: <a href="https://github.com/twpayne/chezmoi/compare/v2.30.1...v2.31.0"><code>v2.30.1...v2.31.0</code></a></p>
 <h2 id="2301-2023-02-11"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.30.1">2.30.1</a> (2023-02-11)</h2>
 <ul>
 <li>Add deleteValueAtPath and pruneEmptyDicts template functions by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2750">#2750</a></li>
