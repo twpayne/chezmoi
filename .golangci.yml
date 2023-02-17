@@ -87,7 +87,6 @@ linters:
   - paralleltest
   - rowserrcheck # https://github.com/golangci/golangci-lint/issues/2649
   - sqlclosecheck # https://github.com/golangci/golangci-lint/issues/2649
-  - structcheck # https://github.com/golangci/golangci-lint/issues/2649
   - testpackage
   - tparallel
   - varnamelen
