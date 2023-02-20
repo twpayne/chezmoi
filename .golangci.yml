@@ -3,6 +3,7 @@ linters:
   - asciicheck
   - bidichk
   - bodyclose
+  - containedctx
   - contextcheck
   - decorder
   - depguard
@@ -19,8 +20,8 @@ linters:
   - forbidigo
   - forcetypeassert
   - gci
-  - gocritic
   - gocheckcompilerdirectives
+  - gocritic
   - godot
   - goerr113
   - gofmt
@@ -31,6 +32,7 @@ linters:
   - gosec
   - gosimple
   - govet
+  - grouper
   - importas
   - ineffassign
   - interfacebloat
@@ -39,6 +41,7 @@ linters:
   - loggercheck
   - makezero
   - misspell
+  - musttag
   - nilerr
   - noctx
   - nolintlint
@@ -48,6 +51,7 @@ linters:
   - promlinter
   - reassign
   - revive
+  - sqlclosecheck
   - staticcheck
   - stylecheck
   - tagliatelle
@@ -58,12 +62,12 @@ linters:
   - unconvert
   - unparam
   - unused
+  - usestdlibvars
   - whitespace
   disable:
   - asasalint
   - cyclop
   - exhaustive
-  - exhaustivestruct
   - exhaustruct
   - funlen
   - ginkgolinter
@@ -83,10 +87,8 @@ linters:
   - nilnil
   - nlreturn
   - nonamedreturns
-  - nosnakecase
   - paralleltest
   - rowserrcheck # https://github.com/golangci/golangci-lint/issues/2649
-  - sqlclosecheck # https://github.com/golangci/golangci-lint/issues/2649
   - testpackage
   - tparallel
   - varnamelen
