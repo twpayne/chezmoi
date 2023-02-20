@@ -29,7 +29,7 @@ var (
 )
 
 type gitHubClient struct {
-	ctx    context.Context
+	ctx    context.Context //nolint:containedctx
 	client *github.Client
 }
 

@@ -65,10 +65,10 @@ func run() error {
 	}
 	var goreleaserConfig struct {
 		Builds []struct {
-			GOOS   []string
-			GOARCH []string
-			Ignore []platform
-		}
+			GOOS   []string   `yaml:"goos"`
+			GOARCH []string   `yaml:"goarch"`
+			Ignore []platform `yaml:"ignore"`
+		} `yaml:"builds"`
 	}
 	if err := yaml.Unmarshal(data, &goreleaserConfig); err != nil {
 		return err
