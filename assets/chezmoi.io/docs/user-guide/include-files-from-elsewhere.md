@@ -207,7 +207,8 @@ pull`) by passing the `--refresh-externals`/`-R` flag to `chezmoi apply`.
     directory to git. chezmoi cannot manage any other files in that directory.
 
     The contents of `git-repo` externals will not be manifested in commands
-    like `chezmoi archive` or `chezmoi dump`.
+    like `chezmoi diff` or `chezmoi dump`, and will be listed by `chezmoi
+    unmanaged`.
 
 !!! hint
 
