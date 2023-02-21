@@ -22,16 +22,12 @@ Entries may have the following fields:
 | Variable          | Type     | Default value | Description                                                   |
 | ----------------- | -------- | ------------- | ------------------------------------------------------------- |
 | `type`            | string   | *none*        | External type (`file`, `archive`, or `git-repo`)              |
-| `clone.args`      | []string | *none*        | Extra args to `git clone`                                     |
 | `encrypted`       | bool     | `false`       | Whether the external is encrypted                             |
 | `exact`           | bool     | `false`       | Add `exact_` attribute to directories in archive              |
 | `exclude`         | []string | *none*        | Patterns to exclude from archive                              |
 | `executable`      | bool     | `false`       | Add `executable_` attribute to file                           |
-| `filter.command`  | string   | *none*        | Command to filter contents                                    |
-| `filter.args`     | []string | *none*        | Extra args to command to filter contents                      |
 | `format`          | string   | *autodetect*  | Format of archive                                             |
 | `include`         | []string | *none*        | Patterns to include from archive                              |
-| `pull.args`       | []string | *none*        | Extra args to `git pull`                                      |
 | `refreshPeriod`   | duration | `0`           | Refresh period                                                |
 | `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives |
 | `url`             | string   | *none*        | URL                                                           |
@@ -39,6 +35,10 @@ Entries may have the following fields:
 | `checksum.sha384` | string   | *none*        | Expected SHA384 checksum of data                              |
 | `checksum.sha512` | string   | *none*        | Expected SHA512 checksum of data                              |
 | `checksum.size`   | int      | *none*        | Expected size of data                                         |
+| `clone.args`      | []string | *none*        | Extra args to `git clone`                                     |
+| `filter.command`  | string   | *none*        | Command to filter contents                                    |
+| `filter.args`     | []string | *none*        | Extra args to command to filter contents                      |
+| `pull.args`       | []string | *none*        | Extra args to `git pull`                                      |
 
 If any of the optional `checksum.sha256`, `checksum.sha384`, or
 `checksum.sha512` fields are set, chezmoi will verify that the downloaded data
