@@ -48,11 +48,11 @@ with a template directive:
 
 `$VALUE` can be an arbitrary string or one of:
 
-| Value    | Effect                                                                |
-| -------- | --------------------------------------------------------------------- |
-| `crlf`   | Use Windows line endings (`\r\n`).                                    |
-| `lf`     | Use UNIX-style line endings (`\n`).                                   |
-| `native` | Use platform-native line endings (`crlf` on Windows, `lf` elsewhere). |
+| Value    | Effect                                                               |
+| -------- | -------------------------------------------------------------------- |
+| `crlf`   | Use Windows line endings (`\r\n`)                                    |
+| `lf`     | Use UNIX-style line endings (`\n`)                                   |
+| `native` | Use platform-native line endings (`crlf` on Windows, `lf` elsewhere) |
 
 ## Missing keys
 
@@ -64,8 +64,8 @@ that is not present in the map. This behavior can be changed globally with the
 
 `$VALUE` can be one of:
 
-| Value     | Effect                                                                                         |
-| --------- | ---------------------------------------------------------------------------------------------- |
-| `error`   | Return an error on any missing key (default).                                                  |
-| `invalid` | Ignore missing keys. If printed, the result of the index operation is the string `<no value>`. |
-| `zero`    | Ignore missing keys. If printed, the result of the index operation is the zero value.          |
+| Value     | Effect                                                                                        |
+| --------- | --------------------------------------------------------------------------------------------- |
+| `error`   | Return an error on any missing key (default)                                                  |
+| `invalid` | Ignore missing keys. If printed, the result of the index operation is the string `<no value>` |
+| `zero`    | Ignore missing keys. If printed, the result of the index operation is the zero value          |
