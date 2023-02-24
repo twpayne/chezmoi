@@ -62,6 +62,7 @@ nav:
     - 1Password: user-guide/password-managers/1password.md
     - AWS Secrets Manager: user-guide/password-managers/aws-secrets-manager.md
     - Bitwarden: user-guide/password-managers/bitwarden.md
+    - Dashlane: user-guide/password-managers/dashlane.md
     - gopass: user-guide/password-managers/gopass.md
     - KeePassXC: user-guide/password-managers/keepassxc.md
     - Keychain and Windows Credentials Manager: user-guide/password-managers/keychain-and-windows-credentials-manager.md
@@ -240,6 +241,9 @@ nav:
       - reference/templates/gopass-functions/index.md
       - gopass: reference/templates/gopass-functions/gopass.md
       - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
+    - Dashlane functions:
+      - reference/templates/dashlane-functions/index.md
+      - dashlanePassword: reference/templates/dashlane-functions/dashlanePassword.md
     - KeePassXC functions:
       - reference/templates/keepassxc-functions/index.md
       - keepassxc: reference/templates/keepassxc-functions/keepassxc.md

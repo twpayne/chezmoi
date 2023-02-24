@@ -101,6 +101,13 @@ sections:
     custom:
       type: bool
       description: Enable custom shell completions
+  dashlane:
+    args:
+      type: '[]string'
+      description: Extra args to Dashlane CLI command
+    command:
+      default: '`dcli`'
+      description: Dashlane CLI command
   diff:
     args:
       type: '[]string'
