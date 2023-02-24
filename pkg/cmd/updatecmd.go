@@ -74,17 +74,17 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	default:
-		args := []string{
+		gitArgs := []string{
 			"pull",
 			"--autostash",
 			"--rebase",
 		}
 		if c.Update.RecurseSubmodules {
-			args = append(args,
+			gitArgs = append(gitArgs,
 				"--recurse-submodules",
 			)
 		}
-		if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, args); err != nil {
+		if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, gitArgs); err != nil {
 			return err
 		}
 	}

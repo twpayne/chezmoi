@@ -165,7 +165,7 @@ func keepassxcParseOutput(output []byte) (map[string]string, error) {
 		case match != nil:
 			key = match[1]
 			data[key] = match[2]
-		case match == nil && key != "":
+		case key != "":
 			data[key] += "\n" + s.Text()
 		}
 	}

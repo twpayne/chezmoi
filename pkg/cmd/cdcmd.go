@@ -39,23 +39,26 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 	var dir chezmoi.AbsPath
 	if len(args) == 0 {
 		dir = c.WorkingTreeAbsPath
-	} else if argAbsPath, err := chezmoi.NewAbsPathFromExtPath(args[0], c.homeDirAbsPath); err != nil {
-		return err
-	} else if argAbsPath == c.DestDirAbsPath {
-		dir, err = c.getSourceDirAbsPath(nil)
-		if err != nil {
-			return err
-		}
 	} else {
-		sourceState, err := c.getSourceState(cmd.Context())
-		if err != nil {
+		switch argAbsPath, err := chezmoi.NewAbsPathFromExtPath(args[0], c.homeDirAbsPath); {
+		case err != nil:
 			return err
+		case argAbsPath == c.DestDirAbsPath:
+			dir, err = c.getSourceDirAbsPath(nil)
+			if err != nil {
+				return err
+			}
+		default:
+			sourceState, err := c.getSourceState(cmd.Context())
+			if err != nil {
+				return err
+			}
+			sourceAbsPaths, err := c.sourceAbsPaths(sourceState, args)
+			if err != nil {
+				return err
+			}
+			dir = sourceAbsPaths[0]
 		}
-		sourceAbsPaths, err := c.sourceAbsPaths(sourceState, args)
-		if err != nil {
-			return err
-		}
-		dir = sourceAbsPaths[0]
 	}
 	return c.run(dir, cdCommand, cdArgs)
 }

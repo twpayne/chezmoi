@@ -51,7 +51,6 @@ linters:
   - promlinter
   - reassign
   - revive
-  - sqlclosecheck
   - staticcheck
   - stylecheck
   - tagliatelle
@@ -115,6 +114,11 @@ linters-settings:
     module-path: github.com/twpayne/chezmoi
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
+  govet:
+    disable:
+    - fieldalignment
+    - shadow
+    enable-all: true
   ireturn:
     allow:
     - anon

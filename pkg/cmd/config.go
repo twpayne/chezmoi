@@ -1827,7 +1827,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			// Do nothing.
 		case err == nil:
 			return fmt.Errorf("%s: not a directory", c.SourceDirAbsPath)
-		case err != nil:
+		default:
 			return err
 		}
 	}
@@ -2202,9 +2202,6 @@ func (c *Config) targetRelPaths(
 			return nil, err
 		}
 		targetRelPath, err := c.targetRelPath(argAbsPath)
-		if err != nil {
-			return nil, err
-		}
 		if err != nil {
 			return nil, err
 		}
