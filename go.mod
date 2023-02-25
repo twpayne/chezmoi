@@ -16,7 +16,7 @@ require (
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-git/go-git/v5 v5.5.2
-	github.com/google/go-github/v50 v50.0.0
+	github.com/google/go-github/v50 v50.1.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/klauspost/compress v1.15.15
@@ -31,15 +31,15 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
 	github.com/twpayne/go-pinentry v0.2.0
-	github.com/twpayne/go-vfs/v4 v4.1.0
-	github.com/twpayne/go-xdg/v6 v6.1.0
+	github.com/twpayne/go-vfs/v4 v4.2.0
+	github.com/twpayne/go-xdg/v6 v6.1.1
 	github.com/ulikunitz/xz v0.5.11
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/zalando/go-keyring v0.2.2
 	go.etcd.io/bbolt v1.3.7
 	go.uber.org/multierr v1.9.0
 	golang.org/x/crypto v0.6.0
-	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
+	golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2
 	golang.org/x/oauth2 v0.5.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.5.0
@@ -55,7 +55,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
-	github.com/acomagu/bufpipe v1.0.3 // indirect
+	github.com/acomagu/bufpipe v1.0.4 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
