@@ -1,5 +1,3 @@
-[windows] skip 'UNIX only'
-
 # test that chezmoi does not panic if an external uses an absolute path
 ! exec chezmoi diff
 stderr 'path is not relative'
