@@ -1180,7 +1180,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	s.Lock()
 	defer s.Unlock()
 	for path, external := range externals {
-		if filepath.IsAbs(path) {
+		if strings.HasPrefix(path, "/") || filepath.IsAbs(path) {
 			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
 		}
 		targetRelPath := parentTargetSourceRelPath.JoinString(path)
