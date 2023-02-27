@@ -1,9 +1,14 @@
 [!windows] chmod 755 bin/dcli
 [windows] unix2dos bin/dcli.cmd
+[windows] unix2dos golden/dashlane-note
 
 # test dashlanePassword template function
 exec chezmoi execute-template '{{ (index (dashlanePassword "filter") 0).password }}'
 stdout ^<password>$
+
+# test dashlaneNote template function
+exec chezmoi execute-template '{{ dashlaneNote "filter" }}'
+cmp stdout golden/dashlane-note
 
 -- bin/dcli --
 #!/bin/sh
@@ -35,6 +40,11 @@ case "$*" in
 ]
 EOF
    ;;
+"note filter")
+    cat <<EOF
+<note>
+EOF
+   ;;
 *)
     echo "error: unknown command '$*'"
     exit 1
@@ -64,7 +74,11 @@ IF "%*" == "password --output json filter" (
     echo.        "subdomainOnly": false
     echo.    }
     echo.]
+) ELSE IF "%*" == "note filter" (
+    echo.^<note^>
 ) ELSE (
     echo error: unknown command '$*'
     exit /b 1
 )
+-- golden/dashlane-note --
+<note>

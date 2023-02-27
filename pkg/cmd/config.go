@@ -362,6 +362,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwardenAttachmentByRef": c.bitwardenAttachmentByRefTemplateFunc,
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"comment":                  c.commentTemplateFunc,
+		"dashlaneNote":             c.dashlaneNoteTemplateFunc,
 		"dashlanePassword":         c.dashlanePasswordTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"deleteValueAtPath":        c.deleteValueAtPathTemplateFunc,
