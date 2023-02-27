@@ -8,3 +8,10 @@ for example:
 ```
 examplePassword = {{ (index (dashlanePassword "filter") 0).password }}
 ```
+
+Secure notes can be retrieved with the `dashlaneNote` template function,
+for example:
+
+```
+exampleNote = {{ dashlaneNote "filter" }}
+```

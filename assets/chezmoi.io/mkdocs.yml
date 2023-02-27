@@ -243,6 +243,7 @@ nav:
       - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
     - Dashlane functions:
       - reference/templates/dashlane-functions/index.md
+      - dashlaneNote: reference/templates/dashlane-functions/dashlaneNote.md
       - dashlanePassword: reference/templates/dashlane-functions/dashlanePassword.md
     - KeePassXC functions:
       - reference/templates/keepassxc-functions/index.md
