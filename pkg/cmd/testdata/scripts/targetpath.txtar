@@ -21,5 +21,21 @@ stdout ^${HOME@R}/script$
 exec chezmoi target-path $CHEZMOISOURCEDIR/symlink_dot_symlink
 stdout ^${HOME@R}/.symlink$
 
+chhome home2/user
+
+# test that chezmoi target-path respects .chezmoiroot
+exec chezmoi target-path $CHEZMOISOURCEDIR/home/dot_file
+stdout ^${HOME@R}/\.file$
+
+# test that chezmoi target-path respects .chezmoiscripts in .chezmoiroot
+exec chezmoi target-path $CHEZMOISOURCEDIR/home/.chezmoiscripts/run_script.sh
+stdout ^${HOME@R}/\.chezmoiscripts/script\.sh$
+
 -- home/user/.local/share/chezmoi/run_script --
 #!/bin/sh
+-- home2/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home2/user/.local/share/chezmoi/home/.chezmoiscripts/run_script.sh --
+#!/bin/sh
+-- home2/user/.local/share/chezmoi/home/dot_file --
+# contents of .file
