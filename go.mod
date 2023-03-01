@@ -15,7 +15,7 @@ require (
 	github.com/charmbracelet/glamour v0.6.0
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.6.0
-	github.com/go-git/go-git/v5 v5.5.2
+	github.com/go-git/go-git/v5 v5.6.0
 	github.com/google/go-github/v50 v50.1.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
@@ -106,7 +106,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
-	github.com/pjbgf/sha1cd v0.2.3 // indirect
+	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
