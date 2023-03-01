@@ -1,0 +1,14 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi can run hooks after certain commands
+exec chezmoi diff
+! stdout .
+exec chezmoi apply
+stdout 'apply hook'
+
+-- home/user/.local/share/chezmoi/run_after_hook.sh.tmpl --
+{{ if has "apply" .chezmoi.args -}}
+#!/bin/sh
+
+echo apply hook
+{{ end -}}
