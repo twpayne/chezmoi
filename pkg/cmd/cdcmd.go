@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"errors"
+	"os"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -32,6 +35,10 @@ func (c *Config) newCDCmd() *cobra.Command {
 }
 
 func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
+	if _, ok := os.LookupEnv("CHEZMOI"); ok {
+		return errors.New("already in a chezmoi subshell")
+	}
+
 	cdCommand, cdArgs, err := c.cdCommand()
 	if err != nil {
 		return err
