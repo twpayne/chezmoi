@@ -74,6 +74,16 @@ func TestGuessRepoURL(t *testing.T) {
 			expectedSSHRepoURL:  "git@github.com:user/dotfiles.git",
 		},
 		{
+			arg:                 "user/chezmoi_dotfiles",
+			expectedHTTPRepoURL: "https://github.com/user/chezmoi_dotfiles.git",
+			expectedSSHRepoURL:  "git@github.com:user/chezmoi_dotfiles.git",
+		},
+		{
+			arg:                 "user/.dotfiles",
+			expectedHTTPRepoURL: "https://github.com/user/.dotfiles.git",
+			expectedSSHRepoURL:  "git@github.com:user/.dotfiles.git",
+		},
+		{
 			arg:                 "user/dots",
 			expectedHTTPRepoURL: "https://github.com/user/dots.git",
 			expectedSSHRepoURL:  "git@github.com:user/dots.git",
