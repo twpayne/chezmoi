@@ -156,7 +156,7 @@ allows the fields to be queried by key:
 {{- (onepasswordDetailsFields "$UUID").password.value }}
 ```
 
-Additional fields may be obtained with `onePasswordItemFields`; not all objects
+Additional fields may be obtained with `onepasswordItemFields`; not all objects
 in 1Password have item fields. This can be tested with:
 
 ```console
