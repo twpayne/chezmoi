@@ -182,6 +182,7 @@ nav:
       - encrypt: reference/templates/functions/encrypt.md
       - eqFold: reference/templates/functions/eqFold.md
       - fromIni: reference/templates/functions/fromIni.md
+      - fromJsonc: reference/templates/functions/fromJsonc.md
       - fromToml: reference/templates/functions/fromToml.md
       - fromYaml: reference/templates/functions/fromYaml.md
       - glob: reference/templates/functions/glob.md

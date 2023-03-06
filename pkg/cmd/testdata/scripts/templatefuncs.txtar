@@ -23,6 +23,11 @@ cmp stdout golden/deleteValueAtPath
 exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
 stdout '^true$'
 
+# test fromJsonc template function
+stdin golden/example.jsonc
+exec chezmoi execute-template --with-stdin '{{ fromJsonc .chezmoi.stdin | toJson }}'
+stdout '{"key":1}'
+
 # test glob template function
 exec chezmoi execute-template '{{ glob "*.txt" | join "\n" }}{{ "\n" }}'
 cmp stdout golden/glob
@@ -191,6 +196,10 @@ echo '</plist>'
 # line2
 -- golden/deleteValueAtPath --
 {"a":{"b":{"d":2}}}
+-- golden/example.jsonc --
+{
+  "key": 1, // Comment
+}
 -- golden/expected --
 255
 -- golden/glob --

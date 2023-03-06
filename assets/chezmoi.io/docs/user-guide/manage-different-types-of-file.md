@@ -86,8 +86,8 @@ contents of the file.
     {{- .chezmoi.stdin | replaceAllRegex "old" "new" }}
     ```
 
-    To set individual values in JSON, TOML, and YAML files you can use the
-    `setValueAtPath` template function, for example:
+    To set individual values in JSON, JSONC, TOML, and YAML files you can use
+    the `setValueAtPath` template function, for example:
 
     ```
     {{- /* chezmoi:modify-template */ -}}
