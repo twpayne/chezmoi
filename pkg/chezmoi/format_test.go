@@ -9,6 +9,7 @@ import (
 
 func TestFormats(t *testing.T) {
 	assert.Contains(t, FormatsByName, "json")
+	assert.Contains(t, FormatsByName, "jsonc")
 	assert.Contains(t, FormatsByName, "toml")
 	assert.Contains(t, FormatsByName, "yaml")
 	assert.NotContains(t, FormatsByName, "yml")
@@ -24,6 +25,7 @@ func TestFormatRoundTrip(t *testing.T) {
 	}
 
 	for _, format := range []Format{
+		formatJSONC{},
 		formatJSON{},
 		formatTOML{},
 		formatYAML{},

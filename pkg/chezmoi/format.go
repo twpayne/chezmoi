@@ -6,14 +6,16 @@ import (
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
+	"github.com/tailscale/hujson"
 	"gopkg.in/yaml.v3"
 )
 
 // Formats.
 var (
-	FormatJSON Format = formatJSON{}
-	FormatTOML Format = formatTOML{}
-	FormatYAML Format = formatYAML{}
+	FormatJSON  Format = formatJSON{}
+	FormatJSONC Format = formatJSONC{}
+	FormatTOML  Format = formatTOML{}
+	FormatYAML  Format = formatYAML{}
 )
 
 // A Format is a serialization format.
@@ -26,6 +28,9 @@ type Format interface {
 // A formatJSON implements the JSON serialization format.
 type formatJSON struct{}
 
+// A formatJSONC implements the JSONC serialization format.
+type formatJSONC struct{}
+
 // A formatTOML implements the TOML serialization format.
 type formatTOML struct{}
 
@@ -35,21 +40,45 @@ type formatYAML struct{}
 var (
 	// FormatsByName is a map of all FormatsByName by name.
 	FormatsByName = map[string]Format{
-		"json": FormatJSON,
-		"toml": FormatTOML,
-		"yaml": FormatYAML,
+		"jsonc": FormatJSONC,
+		"json":  FormatJSON,
+		"toml":  FormatTOML,
+		"yaml":  FormatYAML,
 	}
 
 	// FormatsByExtension is a map of all Formats by extension.
 	FormatsByExtension = map[string]Format{
-		"json": FormatJSON,
-		"toml": FormatTOML,
-		"yaml": FormatYAML,
-		"yml":  FormatYAML,
+		"jsonc": FormatJSONC,
+		"json":  FormatJSON,
+		"toml":  FormatTOML,
+		"yaml":  FormatYAML,
+		"yml":   FormatYAML,
 	}
-
 	FormatExtensions = sortedKeys(FormatsByExtension)
 )
+
+// Marshal implements Format.Marshal.
+func (formatJSONC) Marshal(value any) ([]byte, error) {
+	data, err := json.Marshal(value)
+	if err != nil {
+		return nil, err
+	}
+	return hujson.Format(data)
+}
+
+// Name implements Format.Name.
+func (formatJSONC) Name() string {
+	return "jsonc"
+}
+
+// Unmarshal implements Format.Unmarshal.
+func (formatJSONC) Unmarshal(data []byte, value any) error {
+	data, err := hujson.Standardize(data)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, value)
+}
 
 // Marshal implements Format.Marshal.
 func (formatJSON) Marshal(value any) ([]byte, error) {

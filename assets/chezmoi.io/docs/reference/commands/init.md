@@ -22,8 +22,8 @@ First, if the source directory does not already contain a repository, then if
 repository is initialized in the source directory.
 
 Second, if a file called `.chezmoi.$FORMAT.tmpl` exists, where `$FORMAT` is one
-of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new
-configuration file is created using that file as a template.
+of the supported file formats (e.g. `json`, `jsonc`, `toml`, or `yaml`) then a
+new configuration file is created using that file as a template.
 
 Then, if the `--apply` flag is passed, `chezmoi apply` is run.
 
