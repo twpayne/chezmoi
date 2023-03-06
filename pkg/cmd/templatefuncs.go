@@ -140,6 +140,14 @@ func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 	return iniFileToMap(file)
 }
 
+func (c *Config) fromJsoncTemplateFunc(s string) any {
+	var data any
+	if err := chezmoi.FormatJSONC.Unmarshal([]byte(s), &data); err != nil {
+		panic(err)
+	}
+	return data
+}
+
 func (c *Config) fromTomlTemplateFunc(s string) any {
 	var data any
 	if err := chezmoi.FormatTOML.Unmarshal([]byte(s), &data); err != nil {
