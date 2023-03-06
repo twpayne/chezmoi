@@ -36,9 +36,9 @@ machine to machine. For example, for your home machine:
 If you intend to store private data (e.g. access tokens) in
 `~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.
 
-If you prefer, you can use JSON or YAML for your configuration file. Variable
-names must start with a letter and be followed by zero or more letters or
-digits.
+If you prefer, you can use JSON, JSONC, or YAML for your configuration file.
+Variable names must start with a letter and be followed by zero or more letters
+or digits.
 
 Then, add `~/.gitconfig` to chezmoi using the `--autotemplate` flag to turn it
 into a template and automatically detect variables from the `data` section of

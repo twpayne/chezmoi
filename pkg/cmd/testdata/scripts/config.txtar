@@ -16,9 +16,13 @@ stdout /flag/source
 exec chezmoi data --format=yaml
 stdout 'sourceDir: .*/config/source'
 
-# test that the config file can be set
+# test that the config file can be set and can be in YAML format
 exec chezmoi data --config=$HOME/.chezmoi.yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
+
+# test that the config file can be in JSONC format
+exec chezmoi data --config=$HOME/.chezmoi.jsonc --format=yaml
+stdout 'sourceDir: .*/config3/source'
 
 # test that the cache directory can be set
 exec chezmoi data --cache=/flag/cache --format=yaml
@@ -31,6 +35,11 @@ stdin home2/user/.chezmoi.yaml
 exec chezmoi data --config=/dev/stdin --config-format=yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
 
+-- home2/user/.chezmoi.jsonc --
+{
+    "color": "auto",                // Color
+    "sourceDir": "/config3/source", // Source directory
+}
 -- home2/user/.chezmoi.yaml --
 color: auto
 sourceDir: /config2/source

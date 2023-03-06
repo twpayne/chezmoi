@@ -14,7 +14,7 @@ if the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 
 Read the configuration from *filename*.
 
-## `--config-format` `json`|`toml`|`yaml`
+## `--config-format` `json`|`jsonc`|`toml`|`yaml`
 
 Assume the configuration file is in the given format. This is only needed if
 the config filename does not have an extension, for example when it is
