@@ -5,7 +5,7 @@ templates, and all entries that are not files are ignored.
 
 !!! hint
 
-    If you want to re-add a single file uncondtionally, use `chezmoi add --force` instead.
+    If you want to re-add a single file unconditionally, use `chezmoi add --force` instead.
 
 !!! example
 
