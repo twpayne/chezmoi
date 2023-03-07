@@ -1,6 +1,6 @@
 # `awsSecretsManager` *arn*
 
-`awsSecretsManager` returns structured data retreived from
+`awsSecretsManager` returns structured data retrieved from
 [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/). *arn* specifies the `SecretId` passed to
 [`GetSecretValue`](https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html). This can
 either be the full ARN or the

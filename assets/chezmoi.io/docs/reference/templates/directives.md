@@ -39,7 +39,7 @@ inherited by templates called from the file.
 
 ## Line endings
 
-Many of the template functions available in chezmoi primarily use UNIX-syle
+Many of the template functions available in chezmoi primarily use UNIX-style
 line endings (`lf`/`\n`), which may result in unexpected output when running
 `chezmoi diff` on a `modify_` template. These line endings can be overridden
 with a template directive:
