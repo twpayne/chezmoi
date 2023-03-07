@@ -91,6 +91,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 
 	if c.Update.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+			cmd:          cmd,
 			filter:       c.Update.filter,
 			init:         c.Update.init,
 			recursive:    c.Update.recursive,

@@ -43,6 +43,7 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 		return chezmoi.Skip
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
+		cmd:          cmd,
 		filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		init:         c.mergeAll.init,
 		recursive:    c.mergeAll.recursive,
@@ -52,7 +53,7 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	sourceState, err := c.getSourceState(cmd.Context())
+	sourceState, err := c.getSourceState(cmd.Context(), cmd)
 	if err != nil {
 		return err
 	}

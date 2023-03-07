@@ -59,6 +59,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		}
 		if c.Edit.Apply {
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
+				cmd:          cmd,
 				filter:       c.Edit.filter,
 				init:         c.Edit.init,
 				recursive:    true,
@@ -71,7 +72,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	sourceState, err := c.newSourceState(cmd.Context())
+	sourceState, err := c.newSourceState(cmd.Context(), cmd)
 	if err != nil {
 		return err
 	}
@@ -185,6 +186,7 @@ TARGETRELPATH:
 			c.resetSourceState()
 
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+				cmd:          cmd,
 				filter:       c.Edit.filter,
 				init:         c.Edit.init,
 				recursive:    true,

@@ -29,7 +29,7 @@ func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
 		return c.writeOutputString(sourceDirAbsPath.String() + "\n")
 	}
 
-	sourceState, err := c.getSourceState(cmd.Context())
+	sourceState, err := c.getSourceState(cmd.Context(), cmd)
 	if err != nil {
 		return err
 	}

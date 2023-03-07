@@ -56,7 +56,7 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 				return err
 			}
 		default:
-			sourceState, err := c.getSourceState(cmd.Context())
+			sourceState, err := c.getSourceState(cmd.Context(), cmd)
 			if err != nil {
 				return err
 			}

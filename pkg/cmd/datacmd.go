@@ -26,7 +26,7 @@ func (c *Config) newDataCmd() *cobra.Command {
 }
 
 func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
-	sourceState, err := c.newSourceState(cmd.Context(),
+	sourceState, err := c.newSourceState(cmd.Context(), cmd,
 		chezmoi.WithTemplateDataOnly(true),
 	)
 	if err != nil {

@@ -40,6 +40,7 @@ func (c *Config) newApplyCmd() *cobra.Command {
 
 func (c *Config) runApplyCmd(cmd *cobra.Command, args []string) error {
 	return c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+		cmd:          cmd,
 		filter:       c.apply.filter,
 		init:         c.apply.init,
 		recursive:    c.apply.recursive,

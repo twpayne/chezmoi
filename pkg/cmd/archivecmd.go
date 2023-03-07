@@ -76,6 +76,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		return chezmoi.UnknownArchiveFormatError(format)
 	}
 	if err := c.applyArgs(cmd.Context(), archiveSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
+		cmd:       cmd,
 		filter:    c.archive.filter,
 		init:      c.archive.init,
 		recursive: c.archive.recursive,
