@@ -234,6 +234,7 @@ type templateData struct {
 	Arch           string          `json:"arch"`
 	Args           []string        `json:"args"`
 	CacheDir       chezmoi.AbsPath `json:"cacheDir"`
+	Command        string          `json:"command"`
 	ConfigFile     chezmoi.AbsPath `json:"configFile"`
 	Executable     chezmoi.AbsPath `json:"executable"`
 	FQDNHostname   string          `json:"fqdnHostname"`
@@ -479,6 +480,7 @@ func (c *Config) addTemplateFunc(key string, value any) {
 }
 
 type applyArgsOptions struct {
+	cmd          *cobra.Command
 	filter       *chezmoi.EntryTypeFilter
 	init         bool
 	recursive    bool
@@ -495,7 +497,7 @@ func (c *Config) applyArgs(
 	options applyArgsOptions,
 ) error {
 	if options.init {
-		if err := c.createAndReloadConfigFile(); err != nil {
+		if err := c.createAndReloadConfigFile(options.cmd); err != nil {
 			return err
 		}
 	}
@@ -543,7 +545,7 @@ func (c *Config) applyArgs(
 		}
 	}
 
-	sourceState, err := c.getSourceState(ctx)
+	sourceState, err := c.getSourceState(ctx, options.cmd)
 	if err != nil {
 		return err
 	}
@@ -654,7 +656,7 @@ func (c *Config) colorAutoFunc() bool {
 
 // createAndReloadConfigFile creates a config file if it there is a config file
 // template and reloads it.
-func (c *Config) createAndReloadConfigFile() error {
+func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	// Find config template, execute it, and create config file.
 	configTemplate, err := c.findConfigTemplate()
 	if err != nil {
@@ -668,7 +670,7 @@ func (c *Config) createAndReloadConfigFile() error {
 		return nil
 	}
 
-	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents)
+	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents, cmd)
 	if err != nil {
 		return err
 	}
@@ -714,7 +716,7 @@ func (c *Config) createAndReloadConfigFile() error {
 
 // createConfigFile creates a config file using a template and returns its
 // contents.
-func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte, error) {
+func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *cobra.Command) ([]byte, error) {
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	initTemplateFuncs := map[string]any{
@@ -737,7 +739,7 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 		return nil, err
 	}
 
-	templateData := c.getTemplateDataMap()
+	templateData := c.getTemplateDataMap(cmd)
 	if c.init.data {
 		chezmoi.RecursiveMerge(templateData, c.Data)
 	}
@@ -1254,31 +1256,32 @@ func (c *Config) getSourceDirAbsPath(options *getSourceDirAbsPathOptions) (chezm
 	return c.sourceDirAbsPath, c.sourceDirAbsPathErr
 }
 
-func (c *Config) getSourceState(ctx context.Context) (*chezmoi.SourceState, error) {
+func (c *Config) getSourceState(ctx context.Context, cmd *cobra.Command) (*chezmoi.SourceState, error) {
 	if c.sourceState != nil || c.sourceStateErr != nil {
 		return c.sourceState, c.sourceStateErr
 	}
-	c.sourceState, c.sourceStateErr = c.newSourceState(ctx)
+	c.sourceState, c.sourceStateErr = c.newSourceState(ctx, cmd)
 	return c.sourceState, c.sourceStateErr
 }
 
 // getTemplateData returns the default template data.
-func (c *Config) getTemplateData() *templateData {
+func (c *Config) getTemplateData(cmd *cobra.Command) *templateData {
 	if c.templateData == nil {
-		c.templateData = c.newTemplateData()
+		c.templateData = c.newTemplateData(cmd)
 	}
 	return c.templateData
 }
 
-// getTemplateDataMao returns the template data as a map.
-func (c *Config) getTemplateDataMap() map[string]any {
-	templateData := c.getTemplateData()
+// getTemplateDataMap returns the template data as a map.
+func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
+	templateData := c.getTemplateData(cmd)
 
 	return map[string]any{
 		"chezmoi": map[string]any{
 			"arch":           templateData.Arch,
 			"args":           templateData.Args,
 			"cacheDir":       templateData.CacheDir.String(),
+			"command":        templateData.Command,
 			"configFile":     templateData.ConfigFile.String(),
 			"executable":     templateData.Executable.String(),
 			"fqdnHostname":   templateData.FQDNHostname,
@@ -1353,7 +1356,7 @@ func (c *Config) makeRunEWithSourceState(
 	runE func(*cobra.Command, []string, *chezmoi.SourceState) error,
 ) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		sourceState, err := c.getSourceState(cmd.Context())
+		sourceState, err := c.getSourceState(cmd.Context(), cmd)
 		if err != nil {
 			return err
 		}
@@ -1506,7 +1509,7 @@ func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi
 
 // newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(
-	ctx context.Context, options ...chezmoi.SourceStateOption,
+	ctx context.Context, cmd *cobra.Command, options ...chezmoi.SourceStateOption,
 ) (*chezmoi.SourceState, error) {
 	if err := c.checkVersion(); err != nil {
 		return nil, err
@@ -1527,7 +1530,9 @@ func (c *Config) newSourceState(
 	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
-		chezmoi.WithDefaultTemplateDataFunc(c.getTemplateDataMap),
+		chezmoi.WithDefaultTemplateDataFunc(func() map[string]any {
+			return c.getTemplateDataMap(cmd)
+		}),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithHTTPClient(httpClient),
@@ -1898,13 +1903,13 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	scriptEnv := os.Environ()
-	templateData := c.getTemplateData()
+	templateData := c.getTemplateData(cmd)
 	scriptEnv = append(scriptEnv, "CHEZMOI=1")
 	for key, value := range map[string]string{
 		"ARCH":          templateData.Arch,
 		"ARGS":          strings.Join(templateData.Args, " "),
 		"CACHE_DIR":     templateData.CacheDir.String(),
-		"COMMAND":       cmd.Name(),
+		"COMMAND":       templateData.Command,
 		"CONFIG_FILE":   templateData.ConfigFile.String(),
 		"EXECUTABLE":    templateData.Executable.String(),
 		"FQDN_HOSTNAME": templateData.FQDNHostname,
@@ -1982,7 +1987,7 @@ func (c *Config) progressAutoFunc() bool {
 	return false
 }
 
-func (c *Config) newTemplateData() *templateData {
+func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	// Determine the user's username and group, if possible.
 	//
 	// user.Current and user.LookupGroupId in Go's standard library are
@@ -2075,6 +2080,7 @@ func (c *Config) newTemplateData() *templateData {
 		Arch:         runtime.GOARCH,
 		Args:         os.Args,
 		CacheDir:     c.CacheDirAbsPath,
+		Command:      cmd.Name(),
 		ConfigFile:   c.configFileAbsPath,
 		Executable:   chezmoi.NewAbsPath(executable),
 		FQDNHostname: fqdnHostname,
@@ -2311,7 +2317,7 @@ func (c *Config) targetValidArgs(
 		return nil, cobra.ShellCompDirectiveError
 	}
 
-	sourceState, err := c.getSourceState(cmd.Context())
+	sourceState, err := c.getSourceState(cmd.Context(), cmd)
 	if err != nil {
 		cobra.CompErrorln(err.Error())
 		return nil, cobra.ShellCompDirectiveError

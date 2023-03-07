@@ -44,6 +44,7 @@ func (c *Config) newDumpCmd() *cobra.Command {
 func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	dumpSystem := chezmoi.NewDumpSystem()
 	if err := c.applyArgs(cmd.Context(), dumpSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
+		cmd:       cmd,
 		filter:    c.dump.filter,
 		init:      c.dump.init,
 		recursive: c.dump.recursive,

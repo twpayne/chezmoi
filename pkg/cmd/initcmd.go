@@ -212,13 +212,14 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := c.createAndReloadConfigFile(); err != nil {
+	if err := c.createAndReloadConfigFile(cmd); err != nil {
 		return err
 	}
 
 	// Apply.
 	if c.init.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
+			cmd:          cmd,
 			filter:       c.init.filter,
 			recursive:    false,
 			umask:        c.Umask,

@@ -64,7 +64,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			},
 		}))
 	}
-	sourceState, err := c.newSourceState(cmd.Context(), options...)
+	sourceState, err := c.newSourceState(cmd.Context(), cmd, options...)
 	if err != nil {
 		return err
 	}
