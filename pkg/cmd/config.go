@@ -1887,6 +1887,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"ARCH":          templateData.Arch,
 		"ARGS":          strings.Join(templateData.Args, " "),
 		"CACHE_DIR":     templateData.CacheDir.String(),
+		"COMMAND":       cmd.Name(),
 		"CONFIG_FILE":   templateData.ConfigFile.String(),
 		"EXECUTABLE":    templateData.Executable.String(),
 		"FQDN_HOSTNAME": templateData.FQDNHostname,
