@@ -148,15 +148,27 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
+	persistentStateFileAbsPath, err := c.persistentStateFile()
+	if err != nil {
+		return err
+	}
+
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-		AutoTemplate:     c.Add.autoTemplate,
-		Create:           c.Add.create,
-		Encrypt:          c.Add.encrypt,
-		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
-		Exact:            c.Add.exact,
-		Filter:           c.Add.filter,
-		OnIgnoreFunc:     c.defaultOnIgnoreFunc,
-		PreAddFunc:       c.defaultPreAddFunc,
+		AutoTemplate:    c.Add.autoTemplate,
+		Create:          c.Add.create,
+		Encrypt:         c.Add.encrypt,
+		EncryptedSuffix: c.encryption.EncryptedSuffix(),
+		Exact:           c.Add.exact,
+		Filter:          c.Add.filter,
+		OnIgnoreFunc:    c.defaultOnIgnoreFunc,
+		PreAddFunc:      c.defaultPreAddFunc,
+		ProtectedAbsPaths: []chezmoi.AbsPath{
+			c.CacheDirAbsPath,
+			c.WorkingTreeAbsPath,
+			c.configFileAbsPath,
+			persistentStateFileAbsPath,
+			c.sourceDirAbsPath,
+		},
 		ReplaceFunc:      c.defaultReplaceFunc,
 		Template:         c.Add.template,
 		TemplateSymlinks: c.Add.TemplateSymlinks,

@@ -284,18 +284,19 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate     bool             // Automatically create templates, if possible.
-	Create           bool             // Add create_ entries instead of normal entries.
-	Encrypt          bool             // Encrypt files.
-	EncryptedSuffix  string           // Suffix for encrypted files.
-	Exact            bool             // Add the exact_ attribute to added directories.
-	Filter           *EntryTypeFilter // Entry type filter.
-	OnIgnoreFunc     func(RelPath)    // Function to call when a target is ignored.
-	PreAddFunc       PreAddFunc       // Function to be called before a source entry is added.
-	RemoveDir        RelPath          // Directory to remove before adding.
-	ReplaceFunc      ReplaceFunc      // Function to be called before a source entry is replaced.
-	Template         bool             // Add the .tmpl attribute to added files.
-	TemplateSymlinks bool             // Add symlinks with targets in the source or home directories as templates.
+	AutoTemplate      bool             // Automatically create templates, if possible.
+	Create            bool             // Add create_ entries instead of normal entries.
+	Encrypt           bool             // Encrypt files.
+	EncryptedSuffix   string           // Suffix for encrypted files.
+	Exact             bool             // Add the exact_ attribute to added directories.
+	Filter            *EntryTypeFilter // Entry type filter.
+	OnIgnoreFunc      func(RelPath)    // Function to call when a target is ignored.
+	PreAddFunc        PreAddFunc       // Function to be called before a source entry is added.
+	ProtectedAbsPaths []AbsPath        // Paths that must not be added.
+	RemoveDir         RelPath          // Directory to remove before adding.
+	ReplaceFunc       ReplaceFunc      // Function to be called before a source entry is replaced.
+	Template          bool             // Add the .tmpl attribute to added files.
+	TemplateSymlinks  bool             // Add symlinks with targets in the source or home directories as templates.
 }
 
 // Add adds destAbsPathInfos to s.
@@ -303,6 +304,17 @@ func (s *SourceState) Add(
 	sourceSystem System, persistentState PersistentState, destSystem System, destAbsPathInfos map[AbsPath]fs.FileInfo,
 	options *AddOptions,
 ) error {
+	for destAbsPath := range destAbsPathInfos {
+		for _, protectedAbsPath := range options.ProtectedAbsPaths {
+			if protectedAbsPath.Empty() {
+				continue
+			}
+			if strings.HasPrefix(destAbsPath.String(), protectedAbsPath.String()) {
+				return fmt.Errorf("%s: cannot add chezmoi file to chezmoi (%s is protected)", destAbsPath, protectedAbsPath)
+			}
+		}
+	}
+
 	type sourceUpdate struct {
 		destAbsPath    AbsPath
 		entryState     *EntryState

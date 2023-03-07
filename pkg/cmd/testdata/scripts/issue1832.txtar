@@ -3,7 +3,7 @@
 # test that chezmoi add succeeds when changing the permissions of an intermediate directory
 exec chezmoi add $HOME/.config/fish/config
 chmod 700 $HOME/.config
-exec chezmoi add --force $HOME/.config
+exec chezmoi add --force --recursive=false $HOME/.config
 
 -- home/user/.config/fish/config --
 # contents of .config/fish/config
