@@ -1,0 +1,22 @@
+[windows] unix2dos golden/stdout
+
+# test that chezmoi add runs pre and post hooks
+exec chezmoi add $HOME${/}.file
+cmp stdout golden/stdout
+
+-- golden/stdout --
+pre-add-hook
+post-add-hook
+-- home/user/.config/chezmoi/chezmoi.yaml --
+hooks:
+    add:
+        pre:
+            command: 'echo'
+            args:
+            - 'pre-add-hook'
+        post:
+            command: 'echo'
+            args:
+            - 'post-add-hook'
+-- home/user/.file --
+# contents of .file
