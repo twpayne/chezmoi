@@ -39,6 +39,13 @@ chhome home4/user
 ! exec chezmoi diff
 stderr 'exit status 2'
 
+chhome home5/user
+
+# test that chezmoi diff does not invoke diff.command for directories if directories are excluded
+exec chezmoi diff
+stdout \.file
+! stdout \.dir
+
 -- golden/diff-umask-002.diff --
 diff --git a/.file b/.file
 index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100664
@@ -81,3 +88,10 @@ index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10
     args = ["-c", "exit 2"]
 -- home4/user/.local/share/chezmoi/dot_file --
 # target contents of .file
+-- home5/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "echo"
+    exclude = ["dirs"]
+-- home5/user/.local/share/chezmoi/dot_dir/.keep --
+-- home5/user/.local/share/chezmoi/dot_file --
+# contents of .file
