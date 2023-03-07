@@ -70,6 +70,16 @@ type doPurgeOptions struct {
 	workingTree     bool
 }
 
+type commandConfig struct {
+	Command string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
+}
+
+type hookConfig struct {
+	Pre  commandConfig `json:"pre" mapstructure:"pre" yaml:"pre"`
+	Post commandConfig `json:"post" mapstructure:"post" yaml:"post"`
+}
+
 type templateConfig struct {
 	Options []string `json:"options" mapstructure:"options" yaml:"options"`
 }
@@ -87,6 +97,7 @@ type ConfigFile struct {
 	Format             writeDataFormat                 `json:"format" mapstructure:"format" yaml:"format"`
 	DestDirAbsPath     chezmoi.AbsPath                 `json:"destDir" mapstructure:"destDir" yaml:"destDir"`
 	GitHub             gitHubConfig                    `json:"gitHub" mapstructure:"gitHub" yaml:"gitHub"`
+	Hooks              map[string]hookConfig           `json:"hooks" mapstructure:"hooks" yaml:"hooks"`
 	Interpreters       map[string]*chezmoi.Interpreter `json:"interpreters" mapstructure:"interpreters" yaml:"interpreters"` //nolint:lll
 	Mode               chezmoi.Mode                    `json:"mode" mapstructure:"mode" yaml:"mode"`
 	Pager              string                          `json:"pager" mapstructure:"pager" yaml:"pager"`
@@ -1600,6 +1611,12 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
+	if command := c.Hooks[cmd.Name()].Post; command.Command != "" {
+		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -1920,6 +1937,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 	c.runEnv = scriptEnv
 	realSystem.SetScriptEnv(scriptEnv)
+
+	if command := c.Hooks[cmd.Name()].Pre; command.Command != "" {
+		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

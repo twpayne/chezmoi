@@ -188,6 +188,19 @@ sections:
     symmetric:
       type: bool
       description: Use symmetric GPG encryption
+  hooks:
+    '*command*`.post.args`':
+      type: '[]string'
+      description: Extra arguments to command to run after *command*
+    '*command*`.post.command`':
+      type: '[]string'
+      description: Command to run after *command*
+    '*command*`.pre.args`':
+      type: '[]string'
+      description: Extra arguments to command to run before *command*
+    '*command*`.pre.command`':
+      type: '[]string'
+      description: Command to run before *command*
   interpreters:
     '*extension*.`args`':
       type: '[]string'
