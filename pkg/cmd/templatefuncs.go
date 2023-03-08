@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/bradenhilton/mozillainstallhash"
+	"github.com/itchyny/gojq"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
@@ -275,6 +276,30 @@ func (c *Config) ioregTemplateFunc() map[string]any {
 
 func (c *Config) joinPathTemplateFunc(elem ...string) string {
 	return filepath.Join(elem...)
+}
+
+func (c *Config) jqTemplateFunc(source string, input any) any {
+	query, err := gojq.Parse(source)
+	if err != nil {
+		panic(err)
+	}
+	code, err := gojq.Compile(query)
+	if err != nil {
+		panic(err)
+	}
+	iter := code.Run(input)
+	var result []any
+	for {
+		value, ok := iter.Next()
+		if !ok {
+			break
+		}
+		if err, ok := value.(error); ok {
+			panic(err)
+		}
+		result = append(result, value)
+	}
+	return result
 }
 
 func (c *Config) lookPathTemplateFunc(file string) string {

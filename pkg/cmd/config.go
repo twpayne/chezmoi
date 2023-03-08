@@ -384,6 +384,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"includeTemplate":          c.includeTemplateTemplateFunc,
 		"ioreg":                    c.ioregTemplateFunc,
 		"joinPath":                 c.joinPathTemplateFunc,
+		"jq":                       c.jqTemplateFunc,
 		"keepassxc":                c.keepassxcTemplateFunc,
 		"keepassxcAttachment":      c.keepassxcAttachmentTemplateFunc,
 		"keepassxcAttribute":       c.keepassxcAttributeTemplateFunc,

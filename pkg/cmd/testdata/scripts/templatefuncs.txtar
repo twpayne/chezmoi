@@ -64,6 +64,10 @@ stdout ^data$
 exec chezmoi execute-template '{{ joinPath "a" "b" }}'
 stdout a${/}b
 
+# test jq template function
+exec chezmoi execute-template '{{ dict "key" "value" | jq ".key" | first }}'
+stdout ^value$
+
 # test lookPath template function to find in PATH
 exec chezmoi execute-template '{{ lookPath "go" }}'
 stdout go$exe

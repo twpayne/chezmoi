@@ -192,6 +192,7 @@ nav:
       - includeTemplate: reference/templates/functions/includeTemplate.md
       - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
+      - jq: reference/templates/functions/jq.md
       - lookPath: reference/templates/functions/lookPath.md
       - lstat: reference/templates/functions/lstat.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
