@@ -29,6 +29,18 @@ line option.
     }
     ```
 
+=== "JSONC"
+
+    ```jsonc title="~/.config/chezmoi/chezmoi.jsonc"
+    {
+        // The chezmoi source files are stored here
+        "sourceDir": "/home/user/.dotfiles",
+        "git": {
+            "autoPush": true
+        }
+    }
+    ```
+
 === "TOML"
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
