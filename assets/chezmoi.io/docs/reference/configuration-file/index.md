@@ -1,20 +1,20 @@
 # Configuration file
 
-chezmoi searches for its configuration file according to the [XDG Base
-Directory
+chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 and supports [JSON](https://www.json.org/json-en.html), JSONC,
 [TOML](https://github.com/toml-lang/toml), and [YAML](https://yaml.org/). The
-basename of the config file is `chezmoi`, and the first config file found is
-used.
+basename of the config file is `chezmoi`. If multiple configuration file formats
+are present, chezmoi will report an error.
 
 In most installations, the config file will be read from
-`~/.config/chezmoi/chezmoi.$FORMAT`, where `$FORMAT` is one of `json`, `toml`,
-or `yaml`. The config file can be set explicitly with the `--config` command
-line option. By default, the format is detected based on the extension of the
-config file name, but can be overridden with the `--config-format` command line
-option.
-
+`$HOME/.config/chezmoi/chezmoi.$FORMAT`
+(`%USERPROFILE%/.config/chezmoi/chezmoi.$FORMAT`), where `$FORMAT` is one of
+`json`, `jsonc`, `toml`, or `yaml`. The config file can be set explicitly with
+the `--config` command line option or the environment variable
+`$CHEZMOI_CONFIG`. By default, the format is detected based on the extension of
+the config file name, but can be overridden with the `--config-format` command
+line option.
 
 ## Examples
 

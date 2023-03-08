@@ -1361,6 +1361,12 @@ func (c *Config) marshal(dataFormat writeDataFormat, data any) error {
 
 // newRootCmd returns a new root github.com/spf13/cobra.Command.
 func (c *Config) newRootCmd() (*cobra.Command, error) {
+	if configFileFromEnv := os.Getenv("CHEZMOI_CONFIG"); configFileFromEnv != "" {
+		if err := c.configFileAbsPath.Set(configFileFromEnv); err != nil {
+			return nil, err
+		}
+	}
+
 	rootCmd := &cobra.Command{
 		Use:                "chezmoi",
 		Short:              "Manage your dotfiles across multiple diverse machines, securely",

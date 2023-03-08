@@ -15,6 +15,20 @@ chhome home3/user
 exec chezmoi apply --config=$HOME/.chezmoi.toml
 cmp $HOME/tmp/.file golden/.file
 
+chhome home4/user
+
+# test that $CHEZMOI_CONFIG is respected
+env CHEZMOI_CONFIG=$HOME/.chezmoi.toml
+exec chezmoi apply
+cmp $HOME/tmp/.file golden/.file
+
+chhome home5/user
+
+# test that --config flag overrides $CHEZMOI_CONFIG
+env CHEZMOI_CONFIG=$HOME/.chezmoi.toml
+exec chezmoi apply --config=$HOME/.chezmoi2.toml
+cmp $HOME/tmp2/.file golden/.file
+
 -- golden/.file --
 # contents of .file
 -- home/user/.dotfiles/dot_file --
@@ -27,3 +41,18 @@ destDir = "~/tmp"
 -- home3/user/.dotfiles/dot_file --
 # contents of .file
 -- home3/user/tmp/.keep --
+-- home4/user/.chezmoi.toml --
+sourceDir = "~/.dotfiles"
+destDir = "~/tmp"
+-- home4/user/.dotfiles/dot_file --
+# contents of .file
+-- home4/user/tmp/.keep --
+-- home5/user/.chezmoi.toml --
+sourceDir = "~/.dotfiles"
+destDir = "~/tmp"
+-- home5/user/.chezmoi2.toml --
+sourceDir = "~/.dotfiles"
+destDir = "~/tmp2"
+-- home5/user/.dotfiles/dot_file --
+# contents of .file
+-- home5/user/tmp2/.keep --
