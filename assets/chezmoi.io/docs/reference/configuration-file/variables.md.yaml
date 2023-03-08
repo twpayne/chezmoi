@@ -1,13 +1,21 @@
 sections:
   '':
+    cacheDir:
+      default: >-
+        `$XDG_CACHE_HOME/chezmoi` <br/>
+        `$HOME/.cache/chezmoi` <br/>
+        `%USERPROFILE%/.cache/chezmoi`
+      description: 'Cache directory'
     color:
       default: '`auto`'
       description: Colorize output
     data:
-      type: any
+      type: object
       description: Template data
     destDir:
-      default: '`~`'
+      default: >-
+        `$HOME` <br/>
+        `%USERPROFILE%`
       description: Destination directory
     encryption:
       description: Encryption type, either `age` or `gpg`
@@ -20,6 +28,12 @@ sections:
     pager:
       default: '`$PAGER`'
       description: Default pager CLI command
+    persistentState:
+      default: >-
+        `$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb` <br/>
+        `$HOME/.local/share/chezmoi/chezmoi.boltdb` <br/>
+        `%USERPROFILE%/.local/share/chezmoi/chezmoi.boltdb`
+      description: Location of the persistent state file
     progress:
       type: bool
       description: Display progress bars
@@ -29,7 +43,10 @@ sections:
     scriptTempDir:
       description: Temporary directory for scripts
     sourceDir:
-      default: '`~/.local/share/chezmoi`'
+      default: >-
+        `$XDG_SHARE_HOME/chezmoi` <br/>
+        `$HOME/.local/share/chezmoi` <br/>
+        `%USERPROFILE%/.local/share/chezmoi`
       description: Source directory
     umask:
       type: int
@@ -288,7 +305,7 @@ sections:
       description: Vault CLI command
   update:
     args:
-      type: "[]string"
+      type: '[]string'
       description: Extra args to update command
     command:
       description: Update command
