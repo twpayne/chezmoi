@@ -4,6 +4,8 @@
 exec chezmoi add $HOME${/}.file
 cmp stdout golden/stdout
 
+-- bin/echo.cmd --
+@echo %*
 -- golden/stdout --
 pre-add-hook
 post-add-hook
