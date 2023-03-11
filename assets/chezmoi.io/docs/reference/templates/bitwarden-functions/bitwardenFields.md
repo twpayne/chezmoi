@@ -3,11 +3,11 @@
 `bitwardenFields` returns structured data retrieved from
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
 CLI](https://bitwarden.com/help/cli) (`bw`). *arg*s are passed to `bw get`
-unchanged, the output from `bw get` is parsed as JSON, and elements of `fields`
-are returned as a map indexed by each field's `name`.
+unchanged, the output from `bw get` is parsed as JSON, and the elements of
+`fields` are returned as a dict indexed by each field's `name`.
 
-The output from `bw get` is cached so calling `bitwarden` multiple times with
-the same arguments will only invoke `bw get` once.
+The output from `bw get` is cached so calling `bitwardenFields` multiple times
+with the same arguments will only invoke `bw get` once.
 
 !!! example
 
