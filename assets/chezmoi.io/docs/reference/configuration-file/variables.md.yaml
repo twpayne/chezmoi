@@ -293,6 +293,10 @@ sections:
       type: '[]string'
       default: '*see `pinentry` below*'
       description: Extra options for pinentry
+  rbw:
+    command:
+      default: '`rbw`'
+      description: Unofficial Bitwarden CLI command
   secret:
     args:
       type: '[]string'
