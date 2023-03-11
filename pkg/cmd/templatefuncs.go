@@ -422,8 +422,7 @@ func (c *Config) toIniTemplateFunc(data map[string]any) string {
 	return builder.String()
 }
 
-//nolint:revive,stylecheck
-func (c *Config) toPrettyJsonTemplateFunc(args ...any) string {
+func (c *Config) toPrettyJsonTemplateFunc(args ...any) string { //nolint:revive,stylecheck
 	var (
 		indent = "  "
 		value  any
