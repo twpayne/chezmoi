@@ -15,7 +15,7 @@ type bitwardenConfig struct {
 }
 
 func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
-	output, err := c.bitwardenOutput([]string{"attachment", name, "--itemid", itemid, "--raw"})
+	output, err := c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemid, "--raw"})
 	if err != nil {
 		panic(err)
 	}
@@ -23,23 +23,21 @@ func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
 }
 
 func (c *Config) bitwardenAttachmentByRefTemplateFunc(name string, args ...string) string {
-	output, err := c.bitwardenOutput(args)
+	output, err := c.bitwardenOutput(append([]string{"get"}, args...))
 	if err != nil {
 		panic(err)
 	}
-	var data map[string]interface{}
+	var data struct {
+		ID string `json:"id"`
+	}
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.Bitwarden.Command, args, output, err))
 	}
-	itemid, ok := data["id"].(string)
-	if !ok {
-		panic("bitwarden object has invalid id")
-	}
-	return c.bitwardenAttachmentTemplateFunc(name, itemid)
+	return c.bitwardenAttachmentTemplateFunc(name, data.ID)
 }
 
 func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]any {
-	output, err := c.bitwardenOutput(args)
+	output, err := c.bitwardenOutput(append([]string{"get"}, args...))
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +57,7 @@ func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]any {
 }
 
 func (c *Config) bitwardenTemplateFunc(args ...string) map[string]any {
-	output, err := c.bitwardenOutput(args)
+	output, err := c.bitwardenOutput(append([]string{"get"}, args...))
 	if err != nil {
 		panic(err)
 	}
@@ -77,7 +75,6 @@ func (c *Config) bitwardenOutput(args []string) ([]byte, error) {
 	}
 
 	name := c.Bitwarden.Command
-	args = append([]string{"get"}, args...)
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
