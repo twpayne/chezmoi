@@ -5,6 +5,10 @@
 exec chezmoi execute-template '{{ (rbw "test-entry").data.password }}'
 stdout ^hunter2$
 
+# test rbwFields template function
+exec chezmoi execute-template '{{ (rbwFields "test-entry").something.value }}'
+stdout ^secret$
+
 -- bin/rbw --
 #!/bin/sh
 
