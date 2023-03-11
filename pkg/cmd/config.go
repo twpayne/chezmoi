@@ -422,6 +422,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"pruneEmptyDicts":          c.pruneEmptyDictsTemplateFunc,
 		"quoteList":                c.quoteListTemplateFunc,
 		"rbw":                      c.rbwTemplateFunc,
+		"rbwFields":                c.rbwFieldsTemplateFunc,
 		"replaceAllRegex":          c.replaceAllRegexTemplateFunc,
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,

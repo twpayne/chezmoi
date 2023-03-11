@@ -240,6 +240,7 @@ nav:
       - bitwardenAttachmentByRef: reference/templates/bitwarden-functions/bitwardenAttachmentByRef.md
       - bitwardenFields: reference/templates/bitwarden-functions/bitwardenFields.md
       - rbw: reference/templates/bitwarden-functions/rbw.md
+      - rbwFields: reference/templates/bitwarden-functions/rbwFields.md
     - gopass functions:
       - reference/templates/gopass-functions/index.md
       - gopass: reference/templates/gopass-functions/gopass.md

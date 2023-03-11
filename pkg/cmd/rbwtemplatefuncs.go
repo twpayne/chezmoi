@@ -14,6 +14,27 @@ type rbwConfig struct {
 	outputCache map[string][]byte
 }
 
+func (c *Config) rbwFieldsTemplateFunc(name string) map[string]any {
+	args := []string{"get", "--raw", name}
+	output, err := c.rbwOutput(args)
+	if err != nil {
+		panic(err)
+	}
+	var data struct {
+		Fields []map[string]any `json:"fields"`
+	}
+	if err := json.Unmarshal(output, &data); err != nil {
+		panic(newParseCmdOutputError(c.RBW.Command, args, output, err))
+	}
+	result := make(map[string]any)
+	for _, field := range data.Fields {
+		if name, ok := field["name"].(string); ok {
+			result[name] = field
+		}
+	}
+	return result
+}
+
 func (c *Config) rbwTemplateFunc(name string) map[string]any {
 	args := []string{"get", "--raw", name}
 	output, err := c.rbwOutput(args)
