@@ -1,5 +1,4 @@
 //go:build go1.18
-// +build go1.18
 
 //go:generate go run . completion bash -o completions/chezmoi-completion.bash
 //go:generate go run . completion fish -o completions/chezmoi.fish

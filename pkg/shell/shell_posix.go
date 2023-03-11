@@ -1,5 +1,4 @@
 //go:build !darwin && !plan9 && !windows
-// +build !darwin,!plan9,!windows
 
 package shell
 

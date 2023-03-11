@@ -1,5 +1,4 @@
 //go:build (cgo && aix) || (cgo && android) || (cgo && darwin) || (cgo && dragonfly) || (cgo && freebsd) || (cgo && illumos) || (cgo && linux) || (cgo && netbsd) || (cgo && openbsd) || (cgo && solaris)
-// +build cgo,aix cgo,android cgo,darwin cgo,dragonfly cgo,freebsd cgo,illumos cgo,linux cgo,netbsd cgo,openbsd cgo,solaris
 
 package shell
 
