@@ -1,3 +1,6 @@
+run:
+  go: '1.18'
+
 linters:
   enable:
   - asciicheck
@@ -110,7 +113,6 @@ linters-settings:
     - prefix(github.com/twpayne/chezmoi)
   gofumpt:
     extra-rules: true
-    lang-version: '1.18'
     module-path: github.com/twpayne/chezmoi
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
