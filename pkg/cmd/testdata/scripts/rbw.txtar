@@ -1,0 +1,83 @@
+[!windows] chmod 755 bin/rbw
+[windows] unix2dos bin/rbw.cmd
+
+# test rbw template function
+exec chezmoi execute-template '{{ (rbw "test-entry").data.password }}'
+stdout ^hunter2$
+
+-- bin/rbw --
+#!/bin/sh
+
+case "$*" in
+"get --raw test-entry")
+    cat <<EOF
+{
+  "id": "adf723e1-ab03-4ff3-81aa-f5f3c2b68a5f",
+  "folder": null,
+  "name": "test-entry",
+  "data": {
+    "username": "foo",
+    "password": "hunter2",
+    "totp": null,
+    "uris": [
+      {
+        "uri": "example.com",
+        "match_type": null
+      }
+    ]
+  },
+  "fields": [
+    {
+      "name": "something",
+      "value": "secret"
+    }
+  ],
+  "notes": "blah",
+  "history": [
+    {
+      "last_used_date": "2022-08-18T23:24:47.994Z",
+      "password": "hunter2"
+    }
+  ]
+}
+EOF
+    ;;
+*)
+    exit 1
+    ;;
+esac
+-- bin/rbw.cmd --
+@echo off
+IF "%*" == "get --raw test-entry" (
+    echo.{
+    echo.  "id": "adf723e1-ab03-4ff3-81aa-f5f3c2b68a5f",
+    echo.  "folder": null,
+    echo.  "name": "test-entry",
+    echo.  "data": {
+    echo.    "username": "foo",
+    echo.    "password": "hunter2",
+    echo.    "totp": null,
+    echo.    "uris": [
+    echo.      {
+    echo.        "uri": "example.com",
+    echo.        "match_type": null
+    echo.      }
+    echo.    ]
+    echo.  },
+    echo.  "fields": [
+    echo.    {
+    echo.      "name": "something",
+    echo.      "value": "secret"
+    echo.    }
+    echo.  ],
+    echo.  "notes": "blah",
+    echo.  "history": [
+    echo.    {
+    echo.      "last_used_date": "2022-08-18T23:24:47.994Z",
+    echo.      "password": "hunter2"
+    echo.    }
+    echo.  ]
+    echo.}
+) ELSE (
+    exit /b 1
+)

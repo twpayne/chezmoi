@@ -127,6 +127,7 @@ type ConfigFile struct {
 	Onepassword       onepasswordConfig       `json:"onepassword" mapstructure:"onepassword" yaml:"onepassword"`
 	Pass              passConfig              `json:"pass" mapstructure:"pass" yaml:"pass"`
 	Passhole          passholeConfig          `json:"passhole" mapstructure:"passhole" yaml:"passhole"`
+	RBW               rbwConfig               `json:"rbw" mapstructure:"rbw" yaml:"rbw"`
 	Secret            secretConfig            `json:"secret" mapstructure:"secret" yaml:"secret"`
 	Vault             vaultConfig             `json:"vault" mapstructure:"vault" yaml:"vault"`
 
@@ -420,6 +421,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"passhole":                 c.passholeTemplateFunc,
 		"pruneEmptyDicts":          c.pruneEmptyDictsTemplateFunc,
 		"quoteList":                c.quoteListTemplateFunc,
+		"rbw":                      c.rbwTemplateFunc,
 		"replaceAllRegex":          c.replaceAllRegexTemplateFunc,
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
@@ -2470,6 +2472,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Passhole: passholeConfig{
 			Command: "ph",
 			Prompt:  true,
+		},
+		RBW: rbwConfig{
+			Command: "rbw",
 		},
 		Vault: vaultConfig{
 			Command: "vault",

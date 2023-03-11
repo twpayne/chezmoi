@@ -368,6 +368,12 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			minVersion:  &passholeMinVersion,
 		},
 		&binaryCheck{
+			name:       "rbw-command",
+			binaryname: c.RBW.Command,
+			ifNotSet:   checkResultWarning,
+			ifNotExist: checkResultInfo,
+		},
+		&binaryCheck{
 			name:        "vault-command",
 			binaryname:  c.Vault.Command,
 			ifNotSet:    checkResultWarning,
