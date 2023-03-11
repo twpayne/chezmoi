@@ -1,5 +1,4 @@
 //go:build noupgrade
-// +build noupgrade
 
 package cmd
 
