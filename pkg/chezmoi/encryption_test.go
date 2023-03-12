@@ -119,7 +119,7 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 
 func TestXOREncryption(t *testing.T) {
 	testEncryption(t, &xorEncryption{
-		key: byte(rand.Int() + 1),
+		key: byte(rand.Intn(255) + 1),
 	})
 }
 
