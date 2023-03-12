@@ -21,7 +21,7 @@
         <link rel="next" href="../../developer/developing-locally/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7bf56d0a.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -1709,6 +1709,8 @@
         
           
         
+          
+        
       
       
         
@@ -1753,6 +1755,20 @@
     <li class="md-nav__item">
       <a href="../configuration-file/editor/" class="md-nav__link">
         Editor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration-file/hooks/" class="md-nav__link">
+        Hooks
       </a>
     </li>
   
@@ -2966,6 +2982,8 @@
         
           
         
+          
+        
       
       
         
@@ -3080,6 +3098,20 @@
     <li class="md-nav__item">
       <a href="../templates/functions/fromIni/" class="md-nav__link">
         fromIni
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/fromJsonc/" class="md-nav__link">
+        fromJsonc
       </a>
     </li>
   
@@ -3934,6 +3966,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -4006,6 +4042,34 @@
     <li class="md-nav__item">
       <a href="../templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
         bitwardenFields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/bitwarden-functions/rbw/" class="md-nav__link">
+        rbw
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/bitwarden-functions/rbwFields/" class="md-nav__link">
+        rbwFields
       </a>
     </li>
   
@@ -4860,6 +4924,13 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#2320-2023-03-12" class="md-nav__link">
+    2.32.0 (2023-03-12)
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#2311-2023-03-02" class="md-nav__link">
@@ -6351,6 +6422,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#2320-2023-03-12" class="md-nav__link">
+    2.32.0 (2023-03-12)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#2311-2023-03-02" class="md-nav__link">
     2.31.1 (2023-03-02)
   </a>
@@ -7468,6 +7546,30 @@
 
 
 <h1 id="release-history">Release history</h1>
+<h2 id="2320-2023-03-12"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.32.0">2.32.0</a> (2023-03-12)</h2>
+<ul>
+<li>chore: Add test for target-path, .chezmoiscripts, and .chezmoiroot by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2811">#2811</a></li>
+<li>fix: Allow underscores and dots in GitHub dotfile repo name guesses by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2817">#2817</a></li>
+<li>Improve chezmoi cd command by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2823">#2823</a></li>
+<li>docs: Fix typo by <a href="https://github.com/hezhizhen"><strong>@hezhizhen</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2829">#2829</a></li>
+<li>feat: Add support for the JSONC format by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2827">#2827</a></li>
+<li>chore: Add test that diff.exclude excludes dirs from external diff tool by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2830">#2830</a></li>
+<li>feat: Refuse to add chezmoi files to chezmoi by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2822">#2822</a></li>
+<li>feat: Add pre- and post-command hooks by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2832">#2832</a></li>
+<li>chore: Update dependencies by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2834">#2834</a></li>
+<li>chore: Tidy up nolint directives by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2842">#2842</a></li>
+<li>docs: Updated config / flags documentation information by <a href="https://github.com/halostatue"><strong>@halostatue</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2843">#2843</a></li>
+<li>chore: Miscellaneous password manager cleanups by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2845">#2845</a></li>
+<li>chore: Remove +build comments from modules by <a href="https://github.com/alexandear"><strong>@alexandear</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2846">#2846</a></li>
+<li>chore: Use run.go instead of deprecated lang-version by <a href="https://github.com/alexandear"><strong>@alexandear</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2847">#2847</a></li>
+<li>feat: Add rbw template function for Bitwarden by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2841">#2841</a></li>
+<li>chore: Miscellaneous fixes by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2848">#2848</a></li>
+</ul>
+<p>New Contributors</p>
+<ul>
+<li><a href="https://github.com/hezhizhen"><strong>@hezhizhen</strong></a> made their first contribution in <a href="https://github.com/twpayne/chezmoi/pull/2829">#2829</a></li>
+</ul>
+<p>Full Changelog: <a href="https://github.com/twpayne/chezmoi/compare/v2.31.1...v2.32.0"><code>v2.31.1...v2.32.0</code></a></p>
 <h2 id="2311-2023-03-02"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.31.1">2.31.1</a> (2023-03-02)</h2>
 <ul>
 <li>chore: Bump golangci-lint to v1.51.2 by <a href="https://github.com/twpayne"><strong>@twpayne</strong></a> in <a href="https://github.com/twpayne/chezmoi/pull/2782">#2782</a></li>
@@ -10073,7 +10175,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.fc8c2696.min.js"></script>
       
         <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
       

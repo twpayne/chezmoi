@@ -21,7 +21,7 @@
         <link rel="next" href="../aws-secrets-manager/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7bf56d0a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -1750,6 +1750,8 @@
         
           
         
+          
+        
       
       
         
@@ -1794,6 +1796,20 @@
     <li class="md-nav__item">
       <a href="../../../reference/configuration-file/editor/" class="md-nav__link">
         Editor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/configuration-file/hooks/" class="md-nav__link">
+        Hooks
       </a>
     </li>
   
@@ -3007,6 +3023,8 @@
         
           
         
+          
+        
       
       
         
@@ -3121,6 +3139,20 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/functions/fromIni/" class="md-nav__link">
         fromIni
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/fromJsonc/" class="md-nav__link">
+        fromJsonc
       </a>
     </li>
   
@@ -3975,6 +4007,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -4047,6 +4083,34 @@
     <li class="md-nav__item">
       <a href="../../../reference/templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
         bitwardenFields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/bitwarden-functions/rbw/" class="md-nav__link">
+        rbw
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/bitwarden-functions/rbwFields/" class="md-nav__link">
+        rbwFields
       </a>
     </li>
   
@@ -5405,7 +5469,7 @@ allows the fields to be queried by key:</p>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>{{- (onepasswordDetailsFields &quot;$UUID&quot;).password.value }}
 </code></pre></div>
-<p>Additional fields may be obtained with <code>onePasswordItemFields</code>; not all objects
+<p>Additional fields may be obtained with <code>onepasswordItemFields</code>; not all objects
 in 1Password have item fields. This can be tested with:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordItemFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </code></pre></div>
@@ -5481,7 +5545,7 @@ parameter, which is visible to other users of the same system.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.fc8c2696.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

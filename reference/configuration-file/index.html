@@ -21,7 +21,7 @@
         <link rel="next" href="variables/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7bf56d0a.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -1709,6 +1709,8 @@
         
           
         
+          
+        
       
       
         
@@ -1753,6 +1755,20 @@
     <li class="md-nav__item">
       <a href="editor/" class="md-nav__link">
         Editor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hooks/" class="md-nav__link">
+        Hooks
       </a>
     </li>
   
@@ -2966,6 +2982,8 @@
         
           
         
+          
+        
       
       
         
@@ -3080,6 +3098,20 @@
     <li class="md-nav__item">
       <a href="../templates/functions/fromIni/" class="md-nav__link">
         fromIni
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/fromJsonc/" class="md-nav__link">
+        fromJsonc
       </a>
     </li>
   
@@ -3934,6 +3966,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -4006,6 +4042,34 @@
     <li class="md-nav__item">
       <a href="../templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
         bitwardenFields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/bitwarden-functions/rbw/" class="md-nav__link">
+        rbw
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/bitwarden-functions/rbwFields/" class="md-nav__link">
+        rbwFields
       </a>
     </li>
   
@@ -5243,21 +5307,21 @@
 
 
 <h1 id="configuration-file">Configuration file</h1>
-<p>chezmoi searches for its configuration file according to the <a href="https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html">XDG Base
-Directory
+<p>chezmoi searches for its configuration file according to the <a href="https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html">XDG Base Directory
 Specification</a>
-and supports <a href="https://www.json.org/json-en.html">JSON</a>,
+and supports <a href="https://www.json.org/json-en.html">JSON</a>, JSONC,
 <a href="https://github.com/toml-lang/toml">TOML</a>, and <a href="https://yaml.org/">YAML</a>. The
-basename of the config file is <code>chezmoi</code>, and the first config file found is
-used.</p>
+basename of the config file is <code>chezmoi</code>. If multiple configuration file formats
+are present, chezmoi will report an error.</p>
 <p>In most installations, the config file will be read from
-<code>~/.config/chezmoi/chezmoi.$FORMAT</code>, where <code>$FORMAT</code> is one of <code>json</code>, <code>toml</code>,
-or <code>yaml</code>. The config file can be set explicitly with the <code>--config</code> command
-line option. By default, the format is detected based on the extension of the
-config file name, but can be overridden with the <code>--config-format</code> command line
-option.</p>
+<code>$HOME/.config/chezmoi/chezmoi.$FORMAT</code>
+(<code>%USERPROFILE%/.config/chezmoi/chezmoi.$FORMAT</code>), where <code>$FORMAT</code> is one of
+<code>json</code>, <code>jsonc</code>, <code>toml</code>, or <code>yaml</code>. The config file can be set explicitly with
+the <code>--config</code> command line option. By default, the format is detected based on
+the extension of the config file name, but can be overridden with the
+<code>--config-format</code> command line option.</p>
 <h2 id="examples">Examples</h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">JSON</label><label for="__tabbed_1_2">TOML</label><label for="__tabbed_1_3">YAML</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">JSON</label><label for="__tabbed_1_2">JSONC</label><label for="__tabbed_1_3">TOML</label><label for="__tabbed_1_4">YAML</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
@@ -5266,6 +5330,16 @@ option.</p>
 <span class="w">        </span><span class="nt">&quot;autoPush&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.jsonc</span><pre><span></span><code>{
+    // The chezmoi source files are stored here
+    &quot;sourceDir&quot;: &quot;/home/user/.dotfiles&quot;,
+    &quot;git&quot;: {
+        &quot;autoPush&quot;: true
+    }
+}
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -5331,7 +5405,7 @@ option.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../assets/javascripts/bundle.fc8c2696.min.js"></script>
       
         <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
       

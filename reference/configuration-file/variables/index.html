@@ -21,7 +21,7 @@
         <link rel="next" href="../editor/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.15">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.2">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.113286f1.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.7bf56d0a.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -1709,6 +1709,8 @@
         
           
         
+          
+        
       
       
         
@@ -1763,6 +1765,20 @@
     <li class="md-nav__item">
       <a href="../editor/" class="md-nav__link">
         Editor
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hooks/" class="md-nav__link">
+        Hooks
       </a>
     </li>
   
@@ -2976,6 +2992,8 @@
         
           
         
+          
+        
       
       
         
@@ -3090,6 +3108,20 @@
     <li class="md-nav__item">
       <a href="../../templates/functions/fromIni/" class="md-nav__link">
         fromIni
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/fromJsonc/" class="md-nav__link">
+        fromJsonc
       </a>
     </li>
   
@@ -3944,6 +3976,10 @@
         
           
         
+          
+        
+          
+        
       
       
         
@@ -4016,6 +4052,34 @@
     <li class="md-nav__item">
       <a href="../../templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
         bitwardenFields
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/bitwarden-functions/rbw/" class="md-nav__link">
+        rbw
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/bitwarden-functions/rbwFields/" class="md-nav__link">
+        rbwFields
       </a>
     </li>
   
@@ -5252,6 +5316,13 @@
 <tbody>
 <tr>
 <td>Top level</td>
+<td><code>cacheDir</code></td>
+<td>string</td>
+<td><code>$XDG_CACHE_HOME/chezmoi</code> <br/> <code>$HOME/.cache/chezmoi</code> <br/> <code>%USERPROFILE%/.cache/chezmoi</code></td>
+<td>Cache directory</td>
+</tr>
+<tr>
+<td></td>
 <td><code>color</code></td>
 <td>string</td>
 <td><code>auto</code></td>
@@ -5260,7 +5331,7 @@
 <tr>
 <td></td>
 <td><code>data</code></td>
-<td>any</td>
+<td>object</td>
 <td><em>none</em></td>
 <td>Template data</td>
 </tr>
@@ -5268,7 +5339,7 @@
 <td></td>
 <td><code>destDir</code></td>
 <td>string</td>
-<td><code>~</code></td>
+<td><code>$HOME</code> <br/> <code>%USERPROFILE%</code></td>
 <td>Destination directory</td>
 </tr>
 <tr>
@@ -5301,6 +5372,13 @@
 </tr>
 <tr>
 <td></td>
+<td><code>persistentState</code></td>
+<td>string</td>
+<td><code>$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb</code> <br/> <code>$HOME/.local/share/chezmoi/chezmoi.boltdb</code> <br/> <code>%USERPROFILE%/.local/share/chezmoi/chezmoi.boltdb</code></td>
+<td>Location of the persistent state file</td>
+</tr>
+<tr>
+<td></td>
 <td><code>progress</code></td>
 <td>bool</td>
 <td><code>false</code></td>
@@ -5324,7 +5402,7 @@
 <td></td>
 <td><code>sourceDir</code></td>
 <td>string</td>
-<td><code>~/.local/share/chezmoi</code></td>
+<td><code>$XDG_SHARE_HOME/chezmoi</code> <br/> <code>$HOME/.local/share/chezmoi</code> <br/> <code>%USERPROFILE%/.local/share/chezmoi</code></td>
 <td>Source directory</td>
 </tr>
 <tr>
@@ -5671,6 +5749,34 @@
 <td>Use symmetric GPG encryption</td>
 </tr>
 <tr>
+<td><code>hooks</code></td>
+<td><em>command</em><code>.post.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra arguments to command to run after <em>command</em></td>
+</tr>
+<tr>
+<td></td>
+<td><em>command</em><code>.post.command</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Command to run after <em>command</em></td>
+</tr>
+<tr>
+<td></td>
+<td><em>command</em><code>.pre.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra arguments to command to run before <em>command</em></td>
+</tr>
+<tr>
+<td></td>
+<td><em>command</em><code>.pre.command</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Command to run before <em>command</em></td>
+</tr>
+<tr>
 <td><code>interpreters</code></td>
 <td><em>extension</em>.<code>args</code></td>
 <td>[]string</td>
@@ -5818,6 +5924,13 @@
 <td>Extra options for pinentry</td>
 </tr>
 <tr>
+<td><code>rbw</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>rbw</code></td>
+<td>Unofficial Bitwarden CLI command</td>
+</tr>
+<tr>
 <td><code>secret</code></td>
 <td><code>args</code></td>
 <td>[]string</td>
@@ -5945,7 +6058,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.2a6f1dda.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.fc8c2696.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
