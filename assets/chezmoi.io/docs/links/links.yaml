@@ -390,3 +390,7 @@ articles:
   title: '459 - Soy un zoquete, otra vez hice un rm -rf'
   lang: ES
   url: https://atareao.es/podcast/soy-un-zoquete-otra-vez-hice-un-rm-rf/
+- date: '2023-02-26'
+  version: 2.31.0
+  title: Managing dotfiles with chezmoi
+  url: https://moesgaard.dev/posts/2023-02-26-managing-dotfiles-with-chezmoi/
