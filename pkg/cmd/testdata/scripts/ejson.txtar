@@ -1,0 +1,51 @@
+# test ejsonDecrypt uses default parameters
+! exec chezmoi execute-template '{{ (ejsonDecrypt "golden/my-file.ejson") }}'
+stderr 'couldn''t read key file'
+stderr '/opt/ejson/keys/df82a403a3b58ebedd09758d3b131ff3113b39bdbfb92110940eb57832774345'
+
+# test ejsonDecrypt uses EJSON_KEYDIR when set
+env EJSON_KEYDIR=golden/keys
+exec chezmoi execute-template '{{ (ejsonDecrypt "golden/my-file.ejson").key1 }}'
+stdout ^value1$
+
+# test ejsonDecrypt uses configuration's keyDir when set
+chhome home_set_valid_keydir/user
+env EJSON_KEYDIR=invalid/keys
+exec chezmoi execute-template '{{ (ejsonDecrypt "golden/my-file.ejson").key2 }}'
+stdout ^value2$
+
+# test ejsonDecrypt uses configuration's key when set, and succeeds if valid
+chhome home_set_valid_key/user
+exec chezmoi execute-template '{{ (ejsonDecrypt "golden/my-file.ejson").key1 }}'
+stdout ^value1$
+
+# test ejsonDecrypt uses configuration's key when set, and fails if invalid
+chhome home_set_invalid_key/user
+! exec chezmoi execute-template '{{ (ejsonDecrypt "golden/my-file.ejson") }}'
+
+# test ejsonDecryptWithKey uses the key passed as parameter, and succeeds if valid
+chhome home_set_invalid_key/user
+exec chezmoi execute-template '{{ (ejsonDecryptWithKey "golden/my-file.ejson" "4fed3b88a33a4621b30230f1ad17e175e10f8587e37e84da740711c9fecfe16d").key2 }}'
+stdout ^value2$
+
+# test ejsonDecryptWithKey uses the key passed as parameter, and fails if invalid
+chhome home_set_valid_key/user
+! exec chezmoi execute-template '{{ (ejsonDecryptWithKey "golden/my-file.ejson" "invalid") }}'
+
+-- golden/keys/df82a403a3b58ebedd09758d3b131ff3113b39bdbfb92110940eb57832774345 --
+4fed3b88a33a4621b30230f1ad17e175e10f8587e37e84da740711c9fecfe16d
+-- golden/my-file.ejson --
+{
+        "_public_key": "df82a403a3b58ebedd09758d3b131ff3113b39bdbfb92110940eb57832774345",
+        "key1": "EJ[1:t1Ql8sPo+fpQxHSxarJYDctfjXwfB9+OMH4BK/0CQEE=:9lajUfn0rbr/fbVYHi0yF/BH64htU4yF:8ydfFcJ7UO6rg7TGO2vqT19NBSk02Q==]",
+        "key2": "EJ[1:t1Ql8sPo+fpQxHSxarJYDctfjXwfB9+OMH4BK/0CQEE=:vmOdZjp4gqY0pmjeVb/BQQaFzW17wK5f:7UtzdtHcrwvwZdjqm4Jmn9GHxFkR1Q==]"
+}
+-- home_set_invalid_key/user/.config/chezmoi/chezmoi.yaml --
+ejson:
+  key: "foo"
+-- home_set_valid_key/user/.config/chezmoi/chezmoi.yaml --
+ejson:
+  key: "4fed3b88a33a4621b30230f1ad17e175e10f8587e37e84da740711c9fecfe16d"
+-- home_set_valid_keydir/user/.config/chezmoi/chezmoi.yaml --
+ejson:
+  keyDir: "golden/keys"
