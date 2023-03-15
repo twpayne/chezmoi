@@ -11,6 +11,12 @@ values from the `data` section of the config file with their respective config
 names as a template string. Longer substitutions occur before shorter ones.
 This implies the `--template` option.
 
+!!! warning
+
+    `--autotemplate` uses a greedy algorithm which occasionally generates
+    templates with unwanted variable substitutions. Carefully review any
+    templates it generates.
+
 ## `--encrypt`
 
 Encrypt files using the defined encryption method.

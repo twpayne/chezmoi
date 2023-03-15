@@ -49,14 +49,6 @@ There are several ways to create a template:
     $ chezmoi add --template ~/.zshrc
     ```
 
-* When adding a file for the first time, you can pass the `--autotemplate`
-  argument, which tells chezmoi to make the file as a template and automatically
-  replace variables that chezmoi knows about, for example:
-
-    ```console
-    $ chezmoi add --autotemplate ~/.zshrc
-    ```
-
 * If a file is already managed by chezmoi, but is not a template, you can make
   it a template by running, for example:
 
