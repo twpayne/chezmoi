@@ -1,0 +1,20 @@
+# test that chezmoi managed lists managed files in git-repo externals
+exec chezmoi managed
+cmp stdout golden/managed
+
+# test that chezmoi unmanaged does not list files in git-repo externals
+exec chezmoi unmanaged
+cmp stdout golden/unmanaged
+
+-- golden/managed --
+.dir
+-- golden/unmanaged --
+.local
+-- home/user/.dir/.git/HEAD --
+ref: refs/head/master
+-- home/user/.dir/file --
+# contents of .dir/file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "git-repo"
+    url = "https://example.com/user/repo"

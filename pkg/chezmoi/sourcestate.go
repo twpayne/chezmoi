@@ -671,11 +671,6 @@ func (s *SourceState) Apply(
 	return PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 }
 
-// Contains returns the source state entry for targetRelPath.
-func (s *SourceState) Contains(targetRelPath RelPath) bool {
-	return s.root.Get(targetRelPath) != nil
-}
-
 // Encryption returns s's encryption.
 func (s *SourceState) Encryption() Encryption {
 	return s.encryption
@@ -720,6 +715,11 @@ func (s *SourceState) ForEach(f func(RelPath, SourceStateEntry) error) error {
 	return s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, entry SourceStateEntry) error {
 		return f(targetRelPath, entry)
 	})
+}
+
+// Get returns the source state entry for targetRelPath.
+func (s *SourceState) Get(targetRelPath RelPath) SourceStateEntry {
+	return s.root.Get(targetRelPath)
 }
 
 // Ignore returns if targetRelPath should be ignored.
