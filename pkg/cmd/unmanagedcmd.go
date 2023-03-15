@@ -68,13 +68,25 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		if err != nil {
 			return err
 		}
-		managed := sourceState.Contains(targetRelPath)
+		sourceStateEntry := sourceState.Get(targetRelPath)
+		managed := sourceStateEntry != nil
 		ignored := sourceState.Ignore(targetRelPath)
 		if !managed && !ignored {
 			unmanagedRelPaths[targetRelPath] = struct{}{}
 		}
-		if fileInfo.IsDir() && (!managed || ignored) {
-			return vfs.SkipDir
+		if fileInfo.IsDir() {
+			switch {
+			case !managed:
+				return vfs.SkipDir
+			case ignored:
+				return vfs.SkipDir
+			case sourceStateEntry != nil:
+				if origin, ok := sourceStateEntry.Origin().(*chezmoi.External); ok {
+					if origin.Type == chezmoi.ExternalTypeGitRepo {
+						return vfs.SkipDir
+					}
+				}
+			}
 		}
 		return nil
 	}

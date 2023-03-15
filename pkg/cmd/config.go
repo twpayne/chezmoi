@@ -2243,7 +2243,7 @@ func (c *Config) targetRelPaths(
 			return nil, err
 		}
 		if options.mustBeInSourceState {
-			if !sourceState.Contains(targetRelPath) {
+			if sourceState.Get(targetRelPath) == nil {
 				return nil, fmt.Errorf("%s: not in source state", arg)
 			}
 		}
