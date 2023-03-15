@@ -63,6 +63,7 @@ nav:
     - AWS Secrets Manager: user-guide/password-managers/aws-secrets-manager.md
     - Bitwarden: user-guide/password-managers/bitwarden.md
     - Dashlane: user-guide/password-managers/dashlane.md
+    - ejson: user-guide/password-managers/ejson.md
     - gopass: user-guide/password-managers/gopass.md
     - KeePassXC: user-guide/password-managers/keepassxc.md
     - Keychain and Windows Credentials Manager: user-guide/password-managers/keychain-and-windows-credentials-manager.md
@@ -240,14 +241,18 @@ nav:
       - bitwardenFields: reference/templates/bitwarden-functions/bitwardenFields.md
       - rbw: reference/templates/bitwarden-functions/rbw.md
       - rbwFields: reference/templates/bitwarden-functions/rbwFields.md
-    - gopass functions:
-      - reference/templates/gopass-functions/index.md
-      - gopass: reference/templates/gopass-functions/gopass.md
-      - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
     - Dashlane functions:
       - reference/templates/dashlane-functions/index.md
       - dashlaneNote: reference/templates/dashlane-functions/dashlaneNote.md
       - dashlanePassword: reference/templates/dashlane-functions/dashlanePassword.md
+    - ejson functions:
+      - reference/templates/ejson-functions/index.md
+      - ejsonDecrypt: reference/templates/ejson-functions/ejsonDecrypt.md
+      - ejsonDecryptWithKey: reference/templates/ejson-functions/ejsonDecryptWithKey.md
+    - gopass functions:
+      - reference/templates/gopass-functions/index.md
+      - gopass: reference/templates/gopass-functions/gopass.md
+      - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
     - KeePassXC functions:
       - reference/templates/keepassxc-functions/index.md
       - keepassxc: reference/templates/keepassxc-functions/keepassxc.md

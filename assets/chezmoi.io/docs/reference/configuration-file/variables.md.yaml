@@ -165,6 +165,13 @@ sections:
     watch:
       type: bool
       description: Automatically apply changes when files are saved
+  ejson:
+    keyDir:
+      type: 'string'
+      description: Path to directory containing private keys. Defaults to /opt/ejson/keys. Setting the EJSON_KEYDIR environment will also set this value, with lower precedence.
+    key:
+      type: 'string'
+      description: The private key to use for decryption, will supersede using the keyDir if set.
   git:
     autoAdd:
       type: bool

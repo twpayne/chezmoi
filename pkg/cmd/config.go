@@ -120,6 +120,7 @@ type ConfigFile struct {
 	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"` //nolint:lll
 	Bitwarden         bitwardenConfig         `json:"bitwarden" mapstructure:"bitwarden" yaml:"bitwarden"`
 	Dashlane          dashlaneConfig          `json:"dashlane" mapstructure:"dashlane" yaml:"dashlane"`
+	Ejson             ejsonConfig             `json:"ejson" mapstructure:"ejson" yaml:"ejson"`
 	Gopass            gopassConfig            `json:"gopass" mapstructure:"gopass" yaml:"gopass"`
 	Keepassxc         keepassxcConfig         `json:"keepassxc" mapstructure:"keepassxc" yaml:"keepassxc"`
 	Keeper            keeperConfig            `json:"keeper" mapstructure:"keeper" yaml:"keeper"`
@@ -379,6 +380,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"dashlanePassword":         c.dashlanePasswordTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"deleteValueAtPath":        c.deleteValueAtPathTemplateFunc,
+		"ejsonDecrypt":             c.ejsonDecryptTemplateFunc,
+		"ejsonDecryptWithKey":      c.ejsonDecryptWithKeyTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
 		"eqFold":                   c.eqFoldTemplateFunc,
 		"fromIni":                  c.fromIniTemplateFunc,
@@ -2450,6 +2453,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Dashlane: dashlaneConfig{
 			Command: "dcli",
 		},
+		Ejson: ejsonConfig{},
 		Gopass: gopassConfig{
 			Command: "gopass",
 		},
