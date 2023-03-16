@@ -81,8 +81,8 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 			case ignored:
 				return vfs.SkipDir
 			case sourceStateEntry != nil:
-				if origin, ok := sourceStateEntry.Origin().(*chezmoi.External); ok {
-					if origin.Type == chezmoi.ExternalTypeGitRepo {
+				if external, ok := sourceStateEntry.Origin().(*chezmoi.External); ok {
+					if external.Type == chezmoi.ExternalTypeGitRepo {
 						return vfs.SkipDir
 					}
 				}
