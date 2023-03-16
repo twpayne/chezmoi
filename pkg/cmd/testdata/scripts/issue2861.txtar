@@ -1,0 +1,12 @@
+# test that chezmoi status shows just-added-then-modified files
+exec chezmoi add $HOME${/}.file
+edit $HOME/.file
+edit $CHEZMOISOURCEDIR/dot_file
+edit $CHEZMOISOURCEDIR/dot_file
+exec chezmoi status
+cmp stdout golden/status
+
+-- golden/status --
+MM .file
+-- home/user/.file --
+# contents of .file
