@@ -54,7 +54,7 @@ You can then open the template (which will be saved in the file
 $ chezmoi edit ~/.gitconfig
 ```
 
-Edit the to file should look something like:
+Edit the file so it looks something like:
 
 ```toml title="~/.local/share/chezmoi/dot_gitconfig.tmpl"
 [user]
