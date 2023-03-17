@@ -2453,7 +2453,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Dashlane: dashlaneConfig{
 			Command: "dcli",
 		},
-		Ejson: ejsonConfig{},
+		Ejson: ejsonConfig{
+			KeyDir: firstNonEmptyString(os.Getenv("EJSON_KEYDIR"), "/opt/ejson/keys"),
+		},
 		Gopass: gopassConfig{
 			Command: "gopass",
 		},
