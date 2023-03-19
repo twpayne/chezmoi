@@ -23,8 +23,24 @@ Put the following at the top of your script:
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
   if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) {
     $CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
-    Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+    Start-Process -Wait -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
     Exit
   }
 }
 ```
+
+If you use [gsudo](https://gerardog.github.io/gsudo/docs/intro), it has tips on writing
+[self-elevating scripts](https://gerardog.github.io/gsudo/docs/tips/script-self-elevation#self-elevate-script).
+
+## Notes on running elevated scripts
+
+However you decide to run a script in an elevated prompt, as soon as the non-elevated script returns, chezmoi will move to the next step in its
+processing (running more scripts, creating files, etc.).
+Ensure that the elevated script completes *before the non-elevated script exits*, or subsequent steps may not run as expected.
+In the example above, this is accomplished by passing `-Wait` to PowerShell's `Start-Process` cmdlet.
+
+Note that by including `-NoExit` in `$CommandLine`, the new (elevated) PowerShell process/window will not exit automatically on completion.
+This means you'll need to close the new window by hand for chezmoi to continue its steps. If this manual intervention is desired, it would
+be convenient to print a message as the script's last command to indicate completion for you to safely close the elevated window.
+If you want no manual intervention, you can remove `-NoExit` from `$CommandLine`, but then you likely won’t see the output of the elevated
+script, which will make it more difficult to determine if something went wrong during its execution.
