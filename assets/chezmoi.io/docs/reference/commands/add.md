@@ -4,7 +4,7 @@ Add *target*s to the source state. If any target is already in the source
 state, then its source state is replaced with its current state in the
 destination directory.
 
-## `--autotemplate`
+## `--autotemplate` (deprecated)
 
 Automatically generate a template by replacing strings that match variable
 values from the `data` section of the config file with their respective config
@@ -16,6 +16,9 @@ This implies the `--template` option.
     `--autotemplate` uses a greedy algorithm which occasionally generates
     templates with unwanted variable substitutions. Carefully review any
     templates it generates.
+
+    `--autotemplate` has been deprecated and will be removed in a future
+    release of chezmoi.
 
 ## `--encrypt`
 
