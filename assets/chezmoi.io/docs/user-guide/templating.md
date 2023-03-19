@@ -31,8 +31,8 @@ These come from a variety of sources (later data overwrite earlier ones):
 * Variables populated by chezmoi are in `.chezmoi`, for example `.chezmoi.os`.
 
 * Variables created by you in the `.chezmoidata.$FORMAT` configuration file.
-  The various supported formats (json, toml and yaml) are read in alphabetical
-  order.
+  The various supported formats (`json`, `jsonc`, `toml` and `yaml`) are read in
+  alphabetical order.
 
 * Variables created by you in the `data` section of the configuration file.
 

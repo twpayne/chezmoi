@@ -2,7 +2,7 @@
 
 If a file called `.chezmoi.$FORMAT.tmpl` exists then `chezmoi init` will use it
 to create an initial config file. `$FORMAT` must be one of the supported
-config file formats, e.g. `json`, `toml`, or `yaml`.
+config file formats, e.g. `json`, `jsonc`, `toml`, or `yaml`.
 
 !!! example
 
