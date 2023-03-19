@@ -6,7 +6,7 @@ inside `.chezmoiroot`), it is interpreted as a list of external files and
 archives to be included as if they were in the source state.
 
 `$FORMAT` must be one of chezmoi's supported configuration file formats, e.g.
-`json`, `toml`, or `yaml`.
+`json`, `jsonc`, `toml`, or `yaml`.
 
 `.chezmoiexternal.$FORMAT` is interpreted as a template. This allows different
 externals to be included on different machines.
