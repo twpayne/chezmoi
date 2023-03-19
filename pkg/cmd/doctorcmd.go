@@ -498,9 +498,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 	case 0:
 		return checkResultOK, "no config file found"
 	case 1:
-		var filenameAbsPath chezmoi.AbsPath
-		for filenameAbsPath = range filenameAbsPaths {
-		}
+		filenameAbsPath := anyKey(filenameAbsPaths)
 		if filenameAbsPath != c.expected {
 			return checkResultFailed, fmt.Sprintf("found %s, expected %s", filenameAbsPath, c.expected)
 		}
@@ -740,4 +738,14 @@ func (c *versionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath
 		return checkResultWarning, c.versionStr
 	}
 	return checkResultOK, c.versionStr
+}
+
+// anyKey returns any key from m. It is typically used to return a single key
+// when m is known to contain exactly one element.
+func anyKey[M ~map[K]V, K comparable, V any](m M) K { //nolint:ireturn
+	for k := range m {
+		return k
+	}
+	var k K
+	return k
 }

@@ -671,10 +671,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	}
 
 	if configTemplate == nil {
-		if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
-			return err
-		}
-		return nil
+		return c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey)
 	}
 
 	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents, cmd)
@@ -714,11 +711,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &c.ConfigFile); err != nil {
 		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
 	}
-	if err := c.setEncryption(); err != nil {
-		return err
-	}
-
-	return nil
+	return c.setEncryption()
 }
 
 // createConfigFile creates a config file using a template and returns its
@@ -858,10 +851,7 @@ func (c *Config) decodeConfigMap(configMap map[string]any, configFile *ConfigFil
 	if err != nil {
 		return err
 	}
-	if err := decoder.Decode(configMap); err != nil {
-		return err
-	}
-	return nil
+	return decoder.Decode(configMap)
 }
 
 // defaultPreApplyFunc is the default pre-apply function. If the target entry
@@ -1584,7 +1574,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			var format chezmoi.Format
 			if format, err = chezmoi.FormatFromAbsPath(c.configFileAbsPath); err == nil {
 				var config map[string]any
-				if err = format.Unmarshal(configFileContents, &config); err != nil {
+				if err = format.Unmarshal(configFileContents, &config); err != nil { //nolint:revive
 					// err is already set, do nothing.
 				} else {
 					err = c.decodeConfigMap(config, &ConfigFile{})

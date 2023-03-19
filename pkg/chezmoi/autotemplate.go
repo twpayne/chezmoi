@@ -74,10 +74,9 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 			if j == -1 {
 				// No more occurrences found, so terminate the loop.
 				break
-			} else {
-				// Advance to the next occurrence.
-				index += j
 			}
+			// Advance to the next occurrence.
+			index += j
 		}
 	}
 

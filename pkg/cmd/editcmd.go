@@ -244,9 +244,5 @@ TARGETRELPATH:
 		return err
 	}
 
-	if err := postEditFunc(); err != nil {
-		return err
-	}
-
-	return nil
+	return postEditFunc()
 }
