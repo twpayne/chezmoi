@@ -1918,6 +1918,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"SOURCE_DIR":    templateData.SourceDir.String(),
 		"UID":           templateData.UID,
 		"USERNAME":      templateData.Username,
+		"VERBOSE":       strconv.FormatBool(c.Verbose),
 		"WORKING_TREE":  templateData.WorkingTree.String(),
 	} {
 		scriptEnv = append(scriptEnv, "CHEZMOI_"+key+"="+value)
