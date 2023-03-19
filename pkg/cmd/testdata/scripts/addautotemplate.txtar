@@ -1,5 +1,6 @@
 # test that chezmoi add --autotemplate on a file with a replacement creates a template in the source directory
 exec chezmoi add --autotemplate $HOME${/}.template
+stderr 'deprecated'
 cmp $CHEZMOISOURCEDIR/dot_template.tmpl golden/dot_template.tmpl
 
 # test that chezmoi add --autotemplate on a symlink with a replacement creates a template in the source directory
