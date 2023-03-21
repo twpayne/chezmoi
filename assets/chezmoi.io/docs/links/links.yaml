@@ -394,3 +394,8 @@ articles:
   version: 2.31.0
   title: Managing dotfiles with chezmoi
   url: https://moesgaard.dev/posts/2023-02-26-managing-dotfiles-with-chezmoi/
+- date: '2023-03-21'
+  version: 2.32.0
+  title: AWS CLI のプロファイルを chezmoi とBitwarden で管理する
+  lang: JP
+  url: https://zenn.dev/nh8939/articles/8a6a4f5eb967a9
