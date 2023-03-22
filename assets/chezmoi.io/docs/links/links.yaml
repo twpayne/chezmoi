@@ -396,3 +396,7 @@ articles:
   title: 'AWS CLI のプロファイルを chezmoi とBitwarden で管理する'
   lang: JP
   url: https://zenn.dev/nh8939/articles/8a6a4f5eb967a9
+- date: '2023-03-17'
+  version: 2.32.0
+  title: 'Automating the Setup of a New Mac With All Your Apps, Preferences, and Development Tools'
+  url: https://www.moncefbelyamani.com/automating-the-setup-of-a-new-mac-with-all-your-apps-preferences-and-development-tools/
