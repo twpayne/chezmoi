@@ -6,7 +6,7 @@ stdout ^WORK=${WORK@R}$
 [darwin] stdout ^CHEZMOI_OS=darwin$
 [linux] stdout ^CHEZMOI_OS=linux$
 stdout ^CHEZMOI_SOURCE_DIR=${CHEZMOISOURCEDIR@R}/home$
-stdout ^CHEZMOI_VERBOSE=false$
+stdout ^CHEZMOI_VERBOSE=$
 stdout ^SCRIPTENV_KEY=SCRIPTENV_VALUE$
 
 # test that chezmoi passes along --verbose in scripts
@@ -15,7 +15,7 @@ stdout ^WORK=${WORK@R}$
 [darwin] stdout ^CHEZMOI_OS=darwin$
 [linux] stdout ^CHEZMOI_OS=linux$
 stdout ^CHEZMOI_SOURCE_DIR=${CHEZMOISOURCEDIR@R}/home$
-stdout ^CHEZMOI_VERBOSE=true$
+stdout ^CHEZMOI_VERBOSE=1$
 stdout ^SCRIPTENV_KEY=SCRIPTENV_VALUE$
 
 -- home/user/.config/chezmoi/chezmoi.toml --
