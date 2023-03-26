@@ -10,6 +10,9 @@ an empty string.
 environment and the filesystem at the moment the template is executed. Exercise
 caution when using it in your templates.
 
+The return value of the first successful call to `lookPath` is cached, and
+future calls to `lookPath` for the same *file* will return this path.
+
 !!! example
 
     ```
