@@ -13,6 +13,7 @@ chmod 755 bin/op
 chmod 755 bin/pass
 chmod 755 bin/ph
 chmod 755 bin/pinentry
+chmod 755 bin/rbw
 chmod 755 bin/secret
 chmod 755 bin/shell
 chmod 755 bin/vault
@@ -54,6 +55,7 @@ stdout '^ok\s+passhole-command\s+'
 stdout '^ok\s+lastpass-command\s+'
 stdout '^ok\s+pass-command\s+'
 stdout '^ok\s+vault-command\s+'
+stdout '^ok\s+rbw-command\s+'
 stdout '^ok\s+secret-command\s+'
 
 chhome home2/user
@@ -155,6 +157,10 @@ echo "Copyright (C) 2016 g10 Code GmbH"
 echo "License GPLv2+: GNU GPL version 2 or later <https://www.gnu.org/licenses/>"
 echo "This is free software: you are free to change and redistribute it."
 echo "There is NO WARRANTY, to the extent permitted by law."
+-- bin/rbw --
+#!/bin/sh
+
+echo rbw 1.7.0
 -- bin/secret --
 #!/bin/sh
 -- bin/shell --

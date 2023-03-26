@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/coreos/go-semver/semver"
+
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -13,6 +15,8 @@ type rbwConfig struct {
 	Command     string `json:"command" mapstructure:"command" yaml:"command"`
 	outputCache map[string][]byte
 }
+
+var rbwMinVersion = semver.Version{Major: 1, Minor: 7, Patch: 0}
 
 func (c *Config) rbwFieldsTemplateFunc(name string) map[string]any {
 	args := []string{"get", "--raw", name}
