@@ -368,10 +368,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			minVersion:  &passholeMinVersion,
 		},
 		&binaryCheck{
-			name:       "rbw-command",
-			binaryname: c.RBW.Command,
-			ifNotSet:   checkResultWarning,
-			ifNotExist: checkResultInfo,
+			name:        "rbw-command",
+			binaryname:  c.RBW.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`^rbw\s+(\d+\.\d+\.\d+)`),
+			minVersion:  &rbwMinVersion,
 		},
 		&binaryCheck{
 			name:        "vault-command",
