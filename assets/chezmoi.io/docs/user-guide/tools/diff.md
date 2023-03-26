@@ -18,8 +18,8 @@ specify:
 !!! hint
 
     If you generate your config file from a config file template, then you'll
-    need to escape the `{{` and `}}` in your config file template so that they
-    appear in your generated config file.
+    need to escape the `{{` and `}}` as `{{ "{{" }}` and `{{ "}}" }}`. That way
+    your generated config file contains the `{{` and `}}` you expect.
 
 ## Don't show scripts in the diff output
 
