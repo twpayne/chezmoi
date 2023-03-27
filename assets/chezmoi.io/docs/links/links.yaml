@@ -357,6 +357,13 @@ articles:
   version: 2.24.0
   title: 'Shit Hot Dotfiles'
   url: https://kolv.in/posts/dotfile-managment
+- data: '2022-12-15'
+  version: 2.27.3
+  title: 'Archivos de configuración fácil con chezmoi'
+  lang: ES
+  formats:
+  - video
+  url: https://www.youtube.com/watch?v=Xsh2DGSe6Lg
 - date: '2023-01-05'
   version: 2.29.1
   title: '既存の dotfiles を chezmoi で管理する'
