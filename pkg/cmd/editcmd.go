@@ -90,7 +90,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		decryptedAbsPath chezmoi.AbsPath
 	}
 	var transparentlyDecryptedFiles []transparentlyDecryptedFile
-TARGETRELPATH:
+TARGET_REL_PATH:
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
@@ -154,7 +154,7 @@ TARGETRELPATH:
 			}
 			if err := c.baseSystem.Link(c.SourceDirAbsPath.Join(sourceRelPath.RelPath()), hardlinkAbsPath); err == nil {
 				editorArgs = append(editorArgs, hardlinkAbsPath.String())
-				continue TARGETRELPATH
+				continue TARGET_REL_PATH
 			}
 
 			// Otherwise, fall through to the default option of editing the
