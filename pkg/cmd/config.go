@@ -1876,7 +1876,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	FOR:
 		for {
 			gitDirAbsPath := workingTreeAbsPath.JoinString(gogit.GitDirName)
-			if fileInfo, err := c.baseSystem.Stat(gitDirAbsPath); err == nil && fileInfo.IsDir() {
+			if _, err := c.baseSystem.Stat(gitDirAbsPath); err == nil {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
 				break FOR
 			}
