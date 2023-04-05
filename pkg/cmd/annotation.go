@@ -17,7 +17,7 @@ var (
 
 // Persistent state modes.
 const (
-	persistentStateModeKey = "chezoi_persistent_state_mode"
+	persistentStateModeKey = "chezmoi_persistent_state_mode"
 
 	persistentStateModeEmpty         persistentStateMode = "empty"
 	persistentStateModeReadOnly      persistentStateMode = "read-only"

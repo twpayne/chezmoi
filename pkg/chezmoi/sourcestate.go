@@ -329,7 +329,7 @@ func (s *SourceState) Add(
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
 	nonEmptyDirs := make(map[SourceRelPath]struct{})
 	dirRenames := make(map[AbsPath]AbsPath)
-DESTABSPATH:
+DEST_ABS_PATH:
 	for _, destAbsPath := range destAbsPaths {
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
 		if !options.Filter.IncludeFileInfo(destAbsPathInfo) {
@@ -374,7 +374,7 @@ DESTABSPATH:
 		if options.PreAddFunc != nil {
 			switch err := options.PreAddFunc(targetRelPath); {
 			case errors.Is(err, Skip):
-				continue DESTABSPATH
+				continue DEST_ABS_PATH
 			case err != nil:
 				return err
 			}
@@ -398,7 +398,7 @@ DESTABSPATH:
 				if options.ReplaceFunc != nil {
 					switch err := options.ReplaceFunc(targetRelPath, newSourceStateEntry, oldSourceStateEntry); {
 					case errors.Is(err, Skip):
-						continue DESTABSPATH
+						continue DEST_ABS_PATH
 					case err != nil:
 						return err
 					}
@@ -413,7 +413,7 @@ DESTABSPATH:
 					oldSourceAbsPath := s.sourceDirAbsPath.Join(oldSourceEntryRelPath.RelPath())
 					newSourceAbsPath := s.sourceDirAbsPath.Join(sourceEntryRelPath.RelPath())
 					dirRenames[oldSourceAbsPath] = newSourceAbsPath
-					continue DESTABSPATH
+					continue DEST_ABS_PATH
 				}
 
 				// Otherwise, remove the old entry.

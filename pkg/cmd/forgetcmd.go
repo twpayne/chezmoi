@@ -35,7 +35,7 @@ func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return err
 	}
 
-TARGETRELPATH:
+TARGET_REL_PATH:
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 
@@ -46,10 +46,10 @@ TARGETRELPATH:
 			// OK, keep going.
 		case chezmoi.SourceStateOriginRemove:
 			c.errorf("warning: %s: cannot forget entry from remove\n", targetRelPath)
-			continue TARGETRELPATH
+			continue TARGET_REL_PATH
 		case *chezmoi.External:
 			c.errorf("warning: %s: cannot forget entry from external %s\n", targetRelPath, sourceStateOrigin.OriginString())
-			continue TARGETRELPATH
+			continue TARGET_REL_PATH
 		default:
 			panic(fmt.Sprintf("%s: %T: unknown source state origin type", targetRelPath, sourceStateOrigin))
 		}

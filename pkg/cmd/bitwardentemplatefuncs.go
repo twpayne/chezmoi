@@ -14,8 +14,8 @@ type bitwardenConfig struct {
 	outputCache map[string][]byte
 }
 
-func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
-	output, err := c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemid, "--raw"})
+func (c *Config) bitwardenAttachmentTemplateFunc(name, itemID string) string {
+	output, err := c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemID, "--raw"})
 	if err != nil {
 		panic(err)
 	}

@@ -111,8 +111,8 @@ func pluralize(singular string) string {
 	return singular + "s"
 }
 
-// titleize returns s with its first rune titleized.
-func titleize(s string) string {
+// titleFirst returns s with its first rune converted to title case.
+func titleFirst(s string) string {
 	if s == "" {
 		return s
 	}
@@ -128,7 +128,7 @@ func upperSnakeCaseToCamelCase(s string) string {
 		if i == 0 {
 			words[i] = strings.ToLower(word)
 		} else if !isWellKnownAbbreviation(word) {
-			words[i] = titleize(strings.ToLower(word))
+			words[i] = titleFirst(strings.ToLower(word))
 		}
 	}
 	return strings.Join(words, "")

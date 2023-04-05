@@ -50,7 +50,7 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 	})
 	sort.Sort(targetRelPaths)
 
-TARGETRELPATH:
+TARGET_REL_PATH:
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateFile, ok := sourceStateEntries[targetRelPath].(*chezmoi.SourceStateFile)
 		if !ok {
@@ -118,7 +118,7 @@ TARGETRELPATH:
 				case choice == "yes":
 					break FOR
 				case choice == "no":
-					continue TARGETRELPATH
+					continue TARGET_REL_PATH
 				case choice == "all":
 					c.interactive = false
 					break FOR

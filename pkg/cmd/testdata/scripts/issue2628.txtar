@@ -6,7 +6,7 @@ cmp $HOME/.file golden/.file
 
 chhome home2/user
 
-# test that .chezmoignore.tmpl is read
+# test that .chezmoiignore.tmpl is read
 exec chezmoi apply
 ! exists $HOME/.file
 
