@@ -159,7 +159,7 @@ nfpms:
       - src: completions/chezmoi-completion.bash
         dst: /usr/share/bash-completion/completions/chezmoi
       - src: completions/chezmoi.fish
-        dst: /usr/share/fish/completions/chezmoi.fish
+        dst: /usr/share/fish/vendor_completions.d/chezmoi.fish
       - src: completions/chezmoi.zsh
         dst: /usr/share/zsh/vendor-completions/_chezmoi
     rpm:
@@ -175,7 +175,7 @@ nfpms:
       - src: completions/chezmoi-completion.bash
         dst: /usr/share/bash-completion/completions/chezmoi
       - src: completions/chezmoi.fish
-        dst: /usr/share/fish/completions/chezmoi.fish
+        dst: /usr/share/fish/vendor_completions.d/chezmoi.fish
       - src: completions/chezmoi.zsh
         dst: /usr/share/zsh/site-functions/_chezmoi
 - id: apks
