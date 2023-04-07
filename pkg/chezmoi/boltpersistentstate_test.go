@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -126,6 +127,23 @@ func TestBoltPersistentStateMock(t *testing.T) {
 		assert.Equal(t, value1, actualValue)
 
 		require.NoError(t, b.Close())
+	})
+}
+
+func TestBoltPersistentStateGeneric(t *testing.T) {
+	system := NewRealSystem(vfs.OSFS)
+	var tempDirs []string
+	defer func() {
+		for _, tempDir := range tempDirs {
+			assert.NoError(t, os.RemoveAll(tempDir))
+		}
+	}()
+	testPersistentState(t, func() PersistentState {
+		tempDir, err := os.MkdirTemp("", "chezmoi-test")
+		require.NoError(t, err)
+		b, err := NewBoltPersistentState(system, NewAbsPath(tempDir).JoinString("chezmoistate.boltdb"), BoltPersistentStateReadWrite)
+		require.NoError(t, err)
+		return b
 	})
 }
 
