@@ -135,6 +135,7 @@ linters-settings:
     - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.ActualStateEntry
     - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.Encryption
     - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.Format
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.PersistentState
     - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateOrigin
     - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateEntry
     - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.System
