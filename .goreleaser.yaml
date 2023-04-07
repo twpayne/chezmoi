@@ -225,6 +225,7 @@ signs:
   - sign-blob
   - --key=assets/cosign/cosign.key
   - --output-signature=${signature}
+  - --yes
   - ${artifact}
   artifacts: checksum
 
