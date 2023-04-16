@@ -1,0 +1,16 @@
+[windows] skip 'UNIX only'
+
+# test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present
+exec chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+stdout ${CHEZMOISOURCEDIR@R}/home
+
+# test that .chezmoi.sourceDir is set correctly in chezmoi apply
+exec chezmoi apply
+stdout ${CHEZMOISOURCEDIR@R}/home
+
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/home/.chezmoiscripts/run_once_echo.sh.tmpl --
+#!/bin/sh
+
+echo {{ .chezmoi.sourceDir }}
