@@ -111,6 +111,7 @@ type SourceState struct {
 	readTemplateData        bool
 	userTemplateData        map[string]any
 	priorityTemplateData    map[string]any
+	scriptEnv               []string
 	templateData            map[string]any
 	templateFuncs           template.FuncMap
 	templateOptions         []string
@@ -196,6 +197,13 @@ func WithPriorityTemplateData(priorityTemplateData map[string]any) SourceStateOp
 func WithReadTemplateData(readTemplateData bool) SourceStateOption {
 	return func(s *SourceState) {
 		s.readTemplateData = readTemplateData
+	}
+}
+
+// WithScriptEnv sets the script environment variables.
+func WithScriptEnv(scriptEnv []string) SourceStateOption {
+	return func(s *SourceState) {
+		s.scriptEnv = scriptEnv
 	}
 }
 
@@ -1673,6 +1681,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 			// Run the modifier on the current contents.
 			cmd := interpreter.ExecCommand(tempFile.Name())
+			cmd.Env = s.scriptEnv
 			cmd.Stdin = bytes.NewReader(currentContents)
 			cmd.Stderr = os.Stderr
 			contents, err = chezmoilog.LogCmdOutput(cmd)

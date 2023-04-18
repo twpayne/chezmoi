@@ -1,0 +1,10 @@
+[windows] skip
+
+# test that chezmoi sets environment variables for modify_ scripts
+exec chezmoi apply
+grep ^${CHEZMOISOURCEDIR@R}$ $HOME/.modify
+
+-- home/user/.local/share/chezmoi/modify_dot_modify --
+#!/bin/sh
+
+echo ${CHEZMOI_SOURCE_DIR}
