@@ -1537,6 +1537,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithLogger(&sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
+		chezmoi.WithScriptEnv(c.runEnv),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
