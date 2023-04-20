@@ -1,0 +1,24 @@
+# test that .chezmoiignore prevents git-repo externals from being downloaded
+exec chezmoi apply
+! exists .dir
+
+chhome home2/user
+
+# test that .chezmoiignore prevents external archives from being downloaded
+exec chezmoi apply
+! exists .dir
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "https://example.com/does-not-exist.tar.gz"
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.dir
+.dir/**
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "git-repo"
+    url = "https://example.com/user/repo.git"
+-- home2/user/.local/share/chezmoi/.chezmoiignore --
+.dir
+.dir/**

@@ -1046,6 +1046,9 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	// Generate SourceStateCommands for git-repo externals.
 	var gitRepoExternalRelPaths RelPaths
 	for externalRelPath, external := range s.externals {
+		if s.Ignore(externalRelPath) {
+			continue
+		}
 		if external.Type == ExternalTypeGitRepo {
 			gitRepoExternalRelPaths = append(gitRepoExternalRelPaths, externalRelPath)
 		}
