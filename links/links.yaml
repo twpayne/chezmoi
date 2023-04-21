@@ -407,3 +407,8 @@ articles:
   version: 2.32.0
   title: 'Automating the Setup of a New Mac With All Your Apps, Preferences, and Development Tools'
   url: https://www.moncefbelyamani.com/automating-the-setup-of-a-new-mac-with-all-your-apps-preferences-and-development-tools/
+- date: '2023-04-15'
+  version: 2.33.1
+  title: 'dotfiles の管理に chezmoi を導入して fswatch で自動 apply できるようにしたg'
+  lang: JP
+  url: https://blog.mono0x.net/2023/04/15/chezmoi/
