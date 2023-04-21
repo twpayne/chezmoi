@@ -237,6 +237,7 @@ type templateData struct {
 	Args           []string        `json:"args"`
 	CacheDir       chezmoi.AbsPath `json:"cacheDir"`
 	Command        string          `json:"command"`
+	Config         ConfigFile      `json:"config"`
 	ConfigFile     chezmoi.AbsPath `json:"configFile"`
 	Executable     chezmoi.AbsPath `json:"executable"`
 	FQDNHostname   string          `json:"fqdnHostname"`
@@ -1279,6 +1280,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"args":           templateData.Args,
 			"cacheDir":       templateData.CacheDir.String(),
 			"command":        templateData.Command,
+			"config":         templateData.Config,
 			"configFile":     templateData.ConfigFile.String(),
 			"executable":     templateData.Executable.String(),
 			"fqdnHostname":   templateData.FQDNHostname,
@@ -2082,6 +2084,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		Args:         os.Args,
 		CacheDir:     c.CacheDirAbsPath,
 		Command:      cmd.Name(),
+		Config:       c.ConfigFile,
 		ConfigFile:   c.configFileAbsPath,
 		Executable:   chezmoi.NewAbsPath(executable),
 		FQDNHostname: fqdnHostname,
