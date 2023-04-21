@@ -10,7 +10,6 @@ import (
 
 type addCmdConfig struct {
 	TemplateSymlinks bool `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
-	autoTemplate     bool
 	create           bool
 	encrypt          bool
 	exact            bool
@@ -40,7 +39,6 @@ func (c *Config) newAddCmd() *cobra.Command {
 	}
 
 	flags := addCmd.Flags()
-	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates") //nolint:lll
 	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
 	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
@@ -52,10 +50,6 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
 	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates") //nolint:lll
-
-	if err := flags.MarkDeprecated("autotemplate", "it will be removed in a future release"); err != nil {
-		panic(err)
-	}
 
 	registerExcludeIncludeFlagCompletionFuncs(addCmd)
 
@@ -158,7 +152,6 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	}
 
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-		AutoTemplate:    c.Add.autoTemplate,
 		Create:          c.Add.create,
 		Encrypt:         c.Add.encrypt,
 		EncryptedSuffix: c.encryption.EncryptedSuffix(),
