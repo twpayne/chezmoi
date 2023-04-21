@@ -8,7 +8,7 @@ require (
 	github.com/Shopify/ejson v1.3.3
 	github.com/aws/aws-sdk-go-v2 v1.17.8
 	github.com/aws/aws-sdk-go-v2/config v1.18.21
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.3
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.4
 	github.com/bmatcuk/doublestar/v4 v4.6.0
 	github.com/bradenhilton/mozillainstallhash v1.0.1
 	github.com/charmbracelet/bubbles v0.15.0
@@ -42,7 +42,7 @@ require (
 	go.etcd.io/bbolt v1.3.7
 	go.uber.org/multierr v1.11.0
 	golang.org/x/crypto v0.8.0
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
+	golang.org/x/exp v0.0.0-20230420155640-133eef4313cb
 	golang.org/x/oauth2 v0.7.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.7.0
