@@ -237,7 +237,7 @@ type templateData struct {
 	args           []string
 	cacheDir       chezmoi.AbsPath
 	command        string
-	config         ConfigFile
+	config         map[string]any
 	configFile     chezmoi.AbsPath
 	executable     chezmoi.AbsPath
 	fqdnHostname   string
@@ -2084,7 +2084,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		args:         os.Args,
 		cacheDir:     c.CacheDirAbsPath,
 		command:      cmd.Name(),
-		config:       c.ConfigFile,
+		config:       c.ConfigFile.toMap(),
 		configFile:   c.configFileAbsPath,
 		executable:   chezmoi.NewAbsPath(executable),
 		fqdnHostname: fqdnHostname,
@@ -2531,6 +2531,14 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			recursive: true,
 		},
 	}
+}
+
+func (f *ConfigFile) toMap() map[string]any {
+	var result map[string]any
+	if err := mapstructure.Decode(f, &result); err != nil {
+		panic(err)
+	}
+	return result
 }
 
 func parseCommand(command string, args []string) (string, []string, error) {
