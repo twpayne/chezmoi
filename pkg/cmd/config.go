@@ -233,27 +233,27 @@ type Config struct {
 }
 
 type templateData struct {
-	Arch           string          `json:"arch"`
-	Args           []string        `json:"args"`
-	CacheDir       chezmoi.AbsPath `json:"cacheDir"`
-	Command        string          `json:"command"`
-	Config         ConfigFile      `json:"config"`
-	ConfigFile     chezmoi.AbsPath `json:"configFile"`
-	Executable     chezmoi.AbsPath `json:"executable"`
-	FQDNHostname   string          `json:"fqdnHostname"`
-	GID            string          `json:"gid"`
-	Group          string          `json:"group"`
-	HomeDir        chezmoi.AbsPath `json:"homeDir"`
-	Hostname       string          `json:"hostname"`
-	Kernel         map[string]any  `json:"kernel"`
-	OS             string          `json:"os"`
-	OSRelease      map[string]any  `json:"osRelease"`
-	SourceDir      chezmoi.AbsPath `json:"sourceDir"`
-	UID            string          `json:"uid"`
-	Username       string          `json:"username"`
-	Version        map[string]any  `json:"version"`
-	WindowsVersion map[string]any  `json:"windowsVersion"`
-	WorkingTree    chezmoi.AbsPath `json:"workingTree"`
+	arch           string
+	args           []string
+	cacheDir       chezmoi.AbsPath
+	command        string
+	config         ConfigFile
+	configFile     chezmoi.AbsPath
+	executable     chezmoi.AbsPath
+	fqdnHostname   string
+	gid            string
+	group          string
+	homeDir        chezmoi.AbsPath
+	hostname       string
+	kernel         map[string]any
+	os             string
+	osRelease      map[string]any
+	sourceDir      chezmoi.AbsPath
+	uid            string
+	username       string
+	version        map[string]any
+	windowsVersion map[string]any
+	workingTree    chezmoi.AbsPath
 }
 
 // A configOption sets and option on a Config.
@@ -1276,27 +1276,27 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 
 	return map[string]any{
 		"chezmoi": map[string]any{
-			"arch":           templateData.Arch,
-			"args":           templateData.Args,
-			"cacheDir":       templateData.CacheDir.String(),
-			"command":        templateData.Command,
-			"config":         templateData.Config,
-			"configFile":     templateData.ConfigFile.String(),
-			"executable":     templateData.Executable.String(),
-			"fqdnHostname":   templateData.FQDNHostname,
-			"gid":            templateData.GID,
-			"group":          templateData.Group,
-			"homeDir":        templateData.HomeDir.String(),
-			"hostname":       templateData.Hostname,
-			"kernel":         templateData.Kernel,
-			"os":             templateData.OS,
-			"osRelease":      templateData.OSRelease,
-			"sourceDir":      templateData.SourceDir.String(),
-			"uid":            templateData.UID,
-			"username":       templateData.Username,
-			"version":        templateData.Version,
-			"windowsVersion": templateData.WindowsVersion,
-			"workingTree":    templateData.WorkingTree.String(),
+			"arch":           templateData.arch,
+			"args":           templateData.args,
+			"cacheDir":       templateData.cacheDir.String(),
+			"command":        templateData.command,
+			"config":         templateData.config,
+			"configFile":     templateData.configFile.String(),
+			"executable":     templateData.executable.String(),
+			"fqdnHostname":   templateData.fqdnHostname,
+			"gid":            templateData.gid,
+			"group":          templateData.group,
+			"homeDir":        templateData.homeDir.String(),
+			"hostname":       templateData.hostname,
+			"kernel":         templateData.kernel,
+			"os":             templateData.os,
+			"osRelease":      templateData.osRelease,
+			"sourceDir":      templateData.sourceDir.String(),
+			"uid":            templateData.uid,
+			"username":       templateData.username,
+			"version":        templateData.version,
+			"windowsVersion": templateData.windowsVersion,
+			"workingTree":    templateData.workingTree.String(),
 		},
 	}
 }
@@ -1906,22 +1906,22 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	templateData := c.getTemplateData(cmd)
 	scriptEnv = append(scriptEnv, "CHEZMOI=1")
 	for key, value := range map[string]string{
-		"ARCH":          templateData.Arch,
-		"ARGS":          strings.Join(templateData.Args, " "),
-		"CACHE_DIR":     templateData.CacheDir.String(),
-		"COMMAND":       templateData.Command,
-		"CONFIG_FILE":   templateData.ConfigFile.String(),
-		"EXECUTABLE":    templateData.Executable.String(),
-		"FQDN_HOSTNAME": templateData.FQDNHostname,
-		"GID":           templateData.GID,
-		"GROUP":         templateData.Group,
-		"HOME_DIR":      templateData.HomeDir.String(),
-		"HOSTNAME":      templateData.Hostname,
-		"OS":            templateData.OS,
-		"SOURCE_DIR":    templateData.SourceDir.String(),
-		"UID":           templateData.UID,
-		"USERNAME":      templateData.Username,
-		"WORKING_TREE":  templateData.WorkingTree.String(),
+		"ARCH":          templateData.arch,
+		"ARGS":          strings.Join(templateData.args, " "),
+		"CACHE_DIR":     templateData.cacheDir.String(),
+		"COMMAND":       templateData.command,
+		"CONFIG_FILE":   templateData.configFile.String(),
+		"EXECUTABLE":    templateData.executable.String(),
+		"FQDN_HOSTNAME": templateData.fqdnHostname,
+		"GID":           templateData.gid,
+		"GROUP":         templateData.group,
+		"HOME_DIR":      templateData.homeDir.String(),
+		"HOSTNAME":      templateData.hostname,
+		"OS":            templateData.os,
+		"SOURCE_DIR":    templateData.sourceDir.String(),
+		"UID":           templateData.uid,
+		"USERNAME":      templateData.username,
+		"WORKING_TREE":  templateData.workingTree.String(),
 	} {
 		scriptEnv = append(scriptEnv, "CHEZMOI_"+key+"="+value)
 	}
@@ -1929,10 +1929,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		scriptEnv = append(scriptEnv, "CHEZMOI_VERBOSE=1")
 	}
 	for groupKey, group := range map[string]map[string]any{
-		"KERNEL":          templateData.Kernel,
-		"OS_RELEASE":      templateData.OSRelease,
-		"VERSION":         templateData.Version,
-		"WINDOWS_VERSION": templateData.WindowsVersion,
+		"KERNEL":          templateData.kernel,
+		"OS_RELEASE":      templateData.osRelease,
+		"VERSION":         templateData.version,
+		"WINDOWS_VERSION": templateData.windowsVersion,
 	} {
 		for key, value := range group {
 			upperSnakeCaseKey := camelCaseToUpperSnakeCase(key)
@@ -2080,32 +2080,32 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
 
 	return &templateData{
-		Arch:         runtime.GOARCH,
-		Args:         os.Args,
-		CacheDir:     c.CacheDirAbsPath,
-		Command:      cmd.Name(),
-		Config:       c.ConfigFile,
-		ConfigFile:   c.configFileAbsPath,
-		Executable:   chezmoi.NewAbsPath(executable),
-		FQDNHostname: fqdnHostname,
-		GID:          gid,
-		Group:        group,
-		HomeDir:      c.homeDirAbsPath,
-		Hostname:     hostname,
-		Kernel:       kernel,
-		OS:           runtime.GOOS,
-		OSRelease:    osRelease,
-		SourceDir:    sourceDirAbsPath,
-		UID:          uid,
-		Username:     username,
-		Version: map[string]any{
+		arch:         runtime.GOARCH,
+		args:         os.Args,
+		cacheDir:     c.CacheDirAbsPath,
+		command:      cmd.Name(),
+		config:       c.ConfigFile,
+		configFile:   c.configFileAbsPath,
+		executable:   chezmoi.NewAbsPath(executable),
+		fqdnHostname: fqdnHostname,
+		gid:          gid,
+		group:        group,
+		homeDir:      c.homeDirAbsPath,
+		hostname:     hostname,
+		kernel:       kernel,
+		os:           runtime.GOOS,
+		osRelease:    osRelease,
+		sourceDir:    sourceDirAbsPath,
+		uid:          uid,
+		username:     username,
+		version: map[string]any{
 			"builtBy": c.versionInfo.BuiltBy,
 			"commit":  c.versionInfo.Commit,
 			"date":    c.versionInfo.Date,
 			"version": c.versionInfo.Version,
 		},
-		WindowsVersion: windowsVersion,
-		WorkingTree:    c.WorkingTreeAbsPath,
+		windowsVersion: windowsVersion,
+		workingTree:    c.WorkingTreeAbsPath,
 	}
 }
 
