@@ -46,8 +46,13 @@ func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, path any, prom
 	}
 	if !c.init.forcePromptOnce {
 		if value, ok := nestedMap[lastKey]; ok {
-			if boolValue, ok := value.(bool); ok {
-				return boolValue
+			switch value := value.(type) {
+			case bool:
+				return value
+			case string:
+				if boolValue, err := chezmoi.ParseBool(value); err == nil {
+					return boolValue
+				}
 			}
 		}
 	}
