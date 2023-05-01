@@ -1,0 +1,7 @@
+# test that chezmoi remove does not delete the source directory when removing a file in an exact directory
+mkdir $HOME/.dir
+mkfile $HOME/.dir/test.file
+exec chezmoi remove --force $HOME${/}.dir/test.file
+exists $CHEZMOISOURCEDIR
+
+-- home/user/.local/share/chezmoi/exact_dot_dir/.keep --

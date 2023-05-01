@@ -4,7 +4,7 @@ exists $HOME/.dir/file
 exists $HOME/.file1
 exists $HOME/.file2
 
-# test that chezmoi apply file removes only file
+# test that chezmoi apply file1 removes only file1
 exec chezmoi apply --force $HOME${/}.file1
 exists $HOME/.dir/file
 ! exists $HOME/.file1
