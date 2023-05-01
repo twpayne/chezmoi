@@ -6,7 +6,7 @@ require (
 	filippo.io/age v1.1.1
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/Shopify/ejson v1.3.3
-	github.com/aws/aws-sdk-go-v2 v1.17.8
+	github.com/aws/aws-sdk-go-v2 v1.18.0
 	github.com/aws/aws-sdk-go-v2/config v1.18.21
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.19.4
 	github.com/bmatcuk/doublestar/v4 v4.6.0
