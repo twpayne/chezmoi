@@ -1,0 +1,11 @@
+[windows] skip 'UNIX only'
+
+chmod 755 $CHEZMOISOURCEDIR/external_dot_dir/executable
+
+# test that external_ directories respect the executable bit
+exec chezmoi apply
+[umask:002] cmpmod 775 $HOME/.dir/executable
+[umask:022] cmpmod 755 $HOME/.dir/executable
+
+-- home/user/.local/share/chezmoi/external_dot_dir/executable --
+# contents of .dir/executable

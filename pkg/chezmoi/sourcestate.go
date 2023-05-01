@@ -2157,6 +2157,7 @@ func (s *SourceState) readExternalDir(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
 				Empty:      true,
+				Executable: isExecutable(fileInfo),
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
