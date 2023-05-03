@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"filippo.io/age"
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
@@ -16,7 +16,7 @@ func TestAgeEncryption(t *testing.T) {
 
 	identityFile := filepath.Join(t.TempDir(), "chezmoi-test-age-key.txt")
 	recipient, err := chezmoitest.AgeGenerateKey(identityFile)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	testEncryption(t, &AgeEncryption{
 		Command:   command,
@@ -31,10 +31,10 @@ func TestAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
 	tempDir := t.TempDir()
 	identityFile1 := filepath.Join(tempDir, "chezmoi-test-age-key1.txt")
 	recipient1, err := chezmoitest.AgeGenerateKey(identityFile1)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	identityFile2 := filepath.Join(tempDir, "chezmoi-test-age-key2.txt")
 	recipient2, err := chezmoitest.AgeGenerateKey(identityFile2)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	testEncryption(t, &AgeEncryption{
 		Command: command,
@@ -55,9 +55,9 @@ func TestAgeRecipientsFile(t *testing.T) {
 	tempDir := t.TempDir()
 	identityFile := filepath.Join(tempDir, "chezmoi-test-age-key.txt")
 	recipient, err := chezmoitest.AgeGenerateKey(identityFile)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	recipientsFile := filepath.Join(t.TempDir(), "chezmoi-test-age-recipients.txt")
-	require.NoError(t, os.WriteFile(recipientsFile, []byte(recipient), 0o666))
+	assert.NoError(t, os.WriteFile(recipientsFile, []byte(recipient), 0o666))
 
 	testEncryption(t, &AgeEncryption{
 		Command:        command,
@@ -104,7 +104,7 @@ func TestBuiltinAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
 func TestBuiltinAgeRecipientsFile(t *testing.T) {
 	recipient, identityAbsPath := builtinAgeGenerateKey(t)
 	recipientsFile := filepath.Join(t.TempDir(), "chezmoi-builtin-age-recipients.txt")
-	require.NoError(t, os.WriteFile(recipientsFile, []byte(recipient.String()), 0o666))
+	assert.NoError(t, os.WriteFile(recipientsFile, []byte(recipient.String()), 0o666))
 
 	testEncryption(t, &AgeEncryption{
 		UseBuiltin:     true,
@@ -124,8 +124,8 @@ func TestBuiltinAgeRecipientsFile(t *testing.T) {
 func builtinAgeGenerateKey(t *testing.T) (*age.X25519Recipient, AbsPath) {
 	t.Helper()
 	identity, err := age.GenerateX25519Identity()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	identityFile := filepath.Join(t.TempDir(), "chezmoi-test-builtin-age-key.txt")
-	require.NoError(t, os.WriteFile(identityFile, []byte(identity.String()), 0o600))
+	assert.NoError(t, os.WriteFile(identityFile, []byte(identity.String()), 0o600))
 	return identity.Recipient(), NewAbsPath(identityFile)
 }

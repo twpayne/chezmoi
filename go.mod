@@ -32,7 +32,6 @@ require (
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.2
 	github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a
 	github.com/twpayne/go-pinentry v0.2.0
 	github.com/twpayne/go-vfs/v4 v4.2.0
@@ -82,7 +81,6 @@ require (
 	github.com/cloudflare/circl v1.3.2 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.9.0 // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
@@ -116,11 +114,11 @@ require (
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/skeema/knownhosts v1.1.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
+	github.com/stretchr/testify v1.8.2 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/yuin/goldmark v1.5.4 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect

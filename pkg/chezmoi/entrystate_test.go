@@ -8,7 +8,6 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/muesli/combinator"
-	"github.com/stretchr/testify/require"
 )
 
 func TestEntryStateEquivalent(t *testing.T) {
@@ -90,7 +89,7 @@ func TestEntryStateEquivalent(t *testing.T) {
 		EntryState1Key string
 		EntryState2Key string
 	}
-	require.NoError(t, combinator.Generate(&testCases, testData))
+	assert.NoError(t, combinator.Generate(&testCases, testData))
 
 	for _, tc := range testCases {
 		name := fmt.Sprintf("%s_%s", tc.EntryState1Key, tc.EntryState2Key)

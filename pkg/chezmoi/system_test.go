@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
@@ -40,7 +39,7 @@ func TestConcurrentWalkSourceDir(t *testing.T) {
 			mutex.Unlock()
 			return nil
 		}
-		require.NoError(t, concurrentWalkSourceDir(ctx, system, sourceDirAbsPath, walkFunc))
+		assert.NoError(t, concurrentWalkSourceDir(ctx, system, sourceDirAbsPath, walkFunc))
 	})
 	sort.Sort(actualSourceAbsPaths)
 	assert.Equal(t, expectedSourceAbsPaths, actualSourceAbsPaths)
@@ -79,7 +78,7 @@ func TestWalkSourceDir(t *testing.T) {
 	var actualSourceDirAbsPaths []AbsPath
 	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
 		system := NewRealSystem(fileSystem)
-		require.NoError(t, WalkSourceDir(system, sourceDirAbsPath, func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		assert.NoError(t, WalkSourceDir(system, sourceDirAbsPath, func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}

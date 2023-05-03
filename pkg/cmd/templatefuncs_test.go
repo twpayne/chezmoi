@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoiassert"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
@@ -768,7 +767,7 @@ func TestNeedsQuote(t *testing.T) {
 
 func TestQuoteListTemplateFunc(t *testing.T) {
 	c, err := newConfig()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	actual := c.quoteListTemplateFunc([]any{
 		[]byte{65},
 		"b",

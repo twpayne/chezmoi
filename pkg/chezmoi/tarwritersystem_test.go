@@ -10,7 +10,6 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/coreos/go-semver/semver"
-	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
@@ -48,16 +47,16 @@ func TestTarWriterSystem(t *testing.T) {
 				Patch: 3,
 			}),
 		)
-		require.NoError(t, s.Read(ctx, nil))
+		assert.NoError(t, s.Read(ctx, nil))
 		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}
 		tarWriterSystem := NewTarWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
+		assert.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
 			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
-		require.NoError(t, tarWriterSystem.Close())
+		assert.NoError(t, tarWriterSystem.Close())
 
 		r := tar.NewReader(b)
 		for _, tc := range []struct {
@@ -92,7 +91,7 @@ func TestTarWriterSystem(t *testing.T) {
 		} {
 			t.Run(tc.expectedName, func(t *testing.T) {
 				header, err := r.Next()
-				require.NoError(t, err)
+				assert.NoError(t, err)
 				assert.Equal(t, tc.expectedTypeflag, header.Typeflag)
 				assert.Equal(t, tc.expectedName, header.Name)
 				assert.Equal(t, tc.expectedMode, header.Mode)
@@ -100,7 +99,7 @@ func TestTarWriterSystem(t *testing.T) {
 				assert.Equal(t, int64(len(tc.expectedContents)), header.Size)
 				if tc.expectedContents != nil {
 					actualContents, err := io.ReadAll(r)
-					require.NoError(t, err)
+					assert.NoError(t, err)
 					assert.Equal(t, tc.expectedContents, actualContents)
 				}
 			})

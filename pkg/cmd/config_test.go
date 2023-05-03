@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 	xdg "github.com/twpayne/go-xdg/v6"
 
@@ -136,7 +135,7 @@ func TestParseConfig(t *testing.T) {
 				"/home/user/.config/chezmoi/" + tc.filename: tc.contents,
 			}, func(fileSystem vfs.FS) {
 				c := newTestConfig(t, fileSystem)
-				require.NoError(t, c.execute([]string{"init"}))
+				assert.NoError(t, c.execute([]string{"init"}))
 				assert.Equal(t, tc.expectedColor, c.Color.Value(c.colorAutoFunc))
 			})
 		})
@@ -172,7 +171,7 @@ func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Co
 			}),
 		}, options...)...,
 	)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	return config
 }
 

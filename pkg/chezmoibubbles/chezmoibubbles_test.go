@@ -3,8 +3,8 @@ package chezmoibubbles
 import (
 	"testing"
 
+	"github.com/alecthomas/assert/v2"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/stretchr/testify/require"
 )
 
 var keyTypes = map[tea.KeyType]struct{}{
@@ -40,7 +40,7 @@ func testRunModelWithInput[M tea.Model](t *testing.T, model M, input string) M {
 		m, _ := model.Update(msg)
 		var ok bool
 		model, ok = m.(M)
-		require.True(t, ok)
+		assert.True(t, ok)
 	}
 	return model
 }

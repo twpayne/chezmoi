@@ -3,10 +3,10 @@ package commands
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestFS(t *testing.T) {
 	_, err := FS.ReadFile("add.md")
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

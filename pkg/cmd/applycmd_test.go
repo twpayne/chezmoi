@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
@@ -203,9 +203,9 @@ func TestApplyCmd(t *testing.T) {
 				},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
-					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
+					assert.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				require.NoError(t, newTestConfig(t, fileSystem).execute(append([]string{"apply"}, tc.args...)))
+				assert.NoError(t, newTestConfig(t, fileSystem).execute(append([]string{"apply"}, tc.args...)))
 				vfst.RunTests(t, fileSystem, "", tc.tests)
 			})
 		})

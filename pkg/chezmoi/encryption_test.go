@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 type xorEncryption struct {
@@ -55,7 +54,7 @@ func lookPathOrSkip(t *testing.T, file string) string {
 	if errors.Is(err, exec.ErrNotFound) {
 		t.Skipf("%s not found in $PATH", file)
 	}
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	return command
 }
 
@@ -65,17 +64,17 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		expectedPlaintext := []byte("plaintext\n")
 
 		actualCiphertext, err := encryption.Encrypt(expectedPlaintext)
-		require.NoError(t, err)
-		require.NotEmpty(t, actualCiphertext)
+		assert.NoError(t, err)
+		assert.NotZero(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
 
 		plaintextAbsPath := NewAbsPath(t.TempDir()).JoinString("plaintext")
 
-		require.NoError(t, encryption.DecryptToFile(plaintextAbsPath, actualCiphertext))
+		assert.NoError(t, encryption.DecryptToFile(plaintextAbsPath, actualCiphertext))
 
 		actualPlaintext, err := os.ReadFile(plaintextAbsPath.String())
-		require.NoError(t, err)
-		require.NotEmpty(t, actualPlaintext)
+		assert.NoError(t, err)
+		assert.NotZero(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
 	})
 }
@@ -86,13 +85,13 @@ func testEncryptionEncryptDecrypt(t *testing.T, encryption Encryption) {
 		expectedPlaintext := []byte("plaintext\n")
 
 		actualCiphertext, err := encryption.Encrypt(expectedPlaintext)
-		require.NoError(t, err)
-		require.NotEmpty(t, actualCiphertext)
+		assert.NoError(t, err)
+		assert.NotZero(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
 
 		actualPlaintext, err := encryption.Decrypt(actualCiphertext)
-		require.NoError(t, err)
-		require.NotEmpty(t, actualPlaintext)
+		assert.NoError(t, err)
+		assert.NotZero(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
 	})
 }
@@ -103,16 +102,16 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 		expectedPlaintext := []byte("plaintext\n")
 
 		plaintextAbsPath := NewAbsPath(t.TempDir()).JoinString("plaintext")
-		require.NoError(t, os.WriteFile(plaintextAbsPath.String(), expectedPlaintext, 0o666))
+		assert.NoError(t, os.WriteFile(plaintextAbsPath.String(), expectedPlaintext, 0o666))
 
 		actualCiphertext, err := encryption.EncryptFile(plaintextAbsPath)
-		require.NoError(t, err)
-		require.NotEmpty(t, actualCiphertext)
+		assert.NoError(t, err)
+		assert.NotZero(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
 
 		actualPlaintext, err := encryption.Decrypt(actualCiphertext)
-		require.NoError(t, err)
-		require.NotEmpty(t, actualPlaintext)
+		assert.NoError(t, err)
+		assert.NotZero(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
 	})
 }

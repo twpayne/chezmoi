@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
@@ -125,10 +124,10 @@ func TestDiffCmd(t *testing.T) {
 				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: fs.ModePerm &^ chezmoitest.Umask},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
-					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
+					assert.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
 				stdout := strings.Builder{}
-				require.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"diff"}, tc.args...)))
+				assert.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"diff"}, tc.args...)))
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 			})
 		})

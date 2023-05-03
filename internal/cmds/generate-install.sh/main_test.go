@@ -3,10 +3,10 @@ package main
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestGoToolDistList(t *testing.T) {
 	_, err := goToolDistList()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 }

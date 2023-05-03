@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
@@ -67,7 +66,7 @@ func TestTemplateParseAndExecute(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			tmpl, err := ParseTemplate(tc.name, []byte(tc.dataStr), nil, TemplateOptions{})
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			actual, err := tmpl.Execute(nil)
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expectedStr, string(actual))

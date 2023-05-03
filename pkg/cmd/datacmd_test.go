@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -50,7 +49,7 @@ func TestDataCmd(t *testing.T) {
 				config := newTestConfig(t, fileSystem)
 				builder := strings.Builder{}
 				config.stdout = &builder
-				require.NoError(t, config.execute(args))
+				assert.NoError(t, config.execute(args))
 
 				var data struct {
 					Chezmoi struct {
@@ -60,7 +59,7 @@ func TestDataCmd(t *testing.T) {
 				}
 				assert.NoError(t, tc.format.Unmarshal([]byte(builder.String()), &data))
 				normalizedSourceDir, err := chezmoi.NormalizePath("/tmp/source")
-				require.NoError(t, err)
+				assert.NoError(t, err)
 				assert.Equal(t, normalizedSourceDir.String(), data.Chezmoi.SourceDir)
 				assert.True(t, data.Test)
 			})

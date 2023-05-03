@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
@@ -83,7 +83,7 @@ func SkipUnlessGOOS(t *testing.T, name string) {
 func WithTestFS(t *testing.T, root any, f func(vfs.FS)) {
 	t.Helper()
 	fileSystem, cleanup, err := vfst.NewTestFS(root, vfst.BuilderUmask(Umask))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	t.Cleanup(cleanup)
 	f(fileSystem)
 }

@@ -1,11 +1,11 @@
 package cmd
 
 import (
+	"errors"
 	"runtime"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -117,7 +117,7 @@ func TestIssue2137(t *testing.T) {
 	}, func(fileSystem vfs.FS) {
 		err := newTestConfig(t, fileSystem).execute([]string{"init"})
 		tooOldError := &chezmoi.TooOldError{}
-		require.ErrorAs(t, err, &tooOldError)
+		assert.True(t, errors.As(err, &tooOldError))
 	})
 }
 
@@ -133,9 +133,9 @@ func TestIssue2283(t *testing.T) {
 			},
 		},
 	}, func(fileSystem vfs.FS) {
-		require.NoError(t, newTestConfig(t, fileSystem).execute([]string{"init"}))
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"init"}))
 		data, err := fileSystem.ReadFile("/home/user/.config/chezmoi/chezmoi.yaml")
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		assert.Equal(t, "sourceDir: /home/user/.local/share/chezmoi/home\n", string(data))
 	})
 }

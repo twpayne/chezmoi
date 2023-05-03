@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 func TestAbsPathTrimDirPrefix(t *testing.T) {
@@ -42,7 +41,7 @@ func TestAbsPathTrimDirPrefix(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			actual, err := tc.absPath.TrimDirPrefix(tc.dirPrefixAbsPath)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, tc.expected, actual)
 		})
 	}
