@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestSourceStateEntryTreeNodeEmpty(t *testing.T) {
@@ -20,10 +20,10 @@ func TestSourceStateEntryTreeNodeSingle(t *testing.T) {
 	n := newSourceStateTreeNode()
 	sourceStateFile := &SourceStateFile{}
 	n.Set(NewRelPath("file"), sourceStateFile)
-	assert.Equal(t, sourceStateFile, n.Get(NewRelPath("file")))
+	assert.Equal(t, sourceStateFile, n.Get(NewRelPath("file")).(*SourceStateFile))
 	assert.NoError(t, n.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 		assert.Equal(t, NewRelPath("file"), targetRelPath)
-		assert.Equal(t, sourceStateFile, sourceStateEntry)
+		assert.Equal(t, sourceStateFile, sourceStateEntry.(*SourceStateFile))
 		return nil
 	}))
 }

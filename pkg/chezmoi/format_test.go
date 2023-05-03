@@ -3,16 +3,16 @@ package chezmoi
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 	"github.com/stretchr/testify/require"
 )
 
 func TestFormats(t *testing.T) {
-	assert.Contains(t, FormatsByName, "json")
-	assert.Contains(t, FormatsByName, "jsonc")
-	assert.Contains(t, FormatsByName, "toml")
-	assert.Contains(t, FormatsByName, "yaml")
-	assert.NotContains(t, FormatsByName, "yml")
+	assert.NotZero(t, FormatsByName["json"])
+	assert.NotZero(t, FormatsByName["jsonc"])
+	assert.NotZero(t, FormatsByName["toml"])
+	assert.NotZero(t, FormatsByName["yaml"])
+	assert.Zero(t, FormatsByName["yml"])
 }
 
 func TestFormatRoundTrip(t *testing.T) {

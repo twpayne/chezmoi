@@ -5,9 +5,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 	"github.com/stretchr/testify/require"
 
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoiassert"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
@@ -151,7 +152,7 @@ func TestDeleteValueAtPathTemplateFunc(t *testing.T) {
 				actual := c.deleteValueAtPathTemplateFunc(tc.path, tc.dict)
 				assert.Equal(t, tc.expected, actual)
 			} else {
-				assert.PanicsWithError(t, tc.expectedErr, func() {
+				chezmoiassert.PanicsWithErrorString(t, tc.expectedErr, func() {
 					c.deleteValueAtPathTemplateFunc(tc.path, tc.dict)
 				})
 			}
@@ -351,7 +352,7 @@ func TestSetValueAtPathTemplateFunc(t *testing.T) {
 				actual := c.setValueAtPathTemplateFunc(tc.path, tc.value, tc.dict)
 				assert.Equal(t, tc.expected, actual)
 			} else {
-				assert.PanicsWithError(t, tc.expectedErr, func() {
+				chezmoiassert.PanicsWithErrorString(t, tc.expectedErr, func() {
 					c.setValueAtPathTemplateFunc(tc.path, tc.value, tc.dict)
 				})
 			}

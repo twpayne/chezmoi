@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
@@ -73,7 +73,7 @@ func TestBoltPersistentState(t *testing.T) {
 			string(bucket): {
 				string(key): string(value),
 			},
-		}, data)
+		}, data.(map[string]map[string]string))
 
 		require.NoError(t, b1.Close())
 
@@ -121,7 +121,7 @@ func TestBoltPersistentStateMock(t *testing.T) {
 		require.NoError(t, m.Delete(bucket, key))
 		actualValue, err = m.Get(bucket, key)
 		require.NoError(t, err)
-		assert.Nil(t, actualValue)
+		assert.Zero(t, actualValue)
 		actualValue, err = b.Get(bucket, key)
 		require.NoError(t, err)
 		assert.Equal(t, value1, actualValue)

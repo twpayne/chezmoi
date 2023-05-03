@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestRecursiveMerge(t *testing.T) {

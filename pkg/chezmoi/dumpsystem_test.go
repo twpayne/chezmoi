@@ -5,8 +5,8 @@ import (
 	"io/fs"
 	"testing"
 
+	"github.com/alecthomas/assert/v2"
 	"github.com/coreos/go-semver/semver"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 
@@ -78,6 +78,6 @@ func TestDumpSystem(t *testing.T) {
 			},
 		}
 		actualData := dumpSystem.Data()
-		assert.Equal(t, expectedData, actualData)
+		assert.Equal(t, expectedData, actualData.(map[string]any))
 	})
 }
