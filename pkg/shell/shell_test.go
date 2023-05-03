@@ -3,11 +3,11 @@ package shell
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestCurrentUserShell(t *testing.T) {
 	shell, ok := CurrentUserShell()
 	assert.True(t, ok)
-	assert.NotEmpty(t, shell)
+	assert.NotEqual(t, "", shell)
 }

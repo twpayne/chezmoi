@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 	xdg "github.com/twpayne/go-xdg/v6"

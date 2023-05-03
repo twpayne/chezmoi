@@ -164,6 +164,7 @@ issues:
     - lll
     path: ^internal/cmds/
   - linters:
+    - forcetypeassert
     - gosec
     - lll
     path: _test\.go$

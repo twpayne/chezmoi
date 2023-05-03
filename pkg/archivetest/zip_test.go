@@ -5,8 +5,8 @@ import (
 	"io/fs"
 	"testing"
 
+	"github.com/alecthomas/assert/v2"
 	"github.com/klauspost/compress/zip"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -75,5 +75,5 @@ func TestNewZip(t *testing.T) {
 	assert.Equal(t, fs.ModeSymlink, zipFile.FileInfo().Mode().Type())
 	assert.Equal(t, uint64(len("file")), zipFile.UncompressedSize64)
 
-	assert.Len(t, zipReader.File, fileIndex)
+	assert.Equal(t, fileIndex, len(zipReader.File))
 }

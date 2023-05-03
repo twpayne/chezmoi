@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,7 +24,7 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 
 	actualValue, err := s1.Get(bucket1, key)
 	require.NoError(t, err)
-	assert.Nil(t, actualValue)
+	assert.Zero(t, actualValue)
 
 	require.NoError(t, s1.Set(bucket1, key, value))
 
@@ -57,7 +57,7 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 	require.NoError(t, s1.Delete(bucket1, key))
 	actualValue, err = s1.Get(bucket1, key)
 	require.NoError(t, err)
-	assert.Nil(t, actualValue)
+	assert.Zero(t, actualValue)
 
 	require.NoError(t, s1.Set(bucket2, key, value))
 	actualValue, err = s1.Get(bucket2, key)
@@ -66,5 +66,5 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 	require.NoError(t, s1.DeleteBucket(bucket2))
 	actualValue, err = s1.Get(bucket2, key)
 	require.NoError(t, err)
-	assert.Nil(t, actualValue)
+	assert.Zero(t, actualValue)
 }

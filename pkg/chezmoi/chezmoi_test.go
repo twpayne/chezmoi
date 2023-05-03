@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/alecthomas/assert/v2"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
-	"github.com/stretchr/testify/assert"
 	"github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"

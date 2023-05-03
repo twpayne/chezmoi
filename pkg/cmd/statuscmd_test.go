@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
@@ -65,7 +65,7 @@ func TestStatusCmd(t *testing.T) {
 
 				stdout.Reset()
 				require.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"status"}, tc.args...)))
-				assert.Empty(t, stdout.String())
+				assert.Zero(t, stdout.String())
 			})
 		})
 	}

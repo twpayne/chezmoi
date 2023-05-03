@@ -3,7 +3,7 @@ package chezmoibubbles
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/alecthomas/assert/v2"
 )
 
 func TestIntInputModel(t *testing.T) {

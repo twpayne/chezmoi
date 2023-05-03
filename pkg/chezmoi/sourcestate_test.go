@@ -14,8 +14,8 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/alecthomas/assert/v2"
 	"github.com/coreos/go-semver/semver"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
