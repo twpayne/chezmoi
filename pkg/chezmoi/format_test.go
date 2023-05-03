@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 func TestFormats(t *testing.T) {
@@ -41,9 +40,9 @@ func TestFormatRoundTrip(t *testing.T) {
 				String: "string",
 			}
 			data, err := format.Marshal(v)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			var actualValue value
-			require.NoError(t, format.Unmarshal(data, &actualValue))
+			assert.NoError(t, format.Unmarshal(data, &actualValue))
 			assert.Equal(t, v, actualValue)
 		})
 	}

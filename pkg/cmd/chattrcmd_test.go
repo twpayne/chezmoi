@@ -6,7 +6,6 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/require"
 )
 
 func TestChattrCmdValidArgs(t *testing.T) {
@@ -227,9 +226,9 @@ func TestParseAttrModifier(t *testing.T) {
 		t.Run(tc.s, func(t *testing.T) {
 			actual, err := parseModifier(tc.s)
 			if tc.expectedErr {
-				require.Error(t, err)
+				assert.Error(t, err)
 			} else {
-				require.NoError(t, err)
+				assert.NoError(t, err)
 				assert.Equal(t, tc.expected, actual)
 			}
 		})

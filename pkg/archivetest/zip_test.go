@@ -7,7 +7,6 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/klauspost/compress/zip"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewZip(t *testing.T) {
@@ -29,14 +28,14 @@ func TestNewZip(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	zipReader, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	fileIndex := 0
 	nextFile := func() *zip.File {
-		require.LessOrEqual(t, fileIndex, len(zipReader.File))
+		assert.True(t, fileIndex <= len(zipReader.File))
 		zipFile := zipReader.File[fileIndex]
 		fileIndex++
 		return zipFile

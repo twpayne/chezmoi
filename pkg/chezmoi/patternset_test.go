@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
@@ -131,7 +130,7 @@ func TestPatternSetGlob(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				actualMatches, err := tc.ps.glob(fileSystem, "/")
-				require.NoError(t, err)
+				assert.NoError(t, err)
 				assert.Equal(t, tc.expectedMatches, actualMatches)
 			})
 		})
@@ -142,7 +141,7 @@ func mustNewPatternSet(t *testing.T, patterns map[string]patternSetIncludeType) 
 	t.Helper()
 	ps := newPatternSet()
 	for pattern, include := range patterns {
-		require.NoError(t, ps.add(pattern, include))
+		assert.NoError(t, ps.add(pattern, include))
 	}
 	return ps
 }

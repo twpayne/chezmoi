@@ -5,18 +5,17 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
 func TestNewAbsPathFromExtPath(t *testing.T) {
 	wd, err := os.Getwd()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	wdAbsPath := NewAbsPath(wd)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	homeDirAbsPath, err := NormalizePath(chezmoitest.HomeDir())
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	for _, tc := range []struct {
 		name     string
@@ -52,11 +51,11 @@ func TestNewAbsPathFromExtPath(t *testing.T) {
 			chezmoitest.SkipUnlessGOOS(t, tc.name)
 
 			actual, err := NewAbsPathFromExtPath(tc.extPath, homeDirAbsPath)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			normalizedActual, err := NormalizePath(actual.String())
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			expected, err := NormalizePath(tc.expected.String())
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, expected, normalizedActual)
 		})
 	}

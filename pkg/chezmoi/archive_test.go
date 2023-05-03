@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 
 	"github.com/twpayne/chezmoi/v2/pkg/archivetest"
 )
@@ -85,7 +84,7 @@ func TestWalkArchive(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			data, err := tc.dataFunc(tc.root)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			expectedNames := []string{
 				"dir1",
@@ -113,7 +112,7 @@ func TestWalkArchive(t *testing.T) {
 					return nil
 				}
 			}
-			require.NoError(t, WalkArchive(data, tc.archiveFormat, walkArchiveFunc))
+			assert.NoError(t, WalkArchive(data, tc.archiveFormat, walkArchiveFunc))
 			assert.Equal(t, expectedNames, actualNames)
 		})
 	}

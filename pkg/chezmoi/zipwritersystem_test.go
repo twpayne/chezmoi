@@ -11,7 +11,6 @@ import (
 	"github.com/alecthomas/assert/v2"
 	"github.com/coreos/go-semver/semver"
 	"github.com/klauspost/compress/zip"
-	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
@@ -49,19 +48,19 @@ func TestZIPWriterSystem(t *testing.T) {
 				Patch: 3,
 			}),
 		)
-		require.NoError(t, s.Read(ctx, nil))
+		assert.NoError(t, s.Read(ctx, nil))
 		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}
 		zipWriterSystem := NewZIPWriterSystem(b, time.Now().UTC())
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
+		assert.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
 			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
-		require.NoError(t, zipWriterSystem.Close())
+		assert.NoError(t, zipWriterSystem.Close())
 
 		r, err := zip.NewReader(bytes.NewReader(b.Bytes()), int64(b.Len()))
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		expectedFiles := []struct {
 			name     string
 			method   uint16
@@ -90,7 +89,7 @@ func TestZIPWriterSystem(t *testing.T) {
 				contents: []byte(".dir/subdir/file"),
 			},
 		}
-		require.Len(t, r.File, len(expectedFiles))
+		assert.Equal(t, len(expectedFiles), len(r.File))
 		for i, expectedFile := range expectedFiles {
 			t.Run(expectedFile.name, func(t *testing.T) {
 				actualFile := r.File[i]
@@ -99,9 +98,9 @@ func TestZIPWriterSystem(t *testing.T) {
 				assert.Equal(t, expectedFile.mode, actualFile.Mode())
 				if expectedFile.contents != nil {
 					rc, err := actualFile.Open()
-					require.NoError(t, err)
+					assert.NoError(t, err)
 					actualContents, err := io.ReadAll(rc)
-					require.NoError(t, err)
+					assert.NoError(t, err)
 					assert.Equal(t, expectedFile.contents, actualContents)
 				}
 			})

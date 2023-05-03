@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
@@ -107,7 +106,7 @@ func TestManagedCmd(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				stdout := &bytes.Buffer{}
-				require.NoError(t, newTestConfig(t, fileSystem, withStdout(stdout)).execute(append([]string{"managed"}, tc.args...)))
+				assert.NoError(t, newTestConfig(t, fileSystem, withStdout(stdout)).execute(append([]string{"managed"}, tc.args...)))
 				assert.Equal(t, tc.expectedOutput, stdout.String())
 			})
 		})

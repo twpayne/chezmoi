@@ -6,7 +6,6 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/muesli/combinator"
-	"github.com/stretchr/testify/require"
 )
 
 func TestDirAttr(t *testing.T) {
@@ -38,7 +37,7 @@ func TestDirAttr(t *testing.T) {
 		Remove:   []bool{false, true},
 	}
 	var dirAttrs []DirAttr
-	require.NoError(t, combinator.Generate(&dirAttrs, testData))
+	assert.NoError(t, combinator.Generate(&dirAttrs, testData))
 	for _, dirAttr := range dirAttrs {
 		actualSourceName := dirAttr.SourceName()
 		actualDirAttr := parseDirAttr(actualSourceName)
@@ -95,7 +94,7 @@ func TestFileAttr(t *testing.T) {
 		"symlink_name",
 		"template.tmpl",
 	}
-	require.NoError(t, combinator.Generate(&fileAttrs, struct {
+	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Encrypted  []bool
@@ -112,7 +111,7 @@ func TestFileAttr(t *testing.T) {
 		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
-	require.NoError(t, combinator.Generate(&fileAttrs, struct {
+	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Empty      []bool
@@ -131,7 +130,7 @@ func TestFileAttr(t *testing.T) {
 		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
-	require.NoError(t, combinator.Generate(&fileAttrs, struct {
+	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Encrypted  []bool
@@ -148,14 +147,14 @@ func TestFileAttr(t *testing.T) {
 		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
-	require.NoError(t, combinator.Generate(&fileAttrs, struct {
+	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 	}{
 		Type:       SourceFileTypeRemove,
 		TargetName: targetNames,
 	}))
-	require.NoError(t, combinator.Generate(&fileAttrs, struct {
+	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		Condition  []ScriptCondition
 		TargetName []string
@@ -166,7 +165,7 @@ func TestFileAttr(t *testing.T) {
 		TargetName: targetNames,
 		Order:      []ScriptOrder{ScriptOrderBefore, ScriptOrderDuring, ScriptOrderAfter},
 	}))
-	require.NoError(t, combinator.Generate(&fileAttrs, struct {
+	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 	}{

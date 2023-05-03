@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 
 	"github.com/twpayne/chezmoi/v2/pkg/archivetest"
 )
@@ -20,7 +19,7 @@ func TestArchiveReaderSystemTar(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", data, ArchiveFormatTar, ArchiveReaderSystemOptions{
 		RootAbsPath:     NewAbsPath("/home/user"),

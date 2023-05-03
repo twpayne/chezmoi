@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 func testPersistentState(t *testing.T, constructor func() PersistentState) {
@@ -20,19 +19,19 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 
 	s1 := constructor()
 
-	require.NoError(t, s1.Delete(bucket1, value))
+	assert.NoError(t, s1.Delete(bucket1, value))
 
 	actualValue, err := s1.Get(bucket1, key)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Zero(t, actualValue)
 
-	require.NoError(t, s1.Set(bucket1, key, value))
+	assert.NoError(t, s1.Set(bucket1, key, value))
 
 	actualValue, err = s1.Get(bucket1, key)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, value, actualValue)
 
-	require.NoError(t, s1.ForEach(bucket1, func(k, v []byte) error {
+	assert.NoError(t, s1.ForEach(bucket1, func(k, v []byte) error {
 		assert.Equal(t, key, k)
 		assert.Equal(t, value, v)
 		return nil
@@ -43,28 +42,28 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 	}))
 
 	s2 := constructor()
-	require.NoError(t, s1.CopyTo(s2))
+	assert.NoError(t, s1.CopyTo(s2))
 	actualValue, err = s2.Get(bucket1, key)
 	assert.NoError(t, err)
 	assert.Equal(t, value, actualValue)
 
-	require.NoError(t, s2.Close())
+	assert.NoError(t, s2.Close())
 
 	actualValue, err = s1.Get(bucket1, key)
 	assert.NoError(t, err)
 	assert.Equal(t, value, actualValue)
 
-	require.NoError(t, s1.Delete(bucket1, key))
+	assert.NoError(t, s1.Delete(bucket1, key))
 	actualValue, err = s1.Get(bucket1, key)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Zero(t, actualValue)
 
-	require.NoError(t, s1.Set(bucket2, key, value))
+	assert.NoError(t, s1.Set(bucket2, key, value))
 	actualValue, err = s1.Get(bucket2, key)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, value, actualValue)
-	require.NoError(t, s1.DeleteBucket(bucket2))
+	assert.NoError(t, s1.DeleteBucket(bucket2))
 	actualValue, err = s1.Get(bucket2, key)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Zero(t, actualValue)
 }

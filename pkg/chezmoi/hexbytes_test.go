@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 func TestHexBytes(t *testing.T) {
@@ -33,10 +32,10 @@ func TestHexBytes(t *testing.T) {
 			} {
 				t.Run(format.Name(), func(t *testing.T) {
 					actual, err := format.Marshal(tc.b)
-					require.NoError(t, err)
+					assert.NoError(t, err)
 					assert.Equal(t, []byte(tc.expectedStr), actual)
 					var actualHexBytes HexBytes
-					require.NoError(t, format.Unmarshal(actual, &actualHexBytes))
+					assert.NoError(t, format.Unmarshal(actual, &actualHexBytes))
 					assert.Equal(t, tc.b, actualHexBytes)
 				})
 			}

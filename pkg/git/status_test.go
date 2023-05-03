@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 func TestParseStatusPorcelainV2(t *testing.T) {
@@ -185,7 +184,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			actualStatus, err := ParseStatusPorcelainV2([]byte(tc.outputStr))
-			require.NoError(t, err)
+			assert.NoError(t, err)
 			assert.Equal(t, tc.expectedEmpty, actualStatus.Empty())
 			assert.Equal(t, tc.expectedStatus, actualStatus)
 		})

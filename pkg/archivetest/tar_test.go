@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewTar(t *testing.T) {
@@ -29,45 +28,45 @@ func TestNewTar(t *testing.T) {
 			},
 		},
 	})
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	tarReader := tar.NewReader(bytes.NewBuffer(data))
 
 	header, err := tarReader.Next()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeDir), header.Typeflag)
 	assert.Equal(t, "dir/", header.Name)
 	assert.Equal(t, int64(fs.ModePerm), header.Mode)
 
 	header, err = tarReader.Next()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
 	assert.Equal(t, "dir/file1", header.Name)
 	assert.Equal(t, int64(len("# contents of dir/file1\n")), header.Size)
 	assert.Equal(t, int64(0o666), header.Mode)
 
 	header, err = tarReader.Next()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
 	assert.Equal(t, "dir/file2", header.Name)
 	assert.Equal(t, int64(len("# contents of dir/file2\n")), header.Size)
 	assert.Equal(t, int64(0o666), header.Mode)
 
 	header, err = tarReader.Next()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeDir), header.Typeflag)
 	assert.Equal(t, "dir/subdir/", header.Name)
 	assert.Equal(t, int64(0o700), header.Mode)
 
 	header, err = tarReader.Next()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
 	assert.Equal(t, "dir/subdir/file", header.Name)
 	assert.Equal(t, int64(len("# contents of dir/subdir/file\n")), header.Size)
 	assert.Equal(t, int64(fs.ModePerm), header.Mode)
 
 	header, err = tarReader.Next()
-	require.NoError(t, err)
+	assert.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeSymlink), header.Typeflag)
 	assert.Equal(t, "dir/subdir/symlink", header.Name)
 	assert.Equal(t, "file", header.Linkname)

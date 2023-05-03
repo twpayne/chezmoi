@@ -4,7 +4,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/alecthomas/assert/v2"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
@@ -17,7 +17,7 @@ func TestGPGEncryption(t *testing.T) {
 
 	tempDir := t.TempDir()
 	key, passphrase, err := chezmoitest.GPGGenerateKey(command, tempDir)
-	require.NoError(t, err)
+	assert.NoError(t, err)
 
 	for _, tc := range []struct {
 		name      string
