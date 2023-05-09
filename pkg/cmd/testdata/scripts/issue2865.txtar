@@ -1,16 +1,36 @@
-[windows] skip 'UNIX only'
+[!exec:git] skip 'git not found in $PATH'
 
-# test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present
-exec chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+mkgitconfig
+mkhomedir golden
+mkhomedir
+
+# create a commit
+exec chezmoi git init
+cp golden/chezmoiroot  $CHEZMOISOURCEDIR/.chezmoiroot
+mkdir $CHEZMOISOURCEDIR/home
+mkdir $CHEZMOISOURCEDIR/home/.chezmoiscripts
+cp golden/chezmoi.toml $CHEZMOISOURCEDIR/home/.chezmoi.toml.tmpl
+cp golden/run_once_echo.sh $CHEZMOISOURCEDIR/home/.chezmoiscripts/run_once_echo.sh.tmpl
+exec chezmoi git add .
+exec chezmoi git commit -- --message 'Initial commit'
+
+chhome home2/user
+
+# test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present (chezmoi init --apply in a clean home directory)
+mkgitconfig
+exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
 stdout ${CHEZMOISOURCEDIR@R}/home
 
-# test that .chezmoi.sourceDir is set correctly in chezmoi apply
-exec chezmoi apply
+# test that .chezmoi.sourceDir is set correctly in config file
+exec chezmoi execute-template '{{ .testDir }}'
 stdout ${CHEZMOISOURCEDIR@R}/home
 
--- home/user/.local/share/chezmoi/.chezmoiroot --
+-- golden/chezmoiroot --
 home
--- home/user/.local/share/chezmoi/home/.chezmoiscripts/run_once_echo.sh.tmpl --
+-- golden/chezmoi.toml --
+[data]
+  testDir="{{ .chezmoi.sourceDir }}"
+-- golden/run_once_echo.sh --
 #!/bin/sh
 
-echo {{ .chezmoi.sourceDir }}
+echo "{{ .chezmoi.sourceDir }}"
