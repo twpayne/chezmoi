@@ -15,7 +15,7 @@ exec chezmoi dump --format=json --recursive=false $HOME${/}.dir
 cmp stdout golden/dump-dir-non-recursive.json
 
 ! exec chezmoi dump $HOME${/}.inputrc
-stderr 'not in source state'
+stderr 'not managed'
 
 -- golden/dump-dir-non-recursive.json --
 {

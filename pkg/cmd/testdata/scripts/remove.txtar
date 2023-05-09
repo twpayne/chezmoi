@@ -17,7 +17,7 @@ exec chezmoi remove --force $HOME${/}.dir
 # test that if any chezmoi remove stops on any error
 exists $HOME/.executable
 ! exec chezmoi remove --force $HOME${/}.newfile $HOME${/}.executable
-stderr 'not in source state'
+stderr 'not managed'
 exists $HOME/.executable
 
 chhome home2/user

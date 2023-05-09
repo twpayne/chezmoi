@@ -1,0 +1,7 @@
+# test that chezmoi source-path returns an error for file to be removed from exact directories
+mkdir $HOME/.dir
+mkfile $HOME/.dir/test.file
+! exec chezmoi source-path $HOME/.dir/test.file
+stderr 'not in source state'
+
+-- home/user/.local/share/chezmoi/exact_dot_dir/.keep --

@@ -38,7 +38,8 @@ func (c *Config) newMergeCmd() *cobra.Command {
 
 func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
-		mustBeInSourceState: false,
+		mustBeInSourceState: true,
+		mustBeManaged:       false,
 		recursive:           true,
 	})
 	if err != nil {
