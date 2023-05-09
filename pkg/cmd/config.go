@@ -665,6 +665,16 @@ func (c *Config) colorAutoFunc() bool {
 // createAndReloadConfigFile creates a config file if it there is a config file
 // template and reloads it.
 func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
+	// Refresh the source directory, as there might be a .chezmoiroot file and
+	// the template data is set before .chezmoiroot is read.
+	sourceDirAbsPath, err := c.getSourceDirAbsPath(&getSourceDirAbsPathOptions{
+		refresh: true,
+	})
+	if err != nil {
+		return err
+	}
+	c.templateData.sourceDir = sourceDirAbsPath
+
 	// Find config template, execute it, and create config file.
 	configTemplate, err := c.findConfigTemplate()
 	if err != nil {
