@@ -39,8 +39,8 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 
 func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
-		mustBeInSourceState: true,
-		recursive:           c.remove.recursive,
+		mustBeManaged: true,
+		recursive:     c.remove.recursive,
 	})
 	if err != nil {
 		return err

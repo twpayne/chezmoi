@@ -569,8 +569,8 @@ func (c *Config) applyArgs(
 		}
 	default:
 		targetRelPaths, err = c.targetRelPaths(sourceState, args, targetRelPathsOptions{
-			mustBeInSourceState: true,
-			recursive:           options.recursive,
+			mustBeManaged: true,
+			recursive:     options.recursive,
 		})
 		if err != nil {
 			return err
@@ -2202,6 +2202,7 @@ func (c *Config) setEncryption() error {
 func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
+		mustBeManaged:       true,
 	})
 	if err != nil {
 		return nil, err
@@ -2225,6 +2226,7 @@ func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error)
 
 type targetRelPathsOptions struct {
 	mustBeInSourceState bool
+	mustBeManaged       bool
 	recursive           bool
 }
 
@@ -2243,8 +2245,12 @@ func (c *Config) targetRelPaths(
 		if err != nil {
 			return nil, err
 		}
+		sourceStateEntry := sourceState.Get(targetRelPath)
+		if options.mustBeManaged && sourceStateEntry == nil {
+			return nil, fmt.Errorf("%s: not managed", arg)
+		}
 		if options.mustBeInSourceState {
-			if sourceState.Get(targetRelPath) == nil {
+			if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); ok {
 				return nil, fmt.Errorf("%s: not in source state", arg)
 			}
 		}

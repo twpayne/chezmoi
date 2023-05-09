@@ -8,11 +8,11 @@ stdout ^${CHEZMOISOURCEDIR@R}/dot_file$
 
 # test that chezmoi source-path returns an error if the target is not in the source state
 ! exec chezmoi source-path $HOME${/}.newfile
-stderr 'not in source state'
+stderr 'not managed'
 
 # test that chezmoi source-path returns an error if the target is not in the destination directory
 ! exec chezmoi source-path $WORK${/}etc${/}passwd
-stderr 'not in'
+stderr 'not in destination directory'
 
 chhome home2/user
 
