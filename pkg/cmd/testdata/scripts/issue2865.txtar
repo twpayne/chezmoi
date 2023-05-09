@@ -1,16 +1,37 @@
-[windows] skip 'UNIX only'
+[!exec:git] skip 'git not found in $PATH'
 
-# test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present
-exec chezmoi execute-template '{{ .chezmoi.sourceDir }}'
-stdout ${CHEZMOISOURCEDIR@R}/home
+mkgitconfig
 
-# test that .chezmoi.sourceDir is set correctly in chezmoi apply
-exec chezmoi apply
-stdout ${CHEZMOISOURCEDIR@R}/home
+# create a commit
+exec chezmoi git init
+exec chezmoi git add .
+exec chezmoi git commit -- --message 'Initial commit'
+
+chhome home2/user
+
+# test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present (chezmoi init --apply in a clean home directory)
+mkgitconfig
+exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
+stdout '/.local/share/chezmoi/home$'
+
+# test that .chezmoi.sourceDir is set correctly in config file
+exec chezmoi execute-template '{{ .testDir }}'
+stdout '/.local/share/chezmoi/home$'
 
 -- home/user/.local/share/chezmoi/.chezmoiroot --
 home
+-- home/user/.local/share/chezmoi/home/.chezmoi.toml.tmpl --
+[data]
+    testDir = {{ .chezmoi.sourceDir | quote }}
+-- home/user/.local/share/chezmoi/home/.chezmoiignore --
+{{- if eq .chezmoi.os "windows" }}
+.chezmoiscripts/echo.sh
+{{- else }}
+.chezmoiscripts/echo.ps1
+{{- end }}
+-- home/user/.local/share/chezmoi/home/.chezmoiscripts/run_once_echo.ps1.tmpl --
+Write-Host {{ .chezmoi.sourceDir | quote }}
 -- home/user/.local/share/chezmoi/home/.chezmoiscripts/run_once_echo.sh.tmpl --
 #!/bin/sh
 
-echo {{ .chezmoi.sourceDir }}
+echo {{ .chezmoi.sourceDir | quote }}
