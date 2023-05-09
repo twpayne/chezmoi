@@ -665,6 +665,10 @@ func (c *Config) colorAutoFunc() bool {
 // createAndReloadConfigFile creates a config file if it there is a config file
 // template and reloads it.
 func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
+	c.templateData.sourceDir, _ = c.getSourceDirAbsPath(&getSourceDirAbsPathOptions{
+		refresh: true,
+	})
+
 	// Find config template, execute it, and create config file.
 	configTemplate, err := c.findConfigTemplate()
 	if err != nil {
