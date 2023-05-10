@@ -7,10 +7,12 @@ mkhomedir
 # create a commit
 exec chezmoi git init
 cp golden/chezmoiroot  $CHEZMOISOURCEDIR/.chezmoiroot
-mkdir $CHEZMOISOURCEDIR/home
-mkdir $CHEZMOISOURCEDIR/home/.chezmoiscripts
-cp golden/chezmoi.toml $CHEZMOISOURCEDIR/home/.chezmoi.toml.tmpl
-cp golden/run_once_echo.sh $CHEZMOISOURCEDIR/home/.chezmoiscripts/run_once_echo.sh.tmpl
+mkdir $CHEZMOISOURCEDIR/chezmoihome
+mkdir $CHEZMOISOURCEDIR/chezmoihome/.chezmoiscripts
+cp golden/chezmoi.toml $CHEZMOISOURCEDIR/chezmoihome/.chezmoi.toml.tmpl
+cp golden/chezmoiignore $CHEZMOISOURCEDIR/chezmoihome/.chezmoiignore
+cp golden/run_once_echo.sh $CHEZMOISOURCEDIR/chezmoihome/.chezmoiscripts/run_once_echo.sh.tmpl
+cp golden/run_once_echo.ps1 $CHEZMOISOURCEDIR/chezmoihome/.chezmoiscripts/run_once_echo.ps1.tmpl
 exec chezmoi git add .
 exec chezmoi git commit -- --message 'Initial commit'
 
@@ -19,17 +21,25 @@ chhome home2/user
 # test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present (chezmoi init --apply in a clean home directory)
 mkgitconfig
 exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-stdout ${CHEZMOISOURCEDIR@R}/home
+stdout '.*/.local/share/chezmoi/chezmoihome$'
 
 # test that .chezmoi.sourceDir is set correctly in config file
 exec chezmoi execute-template '{{ .testDir }}'
-stdout ${CHEZMOISOURCEDIR@R}/home
+stdout '.*/.local/share/chezmoi/chezmoihome$'
 
 -- golden/chezmoi.toml --
 [data]
   testDir="{{ .chezmoi.sourceDir }}"
+-- golden/chezmoiignore --
+{{- if eq .chezmoi.os "windows" }}
+.chezmoiscripts/echo.sh
+{{- else }}
+.chezmoiscripts/echo.ps1
+{{- end }}
 -- golden/chezmoiroot --
-home
+chezmoihome
+-- golden/run_once_echo.ps1 --
+Write-Host "{{ .chezmoi.sourceDir }}"
 -- golden/run_once_echo.sh --
 #!/bin/sh
 
