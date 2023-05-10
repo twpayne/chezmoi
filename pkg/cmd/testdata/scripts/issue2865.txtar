@@ -25,11 +25,11 @@ stdout ${CHEZMOISOURCEDIR@R}/home
 exec chezmoi execute-template '{{ .testDir }}'
 stdout ${CHEZMOISOURCEDIR@R}/home
 
--- golden/chezmoiroot --
-home
 -- golden/chezmoi.toml --
 [data]
   testDir="{{ .chezmoi.sourceDir }}"
+-- golden/chezmoiroot --
+home
 -- golden/run_once_echo.sh --
 #!/bin/sh
 
