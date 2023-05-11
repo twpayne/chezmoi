@@ -412,3 +412,12 @@ articles:
   title: 'dotfiles の管理に chezmoi を導入して fswatch で自動 apply できるようにしたg'
   lang: JP
   url: https://blog.mono0x.net/2023/04/15/chezmoi/
+- date: '2023-04-26'
+  version: 2.33.1
+  title: 'Managing my /home directory'
+  url: https://aspatel.com/20230426180939/
+- date: '2023-04-29'
+  version: 2.33.1
+  title: 'chezmoi のテンプレート機能を使ってシェルの起動を高速化する'
+  lang: JP
+  url: https://blog.mono0x.net/2023/04/29/optimize-rcfiles-using-chezmoi/
