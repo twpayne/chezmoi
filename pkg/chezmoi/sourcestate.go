@@ -911,7 +911,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				allSourceStateEntriesMu.Unlock()
 				return fs.SkipDir
 			}
-			if sourceStateDir.Attr.Remove {
+			if sourceStateDir.Attr.Type == SourceDirTypeRemove {
 				s.Lock()
 				s.removeDirs[targetRelPath] = struct{}{}
 				s.Unlock()

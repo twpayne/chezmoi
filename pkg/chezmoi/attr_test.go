@@ -9,35 +9,42 @@ import (
 )
 
 func TestDirAttr(t *testing.T) {
-	testData := struct {
+	var dirAttrs []DirAttr
+	targetNames := []string{
+		".dir",
+		"dir.tmpl",
+		"dir",
+		"exact_dir",
+		"empty_dir",
+		"encrypted_dir",
+		"executable_dir",
+		"once_dir",
+		"run_dir",
+		"run_once_dir",
+		"symlink_dir",
+	}
+	assert.NoError(t, combinator.Generate(&dirAttrs, struct {
+		Type       SourceDirTargetType
 		TargetName []string
 		Exact      []bool
 		External   []bool
 		Private    []bool
 		ReadOnly   []bool
-		Remove     []bool
 	}{
-		TargetName: []string{
-			".dir",
-			"dir.tmpl",
-			"dir",
-			"exact_dir",
-			"empty_dir",
-			"encrypted_dir",
-			"executable_dir",
-			"once_dir",
-			"run_dir",
-			"run_once_dir",
-			"symlink_dir",
-		},
-		Exact:    []bool{false, true},
-		External: []bool{false, true},
-		Private:  []bool{false, true},
-		ReadOnly: []bool{false, true},
-		Remove:   []bool{false, true},
-	}
-	var dirAttrs []DirAttr
-	assert.NoError(t, combinator.Generate(&dirAttrs, testData))
+		Type:       SourceDirTypeDir,
+		TargetName: targetNames,
+		Exact:      []bool{false, true},
+		External:   []bool{false, true},
+		Private:    []bool{false, true},
+		ReadOnly:   []bool{false, true},
+	}))
+	assert.NoError(t, combinator.Generate(&dirAttrs, struct {
+		Type       SourceDirTargetType
+		TargetName []string
+	}{
+		Type:       SourceDirTypeRemove,
+		TargetName: targetNames,
+	}))
 	for _, dirAttr := range dirAttrs {
 		actualSourceName := dirAttr.SourceName()
 		actualDirAttr := parseDirAttr(actualSourceName)
@@ -90,6 +97,7 @@ func TestFileAttr(t *testing.T) {
 		"modify_name",
 		"name.literal",
 		"name",
+		"remove_",
 		"run_name",
 		"symlink_name",
 		"template.tmpl",
