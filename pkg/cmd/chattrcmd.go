@@ -42,6 +42,14 @@ const (
 	orderModifierSetAfter       orderModifier = 2
 )
 
+type sourceDirTypeModifier int
+
+const (
+	sourceDirTypeModifierLeaveUnchanged sourceDirTypeModifier = iota
+	sourceDirTypeModifierSetRemove
+	sourceDirTypeModifierClearRemove
+)
+
 type sourceFileTypeModifier int
 
 const (
@@ -50,6 +58,8 @@ const (
 	sourceFileTypeModifierClearCreate
 	sourceFileTypeModifierSetModify
 	sourceFileTypeModifierClearModify
+	sourceFileTypeModifierSetRemove
+	sourceFileTypeModifierClearRemove
 	sourceFileTypeModifierSetScript
 	sourceFileTypeModifierClearScript
 	sourceFileTypeModifierSetSymlink
@@ -57,6 +67,7 @@ const (
 )
 
 type modifier struct {
+	sourceDirType  sourceDirTypeModifier
 	sourceFileType sourceFileTypeModifier
 	condition      conditionModifier
 	empty          boolModifier
@@ -67,7 +78,6 @@ type modifier struct {
 	order          orderModifier
 	private        boolModifier
 	readOnly       boolModifier
-	remove         boolModifier
 	template       boolModifier
 }
 
@@ -289,6 +299,23 @@ func (m orderModifier) modify(order chezmoi.ScriptOrder) chezmoi.ScriptOrder {
 }
 
 // modify returns the modified value of type.
+func (m sourceDirTypeModifier) modify(sourceDirType chezmoi.SourceDirTargetType) chezmoi.SourceDirTargetType {
+	switch m {
+	case sourceDirTypeModifierLeaveUnchanged:
+		return sourceDirType
+	case sourceDirTypeModifierSetRemove:
+		return chezmoi.SourceDirTypeRemove
+	case sourceDirTypeModifierClearRemove:
+		if sourceDirType == chezmoi.SourceDirTypeRemove {
+			return chezmoi.SourceDirTypeDir
+		}
+		return sourceDirType
+	default:
+		panic(fmt.Sprintf("%d: unknown type modifier", m))
+	}
+}
+
+// modify returns the modified value of type.
 func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetType) chezmoi.SourceFileTargetType {
 	switch m {
 	case sourceFileTypeModifierLeaveUnchanged:
@@ -297,6 +324,13 @@ func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetTy
 		return chezmoi.SourceFileTypeCreate
 	case sourceFileTypeModifierClearCreate:
 		if sourceFileType == chezmoi.SourceFileTypeCreate {
+			return chezmoi.SourceFileTypeFile
+		}
+		return sourceFileType
+	case sourceFileTypeModifierSetRemove:
+		return chezmoi.SourceFileTypeRemove
+	case sourceFileTypeModifierClearRemove:
+		if sourceFileType == chezmoi.SourceFileTypeRemove {
 			return chezmoi.SourceFileTypeFile
 		}
 		return sourceFileType
@@ -412,7 +446,14 @@ func parseModifier(s string) (*modifier, error) {
 		case "readonly", "r":
 			m.readOnly = bm
 		case "remove":
-			m.remove = bm
+			switch bm {
+			case boolModifierClear:
+				m.sourceDirType = sourceDirTypeModifierClearRemove
+				m.sourceFileType = sourceFileTypeModifierClearRemove
+			case boolModifierSet:
+				m.sourceDirType = sourceDirTypeModifierSetRemove
+				m.sourceFileType = sourceFileTypeModifierSetRemove
+			}
 		case "script":
 			switch bm {
 			case boolModifierClear:
@@ -438,13 +479,23 @@ func parseModifier(s string) (*modifier, error) {
 
 // modifyDirAttr returns the modified value of dirAttr.
 func (m *modifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
-	return chezmoi.DirAttr{
-		TargetName: dirAttr.TargetName,
-		Exact:      m.exact.modify(dirAttr.Exact),
-		External:   m.external.modify(dirAttr.External),
-		Private:    m.private.modify(dirAttr.Private),
-		ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
-		Remove:     m.remove.modify(dirAttr.Remove),
+	switch m.sourceDirType.modify(dirAttr.Type) {
+	case chezmoi.SourceDirTypeDir:
+		return chezmoi.DirAttr{
+			TargetName: dirAttr.TargetName,
+			Type:       chezmoi.SourceDirTypeDir,
+			Exact:      m.exact.modify(dirAttr.Exact),
+			External:   m.external.modify(dirAttr.External),
+			Private:    m.private.modify(dirAttr.Private),
+			ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
+		}
+	case chezmoi.SourceDirTypeRemove:
+		return chezmoi.DirAttr{
+			TargetName: dirAttr.TargetName,
+			Type:       chezmoi.SourceDirTypeRemove,
+		}
+	default:
+		panic(fmt.Sprintf("%d: unknown source dir type", dirAttr.Type))
 	}
 }
 
