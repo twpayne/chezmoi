@@ -58,7 +58,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 
 func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
 	if !c.Add.quiet {
-		c.errorf("warning: ignoring %s", targetRelPath)
+		c.errorf("warning: ignoring %s\n", targetRelPath)
 	}
 }
 
