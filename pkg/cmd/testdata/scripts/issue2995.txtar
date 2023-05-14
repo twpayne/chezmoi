@@ -1,0 +1,17 @@
+# test that chezmoi apply only creates empty files if they have the empty_ attribute
+exec chezmoi apply
+! exists $HOME/new.txt
+exists $HOME/create-new.txt
+cmp $HOME/existing.txt golden/existing.txt
+cmp $HOME/existing-empty.txt golden/existing-empty.txt
+
+-- golden/existing-empty.txt --
+-- golden/existing.txt --
+# contents of existing.txt
+-- home/user/.local/share/chezmoi/create_empty_create-new.txt --
+-- home/user/.local/share/chezmoi/create_empty_existing-empty.txt --
+-- home/user/.local/share/chezmoi/create_existing.txt --
+-- home/user/.local/share/chezmoi/create_new.txt --
+-- home/user/existing-empty.txt --
+-- home/user/existing.txt --
+# contents of existing.txt

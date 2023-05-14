@@ -40,15 +40,16 @@ to as "attributes":
 Different target types allow different prefixes and suffixes. The order of
 prefixes is important.
 
-| Target type   | Source type | Allowed prefixes in order                                               | Allowed suffixes |
-| ------------- | ----------- | ----------------------------------------------------------------------- | ---------------- |
-| Directory     | Directory   | `external_` or `remove_`, `exact_`, `private_`, `readonly_`, `dot_`     | *none*           |
-| Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                         | `.tmpl`          |
-| Create file   | File        | `create_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
-| Modify file   | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
-| Remove        | File        | `remove_`, `dot_`                                                       | *none*           |
-| Script        | File        | `run_`, `once_` or `onchange_`, `before_` or `after_`                   | `.tmpl`          |
-| Symbolic link | File        | `symlink_`, `dot_`                                                      | `.tmpl`          |
+| Target type      | Source type | Allowed prefixes in order                                                         | Allowed suffixes |
+| ---------------- | ----------- | --------------------------------------------------------------------------------- | ---------------- |
+| Directory        | Directory   | `external_`, `exact_`, `private_`, `readonly_`, `dot_`                            | *none*           |
+| Remove directory | Directory   | `remove_`, `dot_`                                                                 | *none*           |
+| Regular file     | File        | `encrypted_`, `private_`, `executable_`, `empty_`, `dot_`                         | `.tmpl`          |
+| Create file      | File        | `create_`, `encrypted_`, `private_`, `readonly_`, `empty_`, `executable_`, `dot_` | `.tmpl`          |
+| Modify file      | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_`           | `.tmpl`          |
+| Remove file      | File        | `remove_`, `dot_`                                                                 | *none*           |
+| Script           | File        | `run_`, `once_` or `onchange_`, `before_` or `after_`                             | `.tmpl`          |
+| Symbolic link    | File        | `symlink_`, `dot_`                                                                | `.tmpl`          |
 
 The `literal_` prefix and `.literal` suffix can appear anywhere and stop
 attribute parsing. This permits filenames that would otherwise conflict with

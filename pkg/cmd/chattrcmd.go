@@ -475,6 +475,7 @@ func (m *modifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAttr {
 		return chezmoi.FileAttr{
 			TargetName: fileAttr.TargetName,
 			Type:       chezmoi.SourceFileTypeCreate,
+			Empty:      m.encrypted.modify(fileAttr.Empty),
 			Encrypted:  m.encrypted.modify(fileAttr.Encrypted),
 			Executable: m.executable.modify(fileAttr.Executable),
 			Private:    m.private.modify(fileAttr.Private),

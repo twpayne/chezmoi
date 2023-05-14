@@ -97,6 +97,7 @@ func TestFileAttr(t *testing.T) {
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
+		Empty      []bool
 		Encrypted  []bool
 		Executable []bool
 		Private    []bool
@@ -105,6 +106,7 @@ func TestFileAttr(t *testing.T) {
 	}{
 		Type:       SourceFileTypeCreate,
 		TargetName: []string{},
+		Empty:      []bool{false, true},
 		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},

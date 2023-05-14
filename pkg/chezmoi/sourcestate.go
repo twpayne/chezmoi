@@ -1537,7 +1537,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 		}
 		return &TargetStateFile{
 			lazyContents: lazyContents,
-			empty:        true,
+			empty:        fileAttr.Empty,
 			perm:         fileAttr.perm() &^ s.umask,
 			sourceAttr: SourceAttr{
 				Encrypted: fileAttr.Encrypted,

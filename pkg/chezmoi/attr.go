@@ -173,6 +173,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		name, encrypted = CutPrefix(name, encryptedPrefix)
 		name, private = CutPrefix(name, privatePrefix)
 		name, readOnly = CutPrefix(name, readOnlyPrefix)
+		name, empty = CutPrefix(name, emptyPrefix)
 		name, executable = CutPrefix(name, executablePrefix)
 	case strings.HasPrefix(name, removePrefix):
 		sourceFileType = SourceFileTypeRemove
@@ -275,6 +276,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		}
 		if fa.ReadOnly {
 			sourceName += readOnlyPrefix
+		}
+		if fa.Empty {
+			sourceName += emptyPrefix
 		}
 		if fa.Executable {
 			sourceName += executablePrefix
