@@ -12,7 +12,8 @@ chhome home2/user
 # test that .chezmoi.sourceDir is set correctly when .chezmoiroot is present (chezmoi init --apply in a clean home directory)
 mkgitconfig
 exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-stdout '/.local/share/chezmoi/home$'
+stdout '\.chezmoi\.sourceDir=.*/\.local/share/chezmoi/home$'
+stdout 'CHEZMOI_SOURCE_DIR=.*/\.local/share/chezmoi/home$'
 
 # test that .chezmoi.sourceDir is set correctly in config file
 exec chezmoi execute-template '{{ .testDir }}'
@@ -30,8 +31,10 @@ home
 .chezmoiscripts/echo.ps1
 {{- end }}
 -- home/user/.local/share/chezmoi/home/.chezmoiscripts/run_once_echo.ps1.tmpl --
-Write-Host {{ .chezmoi.sourceDir | quote }}
+Write-Host .chezmoi.sourceDir={{ .chezmoi.sourceDir }}
+Write-Host CHEZMOI_SOURCE_DIR=$Env:CHEZMOI_SOURCE_DIR
 -- home/user/.local/share/chezmoi/home/.chezmoiscripts/run_once_echo.sh.tmpl --
 #!/bin/sh
 
-echo {{ .chezmoi.sourceDir | quote }}
+echo .chezmoi.sourceDir={{ .chezmoi.sourceDir }}
+echo CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}

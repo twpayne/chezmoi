@@ -674,6 +674,9 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return err
 	}
 	c.templateData.sourceDir = sourceDirAbsPath
+	c.runEnv = append(c.runEnv, "CHEZMOI_SOURCE_DIR="+sourceDirAbsPath.String())
+	realSystem := c.baseSystem.(*chezmoi.RealSystem) //nolint:forcetypeassert
+	realSystem.SetScriptEnv(c.runEnv)
 
 	// Find config template, execute it, and create config file.
 	configTemplate, err := c.findConfigTemplate()
@@ -690,7 +693,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return err
 	}
 
-	// Validate the configMap.
+	// Validate the config file.
 	var configFile ConfigFile
 	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &configFile); err != nil {
 		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
