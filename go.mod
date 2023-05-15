@@ -42,7 +42,7 @@ require (
 	go.etcd.io/bbolt v1.3.7
 	go.uber.org/multierr v1.11.0
 	golang.org/x/crypto v0.9.0
-	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
+	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
 	golang.org/x/oauth2 v0.8.0
 	golang.org/x/sync v0.2.0
 	golang.org/x/sys v0.8.0
@@ -80,8 +80,8 @@ require (
 	github.com/charmbracelet/lipgloss v0.7.1 // indirect
 	github.com/cloudflare/circl v1.3.3 // indirect
 	github.com/containerd/console v1.0.3 // indirect
-	github.com/danieljoos/wincred v1.1.2 // indirect
-	github.com/dlclark/regexp2 v1.9.0 // indirect
+	github.com/danieljoos/wincred v1.2.0 // indirect
+	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
@@ -116,8 +116,8 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/skeema/knownhosts v1.1.0 // indirect
-	github.com/spf13/cast v1.5.0 // indirect
+	github.com/skeema/knownhosts v1.1.1 // indirect
+	github.com/spf13/cast v1.5.1 // indirect
 	github.com/stretchr/testify v1.8.2 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/yuin/goldmark v1.5.4 // indirect
@@ -125,13 +125,14 @@ require (
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
-	golang.org/x/tools v0.8.0 // indirect
+	golang.org/x/tools v0.9.1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 
 exclude (
+	github.com/charmbracelet/bubbletea v0.24.0 // https://github.com/charmbracelet/bubbletea/issues/737
 	github.com/sergi/go-diff v1.2.0 // https://github.com/sergi/go-diff/issues/123
 	github.com/sergi/go-diff v1.3.0
 	github.com/sergi/go-diff v1.3.1 // https://github.com/twpayne/chezmoi/issues/2706
