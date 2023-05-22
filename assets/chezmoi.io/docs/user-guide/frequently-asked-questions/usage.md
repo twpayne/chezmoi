@@ -81,14 +81,19 @@ You have several options:
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.
 
-## Can I store/share my shell history with chezmoi?
+## Can I use chezmoi to manage my shell history across multiple machines?
 
-Not easily. chezmoi's only shared state between machines is your git repo, and
-creating a commit every time a command is entered would quickly become
-cumbersome.
 
-Instead, consider using a tool like [atuin](https://github.com/ellie/atuin). You
-can use chezmoi to install and configure atuin on new machines.
+No. Every change in a file managed by chezmoi requires an explicit command to
+record it (e.g. `chezmoi add`) or apply it somewhere else (e.g. `chezmoi
+update`), and is recorded as a commit in your dotfiles repository. Creating a
+commit every time a command is entered would quickly become cumbersome. This
+makes chezmoi unsuitable for sharing changes to rapidly-changing files like
+shell histories.
+
+Instead, consider using a dedicated tool for sharing shell history across
+multiple machines, like [`atuin`](https://atuin.sh/). You can use chezmoi to
+install and configure atuin.
 
 ## How do I install pre-requisites for templates?
 

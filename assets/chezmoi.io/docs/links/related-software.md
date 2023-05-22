@@ -17,6 +17,10 @@ A plugin for VIM to apply the dotfile you are editing on `:w`.
 
 ## Other
 
+### [`atuin.sh`](https://atuin.sh/)
+
+Sync, search and backup shell history .
+
 ### [`github.com/hussainweb/ansible-role-chezmoi`](https://github.com/hussainweb/ansible-role-chezmoi)
 
 Installs chezmoi on Ubuntu and Debian servers.
