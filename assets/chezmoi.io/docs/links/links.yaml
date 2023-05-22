@@ -436,3 +436,11 @@ articles:
   title: 'chezmoi'
   lang: JP
   url: 'https://www.ebiyuu.com/dotfiles/chezmoi/'
+- date: '2023-05-22'
+  version: 2.33.6
+  formats:
+  - audio
+  - text
+  title: '491 - Tres herramientas que han revolucionado mi terminal Linux'
+  lang: ES
+  url: https://atareao.es/podcast/tres-herramientas-que-han-revolucionado-mi-terminal-linux/
