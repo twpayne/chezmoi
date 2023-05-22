@@ -357,7 +357,7 @@ articles:
   version: 2.24.0
   title: 'Shit Hot Dotfiles'
   url: https://kolv.in/posts/dotfile-managment
-- data: '2022-12-15'
+- date: '2022-12-15'
   version: 2.27.3
   title: 'Archivos de configuración fácil con chezmoi'
   lang: ES
@@ -407,6 +407,16 @@ articles:
   version: 2.32.0
   title: 'Automating the Setup of a New Mac With All Your Apps, Preferences, and Development Tools'
   url: https://www.moncefbelyamani.com/automating-the-setup-of-a-new-mac-with-all-your-apps-preferences-and-development-tools/
+- date: '2023-03-25'
+  version: 2.33.0
+  title: 'chezmoi, 세상 편리하게 dotfile 관리하기'
+  lang: KR
+  url: 'https://songkg7.github.io/posts/chezmoi-awesome-dotfile-manager/'
+- date: '2023-04-08'
+  version: 2.33.1
+  title: 'chezmoi, 본격적으로 활용하기'
+  lang: KR
+  url: 'https://songkg7.github.io/posts/chezmoi-basic-settings/'
 - date: '2023-04-15'
   version: 2.33.1
   title: 'dotfiles の管理に chezmoi を導入して fswatch で自動 apply できるようにしたg'
@@ -421,3 +431,16 @@ articles:
   title: 'chezmoi のテンプレート機能を使ってシェルの起動を高速化する'
   lang: JP
   url: https://blog.mono0x.net/2023/04/29/optimize-rcfiles-using-chezmoi/
+- date: '2023-05-16'
+  version: 2.33.6
+  title: 'chezmoi'
+  lang: JP
+  url: 'https://www.ebiyuu.com/dotfiles/chezmoi/'
+- date: '2023-05-22'
+  version: 2.33.6
+  formats:
+  - audio
+  - text
+  title: '491 - Tres herramientas que han revolucionado mi terminal Linux'
+  lang: ES
+  url: https://atareao.es/podcast/tres-herramientas-que-han-revolucionado-mi-terminal-linux/

@@ -21,7 +21,7 @@
         <link rel="next" href="../encryption/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.14">
     
     
       
@@ -1472,8 +1472,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#can-i-storeshare-my-shell-history-with-chezmoi" class="md-nav__link">
-    Can I store/share my shell history with chezmoi?
+  <a href="#can-i-use-chezmoi-to-manage-my-shell-history-across-multiple-machines" class="md-nav__link">
+    Can I use chezmoi to manage my shell history across multiple machines?
   </a>
   
 </li>
@@ -5555,8 +5555,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#can-i-storeshare-my-shell-history-with-chezmoi" class="md-nav__link">
-    Can I store/share my shell history with chezmoi?
+  <a href="#can-i-use-chezmoi-to-manage-my-shell-history-across-multiple-machines" class="md-nav__link">
+    Can I use chezmoi to manage my shell history across multiple machines?
   </a>
   
 </li>
@@ -5670,12 +5670,16 @@ diff</code>.</p>
 <p><code>chezmoi merge</code> will open a merge tool to resolve differences between the source
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.</p>
-<h2 id="can-i-storeshare-my-shell-history-with-chezmoi">Can I store/share my shell history with chezmoi?</h2>
-<p>Not easily. chezmoi's only shared state between machines is your git repo, and
-creating a commit every time a command is entered would quickly become
-cumbersome.</p>
-<p>Instead, consider using a tool like <a href="https://github.com/ellie/atuin">atuin</a>. You
-can use chezmoi to install and configure atuin on new machines.</p>
+<h2 id="can-i-use-chezmoi-to-manage-my-shell-history-across-multiple-machines">Can I use chezmoi to manage my shell history across multiple machines?</h2>
+<p>No. Every change in a file managed by chezmoi requires an explicit command to
+record it (e.g. <code>chezmoi add</code>) or apply it somewhere else (e.g. <code>chezmoi
+update</code>), and is recorded as a commit in your dotfiles repository. Creating a
+commit every time a command is entered would quickly become cumbersome. This
+makes chezmoi unsuitable for sharing changes to rapidly-changing files like
+shell histories.</p>
+<p>Instead, consider using a dedicated tool for sharing shell history across
+multiple machines, like <a href="https://atuin.sh/"><code>atuin</code></a>. You can use chezmoi to
+install and configure atuin.</p>
 <h2 id="how-do-i-install-pre-requisites-for-templates">How do I install pre-requisites for templates?</h2>
 <p>If you have a template that depends on some other tool, like <code>curl</code>, you may need
 to install it before chezmoi renders the template.</p>
@@ -5758,7 +5762,7 @@ these depend on your shell.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.b4d07000.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
