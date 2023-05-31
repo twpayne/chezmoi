@@ -18,7 +18,7 @@ chhome home3/user
 
 # test that chezmoi reports an error if there is a .chezmoi* file in the .chezmoitemplates directory
 ! exec chezmoi status
-! stderr 'not allowed in \.chezmoitemplates directory'
+stderr 'not allowed in \.chezmoitemplates directory'
 
 # test that chezmoi data returns an error if an unknown read format is specified
 ! exec chezmoi init --config-format=yml
