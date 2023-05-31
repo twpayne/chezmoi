@@ -82,6 +82,22 @@ stdout value
 exec chezmoi execute-template --init '{{ promptString "value" "default" }}'
 stdout default
 
+# test that chezmoi execute-template reads all files in the .chezmoidata subdirectory
+exec chezmoi execute-template '{{ .a }}{{ .b }}'
+stdout 'alphabeta'
+
+chhome home2/user
+
+# test that files in .chezmoidata must have known extensions
+! exec chezmoi execute-template
+stderr 'unknown format'
+
+chhome home3/user
+
+# test that .chezmoiignore files are not allowed in .chezmoidata
+! exec chezmoi execute-template
+stderr 'not allowed in .chezmoidata directory'
+
 -- golden/stdin --
 # contents of stdin
 -- golden/stdin.tmpl --
@@ -90,6 +106,10 @@ stdout default
 [data.last]
     config = "chezmoi.toml"
     global = "chezmoi.toml"
+-- home/user/.local/share/chezmoi/.chezmoidata/a.json --
+{"a":"alpha"}
+-- home/user/.local/share/chezmoi/.chezmoidata/dir/b.yaml --
+b: beta
 -- home/user/.local/share/chezmoi/.chezmoidata.json --
 {
   "last": {
@@ -112,3 +132,5 @@ last:
 {{ "invalid template"
 -- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
 {{ cat "hello" "world" }}
+-- home2/user/.local/share/chezmoi/.chezmoidata/unknown --
+-- home3/user/.local/share/chezmoi/.chezmoidata/.chezmoiignore --

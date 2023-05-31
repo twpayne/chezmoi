@@ -855,6 +855,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		parentSourceRelPath, sourceName := sourceRelPath.Split()
 
 		switch {
+		case fileInfo.Name() == dataName:
+			if !s.readTemplateData {
+				return nil
+			}
+			return s.addTemplateDataDir(sourceAbsPath)
 		case isPrefixDotFormat(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
 				return nil
@@ -1273,6 +1278,43 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	return nil
 }
 
+// addTemplateData adds all template data in the directory sourceAbsPath to s.
+func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath) error {
+	fileInfo, err := s.system.Stat(sourceAbsPath)
+	if err != nil {
+		return err
+	}
+	walkFunc := func(dataAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		if dataAbsPath == sourceAbsPath {
+			return nil
+		}
+		if err == nil && fileInfo.Mode().Type() == fs.ModeSymlink {
+			fileInfo, err = s.system.Stat(dataAbsPath)
+		}
+		switch {
+		case err != nil:
+			return err
+		case strings.HasPrefix(fileInfo.Name(), Prefix):
+			return fmt.Errorf("%s: not allowed in %s directory", dataAbsPath, dataName)
+		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
+			if fileInfo.IsDir() {
+				return vfs.SkipDir
+			}
+			return nil
+		case fileInfo.Mode().IsRegular():
+			return s.addTemplateData(dataAbsPath)
+		case fileInfo.IsDir():
+			return nil
+		default:
+			return &unsupportedFileTypeError{
+				absPath: dataAbsPath,
+				mode:    fileInfo.Mode(),
+			}
+		}
+	}
+	return walkSourceDir(s.system, sourceAbsPath, fileInfo, walkFunc)
+}
+
 // addTemplatesDir adds all templates in templatesDirAbsPath to s.
 func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath AbsPath) error {
 	walkFunc := func(ctx context.Context, templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
@@ -1286,8 +1328,8 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 		case err != nil:
 			return err
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
-			return fmt.Errorf("%s: not allowed in %s directory", TemplatesDirName, templateAbsPath)
-		case strings.HasPrefix(fileInfo.Name(), "."):
+			return fmt.Errorf("%s: not allowed in %s directory", templateAbsPath, TemplatesDirName)
+		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
 				return vfs.SkipDir
 			}
