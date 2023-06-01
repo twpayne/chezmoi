@@ -11,7 +11,7 @@ jobs:
       id: go-version
       run: |
         echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> ${GITHUB_OUTPUT}
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ steps.go-version.outputs.go-version }}
     - name: install
