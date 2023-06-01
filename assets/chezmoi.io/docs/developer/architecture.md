@@ -160,11 +160,10 @@ its contents SHA256 sum is then updated in the persistent state.
 
 chezmoi has a mix of, unit, integration, and end-to-end tests. Unit and
 integration tests use the
-[`github.com/stretchr/testify`](https://pkg.go.dev/github.com/stretchr/testify)
+[`github.com/alecthomas/assert/v2`](https://pkg.go.dev/github.com/alecthomas/assert)
 framework. End-to-end tests use
 [`github.com/rogpeppe/go-internal/testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
-with the test scripts themselves in
-`pkg/cmd/testdata/scripts/$TEST_NAME.txtar`.
+with the test scripts themselves in `pkg/cmd/testdata/scripts/$TEST_NAME.txtar`.
 
 You can run individual end-to-end tests with
 
