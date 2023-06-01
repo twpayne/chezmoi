@@ -127,7 +127,7 @@ jobs:
     runs-on: macos-11
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: build
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: oldstable
     - name: build
@@ -184,7 +184,7 @@ jobs:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-release-dependencies
@@ -242,7 +242,7 @@ jobs:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
@@ -280,7 +280,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
@@ -295,7 +295,7 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
@@ -334,7 +334,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: generate
@@ -360,7 +360,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: golangci/golangci-lint-action@08e2f20817b15149a52b5b3ebe7de50aff2ba8c5
@@ -400,7 +400,7 @@ jobs:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343
@@ -424,7 +424,7 @@ jobs:
     - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
