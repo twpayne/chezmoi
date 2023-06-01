@@ -94,26 +94,27 @@ var knownPrefixedFiles = newSet(
 	Prefix+".toml"+TemplateSuffix,
 	Prefix+".yaml"+TemplateSuffix,
 	RootName,
+	VersionName,
 	dataName+".json",
 	dataName+".toml",
 	dataName+".yaml",
-	externalName+".json",
 	externalName+".json"+TemplateSuffix,
-	externalName+".toml",
+	externalName+".json",
 	externalName+".toml"+TemplateSuffix,
-	externalName+".yaml",
+	externalName+".toml",
 	externalName+".yaml"+TemplateSuffix,
-	ignoreName,
+	externalName+".yaml",
 	ignoreName+TemplateSuffix,
-	removeName,
+	ignoreName,
 	removeName+TemplateSuffix,
-	VersionName,
+	removeName,
 )
 
 // knownPrefixedDirs is a set of known dirnames with the .chezmoi prefix.
 var knownPrefixedDirs = newSet(
-	scriptsDirName,
 	TemplatesDirName,
+	dataName,
+	scriptsDirName,
 )
 
 // knownTargetFiles is a set of known target files that should not be managed
