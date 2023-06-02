@@ -186,6 +186,11 @@ func (s *DebugSystem) UnderlyingFS() vfs.FS {
 	return s.system.UnderlyingFS()
 }
 
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *DebugSystem) UnderlyingSystem() System {
+	return s.system
+}
+
 // WriteFile implements System.WriteFile.
 func (s *DebugSystem) WriteFile(name AbsPath, data []byte, perm fs.FileMode) error {
 	err := s.system.WriteFile(name, data, perm)

@@ -122,6 +122,11 @@ func (s *DryRunSystem) UnderlyingFS() vfs.FS {
 	return s.system.UnderlyingFS()
 }
 
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *DryRunSystem) UnderlyingSystem() System {
+	return s.system
+}
+
 // WriteFile implements System.WriteFile.
 func (s *DryRunSystem) WriteFile(AbsPath, []byte, fs.FileMode) error {
 	s.setModified()

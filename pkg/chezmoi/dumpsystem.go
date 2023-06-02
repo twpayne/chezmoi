@@ -119,6 +119,11 @@ func (s *DumpSystem) UnderlyingFS() vfs.FS {
 	return nil
 }
 
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *DumpSystem) UnderlyingSystem() System {
+	return s
+}
+
 // WriteFile implements System.WriteFile.
 func (s *DumpSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	return s.setData(filename.String(), &fileData{

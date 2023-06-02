@@ -146,6 +146,11 @@ func (s *RealSystem) UnderlyingFS() vfs.FS {
 	return s.fileSystem
 }
 
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *RealSystem) UnderlyingSystem() System {
+	return s
+}
+
 // getScriptWorkingDir returns the script's working directory.
 //
 // If this is a before_ script then the requested working directory may not

@@ -1,0 +1,2 @@
+# test that chezmoi --debug init does not fail
+exec chezmoi --debug init
