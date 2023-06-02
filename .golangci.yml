@@ -9,7 +9,6 @@ linters:
   - containedctx
   - contextcheck
   - decorder
-  - depguard
   - dogsled
   - dupl
   - dupword
@@ -34,6 +33,7 @@ linters:
   - goprintffuncname
   - gosec
   - gosimple
+  - gosmopolitan
   - govet
   - grouper
   - importas
@@ -69,9 +69,11 @@ linters:
   - usestdlibvars
   - wastedassign
   - whitespace
+  - zerologlint
   disable:
   - asasalint
   - cyclop
+  - depguard
   - exhaustive
   - exhaustruct
   - funlen
@@ -93,6 +95,7 @@ linters:
   - nlreturn
   - nonamedreturns
   - paralleltest
+  - tagalign
   - testpackage
   - tparallel
   - varnamelen
