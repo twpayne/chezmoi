@@ -237,6 +237,11 @@ func (s *GitDiffSystem) UnderlyingFS() vfs.FS {
 	return s.system.UnderlyingFS()
 }
 
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *GitDiffSystem) UnderlyingSystem() System {
+	return s.system
+}
+
 // WriteFile implements System.WriteFile.
 func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeFiles) {

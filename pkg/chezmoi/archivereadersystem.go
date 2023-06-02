@@ -109,3 +109,8 @@ func (s *ArchiveReaderSystem) Readlink(name AbsPath) (string, error) {
 	}
 	return "", fs.ErrNotExist
 }
+
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *ArchiveReaderSystem) UnderlyingSystem() System {
+	return s
+}

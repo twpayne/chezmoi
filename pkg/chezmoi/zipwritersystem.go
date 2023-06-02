@@ -52,6 +52,11 @@ func (s *ZIPWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte
 	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 
+// UnderlyingSystem implements System.UnderlyingSystem.
+func (s *ZIPWriterSystem) UnderlyingSystem() System {
+	return s
+}
+
 // WriteFile implements System.WriteFile.
 func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	fileHeader := zip.FileHeader{

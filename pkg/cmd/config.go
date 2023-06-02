@@ -675,7 +675,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	}
 	c.templateData.sourceDir = sourceDirAbsPath
 	c.runEnv = append(c.runEnv, "CHEZMOI_SOURCE_DIR="+sourceDirAbsPath.String())
-	realSystem := c.baseSystem.(*chezmoi.RealSystem) //nolint:forcetypeassert
+	realSystem := c.baseSystem.UnderlyingSystem().(*chezmoi.RealSystem) //nolint:forcetypeassert
 	realSystem.SetScriptEnv(c.runEnv)
 
 	// Find config template, execute it, and create config file.
