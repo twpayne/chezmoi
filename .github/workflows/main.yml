@@ -439,6 +439,7 @@ jobs:
     - name: prepare-get.chezmoi.io
       run: |
         cp assets/scripts/install.sh assets/get.chezmoi.io/index.html
+        cp assets/scripts/install-local-bin.sh assets/get.chezmoi.io/lb
         cp assets/scripts/install.ps1 assets/get.chezmoi.io/ps1
         cp LICENSE assets/get.chezmoi.io/LICENSE
     - name: push-get.chezmoi.io
@@ -451,3 +452,4 @@ jobs:
         destination-repository-name: get.chezmoi.io
         target-branch: gh-pages
         commit-message: 'chore: Update from ORIGIN_COMMIT'
+        user-email: twpayne@gmail.com

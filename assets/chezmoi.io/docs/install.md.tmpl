@@ -170,6 +170,11 @@ with a single command:
 
 !!! hint
 
+    If you want to install chezmoi in `./.local/bin` instead of `./bin` you can
+    use `get.chezmoi.io/lb` or `chezmoi.io/getlb` instead.
+
+!!! hint
+
     To install the chezmoi binary in a different directory, use the `-b` option,
     for example:
 
@@ -295,8 +300,9 @@ Verify the signature of the checksum file with cosign.
 
     cosign should print `Verified OK`
 
-Verify the that the SHA256 sum of your downloads match the SHA256 sum in the
-verified checksum file. All your downloads must be in the current directory.
+Verify the that the SHA256 sum of your downloads matches the SHA256 sum in the
+verified checksum file. All the downloaded files must be in the current
+directory.
 
 === "Linux"
 

@@ -7,7 +7,7 @@
 
 set -e
 
-BINDIR="${BINDIR:-{{ .BinDir }}}"
+BINDIR="${BINDIR:-.local/bin}"
 CHEZMOI_USER_REPO="${CHEZMOI_USER_REPO:-twpayne/chezmoi}"
 TAGARG=latest
 LOG_LEVEL=2
@@ -150,9 +150,34 @@ get_goarch() {
 
 check_goos_goarch() {
 	case "${1}" in
-{{- range .Platforms }}
-	{{ .GOOS }}/{{ .GOARCH }}) return 0 ;;
-{{- end }}
+	darwin/amd64) return 0 ;;
+	darwin/arm64) return 0 ;;
+	freebsd/386) return 0 ;;
+	freebsd/amd64) return 0 ;;
+	freebsd/arm) return 0 ;;
+	freebsd/arm64) return 0 ;;
+	freebsd/riscv64) return 0 ;;
+	illumos/amd64) return 0 ;;
+	linux/386) return 0 ;;
+	linux/amd64) return 0 ;;
+	linux/arm) return 0 ;;
+	linux/arm64) return 0 ;;
+	linux/loong64) return 0 ;;
+	linux/mips64) return 0 ;;
+	linux/mips64le) return 0 ;;
+	linux/ppc64) return 0 ;;
+	linux/ppc64le) return 0 ;;
+	linux/riscv64) return 0 ;;
+	linux/s390x) return 0 ;;
+	openbsd/386) return 0 ;;
+	openbsd/amd64) return 0 ;;
+	openbsd/arm) return 0 ;;
+	openbsd/arm64) return 0 ;;
+	openbsd/mips64) return 0 ;;
+	solaris/amd64) return 0 ;;
+	windows/386) return 0 ;;
+	windows/amd64) return 0 ;;
+	windows/arm) return 0 ;;
 	*)
 		printf '%s: unsupported platform\n' "${1}" 1>&2
 		return 1
