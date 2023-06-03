@@ -12,7 +12,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var output = flag.String("o", "", "output")
+var (
+	binDir = flag.String("b", "./bin", "binary directory")
+	output = flag.String("o", "", "output")
+)
 
 type platform struct {
 	GOOS   string
@@ -128,8 +131,10 @@ func run() error {
 		defer outputFile.Close()
 	}
 	return installShTemplate.ExecuteTemplate(outputFile, "install.sh.tmpl", struct {
+		BinDir    string
 		Platforms []platform
 	}{
+		BinDir:    *binDir,
 		Platforms: sortedPlatforms,
 	})
 }

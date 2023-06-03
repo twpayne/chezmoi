@@ -56,6 +56,7 @@ def on_post_build(config, **kwargs):
 
     # copy installation scripts
     utils.copy_file('../scripts/install.sh', os.path.join(site_dir, 'get'))
+    utils.copy_file('../scripts/install-local-bin.sh', os.path.join(site_dir, 'getlb'))
     utils.copy_file('../scripts/install.ps1', os.path.join(site_dir, 'get.ps1'))
 
     # copy cosign.pub
