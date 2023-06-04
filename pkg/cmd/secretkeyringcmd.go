@@ -43,8 +43,8 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		RunE:  c.runSecretKeyringDeleteCmdE,
 	}
 	secretKeyringDeletePersistentFlags := keyringDeleteCmd.PersistentFlags()
-	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.get.service, "service", "", "service")
-	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.get.user, "user", "", "user")
+	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.delete.service, "service", "", "service")
+	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.delete.user, "user", "", "user")
 	markPersistentFlagsRequired(keyringDeleteCmd, "service", "user")
 	keyringCmd.AddCommand(keyringDeleteCmd)
 
