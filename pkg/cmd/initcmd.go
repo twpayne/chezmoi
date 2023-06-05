@@ -26,10 +26,6 @@ type initCmdConfig struct {
 	filter            *chezmoi.EntryTypeFilter
 	guessRepoURL      bool
 	oneShot           bool
-	forcePromptOnce   bool
-	promptBool        map[string]string
-	promptInt         map[string]int
-	promptString      map[string]string
 	purge             bool
 	purgeBinary       bool
 	recurseSubmodules bool
@@ -105,19 +101,16 @@ func (c *Config) newInitCmd() *cobra.Command {
 	}
 
 	flags := initCmd.Flags()
+	c.addInteractiveTemplateFuncFlags(flags)
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "Update destination directory")
 	flags.StringVar(&c.init.branch, "branch", c.init.branch, "Set initial branch to checkout")
 	flags.VarP(&c.init.configPath, "config-path", "C", "Path to write generated config file")
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
 	flags.VarP(c.init.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.BoolVar(&c.init.forcePromptOnce, "prompt", c.init.forcePromptOnce, "Force prompt*Once template functions to prompt") //nolint:lll
 	flags.BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
 	flags.VarP(c.init.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
-	flags.StringToStringVar(&c.init.promptBool, "promptBool", c.init.promptBool, "Populate promptBool")
-	flags.StringToIntVar(&c.init.promptInt, "promptInt", c.init.promptInt, "Populate promptInt")
-	flags.StringToStringVar(&c.init.promptString, "promptString", c.init.promptString, "Populate promptString")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
 	flags.BoolVar(&c.init.recurseSubmodules, "recurse-submodules", c.init.recurseSubmodules, "Checkout submodules recursively") //nolint:lll
