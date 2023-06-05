@@ -1332,10 +1332,6 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if status.Empty() {
 		return nil
 	}
-	commitMessageTemplate, err := templates.FS.ReadFile("COMMIT_MESSAGE.tmpl")
-	if err != nil {
-		return err
-	}
 	funcMap := maps.Clone(sprig.TxtFuncMap())
 	funcMap["targetRelPath"] = func(source string) string {
 		return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
@@ -1343,7 +1339,7 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	templateOptions := chezmoi.TemplateOptions{
 		Options: append([]string(nil), c.Template.Options...),
 	}
-	commitMessageTmpl, err := chezmoi.ParseTemplate("commit_message", commitMessageTemplate, funcMap, templateOptions)
+	commitMessageTmpl, err := chezmoi.ParseTemplate("commit_message", templates.CommitMessageTmpl, funcMap, templateOptions) //nolint:lll
 	if err != nil {
 		return err
 	}
