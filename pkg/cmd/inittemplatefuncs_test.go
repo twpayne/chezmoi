@@ -7,7 +7,7 @@ import (
 	"github.com/alecthomas/assert/v2"
 )
 
-func TestPromptBoolInitTemplateFunc(t *testing.T) {
+func TestPromptBoolInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
@@ -70,17 +70,17 @@ func TestPromptBoolInitTemplateFunc(t *testing.T) {
 			assert.NoError(t, err)
 			if tc.expectedErr {
 				assert.Panics(t, func() {
-					config.promptBoolInitTemplateFunc(tc.prompt, tc.args...)
+					config.promptBoolInteractiveTemplateFunc(tc.prompt, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptBoolInitTemplateFunc(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expected, config.promptBoolInteractiveTemplateFunc(tc.prompt, tc.args...))
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
 		})
 	}
 }
 
-func TestPromptIntInitTemplateFunc(t *testing.T) {
+func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
@@ -143,17 +143,17 @@ func TestPromptIntInitTemplateFunc(t *testing.T) {
 			assert.NoError(t, err)
 			if tc.expectedErr {
 				assert.Panics(t, func() {
-					config.promptIntInitTemplateFunc(tc.prompt, tc.args...)
+					config.promptIntInteractiveTemplateFunc(tc.prompt, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptIntInitTemplateFunc(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expected, config.promptIntInteractiveTemplateFunc(tc.prompt, tc.args...))
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
 		})
 	}
 }
 
-func TestPromptStringInitTemplateFunc(t *testing.T) {
+func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
@@ -229,10 +229,10 @@ func TestPromptStringInitTemplateFunc(t *testing.T) {
 			assert.NoError(t, err)
 			if tc.expectedErr {
 				assert.Panics(t, func() {
-					config.promptStringInitTemplateFunc(tc.prompt, tc.args...)
+					config.promptStringInteractiveTemplateFunc(tc.prompt, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptStringInitTemplateFunc(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expected, config.promptStringInteractiveTemplateFunc(tc.prompt, tc.args...))
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
 		})

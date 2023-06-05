@@ -192,6 +192,9 @@ type Config struct {
 	unmanaged       unmanagedCmdConfig
 	upgrade         upgradeCmdConfig
 
+	// Common configuration.
+	interactiveTemplateFuncs interactiveTemplateFuncsConfig
+
 	// Version information.
 	version     semver.Version
 	versionInfo VersionInfo
@@ -735,12 +738,12 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *co
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	initTemplateFuncs := map[string]any{
 		"exit":             c.exitInitTemplateFunc,
-		"promptBool":       c.promptBoolInitTemplateFunc,
-		"promptBoolOnce":   c.promptBoolOnceInitTemplateFunc,
-		"promptInt":        c.promptIntInitTemplateFunc,
-		"promptIntOnce":    c.promptIntOnceInitTemplateFunc,
-		"promptString":     c.promptStringInitTemplateFunc,
-		"promptStringOnce": c.promptStringOnceInitTemplateFunc,
+		"promptBool":       c.promptBoolInteractiveTemplateFunc,
+		"promptBoolOnce":   c.promptBoolOnceInteractiveTemplateFunc,
+		"promptInt":        c.promptIntInteractiveTemplateFunc,
+		"promptIntOnce":    c.promptIntOnceInteractiveTemplateFunc,
+		"promptString":     c.promptStringInteractiveTemplateFunc,
+		"promptStringOnce": c.promptStringOnceInteractiveTemplateFunc,
 		"stdinIsATTY":      c.stdinIsATTYInitTemplateFunc,
 		"writeToStdout":    c.writeToStdout,
 	}
