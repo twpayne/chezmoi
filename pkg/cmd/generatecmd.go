@@ -31,11 +31,7 @@ func (c *Config) runGenerateCmd(cmd *cobra.Command, args []string) error {
 	builder.Grow(16384)
 	switch args[0] {
 	case "install.sh":
-		data, err := templates.FS.ReadFile("install.sh")
-		if err != nil {
-			return err
-		}
-		if _, err := builder.Write(data); err != nil {
+		if _, err := builder.Write(templates.InstallSH); err != nil {
 			return err
 		}
 	default:
