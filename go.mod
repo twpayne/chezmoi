@@ -136,6 +136,7 @@ exclude (
 	github.com/charmbracelet/bubbles v0.16.1 // https://github.com/charmbracelet/bubbletea/issues/737
 	github.com/charmbracelet/bubbletea v0.24.0 // https://github.com/charmbracelet/bubbletea/issues/737
 	github.com/charmbracelet/bubbletea v0.24.1 // https://github.com/charmbracelet/bubbletea/issues/737
+	github.com/charmbracelet/bubbletea v0.24.2 // https://github.com/charmbracelet/bubbletea/issues/737
 	github.com/sergi/go-diff v1.2.0 // https://github.com/sergi/go-diff/issues/123
 	github.com/sergi/go-diff v1.3.0
 	github.com/sergi/go-diff v1.3.1 // https://github.com/twpayne/chezmoi/issues/2706
