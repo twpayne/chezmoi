@@ -859,7 +859,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if !s.readTemplateData {
 				return nil
 			}
-			return s.addTemplateDataDir(sourceAbsPath)
+			return s.addTemplateDataDir(sourceAbsPath, fileInfo)
 		case isPrefixDotFormat(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
 				return nil
@@ -1279,11 +1279,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 }
 
 // addTemplateData adds all template data in the directory sourceAbsPath to s.
-func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath) error {
-	fileInfo, err := s.system.Stat(sourceAbsPath)
-	if err != nil {
-		return err
-	}
+func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.FileInfo) error {
 	walkFunc := func(dataAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if dataAbsPath == sourceAbsPath {
 			return nil
