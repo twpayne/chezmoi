@@ -70,6 +70,17 @@ and push them to your repo (if `autoPush` is true). `autoPush` implies
 changes. If you only set `autoCommit` to true then changes will be committed but
 not pushed.
 
+By default, `autoCommit` will generate a commit message based on the files
+changed. You can override this by setting the `git.commitMessageTemplate`
+configuration variable. For example, to have chezmoi prompt you for a commit
+message each time, use:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[git]
+    autoCommit = true
+    commitMessageTemplate = "{{ promptString \"Commit message\" }}"
+```
+
 Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.
