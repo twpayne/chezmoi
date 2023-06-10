@@ -1896,6 +1896,14 @@ and push them to your repo (if <code>autoPush</code> is true). <code>autoPush</c
 <code>autoCommit</code>, i.e. if <code>autoPush</code> is true then chezmoi will auto-commit your
 changes. If you only set <code>autoCommit</code> to true then changes will be committed but
 not pushed.</p>
+<p>By default, <code>autoCommit</code> will generate a commit message based on the files
+changed. You can override this by setting the <code>git.commitMessageTemplate</code>
+configuration variable. For example, to have chezmoi prompt you for a commit
+message each time, use:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[git]</span>
+<span class="w">    </span><span class="n">autoCommit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="n">commitMessageTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"{{ promptString \"Commit message\" }}"</span>
+</code></pre></div>
 <p>Be careful when using <code>autoPush</code>. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.</p>
