@@ -185,6 +185,9 @@ sections:
     command:
       default: '`git`'
       description: git CLI command
+    commitMessageTemplate:
+      type: 'string'
+      description: Commit message template
   gitHub:
     refreshPeriod:
       type: duration

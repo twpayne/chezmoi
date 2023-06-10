@@ -36,6 +36,12 @@ exec chezmoi forget --force $HOME${/}.file
 exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
 stdout 'Remove \.file'
 
+# test that chezmoi edit uses a custom commit message template
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "feat: my commit"'
+exec chezmoi edit $HOME${/}.dir${/}file
+exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+stdout 'feat: my commit'
+
 -- home/user/.config/chezmoi/chezmoi.toml --
 [git]
     autoCommit = true

@@ -1336,13 +1336,18 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 		return nil
 	}
 	funcMap := maps.Clone(sprig.TxtFuncMap())
-	funcMap["targetRelPath"] = func(source string) string {
-		return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
-	}
+	maps.Copy(funcMap, map[string]any{
+		"promptBool":   c.promptBoolInteractiveTemplateFunc,
+		"promptInt":    c.promptIntInteractiveTemplateFunc,
+		"promptString": c.promptStringInteractiveTemplateFunc,
+		"targetRelPath": func(source string) string {
+			return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
+		},
+	})
 	templateOptions := chezmoi.TemplateOptions{
 		Options: append([]string(nil), c.Template.Options...),
 	}
-	commitMessageTmpl, err := chezmoi.ParseTemplate("commit_message", templates.CommitMessageTmpl, funcMap, templateOptions) //nolint:lll
+	commitMessageTmpl, err := chezmoi.ParseTemplate("commit_message", []byte(c.Git.CommitMessageTemplate), funcMap, templateOptions) //nolint:lll
 	if err != nil {
 		return err
 	}
@@ -2524,7 +2529,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Format: writeDataFormatJSON,
 		Git: gitCmdConfig{
-			Command: "git",
+			Command:               "git",
+			CommitMessageTemplate: templates.CommitMessageTmpl,
 		},
 		GitHub: gitHubConfig{
 			RefreshPeriod: 1 * time.Minute,
