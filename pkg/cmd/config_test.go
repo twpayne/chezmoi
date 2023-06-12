@@ -243,7 +243,7 @@ func withTestUser(t *testing.T, username string) configOption {
 		var err error
 		config.homeDirAbsPath, err = chezmoi.NormalizePath(config.homeDir)
 		if err != nil {
-			panic(err)
+			t.Fatal(err)
 		}
 		config.CacheDirAbsPath = config.homeDirAbsPath.JoinString(".cache", "chezmoi")
 		config.SourceDirAbsPath = config.homeDirAbsPath.JoinString(".local", "share", "chezmoi")

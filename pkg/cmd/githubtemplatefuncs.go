@@ -56,7 +56,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysValue); { //nolint:lll
 		case err != nil:
 			panic(err)
-		case ok && !now.After(gitHubKeysValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+		case ok && now.Before(gitHubKeysValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
 			return gitHubKeysValue.Keys
 		}
 	}
@@ -117,7 +117,7 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseStateValue); { //nolint:lll
 		case err != nil:
 			panic(err)
-		case ok && !now.After(gitHubLatestReleaseStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+		case ok && now.Before(gitHubLatestReleaseStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
 			return gitHubLatestReleaseStateValue.Release
 		}
 	}
@@ -170,7 +170,7 @@ func (c *Config) gitHubLatestTagTemplateFunc(userRepo string) *github.Repository
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestTagStateBucket, gitHubLatestTagKey, &gitHubLatestTagValue); { //nolint:lll
 		case err != nil:
 			panic(err)
-		case ok && !now.After(gitHubLatestTagValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+		case ok && now.Before(gitHubLatestTagValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
 			return gitHubLatestTagValue.Tag
 		}
 	}

@@ -46,7 +46,7 @@ func (b autoBool) MarshalYAML() (any, error) {
 
 // Set implements github.com/spf13/pflag.Value.Set.
 func (b *autoBool) Set(s string) error {
-	if strings.ToLower(s) == "auto" {
+	if strings.EqualFold(s, "auto") {
 		b.auto = true
 		return nil
 	}
