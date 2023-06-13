@@ -1411,7 +1411,7 @@ func (s *SourceState) getExternalDataRaw(
 		}
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, external.URL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, external.URL, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
