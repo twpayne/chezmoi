@@ -21,10 +21,15 @@ func TestArchiveReaderSystemTar(t *testing.T) {
 	})
 	assert.NoError(t, err)
 
-	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", data, ArchiveFormatTar, ArchiveReaderSystemOptions{
-		RootAbsPath:     NewAbsPath("/home/user"),
-		StripComponents: 1,
-	})
+	archiveReaderSystem, err := NewArchiveReaderSystem(
+		"archive.tar",
+		data,
+		ArchiveFormatTar,
+		ArchiveReaderSystemOptions{
+			RootAbsPath:     NewAbsPath("/home/user"),
+			StripComponents: 1,
+		},
+	)
 	assert.NoError(t, err)
 
 	for _, tc := range []struct {

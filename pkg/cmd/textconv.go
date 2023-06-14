@@ -13,7 +13,7 @@ import (
 type textConvElement struct {
 	Pattern string   `json:"pattern" toml:"pattern" yaml:"pattern"`
 	Command string   `json:"command" toml:"command" yaml:"command"`
-	Args    []string `json:"args" toml:"args" yaml:"args"`
+	Args    []string `json:"args"    toml:"args"    yaml:"args"`
 }
 
 type textConv []*textConvElement
@@ -28,7 +28,8 @@ func (t textConv) convert(path string, data []byte) ([]byte, error) {
 		if !ok {
 			continue
 		}
-		if longestPatternElement == nil || len(command.Pattern) > len(longestPatternElement.Pattern) {
+		if longestPatternElement == nil ||
+			len(command.Pattern) > len(longestPatternElement.Pattern) {
 			longestPatternElement = command
 		}
 	}

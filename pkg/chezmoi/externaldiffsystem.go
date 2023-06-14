@@ -38,7 +38,11 @@ type ExternalDiffSystemOptions struct {
 
 // NewExternalDiffSystem creates a new ExternalDiffSystem.
 func NewExternalDiffSystem(
-	system System, command string, args []string, destDirAbsPath AbsPath, options *ExternalDiffSystemOptions,
+	system System,
+	command string,
+	args []string,
+	destDirAbsPath AbsPath,
+	options *ExternalDiffSystemOptions,
 ) *ExternalDiffSystem {
 	return &ExternalDiffSystem{
 		system:         system,
@@ -54,7 +58,8 @@ func NewExternalDiffSystem(
 // Close frees all resources held by s.
 func (s *ExternalDiffSystem) Close() error {
 	if !s.tempDirAbsPath.Empty() {
-		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil &&
+			!errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 		s.tempDirAbsPath = EmptyAbsPath
@@ -177,7 +182,12 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *ExternalDiffSystem) RunScript(
+	scriptname RelPath,
+	dir AbsPath,
+	data []byte,
+	options RunScriptOptions,
+) error {
 	bits := EntryTypeScripts
 	if options.Condition == ScriptConditionAlways {
 		bits |= EntryTypeAlways

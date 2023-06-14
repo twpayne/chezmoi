@@ -32,12 +32,22 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 	}
 
 	flags := removeCmd.Flags()
-	flags.BoolVarP(&c.remove.recursive, "recursive", "r", c.remove.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(
+		&c.remove.recursive,
+		"recursive",
+		"r",
+		c.remove.recursive,
+		"Recurse into subdirectories",
+	)
 
 	return removeCmd
 }
 
-func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runRemoveCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeManaged: true,
 		recursive:     c.remove.recursive,
@@ -88,11 +98,13 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 				return nil
 			}
 		}
-		if err := c.destSystem.RemoveAll(destAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		if err := c.destSystem.RemoveAll(destAbsPath); err != nil &&
+			!errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 		if !sourceAbsPath.Empty() {
-			if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil &&
+				!errors.Is(err, fs.ErrNotExist) {
 				return err
 			}
 		}

@@ -39,17 +39,39 @@ func (c *Config) newAddCmd() *cobra.Command {
 	}
 
 	flags := addCmd.Flags()
-	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
+	flags.BoolVar(
+		&c.Add.create,
+		"create",
+		c.Add.create,
+		"Add files that should exist, irrespective of their contents",
+	)
 	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
 	flags.VarP(c.Add.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
+	flags.BoolVarP(
+		&c.Add.follow,
+		"follow",
+		"f",
+		c.Add.follow,
+		"Add symlink targets instead of symlinks",
+	)
 	flags.VarP(c.Add.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVarP(&c.Add.prompt, "prompt", "p", c.Add.prompt, "Prompt before adding each entry")
 	flags.BoolVarP(&c.Add.quiet, "quiet", "q", c.Add.quiet, "Suppress warnings")
-	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(
+		&c.Add.recursive,
+		"recursive",
+		"r",
+		c.Add.recursive,
+		"Recurse into subdirectories",
+	)
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
-	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates") //nolint:lll
+	flags.BoolVar(
+		&c.Add.TemplateSymlinks,
+		"template-symlinks",
+		c.Add.TemplateSymlinks,
+		"Add symlinks with target in source or home dirs as templates",
+	)
 
 	registerExcludeIncludeFlagCompletionFuncs(addCmd)
 
@@ -90,7 +112,8 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
 // defaultReplaceFunc prompts the user for confirmation if the adding the entry
 // would remove any of the encrypted, private, or template attributes.
 func (c *Config) defaultReplaceFunc(
-	targetRelPath chezmoi.RelPath, newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry,
+	targetRelPath chezmoi.RelPath,
+	newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry,
 ) error {
 	if c.force {
 		return nil
@@ -116,7 +139,11 @@ func (c *Config) defaultReplaceFunc(
 		return nil
 	}
 	removedAttributesStr := englishListWithNoun(removedAttributes, "attribute", "")
-	prompt := fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr)
+	prompt := fmt.Sprintf(
+		"adding %s would remove %s, continue",
+		targetRelPath,
+		removedAttributesStr,
+	)
 
 	for {
 		switch choice, err := c.promptChoice(prompt, choicesYesNoAllQuit); {
@@ -137,7 +164,11 @@ func (c *Config) defaultReplaceFunc(
 	}
 }
 
-func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runAddCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, destAbsPathInfosOptions{
 		follow:    c.Mode == chezmoi.ModeSymlink || c.Add.follow,
 		recursive: c.Add.recursive,
@@ -151,23 +182,29 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
-	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-		Create:          c.Add.create,
-		Encrypt:         c.Add.encrypt,
-		EncryptedSuffix: c.encryption.EncryptedSuffix(),
-		Exact:           c.Add.exact,
-		Filter:          c.Add.filter,
-		OnIgnoreFunc:    c.defaultOnIgnoreFunc,
-		PreAddFunc:      c.defaultPreAddFunc,
-		ProtectedAbsPaths: []chezmoi.AbsPath{
-			c.CacheDirAbsPath,
-			c.WorkingTreeAbsPath,
-			c.configFileAbsPath,
-			persistentStateFileAbsPath,
-			c.sourceDirAbsPath,
+	return sourceState.Add(
+		c.sourceSystem,
+		c.persistentState,
+		c.destSystem,
+		destAbsPathInfos,
+		&chezmoi.AddOptions{
+			Create:          c.Add.create,
+			Encrypt:         c.Add.encrypt,
+			EncryptedSuffix: c.encryption.EncryptedSuffix(),
+			Exact:           c.Add.exact,
+			Filter:          c.Add.filter,
+			OnIgnoreFunc:    c.defaultOnIgnoreFunc,
+			PreAddFunc:      c.defaultPreAddFunc,
+			ProtectedAbsPaths: []chezmoi.AbsPath{
+				c.CacheDirAbsPath,
+				c.WorkingTreeAbsPath,
+				c.configFileAbsPath,
+				persistentStateFileAbsPath,
+				c.sourceDirAbsPath,
+			},
+			ReplaceFunc:      c.defaultReplaceFunc,
+			Template:         c.Add.template,
+			TemplateSymlinks: c.Add.TemplateSymlinks,
 		},
-		ReplaceFunc:      c.defaultReplaceFunc,
-		Template:         c.Add.template,
-		TemplateSymlinks: c.Add.TemplateSymlinks,
-	})
+	)
 }

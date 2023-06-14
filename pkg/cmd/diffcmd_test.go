@@ -121,13 +121,22 @@ func TestDiffCmd(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]any{
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: fs.ModePerm &^ chezmoitest.Umask},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{
+					Perm: fs.ModePerm &^ chezmoitest.Umask,
+				},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
 					assert.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
 				stdout := strings.Builder{}
-				assert.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"diff"}, tc.args...)))
+				assert.NoError(
+					t,
+					newTestConfig(
+						t,
+						fileSystem,
+						withStdout(&stdout),
+					).execute(append([]string{"diff"}, tc.args...)),
+				)
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 			})
 		})

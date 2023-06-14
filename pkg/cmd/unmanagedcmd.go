@@ -37,7 +37,11 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 	return unmanagedCmd
 }
 
-func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runUnmanagedCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	var absPaths chezmoi.AbsPaths
 	if len(args) == 0 {
 		absPaths = append(absPaths, c.DestDirAbsPath)

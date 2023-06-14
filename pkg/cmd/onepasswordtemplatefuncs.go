@@ -32,7 +32,7 @@ type onepasswordAccount struct {
 
 type onepasswordConfig struct {
 	Command       string `json:"command" mapstructure:"command" yaml:"command"`
-	Prompt        bool   `json:"prompt" mapstructure:"prompt" yaml:"prompt"`
+	Prompt        bool   `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
 	version       *semver.Version
 	versionErr    error
 	environFunc   func() []string
@@ -332,7 +332,10 @@ func (c *Config) onepasswordItemV2(userArgs []string) (*onepasswordItemV2, error
 	return &item, nil
 }
 
-func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withSessionTokenType) ([]byte, error) {
+func (c *Config) onepasswordOutput(
+	args *onepasswordArgs,
+	withSessionToken withSessionTokenType,
+) ([]byte, error) {
 	key := strings.Join(args.args, "\x00")
 	if output, ok := c.Onepassword.outputCache[key]; ok {
 		return output, nil

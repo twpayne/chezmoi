@@ -31,7 +31,11 @@ type BoltPersistentState struct {
 }
 
 // NewBoltPersistentState returns a new BoltPersistentState.
-func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStateMode) (*BoltPersistentState, error) {
+func NewBoltPersistentState(
+	system System,
+	path AbsPath,
+	mode BoltPersistentStateMode,
+) (*BoltPersistentState, error) {
 	empty := false
 	switch _, err := system.Stat(path); {
 	case errors.Is(err, fs.ErrNotExist):

@@ -42,25 +42,25 @@ type dirData struct {
 
 // A fileData contains data about a file.
 type fileData struct {
-	Type     dataType    `json:"type" yaml:"type"`
-	Name     AbsPath     `json:"name" yaml:"name"`
+	Type     dataType    `json:"type"     yaml:"type"`
+	Name     AbsPath     `json:"name"     yaml:"name"`
 	Contents string      `json:"contents" yaml:"contents"`
-	Perm     fs.FileMode `json:"perm" yaml:"perm"`
+	Perm     fs.FileMode `json:"perm"     yaml:"perm"`
 }
 
 // A scriptData contains data about a script.
 type scriptData struct {
-	Type        dataType     `json:"type" yaml:"type"`
-	Name        AbsPath      `json:"name" yaml:"name"`
-	Contents    string       `json:"contents" yaml:"contents"`
-	Condition   string       `json:"condition" yaml:"condition"`
+	Type        dataType     `json:"type"                  yaml:"type"`
+	Name        AbsPath      `json:"name"                  yaml:"name"`
+	Contents    string       `json:"contents"              yaml:"contents"`
+	Condition   string       `json:"condition"             yaml:"condition"`
 	Interpreter *Interpreter `json:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 }
 
 // A symlinkData contains data about a symlink.
 type symlinkData struct {
-	Type     dataType `json:"type" yaml:"type"`
-	Name     AbsPath  `json:"name" yaml:"name"`
+	Type     dataType `json:"type"     yaml:"type"`
+	Name     AbsPath  `json:"name"     yaml:"name"`
 	Linkname string   `json:"linkname" yaml:"linkname"`
 }
 
@@ -98,7 +98,12 @@ func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *DumpSystem) RunScript(
+	scriptname RelPath,
+	dir AbsPath,
+	data []byte,
+	options RunScriptOptions,
+) error {
 	scriptnameStr := scriptname.String()
 	scriptData := &scriptData{
 		Type:     dataTypeScript,

@@ -25,8 +25,8 @@ const (
 // An EntryState represents the state of an entry. A nil EntryState is
 // equivalent to EntryStateTypeAbsent.
 type EntryState struct {
-	Type           EntryStateType `json:"type" yaml:"type"`
-	Mode           fs.FileMode    `json:"mode,omitempty" yaml:"mode,omitempty"`
+	Type           EntryStateType `json:"type"                     yaml:"type"`
+	Mode           fs.FileMode    `json:"mode,omitempty"           yaml:"mode,omitempty"`
 	ContentsSHA256 HexBytes       `json:"contentsSHA256,omitempty" yaml:"contentsSHA256,omitempty"` //nolint:tagliatelle
 	contents       []byte
 	overwrite      bool

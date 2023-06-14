@@ -10,8 +10,8 @@ import (
 )
 
 type updateCmdConfig struct {
-	Command           string   `json:"command" mapstructure:"command" yaml:"command"`
-	Args              []string `json:"args" mapstructure:"args" yaml:"args"`
+	Command           string   `json:"command"           mapstructure:"command"           yaml:"command"`
+	Args              []string `json:"args"              mapstructure:"args"              yaml:"args"`
 	RecurseSubmodules bool     `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
 	apply             bool
 	filter            *chezmoi.EntryTypeFilter
@@ -41,8 +41,19 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 	flags.VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.Update.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
-	flags.BoolVar(&c.Update.RecurseSubmodules, "recurse-submodules", c.Update.RecurseSubmodules, "Recursively update submodules") //nolint:lll
-	flags.BoolVarP(&c.Update.recursive, "recursive", "r", c.Update.recursive, "Recurse into subdirectories")
+	flags.BoolVar(
+		&c.Update.RecurseSubmodules,
+		"recurse-submodules",
+		c.Update.RecurseSubmodules,
+		"Recursively update submodules",
+	)
+	flags.BoolVarP(
+		&c.Update.recursive,
+		"recursive",
+		"r",
+		c.Update.recursive,
+		"Recurse into subdirectories",
+	)
 
 	registerExcludeIncludeFlagCompletionFuncs(updateCmd)
 

@@ -62,7 +62,8 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	if err := s.fileSystem.RemoveAll(newname.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
+	if err := s.fileSystem.RemoveAll(newname.String()); err != nil &&
+		!errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
 	return s.fileSystem.Symlink(filepath.FromSlash(oldname), newname.String())

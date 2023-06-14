@@ -21,10 +21,10 @@ type keepassxcAttributeCacheKey struct {
 }
 
 type keepassxcConfig struct {
-	Command         string          `json:"command" mapstructure:"command" yaml:"command"`
+	Command         string          `json:"command"  mapstructure:"command"  yaml:"command"`
 	Database        chezmoi.AbsPath `json:"database" mapstructure:"database" yaml:"database"`
-	Args            []string        `json:"args" mapstructure:"args" yaml:"args"`
-	Prompt          bool            `json:"prompt" mapstructure:"prompt" yaml:"prompt"`
+	Args            []string        `json:"args"     mapstructure:"args"     yaml:"args"`
+	Prompt          bool            `json:"prompt"   mapstructure:"prompt"   yaml:"prompt"`
 	version         *semver.Version
 	cache           map[string]map[string]string
 	attachmentCache map[string]map[string]string
@@ -44,7 +44,13 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 		panic(err)
 	}
 	if version.Compare(keepassxcHasAttachmentExportVersion) < 0 {
-		panic(fmt.Sprintf("keepassxc-cli version %s required, found %s", keepassxcHasAttachmentExportVersion, version))
+		panic(
+			fmt.Sprintf(
+				"keepassxc-cli version %s required, found %s",
+				keepassxcHasAttachmentExportVersion,
+				version,
+			),
+		)
 	}
 
 	if data, ok := c.Keepassxc.attachmentCache[entry][name]; ok {
@@ -136,7 +142,9 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 
 	cmd := exec.Command(name, args...)
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
-		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
+		password, err := c.readPassword(
+			fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database),
+		)
 		if err != nil {
 			return nil, err
 		}

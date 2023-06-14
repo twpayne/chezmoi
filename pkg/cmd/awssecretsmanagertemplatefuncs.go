@@ -11,7 +11,7 @@ import (
 )
 
 type awsSecretsManagerConfig struct {
-	Region    string `json:"region" mapstructure:"region" yaml:"region"`
+	Region    string `json:"region"  mapstructure:"region"  yaml:"region"`
 	Profile   string `json:"profile" mapstructure:"profile" yaml:"profile"`
 	svc       *secretsmanager.Client
 	cache     map[string]string
@@ -42,9 +42,12 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 		c.AWSSecretsManager.svc = secretsmanager.NewFromConfig(cfg)
 	}
 
-	result, err := c.AWSSecretsManager.svc.GetSecretValue(context.Background(), &secretsmanager.GetSecretValueInput{
-		SecretId: aws.String(arn),
-	})
+	result, err := c.AWSSecretsManager.svc.GetSecretValue(
+		context.Background(),
+		&secretsmanager.GetSecretValueInput{
+			SecretId: aws.String(arn),
+		},
+	)
 	if err != nil {
 		panic(err)
 	}

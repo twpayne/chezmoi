@@ -34,7 +34,11 @@ func makeKeyMsgs(s string) []tea.Msg { //nolint:ireturn,nolintlint
 	return msgs
 }
 
-func testRunModelWithInput[M tea.Model](t *testing.T, model M, input string) M { //nolint:ireturn,nolintlint
+func testRunModelWithInput[M tea.Model]( //nolint:ireturn,nolintlint
+	t *testing.T,
+	model M,
+	input string,
+) M {
 	t.Helper()
 	for _, msg := range makeKeyMsgs(input) {
 		m, _ := model.Update(msg)

@@ -151,7 +151,12 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Fatalf("%s unexpectedly has mode %03o", args[1], fileInfo.Mode().Perm())
 	}
 	if !neg && !equal {
-		ts.Fatalf("%s has mode %03o, expected %03o", args[1], fileInfo.Mode().Perm(), fs.FileMode(mode64)&^chezmoitest.Umask)
+		ts.Fatalf(
+			"%s has mode %03o, expected %03o",
+			args[1],
+			fileInfo.Mode().Perm(),
+			fs.FileMode(mode64)&^chezmoitest.Umask,
+		)
 	}
 }
 
@@ -628,7 +633,10 @@ func goosCondition(cond string) (result, valid bool) {
 }
 
 func prependDirToPath(dir, path string) string {
-	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
+	return strings.Join(
+		append([]string{dir}, filepath.SplitList(path)...),
+		string(os.PathListSeparator),
+	)
 }
 
 func setup(env *testscript.Env) error {

@@ -21,7 +21,11 @@ func (c *Config) newIgnoredCmd() *cobra.Command {
 	return ignoredCmd
 }
 
-func (c *Config) runIgnoredCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runIgnoredCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	builder := strings.Builder{}
 	for _, relPath := range sourceState.Ignored() {
 		if _, err := builder.WriteString(relPath.String()); err != nil {

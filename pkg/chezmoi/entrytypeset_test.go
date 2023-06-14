@@ -149,9 +149,17 @@ func TestEntryTypeSetFlagCompletionFunc(t *testing.T) {
 		},
 	} {
 		t.Run(tc.toComplete, func(t *testing.T) {
-			completions, shellCompDirective := EntryTypeSetFlagCompletionFunc(nil, nil, tc.toComplete)
+			completions, shellCompDirective := EntryTypeSetFlagCompletionFunc(
+				nil,
+				nil,
+				tc.toComplete,
+			)
 			assert.Equal(t, tc.expectedCompletions, completions)
-			assert.Equal(t, cobra.ShellCompDirectiveNoSpace|cobra.ShellCompDirectiveNoFileComp, shellCompDirective)
+			assert.Equal(
+				t,
+				cobra.ShellCompDirectiveNoSpace|cobra.ShellCompDirectiveNoFileComp,
+				shellCompDirective,
+			)
 		})
 	}
 }

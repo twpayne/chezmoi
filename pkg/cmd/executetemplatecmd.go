@@ -34,14 +34,56 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	}
 
 	flags := executeTemplateCmd.Flags()
-	flags.BoolVarP(&c.executeTemplate.init, "init", "i", c.executeTemplate.init, "Simulate chezmoi init")
-	flags.StringToStringVar(&c.executeTemplate.promptBool, "promptBool", c.executeTemplate.promptBool, "Simulate promptBool") //nolint:lll
-	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
-	flags.StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "Simulate promptString") //nolint:lll
-	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
-	flags.StringVar(&c.executeTemplate.templateOptions.LeftDelimiter, "left-delimiter", c.executeTemplate.templateOptions.LeftDelimiter, "Set left template delimiter")     //nolint:lll
-	flags.StringVar(&c.executeTemplate.templateOptions.RightDelimiter, "right-delimiter", c.executeTemplate.templateOptions.RightDelimiter, "Set right template delimiter") //nolint:lll
-	flags.BoolVar(&c.executeTemplate.withStdin, "with-stdin", c.executeTemplate.withStdin, "Set .chezmoi.stdin to the contents of the standard input")                      //nolint:lll
+	flags.BoolVarP(
+		&c.executeTemplate.init,
+		"init",
+		"i",
+		c.executeTemplate.init,
+		"Simulate chezmoi init",
+	)
+	flags.StringToStringVar(
+		&c.executeTemplate.promptBool,
+		"promptBool",
+		c.executeTemplate.promptBool,
+		"Simulate promptBool",
+	)
+	flags.StringToIntVar(
+		&c.executeTemplate.promptInt,
+		"promptInt",
+		c.executeTemplate.promptInt,
+		"Simulate promptInt",
+	)
+	flags.StringToStringVarP(
+		&c.executeTemplate.promptString,
+		"promptString",
+		"p",
+		c.executeTemplate.promptString,
+		"Simulate promptString",
+	)
+	flags.BoolVar(
+		&c.executeTemplate.stdinIsATTY,
+		"stdinisatty",
+		c.executeTemplate.stdinIsATTY,
+		"Simulate stdinIsATTY",
+	)
+	flags.StringVar(
+		&c.executeTemplate.templateOptions.LeftDelimiter,
+		"left-delimiter",
+		c.executeTemplate.templateOptions.LeftDelimiter,
+		"Set left template delimiter",
+	)
+	flags.StringVar(
+		&c.executeTemplate.templateOptions.RightDelimiter,
+		"right-delimiter",
+		c.executeTemplate.templateOptions.RightDelimiter,
+		"Set right template delimiter",
+	)
+	flags.BoolVar(
+		&c.executeTemplate.withStdin,
+		"with-stdin",
+		c.executeTemplate.withStdin,
+		"Set .chezmoi.stdin to the contents of the standard input",
+	)
 
 	return executeTemplateCmd
 }

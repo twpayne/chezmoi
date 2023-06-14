@@ -97,7 +97,13 @@ func (c *Config) newChattrCmd() *cobra.Command {
 	}
 
 	flags := chattrCmd.Flags()
-	flags.BoolVarP(&c.chattr.recursive, "recursive", "r", c.chattr.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(
+		&c.chattr.recursive,
+		"recursive",
+		"r",
+		c.chattr.recursive,
+		"Recurse into subdirectories",
+	)
 
 	return chattrCmd
 }
@@ -153,7 +159,11 @@ func (c *Config) chattrCmdValidArgs(
 	}
 }
 
-func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runChattrCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	// LATER should the core functionality of chattr move to chezmoi.SourceState?
 
 	m, err := parseModifier(args[0])
@@ -299,7 +309,9 @@ func (m orderModifier) modify(order chezmoi.ScriptOrder) chezmoi.ScriptOrder {
 }
 
 // modify returns the modified value of type.
-func (m sourceDirTypeModifier) modify(sourceDirType chezmoi.SourceDirTargetType) chezmoi.SourceDirTargetType {
+func (m sourceDirTypeModifier) modify(
+	sourceDirType chezmoi.SourceDirTargetType,
+) chezmoi.SourceDirTargetType {
 	switch m {
 	case sourceDirTypeModifierLeaveUnchanged:
 		return sourceDirType
@@ -316,7 +328,9 @@ func (m sourceDirTypeModifier) modify(sourceDirType chezmoi.SourceDirTargetType)
 }
 
 // modify returns the modified value of type.
-func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetType) chezmoi.SourceFileTargetType {
+func (m sourceFileTypeModifier) modify(
+	sourceFileType chezmoi.SourceFileTargetType,
+) chezmoi.SourceFileTargetType {
 	switch m {
 	case sourceFileTypeModifierLeaveUnchanged:
 		return sourceFileType

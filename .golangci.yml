@@ -40,7 +40,6 @@ linters:
   - ineffassign
   - interfacebloat
   - ireturn
-  - lll
   - loggercheck
   - makezero
   - misspell
@@ -87,6 +86,7 @@ linters:
   - goheader
   - gomnd
   - gomoddirectives
+  - lll
   - maintidx
   - maligned
   - nakedret
@@ -164,13 +164,8 @@ issues:
   - linters:
     - forbidigo
     - gosec
-    - lll
     path: ^internal/cmds/
   - linters:
     - forcetypeassert
     - gosec
-    - lll
     path: _test\.go$
-  - linters:
-    - lll
-    path: ^pkg/shell/shellcgo\.go$

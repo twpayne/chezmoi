@@ -8,7 +8,7 @@ import (
 
 type ejsonConfig struct {
 	KeyDir string `json:"keyDir" mapstructure:"keyDir" yaml:"keyDir"`
-	Key    string `json:"key" mapstructure:"key" yaml:"key"`
+	Key    string `json:"key"    mapstructure:"key"    yaml:"key"`
 	cache  map[string]any
 }
 
