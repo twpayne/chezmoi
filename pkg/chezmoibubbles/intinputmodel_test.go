@@ -52,7 +52,11 @@ func TestIntInputModel(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			actualModel := testRunModelWithInput(t, NewIntInputModel("prompt", tc.defaultValue), tc.input)
+			actualModel := testRunModelWithInput(
+				t,
+				NewIntInputModel("prompt", tc.defaultValue),
+				tc.input,
+			)
 			assert.Equal(t, tc.expectedCanceled, actualModel.Canceled())
 			assert.Equal(t, tc.expectedValue, actualModel.Value())
 		})

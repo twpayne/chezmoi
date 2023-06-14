@@ -40,14 +40,20 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	return reAddCmd
 }
 
-func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runReAddCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	var targetRelPaths chezmoi.RelPaths
 	sourceStateEntries := make(map[chezmoi.RelPath]chezmoi.SourceStateEntry)
-	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
-		targetRelPaths = append(targetRelPaths, targetRelPath)
-		sourceStateEntries[targetRelPath] = sourceStateEntry
-		return nil
-	})
+	_ = sourceState.ForEach(
+		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+			targetRelPaths = append(targetRelPaths, targetRelPath)
+			sourceStateEntries[targetRelPath] = sourceStateEntry
+			return nil
+		},
+	)
 	sort.Sort(targetRelPaths)
 
 TARGET_REL_PATH:

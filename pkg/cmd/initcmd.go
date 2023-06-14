@@ -53,17 +53,23 @@ var repoGuesses = []struct {
 		sshRepoGuessRepl:  "git@$1:$2/dotfiles.git",
 	},
 	{
-		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
+		rx: regexp.MustCompile(
+			`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`,
+		),
 		httpRepoGuessRepl: "https://$1/$2/$3.git",
 		sshRepoGuessRepl:  "git@$1:$2/$3.git",
 	},
 	{
-		rx:                regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
+		rx: regexp.MustCompile(
+			`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`,
+		),
 		httpRepoGuessRepl: "https://$1/$2/$3.git",
 		sshRepoGuessRepl:  "git@$1:$2/$3.git",
 	},
 	{
-		rx:                regexp.MustCompile(`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
+		rx: regexp.MustCompile(
+			`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`,
+		),
 		httpRepoGuessRepl: "$1$2/$3/$4.git",
 		sshRepoGuessRepl:  "git@$2:$3/$4.git",
 	},
@@ -108,12 +114,35 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
 	flags.VarP(c.init.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
+	flags.BoolVarP(
+		&c.init.guessRepoURL,
+		"guess-repo-url",
+		"g",
+		c.init.guessRepoURL,
+		"Guess the repo URL",
+	)
 	flags.VarP(c.init.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
-	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
-	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
-	flags.BoolVar(&c.init.recurseSubmodules, "recurse-submodules", c.init.recurseSubmodules, "Checkout submodules recursively") //nolint:lll
+	flags.BoolVarP(
+		&c.init.purge,
+		"purge",
+		"p",
+		c.init.purge,
+		"Purge config and source directories after running",
+	)
+	flags.BoolVarP(
+		&c.init.purgeBinary,
+		"purge-binary",
+		"P",
+		c.init.purgeBinary,
+		"Purge chezmoi binary after running",
+	)
+	flags.BoolVar(
+		&c.init.recurseSubmodules,
+		"recurse-submodules",
+		c.init.recurseSubmodules,
+		"Checkout submodules recursively",
+	)
 	flags.BoolVar(&c.init.ssh, "ssh", c.init.ssh, "Use ssh instead of https when guessing repo URL")
 
 	return initCmd

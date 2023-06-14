@@ -12,12 +12,12 @@ import (
 )
 
 type editCmdConfig struct {
-	Command     string        `json:"command" mapstructure:"command" yaml:"command"`
-	Args        []string      `json:"args" mapstructure:"args" yaml:"args"`
-	Hardlink    bool          `json:"hardlink" mapstructure:"hardlink" yaml:"hardlink"`
+	Command     string        `json:"command"     mapstructure:"command"     yaml:"command"`
+	Args        []string      `json:"args"        mapstructure:"args"        yaml:"args"`
+	Hardlink    bool          `json:"hardlink"    mapstructure:"hardlink"    yaml:"hardlink"`
 	MinDuration time.Duration `json:"minDuration" mapstructure:"minDuration" yaml:"minDuration"`
-	Watch       bool          `json:"watch" mapstructure:"watch" yaml:"watch"`
-	Apply       bool          `json:"apply" mapstructure:"apply" yaml:"apply"`
+	Watch       bool          `json:"watch"       mapstructure:"watch"       yaml:"watch"`
+	Apply       bool          `json:"apply"       mapstructure:"apply"       yaml:"apply"`
 	filter      *chezmoi.EntryTypeFilter
 	init        bool
 }
@@ -42,7 +42,12 @@ func (c *Config) newEditCmd() *cobra.Command {
 	flags := editCmd.Flags()
 	flags.BoolVarP(&c.Edit.Apply, "apply", "a", c.Edit.Apply, "Apply after editing")
 	flags.VarP(c.Edit.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
+	flags.BoolVar(
+		&c.Edit.Hardlink,
+		"hardlink",
+		c.Edit.Hardlink,
+		"Invoke editor with a hardlink to the source file",
+	)
 	flags.VarP(c.Edit.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
 	flags.BoolVar(&c.Edit.Watch, "watch", c.Edit.Watch, "Apply on save")

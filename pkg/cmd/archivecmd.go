@@ -41,7 +41,13 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	flags.BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "Compress output with gzip")
 	flags.VarP(c.archive.filter.Exclude, "include", "i", "Include entry types")
 	flags.BoolVar(&c.archive.init, "init", c.archive.init, "Recreate config file from template")
-	flags.BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(
+		&c.archive.recursive,
+		"recursive",
+		"r",
+		c.archive.recursive,
+		"Recurse into subdirectories",
+	)
 
 	registerExcludeIncludeFlagCompletionFuncs(archiveCmd)
 

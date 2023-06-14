@@ -26,7 +26,13 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 
 	flags := mergeAllCmd.Flags()
 	flags.BoolVar(&c.mergeAll.init, "init", c.mergeAll.init, "Recreate config file from template")
-	flags.BoolVarP(&c.mergeAll.recursive, "recursive", "r", c.mergeAll.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(
+		&c.mergeAll.recursive,
+		"recursive",
+		"r",
+		c.mergeAll.recursive,
+		"Recurse into subdirectories",
+	)
 
 	return mergeAllCmd
 }
@@ -37,7 +43,8 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 	preApplyFunc := func(
 		targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
 	) error {
-		if targetEntryState.Type == chezmoi.EntryStateTypeFile && !targetEntryState.Equivalent(actualEntryState) {
+		if targetEntryState.Type == chezmoi.EntryStateTypeFile &&
+			!targetEntryState.Equivalent(actualEntryState) {
 			targetRelPaths = append(targetRelPaths, targetRelPath)
 		}
 		return chezmoi.Skip

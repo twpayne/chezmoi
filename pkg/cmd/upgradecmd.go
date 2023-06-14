@@ -98,7 +98,12 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 	}
 
 	flags := upgradeCmd.Flags()
-	flags.StringVar(&c.upgrade.executable, "executable", c.upgrade.method, "Set executable to replace")
+	flags.StringVar(
+		&c.upgrade.executable,
+		"executable",
+		c.upgrade.method,
+		"Set executable to replace",
+	)
 	flags.StringVar(&c.upgrade.method, "method", c.upgrade.method, "Set upgrade method")
 	flags.StringVar(&c.upgrade.owner, "owner", c.upgrade.owner, "Set owner")
 	flags.StringVar(&c.upgrade.repo, "repo", c.upgrade.repo, "Set repo")
@@ -112,7 +117,9 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 
 	var zeroVersion semver.Version
 	if c.version == zeroVersion && !c.force {
-		return errors.New("cannot upgrade dev version to latest released version unless --force is set")
+		return errors.New(
+			"cannot upgrade dev version to latest released version unless --force is set",
+		)
 	}
 
 	httpClient, err := c.getHTTPClient()
@@ -154,7 +161,12 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		case err != nil:
 			return err
 		case method == "":
-			return fmt.Errorf("%s/%s: cannot determine upgrade method for %s", runtime.GOOS, runtime.GOARCH, executableAbsPath)
+			return fmt.Errorf(
+				"%s/%s: cannot determine upgrade method for %s",
+				runtime.GOOS,
+				runtime.GOARCH,
+				executableAbsPath,
+			)
 		}
 	}
 	c.logger.Info().
@@ -212,8 +224,15 @@ func (c *Config) brewUpgrade() error {
 	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 }
 
-func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
-	name := fmt.Sprintf("%s_%s_checksums.txt", c.upgrade.repo, strings.TrimPrefix(rr.GetTagName(), "v"))
+func (c *Config) getChecksums(
+	ctx context.Context,
+	rr *github.RepositoryRelease,
+) (map[string][]byte, error) {
+	name := fmt.Sprintf(
+		"%s_%s_checksums.txt",
+		c.upgrade.repo,
+		strings.TrimPrefix(rr.GetTagName(), "v"),
+	)
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
 		return nil, fmt.Errorf("%s: cannot find release asset", name)
@@ -285,7 +304,11 @@ func (c *Config) getLibc() (string, error) {
 	return "", errors.New("unable to determine libc")
 }
 
-func (c *Config) getPackageFilename(packageType string, version *semver.Version, os, arch string) (string, error) {
+func (c *Config) getPackageFilename(
+	packageType string,
+	version *semver.Version,
+	os, arch string,
+) (string, error) {
 	if archReplacement, ok := archReplacements[packageType][arch]; ok {
 		arch = archReplacement
 	}
@@ -310,20 +333,44 @@ func (c *Config) replaceExecutable(
 	switch {
 	case runtime.GOOS == "windows":
 		archiveFormat = chezmoi.ArchiveFormatZip
-		archiveName = fmt.Sprintf("%s_%s_%s_%s.zip", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
+		archiveName = fmt.Sprintf(
+			"%s_%s_%s_%s.zip",
+			c.upgrade.repo,
+			releaseVersion,
+			runtime.GOOS,
+			runtime.GOARCH,
+		)
 	case runtime.GOOS == "linux" && runtime.GOARCH == "amd64":
 		archiveFormat = chezmoi.ArchiveFormatTarGz
 		var libc string
 		if libc, err = c.getLibc(); err != nil {
 			return
 		}
-		archiveName = fmt.Sprintf("%s_%s_%s-%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, libc, runtime.GOARCH)
+		archiveName = fmt.Sprintf(
+			"%s_%s_%s-%s_%s.tar.gz",
+			c.upgrade.repo,
+			releaseVersion,
+			runtime.GOOS,
+			libc,
+			runtime.GOARCH,
+		)
 	case runtime.GOOS == "linux" && runtime.GOARCH == "386":
 		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf("%s_%s_%s_i386.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS)
+		archiveName = fmt.Sprintf(
+			"%s_%s_%s_i386.tar.gz",
+			c.upgrade.repo,
+			releaseVersion,
+			runtime.GOOS,
+		)
 	default:
 		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
+		archiveName = fmt.Sprintf(
+			"%s_%s_%s_%s.tar.gz",
+			c.upgrade.repo,
+			releaseVersion,
+			runtime.GOOS,
+			runtime.GOARCH,
+		)
 	}
 	releaseAsset := getReleaseAssetByName(rr, archiveName)
 	if releaseAsset == nil {
@@ -402,7 +449,12 @@ func (c *Config) upgradePackage(
 		}
 
 		// Find the release asset.
-		packageFilename, err := c.getPackageFilename(packageType, version, runtime.GOOS, runtime.GOARCH)
+		packageFilename, err := c.getPackageFilename(
+			packageType,
+			version,
+			runtime.GOOS,
+			runtime.GOARCH,
+		)
 		if err != nil {
 			return err
 		}
@@ -449,7 +501,12 @@ func (c *Config) upgradePackage(
 	}
 }
 
-func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryRelease, name string, data []byte) error {
+func (c *Config) verifyChecksum(
+	ctx context.Context,
+	rr *github.RepositoryRelease,
+	name string,
+	data []byte,
+) error {
 	checksums, err := c.getChecksums(ctx, rr)
 	if err != nil {
 		return err
@@ -461,7 +518,10 @@ func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryReleas
 	checksum := sha256.Sum256(data)
 	if !bytes.Equal(checksum[:], expectedChecksum) {
 		return fmt.Errorf(
-			"%s: checksum failed (want %s, got %s)", name, hex.EncodeToString(expectedChecksum), hex.EncodeToString(checksum[:]),
+			"%s: checksum failed (want %s, got %s)",
+			name,
+			hex.EncodeToString(expectedChecksum),
+			hex.EncodeToString(checksum[:]),
 		)
 	}
 	return nil
@@ -527,7 +587,10 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 		case uid:
 			return upgradeMethodReplaceExecutable, nil
 		default:
-			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current non-root user", executableAbsPath)
+			return "", fmt.Errorf(
+				"%s: cannot upgrade executable owned by non-current non-root user",
+				executableAbsPath,
+			)
 		}
 	case "openbsd":
 		return upgradeMethodReplaceExecutable, nil
@@ -554,7 +617,11 @@ func getPackageType(system chezmoi.System) (string, error) {
 			}
 		}
 	}
-	err = fmt.Errorf("could not determine package type (ID=%q, ID_LIKE=%q)", osRelease["ID"], osRelease["ID_LIKE"])
+	err = fmt.Errorf(
+		"could not determine package type (ID=%q, ID_LIKE=%q)",
+		osRelease["ID"],
+		osRelease["ID_LIKE"],
+	)
 	return packageTypeNone, err
 }
 

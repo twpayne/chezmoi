@@ -15,7 +15,7 @@ import (
 
 type mergeCmdConfig struct {
 	Command string   `json:"command" mapstructure:"command" yaml:"command"`
-	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
+	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
 func (c *Config) newMergeCmd() *cobra.Command {
@@ -36,7 +36,11 @@ func (c *Config) newMergeCmd() *cobra.Command {
 	return mergeCmd
 }
 
-func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runMergeCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 		mustBeManaged:       false,
@@ -59,7 +63,10 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 // doMerge is the core merge functionality. It invokes the merge tool to do a
 // three-way merge between the destination, source, and target, including
 // transparently decrypting the file in the source state.
-func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) (err error) {
+func (c *Config) doMerge(
+	targetRelPath chezmoi.RelPath,
+	sourceStateEntry chezmoi.SourceStateEntry,
+) (err error) {
 	sourceAbsPath := c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 
 	// If the source state entry is an encrypted file, then decrypt it to a
@@ -72,7 +79,9 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 			if plaintextTempDirAbsPath, err = c.tempDir("chezmoi-merge-plaintext"); err != nil {
 				return
 			}
-			plaintextAbsPath = plaintextTempDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
+			plaintextAbsPath = plaintextTempDirAbsPath.Join(
+				sourceStateEntry.SourceRelPath().RelPath(),
+			)
 			defer func() {
 				err = multierr.Append(err, os.RemoveAll(plaintextAbsPath.String()))
 			}()

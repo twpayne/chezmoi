@@ -53,8 +53,11 @@ const (
 
 // A check is an individual check.
 type check interface {
-	Name() string                                                                    // Name returns the check's name.
-	Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) // Run runs the check.
+	Name() string // Name returns the check's name.
+	Run(
+		system chezmoi.System,
+		homeDirAbsPath chezmoi.AbsPath,
+	) (checkResult, string) // Run runs the check.
 }
 
 var checkResultStr = map[checkResult]string{
@@ -404,7 +407,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		// output of chezmoi doctor is often posted publicly and would otherwise
 		// reveal the user's username.
 		message = strings.ReplaceAll(message, homeDirAbsPath.String(), "~")
-		fmt.Fprintf(resultWriter, "%s\t%s\t%s\n", checkResultStr[checkResult], check.Name(), message)
+		fmt.Fprintf(
+			resultWriter,
+			"%s\t%s\t%s\n",
+			checkResultStr[checkResult],
+			check.Name(),
+			message,
+		)
 		if checkResult > worstResult {
 			worstResult = checkResult
 		}
@@ -422,7 +431,10 @@ func (c *argsCheck) Name() string {
 	return c.name
 }
 
-func (c *argsCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *argsCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	return checkResultOK, shellQuoteCommand(c.command, c.args)
 }
 
@@ -430,7 +442,10 @@ func (c *binaryCheck) Name() string {
 	return c.name
 }
 
-func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *binaryCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	if c.binaryname == "" {
 		return c.ifNotSet, "not set"
 	}
@@ -462,7 +477,11 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	if c.versionRx != nil {
 		match := c.versionRx.FindSubmatch(versionBytes)
 		if len(match) != 2 {
-			s := fmt.Sprintf("found %s, cannot parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
+			s := fmt.Sprintf(
+				"found %s, cannot parse version from %s",
+				pathAbsPath,
+				bytes.TrimSpace(versionBytes),
+			)
 			return checkResultWarning, s
 		}
 		versionBytes = match[1]
@@ -473,7 +492,12 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	}
 
 	if c.minVersion != nil && version.LessThan(*c.minVersion) {
-		return checkResultError, fmt.Sprintf("found %s, version %s, need %s", pathAbsPath, version, c.minVersion)
+		return checkResultError, fmt.Sprintf(
+			"found %s, version %s, need %s",
+			pathAbsPath,
+			version,
+			c.minVersion,
+		)
 	}
 
 	return checkResultOK, fmt.Sprintf("found %s, version %s", pathAbsPath, version)
@@ -483,7 +507,10 @@ func (c *configFileCheck) Name() string {
 	return "config-file"
 }
 
-func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *configFileCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	filenameAbsPaths := make(map[chezmoi.AbsPath]struct{})
 	for _, dir := range append([]string{c.bds.ConfigHome}, c.bds.ConfigDirs...) {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dir, homeDirAbsPath)
@@ -491,7 +518,10 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 			return checkResultFailed, err.Error()
 		}
 		for _, extension := range chezmoi.FormatExtensions {
-			filenameAbsPath := configDirAbsPath.Join(c.basename, chezmoi.NewRelPath(c.basename.String()+"."+extension))
+			filenameAbsPath := configDirAbsPath.Join(
+				c.basename,
+				chezmoi.NewRelPath(c.basename.String()+"."+extension),
+			)
 			if _, err := system.Stat(filenameAbsPath); err == nil {
 				filenameAbsPaths[filenameAbsPath] = struct{}{}
 			}
@@ -503,7 +533,11 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 	case 1:
 		filenameAbsPath := anyKey(filenameAbsPaths)
 		if filenameAbsPath != c.expected {
-			return checkResultFailed, fmt.Sprintf("found %s, expected %s", filenameAbsPath, c.expected)
+			return checkResultFailed, fmt.Sprintf(
+				"found %s, expected %s",
+				filenameAbsPath,
+				c.expected,
+			)
 		}
 		config, err := newConfig()
 		if err != nil {
@@ -516,7 +550,11 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		if err != nil {
 			return checkResultError, fmt.Sprintf("%s: %v", filenameAbsPath, err)
 		}
-		message := fmt.Sprintf("%s, last modified %s", filenameAbsPath.String(), fileInfo.ModTime().Format(time.RFC3339))
+		message := fmt.Sprintf(
+			"%s, last modified %s",
+			filenameAbsPath.String(),
+			fileInfo.ModTime().Format(time.RFC3339),
+		)
 		return checkResultOK, message
 	default:
 		filenameStrs := make([]string, 0, len(filenameAbsPaths))
@@ -524,7 +562,10 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 			filenameStrs = append(filenameStrs, filenameAbsPath.String())
 		}
 		sort.Strings(filenameStrs)
-		return checkResultWarning, fmt.Sprintf("%s: multiple config files", englishList(filenameStrs))
+		return checkResultWarning, fmt.Sprintf(
+			"%s: multiple config files",
+			englishList(filenameStrs),
+		)
 	}
 }
 
@@ -532,7 +573,10 @@ func (c *dirCheck) Name() string {
 	return c.name
 }
 
-func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *dirCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	dirEntries, err := system.ReadDir(c.dirname)
 	if err != nil {
 		return checkResultError, err.Error()
@@ -543,7 +587,13 @@ func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 		if dirEntry.Name() != ".git" {
 			continue
 		}
-		cmd := exec.Command("git", "-C", c.dirname.String(), "status", "--porcelain=v2") //nolint:gosec
+		cmd := exec.Command( //nolint:gosec
+			"git",
+			"-C",
+			c.dirname.String(),
+			"status",
+			"--porcelain=v2",
+		)
 		output, err := cmd.Output()
 		if err != nil {
 			gitStatus = gitStatusError
@@ -577,7 +627,10 @@ func (executableCheck) Name() string {
 	return "executable"
 }
 
-func (executableCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (executableCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	executable, err := os.Executable()
 	if err != nil {
 		return checkResultError, err.Error()
@@ -593,7 +646,10 @@ func (c *fileCheck) Name() string {
 	return c.name
 }
 
-func (c *fileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *fileCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	if c.filename.Empty() {
 		return c.ifNotSet, "not set"
 	}
@@ -612,7 +668,10 @@ func (goVersionCheck) Name() string {
 	return "go-version"
 }
 
-func (goVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (goVersionCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	return checkResultOK, fmt.Sprintf("%s (%s)", runtime.Version(), runtime.Compiler)
 }
 
@@ -620,7 +679,10 @@ func (c *latestVersionCheck) Name() string {
 	return "latest-version"
 }
 
-func (c *latestVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *latestVersionCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	if c.httpClientErr != nil {
 		return checkResultFailed, c.httpClientErr.Error()
 	}
@@ -658,7 +720,10 @@ func (osArchCheck) Name() string {
 	return "os-arch"
 }
 
-func (osArchCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (osArchCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	fields := []string{runtime.GOOS + "/" + runtime.GOARCH}
 	if osRelease, err := chezmoi.OSRelease(system.UnderlyingFS()); err == nil {
 		if name, ok := osRelease["NAME"].(string); ok {
@@ -676,7 +741,10 @@ func (skippedCheck) Name() string {
 	return "skipped"
 }
 
-func (skippedCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (skippedCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	return checkResultSkipped, ""
 }
 
@@ -684,7 +752,10 @@ func (c *suspiciousEntriesCheck) Name() string {
 	return "suspicious-entries"
 }
 
-func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *suspiciousEntriesCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	// FIXME include user-defined suffixes from age and gpg configs
 	encryptedSuffixes := []string{
 		defaultAgeEncryptionConfig.Suffix,
@@ -717,7 +788,10 @@ func (upgradeMethodCheck) Name() string {
 	return "upgrade-method"
 }
 
-func (upgradeMethodCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (upgradeMethodCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	executable, err := os.Executable()
 	if err != nil {
 		return checkResultFailed, err.Error()
@@ -736,7 +810,10 @@ func (c *versionCheck) Name() string {
 	return "version"
 }
 
-func (c *versionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (c *versionCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	if c.versionInfo.Version == "" || c.versionInfo.Commit == "" {
 		return checkResultWarning, c.versionStr
 	}

@@ -12,7 +12,11 @@ import (
 
 // A TargetStateEntry represents the state of an entry in the target state.
 type TargetStateEntry interface {
-	Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error)
+	Apply(
+		system System,
+		persistentState PersistentState,
+		actualStateEntry ActualStateEntry,
+	) (bool, error)
 	EntryState(umask fs.FileMode) (*EntryState, error)
 	Evaluate() error
 	SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error)
@@ -64,13 +68,13 @@ type TargetStateSymlink struct {
 // A modifyDirWithCmdState records the state of a directory modified by a
 // command.
 type modifyDirWithCmdState struct {
-	Name  AbsPath   `json:"name" yaml:"name"`
+	Name  AbsPath   `json:"name"  yaml:"name"`
 	RunAt time.Time `json:"runAt" yaml:"runAt"`
 }
 
 // A scriptState records the state of a script that has been run.
 type scriptState struct {
-	Name  RelPath   `json:"name" yaml:"name"`
+	Name  RelPath   `json:"name"  yaml:"name"`
 	RunAt time.Time `json:"runAt" yaml:"runAt"`
 }
 
@@ -115,7 +119,10 @@ func (t *TargetStateModifyDirWithCmd) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateModifyDirWithCmd) SkipApply(
+	persistentState PersistentState,
+	targetAbsPath AbsPath,
+) (bool, error) {
 	if t.forceRefresh {
 		return false, nil
 	}
@@ -172,7 +179,10 @@ func (t *TargetStateDir) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateDir) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateDir) SkipApply(
+	persistentState PersistentState,
+	targetAbsPath AbsPath,
+) (bool, error) {
 	return false, nil
 }
 
@@ -255,7 +265,10 @@ func (t *TargetStateFile) Perm(umask fs.FileMode) fs.FileMode {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateFile) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateFile) SkipApply(
+	persistentState PersistentState,
+	targetAbsPath AbsPath,
+) (bool, error) {
 	return false, nil
 }
 
@@ -287,7 +300,10 @@ func (t *TargetStateRemove) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateRemove) SkipApply(
+	persistentState PersistentState,
+	targetAbsPath AbsPath,
+) (bool, error) {
 	return false, nil
 }
 
@@ -365,7 +381,10 @@ func (t *TargetStateScript) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateScript) SkipApply(
+	persistentState PersistentState,
+	targetAbsPath AbsPath,
+) (bool, error) {
 	switch contents, err := t.Contents(); {
 	case err != nil:
 		return false, err

@@ -12,7 +12,7 @@ import (
 
 type secretConfig struct {
 	Command string   `json:"command" mapstructure:"command" yaml:"command"`
-	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
+	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 	cache   map[string][]byte
 }
 

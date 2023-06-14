@@ -41,7 +41,12 @@ type GitDiffSystemOptions struct {
 // NewGitDiffSystem returns a new GitDiffSystem. Output is written to w, the
 // dirAbsPath is stripped from paths, and color controls whether the output
 // contains ANSI color escape sequences.
-func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *GitDiffSystemOptions) *GitDiffSystem {
+func NewGitDiffSystem(
+	system System,
+	w io.Writer,
+	dirAbsPath AbsPath,
+	options *GitDiffSystemOptions,
+) *GitDiffSystem {
 	unifiedEncoder := diff.NewUnifiedEncoder(w, diff.DefaultContextLines)
 	if options.Color {
 		unifiedEncoder.SetColor(diff.NewColorConfig())
@@ -201,7 +206,12 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *GitDiffSystem) RunScript(
+	scriptname RelPath,
+	dir AbsPath,
+	data []byte,
+	options RunScriptOptions,
+) error {
 	bits := EntryTypeScripts
 	if options.Condition == ScriptConditionAlways {
 		bits |= EntryTypeAlways

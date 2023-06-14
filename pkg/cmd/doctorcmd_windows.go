@@ -21,7 +21,10 @@ func (systeminfoCheck) Name() string {
 	return "systeminfo"
 }
 
-func (systeminfoCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (systeminfoCheck) Run(
+	system chezmoi.System,
+	homeDirAbsPath chezmoi.AbsPath,
+) (checkResult, string) {
 	cmd := exec.Command("systeminfo")
 	data, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {

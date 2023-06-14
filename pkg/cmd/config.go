@@ -72,11 +72,11 @@ type doPurgeOptions struct {
 
 type commandConfig struct {
 	Command string   `json:"command" mapstructure:"command" yaml:"command"`
-	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
+	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
 type hookConfig struct {
-	Pre  commandConfig `json:"pre" mapstructure:"pre" yaml:"pre"`
+	Pre  commandConfig `json:"pre"  mapstructure:"pre"  yaml:"pre"`
 	Post commandConfig `json:"post" mapstructure:"post" yaml:"post"`
 }
 
@@ -85,69 +85,69 @@ type templateConfig struct {
 }
 
 type warningsConfig struct {
-	ConfigFileTemplateHasChanged bool `json:"configFileTemplateHasChanged" mapstructure:"configFileTemplateHasChanged" yaml:"configFileTemplateHasChanged"` //nolint:lll
+	ConfigFileTemplateHasChanged bool `json:"configFileTemplateHasChanged" mapstructure:"configFileTemplateHasChanged" yaml:"configFileTemplateHasChanged"`
 }
 
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
 	// Global configuration.
-	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir" mapstructure:"cacheDir" yaml:"cacheDir"`
-	Color              autoBool                        `json:"color" mapstructure:"color" yaml:"color"`
-	Data               map[string]any                  `json:"data" mapstructure:"data" yaml:"data"`
-	Format             writeDataFormat                 `json:"format" mapstructure:"format" yaml:"format"`
-	DestDirAbsPath     chezmoi.AbsPath                 `json:"destDir" mapstructure:"destDir" yaml:"destDir"`
-	GitHub             gitHubConfig                    `json:"gitHub" mapstructure:"gitHub" yaml:"gitHub"`
-	Hooks              map[string]hookConfig           `json:"hooks" mapstructure:"hooks" yaml:"hooks"`
-	Interpreters       map[string]*chezmoi.Interpreter `json:"interpreters" mapstructure:"interpreters" yaml:"interpreters"` //nolint:lll
-	Mode               chezmoi.Mode                    `json:"mode" mapstructure:"mode" yaml:"mode"`
-	Pager              string                          `json:"pager" mapstructure:"pager" yaml:"pager"`
-	PINEntry           pinEntryConfig                  `json:"pinentry" mapstructure:"pinentry" yaml:"pinentry"`
-	Progress           autoBool                        `json:"progress" mapstructure:"progress" yaml:"progress"`
-	Safe               bool                            `json:"safe" mapstructure:"safe" yaml:"safe"`
-	ScriptEnv          map[string]string               `json:"scriptEnv" mapstructure:"scriptEnv" yaml:"scriptEnv"`
-	ScriptTempDir      chezmoi.AbsPath                 `json:"scriptTempDir" mapstructure:"scriptTempDir" yaml:"scriptTempDir"` //nolint:lll
-	SourceDirAbsPath   chezmoi.AbsPath                 `json:"sourceDir" mapstructure:"sourceDir" yaml:"sourceDir"`
-	Template           templateConfig                  `json:"template" mapstructure:"template" yaml:"template"`
-	TextConv           textConv                        `json:"textConv" mapstructure:"textConv" yaml:"textConv"`
-	Umask              fs.FileMode                     `json:"umask" mapstructure:"umask" yaml:"umask"`
-	UseBuiltinAge      autoBool                        `json:"useBuiltinAge" mapstructure:"useBuiltinAge" yaml:"useBuiltinAge"` //nolint:lll
-	UseBuiltinGit      autoBool                        `json:"useBuiltinGit" mapstructure:"useBuiltinGit" yaml:"useBuiltinGit"` //nolint:lll
-	Verbose            bool                            `json:"verbose" mapstructure:"verbose" yaml:"verbose"`
-	Warnings           warningsConfig                  `json:"warnings" mapstructure:"warnings" yaml:"warnings"`
-	WorkingTreeAbsPath chezmoi.AbsPath                 `json:"workingTree" mapstructure:"workingTree" yaml:"workingTree"`
+	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir"      mapstructure:"cacheDir"      yaml:"cacheDir"`
+	Color              autoBool                        `json:"color"         mapstructure:"color"         yaml:"color"`
+	Data               map[string]any                  `json:"data"          mapstructure:"data"          yaml:"data"`
+	Format             writeDataFormat                 `json:"format"        mapstructure:"format"        yaml:"format"`
+	DestDirAbsPath     chezmoi.AbsPath                 `json:"destDir"       mapstructure:"destDir"       yaml:"destDir"`
+	GitHub             gitHubConfig                    `json:"gitHub"        mapstructure:"gitHub"        yaml:"gitHub"`
+	Hooks              map[string]hookConfig           `json:"hooks"         mapstructure:"hooks"         yaml:"hooks"`
+	Interpreters       map[string]*chezmoi.Interpreter `json:"interpreters"  mapstructure:"interpreters"  yaml:"interpreters"`
+	Mode               chezmoi.Mode                    `json:"mode"          mapstructure:"mode"          yaml:"mode"`
+	Pager              string                          `json:"pager"         mapstructure:"pager"         yaml:"pager"`
+	PINEntry           pinEntryConfig                  `json:"pinentry"      mapstructure:"pinentry"      yaml:"pinentry"`
+	Progress           autoBool                        `json:"progress"      mapstructure:"progress"      yaml:"progress"`
+	Safe               bool                            `json:"safe"          mapstructure:"safe"          yaml:"safe"`
+	ScriptEnv          map[string]string               `json:"scriptEnv"     mapstructure:"scriptEnv"     yaml:"scriptEnv"`
+	ScriptTempDir      chezmoi.AbsPath                 `json:"scriptTempDir" mapstructure:"scriptTempDir" yaml:"scriptTempDir"`
+	SourceDirAbsPath   chezmoi.AbsPath                 `json:"sourceDir"     mapstructure:"sourceDir"     yaml:"sourceDir"`
+	Template           templateConfig                  `json:"template"      mapstructure:"template"      yaml:"template"`
+	TextConv           textConv                        `json:"textConv"      mapstructure:"textConv"      yaml:"textConv"`
+	Umask              fs.FileMode                     `json:"umask"         mapstructure:"umask"         yaml:"umask"`
+	UseBuiltinAge      autoBool                        `json:"useBuiltinAge" mapstructure:"useBuiltinAge" yaml:"useBuiltinAge"`
+	UseBuiltinGit      autoBool                        `json:"useBuiltinGit" mapstructure:"useBuiltinGit" yaml:"useBuiltinGit"`
+	Verbose            bool                            `json:"verbose"       mapstructure:"verbose"       yaml:"verbose"`
+	Warnings           warningsConfig                  `json:"warnings"      mapstructure:"warnings"      yaml:"warnings"`
+	WorkingTreeAbsPath chezmoi.AbsPath                 `json:"workingTree"   mapstructure:"workingTree"   yaml:"workingTree"`
 
 	// Password manager configurations.
-	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"` //nolint:lll
-	Bitwarden         bitwardenConfig         `json:"bitwarden" mapstructure:"bitwarden" yaml:"bitwarden"`
-	Dashlane          dashlaneConfig          `json:"dashlane" mapstructure:"dashlane" yaml:"dashlane"`
-	Ejson             ejsonConfig             `json:"ejson" mapstructure:"ejson" yaml:"ejson"`
-	Gopass            gopassConfig            `json:"gopass" mapstructure:"gopass" yaml:"gopass"`
-	Keepassxc         keepassxcConfig         `json:"keepassxc" mapstructure:"keepassxc" yaml:"keepassxc"`
-	Keeper            keeperConfig            `json:"keeper" mapstructure:"keeper" yaml:"keeper"`
-	Lastpass          lastpassConfig          `json:"lastpass" mapstructure:"lastpass" yaml:"lastpass"`
-	Onepassword       onepasswordConfig       `json:"onepassword" mapstructure:"onepassword" yaml:"onepassword"`
-	Pass              passConfig              `json:"pass" mapstructure:"pass" yaml:"pass"`
-	Passhole          passholeConfig          `json:"passhole" mapstructure:"passhole" yaml:"passhole"`
-	RBW               rbwConfig               `json:"rbw" mapstructure:"rbw" yaml:"rbw"`
-	Secret            secretConfig            `json:"secret" mapstructure:"secret" yaml:"secret"`
-	Vault             vaultConfig             `json:"vault" mapstructure:"vault" yaml:"vault"`
+	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
+	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
+	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
+	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
+	Gopass            gopassConfig            `json:"gopass"            mapstructure:"gopass"            yaml:"gopass"`
+	Keepassxc         keepassxcConfig         `json:"keepassxc"         mapstructure:"keepassxc"         yaml:"keepassxc"`
+	Keeper            keeperConfig            `json:"keeper"            mapstructure:"keeper"            yaml:"keeper"`
+	Lastpass          lastpassConfig          `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
+	Onepassword       onepasswordConfig       `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
+	Pass              passConfig              `json:"pass"              mapstructure:"pass"              yaml:"pass"`
+	Passhole          passholeConfig          `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
+	RBW               rbwConfig               `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
+	Secret            secretConfig            `json:"secret"            mapstructure:"secret"            yaml:"secret"`
+	Vault             vaultConfig             `json:"vault"             mapstructure:"vault"             yaml:"vault"`
 
 	// Encryption configurations.
 	Encryption string                `json:"encryption" mapstructure:"encryption" yaml:"encryption"`
-	Age        chezmoi.AgeEncryption `json:"age" mapstructure:"age" yaml:"age"`
-	GPG        chezmoi.GPGEncryption `json:"gpg" mapstructure:"gpg" yaml:"gpg"`
+	Age        chezmoi.AgeEncryption `json:"age"        mapstructure:"age"        yaml:"age"`
+	GPG        chezmoi.GPGEncryption `json:"gpg"        mapstructure:"gpg"        yaml:"gpg"`
 
 	// Command configurations.
-	Add        addCmdConfig        `json:"add" mapstructure:"add" yaml:"add"`
-	CD         cdCmdConfig         `json:"cd" mapstructure:"cd" yaml:"cd"`
+	Add        addCmdConfig        `json:"add"        mapstructure:"add"        yaml:"add"`
+	CD         cdCmdConfig         `json:"cd"         mapstructure:"cd"         yaml:"cd"`
 	Completion completionCmdConfig `json:"completion" mapstructure:"completion" yaml:"completion"`
-	Diff       diffCmdConfig       `json:"diff" mapstructure:"diff" yaml:"diff"`
-	Edit       editCmdConfig       `json:"edit" mapstructure:"edit" yaml:"edit"`
-	Git        gitCmdConfig        `json:"git" mapstructure:"git" yaml:"git"`
-	Merge      mergeCmdConfig      `json:"merge" mapstructure:"merge" yaml:"merge"`
-	Status     statusCmdConfig     `json:"status" mapstructure:"status" yaml:"status"`
-	Update     updateCmdConfig     `json:"update" mapstructure:"update" yaml:"update"`
-	Verify     verifyCmdConfig     `json:"verify" mapstructure:"verify" yaml:"verify"`
+	Diff       diffCmdConfig       `json:"diff"       mapstructure:"diff"       yaml:"diff"`
+	Edit       editCmdConfig       `json:"edit"       mapstructure:"edit"       yaml:"edit"`
+	Git        gitCmdConfig        `json:"git"        mapstructure:"git"        yaml:"git"`
+	Merge      mergeCmdConfig      `json:"merge"      mapstructure:"merge"      yaml:"merge"`
+	Status     statusCmdConfig     `json:"status"     mapstructure:"status"     yaml:"status"`
+	Update     updateCmdConfig     `json:"update"     mapstructure:"update"     yaml:"update"`
+	Verify     verifyCmdConfig     `json:"verify"     mapstructure:"verify"     yaml:"verify"`
 }
 
 // A Config represents a configuration.
@@ -263,7 +263,7 @@ type templateData struct {
 type configOption func(*Config) error
 
 type configState struct {
-	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"` //nolint:lll,tagliatelle
+	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"` //nolint:tagliatelle
 }
 
 var (
@@ -329,8 +329,11 @@ func newConfig(options ...configOption) (*Config, error) {
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		init: initCmdConfig{
-			data:              true,
-			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			data: true,
+			filter: chezmoi.NewEntryTypeFilter(
+				chezmoi.EntryTypesAll,
+				chezmoi.EntryTypesNone,
+			),
 			guessRepoURL:      true,
 			recurseSubmodules: true,
 		},
@@ -504,7 +507,10 @@ type applyArgsOptions struct {
 // source state for each target entry in args. If args is empty then the source
 // state is applied to all target entries.
 func (c *Config) applyArgs(
-	ctx context.Context, targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string,
+	ctx context.Context,
+	targetSystem chezmoi.System,
+	targetDirAbsPath chezmoi.AbsPath,
+	args []string,
 	options applyArgsOptions,
 ) error {
 	if options.init {
@@ -531,7 +537,8 @@ func (c *Config) applyArgs(
 		}
 		previousConfigTemplateContentsSHA256 = []byte(configState.ConfigTemplateContentsSHA256)
 	}
-	configTemplatesEmpty := currentConfigTemplateContentsSHA256 == nil && previousConfigTemplateContentsSHA256 == nil
+	configTemplatesEmpty := currentConfigTemplateContentsSHA256 == nil &&
+		previousConfigTemplateContentsSHA256 == nil
 	configTemplateContentsUnchanged := configTemplatesEmpty ||
 		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
 	if !configTemplateContentsUnchanged {
@@ -691,7 +698,11 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey)
 	}
 
-	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents, cmd)
+	configFileContents, err := c.createConfigFile(
+		configTemplate.targetRelPath,
+		configTemplate.contents,
+		cmd,
+	)
 	if err != nil {
 		return err
 	}
@@ -705,7 +716,8 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	// Write the config.
 	configPath := c.init.configPath
 	if c.init.configPath.Empty() {
-		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
+		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).
+			Join(chezmoiRelPath, configTemplate.targetRelPath)
 	}
 	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), fs.ModePerm); err != nil {
 		return err
@@ -733,7 +745,11 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 
 // createConfigFile creates a config file using a template and returns its
 // contents.
-func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *cobra.Command) ([]byte, error) {
+func (c *Config) createConfigFile(
+	filename chezmoi.RelPath,
+	data []byte,
+	cmd *cobra.Command,
+) ([]byte, error) {
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	initTemplateFuncs := map[string]any{
@@ -765,7 +781,10 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *co
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
-func (c *Config) defaultConfigFile(fileSystem vfs.FS, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultConfigFile(
+	fileSystem vfs.FS,
+	bds *xdg.BaseDirectorySpecification,
+) (chezmoi.AbsPath, error) {
 	// Search XDG Base Directory Specification config directories first.
 CONFIG_DIR:
 	for _, configDir := range bds.ConfigDirs {
@@ -819,7 +838,11 @@ CONFIG_DIR:
 }
 
 // decodeConfigBytes decodes data in format into configFile.
-func (c *Config) decodeConfigBytes(format chezmoi.Format, data []byte, configFile *ConfigFile) error {
+func (c *Config) decodeConfigBytes(
+	format chezmoi.Format,
+	data []byte,
+	configFile *ConfigFile,
+) error {
 	var configMap map[string]any
 	if err := format.Unmarshal(data, &configMap); err != nil {
 		return err
@@ -875,7 +898,8 @@ func (c *Config) decodeConfigMap(configMap map[string]any, configFile *ConfigFil
 // has changed since chezmoi last wrote it then it prompts the user for the
 // action to take.
 func (c *Config) defaultPreApplyFunc(
-	targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
+	targetRelPath chezmoi.RelPath,
+	targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
 ) error {
 	c.logger.Info().
 		Stringer("targetRelPath", targetRelPath).
@@ -975,7 +999,10 @@ func (c *Config) defaultPreApplyFunc(
 
 // defaultSourceDir returns the default source directory according to the XDG
 // Base Directory Specification.
-func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultSourceDir(
+	fileSystem vfs.Stater,
+	bds *xdg.BaseDirectorySpecification,
+) (chezmoi.AbsPath, error) {
 	// Check for XDG Base Directory Specification data directories first.
 	for _, dataDir := range bds.DataDirs {
 		dataDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dataDir, c.homeDirAbsPath)
@@ -1031,7 +1058,12 @@ func (c *Config) destAbsPathInfos(
 						return err
 					}
 				}
-				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, fileInfo)
+				return sourceState.AddDestAbsPathInfos(
+					destAbsPathInfos,
+					c.destSystem,
+					destAbsPath,
+					fileInfo,
+				)
 			}
 			if err := chezmoi.Walk(c.destSystem, destAbsPath, walkFunc); err != nil {
 				return nil, err
@@ -1225,7 +1257,10 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 			sourceAbsPathStr := configTemplate.sourceAbsPath.String()
 			sourceAbsPathStrs = append(sourceAbsPathStrs, sourceAbsPathStr)
 		}
-		return nil, fmt.Errorf("multiple config file templates: %s ", englishList(sourceAbsPathStrs))
+		return nil, fmt.Errorf(
+			"multiple config file templates: %s ",
+			englishList(sourceAbsPathStrs),
+		)
 	}
 }
 
@@ -1270,7 +1305,10 @@ func (c *Config) getSourceDirAbsPath(options *getSourceDirAbsPathOptions) (chezm
 	return c.sourceDirAbsPath, c.sourceDirAbsPathErr
 }
 
-func (c *Config) getSourceState(ctx context.Context, cmd *cobra.Command) (*chezmoi.SourceState, error) {
+func (c *Config) getSourceState(
+	ctx context.Context,
+	cmd *cobra.Command,
+) (*chezmoi.SourceState, error) {
 	if c.sourceState != nil || c.sourceStateErr != nil {
 		return c.sourceState, c.sourceStateErr
 	}
@@ -1322,7 +1360,11 @@ func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
 	}
-	output, err := c.cmdOutput(c.WorkingTreeAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
+	output, err := c.cmdOutput(
+		c.WorkingTreeAbsPath,
+		c.Git.Command,
+		[]string{"status", "--porcelain=v2"},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -1341,13 +1383,20 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 		"promptInt":    c.promptIntInteractiveTemplateFunc,
 		"promptString": c.promptStringInteractiveTemplateFunc,
 		"targetRelPath": func(source string) string {
-			return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
+			return chezmoi.NewSourceRelPath(source).
+				TargetRelPath(c.encryption.EncryptedSuffix()).
+				String()
 		},
 	})
 	templateOptions := chezmoi.TemplateOptions{
 		Options: append([]string(nil), c.Template.Options...),
 	}
-	commitMessageTmpl, err := chezmoi.ParseTemplate("commit_message", []byte(c.Git.CommitMessageTemplate), funcMap, templateOptions) //nolint:lll
+	commitMessageTmpl, err := chezmoi.ParseTemplate(
+		"commit_message",
+		[]byte(c.Git.CommitMessageTemplate),
+		funcMap,
+		templateOptions,
+	)
 	if err != nil {
 		return err
 	}
@@ -1355,7 +1404,11 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if err != nil {
 		return err
 	}
-	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)})
+	return c.run(
+		c.WorkingTreeAbsPath,
+		c.Git.Command,
+		[]string{"commit", "--message", string(commitMessage)},
+	)
 }
 
 // gitAutoPush pushes all changes to the remote if status is not empty.
@@ -1420,16 +1473,33 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.configFormat, "config-format", "Set config file format")
 	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
-	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory") //nolint:lll
+	persistentFlags.BoolVarP(
+		&c.dryRun,
+		"dry-run",
+		"n",
+		c.dryRun,
+		"Do not make any modifications to the destination directory",
+	)
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
 	persistentFlags.BoolVar(&c.interactive, "interactive", c.interactive, "Prompt for all changes")
-	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
+	persistentFlags.BoolVarP(
+		&c.keepGoing,
+		"keep-going",
+		"k",
+		c.keepGoing,
+		"Keep going as far as possible after an error",
+	)
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
-	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
+	persistentFlags.BoolVar(
+		&c.sourcePath,
+		"source-path",
+		c.sourcePath,
+		"Specify targets by source path",
+	)
 
 	if err := multierr.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
@@ -1504,11 +1574,18 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 // newDiffSystem returns a system that logs all changes to s to w using
 // diff.command if set or the builtin git diff otherwise.
-func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
+func (c *Config) newDiffSystem(
+	s chezmoi.System,
+	w io.Writer,
+	dirAbsPath chezmoi.AbsPath,
+) chezmoi.System {
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
-			Color:          c.Color.Value(c.colorAutoFunc),
-			Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
+			Color: c.Color.Value(c.colorAutoFunc),
+			Filter: chezmoi.NewEntryTypeFilter(
+				c.Diff.include.Bits(),
+				c.Diff.Exclude.Bits(),
+			),
 			Reverse:        c.Diff.Reverse,
 			ScriptContents: c.Diff.ScriptContents,
 			TextConvFunc:   c.TextConv.convert,
@@ -1696,7 +1773,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	if runtime.GOOS == "windows" {
 		var err error
-		c.restoreWindowsConsole, err = termenv.EnableVirtualTerminalProcessing(termenv.DefaultOutput())
+		c.restoreWindowsConsole, err = termenv.EnableVirtualTerminalProcessing(
+			termenv.DefaultOutput(),
+		)
 		if err != nil {
 			return err
 		}
@@ -1823,8 +1902,13 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.persistentState = chezmoi.NullPersistentState{}
 	}
 	if c.debug && c.persistentState != nil {
-		persistentStateLogger := c.logger.With().Str(logComponentKey, logComponentValuePersistentState).Logger()
-		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState, &persistentStateLogger)
+		persistentStateLogger := c.logger.With().
+			Str(logComponentKey, logComponentValuePersistentState).
+			Logger()
+		c.persistentState = chezmoi.NewDebugPersistentState(
+			c.persistentState,
+			&persistentStateLogger,
+		)
 	}
 
 	// Set up the source and destination systems.
@@ -2172,7 +2256,11 @@ func (c *Config) runEditor(args []string) error {
 	err = c.run(chezmoi.EmptyAbsPath, editor, editorArgs)
 	if runtime.GOOS != "windows" && c.Edit.MinDuration != 0 {
 		if duration := time.Since(start); duration < c.Edit.MinDuration {
-			c.errorf("warning: %s: returned in less than %s\n", shellQuoteCommand(editor, editorArgs), c.Edit.MinDuration)
+			c.errorf(
+				"warning: %s: returned in less than %s\n",
+				shellQuoteCommand(editor, editorArgs),
+				c.Edit.MinDuration,
+			)
 		}
 	}
 	return err
@@ -2207,7 +2295,9 @@ func (c *Config) setEncryption() error {
 	}
 
 	if c.debug {
-		encryptionLogger := c.logger.With().Str(logComponentKey, logComponentValueEncryption).Logger()
+		encryptionLogger := c.logger.With().
+			Str(logComponentKey, logComponentValueEncryption).
+			Logger()
 		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
 	}
 
@@ -2216,7 +2306,10 @@ func (c *Config) setEncryption() error {
 
 // sourceAbsPaths returns the source absolute paths for each target path in
 // args.
-func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
+func (c *Config) sourceAbsPaths(
+	sourceState *chezmoi.SourceState,
+	args []string,
+) ([]chezmoi.AbsPath, error) {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 		mustBeManaged:       true,
@@ -2226,7 +2319,9 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 	}
 	sourceAbsPaths := make([]chezmoi.AbsPath, 0, len(targetRelPaths))
 	for _, targetRelPath := range targetRelPaths {
-		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
+		sourceAbsPath := c.SourceDirAbsPath.Join(
+			sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath(),
+		)
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
 	}
 	return sourceAbsPaths, nil
@@ -2236,7 +2331,11 @@ func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error)
 	relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath)
 	var notInAbsDirError *chezmoi.NotInAbsDirError
 	if errors.As(err, &notInAbsDirError) {
-		return chezmoi.EmptyRelPath, fmt.Errorf("%s: not in destination directory (%s)", absPath, c.DestDirAbsPath)
+		return chezmoi.EmptyRelPath, fmt.Errorf(
+			"%s: not in destination directory (%s)",
+			absPath,
+			c.DestDirAbsPath,
+		)
 	}
 	return relPath, err
 }
@@ -2307,11 +2406,13 @@ func (c *Config) targetRelPathsBySourcePath(
 ) ([]chezmoi.RelPath, error) {
 	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
-	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
-		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
-		targetRelPathsBySourceRelPath[sourceRelPath] = targetRelPath
-		return nil
-	})
+	_ = sourceState.ForEach(
+		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+			sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
+			targetRelPathsBySourceRelPath[sourceRelPath] = targetRelPath
+			return nil
+		},
+	)
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
@@ -2546,8 +2647,11 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Update: updateCmdConfig{
 			RecurseSubmodules: true,
 			apply:             true,
-			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			recursive:         true,
+			filter: chezmoi.NewEntryTypeFilter(
+				chezmoi.EntryTypesAll,
+				chezmoi.EntryTypesNone,
+			),
+			recursive: true,
 		},
 		Verify: verifyCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),

@@ -37,7 +37,11 @@ func fileInfoUID(fs.FileInfo) int {
 }
 
 func windowsVersion() (map[string]any, error) {
-	registryKey, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
+	registryKey, err := registry.OpenKey(
+		registry.LOCAL_MACHINE,
+		`SOFTWARE\Microsoft\Windows NT\CurrentVersion`,
+		registry.QUERY_VALUE,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("registry.OpenKey: %w", err)
 	}

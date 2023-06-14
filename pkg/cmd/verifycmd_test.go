@@ -40,7 +40,11 @@ func TestVerifyCmd(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				assert.Equal(t, tc.expectedErr, newTestConfig(t, fileSystem).execute([]string{"verify"}))
+				assert.Equal(
+					t,
+					tc.expectedErr,
+					newTestConfig(t, fileSystem).execute([]string{"verify"}),
+				)
 			})
 		})
 	}

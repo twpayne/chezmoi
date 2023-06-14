@@ -27,7 +27,11 @@ func (c *Config) newForgetCmd() *cobra.Command {
 	return forgetCmd
 }
 
-func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runForgetCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeManaged: true,
 	})

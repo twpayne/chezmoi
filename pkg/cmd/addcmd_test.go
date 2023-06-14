@@ -241,7 +241,10 @@ func TestAddCmd(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.SkipUnlessGOOS(t, tc.name)
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				assert.NoError(t, newTestConfig(t, fileSystem).execute(append([]string{"add"}, tc.args...)))
+				assert.NoError(
+					t,
+					newTestConfig(t, fileSystem).execute(append([]string{"add"}, tc.args...)),
+				)
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
 		})
@@ -260,6 +263,9 @@ func TestAddCmdChmod(t *testing.T) {
 	}, func(fileSystem vfs.FS) {
 		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "/home/user/.dir"}))
 		assert.NoError(t, fileSystem.Chmod("/home/user/.dir/subdir", 0o700))
-		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "--force", "/home/user/.dir"}))
+		assert.NoError(
+			t,
+			newTestConfig(t, fileSystem).execute([]string{"add", "--force", "/home/user/.dir"}),
+		)
 	})
 }

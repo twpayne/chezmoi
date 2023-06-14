@@ -287,7 +287,9 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 		// Translate bbolt timeout errors into a friendlier message. As the
 		// persistent state is opened lazily, this error could occur at any
 		// time, so it's easiest to intercept it here.
-		err = errors.New("timeout obtaining persistent state lock, is another instance of chezmoi running?")
+		err = errors.New(
+			"timeout obtaining persistent state lock, is another instance of chezmoi running?",
+		)
 	}
 	return
 }

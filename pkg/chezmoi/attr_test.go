@@ -170,8 +170,12 @@ func TestFileAttr(t *testing.T) {
 		TargetName []string
 		Order      []ScriptOrder
 	}{
-		Type:       SourceFileTypeScript,
-		Condition:  []ScriptCondition{ScriptConditionAlways, ScriptConditionOnce, ScriptConditionOnChange},
+		Type: SourceFileTypeScript,
+		Condition: []ScriptCondition{
+			ScriptConditionAlways,
+			ScriptConditionOnce,
+			ScriptConditionOnChange,
+		},
 		TargetName: targetNames,
 		Order:      []ScriptOrder{ScriptOrderBefore, ScriptOrderDuring, ScriptOrderAfter},
 	}))

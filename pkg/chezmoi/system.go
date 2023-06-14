@@ -90,7 +90,12 @@ func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (noUpdateSystemMixin) RunScript(
+	scriptname RelPath,
+	dir AbsPath,
+	data []byte,
+	options RunScriptOptions,
+) error {
 	panic("update to no update system")
 }
 

@@ -7,7 +7,7 @@ import (
 
 type pinEntryConfig struct {
 	Command string   `json:"command" mapstructure:"command" yaml:"command"`
-	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
+	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 	Options []string `json:"options" mapstructure:"options" yaml:"options"`
 }
 

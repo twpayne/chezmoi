@@ -16,10 +16,30 @@ type interactiveTemplateFuncsConfig struct {
 }
 
 func (c *Config) addInteractiveTemplateFuncFlags(flags *pflag.FlagSet) {
-	flags.BoolVar(&c.interactiveTemplateFuncs.forcePromptOnce, "prompt", c.interactiveTemplateFuncs.forcePromptOnce, "Force prompt*Once template functions to prompt") //nolint:lll
-	flags.StringToStringVar(&c.interactiveTemplateFuncs.promptBool, "promptBool", c.interactiveTemplateFuncs.promptBool, "Populate promptBool")                        //nolint:lll
-	flags.StringToIntVar(&c.interactiveTemplateFuncs.promptInt, "promptInt", c.interactiveTemplateFuncs.promptInt, "Populate promptInt")                               //nolint:lll
-	flags.StringToStringVar(&c.interactiveTemplateFuncs.promptString, "promptString", c.interactiveTemplateFuncs.promptString, "Populate promptString")                //nolint:lll
+	flags.BoolVar(
+		&c.interactiveTemplateFuncs.forcePromptOnce,
+		"prompt",
+		c.interactiveTemplateFuncs.forcePromptOnce,
+		"Force prompt*Once template functions to prompt",
+	)
+	flags.StringToStringVar(
+		&c.interactiveTemplateFuncs.promptBool,
+		"promptBool",
+		c.interactiveTemplateFuncs.promptBool,
+		"Populate promptBool",
+	)
+	flags.StringToIntVar(
+		&c.interactiveTemplateFuncs.promptInt,
+		"promptInt",
+		c.interactiveTemplateFuncs.promptInt,
+		"Populate promptInt",
+	)
+	flags.StringToStringVar(
+		&c.interactiveTemplateFuncs.promptString,
+		"promptString",
+		c.interactiveTemplateFuncs.promptString,
+		"Populate promptString",
+	)
 }
 
 func (c *Config) promptBoolInteractiveTemplateFunc(prompt string, args ...bool) bool {
@@ -43,7 +63,12 @@ func (c *Config) promptBoolInteractiveTemplateFunc(prompt string, args ...bool) 
 	return value
 }
 
-func (c *Config) promptBoolOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, args ...bool) bool {
+func (c *Config) promptBoolOnceInteractiveTemplateFunc(
+	m map[string]any,
+	path any,
+	prompt string,
+	args ...bool,
+) bool {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -86,7 +111,12 @@ func (c *Config) promptIntInteractiveTemplateFunc(prompt string, args ...int64) 
 	return value
 }
 
-func (c *Config) promptIntOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, args ...int64) int64 {
+func (c *Config) promptIntOnceInteractiveTemplateFunc(
+	m map[string]any,
+	path any,
+	prompt string,
+	args ...int64,
+) int64 {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -124,7 +154,12 @@ func (c *Config) promptStringInteractiveTemplateFunc(prompt string, args ...stri
 	return value
 }
 
-func (c *Config) promptStringOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, args ...string) string { //nolint:lll
+func (c *Config) promptStringOnceInteractiveTemplateFunc(
+	m map[string]any,
+	path any,
+	prompt string,
+	args ...string,
+) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)

@@ -78,13 +78,20 @@ func TestWalkSourceDir(t *testing.T) {
 	var actualSourceDirAbsPaths []AbsPath
 	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
 		system := NewRealSystem(fileSystem)
-		assert.NoError(t, WalkSourceDir(system, sourceDirAbsPath, func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			actualSourceDirAbsPaths = append(actualSourceDirAbsPaths, absPath)
-			return nil
-		}))
+		assert.NoError(
+			t,
+			WalkSourceDir(
+				system,
+				sourceDirAbsPath,
+				func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
+					if err != nil {
+						return err
+					}
+					actualSourceDirAbsPaths = append(actualSourceDirAbsPaths, absPath)
+					return nil
+				},
+			),
+		)
 	})
 	assert.Equal(t, expectedSourceDirAbsPaths, actualSourceDirAbsPaths)
 }

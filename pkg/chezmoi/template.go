@@ -23,7 +23,12 @@ type TemplateOptions struct {
 
 // ParseTemplate parses a template named name from data with the given funcs and
 // templateOptions.
-func ParseTemplate(name string, data []byte, funcs template.FuncMap, options TemplateOptions) (*Template, error) {
+func ParseTemplate(
+	name string,
+	data []byte,
+	funcs template.FuncMap,
+	options TemplateOptions,
+) (*Template, error) {
 	contents := options.parseAndRemoveDirectives(data)
 	template, err := template.New(name).
 		Option(options.Options...).
@@ -67,7 +72,10 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
 
 	// Parse options from directives.
 	for _, directiveMatch := range directiveMatches {
-		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
+		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(
+			data[directiveMatch[2]:directiveMatch[3]],
+			-1,
+		)
 		for _, keyValuePairMatch := range keyValuePairMatches {
 			key := string(keyValuePairMatch[1])
 			value := maybeUnquote(string(keyValuePairMatch[2]))

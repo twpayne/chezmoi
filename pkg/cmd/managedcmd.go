@@ -39,7 +39,11 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	return managedCmd
 }
 
-func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runManagedCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	// Build queued relPaths. When there are no arguments, start from root,
 	// otherwise start from arguments.
 	var relPaths chezmoi.RelPaths
@@ -54,47 +58,52 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 	}
 
 	var paths []string
-	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
-		if !c.managed.filter.IncludeSourceStateEntry(sourceStateEntry) {
-			return nil
-		}
-
-		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
-		if err != nil {
-			return err
-		}
-		if !c.managed.filter.IncludeTargetStateEntry(targetStateEntry) {
-			return nil
-		}
-
-		// When arguments are given, only include paths under these arguments.
-		if len(relPaths) != 0 {
-			included := false
-			for _, path := range relPaths {
-				if targetRelPath.HasDirPrefix(path) || targetRelPath.String() == path.String() {
-					included = true
-					break
-				}
-			}
-			if !included {
+	_ = sourceState.ForEach(
+		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+			if !c.managed.filter.IncludeSourceStateEntry(sourceStateEntry) {
 				return nil
 			}
-		}
 
-		var path string
-		switch c.managed.pathStyle {
-		case pathStyleAbsolute:
-			path = c.DestDirAbsPath.Join(targetRelPath).String()
-		case pathStyleRelative:
-			path = targetRelPath.String()
-		case pathStyleSourceAbsolute:
-			path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()).String()
-		case pathStyleSourceRelative:
-			path = sourceStateEntry.SourceRelPath().RelPath().String()
-		}
-		paths = append(paths, path)
-		return nil
-	})
+			targetStateEntry, err := sourceStateEntry.TargetStateEntry(
+				c.destSystem,
+				c.DestDirAbsPath.Join(targetRelPath),
+			)
+			if err != nil {
+				return err
+			}
+			if !c.managed.filter.IncludeTargetStateEntry(targetStateEntry) {
+				return nil
+			}
+
+			// When arguments are given, only include paths under these arguments.
+			if len(relPaths) != 0 {
+				included := false
+				for _, path := range relPaths {
+					if targetRelPath.HasDirPrefix(path) || targetRelPath.String() == path.String() {
+						included = true
+						break
+					}
+				}
+				if !included {
+					return nil
+				}
+			}
+
+			var path string
+			switch c.managed.pathStyle {
+			case pathStyleAbsolute:
+				path = c.DestDirAbsPath.Join(targetRelPath).String()
+			case pathStyleRelative:
+				path = targetRelPath.String()
+			case pathStyleSourceAbsolute:
+				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()).String()
+			case pathStyleSourceRelative:
+				path = sourceStateEntry.SourceRelPath().RelPath().String()
+			}
+			paths = append(paths, path)
+			return nil
+		},
+	)
 
 	sort.Strings(paths)
 	builder := strings.Builder{}

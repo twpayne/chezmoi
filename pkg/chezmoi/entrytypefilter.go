@@ -21,7 +21,8 @@ func NewEntryTypeFilter(includeEntryTypeBits, excludeEntryTypeBits EntryTypeBits
 
 // IncludeEntryTypeBits returns if entryTypeBits is included.
 func (f *EntryTypeFilter) IncludeEntryTypeBits(entryTypeBits EntryTypeBits) bool {
-	return f.Include.ContainsEntryTypeBits(entryTypeBits) && !f.Exclude.ContainsEntryTypeBits(entryTypeBits)
+	return f.Include.ContainsEntryTypeBits(entryTypeBits) &&
+		!f.Exclude.ContainsEntryTypeBits(entryTypeBits)
 }
 
 // IncludeFileInfo returns if fileInfo is included.
@@ -31,10 +32,12 @@ func (f *EntryTypeFilter) IncludeFileInfo(fileInfo fs.FileInfo) bool {
 
 // IncludeSourceStateEntry returns if sourceStateEntry is included.
 func (f *EntryTypeFilter) IncludeSourceStateEntry(sourceStateEntry SourceStateEntry) bool {
-	return f.Include.ContainsSourceStateEntry(sourceStateEntry) && !f.Exclude.ContainsSourceStateEntry(sourceStateEntry)
+	return f.Include.ContainsSourceStateEntry(sourceStateEntry) &&
+		!f.Exclude.ContainsSourceStateEntry(sourceStateEntry)
 }
 
 // IncludeTargetStateEntry returns if targetStateEntry is included.
 func (f *EntryTypeFilter) IncludeTargetStateEntry(targetStateEntry TargetStateEntry) bool {
-	return f.Include.ContainsTargetStateEntry(targetStateEntry) && !f.Exclude.ContainsTargetStateEntry(targetStateEntry)
+	return f.Include.ContainsTargetStateEntry(targetStateEntry) &&
+		!f.Exclude.ContainsTargetStateEntry(targetStateEntry)
 }

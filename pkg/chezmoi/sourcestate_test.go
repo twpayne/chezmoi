@@ -519,9 +519,15 @@ func TestSourceStateAdd(t *testing.T) {
 
 				destAbsPathInfos := make(map[AbsPath]fs.FileInfo)
 				for _, destAbsPath := range tc.destAbsPaths {
-					assert.NoError(t, s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil))
+					assert.NoError(
+						t,
+						s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil),
+					)
 				}
-				assert.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions))
+				assert.NoError(
+					t,
+					s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions),
+				)
 
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
@@ -533,7 +539,14 @@ func TestSourceStateAddInExternal(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
 	assert.NoError(t, tarWriterSystem.Mkdir(NewAbsPath("dir"), fs.ModePerm))
-	assert.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("dir/file"), []byte("# contents of dir/file\n"), 0o666))
+	assert.NoError(
+		t,
+		tarWriterSystem.WriteFile(
+			NewAbsPath("dir/file"),
+			[]byte("# contents of dir/file\n"),
+			0o666,
+		),
+	)
 	assert.NoError(t, tarWriterSystem.Close())
 	archiveData := buffer.Bytes()
 
@@ -803,10 +816,19 @@ func TestSourceStateApplyAll(t *testing.T) {
 				s := NewSourceState(sourceStateOptions...)
 				assert.NoError(t, s.Read(ctx, nil))
 				requireEvaluateAll(t, s, system)
-				assert.NoError(t, s.applyAll(system, system, persistentState, NewAbsPath("/home/user"), ApplyOptions{
-					Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
-					Umask:  chezmoitest.Umask,
-				}))
+				assert.NoError(
+					t,
+					s.applyAll(
+						system,
+						system,
+						persistentState,
+						NewAbsPath("/home/user"),
+						ApplyOptions{
+							Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+							Umask:  chezmoitest.Umask,
+						},
+					),
+				)
 
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
@@ -1465,7 +1487,9 @@ func TestSourceStateRead(t *testing.T) {
 				assert.NoError(t, err)
 				requireEvaluateAll(t, s, system)
 				tc.expectedSourceState.destDirAbsPath = NewAbsPath("/home/user")
-				tc.expectedSourceState.sourceDirAbsPath = NewAbsPath("/home/user/.local/share/chezmoi")
+				tc.expectedSourceState.sourceDirAbsPath = NewAbsPath(
+					"/home/user/.local/share/chezmoi",
+				)
 				requireEvaluateAll(t, tc.expectedSourceState, system)
 				s.baseSystem = nil
 				s.system = nil
@@ -1604,7 +1628,10 @@ func TestSourceStateReadScriptsConcurrent(t *testing.T) {
 func TestSourceStateReadExternalCache(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
-	assert.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("file"), []byte("# contents of file\n"), 0o666))
+	assert.NoError(
+		t,
+		tarWriterSystem.WriteFile(NewAbsPath("file"), []byte("# contents of file\n"), 0o666),
+	)
 	assert.NoError(t, tarWriterSystem.Close())
 	archiveData := buffer.Bytes()
 
@@ -1650,7 +1677,9 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 					Type:          "archive",
 					URL:           httpServer.URL + "/archive.tar",
 					RefreshPeriod: Duration(1 * time.Minute),
-					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.yaml"),
+					sourceAbsPath: NewAbsPath(
+						"/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
+					),
 				},
 			}, s.externals)
 		}
@@ -1893,7 +1922,10 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 
 // applyAll updates targetDirAbsPath in targetSystem to match s.
 func (s *SourceState) applyAll(
-	targetSystem, destSystem System, persistentState PersistentState, targetDirAbsPath AbsPath, options ApplyOptions,
+	targetSystem, destSystem System,
+	persistentState PersistentState,
+	targetDirAbsPath AbsPath,
+	options ApplyOptions,
 ) error {
 	for _, targetRelPath := range s.TargetRelPaths() {
 		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDirAbsPath, targetRelPath, options); {
@@ -1910,17 +1942,23 @@ func (s *SourceState) applyAll(
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	assert.NoError(t, s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
-		if err := sourceStateEntry.Evaluate(); err != nil {
-			return err
-		}
-		destAbsPath := s.destDirAbsPath.Join(targetRelPath)
-		targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
-		if err != nil {
-			return err
-		}
-		return targetStateEntry.Evaluate()
-	}))
+	assert.NoError(
+		t,
+		s.root.ForEach(
+			EmptyRelPath,
+			func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+				if err := sourceStateEntry.Evaluate(); err != nil {
+					return err
+				}
+				destAbsPath := s.destDirAbsPath.Join(targetRelPath)
+				targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
+				if err != nil {
+					return err
+				}
+				return targetStateEntry.Evaluate()
+			},
+		),
+	)
 }
 
 func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {

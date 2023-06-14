@@ -33,18 +33,38 @@ func (c *Config) newImportCmd() *cobra.Command {
 
 	flags := importCmd.Flags()
 	flags.VarP(&c._import.destination, "destination", "d", "Set destination prefix")
-	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "Set exact_ attribute on imported directories")
+	flags.BoolVar(
+		&c._import.exact,
+		"exact",
+		c._import.exact,
+		"Set exact_ attribute on imported directories",
+	)
 	flags.VarP(c._import.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c._import.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import") //nolint:lll
-	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")                 //nolint:lll
+	flags.BoolVarP(
+		&c._import.removeDestination,
+		"remove-destination",
+		"r",
+		c._import.removeDestination,
+		"Remove destination before import",
+	)
+	flags.IntVar(
+		&c._import.stripComponents,
+		"strip-components",
+		c._import.stripComponents,
+		"Strip leading path components",
+	)
 
 	registerExcludeIncludeFlagCompletionFuncs(importCmd)
 
 	return importCmd
 }
 
-func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runImportCmd(
+	cmd *cobra.Command,
+	args []string,
+	sourceState *chezmoi.SourceState,
+) error {
 	var (
 		name string
 		data []byte
@@ -84,7 +104,11 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 		}
 	}
 	return sourceState.Add(
-		c.sourceSystem, c.persistentState, archiveReaderSystem, archiveReaderSystem.FileInfos(), &chezmoi.AddOptions{
+		c.sourceSystem,
+		c.persistentState,
+		archiveReaderSystem,
+		archiveReaderSystem.FileInfos(),
+		&chezmoi.AddOptions{
 			Exact:     c._import.exact,
 			Filter:    c._import.filter,
 			RemoveDir: removeDir,

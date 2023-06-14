@@ -113,8 +113,8 @@ lint: ensure-golangci-lint
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
 
 .PHONY: format
-format: ensure-gofumpt
-	find . -name \*.go | xargs ./bin/gofumpt -extra -w
+format: ensure-gofumpt ensure-golines
+	find . -name \*.go | xargs ./bin/golines --base-formatter="./bin/gofumpt -extra" -w
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
 .PHONY: format-yaml
@@ -134,6 +134,13 @@ ensure-gofumpt:
 	if [ ! -x bin/gofumpt ] || ( ./bin/gofumpt --version | grep -Fqv "v${GOFUMPT_VERSION}" ) ; then \
 		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install "mvdan.cc/gofumpt@v${GOFUMPT_VERSION}" ; \
+	fi
+
+.PHONY: ensure-golines
+ensure-golines:
+	if [ ! -x bin/golines ] ; then \
+		mkdir -p bin ; \
+		GOBIN=$(shell pwd)/bin ${GO} install github.com/segmentio/golines@latest ; \
 	fi
 
 .PHONY: ensure-golangci-lint
