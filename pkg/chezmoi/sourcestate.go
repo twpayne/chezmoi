@@ -909,7 +909,10 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if !s.readTemplateData {
 				return nil
 			}
-			return s.addTemplateDataDir(sourceAbsPath, fileInfo)
+			if err := s.addTemplateDataDir(sourceAbsPath, fileInfo); err != nil {
+				return err
+			}
+			return vfs.SkipDir
 		case isPrefixDotFormat(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
 				return nil
