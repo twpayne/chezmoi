@@ -201,7 +201,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b
+      uses: goreleaser/goreleaser-action@336e29918d653399e599bfca99fadc1d7ffbc9f7
       with:
         version: latest
         args: release --skip-publish --skip-sign --snapshot --timeout=1h
@@ -407,7 +407,7 @@ jobs:
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b
+    - uses: goreleaser/goreleaser-action@336e29918d653399e599bfca99fadc1d7ffbc9f7
       with:
         version: latest
         args: release --timeout=1h
