@@ -159,7 +159,7 @@ func (s *RealSystem) UnderlyingSystem() System {
 // getScriptWorkingDir returns the script's working directory.
 //
 // If this is a before_ script then the requested working directory may not
-// actually exist yet, so search through the parent directory hierarchy till
+// actually exist yet, so search through the parent directory hierarchy until
 // we find a suitable working directory.
 func (s *RealSystem) getScriptWorkingDir(dir AbsPath) (string, error) {
 	// This should always terminate because dir will eventually become ".", i.e.
