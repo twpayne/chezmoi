@@ -15,7 +15,7 @@ jobs:
   action:
     runs-on: ubuntu-22.04
     steps:
-    - uses: dessant/lock-threads@c1b35aecc5cdb1a34539d14196df55838bb2f836
+    - uses: dessant/lock-threads@be8aa5be94131386884a6da4189effda9b14aa21
       with:
         issue-lock-reason: resolved
         issue-inactive-days: 7
