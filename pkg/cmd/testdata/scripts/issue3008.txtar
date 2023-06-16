@@ -1,0 +1,7 @@
+# test that chezmoi apply does not get confused by multiple files in .chezmoidata
+exec chezmoi apply
+
+-- home/user/.local/share/chezmoi/.chezmoidata/a.yaml --
+a: 1
+-- home/user/.local/share/chezmoi/.chezmoidata/b.yaml --
+b: 2
