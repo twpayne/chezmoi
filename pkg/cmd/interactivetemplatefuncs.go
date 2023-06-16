@@ -11,6 +11,7 @@ import (
 type interactiveTemplateFuncsConfig struct {
 	forcePromptOnce bool
 	promptBool      map[string]string
+	promptDefaults  bool
 	promptInt       map[string]int
 	promptString    map[string]string
 }
@@ -21,6 +22,12 @@ func (c *Config) addInteractiveTemplateFuncFlags(flags *pflag.FlagSet) {
 		"prompt",
 		c.interactiveTemplateFuncs.forcePromptOnce,
 		"Force prompt*Once template functions to prompt",
+	)
+	flags.BoolVar(
+		&c.interactiveTemplateFuncs.promptDefaults,
+		"promptDefaults",
+		c.interactiveTemplateFuncs.promptDefaults,
+		"Make prompt functions return default values",
 	)
 	flags.StringToStringVar(
 		&c.interactiveTemplateFuncs.promptBool,
