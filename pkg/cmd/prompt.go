@@ -177,6 +177,9 @@ func (c *Config) promptBool(prompt string, args ...bool) (bool, error) {
 	default:
 		return false, fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
 	}
+	if c.interactiveTemplateFuncs.promptDefaults && defaultValue != nil {
+		return *defaultValue, nil
+	}
 	return c.readBool(prompt, defaultValue)
 }
 
@@ -194,6 +197,9 @@ func (c *Config) promptChoice(prompt string, choices []string, args ...string) (
 	default:
 		return "", fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 	}
+	if c.interactiveTemplateFuncs.promptDefaults && defaultValue != nil {
+		return *defaultValue, nil
+	}
 	return c.readChoice(prompt, choices, defaultValue)
 }
 
@@ -206,6 +212,9 @@ func (c *Config) promptInt(prompt string, args ...int64) (int64, error) {
 		defaultValue = &args[0]
 	default:
 		return 0, fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+	}
+	if c.interactiveTemplateFuncs.promptDefaults && defaultValue != nil {
+		return *defaultValue, nil
 	}
 	return c.readInt(prompt, defaultValue)
 }
@@ -220,6 +229,9 @@ func (c *Config) promptString(prompt string, args ...string) (string, error) {
 		defaultValue = &arg
 	default:
 		return "", fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+	}
+	if c.interactiveTemplateFuncs.promptDefaults && defaultValue != nil {
+		return *defaultValue, nil
 	}
 	return c.readString(prompt, defaultValue)
 }
