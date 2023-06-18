@@ -316,7 +316,31 @@ func (s *SourceState) Add(
 	destAbsPathInfos map[AbsPath]fs.FileInfo,
 	options *AddOptions,
 ) error {
-	for destAbsPath := range destAbsPathInfos {
+	// Filter out excluded and ignored paths.
+	destAbsPaths := AbsPaths(maps.Keys(destAbsPathInfos))
+	sort.Sort(destAbsPaths)
+	n := 0
+	for _, destAbsPath := range destAbsPaths {
+		destAbsPathInfo := destAbsPathInfos[destAbsPath]
+		if !options.Filter.IncludeFileInfo(destAbsPathInfo) {
+			continue
+		}
+
+		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
+		if s.Ignore(targetRelPath) {
+			if options.OnIgnoreFunc != nil {
+				options.OnIgnoreFunc(targetRelPath)
+			}
+			continue
+		}
+
+		destAbsPaths[n] = destAbsPath
+		n++
+	}
+	destAbsPaths = destAbsPaths[:n]
+
+	// Check for protected paths.
+	for _, destAbsPath := range destAbsPaths {
 		for _, protectedAbsPath := range options.ProtectedAbsPaths {
 			if protectedAbsPath.Empty() {
 				continue
@@ -337,28 +361,14 @@ func (s *SourceState) Add(
 		sourceRelPaths []SourceRelPath
 	}
 
-	destAbsPaths := AbsPaths(maps.Keys(destAbsPathInfos))
-	sort.Sort(destAbsPaths)
-
-	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPathInfos))
+	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPaths))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
 	nonEmptyDirs := make(map[SourceRelPath]struct{})
 	dirRenames := make(map[AbsPath]AbsPath)
 DEST_ABS_PATH:
 	for _, destAbsPath := range destAbsPaths {
-		destAbsPathInfo := destAbsPathInfos[destAbsPath]
-		if !options.Filter.IncludeFileInfo(destAbsPathInfo) {
-			continue
-		}
 		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
-
-		if s.Ignore(targetRelPath) {
-			if options.OnIgnoreFunc != nil {
-				options.OnIgnoreFunc(targetRelPath)
-			}
-			continue
-		}
 
 		// Find the target's parent directory in the source state.
 		var parentSourceRelPath SourceRelPath
@@ -373,6 +383,7 @@ DEST_ABS_PATH:
 		}
 		nonEmptyDirs[parentSourceRelPath] = struct{}{}
 
+		destAbsPathInfo := destAbsPathInfos[destAbsPath]
 		actualStateEntry, err := NewActualStateEntry(destSystem, destAbsPath, destAbsPathInfo, nil)
 		if err != nil {
 			return err

@@ -1,0 +1,9 @@
+# test that chezmoi add respects .chezmoiignore in the presence of protected paths
+exec chezmoi add -r $HOME${/}.local
+exists $CHEZMOISOURCEDIR/dot_local/bin/hello.sh
+
+-- home/user/.local/bin/hello.sh --
+#!/bin/sh
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.local/share/chezmoi
+.local/share/chezmoi/**
