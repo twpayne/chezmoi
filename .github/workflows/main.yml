@@ -9,6 +9,7 @@ on:
     tags:
     - v*
 env:
+  ACTIONLINT_VERSION: 1.6.25
   AGE_VERSION: 1.1.1
   GO_VERSION: 1.20.5
   GOFUMPT_VERSION: 0.4.0
@@ -341,6 +342,10 @@ jobs:
       run: |
         go generate
         git diff --exit-code
+    - name: actionlint
+      run: |
+        go install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}"
+        actionlint
     - uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
       with:
         ignore_paths: completions
