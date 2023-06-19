@@ -3,6 +3,7 @@ ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/wor
 FINDTYPOS_VERSION=$(shell awk '/FINDTYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GOLINES_VERSION=$(shell awk '/GOLINES_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
@@ -131,7 +132,7 @@ create-syso: ensure-goversioninfo
 	./bin/goversioninfo -platform-specific
 
 .PHONY: ensure-tools
-ensure-tools: ensure-actionlint ensure-findtypos ensure-gofumpt ensure-golangci-lint ensure-goversioninfo
+ensure-tools: ensure-actionlint ensure-findtypos ensure-gofumpt ensure-golangci-lint ensure-golines ensure-goversioninfo
 
 .PHONY: ensure-actionlint
 ensure-actionlint:
@@ -156,9 +157,9 @@ ensure-gofumpt:
 
 .PHONY: ensure-golines
 ensure-golines:
-	if [ ! -x bin/golines ] ; then \
+	if [ ! -x bin/golines ] || ( ./bin/actionlint --version | grep -Fqv "v${GOLINES_VERSION}" ) ; then \
 		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin ${GO} install github.com/segmentio/golines@latest ; \
+		GOBIN=$(shell pwd)/bin ${GO} install "github.com/segmentio/golines@v${GOLINES_VERSION}" ; \
 	fi
 
 .PHONY: ensure-golangci-lint
