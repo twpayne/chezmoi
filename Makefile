@@ -1,5 +1,6 @@
 GO?=go
 ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+FINDTYPOS_VERSION=$(shell awk '/FINDTYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
@@ -108,11 +109,12 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-actionlint ensure-golangci-lint
+lint: ensure-actionlint ensure-findtypos ensure-golangci-lint
 	./bin/actionlint
 	./bin/golangci-lint run
 	${GO} run ./internal/cmds/lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
+	./bin/findtypos chezmoi .
 
 .PHONY: format
 format: ensure-gofumpt ensure-golines
@@ -129,13 +131,20 @@ create-syso: ensure-goversioninfo
 	./bin/goversioninfo -platform-specific
 
 .PHONY: ensure-tools
-ensure-tools: ensure-actionlint ensure-gofumpt ensure-golangci-lint ensure-goversioninfo
+ensure-tools: ensure-actionlint ensure-findtypos ensure-gofumpt ensure-golangci-lint ensure-goversioninfo
 
 .PHONY: ensure-actionlint
 ensure-actionlint:
 	if [ ! -x bin/actionlint ] || ( ./bin/actionlint --version | grep -Fqv "v${ACTIONLINT_VERSION}" ) ; then \
 		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}" ; \
+	fi
+
+.PHONY: ensure-findtypos
+ensure-findtypos:
+	if [ ! -x bin/findtypos ] ; then \
+		mkdir -p bin ; \
+		GOBIN=$(shell pwd)/bin ${GO} install "github.com/twpayne/findtypos@v${FINDTYPOS_VERSION}" ; \
 	fi
 
 .PHONY: ensure-gofumpt

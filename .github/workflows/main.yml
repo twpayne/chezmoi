@@ -15,6 +15,7 @@ env:
   GOFUMPT_VERSION: 0.4.0
   GOLANGCI_LINT_VERSION: 1.53.3
   GOVERSIONINFO_VERSION: 1.4.0
+  FINDTYPOS_VERSION: 0.0.1
 jobs:
   changes:
     runs-on: ubuntu-20.04
@@ -357,7 +358,7 @@ jobs:
         find . -name '*.txtar' -print0 | xargs -0 go run ./internal/cmds/lint-txtar
     - name: findtypos
       run: |
-        go install github.com/twpayne/findtypos@v0.0.1
+        go install "github.com/twpayne/findtypos@v${FINDTYPOS_VERSION}"
         findtypos -format=github-actions chezmoi .
   lint:
     needs: changes
