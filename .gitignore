@@ -1,5 +1,6 @@
 /.vagrant
 /COMMIT
+/bin/actionlint
 /bin/chezmoi
 /bin/gofumpt
 /bin/golines
