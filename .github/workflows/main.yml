@@ -138,8 +138,8 @@ jobs:
         go run . --version
     - name: install-age
       run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz | tar xzf -
+        cd "$(mktemp -d)"
+        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: test
@@ -168,8 +168,8 @@ jobs:
         go run . --version
     - name: install-age
       run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
+        cd "$(mktemp -d)"
+        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: test
@@ -194,8 +194,8 @@ jobs:
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
         # https://github.com/goreleaser/goreleaser/issues/1715
         # https://bugs.launchpad.net/snapcraft/+bug/1889741
-        mkdir -p $HOME/.cache/snapcraft/download
-        mkdir -p $HOME/.cache/snapcraft/stage-packages
+        mkdir -p "${HOME}/.cache/snapcraft/download"
+        mkdir -p "${HOME}/.cache/snapcraft/stage-packages"
     - name: create-syso
       run: |
         make create-syso
@@ -248,8 +248,8 @@ jobs:
     - name: install-age
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
+        cd "$(mktemp -d)"
+        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: build
@@ -349,7 +349,7 @@ jobs:
         go run ./internal/cmds/lint-whitespace
     - name: lint-txtar
       run: |
-        find . -name \*.txtar | xargs go run ./internal/cmds/lint-txtar
+        find . -name '*.txtar' -print0 | xargs -0 go run ./internal/cmds/lint-txtar
     - name: findtypos
       run: |
         go install github.com/twpayne/findtypos@v0.0.1
@@ -391,8 +391,8 @@ jobs:
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
         # https://github.com/goreleaser/goreleaser/issues/1715
         # https://bugs.launchpad.net/snapcraft/+bug/1889741
-        mkdir -p $HOME/.cache/snapcraft/download
-        mkdir -p $HOME/.cache/snapcraft/stage-packages
+        mkdir -p "${HOME}/.cache/snapcraft/download"
+        mkdir -p "${HOME}/.cache/snapcraft/stage-packages"
     - name: check-snapcraft-credentials
       run: snapcraft whoami
       env:
