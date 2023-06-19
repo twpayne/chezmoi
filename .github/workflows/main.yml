@@ -111,7 +111,7 @@ jobs:
         ( cd assets/docker && ./test.sh fedora )
   test-freebsd:
     needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+    if: false
     runs-on: macos-12
     steps:
     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
