@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"net"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -296,7 +297,7 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 		text = strings.TrimSpace(text)
 		text, _, _ = strings.Cut(text, "#")
 		fields := whitespaceRx.Split(text, -1)
-		if len(fields) >= 2 && fields[0] == "127.0.1.1" {
+		if len(fields) > 1 && net.ParseIP(fields[0]).IsLoopback() && strings.Contains(fields[1], ".") {
 			return fields[1], nil
 		}
 	}
