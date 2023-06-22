@@ -43,10 +43,8 @@ builds:
   goos:
   - darwin
   - freebsd
-  - illumos
   - linux
   - openbsd
-  - solaris
   - windows
   goarch:
   - '386'

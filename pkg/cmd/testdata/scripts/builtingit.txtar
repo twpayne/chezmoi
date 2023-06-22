@@ -1,5 +1,4 @@
 [!exec:git] skip 'git not found in $PATH'
-[solaris] skip 'go-git uses flock which is not available on solaris'
 [windows] skip 'go-git does not support file:// URLs on windows'
 
 chmod 755 golden/git
