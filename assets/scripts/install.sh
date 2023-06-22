@@ -120,14 +120,6 @@ get_goos() {
 	cygwin_nt*) goos="windows" ;;
 	mingw*) goos="windows" ;;
 	msys_nt*) goos="windows" ;;
-	sunos*)
-		kernel="$(uname -o | tr '[:upper:]' '[:lower:]')"
-		case "${kernel}" in
-		illumos*) goos="illumos" ;;
-		solaris*) goos="solaris" ;;
-		*) goos="${os}" ;;
-		esac
-		;;
 	*) goos="${os}" ;;
 	esac
 	printf '%s' "${goos}"
@@ -157,7 +149,6 @@ check_goos_goarch() {
 	freebsd/arm) return 0 ;;
 	freebsd/arm64) return 0 ;;
 	freebsd/riscv64) return 0 ;;
-	illumos/amd64) return 0 ;;
 	linux/386) return 0 ;;
 	linux/amd64) return 0 ;;
 	linux/arm) return 0 ;;
@@ -174,7 +165,6 @@ check_goos_goarch() {
 	openbsd/arm) return 0 ;;
 	openbsd/arm64) return 0 ;;
 	openbsd/mips64) return 0 ;;
-	solaris/amd64) return 0 ;;
 	windows/386) return 0 ;;
 	windows/amd64) return 0 ;;
 	windows/arm) return 0 ;;

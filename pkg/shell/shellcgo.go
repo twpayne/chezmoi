@@ -1,9 +1,7 @@
-//go:build (cgo && aix) || (cgo && android) || (cgo && darwin) || (cgo && dragonfly) || (cgo && freebsd) || (cgo && illumos) || (cgo && linux) || (cgo && netbsd) || (cgo && openbsd) || (cgo && solaris)
+//go:build (cgo && aix) || (cgo && android) || (cgo && darwin) || (cgo && dragonfly) || (cgo && freebsd) || (cgo && linux) || (cgo && netbsd) || (cgo && openbsd)
 
 package shell
 
-// #cgo solaris CFLAGS: -D_POSIX_PTHREAD_SEMANTICS=1
-// #cgo illumos CFLAGS: -D_POSIX_PTHREAD_SEMANTICS=1
 // #include <errno.h>
 // #include <pwd.h>
 // #include <stdlib.h>

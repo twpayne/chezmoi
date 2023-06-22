@@ -90,8 +90,7 @@ stdout 2656FF1E876E9973
 
 # test that the output function returns an error if the command fails
 [!windows] ! exec chezmoi execute-template '{{ output "false" }}'
-[!(windows||illumos)] stderr 'error calling output: .*/false: exit status 1'
-[illumos] stderr 'error calling output: .*/false: exit status 255'
+[!windows] stderr 'error calling output: .*/false: exit status 1'
 
 # test pruneEmptyDicts template function
 exec chezmoi execute-template '{{ dict "key1" "value1" "key2" (dict) | pruneEmptyDicts | toJson }}'

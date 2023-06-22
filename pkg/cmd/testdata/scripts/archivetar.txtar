@@ -4,14 +4,12 @@ mksourcedir
 
 exec chezmoi archive --output=archive.tar
 exec tar -tf archive.tar
-[!(illumos||openbsd)] cmp stdout golden/archive-tar
-[illumos] cmp stdout golden/archive-tar-illumos
+[!openbsd] cmp stdout golden/archive-tar
 [openbsd] cmp stdout golden/archive-tar-openbsd
 
 exec chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
-[!(illumos||openbsd)] cmp stdout golden/archive-tar
-[illumos] cmp stdout golden/archive-tar-illumos
+[!openbsd] cmp stdout golden/archive-tar
 [openbsd] cmp stdout golden/archive-tar-openbsd
 
 -- golden/archive-tar --
@@ -26,19 +24,6 @@ exec tar -tzf archive.tar.gz
 .private
 .readonly
 .symlink
-.template
--- golden/archive-tar-illumos --
-.create
-.dir/
-.dir/file
-.dir/subdir/
-.dir/subdir/file
-.empty
-.executable
-.file
-.private
-.readonly
-.symlink symbolic link to .dir/subdir/file
 .template
 -- golden/archive-tar-openbsd --
 .create

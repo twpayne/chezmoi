@@ -2514,11 +2514,6 @@ func (c *Config) useBuiltinAgeAutoFunc() bool {
 
 // useBuiltinGitAutoFunc detects whether the builtin git should be used.
 func (c *Config) useBuiltinGitAutoFunc() bool {
-	// useBuiltinGit is false by default on Solaris as it uses the unavailable
-	// flock function.
-	if runtime.GOOS == "solaris" {
-		return false
-	}
 	if _, err := chezmoi.LookPath(c.Git.Command); err == nil {
 		return false
 	}

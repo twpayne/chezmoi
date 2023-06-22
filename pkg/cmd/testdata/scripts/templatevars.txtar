@@ -18,10 +18,8 @@ stdout [\\/]chezmoi(.exe)?$
 exec chezmoi execute-template '{{ .chezmoi.os }}'
 [darwin] stdout darwin
 [freebsd] stdout freebsd
-[illumos] stdout illumos
 [linux] stdout linux
 [openbsd] stdout openbsd
-[solaris] stdout solaris
 [windows] stdout windows
 
 exec chezmoi execute-template '{{ .chezmoi.sourceDir }}'
