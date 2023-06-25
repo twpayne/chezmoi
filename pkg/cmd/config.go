@@ -91,30 +91,31 @@ type warningsConfig struct {
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
 	// Global configuration.
-	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir"      mapstructure:"cacheDir"      yaml:"cacheDir"`
-	Color              autoBool                        `json:"color"         mapstructure:"color"         yaml:"color"`
-	Data               map[string]any                  `json:"data"          mapstructure:"data"          yaml:"data"`
-	Format             writeDataFormat                 `json:"format"        mapstructure:"format"        yaml:"format"`
-	DestDirAbsPath     chezmoi.AbsPath                 `json:"destDir"       mapstructure:"destDir"       yaml:"destDir"`
-	GitHub             gitHubConfig                    `json:"gitHub"        mapstructure:"gitHub"        yaml:"gitHub"`
-	Hooks              map[string]hookConfig           `json:"hooks"         mapstructure:"hooks"         yaml:"hooks"`
-	Interpreters       map[string]*chezmoi.Interpreter `json:"interpreters"  mapstructure:"interpreters"  yaml:"interpreters"`
-	Mode               chezmoi.Mode                    `json:"mode"          mapstructure:"mode"          yaml:"mode"`
-	Pager              string                          `json:"pager"         mapstructure:"pager"         yaml:"pager"`
-	PINEntry           pinEntryConfig                  `json:"pinentry"      mapstructure:"pinentry"      yaml:"pinentry"`
-	Progress           autoBool                        `json:"progress"      mapstructure:"progress"      yaml:"progress"`
-	Safe               bool                            `json:"safe"          mapstructure:"safe"          yaml:"safe"`
-	ScriptEnv          map[string]string               `json:"scriptEnv"     mapstructure:"scriptEnv"     yaml:"scriptEnv"`
-	ScriptTempDir      chezmoi.AbsPath                 `json:"scriptTempDir" mapstructure:"scriptTempDir" yaml:"scriptTempDir"`
-	SourceDirAbsPath   chezmoi.AbsPath                 `json:"sourceDir"     mapstructure:"sourceDir"     yaml:"sourceDir"`
-	Template           templateConfig                  `json:"template"      mapstructure:"template"      yaml:"template"`
-	TextConv           textConv                        `json:"textConv"      mapstructure:"textConv"      yaml:"textConv"`
-	Umask              fs.FileMode                     `json:"umask"         mapstructure:"umask"         yaml:"umask"`
-	UseBuiltinAge      autoBool                        `json:"useBuiltinAge" mapstructure:"useBuiltinAge" yaml:"useBuiltinAge"`
-	UseBuiltinGit      autoBool                        `json:"useBuiltinGit" mapstructure:"useBuiltinGit" yaml:"useBuiltinGit"`
-	Verbose            bool                            `json:"verbose"       mapstructure:"verbose"       yaml:"verbose"`
-	Warnings           warningsConfig                  `json:"warnings"      mapstructure:"warnings"      yaml:"warnings"`
-	WorkingTreeAbsPath chezmoi.AbsPath                 `json:"workingTree"   mapstructure:"workingTree"   yaml:"workingTree"`
+	CacheDirAbsPath        chezmoi.AbsPath                 `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
+	Color                  autoBool                        `json:"color"           mapstructure:"color"           yaml:"color"`
+	Data                   map[string]any                  `json:"data"            mapstructure:"data"            yaml:"data"`
+	Format                 writeDataFormat                 `json:"format"          mapstructure:"format"          yaml:"format"`
+	DestDirAbsPath         chezmoi.AbsPath                 `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
+	GitHub                 gitHubConfig                    `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
+	Hooks                  map[string]hookConfig           `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
+	Interpreters           map[string]*chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
+	Mode                   chezmoi.Mode                    `json:"mode"            mapstructure:"mode"            yaml:"mode"`
+	Pager                  string                          `json:"pager"           mapstructure:"pager"           yaml:"pager"`
+	PersistentStateAbsPath chezmoi.AbsPath                 `json:"persistentState" mapstructure:"persistentState" yaml:"persistentState"`
+	PINEntry               pinEntryConfig                  `json:"pinentry"        mapstructure:"pinentry"        yaml:"pinentry"`
+	Progress               autoBool                        `json:"progress"        mapstructure:"progress"        yaml:"progress"`
+	Safe                   bool                            `json:"safe"            mapstructure:"safe"            yaml:"safe"`
+	ScriptEnv              map[string]string               `json:"scriptEnv"       mapstructure:"scriptEnv"       yaml:"scriptEnv"`
+	ScriptTempDir          chezmoi.AbsPath                 `json:"scriptTempDir"   mapstructure:"scriptTempDir"   yaml:"scriptTempDir"`
+	SourceDirAbsPath       chezmoi.AbsPath                 `json:"sourceDir"       mapstructure:"sourceDir"       yaml:"sourceDir"`
+	Template               templateConfig                  `json:"template"        mapstructure:"template"        yaml:"template"`
+	TextConv               textConv                        `json:"textConv"        mapstructure:"textConv"        yaml:"textConv"`
+	Umask                  fs.FileMode                     `json:"umask"           mapstructure:"umask"           yaml:"umask"`
+	UseBuiltinAge          autoBool                        `json:"useBuiltinAge"   mapstructure:"useBuiltinAge"   yaml:"useBuiltinAge"`
+	UseBuiltinGit          autoBool                        `json:"useBuiltinGit"   mapstructure:"useBuiltinGit"   yaml:"useBuiltinGit"`
+	Verbose                bool                            `json:"verbose"         mapstructure:"verbose"         yaml:"verbose"`
+	Warnings               warningsConfig                  `json:"warnings"        mapstructure:"warnings"        yaml:"warnings"`
+	WorkingTreeAbsPath     chezmoi.AbsPath                 `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
 
 	// Password manager configurations.
 	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
@@ -201,17 +202,16 @@ type Config struct {
 	versionStr  string
 
 	// Configuration.
-	fileSystem             vfs.FS
-	bds                    *xdg.BaseDirectorySpecification
-	configFileAbsPath      chezmoi.AbsPath
-	configFileAbsPathErr   error
-	baseSystem             chezmoi.System
-	sourceSystem           chezmoi.System
-	destSystem             chezmoi.System
-	persistentStateAbsPath chezmoi.AbsPath
-	persistentState        chezmoi.PersistentState
-	httpClient             *http.Client
-	logger                 *zerolog.Logger
+	fileSystem           vfs.FS
+	bds                  *xdg.BaseDirectorySpecification
+	configFileAbsPath    chezmoi.AbsPath
+	configFileAbsPathErr error
+	baseSystem           chezmoi.System
+	sourceSystem         chezmoi.System
+	destSystem           chezmoi.System
+	persistentState      chezmoi.PersistentState
+	httpClient           *http.Client
+	logger               *zerolog.Logger
 
 	// Computed configuration.
 	homeDirAbsPath      chezmoi.AbsPath
@@ -1460,7 +1460,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
-	persistentFlags.Var(&c.persistentStateAbsPath, "persistent-state", "Set persistent state file")
+	persistentFlags.Var(&c.PersistentStateAbsPath, "persistent-state", "Set persistent state file")
 	persistentFlags.Var(&c.Progress, "progress", "Display progress bars")
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
@@ -2060,8 +2060,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 // returning the first persistent file found, and returning the default path if
 // none are found.
 func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
-	if !c.persistentStateAbsPath.Empty() {
-		return c.persistentStateAbsPath, nil
+	if !c.PersistentStateAbsPath.Empty() {
+		return c.PersistentStateAbsPath, nil
 	}
 	if !c.configFileAbsPath.Empty() {
 		return c.configFileAbsPath.Dir().Join(persistentStateFileRelPath), nil

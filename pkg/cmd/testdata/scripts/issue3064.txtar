@@ -1,0 +1,10 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi respects the persistentState config variable
+exec chezmoi apply
+exists test.boltdb
+
+-- home/user/.config/chezmoi/chezmoi.yaml --
+persistentState: test.boltdb
+-- home/user/.local/share/chezmoi/run_once_script.sh --
+#!/bin/sh
