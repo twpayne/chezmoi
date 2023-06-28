@@ -42,6 +42,7 @@ import (
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 	"golang.org/x/term"
 	"mvdan.cc/sh/v3/expand"
 	"mvdan.cc/sh/v3/syntax"
@@ -766,7 +767,7 @@ func (c *Config) createConfigFile(
 	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
 
 	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, funcMap, chezmoi.TemplateOptions{
-		Options: append([]string(nil), c.Template.Options...),
+		Options: slices.Clone(c.Template.Options),
 	})
 	if err != nil {
 		return nil, err
@@ -1389,7 +1390,7 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 		},
 	})
 	templateOptions := chezmoi.TemplateOptions{
-		Options: append([]string(nil), c.Template.Options...),
+		Options: slices.Clone(c.Template.Options),
 	}
 	commitMessageTmpl, err := chezmoi.ParseTemplate(
 		"commit_message",

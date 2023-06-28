@@ -10,6 +10,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/exp/slices"
 )
 
 const few = 64
@@ -93,7 +94,7 @@ func (p OSProcessStateLogObject) MarshalZerologObject(event *zerolog.Event) {
 // FirstFewBytes returns the first few bytes of data in a human-readable form.
 func FirstFewBytes(data []byte) []byte {
 	if len(data) > few {
-		data = append([]byte{}, data[:few]...)
+		data = slices.Clone(data[:few])
 		data = append(data, '.', '.', '.')
 	}
 	return data
