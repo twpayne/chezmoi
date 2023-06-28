@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"strings"
 
+	"golang.org/x/exp/slices"
+
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -43,7 +45,7 @@ func (c *Config) secretOutput(args []string) ([]byte, error) {
 		return output, nil
 	}
 
-	args = append(c.Secret.Args, args...)
+	args = append(slices.Clone(c.Secret.Args), args...)
 	cmd := exec.Command(c.Secret.Command, args...) //nolint:gosec
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr

@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 
+	"golang.org/x/exp/slices"
+
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -60,7 +62,8 @@ func (c *Config) dashlanePasswordTemplateFunc(filter string) any {
 
 func (c *Config) dashlaneOutput(args ...string) ([]byte, error) {
 	name := c.Dashlane.Command
-	cmd := exec.Command(name, append(c.Dashlane.Args, args...)...)
+	args = append(slices.Clone(c.Dashlane.Args), args...)
+	cmd := exec.Command(name, args...)
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {

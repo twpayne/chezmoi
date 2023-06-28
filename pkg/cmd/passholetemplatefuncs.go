@@ -7,6 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/coreos/go-semver/semver"
+	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
@@ -35,7 +36,7 @@ func (c *Config) passholeTemplateFunc(path, field string) string {
 		return value
 	}
 
-	args := append([]string{}, c.Passhole.Args...)
+	args := slices.Clone(c.Passhole.Args)
 	var stdin io.Reader
 	if c.Passhole.Prompt {
 		if c.Passhole.password == "" {

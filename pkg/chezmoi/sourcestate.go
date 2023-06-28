@@ -32,6 +32,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
@@ -1445,7 +1446,7 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			name := templateRelPath.String()
 
 			tmpl, err := ParseTemplate(name, contents, s.templateFuncs, TemplateOptions{
-				Options: append([]string(nil), s.templateOptions...),
+				Options: slices.Clone(s.templateOptions),
 			})
 			if err != nil {
 				return err
@@ -1803,7 +1804,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 					templateContents,
 					s.templateFuncs,
 					TemplateOptions{
-						Options: append([]string(nil), s.templateOptions...),
+						Options: slices.Clone(s.templateOptions),
 					},
 				)
 				if err != nil {
