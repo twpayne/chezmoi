@@ -94,7 +94,6 @@ archives:
   format_overrides:
   - goos: windows
     format: zip
-  rlcp: true
 - id: glibc
   builds:
   - chezmoi-cgo-glibc
@@ -103,7 +102,6 @@ archives:
   - README.md
   - completions/*
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}'
-  rlcp: true
 - id: musl
   builds:
   - chezmoi-cgo-musl
@@ -112,7 +110,6 @@ archives:
   - README.md
   - completions/*
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}'
-  rlcp: true
 
 changelog:
   use: github-native
@@ -207,7 +204,7 @@ release:
     name_template: chezmoi-windows-amd64.exe
 
 scoops:
-- bucket:
+- repository:
     owner: twpayne
     name: scoop-bucket
     token: '{{ .Env.SCOOP_GITHUB_TOKEN }}'
@@ -249,4 +246,3 @@ source:
   prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
   files:
   - COMMIT
-  rlcp: true
