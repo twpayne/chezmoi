@@ -124,8 +124,7 @@ and `$ENTRY.filter.args` variables in `.chezmoiexternal.$FORMAT`, for example:
     executable = true
     refreshPeriod = "168h"
     [".local/bin/age".filter]
-        command = "tar"
-        args = ["--extract", "--file", "/dev/stdin", "--gzip", "--to-stdout", "age/age"]
+        args = ["--extract", "--gzip", "--to-stdout", "age/age"]
 ```
 
 This will extract the single archive member `age/age` from the given URL (which
