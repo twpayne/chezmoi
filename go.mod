@@ -27,7 +27,7 @@ require (
 	github.com/muesli/combinator v0.3.0
 	github.com/muesli/termenv v0.15.2
 	github.com/pelletier/go-toml/v2 v2.0.8
-	github.com/rogpeppe/go-internal v1.10.1-0.20230524175051-ec119421bb97
+	github.com/rogpeppe/go-internal v1.11.0
 	github.com/rs/zerolog v1.29.1
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/cobra v1.7.0
