@@ -383,7 +383,6 @@ jobs:
     - test-archlinux
     - test-debian-i386
     - test-fedora
-    - test-freebsd
     - test-macos
     - test-oldstable-go
     - test-release
