@@ -444,3 +444,8 @@ articles:
   title: '491 - Tres herramientas que han revolucionado mi terminal Linux'
   lang: ES
   url: https://atareao.es/podcast/tres-herramientas-que-han-revolucionado-mi-terminal-linux/
+- date: '2023-06-14'
+  version: 2.34.1
+  title: chezmoi
+  lang: RU
+  url: https://principal-engineering.ru/posts/chezmoi/
