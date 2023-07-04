@@ -42,9 +42,10 @@ type ExternalType string
 
 // ExternalTypes.
 const (
-	ExternalTypeArchive ExternalType = "archive"
-	ExternalTypeFile    ExternalType = "file"
-	ExternalTypeGitRepo ExternalType = "git-repo"
+	ExternalTypeArchive     ExternalType = "archive"
+	ExternalTypeArchiveFile ExternalType = "archive-file"
+	ExternalTypeFile        ExternalType = "file"
+	ExternalTypeGitRepo     ExternalType = "git-repo"
 )
 
 var (
@@ -79,9 +80,10 @@ type External struct {
 		Command string   `json:"command" toml:"command" yaml:"command"`
 		Args    []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"filter"          toml:"filter"          yaml:"filter"`
-	Format  ArchiveFormat `json:"format"          toml:"format"          yaml:"format"`
-	Include []string      `json:"include"         toml:"include"         yaml:"include"`
-	Pull    struct {
+	Format      ArchiveFormat `json:"format"          toml:"format"          yaml:"format"`
+	Include     []string      `json:"include"         toml:"include"         yaml:"include"`
+	ArchivePath string        `json:"path"            toml:"path"            yaml:"path"`
+	Pull        struct {
 		Args []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"pull"            toml:"pull"            yaml:"pull"`
 	RefreshPeriod   Duration `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
@@ -2149,6 +2151,14 @@ func (s *SourceState) readExternal(
 	switch external.Type {
 	case ExternalTypeArchive:
 		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
+	case ExternalTypeArchiveFile:
+		return s.readExternalArchiveFile(
+			ctx,
+			externalRelPath,
+			parentSourceRelPath,
+			external,
+			options,
+		)
 	case ExternalTypeFile:
 		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeGitRepo:
@@ -2167,19 +2177,11 @@ func (s *SourceState) readExternalArchive(
 	external *External,
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
-	data, err := s.getExternalData(ctx, externalRelPath, external, options)
+	data, format, err := s.readExternalArchiveData(ctx, externalRelPath, external, options)
 	if err != nil {
 		return nil, err
 	}
 
-	url, err := url.Parse(external.URL)
-	if err != nil {
-		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
-	}
-	urlPath := url.Path
-	if external.Encrypted {
-		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
-	}
 	dirAttr := DirAttr{
 		TargetName: externalRelPath.Base(),
 		Exact:      external.Exact,
@@ -2197,11 +2199,6 @@ func (s *SourceState) readExternalArchive(
 	}
 	sourceStateEntries := map[RelPath][]SourceStateEntry{
 		externalRelPath: {sourceStateDir},
-	}
-
-	format := external.Format
-	if format == ArchiveFormatUnknown {
-		format = GuessArchiveFormat(urlPath, data)
 	}
 
 	patternSet := newPatternSet()
@@ -2329,6 +2326,143 @@ func (s *SourceState) readExternalArchive(
 	}
 
 	return sourceStateEntries, nil
+}
+
+// readExternalArchiveData reads an external archive's data and returns its data
+// and format.
+func (s *SourceState) readExternalArchiveData(
+	ctx context.Context,
+	externalRelPath RelPath,
+	external *External,
+	options *ReadOptions,
+) ([]byte, ArchiveFormat, error) {
+	data, err := s.getExternalData(ctx, externalRelPath, external, options)
+	if err != nil {
+		return nil, ArchiveFormatUnknown, err
+	}
+
+	url, err := url.Parse(external.URL)
+	if err != nil {
+		return nil, ArchiveFormatUnknown, fmt.Errorf(
+			"%s: %s: %w",
+			externalRelPath,
+			external.URL,
+			err,
+		)
+	}
+	urlPath := url.Path
+	if external.Encrypted {
+		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
+	}
+
+	format := external.Format
+	if format == ArchiveFormatUnknown {
+		format = GuessArchiveFormat(urlPath, data)
+	}
+
+	return data, format, nil
+}
+
+// readExternalArchiveFile reads a file from an external archive and returns its
+// SourceStateEntries.
+func (s *SourceState) readExternalArchiveFile(
+	ctx context.Context,
+	externalRelPath RelPath,
+	parentSourceRelPath SourceRelPath,
+	external *External,
+	options *ReadOptions,
+) (map[RelPath][]SourceStateEntry, error) {
+	if external.ArchivePath == "" {
+		return nil, fmt.Errorf("%s: missing path", externalRelPath)
+	}
+
+	data, format, err := s.readExternalArchiveData(ctx, externalRelPath, external, options)
+	if err != nil {
+		return nil, err
+	}
+
+	var sourceStateEntry SourceStateEntry
+	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+		if external.StripComponents > 0 {
+			components := strings.Split(name, "/")
+			if len(components) <= external.StripComponents {
+				return nil
+			}
+			name = path.Join(components[external.StripComponents:]...)
+		}
+		switch {
+		case name == "":
+			return nil
+		case name != external.ArchivePath:
+			// If this entry is a directory and it cannot contain the file we
+			// are looking for then skip this directory.
+			if fileInfo.IsDir() && !strings.HasPrefix(external.ArchivePath, name) {
+				return fs.SkipDir
+			}
+			return nil
+		case fileInfo.Mode()&fs.ModeType == 0:
+			contents, err := io.ReadAll(r)
+			if err != nil {
+				return fmt.Errorf("%s: %w", name, err)
+			}
+			lazyContents := newLazyContents(contents)
+			fileAttr := FileAttr{
+				TargetName: fileInfo.Name(),
+				Type:       SourceFileTypeFile,
+				Empty:      fileInfo.Size() == 0,
+				Executable: isExecutable(fileInfo),
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
+			}
+			sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
+			targetStateEntry := &TargetStateFile{
+				lazyContents: lazyContents,
+				empty:        fileAttr.Empty,
+				perm:         fileAttr.perm() &^ s.umask,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
+			}
+			sourceStateEntry = &SourceStateFile{
+				lazyContents:     lazyContents,
+				Attr:             fileAttr,
+				origin:           external,
+				sourceRelPath:    sourceRelPath,
+				targetStateEntry: targetStateEntry,
+			}
+			return Break
+		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
+			fileAttr := FileAttr{
+				TargetName: fileInfo.Name(),
+				Type:       SourceFileTypeSymlink,
+			}
+			sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
+			targetStateEntry := &TargetStateSymlink{
+				lazyLinkname: newLazyLinkname(linkname),
+				sourceAttr: SourceAttr{
+					External: true,
+				},
+			}
+			sourceStateEntry = &SourceStateFile{
+				Attr:             fileAttr,
+				origin:           external,
+				sourceRelPath:    sourceRelPath,
+				targetStateEntry: targetStateEntry,
+			}
+			return Break
+		default:
+			return fmt.Errorf("%s: unsupported mode %o", name, fileInfo.Mode()&fs.ModeType)
+		}
+	}); err != nil {
+		return nil, err
+	}
+	if sourceStateEntry == nil {
+		return nil, fmt.Errorf("%s: path not found in %s", external.ArchivePath, external.URL)
+	}
+
+	return map[RelPath][]SourceStateEntry{
+		externalRelPath: {sourceStateEntry},
+	}, nil
 }
 
 // ReadExternalDir returns all source state entries in an external_ dir.

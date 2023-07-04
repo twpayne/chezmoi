@@ -13,32 +13,33 @@ externals to be included on different machines.
 
 Entries are indexed by target name relative to the directory of the
 `.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` field.
-`type` can be either `file`, `archive`, or `git-repo`. If the entry's parent
-directories do not already exist in the source state then chezmoi will create
-them as regular directories.
+`type` can be either `file`, `archive`, `archive-file`, or `git-repo`. If the
+entry's parent directories do not already exist in the source state then chezmoi
+will create them as regular directories.
 
 Entries may have the following fields:
 
-| Variable          | Type     | Default value | Description                                                   |
-| ----------------- | -------- | ------------- | ------------------------------------------------------------- |
-| `type`            | string   | *none*        | External type (`file`, `archive`, or `git-repo`)              |
-| `encrypted`       | bool     | `false`       | Whether the external is encrypted                             |
-| `exact`           | bool     | `false`       | Add `exact_` attribute to directories in archive              |
-| `exclude`         | []string | *none*        | Patterns to exclude from archive                              |
-| `executable`      | bool     | `false`       | Add `executable_` attribute to file                           |
-| `format`          | string   | *autodetect*  | Format of archive                                             |
-| `include`         | []string | *none*        | Patterns to include from archive                              |
-| `refreshPeriod`   | duration | `0`           | Refresh period                                                |
-| `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives |
-| `url`             | string   | *none*        | URL                                                           |
-| `checksum.sha256` | string   | *none*        | Expected SHA256 checksum of data                              |
-| `checksum.sha384` | string   | *none*        | Expected SHA384 checksum of data                              |
-| `checksum.sha512` | string   | *none*        | Expected SHA512 checksum of data                              |
-| `checksum.size`   | int      | *none*        | Expected size of data                                         |
-| `clone.args`      | []string | *none*        | Extra args to `git clone`                                     |
-| `filter.command`  | string   | *none*        | Command to filter contents                                    |
-| `filter.args`     | []string | *none*        | Extra args to command to filter contents                      |
-| `pull.args`       | []string | *none*        | Extra args to `git pull`                                      |
+| Variable          | Type     | Default value | Description                                                      |
+| ----------------- | -------- | ------------- | ---------------------------------------------------------------- |
+| `type`            | string   | *none*        | External type (`file`, `archive`, `archive-file`, or `git-repo`) |
+| `encrypted`       | bool     | `false`       | Whether the external is encrypted                                |
+| `exact`           | bool     | `false`       | Add `exact_` attribute to directories in archive                 |
+| `exclude`         | []string | *none*        | Patterns to exclude from archive                                 |
+| `executable`      | bool     | `false`       | Add `executable_` attribute to file                              |
+| `format`          | string   | *autodetect*  | Format of archive                                                |
+| `path`            | string   | *none*        | Path to file in archive                                          |
+| `include`         | []string | *none*        | Patterns to include from archive                                 |
+| `refreshPeriod`   | duration | `0`           | Refresh period                                                   |
+| `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives    |
+| `url`             | string   | *none*        | URL                                                              |
+| `checksum.sha256` | string   | *none*        | Expected SHA256 checksum of data                                 |
+| `checksum.sha384` | string   | *none*        | Expected SHA384 checksum of data                                 |
+| `checksum.sha512` | string   | *none*        | Expected SHA512 checksum of data                                 |
+| `checksum.size`   | int      | *none*        | Expected size of data                                            |
+| `clone.args`      | []string | *none*        | Extra args to `git clone`                                        |
+| `filter.command`  | string   | *none*        | Command to filter contents                                       |
+| `filter.args`     | []string | *none*        | Extra args to command to filter contents                         |
+| `pull.args`       | []string | *none*        | Extra args to `git pull`                                         |
 
 If any of the optional `checksum.sha256`, `checksum.sha384`, or
 `checksum.sha512` fields are set, chezmoi will verify that the downloaded data
@@ -84,6 +85,12 @@ determine whether an archive member is included:
 Excluded archive members do not generate source state entries, and, if they are
 directories, all of their children are also excluded.
 
+If `type` is `archive-file` then the target is a file or symlink with the
+contents of the entry `path` in the archive at `url`. The optional integer field
+`stripComponents` will remove leading path components from the members of the
+archive before comparing them with `path`. The behavior of `format` is the same
+as for `archive`.
+
 If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME`
 with the optional `clone.args` if the target does not exist. If the target
 exists, then chezmoi will run `git pull` with the optional `pull.args` to
@@ -120,6 +127,10 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
         exact = true
         stripComponents = 1
+    [".local/bin/age"]
+        type = "archive-file"
+        url = "https://github.com/FiloSottile/age/releases/download/v1.1.1/age-v1.1.1-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+        path = "age/age"
     ["www/adminer/plugins"]
         type = "archive"
         url = "https://api.github.com/repos/vrana/adminer/tarball"

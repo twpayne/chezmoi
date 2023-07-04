@@ -113,24 +113,20 @@ to include
 
 ## Extract a single file from an archive
 
-You can extract a single file from an archive using the `$ENTRY.filter.command`
-and `$ENTRY.filter.args` variables in `.chezmoiexternal.$FORMAT`, for example:
+You can extract a single file from an archive using the `archive-file` type in
+`.chezmoiexternal.$FORMAT`, for example:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
-{{ $ageVersion := "1.0.0" -}}
+{{ $ageVersion := "1.1.1" -}}
 [".local/bin/age"]
-    type = "file"
+    type = "archive-file"
     url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
-    executable = true
-    refreshPeriod = "168h"
-    [".local/bin/age".filter]
-        command = "tar"
-        args = ["--extract", "--file", "/dev/stdin", "--gzip", "--to-stdout", "age/age"]
+    path = "age/age"
 ```
 
 This will extract the single archive member `age/age` from the given URL (which
 is computed for the current OS and architecture) to the target
-`./local/bin/age` and set its executable bit.
+`./local/bin/age`.
 
 ## Import archives
 
