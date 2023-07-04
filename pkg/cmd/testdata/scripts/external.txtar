@@ -97,6 +97,12 @@ chhome home11/user
 stderr 'MD5 mismatch'
 stderr 'SHA256 mismatch'
 
+chhome home12/user
+
+# test that chezmoi reads archive-file externals
+exec chezmoi apply
+cmp $HOME/.file golden/dir/file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -130,6 +136,12 @@ stderr 'SHA256 mismatch'
     url = "{{ env "HTTPD_URL" }}/.corrupt-file"
     checksum.md5 = "49fe9018f97349cdd0a0ac7b7f668b05"
     checksum.sha256 = "634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"
+-- home12/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "archive-file"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    path = "dir/file"
+    stripComponents = 1
 -- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
     type = "file"
