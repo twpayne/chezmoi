@@ -297,10 +297,26 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 		text = strings.TrimSpace(text)
 		text, _, _ = strings.Cut(text, "#")
 		fields := whitespaceRx.Split(text, -1)
-		if len(fields) > 1 && net.ParseIP(fields[0]).IsLoopback() &&
-			strings.Contains(fields[1], ".") {
-			return fields[1], nil
+		if len(fields) < 2 {
+			continue
 		}
+		if !net.ParseIP(fields[0]).IsLoopback() {
+			continue
+		}
+		hostname, domainname, found := strings.Cut(fields[1], ".")
+		if !found {
+			continue
+		}
+		if hostname == "localhost" {
+			continue
+		}
+		if domainname == "localdomain" {
+			continue
+		}
+		if runtime.GOOS == "darwin" && domainname == "local" {
+			continue
+		}
+		return fields[1], nil
 	}
 	return "", s.Err()
 }
