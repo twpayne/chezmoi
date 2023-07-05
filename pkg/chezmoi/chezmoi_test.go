@@ -66,6 +66,17 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 			expected: "host.example.com",
 		},
 		{
+			name: "etc_hosts_loopback_ipv4_localhost_dot_localdomain",
+			root: map[string]any{
+				"/etc/hosts": chezmoitest.JoinLines(
+					`127.0.0.1 localhost.localdomain`,
+					`127.0.0.2 host.example.com host`,
+				),
+			},
+			f:        etcHostsFQDNHostname,
+			expected: "host.example.com",
+		},
+		{
 			name: "etc_hosts_loopback_ipv6",
 			root: map[string]any{
 				"/etc/hosts": chezmoitest.JoinLines(
