@@ -65,6 +65,7 @@ nav:
     - Dashlane: user-guide/password-managers/dashlane.md
     - ejson: user-guide/password-managers/ejson.md
     - gopass: user-guide/password-managers/gopass.md
+    - Hashicorp Vault Secrets: user-guide/password-managers/hcp-vault-secrets.md
     - KeePassXC: user-guide/password-managers/keepassxc.md
     - Keychain and Windows Credentials Manager: user-guide/password-managers/keychain-and-windows-credentials-manager.md
     - Keeper: user-guide/password-managers/keeper.md
@@ -254,6 +255,10 @@ nav:
       - reference/templates/gopass-functions/index.md
       - gopass: reference/templates/gopass-functions/gopass.md
       - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
+    - HCP Vault Secrets functions:
+      - reference/templates/hcp-vault-secrets-functions/index.md
+      - hcpVaultSecret: reference/templates/hcp-vault-secrets-functions/hcpVaultSecret.md
+      - hcpVaultSecretJson: reference/templates/hcp-vault-secrets-functions/hcpVaultSecretJson.md
     - KeePassXC functions:
       - reference/templates/keepassxc-functions/index.md
       - keepassxc: reference/templates/keepassxc-functions/keepassxc.md
