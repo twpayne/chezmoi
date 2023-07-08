@@ -215,6 +215,22 @@ sections:
     symmetric:
       type: bool
       description: Use symmetric GPG encryption
+  hcpVaultSecrets:
+    applicationName:
+      type: string
+      description: Default application name if none is specified
+    args:
+      type: '[]string'
+      description: Extra args to HCP Vault Secrets CLI command
+    command:
+      default: '`vlt`'
+      description: HCP Vault Secrets CLI command
+    organizationId:
+      type: string
+      description: Default organization ID if none is specified
+    projectId:
+      type: string
+      description: Default project ID if none is specified
   hooks:
     '*command*`.post.args`':
       type: '[]string'

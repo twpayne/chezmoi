@@ -388,6 +388,15 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
+			name:        "vlt-command",
+			binaryname:  c.HCPVaultSecrets.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"version"},
+			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			minVersion:  &vltMinVersion,
+		},
+		&binaryCheck{
 			name:       "secret-command",
 			binaryname: c.Secret.Command,
 			ifNotSet:   checkResultInfo,

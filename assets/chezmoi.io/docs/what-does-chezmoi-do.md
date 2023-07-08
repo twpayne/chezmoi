@@ -45,9 +45,10 @@ format of your choice. chezmoi can retrieve secrets from
 [1Password](https://1password.com/), [AWS Secrets
 Manager](https://aws.amazon.com/secrets-manager/),
 [Bitwarden](https://bitwarden.com/), [Dashlane](https://www.dashlane.com/),
-[gopass](https://www.gopass.pw/), [KeePassXC](https://keepassxc.org/),
-[Keeper](https://www.keepersecurity.com/), [LastPass](https://lastpass.com/),
-[pass](https://www.passwordstore.org/),
+[gopass](https://www.gopass.pw/), [HCP Vault
+Secrets](https://developer.hashicorp.com/hcp/docs/vault-secrets),
+[KeePassXC](https://keepassxc.org/), [Keeper](https://www.keepersecurity.com/),
+[LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
 [passhole](https://github.com/Evidlo/passhole),
 [Vault](https://www.vaultproject.io/), Keychain,
 [Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any command-line

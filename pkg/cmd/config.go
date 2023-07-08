@@ -124,6 +124,7 @@ type ConfigFile struct {
 	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
 	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
 	Gopass            gopassConfig            `json:"gopass"            mapstructure:"gopass"            yaml:"gopass"`
+	HCPVaultSecrets   hcpVaultSecretConfig    `json:"hcpVaultSecrets"   mapstructure:"hcpVaultSecrets"   yaml:"hcpVaultSecrets"`
 	Keepassxc         keepassxcConfig         `json:"keepassxc"         mapstructure:"keepassxc"         yaml:"keepassxc"`
 	Keeper            keeperConfig            `json:"keeper"            mapstructure:"keeper"            yaml:"keeper"`
 	Lastpass          lastpassConfig          `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
@@ -402,6 +403,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"glob":                     c.globTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,
+		"hcpVaultSecret":           c.hcpVaultSecretTemplateFunc,
+		"hcpVaultSecretJson":       c.hcpVaultSecretJSONTemplateFunc,
 		"hexDecode":                c.hexDecodeTemplateFunc,
 		"hexEncode":                c.hexEncodeTemplateFunc,
 		"include":                  c.includeTemplateFunc,
@@ -2576,6 +2579,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Gopass: gopassConfig{
 			Command: "gopass",
+		},
+		HCPVaultSecrets: hcpVaultSecretConfig{
+			Command: "vlt",
 		},
 		Keepassxc: keepassxcConfig{
 			Command: "keepassxc-cli",
