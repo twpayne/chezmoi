@@ -15,6 +15,10 @@ and work accounts).
 If there is no valid session in the environment, by default you will be
 interactively prompted to sign in.
 
+The 1password CLI command can be set with the `onePassword.command` config
+variable, and extra arguments can be specified with the `onePassword.args`
+config variable.
+
 !!! example
 
     ```
