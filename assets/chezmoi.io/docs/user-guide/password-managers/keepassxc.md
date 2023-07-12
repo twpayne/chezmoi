@@ -28,7 +28,7 @@ called `private-key`, its value is available as:
 
 !!! info
 
-    The KeepassXC CLI does not currently support any persistent login, which
+    The KeePassXC CLI does not currently support any persistent login, which
     means that you will have to enter your password every time you run chezmoi.
 
     Support for non-password authentication methods (e.g. YubiKey) is currently
