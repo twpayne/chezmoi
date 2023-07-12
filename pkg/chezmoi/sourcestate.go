@@ -750,7 +750,7 @@ type ExecuteTemplateDataOptions struct {
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([]byte, error) {
 	templateOptions := options.TemplateOptions
-	templateOptions.Options = append([]string(nil), s.templateOptions...)
+	templateOptions.Options = slices.Clone(s.templateOptions)
 
 	tmpl, err := ParseTemplate(options.Name, options.Data, s.templateFuncs, templateOptions)
 	if err != nil {
