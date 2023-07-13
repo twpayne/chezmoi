@@ -11,12 +11,6 @@ jobs:
       id: go-version
       run: |
         echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> "${GITHUB_OUTPUT}"
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: golang/govulncheck-action@dd3ead030e4f2cf713062f7a3395191802364e13
       with:
-        go-version: ${{ steps.go-version.outputs.go-version }}
-    - name: install
-      run: |
-        go install golang.org/x/vuln/cmd/govulncheck@latest
-    - name: run
-      run: |
-        govulncheck ./...
+        go-version-input: ${{ steps.go-version.outputs.go-version }}
