@@ -1,5 +1,13 @@
 name: govulncheck
 on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+    tags:
+    - v*
   schedule:
   - cron: 22 2 * * *
 jobs:
