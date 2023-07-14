@@ -244,3 +244,38 @@ source:
   prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
   files:
   - COMMIT
+
+winget:
+- name: chezmoi
+  publisher: twpayne
+  publisher_url: https://github.com/twpayne
+  short_description: Manage your dotfiles across multiple diverse machines, securely.
+  license: MIT
+  commit_author:
+    name: Tom Payne
+    email: twpayne@gmail.com
+  homepage: https://chezmoi.io
+  license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
+  copyright: Copyright (c) 2018-2023 Tom Payne
+  release_notes: '{{ .Changelog }}'
+  release_notes_url: 'https://github.com/twpayne/chezmoi/releases/tag/{{ .Tag }}'
+  tags:
+  - cli
+  - configuration
+  - dotbot
+  - dotfile
+  - dotfiles
+  - stow
+  - yadm
+  author: Tom Payne
+  publisher_support_url: https://github.com/twpayne/chezmoi/issues
+  repository:
+    owner: twpayne
+    name: winget-pkgs
+    token: ${{ secrets.WINGET_TOKEN }}
+    pull_request:
+      enabled: true
+      base:
+        owner: microsoft
+        name: winget-pkgs
+        branch: master
