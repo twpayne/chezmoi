@@ -186,6 +186,17 @@ nfpms:
   - apk
   bindir: /usr/bin
 
+chocolateys:
+- authors: Tom Payne <twpayne@gmail.com>
+  project_url: https://chezmoi.io
+  copyright: 'Copyright © Tom Payne, 2018-{{ .Now.Format "2006" }}'
+  license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
+  project_source_url: https://github.com/twpayne/chezmoi
+  docs_url: https://chezmoi.io
+  bug_tracker_url: https://github.com/twpayne/chezmoi/issues
+  summary: Manage your dotfiles across multiple diverse machines, securely.
+  release_notes: 'https://github.com/twpayne/chezmoi/releases/tag/v{{ .Version }}'
+
 release:
   extra_files:
   - glob: ./assets/cosign/cosign.pub
