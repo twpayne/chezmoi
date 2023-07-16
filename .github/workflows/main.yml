@@ -11,6 +11,7 @@ on:
 env:
   ACTIONLINT_VERSION: 1.6.25
   AGE_VERSION: 1.1.1
+  CHOCOLATEY_VERSION: 2.1.0
   GO_VERSION: 1.20.6
   GOFUMPT_VERSION: 0.4.0
   GOLANGCI_LINT_VERSION: 1.53.3
@@ -199,6 +200,11 @@ jobs:
         # https://bugs.launchpad.net/snapcraft/+bug/1889741
         mkdir -p "${HOME}/.cache/snapcraft/download"
         mkdir -p "${HOME}/.cache/snapcraft/stage-packages"
+        mkdir -p /opt/chocolatey
+        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
+        echo '#!/bin/bash' >> /usr/local/bin/choco
+        echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
+        chmod +x /usr/local/bin/choco
     - name: create-syso
       run: |
         make create-syso
@@ -399,6 +405,11 @@ jobs:
         # https://bugs.launchpad.net/snapcraft/+bug/1889741
         mkdir -p "${HOME}/.cache/snapcraft/download"
         mkdir -p "${HOME}/.cache/snapcraft/stage-packages"
+        mkdir -p /opt/chocolatey
+        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
+        echo '#!/bin/bash' >> /usr/local/bin/choco
+        echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
+        chmod +x /usr/local/bin/choco
     - name: check-snapcraft-credentials
       run: snapcraft whoami
       env:
