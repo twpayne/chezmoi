@@ -11,7 +11,7 @@
 <link href="../../migrating-from-another-dotfile-manager/" rel="prev"/>
 <link href="../setup/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.4.3, mkdocs-material-9.1.18" name="generator"/>
+<meta content="mkdocs-1.4.3, mkdocs-material-9.1.17" name="generator"/>
 <title>Command overview - chezmoi</title>
 <link href="../../assets/stylesheets/main.26e3688c.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.ecc896b0.min.css" rel="stylesheet"/>
@@ -377,6 +377,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../password-managers/gopass/">
         gopass
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../password-managers/hcp-vault-secrets/">
+        Hashicorp Vault Secrets
       </a>
 </li>
 <li class="md-nav__item">
@@ -1472,13 +1477,40 @@
 <li class="md-nav__item md-nav__item--nested">
 <input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_13" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
-<a href="../../reference/templates/keepassxc-functions/">KeePassXC functions</a>
+<a href="../../reference/templates/hcp-vault-secrets-functions/">HCP Vault Secrets functions</a>
 <label for="__nav_3_10_13">
 <span class="md-nav__icon md-icon"></span>
 </label>
 </div>
 <nav aria-expanded="false" aria-labelledby="__nav_3_10_13_label" class="md-nav" data-md-level="3">
 <label class="md-nav__title" for="__nav_3_10_13">
+<span class="md-nav__icon md-icon"></span>
+          HCP Vault Secrets functions
+        </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/templates/hcp-vault-secrets-functions/hcpVaultSecret/">
+        hcpVaultSecret
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/templates/hcp-vault-secrets-functions/hcpVaultSecretJson/">
+        hcpVaultSecretJson
+      </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_14" type="checkbox"/>
+<div class="md-nav__link md-nav__link--index">
+<a href="../../reference/templates/keepassxc-functions/">KeePassXC functions</a>
+<label for="__nav_3_10_14">
+<span class="md-nav__icon md-icon"></span>
+</label>
+</div>
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_14_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_14">
 <span class="md-nav__icon md-icon"></span>
           KeePassXC functions
         </label>
@@ -1502,15 +1534,15 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_14" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_15" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/keeper-functions/">Keeper functions</a>
-<label for="__nav_3_10_14">
+<label for="__nav_3_10_15">
 <span class="md-nav__icon md-icon"></span>
 </label>
 </div>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_14_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_14">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_15_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_15">
 <span class="md-nav__icon md-icon"></span>
           Keeper functions
         </label>
@@ -1534,13 +1566,13 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_15" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_10_15" id="__nav_3_10_15_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_16" id="__nav_3_10_16_label" tabindex="0">
           Keyring functions
           <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_15_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_15">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_16_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_16">
 <span class="md-nav__icon md-icon"></span>
           Keyring functions
         </label>
@@ -1554,15 +1586,15 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_16" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_17" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/lastpass-functions/">LastPass functions</a>
-<label for="__nav_3_10_16">
+<label for="__nav_3_10_17">
 <span class="md-nav__icon md-icon"></span>
 </label>
 </div>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_16_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_16">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_17_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_17">
 <span class="md-nav__icon md-icon"></span>
           LastPass functions
         </label>
@@ -1581,15 +1613,15 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_17" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_18" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/pass-functions/">pass functions</a>
-<label for="__nav_3_10_17">
+<label for="__nav_3_10_18">
 <span class="md-nav__icon md-icon"></span>
 </label>
 </div>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_17_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_17">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_18_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_18">
 <span class="md-nav__icon md-icon"></span>
           pass functions
         </label>
@@ -1613,15 +1645,15 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_18" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_19" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/passhole-functions/">Passhole functions</a>
-<label for="__nav_3_10_18">
+<label for="__nav_3_10_19">
 <span class="md-nav__icon md-icon"></span>
 </label>
 </div>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_18_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_18">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_19_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_19">
 <span class="md-nav__icon md-icon"></span>
           Passhole functions
         </label>
@@ -1635,13 +1667,13 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_19" type="checkbox"/>
-<label class="md-nav__link" for="__nav_3_10_19" id="__nav_3_10_19_label" tabindex="0">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_10_20" id="__nav_3_10_20_label" tabindex="0">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
 </label>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_19_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_19">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_20_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_20">
 <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
@@ -1655,15 +1687,15 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_20" type="checkbox"/>
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3_10_21" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
 <a href="../../reference/templates/secret-functions/">Generic secret functions</a>
-<label for="__nav_3_10_20">
+<label for="__nav_3_10_21">
 <span class="md-nav__icon md-icon"></span>
 </label>
 </div>
-<nav aria-expanded="false" aria-labelledby="__nav_3_10_20_label" class="md-nav" data-md-level="3">
-<label class="md-nav__title" for="__nav_3_10_20">
+<nav aria-expanded="false" aria-labelledby="__nav_3_10_21_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_10_21">
 <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
@@ -1968,8 +2000,8 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
-<script src="../../assets/javascripts/bundle.220ee61c.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../assets/javascripts/bundle.b425cdc4.min.js"></script>
 <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
 <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script><script>mermaid.initialize({
     theme: (JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
