@@ -272,7 +272,7 @@ winget:
   repository:
     owner: twpayne
     name: winget-pkgs
-    token: ${{ secrets.WINGET_TOKEN }}
+    token: '{{ .Env.WINGET_GITHUB_TOKEN }}'
     pull_request:
       enabled: true
       base:
