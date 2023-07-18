@@ -89,7 +89,8 @@ If `type` is `archive-file` then the target is a file or symlink with the
 contents of the entry `path` in the archive at `url`. The optional integer field
 `stripComponents` will remove leading path components from the members of the
 archive before comparing them with `path`. The behavior of `format` is the same
-as for `archive`.
+as for `archive`. If `executable` is `true` then chezmoi will set the executable
+bits on the target file, even if they are not set in the archive.
 
 If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME`
 with the optional `clone.args` if the target does not exist. If the target

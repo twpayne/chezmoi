@@ -2410,7 +2410,7 @@ func (s *SourceState) readExternalArchiveFile(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
 				Empty:      fileInfo.Size() == 0,
-				Executable: isExecutable(fileInfo),
+				Executable: isExecutable(fileInfo) || external.Executable,
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
