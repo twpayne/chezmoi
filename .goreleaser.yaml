@@ -272,6 +272,7 @@ winget:
   repository:
     owner: twpayne
     name: winget-pkgs
+    branch: 'chezmoi-{{ .Version }}'
     token: '{{ .Env.WINGET_GITHUB_TOKEN }}'
     pull_request:
       enabled: true
