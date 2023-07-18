@@ -110,6 +110,30 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 			expected: "host.example.com",
 		},
 		{
+			name: "etc_hosts_kubernetes_docker_internal",
+			root: map[string]any{
+				"/etc/hosts": chezmoitest.JoinLines(
+					`##`,
+					`# Host Database`,
+					`#`,
+					`# localhost is used to configure the loopback interface`,
+					`# when the system is booting.  Do not change this entry.`,
+					`##`,
+					`127.0.0.1	localhost`,
+					`255.255.255.255	broadcasthost`,
+					`::1             localhost`,
+					`# Added by Docker Desktop`,
+					`# To allow the same kube context to work on the host and the container:`,
+					`127.0.0.1 kubernetes.docker.internal`,
+					`# End of section`,
+					`127.0.1.1`,
+					`127.0.1.1 host.example.com`,
+				),
+			},
+			f:        etcHostsFQDNHostname,
+			expected: "host.example.com",
+		},
+		{
 			name: "etc_hostname",
 			root: map[string]any{
 				"/etc/hostname": chezmoitest.JoinLines(

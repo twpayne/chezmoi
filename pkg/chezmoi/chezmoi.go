@@ -313,6 +313,11 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 		if domainname == "localdomain" {
 			continue
 		}
+		// Docker Desktop breaks /etc/hosts. Filter out all docker.internal
+		// domain names. See https://github.com/twpayne/chezmoi/issues/3095.
+		if domainname == "docker.internal" {
+			continue
+		}
 		if runtime.GOOS == "darwin" && domainname == "local" {
 			continue
 		}
