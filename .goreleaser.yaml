@@ -195,6 +195,7 @@ chocolateys:
   docs_url: https://chezmoi.io
   bug_tracker_url: https://github.com/twpayne/chezmoi/issues
   summary: Manage your dotfiles across multiple diverse machines, securely.
+  description: Manage your dotfiles across multiple diverse machines, securely.
   release_notes: 'https://github.com/twpayne/chezmoi/releases/tag/v{{ .Version }}'
 
 release:
