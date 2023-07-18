@@ -132,14 +132,14 @@ install `.work` if hostname is `work-laptop`" but chezmoi installs everything
 by default, so we have to turn the logic around and instead write "ignore
 `.work` unless the hostname is `work-laptop`".
 
-Patterns can be excluded by prefixing them with a `!`, for example:
+Patterns can be excluded by starting the line with a `!`, for example:
 
 ``` title="~/.local/share/chezmoi/.chezmoiignore"
-f*
-!foo
+dir/f*
+!dir/foo
 ```
 
-will ignore all files beginning with an `f` except `foo`.
+will ignore all files beginning with an `f` in `dir` except for `dir/foo`.
 
 You can see what files chezmoi ignores with the command
 
