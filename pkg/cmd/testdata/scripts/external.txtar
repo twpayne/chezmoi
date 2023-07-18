@@ -103,6 +103,13 @@ chhome home12/user
 exec chezmoi apply
 cmp $HOME/.file golden/dir/file
 
+chhome home13/user
+
+# test that chezmoi can set executable bits on archive-file externals
+exec chezmoi apply
+[umask:002] cmpmod 775 $HOME/.file
+[umask:022] cmpmod 755 $HOME/.file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -141,6 +148,13 @@ cmp $HOME/.file golden/dir/file
     type = "archive-file"
     url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
     path = "dir/file"
+    stripComponents = 1
+-- home13/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "archive-file"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    path = "dir/file"
+    executable = true
     stripComponents = 1
 -- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
