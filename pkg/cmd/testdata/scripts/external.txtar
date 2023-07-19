@@ -110,6 +110,12 @@ exec chezmoi apply
 [umask:002] cmpmod 775 $HOME/.file
 [umask:022] cmpmod 755 $HOME/.file
 
+chhome home14/user
+
+# test that chezmoi reads external files from the .chezmoiexternal directory
+exec chezmoi apply
+cmp $HOME/.file golden/dir/file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -155,6 +161,12 @@ exec chezmoi apply
     url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
     path = "dir/file"
     executable = true
+    stripComponents = 1
+-- home14/user/.local/share/chezmoi/.chezmoiexternals/external.toml --
+[".file"]
+    type = "archive-file"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    path = "dir/file"
     stripComponents = 1
 -- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]

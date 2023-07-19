@@ -940,7 +940,13 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case s.templateDataOnly:
 			return nil
 		case isPrefixDotFormat(fileInfo.Name(), externalName) || isPrefixDotFormatDotTmpl(fileInfo.Name(), externalName):
-			return s.addExternal(sourceAbsPath)
+			parentAbsPath, _ := sourceAbsPath.Split()
+			return s.addExternal(sourceAbsPath, parentAbsPath)
+		case fileInfo.Name() == externalsDirName:
+			if err := s.addExternalDir(ctx, sourceAbsPath); err != nil {
+				return err
+			}
+			return vfs.SkipDir
 		case fileInfo.Name() == ignoreName || fileInfo.Name() == ignoreName+TemplateSuffix:
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == removeName || fileInfo.Name() == removeName+TemplateSuffix:
@@ -1287,9 +1293,7 @@ func (s *SourceState) TemplateData() map[string]any {
 }
 
 // addExternal adds external source entries to s.
-func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
-	parentAbsPath, _ := sourceAbsPath.Split()
-
+func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	parentRelPath, err := parentAbsPath.TrimDirPrefix(s.sourceDirAbsPath)
 	if err != nil {
 		return err
@@ -1323,6 +1327,40 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 		s.externals[targetRelPath] = external
 	}
 	return nil
+}
+
+// addExternalDir adds all externals in externalsDirAbsPath to s.
+func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath AbsPath) error {
+	walkFunc := func(ctx context.Context, externalAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		if externalAbsPath == externalsDirAbsPath {
+			return nil
+		}
+		if err == nil && fileInfo.Mode().Type() == fs.ModeSymlink {
+			fileInfo, err = s.system.Stat(externalAbsPath)
+		}
+		switch {
+		case err != nil:
+			return err
+		case strings.HasPrefix(fileInfo.Name(), Prefix):
+			return fmt.Errorf("%s: not allowed in %s directory", externalAbsPath, externalsDirName)
+		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
+			if fileInfo.IsDir() {
+				return vfs.SkipDir
+			}
+			return nil
+		case fileInfo.Mode().IsRegular():
+			parentAbsPath, _ := externalAbsPath.Split()
+			return s.addExternal(externalAbsPath, parentAbsPath.TrimSuffix("/").Dir())
+		case fileInfo.IsDir():
+			return nil
+		default:
+			return &unsupportedFileTypeError{
+				absPath: externalAbsPath,
+				mode:    fileInfo.Mode(),
+			}
+		}
+	}
+	return concurrentWalkSourceDir(ctx, s.system, externalsDirAbsPath, walkFunc)
 }
 
 // addPatterns executes the template at sourceAbsPath, interprets the result as

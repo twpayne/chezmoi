@@ -119,6 +119,7 @@ nav:
     - .chezmoi.&lt;format&gt;.tmpl: reference/special-files-and-directories/chezmoi-format-tmpl.md
     - .chezmoidata.&lt;format&gt;: reference/special-files-and-directories/chezmoidata-format.md
     - .chezmoiexternal.&lt;format&gt;: reference/special-files-and-directories/chezmoiexternal-format.md
+    - .chezmoiexternals: reference/special-files-and-directories/chezmoiexternals.md
     - .chezmoiignore: reference/special-files-and-directories/chezmoiignore.md
     - .chezmoiremove: reference/special-files-and-directories/chezmoiremove.md
     - .chezmoiroot: reference/special-files-and-directories/chezmoiroot.md
