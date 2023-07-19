@@ -75,6 +75,7 @@ const (
 	VersionName      = Prefix + "version"
 	dataName         = Prefix + "data"
 	externalName     = Prefix + "external"
+	externalsDirName = Prefix + "externals"
 	ignoreName       = Prefix + "ignore"
 	removeName       = Prefix + "remove"
 	scriptsDirName   = Prefix + "scripts"
@@ -115,6 +116,7 @@ var knownPrefixedFiles = newSet(
 var knownPrefixedDirs = newSet(
 	TemplatesDirName,
 	dataName,
+	externalsDirName,
 	scriptsDirName,
 )
 
