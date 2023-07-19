@@ -422,6 +422,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
         SCOOP_GITHUB_TOKEN: ${{ secrets.SCOOP_GITHUB_TOKEN }}
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        WINGET_GITHUB_TOKEN: ${{ secrets.WINGET_GITHUB_TOKEN }}
   deploy-website:
     needs:
     - release
