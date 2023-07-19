@@ -21,7 +21,7 @@
         <link rel="next" href="../chezmoiignore/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.26e3688c.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.eebd395e.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.ecc896b0.min.css">
@@ -5690,7 +5690,8 @@ directories, all of their children are also excluded.</p>
 contents of the entry <code>path</code> in the archive at <code>url</code>. The optional integer field
 <code>stripComponents</code> will remove leading path components from the members of the
 archive before comparing them with <code>path</code>. The behavior of <code>format</code> is the same
-as for <code>archive</code>.</p>
+as for <code>archive</code>. If <code>executable</code> is <code>true</code> then chezmoi will set the executable
+bits on the target file, even if they are not set in the archive.</p>
 <p>If <code>type</code> is <code>git-repo</code> then chezmoi will run <code>git clone $URL $TARGET_NAME</code>
 with the optional <code>clone.args</code> if the target does not exist. If the target
 exists, then chezmoi will run <code>git pull</code> with the optional <code>pull.args</code> to
@@ -5784,10 +5785,10 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
         
           <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
