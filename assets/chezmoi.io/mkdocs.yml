@@ -61,6 +61,7 @@ nav:
     - user-guide/password-managers/index.md
     - 1Password: user-guide/password-managers/1password.md
     - AWS Secrets Manager: user-guide/password-managers/aws-secrets-manager.md
+    - Azure Key Vault: user-guide/password-managers/azure-key-vault.md
     - Bitwarden: user-guide/password-managers/bitwarden.md
     - Dashlane: user-guide/password-managers/dashlane.md
     - ejson: user-guide/password-managers/ejson.md
@@ -236,6 +237,8 @@ nav:
       - reference/templates/aws-secrets-manager-functions/index.md
       - awsSecretsManager: reference/templates/aws-secrets-manager-functions/awsSecretsManager.md
       - awsSecretsManagerRaw: reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw.md
+    - Azure Key Vault functions:
+      - azureKeyVault: reference/templates/azure-key-vault-functions/azureKeyVault.md
     - Bitwarden functions:
       - reference/templates/bitwarden-functions/index.md
       - bitwarden: reference/templates/bitwarden-functions/bitwarden.md
