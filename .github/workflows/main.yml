@@ -110,21 +110,6 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         ( cd assets/docker && ./test.sh fedora )
-  test-freebsd:
-    needs: changes
-    if: false
-    runs-on: macos-12
-    steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-      with:
-        path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-freebsd13-
-    - name: test
-      run: |
-        ( cd assets/vagrant && ./test.sh freebsd13 )
   test-macos:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
