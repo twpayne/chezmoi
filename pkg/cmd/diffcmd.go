@@ -80,7 +80,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 	}); err != nil {
 		return
 	}
-	if err = c.pageOutputString(builder.String(), c.Diff.Pager); err != nil {
+	if err = c.pageDiffOutput(builder.String()); err != nil {
 		return
 	}
 	if closer, ok := diffSystem.(interface {
