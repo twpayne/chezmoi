@@ -54,6 +54,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/shell"
 )
 
+// defaultSentinel is a string value used to indicate that the default value
+// should be used. It is a string unlikely to be an actual value set by the
+// user.
+const defaultSentinel = "\x00"
+
 const (
 	logComponentKey                  = "component"
 	logComponentValueEncryption      = "encryption"
@@ -1129,7 +1134,7 @@ func (c *Config) diffFile(
 	if err := unifiedEncoder.Encode(diffPatch); err != nil {
 		return err
 	}
-	return c.pageOutputString(builder.String(), c.Diff.Pager)
+	return c.pageDiffOutput(builder.String())
 }
 
 // editor returns the path to the user's editor and any extra arguments.
@@ -1725,10 +1730,16 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// pageOutputString writes output using cmdPager as the pager command.
-func (c *Config) pageOutputString(output, cmdPager string) error {
-	pager := firstNonEmptyString(cmdPager, c.Pager)
-	if c.noPager || pager == "" {
+// pageDiffOutput pages the diff output to stdout.
+func (c *Config) pageDiffOutput(output string) error {
+	pager := c.Diff.Pager
+	switch {
+	case c.noPager:
+		pager = ""
+	case pager == defaultSentinel:
+		pager = c.Pager // Use default pager.
+	}
+	if pager == "" {
 		return c.writeOutputString(output)
 	}
 
@@ -2624,6 +2635,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Diff: diffCmdConfig{
 			Exclude:        chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			Pager:          defaultSentinel,
 			ScriptContents: true,
 			include:        chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},

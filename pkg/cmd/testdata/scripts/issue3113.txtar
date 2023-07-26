@@ -1,0 +1,44 @@
+[windows] skip 'UNIX only'
+
+chmod 777 bin/custom-pager
+chmod 777 bin/default-pager
+
+# test that chezmoi diff uses the default pager by default
+exec chezmoi diff
+stdout default-pager
+
+chhome home2/user
+
+# test that setting diff.pager to a custom pager uses that pager
+exec chezmoi diff
+stdout custom-pager
+
+chhome home3/user
+
+# test that setting diff.pager to the empty string disables the pager
+exec chezmoi diff
+stdout diff
+
+-- bin/custom-pager --
+#!/bin/sh
+
+echo custom-pager
+-- bin/default-pager --
+#!/bin/sh
+
+echo default-pager
+-- home/user/.config/chezmoi/chezmoi.yaml --
+pager: default-pager
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home2/user/.config/chezmoi/chezmoi.yaml --
+diff:
+    pager: custom-pager
+-- home2/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home3/user/.config/chezmoi/chezmoi.yaml --
+pager: default-pager
+diff:
+    pager: ''
+-- home3/user/.local/share/chezmoi/dot_file --
+# contents of .file
