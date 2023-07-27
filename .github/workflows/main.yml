@@ -287,7 +287,8 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
-      run: pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      run: |
+        pip3 install 'mkdocs<1.5.0' mkdocs-material==9.1.18 mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
     - name: build-website
       run: ( cd assets/chezmoi.io && mkdocs build )
       env:
