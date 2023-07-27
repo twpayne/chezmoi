@@ -9,6 +9,7 @@ on:
     tags:
     - v*
 env:
+  MKDOCS_VERSION: 1.4.3
   ACTIONLINT_VERSION: 1.6.25
   AGE_VERSION: 1.1.1
   GO_VERSION: 1.20.6
@@ -287,7 +288,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
-      run: pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      run: pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
     - name: build-website
       run: ( cd assets/chezmoi.io && mkdocs build )
       env:
@@ -436,7 +437,7 @@ jobs:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
       run: |
-        pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+        pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
         ( cd assets/chezmoi.io && mkdocs build )
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
