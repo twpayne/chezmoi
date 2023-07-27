@@ -1,0 +1,75 @@
+[!darwin] skip 'Darwin only'
+
+chmod 755 bin/brew
+chmod 755 bin/mackup
+chmod 755 bin/python3
+
+# test that chezmoi mackup add adds normal dotfiles
+exec chezmoi mackup add curl
+cmp $CHEZMOISOURCEDIR/dot_curlrc golden/dot_curlrc
+
+# test that chezmoi
+exec chezmoi mackup add vscode
+cmp $CHEZMOISOURCEDIR/dot_config/Code/User/settings.json golden/settings.json
+
+-- bin/brew --
+#!/bin/sh
+
+case "$*" in
+"--prefix")
+    echo "opt/homebrew"
+    ;;
+*)
+    echo "Error: Unknown command $*"
+    ;;
+esac
+-- bin/mackup --
+#!/bin/sh
+
+case "$*" in
+"--version")
+    echo "Mackup 0.8.32"
+    ;;
+*)
+    echo "Usage:"
+    ;;
+esac
+-- bin/python3 --
+#!/bin/sh
+
+case "$*" in
+"--version")
+    echo "Python 3.9.0"
+    ;;
+*)
+    echo "Usage:"
+    ;;
+esac
+-- golden/dot_curlrc --
+# contents of .curlrc
+-- golden/settings.json --
+# contents of .config/Code/User/settings.json
+-- home/user/.config/Code/User/settings.json --
+# contents of .config/Code/User/settings.json
+-- home/user/.curlrc --
+# contents of .curlrc
+-- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/curl.cfg --
+[application]
+name = Curl
+
+[configuration_files]
+.netrc
+.curlrc
+-- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/vscode.cfg --
+[application]
+name = Visual Studio Code
+
+[configuration_files]
+Library/Application Support/Code/User/snippets
+Library/Application Support/Code/User/keybindings.json
+Library/Application Support/Code/User/settings.json
+
+[xdg_configuration_files]
+Code/User/snippets
+Code/User/keybindings.json
+Code/User/settings.json
