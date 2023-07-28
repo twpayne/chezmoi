@@ -277,6 +277,7 @@ func (c *Config) builtinGitClone(repoURLStr string, workingTreeRawPath chezmoi.A
 		Depth:             c.init.depth,
 		ReferenceName:     referenceName,
 		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+		ShallowSubmodules: c.init.depth == 1,
 	}
 
 	for {

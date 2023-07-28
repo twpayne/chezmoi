@@ -29,10 +29,10 @@ func lintFilenames(archiveFilename string, archive *txtar.Archive) error {
 	return errs
 }
 
-func sortFilesFunc(file1, file2 txtar.File) bool {
+func sortFilesFunc(file1, file2 txtar.File) int {
 	fileComponents1 := strings.Split(file1.Name, "/")
 	fileComponents2 := strings.Split(file2.Name, "/")
-	return slices.Compare(fileComponents1, fileComponents2) < 0
+	return slices.Compare(fileComponents1, fileComponents2)
 }
 
 func tidyTxtar(archiveFilename string) error {

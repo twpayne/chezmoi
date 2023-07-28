@@ -17,7 +17,7 @@ env:
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
   FINDTYPOS_VERSION: 0.0.1
-  MKDOCS_VERSION: 1.4.3
+  MKDOCS_VERSION: 1.5.1
 jobs:
   changes:
     runs-on: ubuntu-20.04
