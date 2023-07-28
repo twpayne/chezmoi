@@ -44,6 +44,7 @@ in a git repo under your control. You can write the configuration file in the
 format of your choice. chezmoi can retrieve secrets from
 [1Password](https://1password.com/), [AWS Secrets
 Manager](https://aws.amazon.com/secrets-manager/),
+[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/),
 [Bitwarden](https://bitwarden.com/), [Dashlane](https://www.dashlane.com/),
 [gopass](https://www.gopass.pw/), [HCP Vault
 Secrets](https://developer.hashicorp.com/hcp/docs/vault-secrets),

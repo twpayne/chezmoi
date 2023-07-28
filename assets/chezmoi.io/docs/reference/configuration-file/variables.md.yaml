@@ -104,6 +104,9 @@ sections:
       description: AWS shared profile name
     region:
       description: AWS region
+  azureKeyVault:
+    defaultVault:
+      description: Default Azure Key Vault name
   bitwarden:
     command:
       default: '`bw`'

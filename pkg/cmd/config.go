@@ -120,6 +120,7 @@ type ConfigFile struct {
 
 	// Password manager configurations.
 	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
+	AzureKeyVault     azureKeyVaultConfig     `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
 	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
 	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
 	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
@@ -380,6 +381,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	for key, value := range map[string]any{
 		"awsSecretsManager":        c.awsSecretsManagerTemplateFunc,
 		"awsSecretsManagerRaw":     c.awsSecretsManagerRawTemplateFunc,
+		"azureKeyVault":            c.azureKeyVaultTemplateFunc,
 		"bitwarden":                c.bitwardenTemplateFunc,
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
 		"bitwardenAttachmentByRef": c.bitwardenAttachmentByRefTemplateFunc,
