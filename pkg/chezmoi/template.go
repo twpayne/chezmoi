@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strings"
 	"text/template"
+
+	"github.com/mitchellh/copystructure"
 )
 
 // A Template extends text/template.Template with support for directives.
@@ -54,6 +56,15 @@ func (t *Template) AddParseTree(tmpl *Template) (*Template, error) {
 
 // Execute executes t with data.
 func (t *Template) Execute(data any) ([]byte, error) {
+	if data != nil {
+		// Make a deep copy of data, in case any template functions modify it.
+		var err error
+		data, err = copystructure.Copy(data)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var builder strings.Builder
 	if err := t.template.ExecuteTemplate(&builder, t.name, data); err != nil {
 		return nil, err
