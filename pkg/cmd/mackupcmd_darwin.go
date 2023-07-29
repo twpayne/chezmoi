@@ -16,11 +16,10 @@ import (
 )
 
 var (
-	mackupCommentRx           = regexp.MustCompile(`\A#.*\z`)
-	mackupKeyValueRx          = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
-	mackupSectionRx           = regexp.MustCompile(`\A\[(.*)\]\z`)
-	mackupVersionRx           = regexp.MustCompile(`\AMackup\s+(\d+\.\d+\.\d+)\s*\z`)
-	pythonMajorMinorVersionRx = regexp.MustCompile(`\APython\s+(\d+\.\d+)\.\d+\s*\z`)
+	mackupCommentRx  = regexp.MustCompile(`\A#.*\z`)
+	mackupKeyValueRx = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
+	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\z`)
+	mackupVersionRx  = regexp.MustCompile(`\AMackup\s+(\d+\.\d+\.\d+)\s*\z`)
 )
 
 type mackupApplicationApplicationConfig struct {
@@ -139,31 +138,28 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	}
 	mackupVersion := string(mackupVersionMatch[1])
 
-	pythonVersionCmd := exec.Command("python3", "--version")
-	pythonVersionData, err := pythonVersionCmd.Output()
+	libDirAbsPath := brewPrefix.JoinString("Cellar", "mackup", mackupVersion, "libexec", "lib")
+	dirEntries, err := c.baseSystem.ReadDir(libDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	pythonMajorMinorVersionMatch := pythonMajorMinorVersionRx.FindSubmatch(pythonVersionData)
-	if pythonMajorMinorVersionMatch == nil {
+	var pythonDirRelPath chezmoi.RelPath
+	for _, dirEntry := range dirEntries {
+		if dirEntry.IsDir() && strings.HasPrefix(dirEntry.Name(), "python") {
+			pythonDirRelPath = chezmoi.NewRelPath(dirEntry.Name())
+			break
+		}
+	}
+	if pythonDirRelPath.Empty() {
 		return chezmoi.EmptyAbsPath, fmt.Errorf(
-			"%q: cannot determine Python version",
-			pythonVersionData,
+			"%s: could not find python directory",
+			libDirAbsPath,
 		)
 	}
-	pythonMajorMinorVersion := string(pythonMajorMinorVersionMatch[1])
 
-	return brewPrefix.JoinString(
-		"Cellar",
-		"mackup",
-		mackupVersion,
-		"libexec",
-		"lib",
-		"python"+pythonMajorMinorVersion,
-		"site-packages",
-		"mackup",
-		"applications",
-	), nil
+	return libDirAbsPath.Join(pythonDirRelPath).
+			JoinString("site-packages", "mackup", "applications"),
+		nil
 }
 
 func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
