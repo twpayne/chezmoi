@@ -20,7 +20,7 @@ import (
 	"github.com/google/renameio/v2/maybe"
 	"gopkg.in/yaml.v3"
 
-	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 var (

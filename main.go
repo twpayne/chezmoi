@@ -12,7 +12,7 @@ package main
 import (
 	"os"
 
-	"github.com/twpayne/chezmoi/v2/pkg/cmd"
+	"github.com/twpayne/chezmoi/v2/internal/cmd"
 )
 
 var (

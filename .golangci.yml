@@ -135,14 +135,14 @@ linters-settings:
     - github\.com/go-git/go-git/v5/plumbing/format/diff\.File
     - github\.com/go-git/go-git/v5/plumbing/format/diff\.Patch
     - github\.com/mitchellh/mapstructure\.DecodeHookFunc
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.ActualStateEntry
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.Encryption
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.Format
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.PersistentState
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateOrigin
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateEntry
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.System
-    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.TargetStateEntry
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.ActualStateEntry
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.Encryption
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.Format
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.PersistentState
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.SourceStateOrigin
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.SourceStateEntry
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.System
+    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.TargetStateEntry
     - github\.com/twpayne/go-vfs/v4\.FS
     - stdlib
   misspell:
