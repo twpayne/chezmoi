@@ -1,0 +1,9 @@
+# test that template executions are independent
+exec chezmoi apply
+! grep bar $HOME/file1
+! grep foo $HOME/file2
+
+-- home/user/.local/share/chezmoi/file1.tmpl --
+{{ merge . (dict "key1" "foo") }}
+-- home/user/.local/share/chezmoi/file2.tmpl --
+{{ merge . (dict "key2" "bar") }}
