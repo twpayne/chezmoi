@@ -2,13 +2,12 @@
 
 chmod 755 bin/brew
 chmod 755 bin/mackup
-chmod 755 bin/python3
 
 # test that chezmoi mackup add adds normal dotfiles
 exec chezmoi mackup add curl
 cmp $CHEZMOISOURCEDIR/dot_curlrc golden/dot_curlrc
 
-# test that chezmoi
+# test that chezmoi mackup add adds XDG configuration files
 exec chezmoi mackup add vscode
 cmp $CHEZMOISOURCEDIR/dot_config/Code/User/settings.json golden/settings.json
 
@@ -29,17 +28,6 @@ esac
 case "$*" in
 "--version")
     echo "Mackup 0.8.32"
-    ;;
-*)
-    echo "Usage:"
-    ;;
-esac
--- bin/python3 --
-#!/bin/sh
-
-case "$*" in
-"--version")
-    echo "Python 3.9.0"
     ;;
 *)
     echo "Usage:"
