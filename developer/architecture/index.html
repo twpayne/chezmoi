@@ -5419,15 +5419,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pkgchezmoi-directory" class="md-nav__link">
-    pkg/chezmoi/ directory
+  <a href="#internalchezmoi-directory" class="md-nav__link">
+    internal/chezmoi/ directory
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pkgcmd-directory" class="md-nav__link">
-    pkg/cmd/ directory
+  <a href="#internalcmd-directory" class="md-nav__link">
+    internal/cmd/ directory
   </a>
   
 </li>
@@ -5687,15 +5687,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pkgchezmoi-directory" class="md-nav__link">
-    pkg/chezmoi/ directory
+  <a href="#internalchezmoi-directory" class="md-nav__link">
+    internal/chezmoi/ directory
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#pkgcmd-directory" class="md-nav__link">
-    pkg/cmd/ directory
+  <a href="#internalcmd-directory" class="md-nav__link">
+    internal/cmd/ directory
   </a>
   
 </li>
@@ -5758,7 +5758,7 @@
 interested in contributing to chezmoi.</p>
 <p>You can generate Go documentation for chezmoi's source code with <code>go doc</code>, for
 example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>doc<span class="w"> </span>-all<span class="w"> </span>-u<span class="w"> </span>github.com/twpayne/chezmoi/v2/pkg/chezmoi
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>doc<span class="w"> </span>-all<span class="w"> </span>-u<span class="w"> </span>github.com/twpayne/chezmoi/v2/internal/chezmoi
 </code></pre></div>
 <p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi's generated documentation
 online</a>.</p>
@@ -5777,15 +5777,15 @@ online</a>.</p>
 <td>The documentation single source of truth. Help text, examples, and the <a href="https://chezmoi.io">chezmoi.io</a> website are generated from the files in this directory</td>
 </tr>
 <tr>
-<td><code>pkg/chezmoi/</code></td>
+<td><code>internal/chezmoi/</code></td>
 <td>chezmoi's core functionality</td>
 </tr>
 <tr>
-<td><code>pkg/cmd/</code></td>
+<td><code>internal/cmd/</code></td>
 <td>Code for the <code>chezmoi</code> command</td>
 </tr>
 <tr>
-<td><code>pkg/cmd/testdata/scripts/</code></td>
+<td><code>internal/cmd/testdata/scripts/</code></td>
 <td>High-level tests of chezmoi's commands using <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>testscript</code></a></td>
 </tr>
 </tbody>
@@ -5799,7 +5799,7 @@ update the destination directory to match the target state. These concepts are
 represented directly in chezmoi's code.</p>
 <p>chezmoi uses the generic term <em>entry</em> to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.</p>
-<h2 id="pkgchezmoi-directory"><code>pkg/chezmoi/</code> directory</h2>
+<h2 id="internalchezmoi-directory"><code>internal/chezmoi/</code> directory</h2>
 <p>All of chezmoi's interaction with the operating system is abstracted through
 the <code>System</code> interface. A <code>System</code> includes functionality to read and write
 files and directories and execute commands. chezmoi makes a distinction between
@@ -5855,9 +5855,9 @@ contents, to avoid storing secrets in the persistent state.</p>
 its persistent state. chezmoi can then detect if a third party has updated a
 target since chezmoi last wrote it by comparing the actual state entry in the
 target state with the entry state in the persistent state.</p>
-<h2 id="pkgcmd-directory"><code>pkg/cmd/</code> directory</h2>
-<p><code>pkg/cmd/*cmd.go</code> contains the code for each individual command and
-<code>pkg/cmd/*templatefuncs.go</code> contain the template functions.</p>
+<h2 id="internalcmd-directory"><code>internal/cmd/</code> directory</h2>
+<p><code>internal/cmd/*cmd.go</code> contains the code for each individual command and
+<code>internal/cmd/*templatefuncs.go</code> contain the template functions.</p>
 <p>Commands are defined as methods on the <code>Config</code> struct. The <code>Config</code> struct is
 large, containing all configuration values read from the config file, command
 line arguments, and computed and cached values.</p>
@@ -5904,9 +5904,10 @@ integration tests use the
 <a href="https://pkg.go.dev/github.com/alecthomas/assert"><code>github.com/alecthomas/assert/v2</code></a>
 framework. End-to-end tests use
 <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
-with the test scripts themselves in <code>pkg/cmd/testdata/scripts/$TEST_NAME.txtar</code>.</p>
+with the test scripts themselves in
+<code>internal/cmd/testdata/scripts/$TEST_NAME.txtar</code>.</p>
 <p>You can run individual end-to-end tests with</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./pkg/cmd<span class="w"> </span>-run<span class="o">=</span>TestScript/<span class="nv">$TEST_NAME</span>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./internal/cmd<span class="w"> </span>-run<span class="o">=</span>TestScript/<span class="nv">$TEST_NAME</span>
 </code></pre></div>
 <p>Tests should, if at all possible, run unmodified on all operating systems
 tested in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need
