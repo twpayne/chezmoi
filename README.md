@@ -1,4 +1,4 @@
-# ![chezmoi logo](logo.svg) chezmoi
+# ![chezmoi logo](assets/images/logo-144px.svg) chezmoi
 
 [![GitHub Release](https://img.shields.io/github/release/twpayne/chezmoi.svg)](https://github.com/twpayne/chezmoi/releases)
 
