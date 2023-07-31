@@ -5,7 +5,9 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -70,11 +72,14 @@ func (c *Config) runMackupAddCmd(
 		return err
 	}
 
+	mackupDirAbsPath := c.homeDirAbsPath.JoinString(".mackup")
 	var addArgs []string
 	for _, arg := range args {
-		data, err := c.baseSystem.ReadFile(
-			mackupApplicationsDir.Join(chezmoi.NewRelPath(arg + ".cfg")),
-		)
+		configRelPath := chezmoi.NewRelPath(arg + ".cfg")
+		data, err := c.baseSystem.ReadFile(mackupDirAbsPath.Join(configRelPath))
+		if errors.Is(err, os.ErrNotExist) {
+			data, err = c.baseSystem.ReadFile(mackupApplicationsDir.Join(configRelPath))
+		}
 		if err != nil {
 			return err
 		}
