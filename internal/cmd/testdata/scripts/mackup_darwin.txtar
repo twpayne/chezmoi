@@ -41,7 +41,7 @@ esac
 # contents of .config/Code/User/settings.json
 -- home/user/.curlrc --
 # contents of .curlrc
--- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/curl.cfg --
+-- home/user/.mackup/curl.cfg --
 [application]
 name = Curl
 
