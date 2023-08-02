@@ -147,6 +147,19 @@ sections:
       type: bool
       default: '`true`'
       description: Show script contents
+  doppler:
+    args:
+      type: '[]string'
+      description: Extra args to Doppler CLI command
+    command:
+      default: '`doppler`'
+      description: Doppler CLI command
+    config:
+      type: string
+      description: Default config (aka environment) if none is specified
+    project:
+      type: string
+      description: Default project name if none is specified
   edit:
     apply:
       type: bool

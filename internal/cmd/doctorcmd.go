@@ -314,6 +314,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
+			name:        "doppler-command",
+			binaryname:  c.Doppler.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`^v(\d+\.\d+\.\d+)`),
+		},
+		&binaryCheck{
 			name:        "gopass-command",
 			binaryname:  c.Gopass.Command,
 			ifNotSet:    checkResultWarning,

@@ -128,6 +128,7 @@ type ConfigFile struct {
 	AzureKeyVault     azureKeyVaultConfig     `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
 	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
 	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
+	Doppler           dopplerConfig           `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
 	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
 	Gopass            gopassConfig            `json:"gopass"            mapstructure:"gopass"            yaml:"gopass"`
 	HCPVaultSecrets   hcpVaultSecretConfig    `json:"hcpVaultSecrets"   mapstructure:"hcpVaultSecrets"   yaml:"hcpVaultSecrets"`
@@ -396,6 +397,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"dashlanePassword":         c.dashlanePasswordTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"deleteValueAtPath":        c.deleteValueAtPathTemplateFunc,
+		"doppler":                  c.dopplerTemplateFunc,
+		"dopplerProjectJson":       c.dopplerProjectJSONTemplateFunc,
 		"ejsonDecrypt":             c.ejsonDecryptTemplateFunc,
 		"ejsonDecryptWithKey":      c.ejsonDecryptWithKeyTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
@@ -2587,6 +2590,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Dashlane: dashlaneConfig{
 			Command: "dcli",
+		},
+		Doppler: dopplerConfig{
+			Command: "doppler",
 		},
 		Ejson: ejsonConfig{
 			KeyDir: firstNonEmptyString(os.Getenv("EJSON_KEYDIR"), "/opt/ejson/keys"),
