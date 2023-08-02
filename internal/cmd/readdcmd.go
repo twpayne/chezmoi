@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
+	"path/filepath"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -22,7 +23,7 @@ func (c *Config) newReAddCmd() *cobra.Command {
 		Long:              mustLongHelp("re-add"),
 		Example:           example("re-add"),
 		ValidArgsFunction: c.targetValidArgs,
-		Args:              cobra.NoArgs,
+		Args:              cobra.ArbitraryArgs,
 		RunE:              c.makeRunEWithSourceState(c.runReAddCmd),
 		Annotations: newAnnotations(
 			modifiesSourceDirectory,
@@ -47,13 +48,29 @@ func (c *Config) runReAddCmd(
 ) error {
 	var targetRelPaths chezmoi.RelPaths
 	sourceStateEntries := make(map[chezmoi.RelPath]chezmoi.SourceStateEntry)
-	_ = sourceState.ForEach(
-		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+	if len(args) == 0 {
+		_ = sourceState.ForEach(
+			func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+				targetRelPaths = append(targetRelPaths, targetRelPath)
+				sourceStateEntries[targetRelPath] = sourceStateEntry
+				return nil
+			},
+		)
+	} else {
+		for _, arg := range args {
+			arg = filepath.Clean(arg)
+			destAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
+			if err != nil {
+				return err
+			}
+			targetRelPath, err := c.targetRelPath(destAbsPath)
+			if err != nil {
+				return err
+			}
 			targetRelPaths = append(targetRelPaths, targetRelPath)
-			sourceStateEntries[targetRelPath] = sourceStateEntry
-			return nil
-		},
-	)
+			sourceStateEntries[targetRelPath] = sourceState.Get(targetRelPath)
+		}
+	}
 	sort.Sort(targetRelPaths)
 
 TARGET_REL_PATH:
