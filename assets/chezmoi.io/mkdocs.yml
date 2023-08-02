@@ -251,6 +251,10 @@ nav:
       - reference/templates/dashlane-functions/index.md
       - dashlaneNote: reference/templates/dashlane-functions/dashlaneNote.md
       - dashlanePassword: reference/templates/dashlane-functions/dashlanePassword.md
+    - Doppler functions:
+      - reference/templates/doppler-functions/index.md
+      - doppler: reference/templates/doppler-functions/doppler.md
+      - dopplerProjectJson: reference/templates/doppler-functions/dopplerProjectJson.md
     - ejson functions:
       - reference/templates/ejson-functions/index.md
       - ejsonDecrypt: reference/templates/ejson-functions/ejsonDecrypt.md

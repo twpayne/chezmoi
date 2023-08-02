@@ -3,6 +3,7 @@
 chmod 755 bin/age
 chmod 755 bin/bw
 chmod 755 bin/dcli
+chmod 755 bin/doppler
 chmod 755 bin/git
 chmod 755 bin/gopass
 chmod 755 bin/gpg
@@ -48,6 +49,7 @@ stdout '^ok\s+pinentry-command\s+'
 stdout '^ok\s+1password-command\s+'
 stdout '^ok\s+bitwarden-command\s+'
 stdout '^ok\s+dashlane-command\s+'
+stdout '^ok\s+doppler-command\s+'
 stdout '^ok\s+gopass-command\s+'
 stdout '^ok\s+keepassxc-command\s+'
 stdout '^info\s+keepassxc-db\s+'
@@ -93,6 +95,10 @@ echo "1.12.1"
 #!/bin/sh
 
 echo 1.0.0
+-- bin/doppler --
+#!/bin/sh
+
+echo "v3.65.1"
 -- bin/git --
 #!/bin/sh
 
