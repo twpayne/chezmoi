@@ -1,0 +1,10 @@
+[windows] skip 'Unix only'
+
+# test lookPathIn template function to find in specified script - success
+exec chezmoi execute-template '{{ lookPathIn "echo" "/bin" }}'
+stdout ^/bin/echo$
+
+# test lookPathIn template function to find in specified script - failure
+exec chezmoi execute-template '{{ lookPathIn "echo" "/lib" }}'
+stdout ^$
+

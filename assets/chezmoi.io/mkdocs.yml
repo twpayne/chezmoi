@@ -198,6 +198,7 @@ nav:
       - joinPath: reference/templates/functions/joinPath.md
       - jq: reference/templates/functions/jq.md
       - lookPath: reference/templates/functions/lookPath.md
+      - lookPathIn: reference/templates/functions/lookPathIn.md
       - lstat: reference/templates/functions/lstat.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
       - output: reference/templates/functions/output.md

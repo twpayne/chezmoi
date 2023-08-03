@@ -315,6 +315,16 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	}
 }
 
+func (c *Config) lookPathInTemplateFunc(file, paths string) string {
+	switch path, err := chezmoi.LookPathIn(file, paths); {
+	case err == nil:
+		return path
+	// It's wrong to return an error past a parsing issue, parser is "dumb" however.
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) lstatTemplateFunc(name string) any {
 	switch fileInfo, err := c.fileSystem.Lstat(name); {
 	case err == nil:

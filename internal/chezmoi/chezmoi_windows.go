@@ -2,13 +2,51 @@ package chezmoi
 
 import (
 	"io/fs"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 const nativeLineEnding = "\r\n"
 
-// isExecutable returns false on Windows.
+var pathExt []string = nil
+
+// findExecutableExtensions returns valid OS executable extensions for a given executable
+func findExecutableExtensions(path string) []string {
+	cmdExt := filepath.Ext(path)
+	if cmdExt != "" {
+		return []string{path}
+	}
+	exts := getPathExt()
+	result := make([]string, len(exts))
+	withoutSuffix := strings.TrimSuffix(path, cmdExt)
+	for i, ext := range exts {
+		result[i] = withoutSuffix + ext
+	}
+	return result
+}
+
+func getPathExt() []string {
+	if pathExt == nil {
+		pathExt = strings.Split(os.Getenv("PathExt"), string(filepath.ListSeparator))
+	}
+	return pathExt
+}
+
+// isExecutable checks if the file has an extension listed in the `PathExt` variable as per:
+// https://www.nextofwindows.com/what-is-pathext-environment-variable-in-windows then checks to see if it's regular file
 func isExecutable(fileInfo fs.FileInfo) bool {
-	return false
+	foundPathExt := false
+	cmdExt := filepath.Ext(fileInfo.Name())
+	if cmdExt != "" {
+		for _, ext := range getPathExt() {
+			if strings.EqualFold(cmdExt, ext) {
+				foundPathExt = true
+				break
+			}
+		}
+	}
+	return foundPathExt && fileInfo.Mode().IsRegular()
 }
 
 // isPrivate returns false on Windows.
