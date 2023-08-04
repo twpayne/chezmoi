@@ -4,3 +4,4 @@
 assets/scripts/install.sh linguist-generated
 assets/scripts/install-local-bin.sh linguist-generated
 completions/* linguist-generated
+vendor/* linguist-vendored
