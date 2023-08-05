@@ -68,6 +68,14 @@ stdout a${/}b
 exec chezmoi execute-template '{{ dict "key" "value" | jq ".key" | first }}'
 stdout ^value$
 
+# test isExecutable template function positive test case
+[!windows] exec chezmoi execute-template '{{ if isExecutable "/bin/echo" }}executable{{end}}'
+[!windows] stdout ^executable$
+
+# test isExecutable template function negative test case
+[!windows] exec chezmoi execute-template '{{ if isExecutable "/etc/fstat" }}executable{{end}}'
+[!windows] stdout ^$
+
 # test lookPath template function to find in PATH
 exec chezmoi execute-template '{{ lookPath "go" }}'
 stdout go$exe

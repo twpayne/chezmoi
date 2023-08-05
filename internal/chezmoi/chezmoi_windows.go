@@ -13,10 +13,10 @@ const nativeLineEnding = "\r\n"
 
 var pathExts = strings.Split(os.Getenv("PATHEXT"), string(filepath.ListSeparator))
 
-// isExecutable checks if the file is a regular file and has an extension listed
+// IsExecutable checks if the file is a regular file and has an extension listed
 // in the PATHEXT environment variable as per
 // https://www.nextofwindows.com/what-is-pathext-environment-variable-in-windows.
-func isExecutable(fileInfo fs.FileInfo) bool {
+func IsExecutable(fileInfo fs.FileInfo) bool {
 	if !fileInfo.Mode().IsRegular() {
 		return false
 	}

@@ -195,6 +195,7 @@ nav:
       - include: reference/templates/functions/include.md
       - includeTemplate: reference/templates/functions/includeTemplate.md
       - ioreg: reference/templates/functions/ioreg.md
+      - isExecutable: reference/templates/functions/isExecutable.md
       - joinPath: reference/templates/functions/joinPath.md
       - jq: reference/templates/functions/jq.md
       - lookPath: reference/templates/functions/lookPath.md

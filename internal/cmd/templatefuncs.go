@@ -315,6 +315,17 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	}
 }
 
+func (c *Config) isExecutableTemplateFunc(file string) bool {
+	switch fileInfo, err := c.fileSystem.Stat(file); {
+	case err == nil:
+		return chezmoi.IsExecutable(fileInfo)
+	case errors.Is(err, fs.ErrNotExist):
+		return false
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) lstatTemplateFunc(name string) any {
 	switch fileInfo, err := c.fileSystem.Lstat(name); {
 	case err == nil:
