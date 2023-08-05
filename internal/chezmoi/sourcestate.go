@@ -2092,7 +2092,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 	fileAttr := FileAttr{
 		TargetName: fileInfo.Name(),
 		Encrypted:  options.Encrypt,
-		Executable: isExecutable(fileInfo),
+		Executable: IsExecutable(fileInfo),
 		Private:    isPrivate(fileInfo),
 		ReadOnly:   isReadOnly(fileInfo),
 		Template:   options.Template,
@@ -2316,7 +2316,7 @@ func (s *SourceState) readExternalArchive(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
 				Empty:      fileInfo.Size() == 0,
-				Executable: isExecutable(fileInfo),
+				Executable: IsExecutable(fileInfo),
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
@@ -2448,7 +2448,7 @@ func (s *SourceState) readExternalArchiveFile(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
 				Empty:      fileInfo.Size() == 0,
-				Executable: isExecutable(fileInfo) || external.Executable,
+				Executable: IsExecutable(fileInfo) || external.Executable,
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
@@ -2530,7 +2530,7 @@ func (s *SourceState) readExternalDir(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
 				Empty:      true,
-				Executable: isExecutable(fileInfo),
+				Executable: IsExecutable(fileInfo),
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
