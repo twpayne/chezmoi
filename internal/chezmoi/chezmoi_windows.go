@@ -7,7 +7,7 @@ import (
 const nativeLineEnding = "\r\n"
 
 // isExecutable returns false on Windows.
-func isExecutable(fileInfo fs.FileInfo) bool {
+func IsExecutable(fileInfo fs.FileInfo) bool {
 	return false
 }
 

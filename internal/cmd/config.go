@@ -420,6 +420,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"include":                  c.includeTemplateFunc,
 		"includeTemplate":          c.includeTemplateTemplateFunc,
 		"ioreg":                    c.ioregTemplateFunc,
+		"isExecutable":             c.isExecutableTemplateFunc,
 		"joinPath":                 c.joinPathTemplateFunc,
 		"jq":                       c.jqTemplateFunc,
 		"keepassxc":                c.keepassxcTemplateFunc,
