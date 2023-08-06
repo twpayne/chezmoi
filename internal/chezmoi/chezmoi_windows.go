@@ -5,34 +5,28 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 const nativeLineEnding = "\r\n"
 
-var pathExt []string = nil
+var pathExts = strings.Split(os.Getenv("PATHEXT"), string(filepath.ListSeparator))
 
-// getPathExt a singleton that obtains the PathExt environment variable and splits it up using the OS `ListSeparator`
-func getPathExt() []string {
-	if pathExt == nil {
-		pathExt = strings.Split(os.Getenv("PathExt"), string(filepath.ListSeparator))
-	}
-	return pathExt
-}
-
-// isExecutable checks if the file has an extension listed in the `PathExt` variable as per:
-// https://www.nextofwindows.com/what-is-pathext-environment-variable-in-windows then checks to see if it's regular file
+// isExecutable checks if the file is a regular file and has an extension listed
+// in the PATHEXT environment variable as per
+// https://www.nextofwindows.com/what-is-pathext-environment-variable-in-windows.
 func isExecutable(fileInfo fs.FileInfo) bool {
-	foundPathExt := false
-	cmdExt := filepath.Ext(fileInfo.Name())
-	if cmdExt != "" {
-		for _, ext := range getPathExt() {
-			if strings.EqualFold(cmdExt, ext) {
-				foundPathExt = true
-				break
-			}
-		}
+	if !fileInfo.Mode().IsRegular() {
+		return false
 	}
-	return foundPathExt && fileInfo.Mode().IsRegular()
+	ext := filepath.Ext(fileInfo.Name())
+	if ext == "" {
+		return false
+	}
+	return slices.ContainsFunc(pathExts, func(pathExt string) bool {
+		return strings.EqualFold(pathExt, ext)
+	})
 }
 
 // isPrivate returns false on Windows.
