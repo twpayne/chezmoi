@@ -653,6 +653,9 @@ func setup(env *testscript.Env) error {
 
 	env.Setenv("HOME", homeDir)
 	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
+	if runtime.GOOS == "windows" {
+		env.Setenv("PATHEXT", ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL")
+	}
 	env.Setenv("CHEZMOICONFIGDIR", path.Join(absSlashHomeDir, ".config", "chezmoi"))
 	env.Setenv("CHEZMOISOURCEDIR", path.Join(absSlashHomeDir, ".local", "share", "chezmoi"))
 	env.Setenv("CHEZMOI_GITHUB_TOKEN", os.Getenv("CHEZMOI_GITHUB_TOKEN"))
