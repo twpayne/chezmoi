@@ -44,9 +44,9 @@ require (
 	github.com/zalando/go-keyring v0.2.3
 	go.etcd.io/bbolt v1.3.7
 	go.uber.org/multierr v1.11.0
-	golang.org/x/crypto v0.11.0
+	golang.org/x/crypto v0.12.0
 	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b
-	golang.org/x/oauth2 v0.10.0
+	golang.org/x/oauth2 v0.11.0
 	golang.org/x/sync v0.3.0
 	golang.org/x/sys v0.11.0
 	golang.org/x/term v0.11.0
@@ -133,7 +133,7 @@ require (
 	github.com/yuin/goldmark v1.5.5 // indirect
 	github.com/yuin/goldmark-emoji v1.0.2 // indirect
 	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/net v0.13.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
 	golang.org/x/tools v0.11.1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
