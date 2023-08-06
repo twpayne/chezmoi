@@ -1,0 +1,17 @@
+/gojq
+/goxz
+/CREDITS
+/._*
+/y.output
+*.exe
+*.test
+*.out
+*.md
+*.y
+**/*.jq
+**/*.json
+**/*.yaml
+**/*_test.go
+.github
+_gojq
+_tools

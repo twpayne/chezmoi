@@ -1,0 +1,6 @@
+-   id: ejson
+    name: ejson encrypt
+    description: Encrypts ejson files
+    entry: ejson encrypt
+    language: golang
+    files: ejson

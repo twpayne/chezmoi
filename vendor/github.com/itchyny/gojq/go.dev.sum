@@ -1,0 +1,4 @@
+github.com/itchyny/astgen-go v0.0.0-20210914105503-cc8fccf6f972 h1:XYWolmPDLTY9B1O5o/Ad811/mtVkaHWMiZdbPLm/nDA=
+github.com/itchyny/astgen-go v0.0.0-20210914105503-cc8fccf6f972/go.mod h1:jTXcxGeQMJfFN3wWjtzb4aAaWDDN+QbezE0HjH1XfNk=
+github.com/itchyny/timefmt-go v0.1.5 h1:G0INE2la8S6ru/ZI5JecgyzbbJNs5lG1RcBqa7Jm6GE=
+github.com/itchyny/timefmt-go v0.1.5/go.mod h1:nEP7L+2YmAbT2kZ2HfSs1d8Xtw9LY8D2stDBckWakZ8=

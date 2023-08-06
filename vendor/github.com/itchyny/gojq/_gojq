@@ -1,0 +1,43 @@
+#compdef gojq
+
+_gojq()
+{
+  _arguments -s -S \
+    '(-r --raw-output -j --join-output -0 --nul-output)'{-r,--raw-output}'[output raw strings]' \
+    '(-r --raw-output -j --join-output -0 --nul-output)'{-j,--join-output}'[output without newlines]' \
+    '(-r --raw-output -j --join-output -0 --nul-output)'{-0,--nul-output}'[output with NUL character]' \
+    '(-c --compact-output --indent --tab --yaml-output)'{-c,--compact-output}'[output without pretty-printing]' \
+    '(-c --compact-output          --tab --yaml-output)--indent=[number of spaces for indentation]:indentation count:(2 4 8)' \
+    '(-c --compact-output --indent       --yaml-output)--tab[use tabs for indentation]' \
+    '(-c --compact-output --indent --tab              )--yaml-output[output in YAML format]' \
+    '(-C --color-output -M --monochrome-output)'{-C,--color-output}'[output with colors even if piped]' \
+    '(-C --color-output -M --monochrome-output)'{-M,--monochrome-output}'[output without colors]' \
+    '(-n --null-input)'{-n,--null-input}'[use null as input value]' \
+    '(-R --raw-input --stream --yaml-input)'{-R,--raw-input}'[read input as raw strings]' \
+    '(-R --raw-input          --yaml-input)--stream[parse input in stream fashion]' \
+    '(-R --raw-input --stream             )--yaml-input[read input as YAML format]' \
+    '(-s --slurp)'{-s,--slurp}'[read all inputs into an array]' \
+    '(-f --from-file 1)'{-f,--from-file}='[load query from file]:filename of jq query:_files' \
+    '*-L=[directory to search modules from]:module directory:_directories' \
+    '*--arg[set a string value to a variable]:variable name: :string value' \
+    '*--argjson[set a JSON value to a variable]:variable name: :JSON value' \
+    '*--slurpfile[set the JSON contents of a file to a variable]:variable name: :JSON file:_files' \
+    '*--rawfile[set the contents of a file to a variable]:variable name: :file:_files' \
+    '*--args[consume remaining arguments as positional string values]' \
+    '*--jsonargs[consume remaining arguments as positional JSON values]' \
+    '(-e --exit-status)'{-e,--exit-status}'[exit 1 when the last value is false or null]' \
+    '(- 1 *)'{-v,--version}'[display version information]' \
+    '(- 1 *)'{-h,--help}'[display help information]' \
+    '1: :_guard "^-([[:alpha:]0]#|-*)" "jq query"' \
+    '*: :_gojq_args'
+}
+
+_gojq_args() {
+  if (($words[(I)--args] > $words[(I)--jsonargs])); then
+    _message 'string value'
+  elif (($words[(I)--args] < $words[(I)--jsonargs])); then
+    _message 'JSON value'
+  else
+    _arguments '*:input file:_files'
+  fi
+}

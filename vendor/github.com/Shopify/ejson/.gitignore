@@ -1,0 +1,11 @@
+/ejson
+/tags
+/build/
+/pkg/
+/rubygem/pkg/
+/rubygem/build/
+/rubygem/man/
+/rubygem/LICENSE.txt
+/rubygem/lib/ejson/version.rb
+.bundle
+/tmp

@@ -1,0 +1,83 @@
+run:
+  tests: true
+  skip-dirs:
+    - _examples
+
+output:
+  print-issued-lines: false
+
+linters:
+  enable-all: true
+  disable:
+    - maligned
+    - lll
+    - gocyclo
+    - gochecknoglobals
+    - wsl
+    - whitespace
+    - godox
+    - funlen
+    - gocognit
+    - gomnd
+    - goerr113
+    - godot
+    - nestif
+    - testpackage
+    - nolintlint
+    - exhaustivestruct
+    - wrapcheck
+    - gci
+    - gofumpt
+    - gocritic
+    - nlreturn
+    - errorlint
+    - nakedret
+    - forbidigo
+    - revive
+    - cyclop
+    - ifshort
+    - paralleltest
+    - interfacer
+    - scopelint
+    - golint
+    - wastedassign
+    - forcetypeassert
+    - gomoddirectives
+    - thelper
+    - varnamelen
+    - depguard
+    - exhaustruct
+    - nonamedreturns
+    - varcheck
+    - structcheck
+    - deadcode
+    - nosnakecase
+
+linters-settings:
+  govet:
+    check-shadowing: true
+  gocyclo:
+    min-complexity: 10
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 8
+    min-occurrences: 3
+  exhaustive:
+    default-signifies-exhaustive: true
+
+issues:
+  max-per-linter: 0
+  max-same: 0
+  exclude-use-default: false
+  exclude:
+    # Captured by errcheck.
+    - '^(G104|G204|G307):'
+    # Very commonly not checked.
+    - 'Error return value of .(.*\.Help|.*\.MarkFlagRequired|(os\.)?std(out|err)\..*|.*Close|.*Flush|os\.Remove(All)?|.*printf?|os\.(Un)?Setenv). is not checked'
+    - 'exported method `(.*\.MarshalJSON|.*\.UnmarshalJSON|.*\.EntityURN|.*\.GoString|.*\.Pos)` should have comment or be unexported'
+    - 'composite literal uses unkeyed fields'
+    - 'declaration of "err" shadows declaration'
+    - 'bad syntax for struct tag key'
+    - 'bad syntax for struct tag pair'
+    - '^ST1012'

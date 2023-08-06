@@ -1,0 +1,92 @@
+linters:
+  enable:
+  - asciicheck
+  - bidichk
+  - bodyclose
+  - contextcheck
+  - deadcode
+  - depguard
+  - dogsled
+  - dupl
+  - durationcheck
+  - errcheck
+  - errname
+  - errorlint
+  - exhaustive
+  - exportloopref
+  - forcetypeassert
+  - gci
+  - gochecknoinits
+  - gocognit
+  - gocritic
+  - gocyclo
+  - godot
+  - goerr113
+  - gofmt
+  - gofumpt
+  - goheader
+  - goimports
+  - gomoddirectives
+  - gomodguard
+  - goprintffuncname
+  - gosec
+  - gosimple
+  - govet
+  - ifshort
+  - importas
+  - ineffassign
+  - ireturn
+  - makezero
+  - misspell
+  - nakedret
+  - nilerr
+  - nilnil
+  - noctx
+  - nolintlint
+  - prealloc
+  - predeclared
+  - promlinter
+  - revive
+  - rowserrcheck
+  - sqlclosecheck
+  - staticcheck
+  - structcheck
+  - stylecheck
+  - tagliatelle
+  - tenv
+  - thelper
+  - typecheck
+  - unconvert
+  - unparam
+  - unused
+  - varcheck
+  - wastedassign
+  - whitespace
+  disable:
+  - cyclop
+  - exhaustivestruct
+  - forbidigo
+  - funlen
+  - gochecknoglobals
+  - goconst
+  - godox
+  - gomnd
+  - lll
+  - nestif
+  - nlreturn
+  - paralleltest
+  - testpackage
+  - tparallel
+  - varnamelen
+  - wrapcheck
+  - wsl
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/twpayne/go-pinentry
+
+      #issues:
+  #exclude-rules:
+    #- linters:
+    #- scopelint
+    #path: "_test\\.go"
