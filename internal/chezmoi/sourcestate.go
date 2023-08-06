@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/mitchellh/copystructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v4"
@@ -764,11 +765,10 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 		}
 	}
 
-	// Temporarily set .chezmoi.sourceFile to the name of the template.
+	// Set .chezmoi.sourceFile to the name of the template.
 	templateData := s.TemplateData()
 	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 		chezmoiTemplateData["sourceFile"] = options.Name
-		defer delete(chezmoiTemplateData, "sourceFile")
 	}
 
 	return tmpl.Execute(templateData)
@@ -1278,7 +1278,7 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 	return targetRelPaths
 }
 
-// TemplateData returns s's template data.
+// TemplateData returns a copy of s's template data.
 func (s *SourceState) TemplateData() map[string]any {
 	if s.templateData == nil {
 		s.templateData = make(map[string]any)
@@ -1289,7 +1289,11 @@ func (s *SourceState) TemplateData() map[string]any {
 		RecursiveMerge(s.templateData, s.userTemplateData)
 		RecursiveMerge(s.templateData, s.priorityTemplateData)
 	}
-	return s.templateData
+	templateData, err := copystructure.Copy(s.templateData)
+	if err != nil {
+		panic(err)
+	}
+	return templateData.(map[string]any) //nolint:forcetypeassert
 }
 
 // addExternal adds external source entries to s.
@@ -1857,10 +1861,6 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 					chezmoiTemplateData["stdin"] = string(currentContents)
 					chezmoiTemplateData["sourceFile"] = sourceFile
-					defer func() {
-						delete(chezmoiTemplateData, "stdin")
-						delete(chezmoiTemplateData, "sourceFile")
-					}()
 				}
 
 				contents, err = tmpl.Execute(templateData)
