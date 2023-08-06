@@ -16,7 +16,7 @@ env:
   GOLANGCI_LINT_VERSION: 1.53.3
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
-  FINDTYPOS_VERSION: 0.0.1
+  FINDTYPOS_VERSION: 0.0.2
   MKDOCS_VERSION: 1.5.1
 jobs:
   changes:
@@ -61,6 +61,7 @@ jobs:
     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
     - uses: reviewdog/action-misspell@9257f108197b44e37995c98bea6ee4a5b9ffc3b0
       with:
+        exclude: vendor/*
         locale: US
   test-alpine:
     needs: changes
@@ -336,7 +337,9 @@ jobs:
         actionlint
     - uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
       with:
-        ignore_paths: completions
+        ignore_paths: >-
+          completions
+          vendor
     - name: lint-whitespace
       run: |
         go run ./internal/cmds/lint-whitespace

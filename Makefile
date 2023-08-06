@@ -182,7 +182,7 @@ release:
 
 .PHONY: shellcheck
 shellcheck:
-	find . -type f -name \*.sh | xargs shellcheck
+	find . -type f -name \*.sh | grep -v ^\./vendor/ | xargs shellcheck
 
 .PHONY: test-release
 test-release:

@@ -169,3 +169,6 @@ issues:
     - forcetypeassert
     - gosec
     path: _test\.go$
+
+skip-dirs:
+  - vendor
