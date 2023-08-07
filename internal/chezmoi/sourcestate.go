@@ -1280,6 +1280,9 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 
 // TemplateData returns a copy of s's template data.
 func (s *SourceState) TemplateData() map[string]any {
+	s.Lock()
+	defer s.Unlock()
+
 	if s.templateData == nil {
 		s.templateData = make(map[string]any)
 		if s.defaultTemplateDataFunc != nil {
