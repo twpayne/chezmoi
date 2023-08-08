@@ -133,6 +133,40 @@ func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	return false
 }
 
+func (c *Config) findExecutableTemplateFunc(file string, pathList []any) string {
+	files := []string{file}
+	paths, err := anySliceToStringSlice(pathList)
+	if err != nil {
+		panic(fmt.Errorf("path list: %w", err))
+	}
+
+	switch path, err := chezmoi.FindExecutable(files, paths); {
+	case err == nil:
+		return path
+	default:
+		panic(err)
+	}
+}
+
+func (c *Config) findOneExecutableTemplateFunc(fileList, pathList []any) string {
+	files, err := anySliceToStringSlice(fileList)
+	if err != nil {
+		panic(fmt.Errorf("file list: %w", err))
+	}
+
+	paths, err := anySliceToStringSlice(pathList)
+	if err != nil {
+		panic(fmt.Errorf("path list: %w", err))
+	}
+
+	switch path, err := chezmoi.FindExecutable(files, paths); {
+	case err == nil:
+		return path
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 	file, err := ini.Load([]byte(s))
 	if err != nil {
