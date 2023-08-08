@@ -185,6 +185,7 @@ nav:
       - deleteValueAtPath: reference/templates/functions/deleteValueAtPath.md
       - encrypt: reference/templates/functions/encrypt.md
       - eqFold: reference/templates/functions/eqFold.md
+      - findExecutable: reference/templates/functions/findExecutable.md
       - fromIni: reference/templates/functions/fromIni.md
       - fromJsonc: reference/templates/functions/fromJsonc.md
       - fromToml: reference/templates/functions/fromToml.md

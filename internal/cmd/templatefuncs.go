@@ -133,6 +133,16 @@ func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	return false
 }
 
+func (c *Config) findExecutableTemplateFunc(file string, vpaths ...any) string {
+	paths := flattenStringList(vpaths)
+	switch path, err := chezmoi.FindExecutable(file, paths...); {
+	case err == nil:
+		return path
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 	file, err := ini.Load([]byte(s))
 	if err != nil {

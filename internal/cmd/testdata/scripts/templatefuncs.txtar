@@ -78,6 +78,34 @@ stdout ^true$
 exec chezmoi execute-template '{{ isExecutable "bin/not-executable" }}'
 stdout ^false$
 
+# test findExecutable template function to find in specified script varargs - success
+[!windows] exec chezmoi execute-template '{{ findExecutable "echo"  "/lib" "/bin" "/usr/bin" }}'
+[!windows] stdout ^/bin/echo$
+
+# test findExecutable template function to find in specified script varargs - failure
+[!windows] exec chezmoi execute-template '{{ findExecutable "echo" "/lib" }}'
+[!windows] stdout ^$
+
+# test findExecutable template function to find in specified script - success
+[!windows] exec chezmoi execute-template '{{ findExecutable "echo" (list "/lib" "/bin" "/usr/bin") }}'
+[!windows] stdout ^/bin/echo$
+
+# test findExecutable template function to find in specified script - failure
+[!windows] exec chezmoi execute-template '{{ findExecutable "echo" (list "/lib") }}'
+[!windows] stdout ^$
+
+# test findExecutable template function to find in specified script - success with extension
+[windows] exec chezmoi execute-template '{{ findExecutable "git.exe" "c:\\windows\\system32" "c:\\windows\\system64" "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0" "C:\\Program Files\\Git\\cmd" }}'
+[windows] stdout 'git'
+
+# test findExecutable template function to find in specified script - success without extension
+[windows] exec chezmoi execute-template '{{ findExecutable "git" "c:\\windows\\system32" "c:\\windows\\system64" "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0" "C:\\Program Files\\Git\\cmd" }}'
+[windows] stdout 'git'
+
+# test findExecutable template function to find in specified script - failure
+[windows] exec chezmoi execute-template '{{ findExecutable "asdf" "c:\\windows\\system32" "c:\\windows\\system64" "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0" "C:\\Program Files\\Git\\cmd" }}'
+[windows] stdout '^$'
+
 # test lookPath template function to find in PATH
 exec chezmoi execute-template '{{ lookPath "go" }}'
 stdout go$exe

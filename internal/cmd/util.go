@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"reflect"
 	"strings"
 	"unicode"
 )
@@ -142,4 +143,21 @@ func upperSnakeCaseToCamelCaseMap[V any](m map[string]V) map[string]V {
 		result[upperSnakeCaseToCamelCase(k)] = v
 	}
 	return result
+}
+
+func flattenStringList(vpaths []any) []string {
+	var paths []string
+	for i := range vpaths {
+		switch path := vpaths[i].(type) {
+		case []string:
+			paths = append(paths, path...)
+		case string:
+			paths = append(paths, path)
+		case []any:
+			paths = append(paths, flattenStringList(path)...)
+		default:
+			panic("unknown type: " + reflect.TypeOf(path).String())
+		}
+	}
+	return paths
 }
