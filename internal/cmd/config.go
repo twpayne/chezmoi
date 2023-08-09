@@ -410,6 +410,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
 		"gitHubLatestRelease":      c.gitHubLatestReleaseTemplateFunc,
 		"gitHubLatestTag":          c.gitHubLatestTagTemplateFunc,
+		"gitHubReleases":           c.gitHubReleasesTemplateFunc,
+		"gitHubTags":               c.gitHubTagsTemplateFunc,
 		"glob":                     c.globTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,

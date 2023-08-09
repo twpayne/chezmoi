@@ -23,7 +23,8 @@ configState: {}
 entryState: {}
 gitHubKeysState: {}
 gitHubLatestReleaseState: {}
-gitHubLatestTagState: {}
+gitHubReleasesState: {}
+gitHubTagsState: {}
 gitRepoExternalState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/run_once_script.cmd --
