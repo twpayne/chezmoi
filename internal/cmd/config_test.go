@@ -189,7 +189,7 @@ func withDestSystem(destSystem chezmoi.System) configOption {
 	}
 }
 
-func withNoTTY(noTTY bool) configOption {
+func withNoTTY(noTTY bool) configOption { //nolint:unparam
 	return func(c *Config) error {
 		c.noTTY = noTTY
 		return nil

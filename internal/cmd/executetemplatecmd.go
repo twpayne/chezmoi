@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -14,6 +15,7 @@ import (
 type executeTemplateCmdConfig struct {
 	init            bool
 	promptBool      map[string]string
+	promptChoice    map[string]string
 	promptInt       map[string]int
 	promptString    map[string]string
 	stdinIsATTY     bool
@@ -46,6 +48,12 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 		"promptBool",
 		c.executeTemplate.promptBool,
 		"Simulate promptBool",
+	)
+	flags.StringToStringVar(
+		&c.executeTemplate.promptChoice,
+		"promptChoice",
+		c.executeTemplate.promptChoice,
+		"Simulate promptChoice",
 	)
 	flags.StringToIntVar(
 		&c.executeTemplate.promptInt,
@@ -148,6 +156,47 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return promptBoolInitTemplateFunc(field, args...)
 		}
 
+		promptChoiceInitTemplateFunc := func(prompt string, choices []any, args ...string) string {
+			choiceStrs, err := anySliceToStringSlice(choices)
+			if err != nil {
+				panic(err)
+			}
+			switch len(args) {
+			case 0:
+				if value, ok := c.executeTemplate.promptChoice[prompt]; ok {
+					if !slices.Contains(choiceStrs, value) {
+						panic(fmt.Errorf("%s: invalid choice", value))
+					}
+					return value
+				}
+				return prompt
+			case 1:
+				if value, ok := c.executeTemplate.promptChoice[prompt]; ok {
+					if !slices.Contains(choiceStrs, value) {
+						panic(fmt.Errorf("%s: invalid choice", value))
+					}
+					return value
+				}
+				return args[0]
+			default:
+				err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+1)
+				panic(err)
+			}
+		}
+
+		promptChoiceOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, choices []any, args ...string) string {
+			nestedMap, lastKey, err := nestedMapAtPath(m, path)
+			if err != nil {
+				panic(err)
+			}
+			if value, ok := nestedMap[lastKey]; ok {
+				if stringValue, ok := value.(string); ok {
+					return stringValue
+				}
+			}
+			return promptChoiceInitTemplateFunc(prompt, choices, args...)
+		}
+
 		promptIntInitTemplateFunc := func(prompt string, args ...int64) int64 {
 			switch len(args) {
 			case 0:
@@ -163,7 +212,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptIntOnceInitTemplateFunc := func(m map[string]any, path any, field string, args ...int64) int64 {
+		promptIntOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, args ...int64) int64 {
 			nestedMap, lastKey, err := nestedMapAtPath(m, path)
 			if err != nil {
 				panic(err)
@@ -173,7 +222,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return intValue
 				}
 			}
-			return promptIntInitTemplateFunc(field, args...)
+			return promptIntInitTemplateFunc(prompt, args...)
 		}
 
 		promptStringInitTemplateFunc := func(prompt string, args ...string) string {
@@ -194,7 +243,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptStringOnceInitTemplateFunc := func(m map[string]any, path any, field string, args ...string) string {
+		promptStringOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, args ...string) string {
 			nestedMap, lastKey, err := nestedMapAtPath(m, path)
 			if err != nil {
 				panic(err)
@@ -204,7 +253,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return stringValue
 				}
 			}
-			return promptStringInitTemplateFunc(field, args...)
+			return promptStringInitTemplateFunc(prompt, args...)
 		}
 
 		stdinIsATTYInitTemplateFunc := func() bool {
@@ -215,6 +264,8 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			"exit":             c.exitInitTemplateFunc,
 			"promptBool":       promptBoolInitTemplateFunc,
 			"promptBoolOnce":   promptBoolOnceInitTemplateFunc,
+			"promptChoice":     promptChoiceInitTemplateFunc,
+			"promptChoiceOnce": promptChoiceOnceInitTemplateFunc,
 			"promptInt":        promptIntInitTemplateFunc,
 			"promptIntOnce":    promptIntOnceInitTemplateFunc,
 			"promptString":     promptStringInitTemplateFunc,
