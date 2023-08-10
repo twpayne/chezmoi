@@ -771,6 +771,8 @@ func (c *Config) createConfigFile(
 		"exit":             c.exitInitTemplateFunc,
 		"promptBool":       c.promptBoolInteractiveTemplateFunc,
 		"promptBoolOnce":   c.promptBoolOnceInteractiveTemplateFunc,
+		"promptChoice":     c.promptChoiceInteractiveTemplateFunc,
+		"promptChoiceOnce": c.promptChoiceOnceInteractiveTemplateFunc,
 		"promptInt":        c.promptIntInteractiveTemplateFunc,
 		"promptIntOnce":    c.promptIntOnceInteractiveTemplateFunc,
 		"promptString":     c.promptStringInteractiveTemplateFunc,
@@ -1395,6 +1397,7 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	funcMap := maps.Clone(sprig.TxtFuncMap())
 	maps.Copy(funcMap, map[string]any{
 		"promptBool":   c.promptBoolInteractiveTemplateFunc,
+		"promptChoice": c.promptChoiceInteractiveTemplateFunc,
 		"promptInt":    c.promptIntInteractiveTemplateFunc,
 		"promptString": c.promptStringInteractiveTemplateFunc,
 		"targetRelPath": func(source string) string {

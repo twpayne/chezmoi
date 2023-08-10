@@ -11,6 +11,7 @@ import (
 type interactiveTemplateFuncsConfig struct {
 	forcePromptOnce bool
 	promptBool      map[string]string
+	promptChoice    map[string]string
 	promptDefaults  bool
 	promptInt       map[string]int
 	promptString    map[string]string
@@ -34,6 +35,12 @@ func (c *Config) addInteractiveTemplateFuncFlags(flags *pflag.FlagSet) {
 		"promptBool",
 		c.interactiveTemplateFuncs.promptBool,
 		"Populate promptBool",
+	)
+	flags.StringToStringVar(
+		&c.interactiveTemplateFuncs.promptChoice,
+		"promptChoice",
+		c.interactiveTemplateFuncs.promptChoice,
+		"Populate promptChoice",
 	)
 	flags.StringToIntVar(
 		&c.interactiveTemplateFuncs.promptInt,
@@ -99,6 +106,49 @@ func (c *Config) promptBoolOnceInteractiveTemplateFunc(
 	}
 
 	return c.promptBoolInteractiveTemplateFunc(prompt, args...)
+}
+
+func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices []any, args ...string) string {
+	if len(args) > 1 {
+		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
+		panic(err)
+	}
+
+	if valueStr, ok := c.interactiveTemplateFuncs.promptChoice[prompt]; ok {
+		return valueStr
+	}
+
+	choiceStrs, err := anySliceToStringSlice(choices)
+	if err != nil {
+		panic(err)
+	}
+
+	value, err := c.promptChoice(prompt, choiceStrs, args...)
+	if err != nil {
+		panic(err)
+	}
+	return value
+}
+
+func (c *Config) promptChoiceOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, choices []any, args ...string) string {
+	if len(args) > 1 {
+		err := fmt.Errorf("want 4 or 5 arguments, got %d", len(args)+4)
+		panic(err)
+	}
+
+	nestedMap, lastKey, err := nestedMapAtPath(m, path)
+	if err != nil {
+		panic(err)
+	}
+	if !c.interactiveTemplateFuncs.forcePromptOnce {
+		if value, ok := nestedMap[lastKey]; ok {
+			if valueStr, ok := value.(string); ok {
+				return valueStr
+			}
+		}
+	}
+
+	return c.promptChoiceInteractiveTemplateFunc(prompt, choices, args...)
 }
 
 func (c *Config) promptIntInteractiveTemplateFunc(prompt string, args ...int64) int64 {
@@ -185,4 +235,19 @@ func (c *Config) promptStringOnceInteractiveTemplateFunc(
 	}
 
 	return c.promptStringInteractiveTemplateFunc(prompt, args...)
+}
+
+func anySliceToStringSlice(slice []any) ([]string, error) {
+	result := make([]string, 0, len(slice))
+	for _, elem := range slice {
+		switch elem := elem.(type) {
+		case []byte:
+			result = append(result, string(elem))
+		case string:
+			result = append(result, elem)
+		default:
+			return nil, fmt.Errorf("%v: not a string", elem)
+		}
+	}
+	return result, nil
 }

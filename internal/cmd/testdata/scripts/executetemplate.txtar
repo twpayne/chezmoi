@@ -60,6 +60,18 @@ stderr 'invalid syntax'
 exec chezmoi execute-template --init '{{ promptBool "value" true }}'
 stdout true
 
+# test --init --promptChoice
+exec chezmoi execute-template --init --promptChoice value=one '{{ promptChoice "value" (list "one" "two" "three") }}'
+stdout one
+
+# test --init --promptChoice with an invalid value
+! exec chezmoi execute-template --init --promptChoice value=four '{{ promptChoice "value" (list "one" "two" "three") }}'
+stderr 'invalid choice'
+
+# test --init --promptChoice with a default value
+exec chezmoi execute-template --init '{{ promptChoice "value" (list "one" "two" "three") "three" }}'
+stdout three
+
 # test --init --promptInt
 exec chezmoi execute-template --init --promptInt value=1 '{{ promptInt "value" }}'
 stdout 1

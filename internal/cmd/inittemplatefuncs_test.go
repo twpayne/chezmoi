@@ -80,6 +80,96 @@ func TestPromptBoolInteractiveTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestPromptChoiceInteractiveTemplateFunc(t *testing.T) {
+	for _, tc := range []struct {
+		name              string
+		prompt            string
+		choices           []any
+		args              []string
+		stdinStr          string
+		expectedStdoutStr string
+		expected          string
+		expectedErr       bool
+	}{
+		{
+			name:              "response_without_default",
+			prompt:            "choice",
+			choices:           []any{"one", "two", "three"},
+			stdinStr:          "one\n",
+			expectedStdoutStr: "choice (one/two/three)? ",
+			expected:          "one",
+		},
+		{
+			name:              "response_with_default",
+			prompt:            "choice",
+			choices:           []any{"one", "two", "three"},
+			args:              []string{"one"},
+			stdinStr:          "two\n",
+			expectedStdoutStr: "choice (one/two/three, default one)? ",
+			expected:          "two",
+		},
+		{
+			name:              "no_response_with_default",
+			prompt:            "choice",
+			choices:           []any{"one", "two", "three"},
+			args:              []string{"three"},
+			stdinStr:          "\n",
+			expectedStdoutStr: "choice (one/two/three, default three)? ",
+			expected:          "three",
+		},
+		{
+			name:        "invalid_response",
+			prompt:      "choice",
+			choices:     []any{"one", "two", "three"},
+			stdinStr:    "invalid\n",
+			expectedErr: true,
+		},
+		{
+			name:        "invalid_response_with_default",
+			prompt:      "choice",
+			choices:     []any{"one", "two", "three"},
+			args:        []string{"one"},
+			stdinStr:    "invalid\n",
+			expectedErr: true,
+		},
+		{
+			name:        "too_many_args",
+			prompt:      "choice",
+			choices:     []any{"one", "two", "three"},
+			args:        []string{"two", "three"},
+			stdinStr:    "\n",
+			expectedErr: true,
+		},
+		{
+			name:        "invalid_default",
+			prompt:      "choice",
+			choices:     []any{"one", "two", "three"},
+			args:        []string{"four"},
+			stdinStr:    "\n",
+			expectedErr: true,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			stdin := strings.NewReader(tc.stdinStr)
+			stdout := &strings.Builder{}
+			config, err := newConfig(
+				withNoTTY(true),
+				withStdin(stdin),
+				withStdout(stdout),
+			)
+			assert.NoError(t, err)
+			if tc.expectedErr {
+				assert.Panics(t, func() {
+					config.promptChoiceInteractiveTemplateFunc(tc.prompt, tc.choices, tc.args...)
+				})
+			} else {
+				assert.Equal(t, tc.expected, config.promptChoiceInteractiveTemplateFunc(tc.prompt, tc.choices, tc.args...))
+				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
+			}
+		})
+	}
+}
+
 func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string

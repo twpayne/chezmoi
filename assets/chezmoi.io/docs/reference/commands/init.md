@@ -66,6 +66,13 @@ a comma-separated list of *prompt*`=`*value* pairs. If `promptBool` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
 
+## `--promptChoice` *pairs*
+
+Populate the `promptChoice` template function with values from *pairs*. *pairs*
+is a comma-separated list of *prompt*`=`*value* pairs. If `promptChoice` is
+called with a *prompt* that does not match any of *pairs*, then it prompts the
+user for a value.
+
 ## `--promptDefaults`
 
 Make all `prompt*` template function calls with a default value return that

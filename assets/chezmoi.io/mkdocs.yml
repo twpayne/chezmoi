@@ -221,6 +221,8 @@ nav:
       - exit: reference/templates/init-functions/exit.md
       - promptBool: reference/templates/init-functions/promptBool.md
       - promptBoolOnce: reference/templates/init-functions/promptBoolOnce.md
+      - promptChoice: reference/templates/init-functions/promptChoice.md
+      - promptChoiceOnce: reference/templates/init-functions/promptChoiceOnce.md
       - promptInt: reference/templates/init-functions/promptInt.md
       - promptIntOnce: reference/templates/init-functions/promptIntOnce.md
       - promptString: reference/templates/init-functions/promptString.md

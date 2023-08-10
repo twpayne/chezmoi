@@ -6,6 +6,10 @@ exec chezmoi execute-template --init '{{ exit 0 }}'
 exec chezmoi execute-template --init --promptBool bool=true '{{ promptBoolOnce . "bool" "bool" }}'
 stdout true
 
+# test promptChoiceOnce template function with execute-template --init
+exec chezmoi execute-template --init --promptChoice choice=one '{{ promptChoiceOnce . "choice" "choice" (list "one" "two" "three") }}'
+stdout one
+
 # test promptIntOnce template function with execute-template --init
 exec chezmoi execute-template --init --promptInt int=1 '{{ promptIntOnce . "int" "int" }}'
 stdout 1
