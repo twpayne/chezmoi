@@ -77,7 +77,7 @@ func (c *Config) promptBoolOnceInteractiveTemplateFunc(
 	args ...bool,
 ) bool {
 	if len(args) > 1 {
-		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
+		err := fmt.Errorf("want 3 or 4 arguments, got %d", len(args)+2)
 		panic(err)
 	}
 
