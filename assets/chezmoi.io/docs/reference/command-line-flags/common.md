@@ -46,6 +46,11 @@ Prompt before applying each target.
 
 Recurse into subdirectories, `true` by default.
 
+## `--source-path`
+
+Interpret *targets* passed to the command as paths in the source directory
+rather than the destination directory.
+
 ## `-x`, `--exclude` *types*
 
 Exclude target state entries of type *types*. *types* is defined as in the
