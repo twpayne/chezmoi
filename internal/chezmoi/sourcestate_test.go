@@ -428,6 +428,23 @@ func TestSourceStateAdd(t *testing.T) {
 			},
 		},
 		{
+			name: "template",
+			destAbsPaths: []AbsPath{
+				NewAbsPath("/home/user/.template"),
+			},
+			addOptions: AddOptions{
+				AutoTemplate: true,
+				Filter:       NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+			},
+			tests: []any{
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_template.tmpl",
+					vfst.TestModeIsRegular,
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
+					vfst.TestContentsString("key = {{ .variable }}\n"),
+				),
+			},
+		},
+		{
 			name: "dir_and_dir_file",
 			destAbsPaths: []AbsPath{
 				NewAbsPath("/home/user/.dir"),

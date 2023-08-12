@@ -298,6 +298,7 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
+	AutoTemplate      bool             // Automatically create templates, if possible.
 	Create            bool             // Add create_ entries instead of normal entries.
 	Encrypt           bool             // Encrypt files.
 	EncryptedSuffix   string           // Suffix for encrypted files.
@@ -2109,6 +2110,13 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 	if err != nil {
 		return nil, err
 	}
+	if options.AutoTemplate {
+		var replacements bool
+		contents, replacements = autoTemplate(contents, s.TemplateData())
+		if replacements {
+			fileAttr.Template = true
+		}
+	}
 	if len(contents) == 0 {
 		fileAttr.Empty = true
 	}
@@ -2148,6 +2156,8 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	contents := []byte(linkname)
 	template := false
 	switch {
+	case options.AutoTemplate:
+		contents, template = autoTemplate(contents, s.TemplateData())
 	case options.Template:
 		template = true
 	case !options.Template && options.TemplateSymlinks:
