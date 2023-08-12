@@ -10,6 +10,7 @@ import (
 
 type addCmdConfig struct {
 	TemplateSymlinks bool `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
+	autoTemplate     bool
 	create           bool
 	encrypt          bool
 	exact            bool
@@ -39,6 +40,13 @@ func (c *Config) newAddCmd() *cobra.Command {
 	}
 
 	flags := addCmd.Flags()
+	flags.BoolVarP(
+		&c.Add.autoTemplate,
+		"autotemplate",
+		"a",
+		c.Add.autoTemplate,
+		"Generate the template when adding files as templates",
+	) //nolint:lll
 	flags.BoolVar(
 		&c.Add.create,
 		"create",
@@ -188,6 +196,7 @@ func (c *Config) runAddCmd(
 		c.destSystem,
 		destAbsPathInfos,
 		&chezmoi.AddOptions{
+			AutoTemplate:    c.Add.autoTemplate,
 			Create:          c.Add.create,
 			Encrypt:         c.Add.encrypt,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
