@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"go.uber.org/multierr"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
 var (
@@ -35,26 +35,26 @@ func lintData(filename string, data []byte) error {
 
 	lines := bytes.Split(data, []byte{'\n'})
 
-	var err error
+	var errs []error
 
 	for i, line := range lines {
 		switch {
 		case crlfLineEndingRx.Match(line):
-			err = multierr.Append(
-				err,
+			errs = append(
+				errs,
 				fmt.Errorf("::error file=%s,line=%d::CRLF line ending", filename, i+1),
 			)
 		case trailingWhitespaceRx.Match(line):
-			err = multierr.Append(
-				err,
+			errs = append(
+				errs,
 				fmt.Errorf("::error file=%s,line=%d::trailing whitespace", filename, i+1),
 			)
 		}
 	}
 
 	if len(data) > 0 && len(lines[len(lines)-1]) != 0 {
-		err = multierr.Append(
-			err,
+		errs = append(
+			errs,
 			fmt.Errorf(
 				"::error file=%s,line=%d::no newline at end of file",
 				filename,
@@ -63,7 +63,7 @@ func lintData(filename string, data []byte) error {
 		)
 	}
 
-	return err
+	return chezmoierrors.Combine(errs...)
 }
 
 func lintFile(filename string) error {
@@ -75,7 +75,7 @@ func lintFile(filename string) error {
 }
 
 func run() error {
-	var lintErrs error
+	var lintErrs []error
 	if err := fs.WalkDir(os.DirFS("."), ".", func(path string, dirEntry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -89,20 +89,18 @@ func run() error {
 			}
 		}
 		if dirEntry.Type().IsRegular() {
-			lintErrs = multierr.Append(lintErrs, lintFile(path))
+			lintErrs = append(lintErrs, lintFile(path))
 		}
 		return nil
 	}); err != nil {
 		return err
 	}
-	return lintErrs
+	return chezmoierrors.Combine(lintErrs...)
 }
 
 func main() {
 	if err := run(); err != nil {
-		for _, e := range multierr.Errors(err) {
-			fmt.Println(e)
-		}
+		fmt.Println(err)
 		os.Exit(1)
 	}
 }

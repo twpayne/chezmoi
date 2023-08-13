@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"github.com/twpayne/go-pinentry"
-	"go.uber.org/multierr"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
 type pinEntryConfig struct {
@@ -28,7 +29,7 @@ func (c *Config) readPINEntry(prompt string) (pin string, err error) {
 	if err != nil {
 		return
 	}
-	defer multierr.AppendInvoke(&err, multierr.Close(client))
+	defer chezmoierrors.CombineFunc(&err, client.Close)
 
 	pin, _, err = client.GetPIN()
 	return

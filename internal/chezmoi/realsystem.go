@@ -10,8 +10,8 @@ import (
 	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
-	"go.uber.org/multierr"
 
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -106,9 +106,9 @@ func (s *RealSystem) RunScript(
 	if err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, os.RemoveAll(f.Name()))
-	}()
+	defer chezmoierrors.CombineFunc(&err, func() error {
+		return os.RemoveAll(f.Name())
+	})
 
 	// Make the script private before writing it in case it contains any
 	// secrets.
@@ -118,7 +118,7 @@ func (s *RealSystem) RunScript(
 		}
 	}
 	_, err = f.Write(data)
-	err = multierr.Append(err, f.Close())
+	err = chezmoierrors.Combine(err, f.Close())
 	if err != nil {
 		return
 	}

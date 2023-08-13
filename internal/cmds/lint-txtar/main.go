@@ -1,32 +1,34 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/rogpeppe/go-internal/txtar"
-	"go.uber.org/multierr"
 	"golang.org/x/exp/slices"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
 var write = flag.Bool("w", false, "rewrite archives")
 
 func lintFilenames(archiveFilename string, archive *txtar.Archive) error {
-	var errs error
+	var errs []error
 	filenames := make(map[string]struct{})
 	for _, file := range archive.Files {
 		if file.Name == "" {
-			errs = multierr.Append(errs, fmt.Errorf("%s: empty filename", archiveFilename))
+			errs = append(errs, fmt.Errorf("%s: empty filename", archiveFilename))
 		} else {
 			if _, ok := filenames[file.Name]; ok {
-				errs = multierr.Append(errs, fmt.Errorf("%s: %s: duplicate filename", archiveFilename, file.Name))
+				errs = append(errs, fmt.Errorf("%s: %s: duplicate filename", archiveFilename, file.Name))
 			}
 			filenames[file.Name] = struct{}{}
 		}
 	}
-	return errs
+	return errors.Join(errs...)
 }
 
 func sortFilesFunc(file1, file2 txtar.File) int {
@@ -60,11 +62,11 @@ func tidyTxtar(archiveFilename string) error {
 func run() error {
 	flag.Parse()
 
-	var errs error
+	errs := make([]error, 0, flag.NArg())
 	for _, arg := range flag.Args() {
-		errs = multierr.Append(errs, tidyTxtar(arg))
+		errs = append(errs, tidyTxtar(arg))
 	}
-	return errs
+	return chezmoierrors.Combine(errs...)
 }
 
 func main() {
