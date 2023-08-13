@@ -110,7 +110,15 @@ archives:
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}'
 
 changelog:
-  use: github-native
+  groups:
+  - title: Features
+    regexp: '^feat'
+    order: 0
+  - title: Fixes
+    regexp: '^fix'
+    order: 1
+  - title: Other
+    order: 999
 
 checksum:
   extra_files:
