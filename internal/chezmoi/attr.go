@@ -106,10 +106,10 @@ func parseDirAttr(sourceName string) DirAttr {
 		sourceDirType = SourceDirTypeRemove
 		name = name[len(removePrefix):]
 	default:
-		name, external = CutPrefix(name, externalPrefix)
-		name, exact = CutPrefix(name, exactPrefix)
-		name, private = CutPrefix(name, privatePrefix)
-		name, readOnly = CutPrefix(name, readOnlyPrefix)
+		name, external = strings.CutPrefix(name, externalPrefix)
+		name, exact = strings.CutPrefix(name, exactPrefix)
+		name, private = strings.CutPrefix(name, privatePrefix)
+		name, readOnly = strings.CutPrefix(name, readOnlyPrefix)
 	}
 	switch {
 	case strings.HasPrefix(name, dotPrefix):
@@ -199,11 +199,11 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	case strings.HasPrefix(name, createPrefix):
 		sourceFileType = SourceFileTypeCreate
 		name = name[len(createPrefix):]
-		name, encrypted = CutPrefix(name, encryptedPrefix)
-		name, private = CutPrefix(name, privatePrefix)
-		name, readOnly = CutPrefix(name, readOnlyPrefix)
-		name, empty = CutPrefix(name, emptyPrefix)
-		name, executable = CutPrefix(name, executablePrefix)
+		name, encrypted = strings.CutPrefix(name, encryptedPrefix)
+		name, private = strings.CutPrefix(name, privatePrefix)
+		name, readOnly = strings.CutPrefix(name, readOnlyPrefix)
+		name, empty = strings.CutPrefix(name, emptyPrefix)
+		name, executable = strings.CutPrefix(name, executablePrefix)
 	case strings.HasPrefix(name, removePrefix):
 		sourceFileType = SourceFileTypeRemove
 		name = name[len(removePrefix):]
@@ -234,16 +234,16 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	case strings.HasPrefix(name, modifyPrefix):
 		sourceFileType = SourceFileTypeModify
 		name = name[len(modifyPrefix):]
-		name, encrypted = CutPrefix(name, encryptedPrefix)
-		name, private = CutPrefix(name, privatePrefix)
-		name, readOnly = CutPrefix(name, readOnlyPrefix)
-		name, executable = CutPrefix(name, executablePrefix)
+		name, encrypted = strings.CutPrefix(name, encryptedPrefix)
+		name, private = strings.CutPrefix(name, privatePrefix)
+		name, readOnly = strings.CutPrefix(name, readOnlyPrefix)
+		name, executable = strings.CutPrefix(name, executablePrefix)
 	default:
-		name, encrypted = CutPrefix(name, encryptedPrefix)
-		name, private = CutPrefix(name, privatePrefix)
-		name, readOnly = CutPrefix(name, readOnlyPrefix)
-		name, empty = CutPrefix(name, emptyPrefix)
-		name, executable = CutPrefix(name, executablePrefix)
+		name, encrypted = strings.CutPrefix(name, encryptedPrefix)
+		name, private = strings.CutPrefix(name, privatePrefix)
+		name, readOnly = strings.CutPrefix(name, readOnlyPrefix)
+		name, empty = strings.CutPrefix(name, emptyPrefix)
+		name, executable = strings.CutPrefix(name, executablePrefix)
 	}
 	switch {
 	case strings.HasPrefix(name, dotPrefix):
@@ -252,7 +252,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		name = name[len(literalPrefix):]
 	}
 	if encrypted {
-		name, _ = CutSuffix(name, encryptedSuffix)
+		name, _ = strings.CutSuffix(name, encryptedSuffix)
 	}
 	switch {
 	case strings.HasSuffix(name, literalSuffix):
@@ -260,7 +260,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	case strings.HasSuffix(name, TemplateSuffix):
 		name = name[:len(name)-len(TemplateSuffix)]
 		template = true
-		name, _ = CutSuffix(name, literalSuffix)
+		name, _ = strings.CutSuffix(name, literalSuffix)
 	}
 	return FileAttr{
 		TargetName: name,
