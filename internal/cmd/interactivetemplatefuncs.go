@@ -108,7 +108,11 @@ func (c *Config) promptBoolOnceInteractiveTemplateFunc(
 	return c.promptBoolInteractiveTemplateFunc(prompt, args...)
 }
 
-func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices []any, args ...string) string {
+func (c *Config) promptChoiceInteractiveTemplateFunc(
+	prompt string,
+	choices []any,
+	args ...string,
+) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -130,7 +134,13 @@ func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices []an
 	return value
 }
 
-func (c *Config) promptChoiceOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, choices []any, args ...string) string {
+func (c *Config) promptChoiceOnceInteractiveTemplateFunc(
+	m map[string]any,
+	path any,
+	prompt string,
+	choices []any,
+	args ...string,
+) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 4 or 5 arguments, got %d", len(args)+4)
 		panic(err)
