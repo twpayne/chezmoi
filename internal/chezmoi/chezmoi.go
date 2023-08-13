@@ -9,11 +9,9 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"fmt"
-	"io"
 	"io/fs"
 	"net"
 	"os"
-	"path/filepath"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -30,12 +28,6 @@ import (
 var (
 	// DefaultTemplateOptions are the default template options.
 	DefaultTemplateOptions = []string{"missingkey=error"}
-
-	// Break indicates that a walk should be stopped.
-	Break = io.EOF
-
-	// Skip indicates that entry should be skipped.
-	Skip = filepath.SkipDir
 
 	// Umask is the process's umask.
 	Umask = fs.FileMode(0)

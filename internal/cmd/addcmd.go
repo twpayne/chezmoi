@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/fs"
 
 	"github.com/spf13/cobra"
 
@@ -106,7 +107,7 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
 			c.Add.prompt = false
 			return nil
 		case choice == "no":
-			return chezmoi.Skip
+			return fs.SkipDir
 		case choice == "quit":
 			return chezmoi.ExitCodeError(0)
 		case choice == "yes":
@@ -161,7 +162,7 @@ func (c *Config) defaultReplaceFunc(
 			c.force = true
 			return nil
 		case choice == "no":
-			return chezmoi.Skip
+			return fs.SkipDir
 		case choice == "quit":
 			return chezmoi.ExitCodeError(0)
 		case choice == "yes":

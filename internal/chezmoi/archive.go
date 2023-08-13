@@ -200,7 +200,7 @@ HEADER:
 						switch err := processHeader(implicitDirHeader(dir+"/", header.ModTime), dir+"/"); {
 						case errors.Is(err, fs.SkipDir):
 							continue HEADER
-						case errors.Is(err, Break):
+						case errors.Is(err, fs.SkipAll):
 							return nil
 						case err != nil:
 							return err
@@ -211,7 +211,7 @@ HEADER:
 			switch err := processHeader(header, header.Name); {
 			case errors.Is(err, fs.SkipDir):
 				continue HEADER
-			case errors.Is(err, Break):
+			case errors.Is(err, fs.SkipAll):
 				return nil
 			case err != nil:
 				return err
@@ -281,7 +281,7 @@ FILE:
 					switch err := processHeader(fileInfo, dir+"/"); {
 					case errors.Is(err, fs.SkipDir):
 						continue FILE
-					case errors.Is(err, Break):
+					case errors.Is(err, fs.SkipAll):
 						return nil
 					case err != nil:
 						return err
@@ -306,7 +306,7 @@ FILE:
 		switch {
 		case errors.Is(err, fs.SkipDir):
 			skippedDirPrefixes = append(skippedDirPrefixes, zipFile.Name+"/")
-		case errors.Is(err, Break):
+		case errors.Is(err, fs.SkipAll):
 			return nil
 		case err != nil:
 			return err

@@ -30,7 +30,6 @@ import (
 	"github.com/mitchellh/copystructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
@@ -405,7 +404,7 @@ DEST_ABS_PATH:
 
 		if options.PreAddFunc != nil {
 			switch err := options.PreAddFunc(targetRelPath); {
-			case errors.Is(err, Skip):
+			case errors.Is(err, fs.SkipDir):
 				continue DEST_ABS_PATH
 			case err != nil:
 				return err
@@ -429,7 +428,7 @@ DEST_ABS_PATH:
 			if !oldSourceEntryRelPath.Empty() && oldSourceEntryRelPath != sourceEntryRelPath {
 				if options.ReplaceFunc != nil {
 					switch err := options.ReplaceFunc(targetRelPath, newSourceStateEntry, oldSourceStateEntry); {
-					case errors.Is(err, Skip):
+					case errors.Is(err, fs.SkipDir):
 						continue DEST_ABS_PATH
 					case err != nil:
 						return err
@@ -927,7 +926,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if err := s.addTemplateDataDir(sourceAbsPath, fileInfo); err != nil {
 				return err
 			}
-			return vfs.SkipDir
+			return fs.SkipDir
 		case isPrefixDotFormat(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
 				return nil
@@ -937,7 +936,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if err := s.addTemplatesDir(ctx, sourceAbsPath); err != nil {
 				return err
 			}
-			return vfs.SkipDir
+			return fs.SkipDir
 		case s.templateDataOnly:
 			return nil
 		case isPrefixDotFormat(fileInfo.Name(), externalName) || isPrefixDotFormatDotTmpl(fileInfo.Name(), externalName):
@@ -947,7 +946,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if err := s.addExternalDir(ctx, sourceAbsPath); err != nil {
 				return err
 			}
-			return vfs.SkipDir
+			return fs.SkipDir
 		case fileInfo.Name() == ignoreName || fileInfo.Name() == ignoreName+TemplateSuffix:
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == removeName || fileInfo.Name() == removeName+TemplateSuffix:
@@ -960,14 +959,14 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			for relPath, scriptSourceStateEntries := range scriptsDirSourceStateEntries {
 				addSourceStateEntries(relPath, scriptSourceStateEntries...)
 			}
-			return vfs.SkipDir
+			return fs.SkipDir
 		case fileInfo.Name() == VersionName:
 			return s.readVersionFile(sourceAbsPath)
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
 			fallthrough
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
-				return vfs.SkipDir
+				return fs.SkipDir
 			}
 			return nil
 		case fileInfo.IsDir():
@@ -976,7 +975,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				TargetRelPath(s.encryption.EncryptedSuffix()).
 				JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
-				return vfs.SkipDir
+				return fs.SkipDir
 			}
 			sourceStateDir := s.newSourceStateDir(sourceAbsPath, sourceRelPath, da)
 			addSourceStateEntries(targetRelPath, sourceStateDir)
@@ -1353,7 +1352,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 			return fmt.Errorf("%s: not allowed in %s directory", externalAbsPath, externalsDirName)
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
-				return vfs.SkipDir
+				return fs.SkipDir
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
@@ -1449,7 +1448,7 @@ func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.File
 			return fmt.Errorf("%s: not allowed in %s directory", dataAbsPath, dataName)
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
-				return vfs.SkipDir
+				return fs.SkipDir
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
@@ -1482,7 +1481,7 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			return fmt.Errorf("%s: not allowed in %s directory", templateAbsPath, TemplatesDirName)
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
-				return vfs.SkipDir
+				return fs.SkipDir
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
@@ -2481,7 +2480,7 @@ func (s *SourceState) readExternalArchiveFile(
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
 			}
-			return Break
+			return fs.SkipAll
 		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
 			fileAttr := FileAttr{
 				TargetName: fileInfo.Name(),
@@ -2500,7 +2499,7 @@ func (s *SourceState) readExternalArchiveFile(
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
 			}
-			return Break
+			return fs.SkipAll
 		default:
 			return fmt.Errorf("%s: unsupported mode %o", name, fileInfo.Mode()&fs.ModeType)
 		}
@@ -2694,7 +2693,7 @@ func (s *SourceState) readScriptsDir(
 			return fmt.Errorf("%s: not allowed in %s directory", sourceAbsPath, scriptsDirName)
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
-				return vfs.SkipDir
+				return fs.SkipDir
 			}
 			return nil
 		case fileInfo.IsDir():

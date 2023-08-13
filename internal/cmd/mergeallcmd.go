@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"io/fs"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -47,7 +49,7 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 			!targetEntryState.Equivalent(actualEntryState) {
 			targetRelPaths = append(targetRelPaths, targetRelPath)
 		}
-		return chezmoi.Skip
+		return fs.SkipDir
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:          cmd,

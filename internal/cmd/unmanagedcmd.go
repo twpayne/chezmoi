@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/exp/maps"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -81,13 +80,13 @@ func (c *Config) runUnmanagedCmd(
 		if fileInfo.IsDir() {
 			switch {
 			case !managed:
-				return vfs.SkipDir
+				return fs.SkipDir
 			case ignored:
-				return vfs.SkipDir
+				return fs.SkipDir
 			case sourceStateEntry != nil:
 				if external, ok := sourceStateEntry.Origin().(*chezmoi.External); ok {
 					if external.Type == chezmoi.ExternalTypeGitRepo {
-						return vfs.SkipDir
+						return fs.SkipDir
 					}
 				}
 			}
