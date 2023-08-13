@@ -1946,7 +1946,7 @@ func (s *SourceState) applyAll(
 ) error {
 	for _, targetRelPath := range s.TargetRelPaths() {
 		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDirAbsPath, targetRelPath, options); {
-		case errors.Is(err, Skip):
+		case errors.Is(err, fs.SkipDir):
 			continue
 		case err != nil:
 			return err

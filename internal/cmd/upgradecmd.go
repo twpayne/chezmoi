@@ -398,7 +398,7 @@ func (c *Config) replaceExecutable(
 			if err != nil {
 				return err
 			}
-			return chezmoi.Break
+			return fs.SkipAll
 		default:
 			return nil
 		}

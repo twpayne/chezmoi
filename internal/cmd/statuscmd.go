@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/fs"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -75,7 +76,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 		if x != ' ' || y != ' ' {
 			fmt.Fprintf(&builder, "%c%c %s\n", x, y, targetRelPath)
 		}
-		return chezmoi.Skip
+		return fs.SkipDir
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:          cmd,

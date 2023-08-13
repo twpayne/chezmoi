@@ -613,7 +613,7 @@ func (c *Config) applyArgs(
 		switch err := sourceState.Apply(
 			targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions,
 		); {
-		case errors.Is(err, chezmoi.Skip):
+		case errors.Is(err, fs.SkipDir):
 			continue
 		case err != nil && c.keepGoing:
 			c.errorf("%v\n", err)
@@ -954,7 +954,7 @@ func (c *Config) defaultPreApplyFunc(
 			case choice == "yes":
 				return nil
 			case choice == "no":
-				return chezmoi.Skip
+				return fs.SkipDir
 			case choice == "all":
 				c.interactive = false
 				return nil
@@ -1003,7 +1003,7 @@ func (c *Config) defaultPreApplyFunc(
 			c.force = true
 			return nil
 		case choice == "skip":
-			return chezmoi.Skip
+			return fs.SkipDir
 		case choice == "quit":
 			return chezmoi.ExitCodeError(0)
 		default:

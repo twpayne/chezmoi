@@ -67,7 +67,7 @@ func (n *sourceStateEntryTreeNode) ForEachNode(
 	targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error,
 ) error {
 	switch err := f(targetRelPath, n); {
-	case errors.Is(err, Skip):
+	case errors.Is(err, fs.SkipDir):
 		return nil
 	case err != nil:
 		return err
