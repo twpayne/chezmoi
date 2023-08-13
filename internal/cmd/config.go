@@ -40,7 +40,6 @@ import (
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
-	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"golang.org/x/term"
@@ -49,6 +48,7 @@ import (
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/internal/git"
 	"github.com/twpayne/chezmoi/v2/internal/shell"
@@ -486,16 +486,16 @@ func newConfig(options ...configOption) (*Config, error) {
 
 // Close closes resources associated with c.
 func (c *Config) Close() error {
-	var err error
+	errs := make([]error, 0, len(c.tempDirs))
 	for _, tempDirAbsPath := range c.tempDirs {
-		err2 := os.RemoveAll(tempDirAbsPath.String())
-		c.logger.Err(err2).
+		err := os.RemoveAll(tempDirAbsPath.String())
+		c.logger.Err(err).
 			Stringer("tempDir", tempDirAbsPath).
 			Msg("RemoveAll")
-		err = multierr.Append(err, err2)
+		errs = append(errs, err)
 	}
 	pprof.StopCPUProfile()
-	return err
+	return chezmoierrors.Combine(errs...)
 }
 
 // addTemplateFunc adds the template function with the given key and value
@@ -1516,7 +1516,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"Specify targets by source path",
 	)
 
-	if err := multierr.Combine(
+	if err := chezmoierrors.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
 		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
 		persistentFlags.MarkHidden("cpu-profile"),

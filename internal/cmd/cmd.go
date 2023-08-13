@@ -14,10 +14,10 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"go.etcd.io/bbolt"
-	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
 // GitHub owner and repo for chezmoi itself.
@@ -208,7 +208,7 @@ func extractHelp(
 // registerExcludeIncludeFlagCompletionFuncs registers the flag completion
 // functions for the include and exclude flags of cmd. It panics on any error.
 func registerExcludeIncludeFlagCompletionFuncs(cmd *cobra.Command) {
-	if err := multierr.Combine(
+	if err := chezmoierrors.Combine(
 		cmd.RegisterFlagCompletionFunc("exclude", chezmoi.EntryTypeSetFlagCompletionFunc),
 		cmd.RegisterFlagCompletionFunc("include", chezmoi.EntryTypeSetFlagCompletionFunc),
 	); err != nil {
@@ -281,7 +281,7 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 	); err != nil {
 		return err
 	}
-	defer multierr.AppendInvoke(&err, multierr.Close(config))
+	defer chezmoierrors.CombineFunc(&err, config.Close)
 	err = config.execute(args)
 	if errors.Is(err, bbolt.ErrTimeout) {
 		// Translate bbolt timeout errors into a friendlier message. As the

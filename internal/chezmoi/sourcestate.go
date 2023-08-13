@@ -30,10 +30,10 @@ import (
 	"github.com/mitchellh/copystructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -1223,6 +1223,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
 	sort.Sort(targetRelPaths)
+	errs := make([]error, 0, len(targetRelPaths))
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
 		if len(sourceStateEntries) == 1 {
@@ -1239,13 +1240,13 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			origins = append(origins, sourceStateEntry.Origin().OriginString())
 		}
 		sort.Strings(origins)
-		err = multierr.Append(err, &inconsistentStateError{
+		errs = append(errs, &inconsistentStateError{
 			targetRelPath: targetRelPath,
 			origins:       origins,
 		})
 	}
-	if err != nil {
-		return err
+	if len(errs) != 0 {
+		return errors.Join(errs...)
 	}
 
 	// Populate s.Entries with the unique source entry for each target.
@@ -1611,16 +1612,18 @@ func (s *SourceState) getExternalData(
 		return nil, err
 	}
 
+	var errs []error
+
 	if external.Checksum.Size != 0 {
 		if len(data) != external.Checksum.Size {
-			err = multierr.Append(err, fmt.Errorf("size mismatch: expected %d, got %d",
+			errs = append(errs, fmt.Errorf("size mismatch: expected %d, got %d",
 				external.Checksum.Size, len(data)))
 		}
 	}
 
 	if external.Checksum.MD5 != nil {
 		if gotMD5Sum := md5Sum(data); !bytes.Equal(gotMD5Sum, external.Checksum.MD5) {
-			err = multierr.Append(err, fmt.Errorf("MD5 mismatch: expected %s, got %s",
+			errs = append(errs, fmt.Errorf("MD5 mismatch: expected %s, got %s",
 				external.Checksum.MD5, hex.EncodeToString(gotMD5Sum)))
 		}
 	}
@@ -1630,41 +1633,41 @@ func (s *SourceState) getExternalData(
 			gotRIPEMD160Sum,
 			external.Checksum.RIPEMD160,
 		) {
-			err = multierr.Append(err, fmt.Errorf("RIPEMD-160 mismatch: expected %s, got %s",
+			errs = append(errs, fmt.Errorf("RIPEMD-160 mismatch: expected %s, got %s",
 				external.Checksum.RIPEMD160, hex.EncodeToString(gotRIPEMD160Sum)))
 		}
 	}
 
 	if external.Checksum.SHA1 != nil {
 		if gotSHA1Sum := sha1Sum(data); !bytes.Equal(gotSHA1Sum, external.Checksum.SHA1) {
-			err = multierr.Append(err, fmt.Errorf("SHA1 mismatch: expected %s, got %s",
+			errs = append(errs, fmt.Errorf("SHA1 mismatch: expected %s, got %s",
 				external.Checksum.SHA1, hex.EncodeToString(gotSHA1Sum)))
 		}
 	}
 
 	if external.Checksum.SHA256 != nil {
 		if gotSHA256Sum := SHA256Sum(data); !bytes.Equal(gotSHA256Sum, external.Checksum.SHA256) {
-			err = multierr.Append(err, fmt.Errorf("SHA256 mismatch: expected %s, got %s",
+			errs = append(errs, fmt.Errorf("SHA256 mismatch: expected %s, got %s",
 				external.Checksum.SHA256, hex.EncodeToString(gotSHA256Sum)))
 		}
 	}
 
 	if external.Checksum.SHA384 != nil {
 		if gotSHA384Sum := sha384Sum(data); !bytes.Equal(gotSHA384Sum, external.Checksum.SHA384) {
-			err = multierr.Append(err, fmt.Errorf("SHA384 mismatch: expected %s, got %s",
+			errs = append(errs, fmt.Errorf("SHA384 mismatch: expected %s, got %s",
 				external.Checksum.SHA384, hex.EncodeToString(gotSHA384Sum)))
 		}
 	}
 
 	if external.Checksum.SHA512 != nil {
 		if gotSHA512Sum := sha512Sum(data); !bytes.Equal(gotSHA512Sum, external.Checksum.SHA512) {
-			err = multierr.Append(err, fmt.Errorf("SHA512 mismatch: expected %s, got %s",
+			errs = append(errs, fmt.Errorf("SHA512 mismatch: expected %s, got %s",
 				external.Checksum.SHA512, hex.EncodeToString(gotSHA512Sum)))
 		}
 	}
 
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
+	if len(errs) != 0 {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, errors.Join(errs...))
 	}
 
 	if external.Encrypted {
@@ -1875,17 +1878,16 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			if tempFile, err = os.CreateTemp("", "*."+fileAttr.TargetName); err != nil {
 				return
 			}
-			defer func() {
-				err = multierr.Append(err, os.RemoveAll(tempFile.Name()))
-			}()
+			defer chezmoierrors.CombineFunc(&err, func() error {
+				return os.RemoveAll(tempFile.Name())
+			})
 			if runtime.GOOS != "windows" {
 				if err = tempFile.Chmod(0o700); err != nil {
 					return
 				}
 			}
 			_, err = tempFile.Write(modifierContents)
-			multierr.AppendInvoke(&err, multierr.Close(tempFile))
-			if err != nil {
+			if chezmoierrors.CombineFunc(&err, tempFile.Close); err != nil {
 				return
 			}
 

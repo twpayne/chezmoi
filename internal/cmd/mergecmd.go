@@ -8,9 +8,9 @@ import (
 	"text/template"
 
 	"github.com/spf13/cobra"
-	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
 type mergeCmdConfig struct {
@@ -82,9 +82,9 @@ func (c *Config) doMerge(
 			plaintextAbsPath = plaintextTempDirAbsPath.Join(
 				sourceStateEntry.SourceRelPath().RelPath(),
 			)
-			defer func() {
-				err = multierr.Append(err, os.RemoveAll(plaintextAbsPath.String()))
-			}()
+			defer chezmoierrors.CombineFunc(&err, func() error {
+				return os.RemoveAll(plaintextTempDirAbsPath.String())
+			})
 			var plaintext []byte
 			if plaintext, err = sourceStateFile.Contents(); err != nil {
 				return
