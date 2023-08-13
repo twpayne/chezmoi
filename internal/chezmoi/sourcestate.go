@@ -1398,7 +1398,7 @@ func (s *SourceState) addPatterns(
 			continue
 		}
 		include := patternSetInclude
-		text, ok := CutPrefix(text, "!")
+		text, ok := strings.CutPrefix(text, "!")
 		if ok {
 			include = patternSetExclude
 		}

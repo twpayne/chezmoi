@@ -296,7 +296,7 @@ func (s *EntryTypeSet) SetSlice(ss []string) error {
 		if element == "" {
 			continue
 		}
-		element, exclude := CutPrefix(element, "no")
+		element, exclude := strings.CutPrefix(element, "no")
 		bit, ok := entryTypeBits[element]
 		if !ok {
 			return fmt.Errorf("%s: unknown entry type", element)
