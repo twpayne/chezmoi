@@ -109,6 +109,7 @@ The default script interpreters are:
 
 | Extension | Command      | Arguments |
 | --------- | ------------ | --------- |
+| `.nu`     | `nu`         | *none*    |
 | `.pl`     | `perl`       | *none*    |
 | `.py`     | `python3`    | *none*    |
 | `.ps1`    | `powershell` | `-NoLogo` |
