@@ -4,10 +4,8 @@
 
     Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)
 
-| Date | Version | Lang | Title |
-| ---- | ------- | ---- | ----- |
+| Date | Version | Language | Title |
+| ---- | ------- | -------- | ----- |
 {{- range mustReverse .articles }}
-{{-   if not (index . "formats") }}
 | {{ .date }} | {{ .version }} | {{ index . "lang" | default "EN" }} | [{{ .title }}]({{ .url }}) |
-{{-   end }}
 {{- end }}

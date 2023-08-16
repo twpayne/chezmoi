@@ -17,7 +17,7 @@ env:
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
   FINDTYPOS_VERSION: 0.0.1
-  MKDOCS_VERSION: 1.5.1
+  MKDOCS_VERSION: 1.5.2
 jobs:
   changes:
     runs-on: ubuntu-20.04
@@ -273,7 +273,9 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
-      run: pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      run: |
+        pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
+        pip3 install -r assets/chezmoi.io/requirements.txt
     - name: build-website
       run: ( cd assets/chezmoi.io && mkdocs build )
       env:
@@ -422,7 +424,8 @@ jobs:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
       run: |
-        pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+        pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
+        pip3 install -r assets/chezmoi.io/requirements.txt
         ( cd assets/chezmoi.io && mkdocs build )
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}

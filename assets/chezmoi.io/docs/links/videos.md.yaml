@@ -1,1 +1,43 @@
-links.yaml
+videos:
+- date: '2019-11-20'
+  version: 1.7.2
+  title: 'FLOSS weekly episode 556: chezmoi'
+  url: https://twit.tv/shows/floss-weekly/episodes/556
+- date: '2020-03-12'
+  version: 1.7.16
+  title: Managing Dotfiles with ChezMoi
+  url: https://www.youtube.com/watch?v=HXx6ugA98Qo
+- date: '2020-07-06'
+  version: 1.8.3
+  title: 'Conf42: chezmoi: Manage your dotfiles across multiple machines, securely'
+  url: https://www.youtube.com/watch?v=JrCMCdvoMAw
+- date: '2021-02-06'
+  version: 1.8.10
+  title: 'chezmoi: manage your dotfiles across multiple, diverse machines, securely'
+  url: https://fosdem.org/2021/schedule/event/chezmoi/
+- date: '2021-09-06'
+  version: 2.2.0
+  title: 'chezmoi: Organize your dotfiles across multiple computers'
+  url: https://www.youtube.com/watch?v=L_Y3s0PS_Cg
+- date: '2021-11-27'
+  version: 2.8.0
+  lang: TH
+  title: 'Command ไร 2021-11-27 : ย้าย dotfiles ไป chezmoi'
+  url: https://www.youtube.com/watch?v=8ybNfCfnF2Y
+- date: '2021-12-08'
+  version: 2.9.3
+  title: How Go makes chezmoi possible
+  url: https://www.youtube.com/watch?v=5XiewS8ZbH8&t=1044s
+- date: '2022-04-27'
+  version: 2.15.1
+  title: Easily moving Linux installs
+  url: https://www.youtube.com/watch?v=x6063EuxfEA
+- date: '2022-09-13'
+  version: 2.22.1
+  title: Using chezmoi to automate dotfiles / config files (+ my bashrc)
+  url: https://www.youtube.com/watch?v=id5UKYuX4-A
+- date: '2022-12-15'
+  version: 2.27.3
+  lang: ES
+  title: Archivos de configuración fácil con chezmoi
+  url: https://www.youtube.com/watch?v=Xsh2DGSe6Lg

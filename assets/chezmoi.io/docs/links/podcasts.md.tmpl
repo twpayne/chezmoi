@@ -4,10 +4,8 @@
 
     Recommended podcast: [Managing Dot Files and an Introduction to Chezmoi](https://www.podfeet.com/blog/2021/07/ccatp-693/)
 
-| Date | Version | Lang | Title |
-| ---- | ------- | ---- | ----- |
-{{- range mustReverse .articles }}
-{{-   if mustHas "audio" (index . "formats") }}
+| Date | Version | Language | Title |
+| ---- | ------- | -------- | ----- |
+{{- range mustReverse .podcasts }}
 | {{ .date }} | {{ .version }} | {{ .lang | default "EN" }} | [{{ .title }}]({{ .url }}) |
-{{-   end }}
 {{- end }}
