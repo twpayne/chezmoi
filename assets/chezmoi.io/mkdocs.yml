@@ -329,22 +329,14 @@ markdown_extensions:
     custom_fences:
     - name: mermaid
       class: mermaid
-      format: !!python/name:mermaid2.fence_mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.tabbed:
     alternate_style: true
 
 plugins:
-- mermaid2:
-    arguments:
-        # test if its __palette_1 (dark) or __palette_2 (light)
-      theme: |
-        ^(JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
 - mkdocs-simple-hooks:
     hooks:
       on_pre_build: docs.hooks:on_pre_build
       on_files: docs.hooks:on_files
       on_post_build: docs.hooks:on_post_build
 - search
-
-extra_javascript:
-- extra/refresh_on_toggle_dark_light.js

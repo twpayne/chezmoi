@@ -28,12 +28,12 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    H->>W: chezmoi add &lt;file&gt;
-    W->>W: chezmoi edit &lt;file&gt;
+    H->>W: chezmoi add <file>
+    W->>W: chezmoi edit <file>
     W-->>H: chezmoi status
     W-->>H: chezmoi diff
     W->>H: chezmoi apply
-    W->>H: chezmoi edit --apply &lt;file&gt;
+    W->>H: chezmoi edit --apply <file>
     H-->>W: chezmoi cd
 ```
 
@@ -53,9 +53,9 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R->>W: chezmoi init &lt;github-username&gt;
-    R->>H: chezmoi init --apply &lt;github-username&gt;
-    R->>H: chezmoi update &lt;github-username&gt;
+    R->>W: chezmoi init <github-username>
+    R->>H: chezmoi init --apply <github-username>
+    R->>H: chezmoi update <github-username>
     W->>L: git commit
     L->>R: git push
 ```

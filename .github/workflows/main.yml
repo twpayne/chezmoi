@@ -273,7 +273,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
-      run: pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      run: pip3 install mkdocs==${{ env.MKDOCS_VERSION }} -r assets/chezmoi.io/requirements.txt
     - name: build-website
       run: ( cd assets/chezmoi.io && mkdocs build )
       env:
@@ -422,7 +422,7 @@ jobs:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
       run: |
-        pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+        pip3 install mkdocs==${{ env.MKDOCS_VERSION }} -r assets/chezmoi.io/requirements.txt
         ( cd assets/chezmoi.io && mkdocs build )
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}

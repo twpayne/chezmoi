@@ -103,8 +103,8 @@ sequenceDiagram
     participant L as local repo
     participant R as remote repo
     H->>L: chezmoi init
-    H->>W: chezmoi add &lt;file&gt;
-    W->>W: chezmoi edit &lt;file&gt;
+    H->>W: chezmoi add <file>
+    W->>W: chezmoi edit <file>
     W-->>H: chezmoi diff
     W->>H: chezmoi apply
     H-->>W: chezmoi cd
@@ -174,11 +174,11 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R->>W: chezmoi init &lt;repo&gt;
+    R->>W: chezmoi init <repo>
     W-->>H: chezmoi diff
     W->>H: chezmoi apply
-    W->>W: chezmoi edit &lt;file&gt;
-    W->>W: chezmoi merge &lt;file&gt;
+    W->>W: chezmoi edit <file>
+    W->>W: chezmoi merge <file>
     R->>H: chezmoi update
 ```
 
@@ -214,7 +214,7 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R->>H: chezmoi init --apply &lt;repo&gt;
+    R->>H: chezmoi init --apply <repo>
 ```
 
 ## Next steps
