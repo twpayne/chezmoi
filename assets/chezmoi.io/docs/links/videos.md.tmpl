@@ -4,10 +4,8 @@
 
     Recommended video: [chezmoi: manage your dotfiles across multiple, diverse machines, securely](https://fosdem.org/2021/schedule/event/chezmoi/)
 
-| Date | Version | Lang | Title |
-| ---- | ------- | ---- | ----- |
-{{- range mustReverse .articles }}
-{{-   if mustHas "video" (index . "formats") }}
+| Date | Version | Language | Title |
+| ---- | ------- | -------- | ----- |
+{{- range mustReverse .videos }}
 | {{ .date }} | {{ .version }} | {{ .lang | default "EN" }} | [{{ .title }}]({{ .url }}) |
-{{-   end }}
 {{- end }}

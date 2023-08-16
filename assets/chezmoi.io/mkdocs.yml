@@ -64,6 +64,7 @@ nav:
     - Azure Key Vault: user-guide/password-managers/azure-key-vault.md
     - Bitwarden: user-guide/password-managers/bitwarden.md
     - Dashlane: user-guide/password-managers/dashlane.md
+    - Doppler: user-guide/password-managers/doppler.md
     - ejson: user-guide/password-managers/ejson.md
     - gopass: user-guide/password-managers/gopass.md
     - Hashicorp Vault Secrets: user-guide/password-managers/hcp-vault-secrets.md
@@ -216,6 +217,8 @@ nav:
       - gitHubKeys: reference/templates/github-functions/gitHubKeys.md
       - gitHubLatestRelease: reference/templates/github-functions/gitHubLatestRelease.md
       - gitHubLatestTag: reference/templates/github-functions/gitHubLatestTag.md
+      - gitHubReleases: reference/templates/github-functions/gitHubReleases.md
+      - gitHubTags: reference/templates/github-functions/gitHubTags.md
     - Init functions:
       - reference/templates/init-functions/index.md
       - exit: reference/templates/init-functions/exit.md
@@ -333,17 +336,15 @@ markdown_extensions:
 - pymdownx.tabbed:
     alternate_style: true
 
+hooks:
+- docs/hooks.py
+
 plugins:
 - mermaid2:
     arguments:
         # test if its __palette_1 (dark) or __palette_2 (light)
       theme: |
         ^(JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
-- mkdocs-simple-hooks:
-    hooks:
-      on_pre_build: docs.hooks:on_pre_build
-      on_files: docs.hooks:on_files
-      on_post_build: docs.hooks:on_post_build
 - search
 
 extra_javascript:

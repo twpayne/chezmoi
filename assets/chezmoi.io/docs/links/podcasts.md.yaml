@@ -1,1 +1,43 @@
-links.yaml
+podcasts:
+- date: '2019-11-20'
+  version: 1.7.2
+  title: 'FLOSS weekly episode 556: chezmoi'
+  url: https://twit.tv/shows/floss-weekly/episodes/556
+- date: '2021-07-23'
+  version: 2.1.2
+  title: 'CCATP #693 – Bart Busschots on PBS 121 of X — Managing Dot Files and an Introduction to Chezmoi'
+  url: https://www.podfeet.com/blog/2021/07/ccatp-693/
+- date: '2021-08-08'
+  version: 2.1.2
+  title: 'CCATP #695 – Bart Busschots on PBS 122 – Managing Dot Files with Chezmoi'
+  url: https://www.podfeet.com/blog/2021/08/ccatp-695/
+- date: '2021-08-22'
+  version: 2.1.2
+  title: 'CCATP #696 – Bart Busschots on PBS 123 of X — Backing up and Syncing Dot Files with Chezmoi'
+  url: https://www.podfeet.com/blog/2021/08/ccatp-696/
+- date: '2021-09-04'
+  version: 2.1.2
+  title: 'CCATP #698 – Bart Busschots on PBS 124 of X – Chezmoi Templates'
+  url: https://www.podfeet.com/blog/2021/09/ccatp-698/
+- date: '2021-09-18'
+  version: 2.1.2
+  title: 'CCATP #699 – Bart Busschots on PBS 125 of X – Chezmoi on Multiple Computers'
+  url: https://www.podfeet.com/blog/2021/09/ccatp-699/
+- date: '2022-03-11'
+  version: 2.14.0
+  title: 'The Real Python Podcast: Episode 101: Tools for Setting Up Python on a New Machine'
+  url: https://realpython.com/podcasts/rpp/101/#t=3368
+- date: '2022-05-27'
+  version: 2.17.0
+  title: Fédérer une communauté technique autour d'un projet Open Source
+  url: https://www.podcastics.com/podcast/episode/federer-une-communaute-technique-autour-dun-projet-open-source-131694/
+- date: '2023-01-30'
+  version: 2.29.3
+  lang: ES
+  title: 459 - Soy un zoquete, otra vez hice un rm -rf
+  url: https://atareao.es/podcast/soy-un-zoquete-otra-vez-hice-un-rm-rf/
+- date: '2023-05-22'
+  version: 2.33.6
+  lang: ES
+  title: 491 - Tres herramientas que han revolucionado mi terminal Linux
+  url: https://atareao.es/podcast/tres-herramientas-que-han-revolucionado-mi-terminal-linux/
