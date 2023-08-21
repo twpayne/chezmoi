@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v54/github"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )

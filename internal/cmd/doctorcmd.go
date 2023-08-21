@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v54/github"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-xdg/v6"
 
