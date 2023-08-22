@@ -200,6 +200,32 @@ nfpms:
   - apk
   bindir: /usr/bin
 
+chocolateys:
+- owners: twpayne
+  authors: Tom Payne
+  project_url: https://chezmoi.io
+  url_template: "https://github.com/twpayne/chezmoi/releases/download/v{{ .Version }}/{{ .ArtifactName }}"
+  icon_url: https://github.com/twpayne/chezmoi/raw/master/assets/images/logo-144px.png
+  copyright: Copyright © Tom Payne, 2018-2023
+  license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
+  project_source_url: https://github.com/twpayne/chezmoi
+  docs_url: https://chezmoi.io
+  bug_tracker_url: https://github.com/twpayne/chezmoi/issues
+  tags: configuration dotfile dotfiles
+  summary: Manage your dotfiles across multiple diverse machines, securely.
+  description: |
+    ## What does chezmoi do?
+
+    chezmoi helps you manage your personal configuration files (dotfiles, like `~/.gitconfig`) across multiple machines.
+
+    chezmoi is helpful if you have spent time customizing the tools you use (e.g. shells, editors, and version control systems) and want to keep machines running different accounts (e.g. home and work) and/or different operating systems (e.g. Linux, macOS, and Windows) in sync, while still being able to easily cope with differences from machine to machine.
+
+    chezmoi scales from the trivial (e.g. copying a few dotfiles onto a Raspberry Pi, development container, or virtual machine) to complex long-lived multi-machine development environments (e.g. keeping any number of home and work, Linux, macOS, and Windows machines in sync). In all cases you only need to maintain a single source of truth (a single branch in git) and getting started only requires adding a single binary to your machine (which you can do with `curl`, `wget`, or `scp`).
+
+    chezmoi has strong support for security, allowing you to manage secrets (e.g. passwords, access tokens, and private keys) securely and seamlessly using a password manager and/or encrypt whole files with your favorite encryption tool.
+  release_notes: "https://github.com/twpayne/chezmoi/releases/tag/v{{ .Version }}"
+  api_key: '{{ .Env.CHOCOLATEY_API_KEY }}'
+
 release:
   extra_files:
   - glob: ./assets/cosign/cosign.pub
