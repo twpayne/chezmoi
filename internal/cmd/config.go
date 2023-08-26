@@ -127,6 +127,7 @@ type ConfigFile struct {
 	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
 	AzureKeyVault     azureKeyVaultConfig     `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
 	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
+	BitwardenSecrets  bitwardenSecretsConfig  `json:"bitwardenSecrets"  mapstructure:"bitwardenSecrets"  yaml:"bitwardenSecrets"`
 	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
 	Doppler           dopplerConfig           `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
 	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
@@ -392,6 +393,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
 		"bitwardenAttachmentByRef": c.bitwardenAttachmentByRefTemplateFunc,
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
+		"bitwardenSecrets":         c.bitwardenSecretsTemplateFunc,
 		"comment":                  c.commentTemplateFunc,
 		"dashlaneNote":             c.dashlaneNoteTemplateFunc,
 		"dashlanePassword":         c.dashlanePasswordTemplateFunc,
@@ -2593,6 +2595,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		// Password manager configurations.
 		Bitwarden: bitwardenConfig{
 			Command: "bw",
+		},
+		BitwardenSecrets: bitwardenSecretsConfig{
+			Command: "bws",
 		},
 		Dashlane: dashlaneConfig{
 			Command: "dcli",

@@ -251,6 +251,7 @@ nav:
       - bitwardenAttachment: reference/templates/bitwarden-functions/bitwardenAttachment.md
       - bitwardenAttachmentByRef: reference/templates/bitwarden-functions/bitwardenAttachmentByRef.md
       - bitwardenFields: reference/templates/bitwarden-functions/bitwardenFields.md
+      - bitwardenSecrets: reference/templates/bitwarden-functions/bitwardenSecrets.md
       - rbw: reference/templates/bitwarden-functions/rbw.md
       - rbwFields: reference/templates/bitwarden-functions/rbwFields.md
     - Dashlane functions:

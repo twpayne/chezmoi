@@ -306,6 +306,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
+			name:        "bitwarden-secrets-command",
+			binaryname:  c.BitwardenSecrets.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`Bitwarden\s+Secrets\s+CLI\s+(\d+\.\d+\.\d+)`),
+		},
+		&binaryCheck{
 			name:        "dashlane-command",
 			binaryname:  c.Dashlane.Command,
 			ifNotSet:    checkResultWarning,

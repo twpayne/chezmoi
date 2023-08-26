@@ -111,6 +111,10 @@ sections:
     command:
       default: '`bw`'
       description: Bitwarden CLI command
+  bitwardenSecrets:
+    command:
+      default: '`bws`'
+      description: Bitwarden Secrets CLI command
   cd:
     args:
       type: '[]string'
