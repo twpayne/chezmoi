@@ -329,3 +329,7 @@ articles:
   lang: RU
   title: chezmoi
   url: https://principal-engineering.ru/posts/chezmoi/
+- date: '2023-08-05'
+  version: 2.36.1
+  title: Dotfiles with chezmoi
+  url: https://www.steveyackey.com/post/dotfiles-with-chezmoi/
