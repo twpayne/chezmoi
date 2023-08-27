@@ -1403,6 +1403,9 @@ func (s *SourceState) addPatterns(
 			include = patternSetExclude
 		}
 		pattern := dir.JoinString(text).String()
+		if !strings.HasSuffix(pattern, "/**") {
+			pattern += "/**"
+		}
 		if err := patternSet.add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
 		}
