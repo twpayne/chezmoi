@@ -47,7 +47,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 		"a",
 		c.Add.autoTemplate,
 		"Generate the template when adding files as templates",
-	) //nolint:lll
+	)
 	flags.BoolVar(
 		&c.Add.create,
 		"create",
