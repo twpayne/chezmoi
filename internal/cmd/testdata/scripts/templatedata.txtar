@@ -27,6 +27,15 @@ stdout ok
 exec chezmoi execute-template '{{ template "template" . }}'
 stdout ok
 
+[!windows] chhome home4/user
+
+# test that .chezmoi.sourceFile is set
+[!windows] exec chezmoi cat $HOME${/}.file
+[!windows] cmpenv stdout golden/dot_file
+
+-- golden/dot_file --
+dot_file.tmpl
+$WORK/home4/user/.file
 -- home/user/.local/share/chezmoi/dot_file.tmpl --
 {{ .chezmoi.sourceFile }}
 -- home2/user/.local/share/chezmoi/.chezmoidata.toml --
@@ -51,3 +60,6 @@ message: ok
 {{ "invalid template"
 -- home3/user/.local/share/chezmoi/.chezmoitemplates/template --
 {{ .message }}
+-- home4/user/.local/share/chezmoi/dot_file.tmpl --
+{{ .chezmoi.sourceFile }}
+{{ .chezmoi.targetFile }}

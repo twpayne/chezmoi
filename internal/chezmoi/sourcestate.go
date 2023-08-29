@@ -744,6 +744,7 @@ func (s *SourceState) Encryption() Encryption {
 // ExecuteTemplateDataOptions are options to SourceState.ExecuteTemplateData.
 type ExecuteTemplateDataOptions struct {
 	Name            string
+	Destination     string
 	Data            []byte
 	TemplateOptions TemplateOptions
 }
@@ -769,6 +770,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 	templateData := s.TemplateData()
 	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 		chezmoiTemplateData["sourceFile"] = options.Name
+		chezmoiTemplateData["targetFile"] = options.Destination
 	}
 
 	return tmpl.Execute(templateData)
@@ -1726,8 +1728,9 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 				}
 				if fileAttr.Template {
 					contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-						Name: sourceRelPath.String(),
-						Data: contents,
+						Name:        sourceRelPath.String(),
+						Data:        contents,
+						Destination: destAbsPath.String(),
 					})
 					if err != nil {
 						return nil, err
@@ -1783,8 +1786,9 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name: sourceRelPath.String(),
-					Data: contents,
+					Name:        sourceRelPath.String(),
+					Data:        contents,
+					Destination: destAbsPath.String(),
 				})
 				if err != nil {
 					return nil, err
@@ -1829,8 +1833,9 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name: sourceRelPath.String(),
-					Data: modifierContents,
+					Name:        sourceRelPath.String(),
+					Data:        modifierContents,
+					Destination: destAbsPath.String(),
 				})
 				if err != nil {
 					return
@@ -1934,8 +1939,9 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name: sourceRelPath.String(),
-					Data: contents,
+					Name:        sourceRelPath.String(),
+					Data:        contents,
+					Destination: destAbsPath.String(),
 				})
 				if err != nil {
 					return nil, err
@@ -1968,8 +1974,9 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name: sourceRelPath.String(),
-					Data: linknameBytes,
+					Name:        sourceRelPath.String(),
+					Data:        linknameBytes,
+					Destination: destAbsPath.String(),
 				})
 				if err != nil {
 					return "", err
