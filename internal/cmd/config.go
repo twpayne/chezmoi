@@ -186,6 +186,7 @@ type Config struct {
 	keyring keyringData
 
 	// Command configurations, not settable in the config file.
+	age             ageCmdConfig
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
 	chattr          chattrCmdConfig
@@ -1544,6 +1545,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	rootCmd.SetHelpCommand(c.newHelpCmd())
 	for _, cmd := range []*cobra.Command{
 		c.newAddCmd(),
+		c.newAgeCmd(),
 		c.newApplyCmd(),
 		c.newArchiveCmd(),
 		c.newCatCmd(),
