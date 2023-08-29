@@ -44,7 +44,7 @@ $ cat > run_once_before_decrypt-private-key.sh.tmpl <<EOF
 #!/bin/sh
 
 if [ ! -f "${HOME}/key.txt" ]; then
-    age --decrypt --output "${HOME}/key.txt" "{{ .chezmoi.sourceDir }}/key.txt.age"
+    chezmoi age decrypt --output "${HOME}/key.txt" --passphrase "{{ .chezmoi.sourceDir }}/key.txt.age"
     chmod 600 "${HOME}/key.txt"
 fi
 EOF
