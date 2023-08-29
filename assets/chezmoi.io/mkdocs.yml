@@ -130,6 +130,7 @@ nav:
     - .chezmoiversion: reference/special-files-and-directories/chezmoiversion.md
   - Commands:
     - add: reference/commands/add.md
+    - age: reference/commands/age.md
     - apply: reference/commands/apply.md
     - archive: reference/commands/archive.md
     - cat: reference/commands/cat.md
