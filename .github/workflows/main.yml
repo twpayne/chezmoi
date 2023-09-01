@@ -24,7 +24,7 @@ jobs:
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - id: filter
       uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
       with:
@@ -48,7 +48,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 1
     - uses: github/codeql-action/init@0ba4244466797eb048eb91a6cd43d5c03ca8bd05
@@ -58,7 +58,7 @@ jobs:
   misspell:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: reviewdog/action-misspell@9257f108197b44e37995c98bea6ee4a5b9ffc3b0
       with:
         locale: US
@@ -67,7 +67,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -78,7 +78,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
       with:
         path: ~/.vagrant.d
@@ -104,7 +104,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -115,7 +115,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -145,7 +145,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: oldstable
@@ -170,7 +170,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
@@ -228,7 +228,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
@@ -268,7 +268,7 @@ jobs:
   test-website:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -285,7 +285,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -324,7 +324,7 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -354,7 +354,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -391,7 +391,7 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
@@ -416,7 +416,7 @@ jobs:
     - release
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
