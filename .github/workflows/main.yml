@@ -358,7 +358,7 @@ jobs:
     - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: golangci/golangci-lint-action@639cd343e1d3b897ff35927a75193d57cfcba299
+    - uses: golangci/golangci-lint-action@3a919529898de77ec3da873e3063ca4b10e7f5cc
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
