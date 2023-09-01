@@ -51,10 +51,10 @@ jobs:
     - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 1
-    - uses: github/codeql-action/init@0ba4244466797eb048eb91a6cd43d5c03ca8bd05
+    - uses: github/codeql-action/init@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8
       with:
         languages: go
-    - uses: github/codeql-action/analyze@0ba4244466797eb048eb91a6cd43d5c03ca8bd05
+    - uses: github/codeql-action/analyze@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8
   misspell:
     runs-on: ubuntu-22.04
     steps:
