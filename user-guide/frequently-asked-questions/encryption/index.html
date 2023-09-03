@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.0">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.7">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.0e669242.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.046329b4.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.85d0ee34.min.css">
@@ -2831,6 +2831,8 @@
       
         
       
+        
+      
     
     
       
@@ -2874,6 +2876,26 @@
   
   <span class="md-ellipsis">
     add
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/commands/age/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    age
   </span>
   
 
@@ -5511,6 +5533,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -5622,6 +5646,26 @@
   
   <span class="md-ellipsis">
     bitwardenFields
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/bitwarden-functions/bitwardenSecrets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    bitwardenSecrets
   </span>
   
 
@@ -7580,8 +7624,9 @@
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;<span class="w"> </span>run_once_before_decrypt-private-key.sh.tmpl<span class="w"> </span>&lt;&lt;EOF
 <span class="gp">#</span>!/bin/sh
 
-<span class="go">if [ ! -f &quot;${HOME}/key.txt&quot; ]; then</span>
-<span class="go">    age --decrypt --output &quot;${HOME}/key.txt&quot; &quot;{{ .chezmoi.sourceDir }}/key.txt.age&quot;</span>
+<span class="go">if [ ! -f &quot;${HOME}/.config/chezmoi/key.txt&quot; ]; then</span>
+<span class="go">    mkdir -p &quot;${HOME}/.config/chezmoi&quot;</span>
+<span class="go">    chezmoi age decrypt --output &quot;${HOME}/.config/chezmoi/key.txt&quot; --passphrase &quot;{{ .chezmoi.sourceDir }}/key.txt.age&quot;</span>
 <span class="go">    chmod 600 &quot;${HOME}/key.txt&quot;</span>
 <span class="go">fi</span>
 <span class="go">EOF</span>
@@ -7590,7 +7635,7 @@
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoi.toml.tmpl<span class="w"> </span>&lt;&lt;EOF
 <span class="go">encryption = &quot;age&quot;</span>
 <span class="go">[age]</span>
-<span class="go">    identity = &quot;~/key.txt&quot;</span>
+<span class="go">    identity = &quot;~/.config/chezmoi/key.txt&quot;</span>
 <span class="go">    recipient = &quot;age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl&quot;</span>
 <span class="go">EOF</span>
 </code></pre></div>
@@ -7620,7 +7665,7 @@ add</code>, for example:</p>
 </code></pre></div>
 <p>When you run <code>chezmoi init</code> on a new machine you will be prompted to enter your
 passphrase once to decrypt <code>key.txt.age</code>. Your decrypted private key will be
-stored in <code>~/key.txt</code>.</p>
+stored in <code>~/.config/chezmoi/key.txt</code>.</p>
 
 
 
@@ -7671,7 +7716,7 @@ stored in <code>~/key.txt</code>.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.78eede0e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

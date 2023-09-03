@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.0">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.7">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.0e669242.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.046329b4.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.85d0ee34.min.css">
@@ -1092,6 +1092,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Bitwarden
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1101,6 +1112,39 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bitwarden-cli" class="md-nav__link">
+    Bitwarden CLI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitwarden-secrets-cli" class="md-nav__link">
+    Bitwarden Secrets CLI
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2794,6 +2838,8 @@
       
         
       
+        
+      
     
     
       
@@ -2837,6 +2883,26 @@
   
   <span class="md-ellipsis">
     add
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/commands/age/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    age
   </span>
   
 
@@ -5474,6 +5540,8 @@
       
         
       
+        
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -5585,6 +5653,26 @@
   
   <span class="md-ellipsis">
     bitwardenFields
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/bitwarden-functions/bitwardenSecrets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    bitwardenSecrets
   </span>
   
 
@@ -7482,6 +7570,28 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bitwarden-cli" class="md-nav__link">
+    Bitwarden CLI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitwarden-secrets-cli" class="md-nav__link">
+    Bitwarden Secrets CLI
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -7500,8 +7610,11 @@
 
 <h1 id="bitwarden">Bitwarden</h1>
 <p>chezmoi includes support for <a href="https://bitwarden.com/">Bitwarden</a> using the
-<a href="https://bitwarden.com/help/cli">Bitwarden CLI</a> to expose data as a template
+<a href="https://bitwarden.com/help/cli">Bitwarden CLI</a> (<code>bw</code>), <a href="https://bitwarden.com/help/secrets-manager-cli/">Bitwarden
+Secrets CLI</a> (<code>bws</code>), and
+<a href="https://github.com/doy/rbw"><code>rbw</code></a> commands to expose data as a template
 function.</p>
+<h2 id="bitwarden-cli">Bitwarden CLI</h2>
 <p>Log in to Bitwarden using a normal method</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>bw<span class="w"> </span>login<span class="w"> </span><span class="nv">$BITWARDEN_EMAIL</span><span class="w"> </span><span class="c1"># or</span>
 <span class="gp">$ </span>bw<span class="w"> </span>login<span class="w"> </span>--apikey<span class="w"> </span><span class="c1"># or</span>
@@ -7542,6 +7655,18 @@ attachment named <code>id_rsa</code>, you can retrieve its value with:</p>
 </code></pre></div>
 <p>or</p>
 <div class="highlight"><pre><span></span><code>{{ bitwardenAttachmentByRef &quot;id_rsa&quot; &quot;item&quot; &quot;example.com&quot; }}
+</code></pre></div>
+<h2 id="bitwarden-secrets-cli">Bitwarden Secrets CLI</h2>
+<p>Generate an <a href="https://bitwarden.com/help/access-tokens/">access token</a> for a
+specific <a href="https://bitwarden.com/help/service-accounts/">service account</a>.</p>
+<p>Either set the <code>BWS_ACCESS_TOKEN</code> environment variable or store the access token
+in a template variable, e.g.</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[data]</span>
+<span class="w">    </span><span class="n">accessToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==&quot;</span>
+</code></pre></div>
+<p>You can then retrive secrets using the <code>bitwardenSecrets</code> template function, for
+example:</p>
+<div class="highlight"><pre><span></span><code>{{ (bitwardenSecrets &quot;be8e0ad8-d545-4017-a55a-b02f014d4158&quot; .accessToken).value }}
 </code></pre></div>
 
 
@@ -7593,7 +7718,7 @@ attachment named <code>id_rsa</code>, you can retrieve its value with:</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.78eede0e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.dff1b7c8.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
