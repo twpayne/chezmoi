@@ -1431,6 +1431,9 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	}
 	s.Lock()
 	RecursiveMerge(s.userTemplateData, templateData)
+	// Clear the cached template data, as the change to the user template data
+	// means that the cached value is now invalid.
+	s.templateData = nil
 	s.Unlock()
 	return nil
 }
