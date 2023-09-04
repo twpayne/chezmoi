@@ -114,6 +114,7 @@ type SourceState struct {
 	defaultTemplateDataFunc func() map[string]any
 	templateDataOnly        bool
 	readTemplateData        bool
+	defaultTemplateData     map[string]any
 	userTemplateData        map[string]any
 	priorityTemplateData    map[string]any
 	scriptEnv               []string
@@ -1289,9 +1290,10 @@ func (s *SourceState) TemplateData() map[string]any {
 	if s.templateData == nil {
 		s.templateData = make(map[string]any)
 		if s.defaultTemplateDataFunc != nil {
-			RecursiveMerge(s.templateData, s.defaultTemplateDataFunc())
+			s.defaultTemplateData = s.defaultTemplateDataFunc()
 			s.defaultTemplateDataFunc = nil
 		}
+		RecursiveMerge(s.templateData, s.defaultTemplateData)
 		RecursiveMerge(s.templateData, s.userTemplateData)
 		RecursiveMerge(s.templateData, s.priorityTemplateData)
 	}
