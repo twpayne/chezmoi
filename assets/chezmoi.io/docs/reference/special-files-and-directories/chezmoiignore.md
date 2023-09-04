@@ -27,9 +27,8 @@ extension. This allows different files to be ignored on different machines.
             # but not in subdirectories of subdirectories;
             # so a/b/c.txt would *not* be ignored
 
-    backups/   # ignore backups folder in chezmoi directory and all its contents
-    backups/** # ignore all contents of backups folder in chezmoi directory
-               # but not backups folder itself
+    backups/   # ignore the backups folder, but not its contents
+    backups/** # ignore the contents of backups folder but not the folder itself
 
     {{- if ne .email "firstname.lastname@company.com" }}
     # Ignore .company-directory unless configured with a company email
