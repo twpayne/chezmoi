@@ -1,7 +1,8 @@
 symlink archive/symlink1 -> file1
 symlink archive/symlink2 -> file2
 mkdir www
-exec tar czf www/archive.tar.gz archive
+[!darwin] exec tar czf www/archive.tar.gz archive
+[darwin] exec tar czf www/archive.tar.gz --no-mac-metadata archive
 
 httpd www
 

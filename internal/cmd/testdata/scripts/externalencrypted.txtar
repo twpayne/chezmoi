@@ -4,7 +4,8 @@
 mkgpgconfig
 
 # use chezmoi's encryption to encrypt a file and an archive
-exec tar czf $HOME/archive.tar.gz archive
+[!darwin] exec tar czf $HOME/archive.tar.gz archive
+[darwin] exec tar czf $HOME/archive.tar.gz --no-mac-metadata archive
 exec chezmoi add --encrypt $HOME${/}.file $HOME${/}archive.tar.gz
 mkdir www
 cp $CHEZMOISOURCEDIR/encrypted_dot_file.asc www/.file.asc

@@ -1,6 +1,7 @@
 mkhomedir
 symlink archive/.dir/.symlink -> .file
-exec tar czf archive.tar.gz archive
+[!darwin] exec tar czf archive.tar.gz archive
+[darwin] exec tar czf archive.tar.gz --no-mac-metadata archive
 
 # test that chezmoi import imports an archive
 exec chezmoi import --strip-components=1 archive.tar.gz

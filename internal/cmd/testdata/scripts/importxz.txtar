@@ -1,6 +1,7 @@
 [(openbsd||windows)] skip 'tar does not support XZ compression'
 [!exec:xz] skip 'xz not found in $PATH'
-exec tar cJf archive.tar.xz archive
+[!darwin] exec tar cJf archive.tar.xz archive
+[darwin] exec tar cJf archive.tar.xz --no-mac-metadata archive
 
 # test that chezmoi import imports a tar.xz archive
 exec chezmoi import --destination=$HOME${/}.dir --strip-components=1 archive.tar.xz
