@@ -26,7 +26,6 @@ $ go build
     package github.com/twpayne/chezmoi/v2: build constraints exclude all Go files in /home/twp/src/github.com/twpayne/chezmoi
     ```
 
-
 Run all tests:
 
 ```console
@@ -49,3 +48,23 @@ Run a set of smoketests, including cross-compilation, tests, and linting:
 ```console
 $ make smoketest
 ```
+
+!!! hint
+
+    If you use `fish` as your primary shell, you may get warnings from Fish
+    during tests:
+
+    ```
+    error: can not save history
+    warning-path: Unable to locate data directory derived from $HOME: '/home/user/.local/share/fish'.
+    warning-path: The error was 'Operation not supported'.
+    warning-path: Please set $HOME to a directory where you have write access.
+    ```
+
+    These can be avoided with by running tests with `SHELL=bash` or `SHELL=zsh`:
+
+    ```console
+    $ SHELL=bash make test
+    $ SHELL=zsh make smoketest
+    $ SHELL=bash go test ./...
+    ```
