@@ -102,9 +102,11 @@ func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	ciphertextReader := bytes.NewReader(ciphertext)
-	armoredCiphertextReader := armor.NewReader(ciphertextReader)
-	plaintextReader, err := age.Decrypt(armoredCiphertextReader, identities...)
+	var ciphertextReader io.Reader = bytes.NewReader(ciphertext)
+	if bytes.HasPrefix(ciphertext, []byte(armor.Header)) {
+		ciphertextReader = armor.NewReader(ciphertextReader)
+	}
+	plaintextReader, err := age.Decrypt(ciphertextReader, identities...)
 	if err != nil {
 		return nil, err
 	}

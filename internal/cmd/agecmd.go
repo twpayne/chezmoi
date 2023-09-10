@@ -68,14 +68,16 @@ func (c *Config) runAgeDecryptCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("only passphrase encryption is supported")
 	}
 	decrypt := func(ciphertext []byte) ([]byte, error) {
-		ciphertextReader := bytes.NewReader(ciphertext)
-		armoredCiphertextReader := armor.NewReader(ciphertextReader)
+		var ciphertextReader io.Reader = bytes.NewReader(ciphertext)
+		if bytes.HasPrefix(ciphertext, []byte(armor.Header)) {
+			ciphertextReader = armor.NewReader(ciphertextReader)
+		}
 		identity := &LazyScryptIdentity{
 			Passphrase: func() (string, error) {
 				return c.readPassword("Enter passphrase: ")
 			},
 		}
-		plaintextReader, err := age.Decrypt(armoredCiphertextReader, identity)
+		plaintextReader, err := age.Decrypt(ciphertextReader, identity)
 		if err != nil {
 			return nil, err
 		}

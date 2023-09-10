@@ -3,7 +3,7 @@ stdin $HOME/passphrases
 exec chezmoi age encrypt --output $HOME${/}secret.txt.age --passphrase --no-tty $HOME${/}secret.txt
 grep '-----BEGIN AGE ENCRYPTED FILE----' $HOME/secret.txt.age
 
-# test that chezmoi decrypt decrypts a file with a passphrase
+# test that chezmoi age decrypt decrypts a file with a passphrase
 stdin $HOME/passphrase
 exec chezmoi age decrypt --output $HOME${/}secret.txt.decrypted --passphrase --no-tty $HOME${/}secret.txt.age
 cmp $HOME/secret.txt.decrypted $HOME/secret.txt
@@ -13,7 +13,5 @@ passphrase
 -- home/user/passphrases --
 passphrase
 passphrase
--- home/user/plaintext.txt --
-plaintext
 -- home/user/secret.txt --
 secret
