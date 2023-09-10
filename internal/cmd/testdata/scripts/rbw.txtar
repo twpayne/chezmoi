@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/rbw
+[unix] chmod 755 bin/rbw
 [windows] unix2dos bin/rbw.cmd
 
 # test rbw template function

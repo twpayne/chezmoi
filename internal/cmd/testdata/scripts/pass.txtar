@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/pass
+[unix] chmod 755 bin/pass
 [windows] unix2dos bin/pass.cmd
 [windows] unix2dos golden/pass-raw
 

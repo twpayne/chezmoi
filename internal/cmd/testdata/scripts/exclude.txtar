@@ -2,17 +2,17 @@
 
 # test chezmoi diff --exclude
 exec chezmoi diff --exclude=scripts
-[!windows] cmp stdout golden/diff-no-scripts.diff
+[unix] cmp stdout golden/diff-no-scripts.diff
 [windows] cmp stdout golden/diff-no-scripts-windows.diff
 
 # test that chezmoi diff respects the diff.exclude configuration variable
 exec chezmoi diff
-[!windows] cmp stdout golden/diff.diff
+[unix] cmp stdout golden/diff.diff
 [windows] cmp stdout golden/diff-windows.diff
 mkdir $CHEZMOICONFIGDIR
 cp golden/chezmoi.toml $CHEZMOICONFIGDIR
 exec chezmoi diff
-[!windows] cmp stdout golden/diff-no-scripts.diff
+[unix] cmp stdout golden/diff-no-scripts.diff
 [windows] cmp stdout golden/diff-no-scripts-windows.diff
 
 chhome home2/user

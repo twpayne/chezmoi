@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/keeper
+[unix] chmod 755 bin/keeper
 [windows] unix2dos bin/keeper.cmd
 
 # test keeper template function

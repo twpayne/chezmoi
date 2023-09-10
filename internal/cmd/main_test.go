@@ -607,6 +607,9 @@ func goosCondition(cond string) (result, valid bool) {
 	// If any of the terms are neither known GOOSes nor GOARCHes then reject the
 	// condition as invalid.
 	for _, term := range terms {
+		if term == "unix" {
+			continue
+		}
 		if _, ok := imports.KnownOS[term]; !ok {
 			if _, ok := imports.KnownArch[term]; !ok {
 				valid = false
@@ -621,7 +624,11 @@ func goosCondition(cond string) (result, valid bool) {
 	// If any of the terms match either runtime.GOOS or runtime.GOARCH then
 	// the condition is true.
 	for _, term := range terms {
-		if runtime.GOOS == term || runtime.GOARCH == term {
+		switch {
+		case term == runtime.GOOS || term == "unix" && imports.UnixOS[runtime.GOOS]:
+			result = true
+			return
+		case term == runtime.GOARCH:
 			result = true
 			return
 		}

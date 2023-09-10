@@ -1,4 +1,4 @@
-[!windows] skip 'Windows only'
+[unix] skip 'Windows only'
 
 # test chezmoi cd with command with args
 exec chezmoi cd

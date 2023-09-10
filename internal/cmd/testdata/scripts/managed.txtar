@@ -61,8 +61,8 @@ exec chezmoi managed $HOME${/}.dir $HOME${/}.non-exist
 cmp stdout golden/managed-with-absent-args
 
 # test chezmoi managed --path-style=absolute
-[!windows] exec chezmoi managed --path-style=absolute
-[!windows] cmpenv stdout golden/managed-absolute
+[unix] exec chezmoi managed --path-style=absolute
+[unix] cmpenv stdout golden/managed-absolute
 
 # test chezmoi managed --path-style=source-absolute
 exec chezmoi managed --path-style=source-absolute

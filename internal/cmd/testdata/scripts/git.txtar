@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/git
+[unix] chmod 755 bin/git
 [windows] unix2dos bin/git.cmd
 
 exec chezmoi git hello

@@ -12,8 +12,8 @@ stdout execute-template
 exec chezmoi execute-template '{{ .chezmoi.executable }}'
 stdout [\\/]chezmoi(.exe)?$
 
-[!windows] exec chezmoi execute-template '{{ .chezmoi.homeDir }}'
-[!windows] stdout ${HOME@R}
+[unix] exec chezmoi execute-template '{{ .chezmoi.homeDir }}'
+[unix] stdout ${HOME@R}
 
 exec chezmoi execute-template '{{ .chezmoi.os }}'
 [darwin] stdout darwin

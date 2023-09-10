@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/keepass-test
+[unix] chmod 755 bin/keepass-test
 [windows] unix2dos bin/keepass-test.cmd
 
 # test keepassxcAttachment template function

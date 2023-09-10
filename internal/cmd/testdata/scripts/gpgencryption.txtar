@@ -57,7 +57,7 @@ exec chezmoi edit --apply $HOME${/}.dir${/}.encrypted
 grep '# edited' $HOME/.dir/.encrypted
 
 # test that chezmoi edit strips the encrypted suffix
-[!windows] env EDITOR=echo
+[unix] env EDITOR=echo
 [windows] env EDITOR=printargs
 exec chezmoi edit $HOME${/}.dir${/}.encrypted
 stdout '\.dir/\.encrypted\r?$'

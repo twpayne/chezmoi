@@ -11,35 +11,35 @@ exec chezmoi diff
 # test that chezmoi diff generates a diff when a file is added to the source state
 cp golden/dot_newfile $CHEZMOISOURCEDIR/dot_newfile
 exec chezmoi diff
-[!windows] cmp stdout golden/add-newfile-diff-unix.diff
+[unix] cmp stdout golden/add-newfile-diff-unix.diff
 [windows] cmp stdout golden/add-newfile-diff-windows.diff
 rm $CHEZMOISOURCEDIR/dot_newfile
 
 # test that chezmoi diff generates a diff when a file is edited
 edit $HOME/.file
 exec chezmoi diff
-[!windows] cmp stdout golden/modify-file-diff-unix.diff
+[unix] cmp stdout golden/modify-file-diff-unix.diff
 [windows] cmp stdout golden/modify-file-diff-windows.diff
 exec chezmoi apply --force $HOME${/}.file
 
 # test chezmoi diff --reverse
 edit $HOME/.file
 exec chezmoi diff --reverse
-[!windows] cmp stdout golden/modify-file-diff-reverse-unix.diff
+[unix] cmp stdout golden/modify-file-diff-reverse-unix.diff
 [windows] cmp stdout golden/modify-file-diff-reverse-windows.diff
 exec chezmoi apply --force $HOME${/}.file
 
 # test that chezmoi diff generates a diff when a file is removed from the destination directory
 rm $HOME/.file
 exec chezmoi diff
-[!windows] cmp stdout golden/restore-file-diff-unix.diff
+[unix] cmp stdout golden/restore-file-diff-unix.diff
 [windows] cmp stdout golden/restore-file-diff-windows.diff
 exec chezmoi apply --force $HOME${/}.file
 
 # test that chezmoi diff generates a diff when a directory is removed from the destination directory
 rm $HOME/.dir
 exec chezmoi diff --recursive=false $HOME${/}.dir
-[!windows] cmp stdout golden/restore-dir-diff-unix.diff
+[unix] cmp stdout golden/restore-dir-diff-unix.diff
 [windows] cmp stdout golden/restore-dir-diff-windows.diff
 exec chezmoi apply --force $HOME${/}.dir
 
@@ -47,7 +47,7 @@ exec chezmoi apply --force $HOME${/}.dir
 rm $HOME/.symlink
 cp golden/.file $HOME/.symlink
 exec chezmoi diff
-[!windows] cmp stdout golden/symlink-file-diff-unix.diff
+[unix] cmp stdout golden/symlink-file-diff-unix.diff
 # [windows] cmp stdout golden/symlink-file-diff-windows # FIXME
 exec chezmoi apply --force $HOME${/}.symlink
 

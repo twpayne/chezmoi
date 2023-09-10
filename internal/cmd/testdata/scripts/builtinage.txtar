@@ -4,7 +4,7 @@ mkageconfig
 
 # disable age command
 appendline $CHEZMOICONFIGDIR/chezmoi.toml '    command = "false"'
-[!windows] chmod 755 golden/age
+[unix] chmod 755 golden/age
 cp golden/age bin
 
 prependline $CHEZMOICONFIGDIR/chezmoi.toml 'useBuiltinAge = true'
