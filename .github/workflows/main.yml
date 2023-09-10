@@ -11,20 +11,20 @@ on:
 env:
   ACTIONLINT_VERSION: 1.6.25
   AGE_VERSION: 1.1.1
-  GO_VERSION: 1.20.7
+  GO_VERSION: 1.21.1
   GOFUMPT_VERSION: 0.4.0
-  GOLANGCI_LINT_VERSION: 1.53.3
+  GOLANGCI_LINT_VERSION: 1.54.2
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
   FINDTYPOS_VERSION: 0.0.1
-  MKDOCS_VERSION: 1.5.1
+  MKDOCS_VERSION: 1.5.2
 jobs:
   changes:
     runs-on: ubuntu-20.04
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - id: filter
       uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
       with:
@@ -48,17 +48,17 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 1
-    - uses: github/codeql-action/init@0ba4244466797eb048eb91a6cd43d5c03ca8bd05
+    - uses: github/codeql-action/init@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8
       with:
         languages: go
-    - uses: github/codeql-action/analyze@0ba4244466797eb048eb91a6cd43d5c03ca8bd05
+    - uses: github/codeql-action/analyze@00e563ead9f72a8461b24876bee2d0c2e8bd2ee8
   misspell:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: reviewdog/action-misspell@9257f108197b44e37995c98bea6ee4a5b9ffc3b0
       with:
         locale: US
@@ -67,7 +67,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -78,7 +78,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
       with:
         path: ~/.vagrant.d
@@ -104,7 +104,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -115,8 +115,8 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: build
@@ -145,8 +145,8 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: oldstable
     - name: build
@@ -170,10 +170,10 @@ jobs:
     needs: changes
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-release-dependencies
@@ -190,7 +190,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@336e29918d653399e599bfca99fadc1d7ffbc9f7
+      uses: goreleaser/goreleaser-action@3fa32b8bb5620a2c1afe798654bbad59f9da4906
       with:
         version: latest
         args: release --skip-publish --skip-sign --snapshot --timeout=1h
@@ -228,10 +228,10 @@ jobs:
     needs: changes
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
@@ -252,13 +252,13 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o022" -race ./...
+        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o022" -race -timeout=1h ./...
     - name: test-umask-002
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o002" -race ./...
+        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o002" -race -timeout=1h ./...
     - name: test-install.sh
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
@@ -268,12 +268,14 @@ jobs:
   test-website:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
-      run: pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      run: |
+        pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
+        pip3 install -r assets/chezmoi.io/requirements.txt
     - name: build-website
       run: ( cd assets/chezmoi.io && mkdocs build )
       env:
@@ -281,10 +283,10 @@ jobs:
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
@@ -322,8 +324,8 @@ jobs:
   check:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: generate
@@ -352,11 +354,11 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: golangci/golangci-lint-action@639cd343e1d3b897ff35927a75193d57cfcba299
+    - uses: golangci/golangci-lint-action@3a919529898de77ec3da873e3063ca4b10e7f5cc
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
@@ -389,17 +391,17 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@336e29918d653399e599bfca99fadc1d7ffbc9f7
+    - uses: goreleaser/goreleaser-action@3fa32b8bb5620a2c1afe798654bbad59f9da4906
       with:
         version: latest
         args: release --timeout=1h
@@ -414,15 +416,16 @@ jobs:
     - release
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753
+    - uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
       run: |
-        pip3 install mkdocs==${{ env.MKDOCS_VERSION }} mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+        pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
+        pip3 install -r assets/chezmoi.io/requirements.txt
         ( cd assets/chezmoi.io && mkdocs build )
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}

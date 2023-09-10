@@ -11,3 +11,14 @@ stdout ^v2\.
 # test gitHubLatestTag template function
 exec chezmoi execute-template '{{ (gitHubLatestTag "twpayne/chezmoi").Name }}'
 stdout ^v2\.
+
+# test gitHubTags template functions
+exec chezmoi execute-template '{{ (index (gitHubTags "twpayne/chezmoi") 0).Name }}'
+stdout ^v2\.
+
+# test gitHubReleases template functions
+exec chezmoi execute-template '{{ (index (gitHubReleases "twpayne/chezmoi") 0).TagName }}'
+stdout ^v2\.
+
+# gitHubReleases
+# gitHubTags

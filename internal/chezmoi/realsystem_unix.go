@@ -11,7 +11,8 @@ import (
 
 	"github.com/google/renameio/v2"
 	vfs "github.com/twpayne/go-vfs/v4"
-	"go.uber.org/multierr"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.
@@ -93,9 +94,7 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 		if t, err = renameio.TempFile(tempDir, filename.String()); err != nil {
 			return
 		}
-		defer func() {
-			err = multierr.Append(err, t.Cleanup())
-		}()
+		defer chezmoierrors.CombineFunc(&err, t.Cleanup)
 		if err = t.Chmod(perm); err != nil {
 			return
 		}
@@ -132,9 +131,7 @@ func writeFile(fileSystem vfs.FS, filename AbsPath, data []byte, perm fs.FileMod
 	if f, err = fileSystem.OpenFile(filename.String(), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm); err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, f.Close())
-	}()
+	defer chezmoierrors.CombineFunc(&err, f.Close)
 
 	// Set permissions after truncation but before writing any data, in case the
 	// file contained private data before, but before writing the new contents,

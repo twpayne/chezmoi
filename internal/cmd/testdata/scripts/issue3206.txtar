@@ -1,0 +1,96 @@
+# test that chezmoi apply sees .chezmoidata files in a subdirectory when a .chezmoiignore file is present
+exec chezmoi apply --debug
+cmp $HOME/.config/expanso/match/greek.yml golden/greek.yml
+
+-- golden/greek.yml --
+# `propagate_case` allows e.g.:
+# alpha^ => α
+# ALPHA^ => Α [or Alpha^ since it's just 1 char]
+
+matches:
+  - trigger: "alpha^"
+    replace: "α"
+    propagate_case: true
+  - trigger: "beta^"
+    replace: "β"
+    propagate_case: true
+  - trigger: "chi^"
+    replace: "χ"
+    propagate_case: true
+  - trigger: "delta^"
+    replace: "δ"
+    propagate_case: true
+  - trigger: "epsilon^"
+    replace: "ε"
+    propagate_case: true
+  - trigger: "eta^"
+    replace: "η"
+    propagate_case: true
+  - trigger: "gamma^"
+    replace: "γ"
+    propagate_case: true
+  - trigger: "iota^"
+    replace: "ι"
+    propagate_case: true
+  - trigger: "kappa^"
+    replace: "κ"
+    propagate_case: true
+  - trigger: "lambda^"
+    replace: "λ"
+    propagate_case: true
+  - trigger: "mu^"
+    replace: "μ"
+    propagate_case: true
+  - trigger: "nu^"
+    replace: "ν"
+    propagate_case: true
+  - trigger: "omega^"
+    replace: "ω"
+    propagate_case: true
+  - trigger: "omicron^"
+    replace: "ο"
+    propagate_case: true
+  - trigger: "phi^"
+    replace: "φ"
+    propagate_case: true
+  - trigger: "pi^"
+    replace: "π"
+    propagate_case: true
+  - trigger: "psi^"
+    replace: "ψ"
+    propagate_case: true
+  - trigger: "rho^"
+    replace: "ρ"
+    propagate_case: true
+  - trigger: "sigma^"
+    replace: "σ"
+    propagate_case: true
+  - trigger: "tau^"
+    replace: "τ"
+    propagate_case: true
+  - trigger: "theta^"
+    replace: "θ"
+    propagate_case: true
+  - trigger: "upsilon^"
+    replace: "υ"
+    propagate_case: true
+  - trigger: "xi^"
+    replace: "ξ"
+    propagate_case: true
+  - trigger: "zeta^"
+    replace: "ζ"
+    propagate_case: true
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+-- home/user/.local/share/chezmoi/dot_config/private_expanso/match/.chezmoidata.yaml --
+greek_alphabet: {alpha: α, beta: β, chi: χ, delta: δ, epsilon: ε, eta: η, gamma: γ, iota: ι, kappa: κ, lambda: λ, mu: μ, nu: ν, omega: ω, omicron: ο, phi: φ, pi: π, psi: ψ, rho: ρ, sigma: σ, tau: τ, theta: θ, upsilon: υ, xi: ξ, zeta: ζ}
+-- home/user/.local/share/chezmoi/dot_config/private_expanso/match/greek.yml.tmpl --
+# `propagate_case` allows e.g.:
+# alpha^ => α
+# ALPHA^ => Α [or Alpha^ since it's just 1 char]
+
+matches:
+{{- range $trigger, $replace := .greek_alphabet }}
+  - trigger: "{{ $trigger }}^"
+    replace: "{{ $replace }}"
+    propagate_case: true
+{{- end }}

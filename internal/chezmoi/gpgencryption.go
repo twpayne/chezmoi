@@ -5,8 +5,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"go.uber.org/multierr"
-
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -152,9 +151,9 @@ func withPrivateTempDir(f func(tempDirAbsPath AbsPath) error) (err error) {
 	if tempDir, err = os.MkdirTemp("", "chezmoi-encryption"); err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, os.RemoveAll(tempDir))
-	}()
+	defer chezmoierrors.CombineFunc(&err, func() error {
+		return os.RemoveAll(tempDir)
+	})
 	if runtime.GOOS != "windows" {
 		if err = os.Chmod(tempDir, 0o700); err != nil {
 			return

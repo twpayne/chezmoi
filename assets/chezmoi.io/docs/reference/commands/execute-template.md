@@ -20,6 +20,13 @@ from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
 `promptBool` is called with a *prompt* that does not match any of *pairs*, then
 it returns false.
 
+## `--promptChoice` *pairs*
+
+Simulate the `promptChoice` template function with a function that returns
+values from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value*
+pairs. If `promptChoice` is called with a *prompt* that does not match any of
+*pairs*, then it returns false.
+
 ## `--promptInt` *pairs*
 
 Simulate the `promptInt` template function with a function that returns values

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v54/github"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -25,15 +25,21 @@ type gitHubLatestReleaseState struct {
 	Release     *github.RepositoryRelease `json:"release"     yaml:"release"`
 }
 
-type gitHubLatestTagState struct {
-	RequestedAt time.Time             `json:"requestedAt" yaml:"requestedAt"`
-	Tag         *github.RepositoryTag `json:"tag"         yaml:"tag"`
+type gitHubReleasesState struct {
+	RequestedAt time.Time                   `json:"requestedAt" yaml:"requestedAt"`
+	Releases    []*github.RepositoryRelease `json:"releases"    yaml:"releases"`
+}
+
+type gitHubTagsState struct {
+	RequestedAt time.Time               `json:"requestedAt" yaml:"requestedAt"`
+	Tags        []*github.RepositoryTag `json:"tags"        yaml:"tags"`
 }
 
 var (
 	gitHubKeysStateBucket          = []byte("gitHubLatestKeysState")
 	gitHubLatestReleaseStateBucket = []byte("gitHubLatestReleaseState")
-	gitHubLatestTagStateBucket     = []byte("gitHubLatestTagState")
+	gitHubReleasesStateBucket      = []byte("gitHubReleasesState")
+	gitHubTagsStateBucket          = []byte("gitHubTagsState")
 )
 
 type gitHubData struct {
@@ -41,7 +47,8 @@ type gitHubData struct {
 	clientErr          error
 	keysCache          map[string][]*github.Key
 	latestReleaseCache map[string]map[string]*github.RepositoryRelease
-	latestTagCache     map[string]map[string]*github.RepositoryTag
+	releasesCache      map[string]map[string][]*github.RepositoryRelease
+	tagsCache          map[string]map[string][]*github.RepositoryTag
 }
 
 func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
@@ -153,25 +160,38 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 	return release
 }
 
-func (c *Config) gitHubLatestTagTemplateFunc(userRepo string) *github.RepositoryTag {
-	owner, repo, err := gitHubSplitOwnerRepo(userRepo)
+func (c *Config) gitHubLatestTagTemplateFunc(ownerRepo string) *github.RepositoryTag {
+	tags, err := c.getGitHubTags(ownerRepo)
 	if err != nil {
 		panic(err)
 	}
 
-	if tag, ok := c.gitHub.latestTagCache[owner][repo]; ok {
-		return tag
+	if len(tags) > 0 {
+		return tags[0]
+	}
+
+	return nil
+}
+
+func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.RepositoryRelease {
+	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+	if err != nil {
+		panic(err)
+	}
+
+	if releases := c.gitHub.releasesCache[owner][repo]; releases != nil {
+		return releases
 	}
 
 	now := time.Now()
-	gitHubLatestTagKey := []byte(owner + "/" + repo)
+	gitHubReleasesKey := []byte(owner + "/" + repo)
 	if c.GitHub.RefreshPeriod != 0 {
-		var gitHubLatestTagValue gitHubLatestTagState
-		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestTagStateBucket, gitHubLatestTagKey, &gitHubLatestTagValue); {
+		var gitHubReleasesStateValue gitHubReleasesState
+		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubReleasesStateBucket, gitHubReleasesKey, &gitHubReleasesStateValue); {
 		case err != nil:
 			panic(err)
-		case ok && now.Before(gitHubLatestTagValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
-			return gitHubLatestTagValue.Tag
+		case ok && now.Before(gitHubReleasesStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+			return gitHubReleasesStateValue.Releases
 		}
 	}
 
@@ -183,33 +203,89 @@ func (c *Config) gitHubLatestTagTemplateFunc(userRepo string) *github.Repository
 		panic(err)
 	}
 
-	tags, _, err := gitHubClient.Repositories.ListTags(ctx, owner, repo, &github.ListOptions{
-		PerPage: 1,
-	})
+	releases, _, err := gitHubClient.Repositories.ListReleases(ctx, owner, repo, nil)
 	if err != nil {
 		panic(err)
 	}
-	var tag *github.RepositoryTag
-	if len(tags) > 0 {
-		tag = tags[0]
-	}
 
-	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubLatestTagStateBucket, gitHubLatestTagKey, &gitHubLatestTagState{
+	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubReleasesStateBucket, gitHubReleasesKey, &gitHubReleasesState{
 		RequestedAt: now,
-		Tag:         tag,
+		Releases:    releases,
 	}); err != nil {
 		panic(err)
 	}
 
-	if c.gitHub.latestTagCache == nil {
-		c.gitHub.latestTagCache = make(map[string]map[string]*github.RepositoryTag)
+	if c.gitHub.releasesCache == nil {
+		c.gitHub.releasesCache = make(map[string]map[string][]*github.RepositoryRelease)
 	}
-	if c.gitHub.latestTagCache[owner] == nil {
-		c.gitHub.latestTagCache[owner] = make(map[string]*github.RepositoryTag)
+	if c.gitHub.releasesCache[owner] == nil {
+		c.gitHub.releasesCache[owner] = make(map[string][]*github.RepositoryRelease)
 	}
-	c.gitHub.latestTagCache[owner][repo] = tag
+	c.gitHub.releasesCache[owner][repo] = releases
 
-	return tag
+	return releases
+}
+
+func (c *Config) gitHubTagsTemplateFunc(ownerRepo string) []*github.RepositoryTag {
+	tags, err := c.getGitHubTags(ownerRepo)
+	if err != nil {
+		panic(err)
+	}
+
+	return tags
+}
+
+func (c *Config) getGitHubTags(ownerRepo string) ([]*github.RepositoryTag, error) {
+	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+	if err != nil {
+		return nil, err
+	}
+
+	if tags := c.gitHub.tagsCache[owner][repo]; tags != nil {
+		return tags, nil
+	}
+
+	now := time.Now()
+	gitHubTagsKey := []byte(owner + "/" + repo)
+	if c.GitHub.RefreshPeriod != 0 {
+		var gitHubTagsStateValue gitHubTagsState
+		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubTagsStateBucket, gitHubTagsKey, &gitHubTagsStateValue); {
+		case err != nil:
+			return nil, err
+		case ok && now.Before(gitHubTagsStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+			return gitHubTagsStateValue.Tags, nil
+		}
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	gitHubClient, err := c.getGitHubClient(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	tags, _, err := gitHubClient.Repositories.ListTags(ctx, owner, repo, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubTagsStateBucket, gitHubTagsKey, &gitHubTagsState{
+		RequestedAt: now,
+		Tags:        tags,
+	}); err != nil {
+		return nil, err
+	}
+
+	if c.gitHub.tagsCache == nil {
+		c.gitHub.tagsCache = make(map[string]map[string][]*github.RepositoryTag)
+	}
+	if c.gitHub.tagsCache[owner] == nil {
+		c.gitHub.tagsCache[owner] = make(map[string][]*github.RepositoryTag)
+	}
+	c.gitHub.tagsCache[owner][repo] = tags
+
+	return tags, nil
 }
 
 func (c *Config) getGitHubClient(ctx context.Context) (*github.Client, error) {
@@ -227,10 +303,10 @@ func (c *Config) getGitHubClient(ctx context.Context) (*github.Client, error) {
 	return c.gitHub.client, nil
 }
 
-func gitHubSplitOwnerRepo(userRepo string) (string, string, error) {
-	user, repo, ok := strings.Cut(userRepo, "/")
+func gitHubSplitOwnerRepo(ownerRepo string) (string, string, error) {
+	owner, repo, ok := strings.Cut(ownerRepo, "/")
 	if !ok {
-		return "", "", fmt.Errorf("%s: not a user/repo", userRepo)
+		return "", "", fmt.Errorf("%s: not an owner/repo", ownerRepo)
 	}
-	return user, repo, nil
+	return owner, repo, nil
 }

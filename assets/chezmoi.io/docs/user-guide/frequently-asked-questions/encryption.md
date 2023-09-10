@@ -43,8 +43,9 @@ Configure chezmoi to decrypt the passphrase-encrypted private key if needed:
 $ cat > run_once_before_decrypt-private-key.sh.tmpl <<EOF
 #!/bin/sh
 
-if [ ! -f "${HOME}/key.txt" ]; then
-    age --decrypt --output "${HOME}/key.txt" "{{ .chezmoi.sourceDir }}/key.txt.age"
+if [ ! -f "${HOME}/.config/chezmoi/key.txt" ]; then
+    mkdir -p "${HOME}/.config/chezmoi"
+    chezmoi age decrypt --output "${HOME}/.config/chezmoi/key.txt" --passphrase "{{ .chezmoi.sourceDir }}/key.txt.age"
     chmod 600 "${HOME}/key.txt"
 fi
 EOF
@@ -56,7 +57,7 @@ Configure chezmoi to use the public and private key for encryption:
 $ cat >> .chezmoi.toml.tmpl <<EOF
 encryption = "age"
 [age]
-    identity = "~/key.txt"
+    identity = "~/.config/chezmoi/key.txt"
     recipient = "age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl"
 EOF
 ```
@@ -98,4 +99,4 @@ $ chezmoi add --encrypt ~/.ssh/id_rsa
 
 When you run `chezmoi init` on a new machine you will be prompted to enter your
 passphrase once to decrypt `key.txt.age`. Your decrypted private key will be
-stored in `~/key.txt`.
+stored in `~/.config/chezmoi/key.txt`.

@@ -1,0 +1,17 @@
+# test that chezmoi supports separate files via templates
+exec chezmoi apply
+cmp $HOME/.file1 golden/file1
+cmp $HOME/.file2 golden/file2
+
+-- golden/file1 --
+# contents of .file1
+-- golden/file2 --
+# contents of .file2
+-- home/user/.local/share/chezmoi/.chezmoitemplates/file2.tmpl --
+# {{ . }}
+-- home/user/.local/share/chezmoi/.file1 --
+# contents of .file1
+-- home/user/.local/share/chezmoi/dot_file1.tmpl --
+{{- include ".file1" -}}
+-- home/user/.local/share/chezmoi/dot_file2.tmpl --
+{{- template "file2.tmpl" "contents of .file2" -}}

@@ -1,5 +1,7 @@
 [!windows] chmod 755 bin/bw
+[!windows] chmod 755 bin/bws
 [windows] unix2dos bin/bw.cmd
+[windows] unix2dos bin/bws.cmd
 [windows] unix2dos golden/bitwarden-attachment
 
 # test bitwarden template function
@@ -17,6 +19,10 @@ cmp stdout golden/bitwarden-attachment
 # test bitwardenAttachmentByRef template function
 exec chezmoi execute-template '{{ (bitwardenAttachmentByRef "filename" "item" "example.com") }}'
 cmp stdout golden/bitwarden-attachment
+
+# test bitwardenSecrets template function
+exec chezmoi execute-template '{{ (bitwardenSecrets "be8e0ad8-d545-4017-a55a-b02f014d4158" "0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==").value }}'
+stdout '^0\.982492bc-7f37-4475-9e60$'
 
 -- bin/bw --
 #!/bin/sh
@@ -111,6 +117,45 @@ IF "%*" == "get item example.com" (
 ) ELSE (
     echo Invalid command: $*
     echo "See --help for a list of available commands."
+    exit /b 1
+)
+-- bin/bws --
+#!/bin/sh
+
+case "$*" in
+"secret get be8e0ad8-d545-4017-a55a-b02f014d4158 --access-token 0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==")
+    cat <<EOF
+{
+  "object": "secret",
+  "id": "be8e0ad8-d545-4017-a55a-b02f014d4158",
+  "organizationId": "10e8cbfa-7bd2-4361-bd6f-b02e013f9c41",
+  "projectId": "e325ea69-a3ab-4dff-836f-b02e013fe530",
+  "key": "SES_KEY",
+  "value": "0.982492bc-7f37-4475-9e60",
+  "note": "",
+  "creationDate": "2023-06-28T20:13:20.643567Z",
+  "revisionDate": "2023-06-28T20:13:20.643567Z"
+}
+EOF
+    ;;
+*)
+    exit 1
+esac
+-- bin/bws.cmd --
+@echo off
+IF "%*" == "secret get be8e0ad8-d545-4017-a55a-b02f014d4158 --access-token 0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==" (
+    echo.{
+    echo.  "object": "secret",
+    echo.  "id": "be8e0ad8-d545-4017-a55a-b02f014d4158",
+    echo.  "organizationId": "10e8cbfa-7bd2-4361-bd6f-b02e013f9c41",
+    echo.  "projectId": "e325ea69-a3ab-4dff-836f-b02e013fe530",
+    echo.  "key": "SES_KEY",
+    echo.  "value": "0.982492bc-7f37-4475-9e60",
+    echo.  "note": "",
+    echo.  "creationDate": "2023-06-28T20:13:20.643567Z",
+    echo.  "revisionDate": "2023-06-28T20:13:20.643567Z"
+    echo.}
+) ELSE (
     exit /b 1
 )
 -- golden/bitwarden-attachment --

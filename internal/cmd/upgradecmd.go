@@ -20,7 +20,7 @@ import (
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v54/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
 
@@ -398,7 +398,7 @@ func (c *Config) replaceExecutable(
 			if err != nil {
 				return err
 			}
-			return chezmoi.Break
+			return fs.SkipAll
 		default:
 			return nil
 		}

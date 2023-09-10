@@ -40,7 +40,6 @@ import (
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
-	"go.uber.org/multierr"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"golang.org/x/term"
@@ -49,6 +48,7 @@ import (
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/internal/git"
 	"github.com/twpayne/chezmoi/v2/internal/shell"
@@ -127,6 +127,7 @@ type ConfigFile struct {
 	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
 	AzureKeyVault     azureKeyVaultConfig     `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
 	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
+	BitwardenSecrets  bitwardenSecretsConfig  `json:"bitwardenSecrets"  mapstructure:"bitwardenSecrets"  yaml:"bitwardenSecrets"`
 	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
 	Doppler           dopplerConfig           `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
 	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
@@ -185,6 +186,7 @@ type Config struct {
 	keyring keyringData
 
 	// Command configurations, not settable in the config file.
+	age             ageCmdConfig
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
 	chattr          chattrCmdConfig
@@ -392,6 +394,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
 		"bitwardenAttachmentByRef": c.bitwardenAttachmentByRefTemplateFunc,
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
+		"bitwardenSecrets":         c.bitwardenSecretsTemplateFunc,
 		"comment":                  c.commentTemplateFunc,
 		"dashlaneNote":             c.dashlaneNoteTemplateFunc,
 		"dashlanePassword":         c.dashlanePasswordTemplateFunc,
@@ -411,6 +414,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
 		"gitHubLatestRelease":      c.gitHubLatestReleaseTemplateFunc,
 		"gitHubLatestTag":          c.gitHubLatestTagTemplateFunc,
+		"gitHubReleases":           c.gitHubReleasesTemplateFunc,
+		"gitHubTags":               c.gitHubTagsTemplateFunc,
 		"glob":                     c.globTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,
@@ -487,16 +492,16 @@ func newConfig(options ...configOption) (*Config, error) {
 
 // Close closes resources associated with c.
 func (c *Config) Close() error {
-	var err error
+	errs := make([]error, 0, len(c.tempDirs))
 	for _, tempDirAbsPath := range c.tempDirs {
-		err2 := os.RemoveAll(tempDirAbsPath.String())
-		c.logger.Err(err2).
+		err := os.RemoveAll(tempDirAbsPath.String())
+		c.logger.Err(err).
 			Stringer("tempDir", tempDirAbsPath).
 			Msg("RemoveAll")
-		err = multierr.Append(err, err2)
+		errs = append(errs, err)
 	}
 	pprof.StopCPUProfile()
-	return err
+	return chezmoierrors.Combine(errs...)
 }
 
 // addTemplateFunc adds the template function with the given key and value
@@ -614,7 +619,7 @@ func (c *Config) applyArgs(
 		switch err := sourceState.Apply(
 			targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions,
 		); {
-		case errors.Is(err, chezmoi.Skip):
+		case errors.Is(err, fs.SkipDir):
 			continue
 		case err != nil && c.keepGoing:
 			c.errorf("%v\n", err)
@@ -772,6 +777,8 @@ func (c *Config) createConfigFile(
 		"exit":             c.exitInitTemplateFunc,
 		"promptBool":       c.promptBoolInteractiveTemplateFunc,
 		"promptBoolOnce":   c.promptBoolOnceInteractiveTemplateFunc,
+		"promptChoice":     c.promptChoiceInteractiveTemplateFunc,
+		"promptChoiceOnce": c.promptChoiceOnceInteractiveTemplateFunc,
 		"promptInt":        c.promptIntInteractiveTemplateFunc,
 		"promptIntOnce":    c.promptIntOnceInteractiveTemplateFunc,
 		"promptString":     c.promptStringInteractiveTemplateFunc,
@@ -955,7 +962,7 @@ func (c *Config) defaultPreApplyFunc(
 			case choice == "yes":
 				return nil
 			case choice == "no":
-				return chezmoi.Skip
+				return fs.SkipDir
 			case choice == "all":
 				c.interactive = false
 				return nil
@@ -1004,7 +1011,7 @@ func (c *Config) defaultPreApplyFunc(
 			c.force = true
 			return nil
 		case choice == "skip":
-			return chezmoi.Skip
+			return fs.SkipDir
 		case choice == "quit":
 			return chezmoi.ExitCodeError(0)
 		default:
@@ -1396,6 +1403,7 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	funcMap := maps.Clone(sprig.TxtFuncMap())
 	maps.Copy(funcMap, map[string]any{
 		"promptBool":   c.promptBoolInteractiveTemplateFunc,
+		"promptChoice": c.promptChoiceInteractiveTemplateFunc,
 		"promptInt":    c.promptIntInteractiveTemplateFunc,
 		"promptString": c.promptStringInteractiveTemplateFunc,
 		"targetRelPath": func(source string) string {
@@ -1517,7 +1525,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"Specify targets by source path",
 	)
 
-	if err := multierr.Combine(
+	if err := chezmoierrors.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
 		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
 		persistentFlags.MarkHidden("cpu-profile"),
@@ -1538,6 +1546,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	rootCmd.SetHelpCommand(c.newHelpCmd())
 	for _, cmd := range []*cobra.Command{
 		c.newAddCmd(),
+		c.newAgeCmd(),
 		c.newApplyCmd(),
 		c.newArchiveCmd(),
 		c.newCatCmd(),
@@ -2589,6 +2598,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		// Password manager configurations.
 		Bitwarden: bitwardenConfig{
 			Command: "bw",
+		},
+		BitwardenSecrets: bitwardenSecretsConfig{
+			Command: "bws",
 		},
 		Dashlane: dashlaneConfig{
 			Command: "dcli",

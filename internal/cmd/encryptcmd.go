@@ -5,7 +5,7 @@ import (
 )
 
 func (c *Config) newEncryptCommand() *cobra.Command {
-	decryptCommand := &cobra.Command{
+	encryptCmd := &cobra.Command{
 		Use:     "encrypt [file...]",
 		Short:   "Encrypt file or standard input",
 		Long:    mustLongHelp("encrypt"),
@@ -13,7 +13,7 @@ func (c *Config) newEncryptCommand() *cobra.Command {
 		RunE:    c.runEncryptCmd,
 	}
 
-	return decryptCommand
+	return encryptCmd
 }
 
 func (c *Config) runEncryptCmd(cmd *cobra.Command, args []string) error {

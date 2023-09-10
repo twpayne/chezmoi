@@ -214,3 +214,35 @@ func TestApplyCmd(t *testing.T) {
 		})
 	}
 }
+
+func TestIssue3206(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local/share/chezmoi": map[string]any{
+				".chezmoiignore": "",
+				"dot_config/private_expanso/match": map[string]any{
+					".chezmoidata.yaml": "key: value\n",
+					"greek.yml.tmpl":    "{{ .key }}",
+				},
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+	})
+}
+
+func TestIssue3216(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local/share/chezmoi": map[string]any{
+				".chezmoiignore": "",
+				"dot_config/private_expanso/match": map[string]any{
+					".chezmoidata.yaml": "",
+					"greek.yml.tmpl":    "{{ .chezmoi.os }}",
+				},
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+	})
+}

@@ -12,7 +12,6 @@ import (
 	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
-	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
@@ -351,14 +350,14 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 		case errors.Is(err2, fs.ErrNotExist):
 			// Do nothing.
 		case err2 != nil:
-			return multierr.Append(err, err2)
+			return errors.Join(err, err2)
 		}
 		targetData, err2 := s.ReadFile(targetAbsPath)
 		switch {
 		case errors.Is(err2, fs.ErrNotExist):
 			// Do nothing.
 		case err2 != nil:
-			return multierr.Append(err, err2)
+			return errors.Join(err, err2)
 		}
 		if !bytes.Equal(destData, targetData) {
 			return nil

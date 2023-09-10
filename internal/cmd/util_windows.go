@@ -17,6 +17,9 @@ var defaultInterpreters = map[string]*chezmoi.Interpreter{
 	"cmd": {},
 	"com": {},
 	"exe": {},
+	"nu": {
+		Command: "nu",
+	},
 	"pl": {
 		Command: "perl",
 	},

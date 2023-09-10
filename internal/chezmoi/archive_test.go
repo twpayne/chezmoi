@@ -107,7 +107,7 @@ func TestWalkArchive(t *testing.T) {
 				case "dir2":
 					return fs.SkipDir
 				case "symlink1":
-					return Break
+					return fs.SkipAll
 				default:
 					return nil
 				}

@@ -193,43 +193,43 @@ containing:
 
 However, if the differences between the two versions are so large that you'd
 prefer to use completely separate files in the source state, you can achieve
-this using a symbolic link template. Create the following files:
+this with the `include` template function.
 
-``` title="~/.local/share/chezmoi/symlink_dot_bashrc.tmpl"
-.bashrc_{{ .chezmoi.os }}
-```
+Create the following files:
 
-```bash title="~/.local/share/chezmoi/dot_bashrc_darwin"
+```bash title="~/.local/share/chezmoi/.bashrc_darwin"
 # macOS .bashrc contents
 ```
 
-```bash title="~/.local/share/chezmoi/dot_bashrc_linux"
+```bash title="~/.local/share/chezmoi/.bashrc_linux"
 # Linux .bashrc contents
 ```
 
-``` title="~/.local/share/chezmoi/.chezmoiignore"
-{{ if ne .chezmoi.os "darwin" }}
-.bashrc_darwin
-{{ end }}
-{{ if ne .chezmoi.os "linux" }}
-.bashrc_linux
-{{ end }}
+``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   include ".bashrc_darwin" -}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   include ".bashrc_linux" -}}
+{{- end -}}
 ```
 
-This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and to
-`.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that
-only the OS-specific `.bashrc_os` file will be installed on each OS.
+This will cause `~/.bashrc` to contain `~/.local/share/chezmoi/.bashrc_darwin`
+on macOS and `~/.local/share/chezmoi/.bashrc_linux` on Linux.
 
-### Without using symlinks
+If you want to use templates within your templates, then, instead, create:
 
-The same thing can be achieved using the include function.
+```bash title="~/.local/share/chezmoi/.chezmoitemplates/bashrc_darwin.tmpl"
+# macOS .bashrc template contents
+```
+
+```bash title="~/.local/share/chezmoi/.chezmoitemplates/bashrc_linux.tmpl"
+# Linux .bashrc template contents
+```
 
 ``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
-{{ if eq .chezmoi.os "darwin" }}
-{{   include ".bashrc_darwin" }}
-{{ end }}
-{{ if eq .chezmoi.os "linux" }}
-{{   include ".bashrc_linux" }}
-{{ end }}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   template "bashrc_darwin.tmpl" . -}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   template "bashrc_linux.tmpl" . -}}
+{{- end -}}
 ```
-

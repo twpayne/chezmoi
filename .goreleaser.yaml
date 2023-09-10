@@ -110,7 +110,21 @@ archives:
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}'
 
 changelog:
-  use: github-native
+  groups:
+  - title: Features
+    regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+    order: 0
+  - title: Fixes
+    regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+    order: 1
+  - title: Documentation updates
+    regexp: '^.*?docs?(\([[:word:]]+\))??!?:.+$'
+    order: 2
+  - title: Other
+    order: 999
+  filters:
+    exclude:
+      - '^.*?chore(\([[:word:]]+\))??!?:.+$'
 
 checksum:
   extra_files:

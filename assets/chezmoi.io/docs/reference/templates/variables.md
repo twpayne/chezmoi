@@ -20,6 +20,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.osRelease`       | string   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output                                       |
 | `.chezmoi.sourceDir`       | string   | The source directory                                                                                                           |
 | `.chezmoi.sourceFile`      | string   | The path of the template relative to the source directory                                                                      |
+| `.chezmoi.targetFile`      | string   | The absolute path of the target file for the template                                                                          |
 | `.chezmoi.uid`             | string   | The user ID                                                                                                                    |
 | `.chezmoi.username`        | string   | The username of the user running chezmoi                                                                                       |
 | `.chezmoi.version.builtBy` | string   | The program that built the `chezmoi` executable, if set                                                                        |

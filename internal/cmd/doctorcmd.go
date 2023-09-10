@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v53/github"
+	"github.com/google/go-github/v54/github"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-xdg/v6"
 
@@ -304,6 +304,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+		},
+		&binaryCheck{
+			name:        "bitwarden-secrets-command",
+			binaryname:  c.BitwardenSecrets.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`Bitwarden\s+Secrets\s+CLI\s+(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "dashlane-command",
