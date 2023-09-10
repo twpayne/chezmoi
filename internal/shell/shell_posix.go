@@ -1,4 +1,4 @@
-//go:build !darwin && !plan9 && !windows
+//go:build !darwin && !plan9 && unix
 
 package shell
 

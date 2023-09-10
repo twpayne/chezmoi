@@ -1,7 +1,7 @@
-[!windows] chmod 755 bin/chezmoi-output-test
-[!windows] chmod 755 bin/generate-color-formats
-[!windows] chmod 755 bin/ioreg
-[!windows] chmod 755 bin/executable
+[unix] chmod 755 bin/chezmoi-output-test
+[unix] chmod 755 bin/generate-color-formats
+[unix] chmod 755 bin/ioreg
+[unix] chmod 755 bin/executable
 [windows] unix2dos bin/chezmoi-output-test.cmd
 
 symlink $HOME/symlink -> dir
@@ -70,7 +70,7 @@ exec chezmoi execute-template '{{ dict "key" "value" | jq ".key" | first }}'
 stdout ^value$
 
 # test isExecutable template function positive test case
-[!windows] exec chezmoi execute-template '{{ isExecutable "bin/executable" }}'
+[unix] exec chezmoi execute-template '{{ isExecutable "bin/executable" }}'
 [windows] exec chezmoi execute-template '{{ isExecutable "bin/executable.cmd" }}'
 stdout ^true$
 
@@ -95,12 +95,12 @@ exec chezmoi execute-template '{{ mozillaInstallHash "/Applications/Firefox.app/
 stdout 2656FF1E876E9973
 
 # test the output and fromJson template functions
-[!windows] exec chezmoi execute-template '{{ $red := output "generate-color-formats" "#ff0000" | fromJson }}{{ $red.rgb.r }}'
-[!windows] stdout '^255$'
+[unix] exec chezmoi execute-template '{{ $red := output "generate-color-formats" "#ff0000" | fromJson }}{{ $red.rgb.r }}'
+[unix] stdout '^255$'
 
 # test that the output function returns an error if the command fails
-[!windows] ! exec chezmoi execute-template '{{ output "false" }}'
-[!windows] stderr 'error calling output: .*/false: exit status 1'
+[unix] ! exec chezmoi execute-template '{{ output "false" }}'
+[unix] stderr 'error calling output: .*/false: exit status 1'
 
 # test pruneEmptyDicts template function
 exec chezmoi execute-template '{{ dict "key1" "value1" "key2" (dict) | pruneEmptyDicts | toJson }}'

@@ -29,8 +29,8 @@ exec chezmoi edit
 exists $CHEZMOISOURCEDIR/.edited
 
 # test that chezmoi edit edits a directory
-[!windows] exec chezmoi edit $HOME${/}.dir
-[!windows] exists $CHEZMOISOURCEDIR/dot_dir/.edited
+[unix] exec chezmoi edit $HOME${/}.dir
+[unix] exists $CHEZMOISOURCEDIR/dot_dir/.edited
 
 chhome home2/user
 

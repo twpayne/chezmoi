@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/gopass
+[unix] chmod 755 bin/gopass
 [windows] unix2dos bin/gopass.cmd
 [windows] unix2dos golden/gopass-raw
 

@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/git
+[unix] chmod 755 bin/git
 [windows] skip 'UNIX only'
 
 # test that the error message returned when git fails to update an external includes the target path

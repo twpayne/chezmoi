@@ -7,7 +7,7 @@ exec chezmoi status
 # test that chezmoi does follow symlinks in the source directory if the file should not be ignored
 symlink $CHEZMOISOURCEDIR/.chezmoifile -> non_existent_file
 ! exec chezmoi status
-[!windows] stderr 'no such file or directory'
+[unix] stderr 'no such file or directory'
 [windows] stderr 'The system cannot find the file specified'
 rm $CHEZMOISOURCEDIR/.chezmoifile
 exec chezmoi status

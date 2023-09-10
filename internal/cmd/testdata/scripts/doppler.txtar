@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/doppler
+[unix] chmod 755 bin/doppler
 [windows] unix2dos bin/doppler.cmd
 
 # test doppler template function (global configuration)

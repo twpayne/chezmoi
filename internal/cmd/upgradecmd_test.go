@@ -1,4 +1,4 @@
-//go:build !noupgrade && !windows
+//go:build !noupgrade && unix
 
 package cmd
 

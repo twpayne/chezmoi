@@ -23,12 +23,12 @@ exists $CHEZMOISOURCEDIR/empty_dot_empty
 
 # test adding an executable file
 exec chezmoi add $HOME${/}.executable
-[!windows] cmp $CHEZMOISOURCEDIR/executable_dot_executable golden/executable_dot_executable
+[unix] cmp $CHEZMOISOURCEDIR/executable_dot_executable golden/executable_dot_executable
 [windows] cmp $CHEZMOISOURCEDIR/dot_executable golden/executable_dot_executable
 
 # test adding a private file
 exec chezmoi add $HOME${/}.private
-[!windows] cmp $CHEZMOISOURCEDIR/private_dot_private $HOME/.private
+[unix] cmp $CHEZMOISOURCEDIR/private_dot_private $HOME/.private
 [windows] cmp $CHEZMOISOURCEDIR/dot_private $HOME/.private
 
 # test adding a symlink

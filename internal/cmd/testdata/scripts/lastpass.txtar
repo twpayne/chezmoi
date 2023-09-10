@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/lpass
+[unix] chmod 755 bin/lpass
 [windows] unix2dos bin/lpass.cmd
 
 # test lastpass template function

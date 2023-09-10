@@ -1,4 +1,4 @@
-[!windows] skip 'Windows only'
+[unix] skip 'Windows only'
 
 # test that chezmoi status prints that it will run the script
 exec chezmoi status

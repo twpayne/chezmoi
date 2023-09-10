@@ -1,6 +1,6 @@
 # test that .chezmoi.sourceDir can be used with joinPath
-[!windows] exec chezmoi execute-template '{{ joinPath .chezmoi.sourceDir ".file" }}'
-[!windows] stdout ${CHEZMOISOURCEDIR@R}/.file
+[unix] exec chezmoi execute-template '{{ joinPath .chezmoi.sourceDir ".file" }}'
+[unix] stdout ${CHEZMOISOURCEDIR@R}/.file
 
 # test that .chezmoi.sourceFile is set
 exec chezmoi cat $HOME${/}.file
@@ -27,11 +27,11 @@ stdout ok
 exec chezmoi execute-template '{{ template "template" . }}'
 stdout ok
 
-[!windows] chhome home4/user
+[unix] chhome home4/user
 
 # test that .chezmoi.sourceFile is set
-[!windows] exec chezmoi cat $HOME${/}.file
-[!windows] cmpenv stdout golden/dot_file
+[unix] exec chezmoi cat $HOME${/}.file
+[unix] cmpenv stdout golden/dot_file
 
 -- golden/dot_file --
 dot_file.tmpl

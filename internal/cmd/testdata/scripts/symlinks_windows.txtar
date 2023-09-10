@@ -1,4 +1,4 @@
-[!windows] skip 'Windows only'
+[unix] skip 'Windows only'
 
 # test that chezmoi apply normalizes symlinks
 exec chezmoi apply $HOME${/}.symlink_backward_slash $HOME${/}.symlink_forward_slash

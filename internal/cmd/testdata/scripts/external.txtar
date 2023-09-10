@@ -14,14 +14,14 @@ exec chezmoi diff --exclude=externals
 # test that chezmoi reads external files from .chezmoiexternal.toml
 exec chezmoi apply --force
 cmp $HOME/.file golden/.file
-[!windows] cmpmod 666 $HOME/.file
+[unix] cmpmod 666 $HOME/.file
 
 chhome home2/user
 
 # test that chezmoi reads executable external files from .chezmoiexternal.toml
 exec chezmoi apply --force
 cmp $HOME/.file golden/.file
-[!windows] cmpmod 777 $HOME/.file
+[unix] cmpmod 777 $HOME/.file
 
 chhome home3/user
 
@@ -40,7 +40,7 @@ exec chezmoi diff --exclude=externals
 # test that chezmoi reads external archives from .chezmoiexternal.yaml
 exec chezmoi apply --force
 cmp $HOME/.dir/dir/file golden/dir/file
-[!windows] readlink $HOME/.dir/dir/symlink file
+[unix] readlink $HOME/.dir/dir/symlink file
 exists $HOME/.dir/file
 
 chhome home4/user
@@ -48,7 +48,7 @@ chhome home4/user
 # test that chezmoi reads exact external archives from .chezmoiexternal.yaml
 exec chezmoi apply --force
 cmp $HOME/.dir/dir/file golden/dir/file
-[!windows] readlink $HOME/.dir/dir/symlink file
+[unix] readlink $HOME/.dir/dir/symlink file
 ! exists $HOME/.dir/file
 
 chhome home5/user
@@ -56,7 +56,7 @@ chhome home5/user
 # test that chezmoi reads externals from subdirectories
 exec chezmoi apply --force
 cmp $HOME/.dir/subdir/dir/file golden/dir/file
-[!windows] readlink $HOME/.dir/subdir/dir/symlink file
+[unix] readlink $HOME/.dir/subdir/dir/symlink file
 
 chhome home6/user
 

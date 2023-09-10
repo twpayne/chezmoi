@@ -1,6 +1,6 @@
-[!windows] chmod 755 bin/perl
-[!windows] chmod 755 bin/python3
-[!windows] chmod 755 bin/ruby
+[unix] chmod 755 bin/perl
+[unix] chmod 755 bin/python3
+[unix] chmod 755 bin/ruby
 [windows] unix2dos golden/stdout
 
 # test that chezmoi apply uses python3 and ruby from $PATH instead of the system Python and Ruby

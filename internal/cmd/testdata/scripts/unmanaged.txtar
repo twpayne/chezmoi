@@ -28,8 +28,8 @@ cmp stdout golden/unmanaged-with-some-managed
 ! exec chezmoi unmanaged $HOME${/}absent-path
 
 # test chezmoi unmanaged --path-style=absolute
-[!windows] exec chezmoi unmanaged --path-style=absolute
-[!windows] cmpenv stdout golden/unmanaged-absolute
+[unix] exec chezmoi unmanaged --path-style=absolute
+[unix] cmpenv stdout golden/unmanaged-absolute
 
 -- golden/unmanaged --
 .local

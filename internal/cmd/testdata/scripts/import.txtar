@@ -5,7 +5,7 @@ exec tar czf archive.tar.gz archive
 # test that chezmoi import imports an archive
 exec chezmoi import --strip-components=1 archive.tar.gz
 cmp $CHEZMOISOURCEDIR/dot_dir/dot_file golden/dot_dir/dot_file
-[!windows] cmp $CHEZMOISOURCEDIR/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
+[unix] cmp $CHEZMOISOURCEDIR/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
 
 # test that chezmoi import run a second time overwrites
 exec chezmoi import --strip-components=1 archive.tar.gz
@@ -15,7 +15,7 @@ chhome home2/user
 # test chezmoi import --destination
 exec chezmoi import --strip-components=1 --destination=$HOME${/}.subdir archive.tar.gz
 cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/dot_file golden/dot_dir/dot_file
-[!windows] cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
+[unix] cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
 
 chhome home3/user
 

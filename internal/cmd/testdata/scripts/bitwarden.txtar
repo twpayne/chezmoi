@@ -1,5 +1,5 @@
-[!windows] chmod 755 bin/bw
-[!windows] chmod 755 bin/bws
+[unix] chmod 755 bin/bw
+[unix] chmod 755 bin/bws
 [windows] unix2dos bin/bw.cmd
 [windows] unix2dos bin/bws.cmd
 [windows] unix2dos golden/bitwarden-attachment

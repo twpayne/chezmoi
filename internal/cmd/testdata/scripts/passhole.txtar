@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/ph
+[unix] chmod 755 bin/ph
 [windows] unix2dos bin/ph.cmd
 
 # test passhole template function

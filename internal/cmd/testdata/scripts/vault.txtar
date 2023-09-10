@@ -1,4 +1,4 @@
-[!windows] chmod 755 bin/vault
+[unix] chmod 755 bin/vault
 [windows] unix2dos bin/vault.cmd
 
 # test vault template function

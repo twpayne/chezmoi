@@ -1,4 +1,4 @@
-[!windows] skip 'Windows only'
+[unix] skip 'Windows only'
 
 # test that chezmoi apply modifies a file with a Batch script
 exec chezmoi apply

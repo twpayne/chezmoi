@@ -1,4 +1,4 @@
-[!windows] skip 'Windows only'
+[unix] skip 'Windows only'
 
 mksourcedir
 

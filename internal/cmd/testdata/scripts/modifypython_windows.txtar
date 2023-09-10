@@ -1,4 +1,4 @@
-[!windows] skip 'Windows only'
+[unix] skip 'Windows only'
 [!exec:python3] skip 'python3 not found in %PATH%'
 
 # test that chezmoi apply modifies a file with python3
