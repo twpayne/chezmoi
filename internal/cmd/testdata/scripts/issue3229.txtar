@@ -1,0 +1,8 @@
+exec chezmoi apply
+grep 'Marat Reymers' $HOME/.golangci.yml
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".golangci.yml"]
+    type = "file"
+    url = "https://gist.githubusercontent.com/maratori/47a4d00457a92aa426dbd48a18776322/raw/"
+    refreshPeriod = "1h"
