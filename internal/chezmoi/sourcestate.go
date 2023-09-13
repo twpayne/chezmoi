@@ -122,7 +122,7 @@ type SourceState struct {
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*Template
-	externals               map[RelPath]*External
+	externals               map[RelPath][]*External
 	ignoredRelPaths         map[RelPath]struct{}
 }
 
@@ -281,7 +281,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		userTemplateData:     make(map[string]any),
 		templateOptions:      DefaultTemplateOptions,
 		templates:            make(map[string]*Template),
-		externals:            make(map[RelPath]*External),
+		externals:            make(map[RelPath][]*External),
 		ignoredRelPaths:      make(map[RelPath]struct{}),
 	}
 	for _, option := range options {
@@ -1048,32 +1048,33 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		if s.Ignore(externalRelPath) {
 			continue
 		}
-		external := s.externals[externalRelPath]
-		parentRelPath, _ := externalRelPath.Split()
-		var parentSourceRelPath SourceRelPath
-		switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external, s.umask); {
-		case err != nil:
-			return err
-		case parentSourceStateEntry != nil:
-			parentSourceRelPath = parentSourceStateEntry.SourceRelPath()
-		}
-		externalSourceStateEntries, err := s.readExternal(
-			ctx,
-			externalRelPath,
-			parentSourceRelPath,
-			external,
-			options,
-		)
-		if err != nil {
-			return err
-		}
-		for targetRelPath, sourceStateEntries := range externalSourceStateEntries {
-			if s.Ignore(targetRelPath) {
-				continue
+		for _, external := range s.externals[externalRelPath] {
+			parentRelPath, _ := externalRelPath.Split()
+			var parentSourceRelPath SourceRelPath
+			switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external, s.umask); {
+			case err != nil:
+				return err
+			case parentSourceStateEntry != nil:
+				parentSourceRelPath = parentSourceStateEntry.SourceRelPath()
 			}
-			allSourceStateEntries[targetRelPath] = append(
-				allSourceStateEntries[targetRelPath],
-				sourceStateEntries...)
+			externalSourceStateEntries, err := s.readExternal(
+				ctx,
+				externalRelPath,
+				parentSourceRelPath,
+				external,
+				options,
+			)
+			if err != nil {
+				return err
+			}
+			for targetRelPath, sourceStateEntries := range externalSourceStateEntries {
+				if s.Ignore(targetRelPath) {
+					continue
+				}
+				allSourceStateEntries[targetRelPath] = append(
+					allSourceStateEntries[targetRelPath],
+					sourceStateEntries...)
+			}
 		}
 	}
 
@@ -1157,65 +1158,68 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Generate SourceStateCommands for git-repo externals.
 	var gitRepoExternalRelPaths RelPaths
-	for externalRelPath, external := range s.externals {
+	for externalRelPath, externals := range s.externals {
 		if s.Ignore(externalRelPath) {
 			continue
 		}
-		if external.Type == ExternalTypeGitRepo {
-			gitRepoExternalRelPaths = append(gitRepoExternalRelPaths, externalRelPath)
+		for _, external := range externals {
+			if external.Type == ExternalTypeGitRepo {
+				gitRepoExternalRelPaths = append(gitRepoExternalRelPaths, externalRelPath)
+			}
 		}
 	}
 	sort.Sort(gitRepoExternalRelPaths)
 	for _, externalRelPath := range gitRepoExternalRelPaths {
-		external := s.externals[externalRelPath]
-		destAbsPath := s.destDirAbsPath.Join(externalRelPath)
-		switch _, err := s.system.Lstat(destAbsPath); {
-		case errors.Is(err, fs.ErrNotExist):
-			// FIXME add support for using builtin git
-			args := []string{"clone"}
-			args = append(args, external.Clone.Args...)
-			args = append(args, external.URL, destAbsPath.String())
-			cmd := exec.Command("git", args...)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			sourceStateCommand := &SourceStateCommand{
-				cmd:           cmd,
-				origin:        external,
-				forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
-				refreshPeriod: external.RefreshPeriod,
-				sourceAttr: SourceAttr{
-					External: true,
-				},
+		for _, external := range s.externals[externalRelPath] {
+			destAbsPath := s.destDirAbsPath.Join(externalRelPath)
+			switch _, err := s.system.Lstat(destAbsPath); {
+			case errors.Is(err, fs.ErrNotExist):
+				// FIXME add support for using builtin git
+				args := []string{"clone"}
+				args = append(args, external.Clone.Args...)
+				args = append(args, external.URL, destAbsPath.String())
+				cmd := exec.Command("git", args...)
+				cmd.Stdin = os.Stdin
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				sourceStateCommand := &SourceStateCommand{
+					cmd:           cmd,
+					origin:        external,
+					forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
+					refreshPeriod: external.RefreshPeriod,
+					sourceAttr: SourceAttr{
+						External: true,
+					},
+				}
+				allSourceStateEntries[externalRelPath] = append(
+					allSourceStateEntries[externalRelPath],
+					sourceStateCommand,
+				)
+			case err != nil:
+				return err
+			default:
+				// FIXME add support for using builtin git
+				args := []string{"pull"}
+				args = append(args, external.Pull.Args...)
+				cmd := exec.Command("git", args...)
+				cmd.Dir = destAbsPath.String()
+				cmd.Stdin = os.Stdin
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				sourceStateCommand := &SourceStateCommand{
+					cmd:           cmd,
+					origin:        external,
+					forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
+					refreshPeriod: external.RefreshPeriod,
+					sourceAttr: SourceAttr{
+						External: true,
+					},
+				}
+				allSourceStateEntries[externalRelPath] = append(
+					allSourceStateEntries[externalRelPath],
+					sourceStateCommand,
+				)
 			}
-			allSourceStateEntries[externalRelPath] = append(
-				allSourceStateEntries[externalRelPath],
-				sourceStateCommand,
-			)
-		case err != nil:
-			return err
-		default:
-			// FIXME add support for using builtin git
-			args := []string{"pull"}
-			args = append(args, external.Pull.Args...)
-			cmd := exec.Command("git", args...)
-			cmd.Dir = destAbsPath.String()
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			sourceStateCommand := &SourceStateCommand{
-				cmd:           cmd,
-				origin:        external,
-				forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
-				refreshPeriod: external.RefreshPeriod,
-				sourceAttr: SourceAttr{
-					External: true,
-				},
-			}
-			allSourceStateEntries[externalRelPath] = append(
-				allSourceStateEntries[externalRelPath],
-				sourceStateCommand,
-			)
 		}
 	}
 
@@ -1332,11 +1336,8 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
 		}
 		targetRelPath := parentTargetSourceRelPath.JoinString(path)
-		if _, ok := s.externals[targetRelPath]; ok {
-			return fmt.Errorf("%s: duplicate externals", targetRelPath)
-		}
 		external.sourceAbsPath = sourceAbsPath
-		s.externals[targetRelPath] = external
+		s.externals[targetRelPath] = append(s.externals[targetRelPath], external)
 	}
 	return nil
 }

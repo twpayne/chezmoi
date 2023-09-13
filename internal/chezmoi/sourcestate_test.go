@@ -1528,7 +1528,7 @@ func TestSourceStateReadExternal(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		root              any
-		expectedExternals map[RelPath]*External
+		expectedExternals map[RelPath][]*External
 	}{
 		{
 			name: "external_yaml",
@@ -1541,11 +1541,13 @@ func TestSourceStateReadExternal(t *testing.T) {
 					),
 				},
 			},
-			expectedExternals: map[RelPath]*External{
+			expectedExternals: map[RelPath][]*External{
 				NewRelPath("file"): {
-					Type:          "file",
-					URL:           httpServer.URL + "/file",
-					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.yaml"),
+					{
+						Type:          "file",
+						URL:           httpServer.URL + "/file",
+						sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.yaml"),
+					},
 				},
 			},
 		},
@@ -1560,11 +1562,13 @@ func TestSourceStateReadExternal(t *testing.T) {
 					),
 				},
 			},
-			expectedExternals: map[RelPath]*External{
+			expectedExternals: map[RelPath][]*External{
 				NewRelPath("file"): {
-					Type:          "file",
-					URL:           httpServer.URL + "/file",
-					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.toml"),
+					{
+						Type:          "file",
+						URL:           httpServer.URL + "/file",
+						sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.toml"),
+					},
 				},
 			},
 		},
@@ -1579,11 +1583,13 @@ func TestSourceStateReadExternal(t *testing.T) {
 					),
 				},
 			},
-			expectedExternals: map[RelPath]*External{
+			expectedExternals: map[RelPath][]*External{
 				NewRelPath(".dir/file"): {
-					Type:          "file",
-					URL:           httpServer.URL + "/file",
-					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/dot_dir/.chezmoiexternal.yaml"),
+					{
+						Type:          "file",
+						URL:           httpServer.URL + "/file",
+						sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/dot_dir/.chezmoiexternal.yaml"),
+					},
 				},
 			},
 		},
@@ -1689,14 +1695,16 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 					return now
 				},
 			}))
-			assert.Equal(t, map[RelPath]*External{
+			assert.Equal(t, map[RelPath][]*External{
 				NewRelPath(".dir"): {
-					Type:          "archive",
-					URL:           httpServer.URL + "/archive.tar",
-					RefreshPeriod: Duration(1 * time.Minute),
-					sourceAbsPath: NewAbsPath(
-						"/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
-					),
+					{
+						Type:          "archive",
+						URL:           httpServer.URL + "/archive.tar",
+						RefreshPeriod: Duration(1 * time.Minute),
+						sourceAbsPath: NewAbsPath(
+							"/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
+						),
+					},
 				},
 			}, s.externals)
 		}
