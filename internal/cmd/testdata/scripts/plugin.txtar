@@ -1,0 +1,16 @@
+[unix] chmod 755 bin/chezmoi-plugin
+
+# test that chezmoi returns unknown command errors for unknown commands
+! exec chezmoi unknown
+stderr 'unknown command'
+
+# test that chezmoi executes plugins
+exec chezmoi plugin
+stdout hello
+
+-- bin/chezmoi-plugin --
+#!/bin/sh
+
+echo hello
+-- bin/chezmoi-plugin.cmd --
+@echo hello
