@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"regexp"
 	"runtime/debug"
 	"strconv"
@@ -105,7 +106,18 @@ func (v VersionInfo) MarshalZerologObject(e *zerolog.Event) {
 
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
-	if err := runMain(versionInfo, args); err != nil {
+	err := runMain(versionInfo, args)
+	if err != nil && strings.Contains(err.Error(), "unknown command") &&
+		len(args) > 0 { // FIXME find a better way of detecting unknown commands
+		if name, err2 := exec.LookPath("chezmoi-" + args[0]); err2 == nil {
+			cmd := exec.Command(name, args[1:]...)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err = cmd.Run()
+		}
+	}
+	if err != nil {
 		var errExitCode chezmoi.ExitCodeError
 		if errors.As(err, &errExitCode) {
 			return int(errExitCode)
