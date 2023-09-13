@@ -1,0 +1,41 @@
+exec tar czf www/archive1.tar.gz archive1
+exec tar czf www/archive2.tar.gz archive2
+
+httpd www
+
+# test that chezmoi externals allow multiple non-conflicting archives
+exec chezmoi apply
+cmp $HOME/.dir/file1 archive1/file1
+cmp $HOME/.dir/file2 archive2/file2
+
+chhome home2/user
+
+# test that chezmoi externals do not allow multiple conflicting archives
+! exec chezmoi apply
+stderr 'inconsistent state'
+
+-- archive1/file1 --
+# contents of file1
+-- archive2/file2 --
+# contents of file2
+-- home/user/.local/share/chezmoi/.chezmoiexternals/archive1.toml.tmpl --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
+    stripComponents = 1
+-- home/user/.local/share/chezmoi/.chezmoiexternals/archive2.toml.tmpl --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive2.tar.gz"
+    stripComponents = 1
+-- home2/user/.local/share/chezmoi/.chezmoiexternals/archive1.toml.tmpl --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
+    stripComponents = 1
+-- home2/user/.local/share/chezmoi/.chezmoiexternals/archive2.toml.tmpl --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
+    stripComponents = 1
+-- www/.keep --
