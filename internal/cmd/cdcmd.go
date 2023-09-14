@@ -67,6 +67,16 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 			dir = sourceAbsPaths[0]
 		}
 	}
+
+	fileInfo, err := c.baseSystem.Stat(dir)
+	if err != nil {
+		return err
+	}
+
+	if !fileInfo.IsDir() {
+		return errors.New("cd target is not a directory")
+	}
+
 	return c.run(dir, cdCommand, cdArgs)
 }
 
