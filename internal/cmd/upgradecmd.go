@@ -20,7 +20,7 @@ import (
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v54/github"
+	"github.com/google/go-github/v55/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
 
