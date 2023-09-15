@@ -350,7 +350,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			pathStyle: pathStyleRelative,
+			pathStyle: chezmoi.PathStyleRelative,
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
@@ -359,7 +359,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		unmanaged: unmanagedCmdConfig{
-			pathStyle: pathStyleRelative,
+			pathStyle: chezmoi.PathStyleRelative,
 		},
 		upgrade: upgradeCmdConfig{
 			owner: gitHubOwner,
@@ -2677,6 +2677,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Status: statusCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			PathStyle: chezmoi.PathStyleRelative.Copy(),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},

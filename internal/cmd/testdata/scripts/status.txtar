@@ -7,6 +7,14 @@ mksourcedir
 exec chezmoi status
 cmp stdout golden/status
 
+# test that the --path-style=absolute works as expected
+[unix] exec chezmoi status --path-style=absolute
+[unix] cmpenv stdout golden/status-absolute-flag
+
+# test that chezmoi status lists all files to be added
+exec chezmoi status
+cmp stdout golden/status
+
 # test that chezmoi status omits applied files
 exec chezmoi apply --force $HOME${/}.file
 exec chezmoi status
@@ -27,6 +35,12 @@ edit $CHEZMOISOURCEDIR/dot_file
 exec chezmoi status
 ! stdout .
 
+# test that the pathStyle config option works as expected
+[unix] chhome home2/user
+[unix] mksourcedir
+[unix] exec chezmoi status
+[unix] cmpenv stdout golden/status-absolute-config
+
 -- golden/status --
  A .create
  A .dir
@@ -40,6 +54,32 @@ exec chezmoi status
  A .readonly
  A .symlink
  A .template
+-- golden/status-absolute-config --
+ A $WORK/home2/user/.create
+ A $WORK/home2/user/.dir
+ A $WORK/home2/user/.dir/file
+ A $WORK/home2/user/.dir/subdir
+ A $WORK/home2/user/.dir/subdir/file
+ A $WORK/home2/user/.empty
+ A $WORK/home2/user/.executable
+ A $WORK/home2/user/.file
+ A $WORK/home2/user/.private
+ A $WORK/home2/user/.readonly
+ A $WORK/home2/user/.symlink
+ A $WORK/home2/user/.template
+-- golden/status-absolute-flag --
+ A $WORK/home/user/.create
+ A $WORK/home/user/.dir
+ A $WORK/home/user/.dir/file
+ A $WORK/home/user/.dir/subdir
+ A $WORK/home/user/.dir/subdir/file
+ A $WORK/home/user/.empty
+ A $WORK/home/user/.executable
+ A $WORK/home/user/.file
+ A $WORK/home/user/.private
+ A $WORK/home/user/.readonly
+ A $WORK/home/user/.symlink
+ A $WORK/home/user/.template
 -- golden/status-except-dot-file --
  A .create
  A .dir
@@ -54,3 +94,6 @@ exec chezmoi status
  A .template
 -- golden/status-modified-file --
 MM .file
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[status]
+    pathStyle = "absolute"

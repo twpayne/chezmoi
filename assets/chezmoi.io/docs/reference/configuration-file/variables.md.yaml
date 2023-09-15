@@ -353,6 +353,10 @@ sections:
     exclude:
       type: '[]string'
       description: Entry types to exclude from status
+    pathStyle:
+      type: 'string'
+      default: '`relative`'
+      description: How to present the path to files in status output
   template:
     options:
       type: '[]string'

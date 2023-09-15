@@ -13,7 +13,7 @@ import (
 )
 
 type unmanagedCmdConfig struct {
-	pathStyle pathStyle
+	pathStyle chezmoi.PathStyle
 }
 
 func (c *Config) newUnmanagedCmd() *cobra.Command {
@@ -29,7 +29,7 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 	flags := unmanagedCmd.Flags()
 	flags.VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
 
-	if err := unmanagedCmd.RegisterFlagCompletionFunc("path-style", pathStyleFlagCompletionFunc); err != nil {
+	if err := unmanagedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleFlagCompletionFunc); err != nil {
 		panic(err)
 	}
 
@@ -104,9 +104,9 @@ func (c *Config) runUnmanagedCmd(
 	sort.Sort(sortedRelPaths)
 	for _, relPath := range sortedRelPaths {
 		switch c.unmanaged.pathStyle {
-		case pathStyleAbsolute:
+		case chezmoi.PathStyleAbsolute:
 			fmt.Fprintln(&builder, c.DestDirAbsPath.Join(relPath))
-		case pathStyleRelative:
+		case chezmoi.PathStyleRelative:
 			fmt.Fprintln(&builder, relPath)
 		}
 	}

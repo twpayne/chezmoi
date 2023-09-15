@@ -11,7 +11,8 @@ import (
 )
 
 type statusCmdConfig struct {
-	Exclude   *chezmoi.EntryTypeSet `json:"exclude" mapstructure:"exclude" yaml:"exclude"`
+	Exclude   *chezmoi.EntryTypeSet `json:"exclude"   mapstructure:"exclude"   yaml:"exclude"`
+	PathStyle *chezmoi.PathStyle    `json:"pathStyle" mapstructure:"pathStyle" yaml:"pathStyle"`
 	include   *chezmoi.EntryTypeSet
 	init      bool
 	recursive bool
@@ -34,6 +35,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 
 	flags := statusCmd.Flags()
 	flags.VarP(c.Status.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.Status.PathStyle, "path-style", "p", "Path style")
 	flags.VarP(c.Status.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Status.init, "init", c.Status.init, "Recreate config file from template")
 	flags.BoolVarP(
@@ -73,8 +75,21 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 			x = statusRune(lastWrittenEntryState, actualEntryState)
 			y = statusRune(actualEntryState, targetEntryState)
 		}
+
 		if x != ' ' || y != ' ' {
-			fmt.Fprintf(&builder, "%c%c %s\n", x, y, targetRelPath)
+			var path string
+			switch *c.Status.PathStyle {
+			case chezmoi.PathStyleAbsolute:
+				path = c.DestDirAbsPath.Join(targetRelPath).String()
+			case chezmoi.PathStyleRelative:
+				path = targetRelPath.String()
+			case chezmoi.PathStyleSourceAbsolute:
+				return fmt.Errorf("source-absolute not supported for status")
+			case chezmoi.PathStyleSourceRelative:
+				return fmt.Errorf("source-relative not supported for status")
+			}
+
+			fmt.Fprintf(&builder, "%c%c %s\n", x, y, path)
 		}
 		return fs.SkipDir
 	}
