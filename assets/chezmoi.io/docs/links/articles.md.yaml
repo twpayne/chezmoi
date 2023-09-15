@@ -333,3 +333,13 @@ articles:
   version: 2.36.1
   title: Dotfiles with chezmoi
   url: https://www.steveyackey.com/post/dotfiles-with-chezmoi/
+- date: '2023-09-07'
+  version: 2.39.1
+  lang: JP
+  title: 【chezmoi】dotfileのセキュアな値をdashlaneから参照できるようにする
+  url: https://zenn.dev/hulk510/articles/chezmoi-dashlane
+- date: '2023-09-13'
+  version: 2.39.1
+  lang: JP
+  title: 複数OSに対応しているchezmoiを使ってdotfilesを効率的に管理する
+  url: https://www.asobou.co.jp/blog/web/chezmoi
