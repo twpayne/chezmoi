@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -68,13 +69,11 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	fileInfo, err := c.baseSystem.Stat(dir)
-	if err != nil {
+	switch fileInfo, err := c.baseSystem.Stat(dir); {
+	case err != nil:
 		return err
-	}
-
-	if !fileInfo.IsDir() {
-		return errors.New("cd target is not a directory")
+	case !fileInfo.IsDir():
+		return fmt.Errorf("%s: not a directory", dir)
 	}
 
 	return c.run(dir, cdCommand, cdArgs)

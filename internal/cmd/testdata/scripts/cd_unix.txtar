@@ -25,6 +25,14 @@ env SHELL='shell arg1'
 exec chezmoi cd
 stdout '^shell arg1$'
 
+# test that chezmoi cd will not try to change to a non-directory
+! exec chezmoi cd $HOME${/}.file
+stderr 'not a directory'
+
+# test that cd will not try to change to a non-existent directory
+! exec chezmoi cd $HOME${/}.notexist
+stderr 'not managed'
+
 chhome home2/user
 
 # test chezmoi cd with shell command set in config file overrides $SHELL environment variable
@@ -48,6 +56,7 @@ pwd > $WORK/pwd.log
 echo shell $*
 -- home/user/.dir/.keep --
 -- home/user/.local/share/chezmoi/dot_dir/.keep --
+-- home/user/.local/share/chezmoi/dot_file --
 -- home2/user/.config/chezmoi/chezmoi.toml --
 [cd]
     command = "shell"
