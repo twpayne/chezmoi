@@ -12,7 +12,7 @@ import (
 
 type managedCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
-	pathStyle pathStyle
+	pathStyle chezmoi.PathStyle
 }
 
 func (c *Config) newManagedCmd() *cobra.Command {
@@ -32,7 +32,7 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	flags.VarP(&c.managed.pathStyle, "path-style", "p", "Path style")
 
 	registerExcludeIncludeFlagCompletionFuncs(managedCmd)
-	if err := managedCmd.RegisterFlagCompletionFunc("path-style", pathStyleFlagCompletionFunc); err != nil {
+	if err := managedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleFlagCompletionFunc); err != nil {
 		panic(err)
 	}
 
@@ -91,13 +91,13 @@ func (c *Config) runManagedCmd(
 
 			var path string
 			switch c.managed.pathStyle {
-			case pathStyleAbsolute:
+			case chezmoi.PathStyleAbsolute:
 				path = c.DestDirAbsPath.Join(targetRelPath).String()
-			case pathStyleRelative:
+			case chezmoi.PathStyleRelative:
 				path = targetRelPath.String()
-			case pathStyleSourceAbsolute:
+			case chezmoi.PathStyleSourceAbsolute:
 				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()).String()
-			case pathStyleSourceRelative:
+			case chezmoi.PathStyleSourceRelative:
 				path = sourceStateEntry.SourceRelPath().RelPath().String()
 			}
 			paths = append(paths, path)
