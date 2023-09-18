@@ -2,7 +2,7 @@
 
 chezmoi is written in [Go](https://golang.org) and development happens on
 [GitHub](https://github.com). chezmoi is a standard Go project, using standard
-Go tooling. chezmoi requires Go 1.19 or later.
+Go tooling. chezmoi requires Go 1.20 or later.
 
 Checkout chezmoi:
 
