@@ -234,10 +234,12 @@ type Config struct {
 	templateData        *templateData
 	runEnv              []string
 
-	stdin       io.Reader
-	stdout      io.Writer
-	stderr      io.Writer
-	bufioReader *bufio.Reader
+	stdin             io.Reader
+	stdout            io.Writer
+	stderr            io.Writer
+	bufioReader       *bufio.Reader
+	diffPagerCmdStdin io.WriteCloser
+	diffPagerCmd      *exec.Cmd
 
 	tempDirs map[string]chezmoi.AbsPath
 
@@ -1286,6 +1288,45 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 	}
 }
 
+// getDiffPager returns the pager for diff output.
+func (c *Config) getDiffPager() string {
+	switch {
+	case c.noPager:
+		return ""
+	case c.Diff.Pager != defaultSentinel:
+		return c.Diff.Pager
+	default:
+		return c.Pager
+	}
+}
+
+// getDiffPagerCmd returns a command to run the diff pager, or nil if there is
+// no diff pager configured.
+func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
+	pager := c.getDiffPager()
+	if pager == "" {
+		return nil, nil
+	}
+
+	// If the pager command contains any spaces, assume that it is a full
+	// shell command to be executed via the user's shell. Otherwise, execute
+	// it directly.
+	var pagerCmd *exec.Cmd
+	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
+		shellCommand, _ := shell.CurrentUserShell()
+		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
+		if err != nil {
+			return nil, err
+		}
+		pagerCmd = exec.Command(shellCommand, shellArgs...)
+	} else {
+		pagerCmd = exec.Command(pager)
+	}
+	pagerCmd.Stdout = c.stdout
+	pagerCmd.Stderr = c.stderr
+	return pagerCmd, nil
+}
+
 func (c *Config) getHTTPClient() (*http.Client, error) {
 	if c.httpClient != nil {
 		return c.httpClient, nil
@@ -1685,6 +1726,16 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		return err
 	}
 
+	// Wait for any diff pager process to terminate.
+	if c.diffPagerCmd != nil {
+		if err := c.diffPagerCmdStdin.Close(); err != nil {
+			return err
+		}
+		if err := chezmoilog.LogCmdWait(c.diffPagerCmd); err != nil {
+			return err
+		}
+	}
+
 	if annotations.hasTag(modifiesConfigFile) {
 		configFileContents, err := c.baseSystem.ReadFile(c.configFileAbsPath)
 		switch {
@@ -1746,35 +1797,15 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 
 // pageDiffOutput pages the diff output to stdout.
 func (c *Config) pageDiffOutput(output string) error {
-	pager := c.Diff.Pager
-	switch {
-	case c.noPager:
-		pager = ""
-	case pager == defaultSentinel:
-		pager = c.Pager // Use default pager.
-	}
-	if pager == "" {
+	switch pagerCmd, err := c.getDiffPagerCmd(); {
+	case err != nil:
+		return err
+	case pagerCmd == nil:
 		return c.writeOutputString(output)
+	default:
+		pagerCmd.Stdin = bytes.NewBufferString(output)
+		return chezmoilog.LogCmdRun(pagerCmd)
 	}
-
-	// If the pager command contains any spaces, assume that it is a full
-	// shell command to be executed via the user's shell. Otherwise, execute
-	// it directly.
-	var pagerCmd *exec.Cmd
-	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
-		shellCommand, _ := shell.CurrentUserShell()
-		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
-		if err != nil {
-			return err
-		}
-		pagerCmd = exec.Command(shellCommand, shellArgs...)
-	} else {
-		pagerCmd = exec.Command(pager)
-	}
-	pagerCmd.Stdin = bytes.NewBufferString(output)
-	pagerCmd.Stdout = c.stdout
-	pagerCmd.Stderr = c.stderr
-	return chezmoilog.LogCmdRun(pagerCmd)
 }
 
 // persistentPreRunRootE performs pre-run actions for the root command.
@@ -1951,13 +1982,31 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	if !annotations.hasTag(modifiesSourceDirectory) {
 		c.sourceSystem = chezmoi.NewReadOnlySystem(c.sourceSystem)
 	}
-	if c.dryRun {
+	if c.dryRun || annotations.hasTag(dryRun) {
 		c.sourceSystem = chezmoi.NewDryRunSystem(c.sourceSystem)
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
-	if c.Verbose {
-		c.sourceSystem = c.newDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath)
-		c.destSystem = c.newDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath)
+	if c.Verbose || annotations.hasTag(outputsDiff) {
+		// If the user has configured a diff pager, then start it as a process.
+		// Otherwise, write the diff output directly to stdout.
+		var writer io.Writer
+		switch pagerCmd, err := c.getDiffPagerCmd(); {
+		case err != nil:
+			return err
+		case pagerCmd == nil:
+			writer = c.stdout
+		default:
+			pipeReader, pipeWriter := io.Pipe()
+			pagerCmd.Stdin = pipeReader
+			if err := chezmoilog.LogCmdStart(pagerCmd); err != nil {
+				return err
+			}
+			writer = pipeWriter
+			c.diffPagerCmd = pagerCmd
+			c.diffPagerCmdStdin = pipeWriter
+		}
+		c.sourceSystem = c.newDiffSystem(c.sourceSystem, writer, c.SourceDirAbsPath)
+		c.destSystem = c.newDiffSystem(c.destSystem, writer, c.DestDirAbsPath)
 	}
 
 	if err := c.setEncryption(); err != nil {

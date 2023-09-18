@@ -26,6 +26,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runStatusCmd,
 		Annotations: newAnnotations(
+			dryRun,
 			modifiesDestinationDirectory,
 			persistentStateModeReadMockWrite,
 			requiresSourceDirectory,
@@ -51,7 +52,6 @@ func (c *Config) newStatusCmd() *cobra.Command {
 
 func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 	builder := strings.Builder{}
-	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	preApplyFunc := func(
 		targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
 	) error {
@@ -78,7 +78,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 		}
 		return fs.SkipDir
 	}
-	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:          cmd,
 		filter:       chezmoi.NewEntryTypeFilter(c.Status.include.Bits(), c.Status.Exclude.Bits()),
 		init:         c.Status.init,

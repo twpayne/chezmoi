@@ -168,6 +168,30 @@ func LogCmdRun(cmd *exec.Cmd) error {
 	return err
 }
 
+// LogCmdStart calls cmd.Start, logs the result, and returns the result.
+func LogCmdStart(cmd *exec.Cmd) error {
+	start := time.Now()
+	err := cmd.Start()
+	log.Err(err).
+		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Time("start", start).
+		Msg("Start")
+	return err
+}
+
+// LogCmdWait calls cmd.Wait, logs the result, and returns the result.
+func LogCmdWait(cmd *exec.Cmd) error {
+	err := cmd.Wait()
+	end := time.Now()
+	log.Err(err).
+		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Time("end", end).
+		Msg("Wait")
+	return err
+}
+
 // Output returns the first few bytes of output if err is nil, otherwise it
 // returns the full output.
 func Output(data []byte, err error) []byte {

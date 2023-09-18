@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -30,6 +28,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runDiffCmd,
 		Annotations: newAnnotations(
+			dryRun,
+			outputsDiff,
 			persistentStateModeReadMockWrite,
 			requiresSourceDirectory,
 		),
@@ -68,27 +68,11 @@ func (c *Config) newDiffCmd() *cobra.Command {
 }
 
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
-	builder := &strings.Builder{}
-	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	diffSystem := c.newDiffSystem(dryRunSystem, builder, c.DestDirAbsPath)
-	if err = c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	return c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:       cmd,
 		filter:    chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 		init:      c.Diff.init,
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,
-	}); err != nil {
-		return
-	}
-	if err = c.pageDiffOutput(builder.String()); err != nil {
-		return
-	}
-	if closer, ok := diffSystem.(interface {
-		Close() error
-	}); ok {
-		if err = closer.Close(); err != nil {
-			return
-		}
-	}
-	return
+	})
 }
