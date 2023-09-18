@@ -21,6 +21,7 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 		Example: example("merge-all"),
 		RunE:    c.runMergeAllCmd,
 		Annotations: newAnnotations(
+			dryRun,
 			modifiesSourceDirectory,
 			requiresSourceDirectory,
 		),
@@ -41,7 +42,6 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 
 func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 	var targetRelPaths []chezmoi.RelPath
-	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	preApplyFunc := func(
 		targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
 	) error {
@@ -51,7 +51,7 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 		}
 		return fs.SkipDir
 	}
-	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:          cmd,
 		filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		init:         c.mergeAll.init,

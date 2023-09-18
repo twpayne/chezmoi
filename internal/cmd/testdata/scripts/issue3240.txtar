@@ -1,0 +1,26 @@
+[windows] skip 'UNIX only'
+
+chmod 777 bin/custom-pager
+
+# test that chezmoi diff uses the custom pager if set
+exec chezmoi diff
+cmp stdout golden/stdout
+
+# test that chezmoi diff --verbose has identical output
+exec chezmoi diff --verbose
+cmp stdout golden/stdout
+
+# test that chezmoi apply uses the custom pager if set
+exec chezmoi apply --dry-run --verbose
+stdout custom-pager
+
+-- bin/custom-pager --
+#!/bin/sh
+
+echo custom-pager
+-- golden/stdout --
+custom-pager
+-- home/user/.config/chezmoi/chezmoi.toml --
+pager = "custom-pager"
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
