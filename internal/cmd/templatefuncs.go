@@ -476,13 +476,11 @@ func (c *Config) toPrettyJsonTemplateFunc(args ...any) string { //nolint:revive,
 	default:
 		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
 	}
-	var builder strings.Builder
-	encoder := json.NewEncoder(&builder)
-	encoder.SetIndent("", indent)
-	if err := encoder.Encode(value); err != nil {
+	prettyJSON, err := json.MarshalIndent(value, "", indent)
+	if err != nil {
 		panic(err)
 	}
-	return builder.String()
+	return string(prettyJSON) + "\n"
 }
 
 func (c *Config) toTomlTemplateFunc(data any) string {
