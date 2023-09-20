@@ -349,6 +349,24 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	}
 }
 
+func (c *Config) lookOnePathTemplateFunc(fileList []any) string {
+	files, err := anySliceToStringSlice(fileList)
+	if err != nil {
+		panic(err)
+	}
+
+	switch path, err := chezmoi.LookOnePath(files); {
+	case err == nil:
+		return path
+	case errors.Is(err, exec.ErrNotFound):
+		return ""
+	case errors.Is(err, fs.ErrNotExist):
+		return ""
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) isExecutableTemplateFunc(file string) bool {
 	switch fileInfo, err := c.fileSystem.Stat(file); {
 	case err == nil:

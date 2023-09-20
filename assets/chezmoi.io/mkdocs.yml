@@ -202,6 +202,7 @@ nav:
       - isExecutable: reference/templates/functions/isExecutable.md
       - joinPath: reference/templates/functions/joinPath.md
       - jq: reference/templates/functions/jq.md
+      - lookOnePath: reference/templates/functions/lookOnePath.md
       - lookPath: reference/templates/functions/lookPath.md
       - lstat: reference/templates/functions/lstat.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md

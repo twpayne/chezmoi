@@ -118,6 +118,10 @@ stdout go$exe
 exec chezmoi execute-template '{{ lookPath "/non-existing-file" }}'
 ! stdout .
 
+# test lookPath template function to find in PATH with a list
+exec chezmoi execute-template '{{ lookOnePath (list "no-go" "go") }}'
+stdout go$exe
+
 # test lstat template function
 exec chezmoi execute-template '{{ (joinPath .chezmoi.homeDir "symlink" | lstat).type }}'
 stdout ^symlink$

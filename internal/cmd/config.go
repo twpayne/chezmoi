@@ -441,6 +441,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"keyring":                  c.keyringTemplateFunc,
 		"lastpass":                 c.lastpassTemplateFunc,
 		"lastpassRaw":              c.lastpassRawTemplateFunc,
+		"lookOnePath":              c.lookOnePathTemplateFunc,
 		"lookPath":                 c.lookPathTemplateFunc,
 		"lstat":                    c.lstatTemplateFunc,
 		"mozillaInstallHash":       c.mozillaInstallHashTemplateFunc,

@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"os/exec"
+	"strings"
 	"sync"
 )
 
@@ -13,17 +14,29 @@ var (
 // LookPath is like os/exec.LookPath except that the first positive result is
 // cached.
 func LookPath(file string) (string, error) {
+	return LookOnePath([]string{file})
+}
+
+// LookOnePath is like os/exec.LookPath where any one of the provided files
+// will be returned and the first positive result is cached.
+func LookOnePath(files []string) (string, error) {
 	lookPathCacheMutex.Lock()
 	defer lookPathCacheMutex.Unlock()
 
-	if path, ok := lookPathCache[file]; ok {
+	key := strings.Join(files, "\x00")
+
+	if path, ok := lookPathCache[key]; ok {
 		return path, nil
 	}
 
-	path, err := exec.LookPath(file)
-	if err == nil {
-		lookPathCache[file] = path
+	for _, file := range files {
+		path, err := exec.LookPath(file)
+		if err == nil {
+			lookPathCache[key] = path
+
+			return path, nil
+		}
 	}
 
-	return path, err
+	return "", exec.ErrNotFound
 }
