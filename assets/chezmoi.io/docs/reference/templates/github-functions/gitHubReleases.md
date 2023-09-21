@@ -22,7 +22,7 @@ Calls to `gitHubReleases` are cached so calling `gitHubReleases` with the same
 !!! warning
 
     The values returned by `gitHubReleases` are not directly queryable via the
-    [`jq`](/reference/templates/functions/jq.md) function and must instead be
+    [`jq`](/reference/templates/functions/jq/) function and must instead be
     converted through JSON:
 
     ```

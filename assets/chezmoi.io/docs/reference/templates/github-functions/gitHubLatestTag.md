@@ -5,7 +5,7 @@
 bindings](https://pkg.go.dev/github.com/google/go-github/v55/github#RepositoryTag).
 
 Calls to `gitHubLatestTag` are cached the same as
-[`githubTags`](/reference/templates/functions/gitHubTags.md), so calling
+[`githubTags`](/reference/templates/functions/gitHubTags/), so calling
 `gitHubLatestTag` with the same *owner-repo* will only result in one call to the
 GitHub API.
 
