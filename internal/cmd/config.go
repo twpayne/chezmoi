@@ -1992,7 +1992,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.sourceSystem = chezmoi.NewDryRunSystem(c.sourceSystem)
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
-	if c.Verbose || annotations.hasTag(outputsDiff) {
+	if annotations.hasTag(outputsDiff) ||
+		c.Verbose &&
+			(annotations.hasTag(modifiesDestinationDirectory) || annotations.hasTag(modifiesSourceDirectory)) {
 		// If the user has configured a diff pager, then start it as a process.
 		// Otherwise, write the diff output directly to stdout.
 		var writer io.Writer
