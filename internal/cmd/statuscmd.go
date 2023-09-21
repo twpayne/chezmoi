@@ -28,7 +28,6 @@ func (c *Config) newStatusCmd() *cobra.Command {
 		RunE:              c.runStatusCmd,
 		Annotations: newAnnotations(
 			dryRun,
-			modifiesDestinationDirectory,
 			persistentStateModeReadMockWrite,
 			requiresSourceDirectory,
 		),

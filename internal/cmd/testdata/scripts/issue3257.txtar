@@ -1,0 +1,26 @@
+[windows] skip 'UNIX only'
+
+chmod 755 bin/custom-pager
+
+# test that chezmoi add invokes the pager when verbose is set
+exec chezmoi add $HOME${/}.file
+stdout custom-pager
+
+# test chat chezmoi chattr invokes the pager when verbose is set
+exec chezmoi chattr +private $HOME${/}.file
+stdout custom-pager
+
+# test that chezmoi status does not invoke the pager when verbose is set
+exec chezmoi status
+! stdout custom-pager
+
+-- bin/custom-pager --
+#!/bin/sh
+
+echo custom-pager
+-- home/user/.config/chezmoi/chezmoi.yaml --
+pager: custom-pager
+verbose: true
+-- home/user/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/.keep --
