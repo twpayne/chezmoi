@@ -1,5 +1,8 @@
 symlink archive/dir/symlink -> file
+[darwin] exec xattr -w -s io.chezmoi.test metadata-test archive/dir archive/dir/symlink archive/dir/file
 exec tar czf www/archive.tar.gz archive
+# Force the collection of the Mac metadata for the home15/user test
+[darwin] exec tar czf www/archive-mac-metadata.tar.gz --mac-metadata archive
 
 httpd www
 
@@ -116,6 +119,12 @@ chhome home14/user
 exec chezmoi apply
 cmp $HOME/.file golden/dir/file
 
+[darwin] chhome home15/user
+
+# test that chezmoi managed --include=externals lists external targets including AppleDouble files
+[darwin] exec chezmoi managed --include=externals
+[darwin] cmp stdout golden/managed-appledouble
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -125,6 +134,14 @@ cmp $HOME/.file golden/dir/file
 -- golden/managed --
 .dir
 .dir/dir
+.dir/dir/file
+.dir/dir/symlink
+-- golden/managed-appledouble --
+.dir
+.dir/._dir
+.dir/dir
+.dir/dir/._file
+.dir/dir/._symlink
 .dir/dir/file
 .dir/dir/symlink
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
@@ -168,6 +185,14 @@ cmp $HOME/.file golden/dir/file
     url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
     path = "dir/file"
     stripComponents = 1
+-- home15/user/.dir/file --
+-- home15/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive-mac-metadata.tar.gz
+    archive:
+      extractAppleDoubleFiles: true
+    stripComponents: 1
 -- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
     type = "file"

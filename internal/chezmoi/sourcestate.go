@@ -55,6 +55,10 @@ var (
 	)
 	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
 	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
+
+	// AppleDouble constants.
+	appleDoubleMagicCode = []byte{0x00, 0x05, 0x16, 0x07}
+	appleDoubleVersion   = []byte{0x00, 0x02, 0x00, 0x00}
 )
 
 // An External is an external source.
@@ -80,9 +84,12 @@ type External struct {
 		Command string   `json:"command" toml:"command" yaml:"command"`
 		Args    []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"filter"          toml:"filter"          yaml:"filter"`
-	Format      ArchiveFormat `json:"format"          toml:"format"          yaml:"format"`
-	Include     []string      `json:"include"         toml:"include"         yaml:"include"`
-	ArchivePath string        `json:"path"            toml:"path"            yaml:"path"`
+	Format  ArchiveFormat `json:"format"          toml:"format"          yaml:"format"`
+	Archive struct {
+		ExtractAppleDoubleFiles bool `json:"extractAppleDoubleFiles" toml:"extractAppleDoubleFiles" yaml:"extractAppleDoubleFiles"`
+	} `json:"archive"         toml:"archive"         yaml:"archive"`
+	Include     []string `json:"include"         toml:"include"         yaml:"include"`
+	ArchivePath string   `json:"path"            toml:"path"            yaml:"path"`
 	Pull        struct {
 		Args []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"pull"            toml:"pull"            yaml:"pull"`
@@ -2338,6 +2345,11 @@ func (s *SourceState) readExternalArchive(
 			if err != nil {
 				return fmt.Errorf("%s: %w", name, err)
 			}
+
+			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(name, contents) {
+				return nil
+			}
+
 			lazyContents := newLazyContents(contents)
 			fileAttr := FileAttr{
 				TargetName: fileInfo.Name(),
@@ -2470,6 +2482,11 @@ func (s *SourceState) readExternalArchiveFile(
 			if err != nil {
 				return fmt.Errorf("%s: %w", name, err)
 			}
+
+			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(name, contents) {
+				return nil
+			}
+
 			lazyContents := newLazyContents(contents)
 			fileAttr := FileAttr{
 				TargetName: fileInfo.Name(),
@@ -2814,4 +2831,13 @@ func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
 		}
 	}
 	return true
+}
+
+// isAppleDoubleFile returns true if the file looks like and has the
+// expected signature of an AppleDouble file.
+func isAppleDoubleFile(name string, contents []byte) bool {
+	return strings.HasPrefix(path.Base(name), "._") &&
+		len(contents) >= 8 &&
+		bytes.Equal(appleDoubleMagicCode, contents[0:4]) &&
+		bytes.Equal(appleDoubleVersion, contents[4:8])
 }
