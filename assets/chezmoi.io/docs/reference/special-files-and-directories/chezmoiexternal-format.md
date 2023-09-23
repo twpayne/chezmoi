@@ -19,27 +19,28 @@ will create them as regular directories.
 
 Entries may have the following fields:
 
-| Variable          | Type     | Default value | Description                                                      |
-| ----------------- | -------- | ------------- | ---------------------------------------------------------------- |
-| `type`            | string   | *none*        | External type (`file`, `archive`, `archive-file`, or `git-repo`) |
-| `encrypted`       | bool     | `false`       | Whether the external is encrypted                                |
-| `exact`           | bool     | `false`       | Add `exact_` attribute to directories in archive                 |
-| `exclude`         | []string | *none*        | Patterns to exclude from archive                                 |
-| `executable`      | bool     | `false`       | Add `executable_` attribute to file                              |
-| `format`          | string   | *autodetect*  | Format of archive                                                |
-| `path`            | string   | *none*        | Path to file in archive                                          |
-| `include`         | []string | *none*        | Patterns to include from archive                                 |
-| `refreshPeriod`   | duration | `0`           | Refresh period                                                   |
-| `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives    |
-| `url`             | string   | *none*        | URL                                                              |
-| `checksum.sha256` | string   | *none*        | Expected SHA256 checksum of data                                 |
-| `checksum.sha384` | string   | *none*        | Expected SHA384 checksum of data                                 |
-| `checksum.sha512` | string   | *none*        | Expected SHA512 checksum of data                                 |
-| `checksum.size`   | int      | *none*        | Expected size of data                                            |
-| `clone.args`      | []string | *none*        | Extra args to `git clone`                                        |
-| `filter.command`  | string   | *none*        | Command to filter contents                                       |
-| `filter.args`     | []string | *none*        | Extra args to command to filter contents                         |
-| `pull.args`       | []string | *none*        | Extra args to `git pull`                                         |
+| Variable                     | Type     | Default value | Description                                                      |
+| ---------------------------- | -------- | ------------- | ---------------------------------------------------------------- |
+| `type`                       | string   | *none*        | External type (`file`, `archive`, `archive-file`, or `git-repo`) |
+| `encrypted`                  | bool     | `false`       | Whether the external is encrypted                                |
+| `exact`                      | bool     | `false`       | Add `exact_` attribute to directories in archive                 |
+| `exclude`                    | []string | *none*        | Patterns to exclude from archive                                 |
+| `executable`                 | bool     | `false`       | Add `executable_` attribute to file                              |
+| `format`                     | string   | *autodetect*  | Format of archive                                                |
+| `path`                       | string   | *none*        | Path to file in archive                                          |
+| `include`                    | []string | *none*        | Patterns to include from archive                                 |
+| `refreshPeriod`              | duration | `0`           | Refresh period                                                   |
+| `stripComponents`            | int      | `0`           | Number of leading directory components to strip from archives    |
+| `url`                        | string   | *none*        | URL                                                              |
+| `checksum.sha256`            | string   | *none*        | Expected SHA256 checksum of data                                 |
+| `checksum.sha384`            | string   | *none*        | Expected SHA384 checksum of data                                 |
+| `checksum.sha512`            | string   | *none*        | Expected SHA512 checksum of data                                 |
+| `checksum.size`              | int      | *none*        | Expected size of data                                            |
+| `clone.args`                 | []string | *none*        | Extra args to `git clone`                                        |
+| `filter.command`             | string   | *none*        | Command to filter contents                                       |
+| `filter.args`                | []string | *none*        | Extra args to command to filter contents                         |
+| `pull.args`                  | []string | *none*        | Extra args to `git pull`                                         |
+| `archive.extractAppleDouble` | bool     | `false`       | If `true`, AppleDouble files are extracted                       |
 
 If any of the optional `checksum.sha256`, `checksum.sha384`, or
 `checksum.sha512` fields are set, chezmoi will verify that the downloaded data
@@ -65,6 +66,12 @@ members of archive. The optional string field `format` sets the archive format.
 The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
 `xz`, `.tar.zst`, and `zip`. If `format` is not specified then chezmoi will
 guess the format using firstly the path of the URL and secondly its contents.
+
+When `type` is `archive` or `archive-file`, the optional setting
+`archive.extractAppleDouble` controls whether
+[AppleDouble](https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats)
+files are extracted. It is `false` by default, so AppleDouble files will not
+be extracted.
 
 The optional `include` and `exclude` fields are lists of patterns specify which
 archive members to include or exclude respectively. Patterns match paths in the
