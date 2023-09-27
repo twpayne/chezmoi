@@ -335,6 +335,8 @@ github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a h1:SJy1Pu0eH1C29X
 github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a/go.mod h1:DFSS3NAGHthKo1gTlmEcSBiZrRJXi28rLNd/1udP1c8=
 github.com/twpayne/go-pinentry v0.3.0 h1:Rr+fEOZXmeItOb4thjeVaBWJKB9Xa/eojolycyF/26c=
 github.com/twpayne/go-pinentry v0.3.0/go.mod h1:iOIZD+9np/2V24OdCGos7Y1/xX90wc6VEAZsgb+r9D4=
+github.com/twpayne/go-shell v0.4.0 h1:RAAMbjEj7mcwDdwC7SiFHGUKR+WDAURU6mnyd3r2p2E=
+github.com/twpayne/go-shell v0.4.0/go.mod h1:MP3aUA0TQ3IGoJc15ahjb+7A7wZH4NeGrvLZ/aFQsHc=
 github.com/twpayne/go-vfs/v4 v4.3.0 h1:rTqFzzOQ/6ESKTSiwVubHlCBedJDOhQyVSnw8rQNZhU=
 github.com/twpayne/go-vfs/v4 v4.3.0/go.mod h1:tq2UVhnUepesc0lSnPJH/jQ8HruGhzwZe2r5kDFpEIw=
 github.com/twpayne/go-xdg/v6 v6.1.2 h1:KbfCsAP4bBR5+dzfTIh/M9onOPCSqlYsIER79IKwt+s=
