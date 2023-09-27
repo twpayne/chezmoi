@@ -37,6 +37,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
@@ -51,7 +52,6 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/internal/git"
-	"github.com/twpayne/chezmoi/v2/internal/shell"
 )
 
 // defaultSentinel is a string value used to indicate that the default value
