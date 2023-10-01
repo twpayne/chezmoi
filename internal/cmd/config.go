@@ -249,27 +249,29 @@ type Config struct {
 }
 
 type templateData struct {
-	arch           string
-	args           []string
-	cacheDir       chezmoi.AbsPath
-	command        string
-	config         map[string]any
-	configFile     chezmoi.AbsPath
-	executable     chezmoi.AbsPath
-	fqdnHostname   string
-	gid            string
-	group          string
-	homeDir        chezmoi.AbsPath
-	hostname       string
-	kernel         map[string]any
-	os             string
-	osRelease      map[string]any
-	sourceDir      chezmoi.AbsPath
-	uid            string
-	username       string
-	version        map[string]any
-	windowsVersion map[string]any
-	workingTree    chezmoi.AbsPath
+	arch              string
+	args              []string
+	cacheDir          chezmoi.AbsPath
+	command           string
+	config            map[string]any
+	configFile        chezmoi.AbsPath
+	executable        chezmoi.AbsPath
+	fqdnHostname      string
+	gid               string
+	group             string
+	homeDir           chezmoi.AbsPath
+	hostname          string
+	kernel            map[string]any
+	os                string
+	osRelease         map[string]any
+	pathListSeparator string
+	pathSeparator     string
+	sourceDir         chezmoi.AbsPath
+	uid               string
+	username          string
+	version           map[string]any
+	windowsVersion    map[string]any
+	workingTree       chezmoi.AbsPath
 }
 
 // A configOption sets and option on a Config.
@@ -1395,27 +1397,29 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 
 	return map[string]any{
 		"chezmoi": map[string]any{
-			"arch":           templateData.arch,
-			"args":           templateData.args,
-			"cacheDir":       templateData.cacheDir.String(),
-			"command":        templateData.command,
-			"config":         templateData.config,
-			"configFile":     templateData.configFile.String(),
-			"executable":     templateData.executable.String(),
-			"fqdnHostname":   templateData.fqdnHostname,
-			"gid":            templateData.gid,
-			"group":          templateData.group,
-			"homeDir":        templateData.homeDir.String(),
-			"hostname":       templateData.hostname,
-			"kernel":         templateData.kernel,
-			"os":             templateData.os,
-			"osRelease":      templateData.osRelease,
-			"sourceDir":      templateData.sourceDir.String(),
-			"uid":            templateData.uid,
-			"username":       templateData.username,
-			"version":        templateData.version,
-			"windowsVersion": templateData.windowsVersion,
-			"workingTree":    templateData.workingTree.String(),
+			"arch":              templateData.arch,
+			"args":              templateData.args,
+			"cacheDir":          templateData.cacheDir.String(),
+			"command":           templateData.command,
+			"config":            templateData.config,
+			"configFile":        templateData.configFile.String(),
+			"executable":        templateData.executable.String(),
+			"fqdnHostname":      templateData.fqdnHostname,
+			"gid":               templateData.gid,
+			"group":             templateData.group,
+			"homeDir":           templateData.homeDir.String(),
+			"hostname":          templateData.hostname,
+			"kernel":            templateData.kernel,
+			"os":                templateData.os,
+			"osRelease":         templateData.osRelease,
+			"pathListSeparator": templateData.pathListSeparator,
+			"pathSeparator":     templateData.pathSeparator,
+			"sourceDir":         templateData.sourceDir.String(),
+			"uid":               templateData.uid,
+			"username":          templateData.username,
+			"version":           templateData.version,
+			"windowsVersion":    templateData.windowsVersion,
+			"workingTree":       templateData.workingTree.String(),
 		},
 	}
 }
@@ -2263,24 +2267,26 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
 
 	return &templateData{
-		arch:         runtime.GOARCH,
-		args:         os.Args,
-		cacheDir:     c.CacheDirAbsPath,
-		command:      cmd.Name(),
-		config:       c.ConfigFile.toMap(),
-		configFile:   c.configFileAbsPath,
-		executable:   chezmoi.NewAbsPath(executable),
-		fqdnHostname: fqdnHostname,
-		gid:          gid,
-		group:        group,
-		homeDir:      c.homeDirAbsPath,
-		hostname:     hostname,
-		kernel:       kernel,
-		os:           runtime.GOOS,
-		osRelease:    osRelease,
-		sourceDir:    sourceDirAbsPath,
-		uid:          uid,
-		username:     username,
+		arch:              runtime.GOARCH,
+		args:              os.Args,
+		cacheDir:          c.CacheDirAbsPath,
+		command:           cmd.Name(),
+		config:            c.ConfigFile.toMap(),
+		configFile:        c.configFileAbsPath,
+		executable:        chezmoi.NewAbsPath(executable),
+		fqdnHostname:      fqdnHostname,
+		gid:               gid,
+		group:             group,
+		homeDir:           c.homeDirAbsPath,
+		hostname:          hostname,
+		kernel:            kernel,
+		os:                runtime.GOOS,
+		osRelease:         osRelease,
+		pathListSeparator: string(os.PathListSeparator),
+		pathSeparator:     string(os.PathSeparator),
+		sourceDir:         sourceDirAbsPath,
+		uid:               uid,
+		username:          username,
 		version: map[string]any{
 			"builtBy": c.versionInfo.BuiltBy,
 			"commit":  c.versionInfo.Commit,
