@@ -73,6 +73,17 @@ When using Oh My Zsh, make sure you disable auto-updates by setting
 `~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.
 
+!!! note
+
+    If your external dependency target directory can contain cache files that are
+    added during normal use, chezmoi will report that files have changed on
+    `chezmoi apply`. To avoid this, add the cache directory to your
+    [`.chezmoiignore`](/reference/special-files-and-directories/chezmoiignore/)
+    file.
+
+    For example, Oh My Zsh may cache completions in `.oh-my-zsh/cache/completions/`,
+    which should be added to your `.chezmoiignore` file.
+
 ## Include a subdirectory with selected files from a URL
 
 Use `include` pattern filters to include only selected files from an archive
