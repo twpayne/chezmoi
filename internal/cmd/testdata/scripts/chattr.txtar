@@ -6,6 +6,16 @@ exec chezmoi chattr empty $HOME${/}.file
 ! exists $CHEZMOISOURCEDIR/dot_file
 exists $CHEZMOISOURCEDIR/empty_dot_file
 
+# test that chezmoi chattr remove sets the remove attribute on a file
+exec chezmoi chattr remove $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/empty_dot_file
+exists $CHEZMOISOURCEDIR/remove_dot_file
+
+# test that chezmoi chattr noremove removes the remove attribute on a file
+exec chezmoi chattr noremove,empty $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/remove_dot_file
+exists $CHEZMOISOURCEDIR/empty_dot_file
+
 # test that chezmoi attr +p sets the private attribute on a file
 exec chezmoi chattr +p $HOME${/}.file
 ! exists $CHEZMOISOURCEDIR/empty_dot_file
