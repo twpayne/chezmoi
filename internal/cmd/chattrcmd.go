@@ -560,6 +560,11 @@ func (m *modifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAttr {
 			Type:       chezmoi.SourceFileTypeSymlink,
 			Template:   m.template.modify(fileAttr.Template),
 		}
+	case chezmoi.SourceFileTypeRemove:
+		return chezmoi.FileAttr{
+			TargetName: fileAttr.TargetName,
+			Type:       chezmoi.SourceFileTypeRemove,
+		}
 	default:
 		panic(fmt.Sprintf("%d: unknown source file type", fileAttr.Type))
 	}
