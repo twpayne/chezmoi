@@ -1508,11 +1508,9 @@ func TestSourceStateRead(t *testing.T) {
 					"/home/user/.local/share/chezmoi",
 				)
 				requireEvaluateAll(t, tc.expectedSourceState, system)
-				s.baseSystem = nil
-				s.system = nil
 				s.templateData = nil
 				s.version = semver.Version{}
-				assert.Equal(t, tc.expectedSourceState, s)
+				assert.Equal(t, tc.expectedSourceState, s, assert.Exclude[System]())
 			})
 		})
 	}

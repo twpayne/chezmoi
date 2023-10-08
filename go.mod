@@ -8,10 +8,10 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.0.1
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/Shopify/ejson v1.4.1
-	github.com/alecthomas/assert/v2 v2.3.0
-	github.com/aws/aws-sdk-go-v2 v1.21.0
-	github.com/aws/aws-sdk-go-v2/config v1.18.42
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.3
+	github.com/alecthomas/assert/v2 v2.4.0
+	github.com/aws/aws-sdk-go-v2 v1.21.1
+	github.com/aws/aws-sdk-go-v2/config v1.18.44
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.21.4
 	github.com/bmatcuk/doublestar/v4 v4.6.0
 	github.com/bradenhilton/mozillainstallhash v1.0.1
 	github.com/charmbracelet/bubbles v0.16.1
@@ -44,12 +44,12 @@ require (
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/zalando/go-keyring v0.2.3
 	go.etcd.io/bbolt v1.3.7
-	golang.org/x/crypto v0.13.0
-	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
-	golang.org/x/oauth2 v0.12.0
-	golang.org/x/sync v0.3.0
-	golang.org/x/sys v0.12.0
-	golang.org/x/term v0.12.0
+	golang.org/x/crypto v0.14.0
+	golang.org/x/exp v0.0.0-20231006140011-7918f672742d
+	golang.org/x/oauth2 v0.13.0
+	golang.org/x/sync v0.4.0
+	golang.org/x/sys v0.13.0
+	golang.org/x/term v0.13.0
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
 	howett.net/plist v1.0.0
@@ -58,7 +58,7 @@ require (
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.7.2 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.8.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.0 // indirect
@@ -68,19 +68,19 @@ require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230923063757-afb1ddc0824c // indirect
 	github.com/acomagu/bufpipe v1.0.4 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
-	github.com/alecthomas/repr v0.2.0 // indirect
+	github.com/alecthomas/repr v0.3.0 // indirect
 	github.com/alessio/shellescape v1.4.2 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.40 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.11 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.41 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.35 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.43 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.35 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.14.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.17.1 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.22.0 // indirect
-	github.com/aws/smithy-go v1.14.2 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.42 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.13.12 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.42 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.36 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.44 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.36 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.15.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.17.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.23.1 // indirect
+	github.com/aws/smithy-go v1.15.0 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
@@ -133,10 +133,10 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/yuin/goldmark v1.5.6 // indirect
 	github.com/yuin/goldmark-emoji v1.0.2 // indirect
-	golang.org/x/mod v0.12.0 // indirect
-	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/mod v0.13.0 // indirect
+	golang.org/x/net v0.16.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
-	golang.org/x/tools v0.13.0 // indirect
+	golang.org/x/tools v0.14.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
