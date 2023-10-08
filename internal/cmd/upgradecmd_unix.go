@@ -166,6 +166,10 @@ func (c *Config) upgradeUNIXPackage(
 	}
 }
 
+func (c *Config) winGetUpgrade() error {
+	return errUnsupportedUpgradeMethod
+}
+
 // getLibc attempts to determine the system's libc.
 func getLibc() (string, error) {
 	// First, try parsing the output of ldd --version. On glibc systems it
@@ -186,6 +190,32 @@ func getLibc() (string, error) {
 	}
 
 	return "", errors.New("unable to determine libc")
+}
+
+// getPackageType returns the distributions package type based on is OS release.
+func getPackageType(system chezmoi.System) (string, error) {
+	osRelease, err := chezmoi.OSRelease(system.UnderlyingFS())
+	if err != nil {
+		return packageTypeNone, err
+	}
+	if id, ok := osRelease["ID"].(string); ok {
+		if packageType, ok := packageTypeByID[id]; ok {
+			return packageType, nil
+		}
+	}
+	if idLikes, ok := osRelease["ID_LIKE"].(string); ok {
+		for _, id := range strings.Split(idLikes, " ") {
+			if packageType, ok := packageTypeByID[id]; ok {
+				return packageType, nil
+			}
+		}
+	}
+	err = fmt.Errorf(
+		"could not determine package type (ID=%q, ID_LIKE=%q)",
+		osRelease["ID"],
+		osRelease["ID_LIKE"],
+	)
+	return packageTypeNone, err
 }
 
 // getUpgradeMethod attempts to determine the method by which chezmoi can be
@@ -258,34 +288,4 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 	default:
 		return "", nil
 	}
-}
-
-func (c *Config) winGetUpgrade() error {
-	return errUnsupportedUpgradeMethod
-}
-
-// getPackageType returns the distributions package type based on is OS release.
-func getPackageType(system chezmoi.System) (string, error) {
-	osRelease, err := chezmoi.OSRelease(system.UnderlyingFS())
-	if err != nil {
-		return packageTypeNone, err
-	}
-	if id, ok := osRelease["ID"].(string); ok {
-		if packageType, ok := packageTypeByID[id]; ok {
-			return packageType, nil
-		}
-	}
-	if idLikes, ok := osRelease["ID_LIKE"].(string); ok {
-		for _, id := range strings.Split(idLikes, " ") {
-			if packageType, ok := packageTypeByID[id]; ok {
-				return packageType, nil
-			}
-		}
-	}
-	err = fmt.Errorf(
-		"could not determine package type (ID=%q, ID_LIKE=%q)",
-		osRelease["ID"],
-		osRelease["ID_LIKE"],
-	)
-	return packageTypeNone, err
 }
