@@ -417,6 +417,7 @@ jobs:
         version: latest
         args: release --timeout=1h
       env:
+        CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
         COSIGN_PWD: ${{ secrets.COSIGN_PWD }}
         GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
         SCOOP_GITHUB_TOKEN: ${{ secrets.SCOOP_GITHUB_TOKEN }}
