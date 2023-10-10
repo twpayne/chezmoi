@@ -2125,6 +2125,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 	for key, value := range c.ScriptEnv {
+		if strings.HasPrefix(key, "CHEZMOI_") {
+			c.errorf("warning: %s: overriding reserved environment variable", key)
+		}
 		os.Setenv(key, value)
 	}
 
