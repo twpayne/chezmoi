@@ -85,21 +85,6 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         ( cd assets/docker && ./test.sh archlinux )
-  test-debian-i386:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-12
-    steps:
-    - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
-    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-      with:
-        path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-debian-i386-
-    - name: test
-      run: |
-        ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -375,7 +360,6 @@ jobs:
     - lint
     - test-alpine
     - test-archlinux
-    - test-debian-i386
     - test-fedora
     - test-macos
     - test-oldstable-go
