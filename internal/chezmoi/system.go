@@ -38,7 +38,6 @@ type System interface { //nolint:interfacebloat
 	RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error
 	Stat(name AbsPath) (fs.FileInfo, error)
 	UnderlyingFS() vfs.FS
-	UnderlyingSystem() System
 	WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error
 	WriteSymlink(oldname string, newname AbsPath) error
 }

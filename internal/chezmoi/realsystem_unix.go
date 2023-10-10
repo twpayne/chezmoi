@@ -21,7 +21,6 @@ type RealSystem struct {
 	safe                    bool
 	createScriptTempDirOnce sync.Once
 	scriptTempDir           AbsPath
-	scriptEnv               []string
 	devCache                map[AbsPath]uint // devCache maps directories to device numbers.
 	tempDirCache            map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
 }
