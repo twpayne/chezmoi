@@ -36,9 +36,10 @@ func (c *Config) newCDCmd() *cobra.Command {
 }
 
 func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
-	if _, ok := os.LookupEnv("CHEZMOI"); ok {
+	if _, ok := os.LookupEnv("CHEZMOI_SUBSHELL"); ok {
 		return errors.New("already in a chezmoi subshell")
 	}
+	os.Setenv("CHEZMOI_SUBSHELL", "1")
 
 	cdCommand, cdArgs, err := c.cdCommand()
 	if err != nil {

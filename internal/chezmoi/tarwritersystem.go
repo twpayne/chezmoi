@@ -52,11 +52,6 @@ func (s *TarWriterSystem) RunScript(
 	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 
-// UnderlyingSystem implements System.UnderlyingSystem.
-func (s *TarWriterSystem) UnderlyingSystem() System {
-	return s
-}
-
 // WriteFile implements System.WriteFile.
 func (s *TarWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	header := s.headerTemplate

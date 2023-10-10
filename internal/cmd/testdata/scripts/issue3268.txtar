@@ -1,0 +1,12 @@
+[unix] chmod 755 bin/chezmoi-test-command
+
+# test that chezmoi sets CHEZMOI_ environment variables
+exec chezmoi execute-template '{{ output "chezmoi-test-command" }}'
+stdout 'CHEZMOI_SOURCE_DIR=.*/\.local/share/chezmoi\s?$'
+
+-- bin/chezmoi-test-command --
+#!/bin/sh
+
+echo CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}
+-- bin/chezmoi-test-command.cmd --
+@echo CHEZMOI_SOURCE_DIR=%CHEZMOI_SOURCE_DIR%

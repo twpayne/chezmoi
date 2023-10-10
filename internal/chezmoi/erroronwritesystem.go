@@ -114,11 +114,6 @@ func (s *ErrorOnWriteSystem) UnderlyingFS() vfs.FS {
 	return s.system.UnderlyingFS()
 }
 
-// UnderlyingSystem implements System.UnderlyingSystem.
-func (s *ErrorOnWriteSystem) UnderlyingSystem() System {
-	return s.system
-}
-
 // WriteFile implements System.WriteFile.
 func (s *ErrorOnWriteSystem) WriteFile(AbsPath, []byte, fs.FileMode) error {
 	return s.err

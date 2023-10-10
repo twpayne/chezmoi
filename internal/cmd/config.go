@@ -232,7 +232,6 @@ type Config struct {
 	sourceState         *chezmoi.SourceState
 	sourceStateErr      error
 	templateData        *templateData
-	runEnv              []string
 
 	stdin             io.Reader
 	stdout            io.Writer
@@ -710,9 +709,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return err
 	}
 	c.templateData.sourceDir = sourceDirAbsPath
-	c.runEnv = append(c.runEnv, "CHEZMOI_SOURCE_DIR="+sourceDirAbsPath.String())
-	realSystem := c.baseSystem.UnderlyingSystem().(*chezmoi.RealSystem) //nolint:forcetypeassert
-	realSystem.SetScriptEnv(c.runEnv)
+	os.Setenv("CHEZMOI_SOURCE_DIR", sourceDirAbsPath.String())
 
 	// Find config template, execute it, and create config file.
 	configTemplate, err := c.findConfigTemplate()
@@ -1705,7 +1702,6 @@ func (c *Config) newSourceState(
 		chezmoi.WithLogger(&sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
-		chezmoi.WithScriptEnv(c.runEnv),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
@@ -2091,9 +2087,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
-	scriptEnv := os.Environ()
 	templateData := c.getTemplateData(cmd)
-	scriptEnv = append(scriptEnv, "CHEZMOI=1")
+	os.Setenv("CHEZMOI", "1")
 	for key, value := range map[string]string{
 		"ARCH":          templateData.arch,
 		"ARGS":          strings.Join(templateData.args, " "),
@@ -2112,10 +2107,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"USERNAME":      templateData.username,
 		"WORKING_TREE":  templateData.workingTree.String(),
 	} {
-		scriptEnv = append(scriptEnv, "CHEZMOI_"+key+"="+value)
+		os.Setenv("CHEZMOI_"+key, value)
 	}
 	if c.Verbose {
-		scriptEnv = append(scriptEnv, "CHEZMOI_VERBOSE=1")
+		os.Setenv("CHEZMOI_VERBOSE", "1")
 	}
 	for groupKey, group := range map[string]map[string]any{
 		"KERNEL":          templateData.kernel,
@@ -2124,16 +2119,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"WINDOWS_VERSION": templateData.windowsVersion,
 	} {
 		for key, value := range group {
-			upperSnakeCaseKey := camelCaseToUpperSnakeCase(key)
+			key := "CHEZMOI_" + groupKey + "_" + camelCaseToUpperSnakeCase(key)
 			valueStr := fmt.Sprintf("%s", value)
-			scriptEnv = append(scriptEnv, "CHEZMOI_"+groupKey+"_"+upperSnakeCaseKey+"="+valueStr)
+			os.Setenv(key, valueStr)
 		}
 	}
 	for key, value := range c.ScriptEnv {
-		scriptEnv = append(scriptEnv, key+"="+value)
+		os.Setenv(key, value)
 	}
-	c.runEnv = scriptEnv
-	realSystem.SetScriptEnv(scriptEnv)
 
 	if command := c.Hooks[cmd.Name()].Pre; command.Command != "" {
 		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
@@ -2326,7 +2319,6 @@ func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 		}
 		cmd.Dir = dirRawAbsPath.String()
 	}
-	cmd.Env = c.runEnv
 	cmd.Stdin = c.stdin
 	cmd.Stdout = c.stdout
 	cmd.Stderr = c.stderr

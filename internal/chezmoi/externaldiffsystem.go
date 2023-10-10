@@ -224,11 +224,6 @@ func (s *ExternalDiffSystem) UnderlyingFS() vfs.FS {
 	return s.system.UnderlyingFS()
 }
 
-// UnderlyingSystem implements System.UnderlyingSystem.
-func (s *ExternalDiffSystem) UnderlyingSystem() System {
-	return s.system
-}
-
 // WriteFile implements System.WriteFile.
 func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeFiles) {

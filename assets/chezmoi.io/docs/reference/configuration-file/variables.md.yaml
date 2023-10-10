@@ -39,7 +39,7 @@ sections:
       description: Display progress bars
     scriptEnv:
       type: object
-      description: Extra environment variables for scripts
+      description: Extra environment variables for scripts and commands
     scriptTempDir:
       description: Temporary directory for scripts
     sourceDir:

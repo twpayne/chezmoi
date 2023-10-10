@@ -58,8 +58,3 @@ func (s *ReadOnlySystem) Stat(name AbsPath) (fs.FileInfo, error) {
 func (s *ReadOnlySystem) UnderlyingFS() vfs.FS {
 	return s.system.UnderlyingFS()
 }
-
-// UnderlyingSystem implements System.UnderlyingSystem.
-func (s *ReadOnlySystem) UnderlyingSystem() System {
-	return s.system
-}

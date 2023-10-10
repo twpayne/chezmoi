@@ -128,17 +128,11 @@ func (s *RealSystem) RunScript(
 	if err != nil {
 		return err
 	}
-	cmd.Env = s.scriptEnv
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	return s.RunCmd(cmd)
-}
-
-// SetScriptEnv sets the environment variables for scripts.
-func (s *RealSystem) SetScriptEnv(scriptEnv []string) {
-	s.scriptEnv = scriptEnv
 }
 
 // Stat implements System.Stat.
@@ -149,11 +143,6 @@ func (s *RealSystem) Stat(name AbsPath) (fs.FileInfo, error) {
 // UnderlyingFS implements System.UnderlyingFS.
 func (s *RealSystem) UnderlyingFS() vfs.FS {
 	return s.fileSystem
-}
-
-// UnderlyingSystem implements System.UnderlyingSystem.
-func (s *RealSystem) UnderlyingSystem() System {
-	return s
 }
 
 // getScriptWorkingDir returns the script's working directory.
