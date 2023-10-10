@@ -94,7 +94,7 @@ directory that exists and is a directory.
 
 chezmoi sets a number of `CHEZMOI*` environment variables when running scripts,
 corresponding to commonly-used template data variables. Extra environment
-variables can be set in the `scriptEnv` configuration variable.
+variables can be set in the `env` or `scriptEnv` configuration variables.
 
 ### Scripts on Windows
 

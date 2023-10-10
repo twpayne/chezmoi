@@ -19,6 +19,9 @@ sections:
       description: Destination directory
     encryption:
       description: Encryption type, either `age` or `gpg`
+    env:
+      type: object
+      description: Extra environment variables for scripts and commands
     format:
       default: '`json`'
       description: Format for data output, either `json` or `yaml`

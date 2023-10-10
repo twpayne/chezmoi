@@ -4,9 +4,32 @@
 exec chezmoi execute-template '{{ output "chezmoi-test-command" }}'
 stdout 'CHEZMOI_SOURCE_DIR=.*/\.local/share/chezmoi\s?$'
 
+chhome home2/user
+
+# test that chezmoi sets environment variables from env
+exec chezmoi execute-template '{{ env "VAR" }}'
+stdout VALUE
+
+chhome home3/user
+
+# test that env and scriptEnv cannot both be set
+! exec chezmoi execute-template ''
+stderr 'only one of env or scriptEnv may be set'
+
 -- bin/chezmoi-test-command --
 #!/bin/sh
 
 echo CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}
 -- bin/chezmoi-test-command.cmd --
 @echo CHEZMOI_SOURCE_DIR=%CHEZMOI_SOURCE_DIR%
+-- home2/user/.config/chezmoi/chezmoi.json --
+{
+    "env": {
+        "VAR": "VALUE"
+    }
+}
+-- home3/user/.config/chezmoi/chezmoi.yaml --
+env:
+  VAR: VALUE
+scriptEnv:
+  VAR: VALUE

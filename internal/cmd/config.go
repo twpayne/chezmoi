@@ -100,6 +100,7 @@ type ConfigFile struct {
 	CacheDirAbsPath        chezmoi.AbsPath                 `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
 	Color                  autoBool                        `json:"color"           mapstructure:"color"           yaml:"color"`
 	Data                   map[string]any                  `json:"data"            mapstructure:"data"            yaml:"data"`
+	Env                    map[string]string               `json:"env"             mapstructure:"env"             yaml:"env"`
 	Format                 writeDataFormat                 `json:"format"          mapstructure:"format"          yaml:"format"`
 	DestDirAbsPath         chezmoi.AbsPath                 `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
 	GitHub                 gitHubConfig                    `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
@@ -2124,7 +2125,16 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			os.Setenv(key, valueStr)
 		}
 	}
-	for key, value := range c.ScriptEnv {
+	var env map[string]string
+	switch {
+	case len(c.Env) != 0 && len(c.ScriptEnv) != 0:
+		return errors.New("only one of env or scriptEnv may be set")
+	case len(c.Env) != 0:
+		env = c.Env
+	case len(c.ScriptEnv) != 0:
+		env = c.ScriptEnv
+	}
+	for key, value := range env {
 		if strings.HasPrefix(key, "CHEZMOI_") {
 			c.errorf("warning: %s: overriding reserved environment variable", key)
 		}
