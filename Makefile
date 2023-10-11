@@ -188,7 +188,6 @@ shellcheck:
 test-release:
 	goreleaser release \
 		--clean \
-		--skip-publish \
-		--skip-sign \
+		--skip=sign \
 		--snapshot \
 		${GORELEASER_FLAGS}

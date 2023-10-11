@@ -184,7 +184,7 @@ jobs:
       uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8
       with:
         version: latest
-        args: release --skip-publish --skip-sign --snapshot --timeout=1h
+        args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce
