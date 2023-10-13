@@ -2138,7 +2138,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if strings.HasPrefix(key, "CHEZMOI_") {
 			c.errorf("warning: %s: overriding reserved environment variable", key)
 		}
-		os.Setenv(key, value)
+		os.Setenv(key, os.ExpandEnv(value))
 	}
 
 	if command := c.Hooks[cmd.Name()].Pre; command.Command != "" {
