@@ -139,6 +139,7 @@ type ConfigFile struct {
 	Lastpass          lastpassConfig          `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
 	Onepassword       onepasswordConfig       `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
 	Pass              passConfig              `json:"pass"              mapstructure:"pass"              yaml:"pass"`
+	Passage           passageConfig           `json:"passage"           mapstructure:"passage"           yaml:"passage"`
 	Passhole          passholeConfig          `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
 	RBW               rbwConfig               `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
 	Secret            secretConfig            `json:"secret"            mapstructure:"secret"            yaml:"secret"`
@@ -453,6 +454,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"onepasswordRead":          c.onepasswordReadTemplateFunc,
 		"output":                   c.outputTemplateFunc,
 		"pass":                     c.passTemplateFunc,
+		"passage":                  c.passageTemplateFunc,
+		"passageRaw":               c.passageRawTemplateFunc,
 		"passFields":               c.passFieldsTemplateFunc,
 		"passhole":                 c.passholeTemplateFunc,
 		"passRaw":                  c.passRawTemplateFunc,
@@ -2696,6 +2699,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Pass: passConfig{
 			Command: "pass",
+		},
+		Passage: passageConfig{
+			Command: "passage",
 		},
 		Passhole: passholeConfig{
 			Command: "ph",
