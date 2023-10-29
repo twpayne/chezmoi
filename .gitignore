@@ -2,7 +2,7 @@
 /COMMIT
 /bin/actionlint
 /bin/chezmoi
-/bin/findtypos
+/bin/find-typos
 /bin/gofumpt
 /bin/golines
 /bin/golangci-lint

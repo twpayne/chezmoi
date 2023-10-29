@@ -1,6 +1,6 @@
 GO?=go
 ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-FINDTYPOS_VERSION=$(shell awk '/FINDTYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+FIND_TYPOS_VERSION=$(shell awk '/FIND_TYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLINES_VERSION=$(shell awk '/GOLINES_VERSION:/ { print $$2 }' .github/workflows/main.yml)
@@ -110,12 +110,12 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-actionlint ensure-findtypos ensure-golangci-lint
+lint: ensure-actionlint ensure-find-typos ensure-golangci-lint
 	./bin/actionlint
 	./bin/golangci-lint run
 	${GO} run ./internal/cmds/lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
-	./bin/findtypos chezmoi .
+	./bin/find-typos chezmoi .
 
 .PHONY: format
 format: ensure-gofumpt ensure-golines
@@ -132,7 +132,7 @@ create-syso: ensure-goversioninfo
 	./bin/goversioninfo -platform-specific
 
 .PHONY: ensure-tools
-ensure-tools: ensure-actionlint ensure-findtypos ensure-gofumpt ensure-golangci-lint ensure-golines ensure-goversioninfo
+ensure-tools: ensure-actionlint ensure-find-typos ensure-gofumpt ensure-golangci-lint ensure-golines ensure-goversioninfo
 
 .PHONY: ensure-actionlint
 ensure-actionlint:
@@ -141,11 +141,11 @@ ensure-actionlint:
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}" ; \
 	fi
 
-.PHONY: ensure-findtypos
-ensure-findtypos:
-	if [ ! -x bin/findtypos ] ; then \
+.PHONY: ensure-find-typos
+ensure-find-typos:
+	if [ ! -x bin/find-typos ] ; then \
 		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin ${GO} install "github.com/twpayne/findtypos@v${FINDTYPOS_VERSION}" ; \
+		GOBIN=$(shell pwd)/bin ${GO} install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}" ; \
 	fi
 
 .PHONY: ensure-gofumpt

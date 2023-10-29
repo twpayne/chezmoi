@@ -17,7 +17,7 @@ env:
   GOLANGCI_LINT_VERSION: 1.54.2
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
-  FINDTYPOS_VERSION: 0.0.2
+  FIND_TYPOS_VERSION: 0.0.3
   MKDOCS_VERSION: 1.5.3
 jobs:
   changes:
@@ -336,10 +336,10 @@ jobs:
     - name: lint-txtar
       run: |
         find . -name '*.txtar' -print0 | xargs -0 go run ./internal/cmds/lint-txtar
-    - name: findtypos
+    - name: find-typos
       run: |
-        go install "github.com/twpayne/findtypos@v${FINDTYPOS_VERSION}"
-        findtypos -format=github-actions chezmoi .
+        go install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}"
+        find-typos -format=github-actions chezmoi .
   lint:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
