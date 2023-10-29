@@ -11,7 +11,7 @@ import (
 type lstatFS struct {
 	wrapped interface {
 		fs.FS
-		Lstat(string) (fs.FileInfo, error)
+		Lstat(name string) (fs.FileInfo, error)
 	}
 }
 

@@ -23,6 +23,7 @@ linters:
   - forcetypeassert
   - gci
   - gocheckcompilerdirectives
+  - gochecksumtype
   - gocritic
   - godot
   - goerr113
@@ -37,6 +38,7 @@ linters:
   - govet
   - grouper
   - importas
+  - inamedparam
   - ineffassign
   - interfacebloat
   - ireturn
@@ -48,12 +50,15 @@ linters:
   - noctx
   - nolintlint
   - nosprintfhostport
+  - perfsprint
   - prealloc
   - predeclared
   - promlinter
+  - protogetter
   - reassign
   - revive
   - rowserrcheck
+  - sloglint
   - sqlclosecheck
   - staticcheck
   - stylecheck

@@ -52,7 +52,7 @@ func (c *Config) runManagedCmd(
 			return err
 		} else if relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath); err != nil {
 			return err
-		} else {
+		} else { //nolint:revive
 			relPaths = append(relPaths, relPath)
 		}
 	}
