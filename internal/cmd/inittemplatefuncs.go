@@ -13,6 +13,9 @@ func (c *Config) exitInitTemplateFunc(code int) string {
 }
 
 func (c *Config) stdinIsATTYInitTemplateFunc() bool {
+	if c.noTTY {
+		return false
+	}
 	file, ok := c.stdin.(*os.File)
 	if !ok {
 		return false
