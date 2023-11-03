@@ -11,6 +11,8 @@ import (
 type mergeAllCmdConfig struct {
 	init      bool
 	recursive bool
+
+	Merge mergeCmdConfig `json:"merge" mapstructure:"merge" yaml:"merge"`
 }
 
 func (c *Config) newMergeAllCmd() *cobra.Command {
@@ -28,12 +30,12 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 	}
 
 	flags := mergeAllCmd.Flags()
-	flags.BoolVar(&c.mergeAll.init, "init", c.mergeAll.init, "Recreate config file from template")
+	flags.BoolVar(&c.MergeAll.init, "init", c.MergeAll.init, "Recreate config file from template")
 	flags.BoolVarP(
-		&c.mergeAll.recursive,
+		&c.MergeAll.recursive,
 		"recursive",
 		"r",
-		c.mergeAll.recursive,
+		c.MergeAll.recursive,
 		"Recurse into subdirectories",
 	)
 
@@ -54,8 +56,8 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 	if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:          cmd,
 		filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-		init:         c.mergeAll.init,
-		recursive:    c.mergeAll.recursive,
+		init:         c.MergeAll.init,
+		recursive:    c.MergeAll.recursive,
 		umask:        c.Umask,
 		preApplyFunc: preApplyFunc,
 	}); err != nil {
@@ -69,7 +71,7 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
-		if err := c.doMerge(targetRelPath, sourceStateEntry); err != nil {
+		if err := c.doMerge(targetRelPath, sourceStateEntry, c.MergeAll.Merge); err != nil {
 			return err
 		}
 	}

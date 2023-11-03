@@ -52,7 +52,7 @@ func (c *Config) runMergeCmd(
 
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
-		if err := c.doMerge(targetRelPath, sourceStateEntry); err != nil {
+		if err := c.doMerge(targetRelPath, sourceStateEntry, c.Merge); err != nil {
 			return err
 		}
 	}
@@ -66,6 +66,7 @@ func (c *Config) runMergeCmd(
 func (c *Config) doMerge(
 	targetRelPath chezmoi.RelPath,
 	sourceStateEntry chezmoi.SourceStateEntry,
+	mergeConfig mergeCmdConfig,
 ) (err error) {
 	sourceAbsPath := c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 
@@ -143,7 +144,7 @@ func (c *Config) doMerge(
 		Target:      targetStateAbsPath.String(),
 	}
 
-	args := make([]string, 0, len(c.Merge.Args))
+	args := make([]string, 0, len(mergeConfig.Args))
 
 	// Work around a regression introduced in 2.1.4
 	// (https://github.com/twpayne/chezmoi/pull/1324) in a user-friendly
@@ -157,7 +158,7 @@ func (c *Config) doMerge(
 	// is considered a template if, after execution as a template, it is
 	// not equal to the original arg.
 	anyTemplateArgs := false
-	for i, arg := range c.Merge.Args {
+	for i, arg := range mergeConfig.Args {
 		var tmpl *template.Template
 		if tmpl, err = template.New("merge.args[" + strconv.Itoa(i) + "]").Parse(arg); err != nil {
 			return
@@ -185,7 +186,7 @@ func (c *Config) doMerge(
 		return
 	}
 
-	if err = c.run(c.DestDirAbsPath, c.Merge.Command, args); err != nil {
+	if err = c.run(c.DestDirAbsPath, mergeConfig.Command, args); err != nil {
 		err = fmt.Errorf("%s: %w", targetRelPath, err)
 		return
 	}

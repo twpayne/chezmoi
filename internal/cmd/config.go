@@ -157,6 +157,7 @@ type ConfigFile struct {
 	Edit       editCmdConfig       `json:"edit"       mapstructure:"edit"       yaml:"edit"`
 	Git        gitCmdConfig        `json:"git"        mapstructure:"git"        yaml:"git"`
 	Merge      mergeCmdConfig      `json:"merge"      mapstructure:"merge"      yaml:"merge"`
+	MergeAll   mergeAllCmdConfig   `json:"mergeAll"   mapstructure:"mergeAll"   yaml:"mergeAll"`
 	Status     statusCmdConfig     `json:"status"     mapstructure:"status"     yaml:"status"`
 	Update     updateCmdConfig     `json:"update"     mapstructure:"update"     yaml:"update"`
 	Verify     verifyCmdConfig     `json:"verify"     mapstructure:"verify"     yaml:"verify"`
@@ -196,7 +197,6 @@ type Config struct {
 	_import         importCmdConfig
 	init            initCmdConfig
 	managed         managedCmdConfig
-	mergeAll        mergeAllCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
 	remove          removeCmdConfig
@@ -355,9 +355,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		managed: managedCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			pathStyle: chezmoi.PathStyleRelative,
-		},
-		mergeAll: mergeAllCmdConfig{
-			recursive: true,
 		},
 		reAdd: reAddCmdConfig{
 			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
@@ -2738,6 +2735,11 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",
+		},
+		MergeAll: mergeAllCmdConfig{
+			Merge: mergeCmdConfig{
+				Command: "vimdiff",
+			},
 		},
 		Status: statusCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
