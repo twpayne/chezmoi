@@ -1,0 +1,37 @@
+[windows] skip # FIXME make this test pass on Windows
+
+# test that chezmoi edit-config-template creates a new config file template
+exec chezmoi edit-config-template
+cmp $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl golden/edited
+
+chhome home2/user
+
+# test that chezmoi edit-config-template creates a new config file template in .chezmoiroot
+exec chezmoi edit-config-template
+cmp $CHEZMOISOURCEDIR/home/.chezmoi.toml.tmpl golden/edited
+
+chhome home3/user
+
+# test that chezmoi edit-config-template creates a new config file template from an existing config file
+exec chezmoi edit-config-template
+cmp $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl golden/edited-chezmoi.yaml
+
+chhome home4/user
+
+# test that chezmoi edit-config-template edits an existing config file template
+exec chezmoi edit-config-template
+cmp $CHEZMOISOURCEDIR/home/.chezmoi.yaml.tmpl golden/edited-chezmoi.yaml
+
+-- golden/edited --
+# edited
+-- golden/edited-chezmoi.yaml --
+{}
+# edited
+-- home2/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home3/user/.config/chezmoi/chezmoi.yaml --
+{}
+-- home4/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home4/user/.local/share/chezmoi/home/.chezmoi.yaml.tmpl --
+{}
