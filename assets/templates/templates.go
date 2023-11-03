@@ -8,6 +8,3 @@ var CommitMessageTmpl string
 
 //go:embed install.sh
 var InstallSH []byte
-
-//go:embed versioninfo.json.tmpl
-var VersionInfoJSON []byte
