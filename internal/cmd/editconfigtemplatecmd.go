@@ -18,9 +18,9 @@ func (c *Config) newEditConfigTemplateCmd() *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE:    c.makeRunEWithSourceState(c.runEditConfigTemplateCmd),
 		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
 			modifiesSourceDirectory,
 			runsCommands,
-			runsWithInvalidConfig,
 		),
 	}
 

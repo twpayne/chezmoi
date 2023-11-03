@@ -26,9 +26,9 @@ func (c *Config) newCDCmd() *cobra.Command {
 		Args:    cobra.MaximumNArgs(1),
 		Annotations: newAnnotations(
 			createSourceDirectoryIfNeeded,
+			doesNotRequireValidConfig,
 			requiresWorkingTree,
 			runsCommands,
-			runsWithInvalidConfig,
 		),
 	}
 

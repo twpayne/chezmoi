@@ -5,6 +5,7 @@ import "github.com/spf13/cobra"
 // Annotations.
 var (
 	createSourceDirectoryIfNeeded = tagAnnotation("chezmoi_create_source_directory_if_needed")
+	doesNotRequireValidConfig     = tagAnnotation("chezmoi_runs_with_invalid_config")
 	dryRun                        = tagAnnotation("chezmoi_dry_run")
 	modifiesConfigFile            = tagAnnotation("chezmoi_modifies_config_file")
 	modifiesDestinationDirectory  = tagAnnotation("chezmoi_modifies_destination_directory")
@@ -14,7 +15,6 @@ var (
 	requiresSourceDirectory       = tagAnnotation("chezmoi_requires_source_directory")
 	requiresWorkingTree           = tagAnnotation("chezmoi_requires_working_tree")
 	runsCommands                  = tagAnnotation("chezmoi_runs_commands")
-	runsWithInvalidConfig         = tagAnnotation("chezmoi_runs_with_invalid_config")
 )
 
 // Persistent state modes.
