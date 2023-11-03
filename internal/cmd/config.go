@@ -1606,6 +1606,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newDumpConfigCmd(),
 		c.newEditCmd(),
 		c.newEditConfigCmd(),
+		c.newEditConfigTemplateCmd(),
 		c.newEncryptCommand(),
 		c.newExecuteTemplateCmd(),
 		c.newForgetCmd(),
