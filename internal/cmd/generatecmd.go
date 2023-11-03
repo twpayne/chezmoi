@@ -19,7 +19,7 @@ func (c *Config) newGenerateCmd() *cobra.Command {
 		ValidArgs: []string{"install.sh"},
 		RunE:      c.runGenerateCmd,
 		Annotations: newAnnotations(
-			runsWithInvalidConfig,
+			doesNotRequireValidConfig,
 		),
 	}
 

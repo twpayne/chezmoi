@@ -21,7 +21,7 @@ func (c *Config) newCompletionCmd() *cobra.Command {
 		Example:   example("completion"),
 		RunE:      c.runCompletionCmd,
 		Annotations: newAnnotations(
-			runsWithInvalidConfig,
+			doesNotRequireValidConfig,
 		),
 	}
 
