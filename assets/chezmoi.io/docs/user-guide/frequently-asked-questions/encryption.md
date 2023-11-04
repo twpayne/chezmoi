@@ -100,3 +100,46 @@ $ chezmoi add --encrypt ~/.ssh/id_rsa
 When you run `chezmoi init` on a new machine you will be prompted to enter your
 passphrase once to decrypt `key.txt.age`. Your decrypted private key will be
 stored in `~/.config/chezmoi/key.txt`.
+
+## How to re-encrypt encrypted files
+
+To rotate from an expired GPG key to its replacement, or change from GPG to age
+encryption, the following steps can be used:
+
+1. Make sure you have applied all encrypted files (e.g. `chezmoi apply` decrypts
+   files and places them in their destinations).
+2. Update chezmoi configuration to use the new encryption method (examples:
+   [gpg](/user-guide/encryption/gpg), [age](/user-guide/encryption/age),
+   [age with one-time passphrase](#how-do-i-configure-chezmoi-to-encrypt-files-but-only-request-a-passphrase-the-first-time-chezmoi-init-is-run)).
+3. Remove all encrypted files from the state via `chezmoi forget` or `chezmoi unmanage`.
+4. Add them back with `chezmoi add --encrypt`.
+
+### Example: Migrate from GPG to age
+
+Update chezmoi configuration to use age encryption (with `chezmoi edit-config`
+or manually editing the corresponding template):
+
+```diff
+- encryption = "gpg"
+- [gpg]
+-     recipient = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
++ encryption = "age"
++ [age]
++     recipient = "age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
++     identity = "/home/user/key.txt"
+```
+
+Re-encrypt the files with a script like this:
+
+```bash
+for encrypted_file in $(chezmoi managed --include encrypted --path-style absolute)
+do
+  # optionally, add --force to avoid prompts
+  chezmoi forget "$encrypted_file"
+
+  # strip the .asc extension
+  decrypted_file="${encrypted_file%.asc}"
+
+  chezmoi add --encrypt "$decrypted_file"
+done
+```
