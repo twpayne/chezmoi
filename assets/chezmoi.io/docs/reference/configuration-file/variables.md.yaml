@@ -34,8 +34,8 @@ sections:
     persistentState:
       default: >-
         `$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb` <br/>
-        `$HOME/.local/share/chezmoi/chezmoi.boltdb` <br/>
-        `%USERPROFILE%/.local/share/chezmoi/chezmoi.boltdb`
+        `$HOME/.config/chezmoi/chezmoi.boltdb` <br/>
+        `%USERPROFILE%/.config/chezmoi/chezmoi.boltdb`
       description: Location of the persistent state file
     progress:
       type: bool
