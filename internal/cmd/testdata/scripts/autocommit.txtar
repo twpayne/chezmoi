@@ -37,7 +37,7 @@ exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
 stdout 'Remove \.file'
 
 # test that chezmoi edit uses a custom commit message template
-appendline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "feat: my commit message"'
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "{{ .prefix }}my commit message"'
 exec chezmoi edit $HOME${/}.dir${/}file
 exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
 stdout 'feat: my commit message'
@@ -46,16 +46,18 @@ stdout 'feat: my commit message'
 appendline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplateFile = ".COMMIT_MESSAGE.tmpl"'
 ! exec chezmoi edit $HOME${/}.dir${/}file
 stderr 'cannot specify both git.commitMessageTemplate and git.commitMessageTemplateFile'
-removeline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "feat: my commit message"'
+removeline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "{{ .prefix }}my commit message"'
 
 # test that chezmoi edit uses a custom commit message template file
 exec chezmoi edit $HOME${/}.dir${/}file
 exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
-stdout 'my commit message file'
+stdout 'feat: my commit message file'
 removeline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplateFile = ".COMMIT_MESSAGE.tmpl"'
 
 -- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+    prefix = "feat: "
 [git]
     autoCommit = true
 -- home/user/.local/share/chezmoi/.COMMIT_MESSAGE.tmpl --
-my commit message file
+{{ .prefix }}my commit message file
