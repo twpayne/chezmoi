@@ -1,3 +1,5 @@
+{{- with .chezmoi.status }}
+
 {{- range .Ordinary -}}
 {{ if and (eq .X 'A') (eq .Y '.') -}}Add {{ .Path | targetRelPath }}
 {{ else if and (eq .X 'D') (eq .Y '.') -}}Remove {{ .Path | targetRelPath }}
@@ -18,4 +20,6 @@
 
 {{- range .Untracked -}}
 {{ fail "untracked files" }}
+{{- end -}}
+
 {{- end -}}

@@ -1448,11 +1448,11 @@ func (c *Config) gitAutoAdd() (*git.Status, error) {
 
 // gitAutoCommit commits all changes in the git index, including generating a
 // commit message from status.
-func (c *Config) gitAutoCommit(status *git.Status) error {
+func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 	if status.Empty() {
 		return nil
 	}
-	funcMap := maps.Clone(sprig.TxtFuncMap())
+	funcMap := maps.Clone(c.templateFuncs)
 	maps.Copy(funcMap, map[string]any{
 		"promptBool":   c.promptBoolInteractiveTemplateFunc,
 		"promptChoice": c.promptChoiceInteractiveTemplateFunc,
@@ -1498,7 +1498,13 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if err != nil {
 		return err
 	}
-	commitMessage, err := commitMessageTmpl.Execute(status)
+	sourceState, err := c.getSourceState(cmd.Context(), cmd)
+	if err != nil {
+		return err
+	}
+	templateDataMap := sourceState.TemplateData()
+	templateDataMap["chezmoi"].(map[string]any)["status"] = status //nolint:forcetypeassert
+	commitMessage, err := commitMessageTmpl.Execute(templateDataMap)
 	if err != nil {
 		return err
 	}
@@ -1803,7 +1809,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			}
 		}
 		if c.Git.AutoCommit || c.Git.AutoPush {
-			if err := c.gitAutoCommit(status); err != nil {
+			if err := c.gitAutoCommit(cmd, status); err != nil {
 				return err
 			}
 		}
