@@ -1452,6 +1452,27 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 	if status.Empty() {
 		return nil
 	}
+	commitMessage, err := c.gitCommitMessage(cmd, status)
+	if err != nil {
+		return err
+	}
+	return c.run(
+		c.WorkingTreeAbsPath,
+		c.Git.Command,
+		[]string{"commit", "--message", string(commitMessage)},
+	)
+}
+
+// gitAutoPush pushes all changes to the remote if status is not empty.
+func (c *Config) gitAutoPush(status *git.Status) error {
+	if status.Empty() {
+		return nil
+	}
+	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"})
+}
+
+// gitCommitMessage returns the git commit message for the given status.
+func (c *Config) gitCommitMessage(cmd *cobra.Command, status *git.Status) ([]byte, error) {
 	funcMap := maps.Clone(c.templateFuncs)
 	maps.Copy(funcMap, map[string]any{
 		"promptBool":   c.promptBoolInteractiveTemplateFunc,
@@ -1472,7 +1493,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 		commitMessageTemplateData = []byte(c.Git.CommitMessageTemplate)
 	case c.Git.CommitMessageTemplateFile != "":
 		if c.sourceDirAbsPathErr != nil {
-			return c.sourceDirAbsPathErr
+			return nil, c.sourceDirAbsPathErr
 		}
 		commitMessageTemplateFileAbsPath := c.sourceDirAbsPath.JoinString(
 			c.Git.CommitMessageTemplateFile,
@@ -1481,7 +1502,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 		var err error
 		commitMessageTemplateData, err = c.baseSystem.ReadFile(commitMessageTemplateFileAbsPath)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	default:
 		name = "COMMIT_MESSAGE"
@@ -1496,31 +1517,15 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	sourceState, err := c.getSourceState(cmd.Context(), cmd)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	templateDataMap := sourceState.TemplateData()
 	templateDataMap["chezmoi"].(map[string]any)["status"] = status //nolint:forcetypeassert
-	commitMessage, err := commitMessageTmpl.Execute(templateDataMap)
-	if err != nil {
-		return err
-	}
-	return c.run(
-		c.WorkingTreeAbsPath,
-		c.Git.Command,
-		[]string{"commit", "--message", string(commitMessage)},
-	)
-}
-
-// gitAutoPush pushes all changes to the remote if status is not empty.
-func (c *Config) gitAutoPush(status *git.Status) error {
-	if status.Empty() {
-		return nil
-	}
-	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"})
+	return commitMessageTmpl.Execute(templateDataMap)
 }
 
 // makeRunEWithSourceState returns a function for

@@ -1,3 +1,16 @@
+mkgitconfig
+
 # test that chezmoi generate install.sh generates a shell script
 exec chezmoi generate install.sh
 stdout '#!/bin/sh'
+
+[!exec:git] skip 'git not found in $PATH'
+
+# test that chezmoi generate git-commit-message generates a git commit message
+exec git --git-dir=$CHEZMOISOURCEDIR/.git init
+exec chezmoi git add .
+exec chezmoi generate git-commit-message
+stdout '^Add .file$'
+
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
