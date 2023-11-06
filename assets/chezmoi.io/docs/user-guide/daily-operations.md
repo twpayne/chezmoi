@@ -81,6 +81,16 @@ message each time, use:
     commitMessageTemplate = "{{ promptString \"Commit message\" }}"
 ```
 
+If your commit message is longer than fits in a string then you can set
+`git.commitMessageTemplateFile` to specify a path to the commit message template
+relative to the source directory, for example:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[git]
+    autoCommit = true
+    commitMessageTemplateFile = ".commit_message.tmpl"
+```
+
 Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.

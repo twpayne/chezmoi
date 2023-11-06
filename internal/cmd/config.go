@@ -899,6 +899,14 @@ func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile 
 		return fmt.Errorf("%s: %w", configFileAbsPath, err)
 	}
 
+	if configFile.Git.CommitMessageTemplate != "" &&
+		configFile.Git.CommitMessageTemplateFile != "" {
+		return fmt.Errorf(
+			"%s: cannot specify both git.commitMessageTemplate and git.commitMessageTemplateFile",
+			configFileAbsPath,
+		)
+	}
+
 	return nil
 }
 
@@ -1456,14 +1464,36 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 				String()
 		},
 	})
-	templateOptions := chezmoi.TemplateOptions{
-		Options: slices.Clone(c.Template.Options),
+	var name string
+	var commitMessageTemplateData []byte
+	switch {
+	case c.Git.CommitMessageTemplate != "":
+		name = "git.commitMessageTemplate"
+		commitMessageTemplateData = []byte(c.Git.CommitMessageTemplate)
+	case c.Git.CommitMessageTemplateFile != "":
+		if c.sourceDirAbsPathErr != nil {
+			return c.sourceDirAbsPathErr
+		}
+		commitMessageTemplateFileAbsPath := c.sourceDirAbsPath.JoinString(
+			c.Git.CommitMessageTemplateFile,
+		)
+		name = c.sourceDirAbsPath.String()
+		var err error
+		commitMessageTemplateData, err = c.baseSystem.ReadFile(commitMessageTemplateFileAbsPath)
+		if err != nil {
+			return err
+		}
+	default:
+		name = "COMMIT_MESSAGE"
+		commitMessageTemplateData = []byte(templates.CommitMessageTmpl)
 	}
 	commitMessageTmpl, err := chezmoi.ParseTemplate(
-		"commit_message",
-		[]byte(c.Git.CommitMessageTemplate),
+		name,
+		commitMessageTemplateData,
 		funcMap,
-		templateOptions,
+		chezmoi.TemplateOptions{
+			Options: slices.Clone(c.Template.Options),
+		},
 	)
 	if err != nil {
 		return err
@@ -2731,8 +2761,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Format: writeDataFormatJSON,
 		Git: gitCmdConfig{
-			Command:               "git",
-			CommitMessageTemplate: templates.CommitMessageTmpl,
+			Command: "git",
 		},
 		GitHub: gitHubConfig{
 			RefreshPeriod: 1 * time.Minute,
