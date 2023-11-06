@@ -211,6 +211,9 @@ sections:
     commitMessageTemplate:
       type: 'string'
       description: Commit message template
+    commitMessageTemplateFile:
+      type: 'string'
+      description: Commit message template file (relative to source directory)
   gitHub:
     refreshPeriod:
       type: duration
