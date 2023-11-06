@@ -1,13 +1,15 @@
-# `generate` *file*
+# `generate` *output*
 
-Generates *file* for use with chezmoi. The currently supported *file*s are:
+Generates *output* for use with chezmoi. The currently supported *output*s are:
 
-| File         | Description                                                |
-| ------------ | ---------------------------------------------------------- |
-| `install.sh` | An install script, suitable for use with Github Codespaces |
+| Output               | Description                                                           |
+| -------------------- | --------------------------------------------------------------------- |
+| `git-commit-message` | A git commit message, describing the changes to the source directory. |
+| `install.sh`         | An install script, suitable for use with Github Codespaces            |
 
 !!! example
 
     ```console
     $ chezmoi generate install.sh > install.sh
+    $ chezmoi git commit -m "$(chezmoi generate git-commit-message)"
     ```
