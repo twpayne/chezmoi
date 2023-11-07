@@ -21,20 +21,12 @@ var (
 )
 
 type gopassConfig struct {
-	Command   string `json:"command" mapstructure:"command" yaml:"command"`
-	versionOK bool
-	cache     map[string]string
-	rawCache  map[string][]byte
+	Command  string `json:"command" mapstructure:"command" yaml:"command"`
+	cache    map[string]string
+	rawCache map[string][]byte
 }
 
 func (c *Config) gopassTemplateFunc(id string) string {
-	if !c.Gopass.versionOK {
-		if err := c.gopassVersionCheck(); err != nil {
-			panic(err)
-		}
-		c.Gopass.versionOK = true
-	}
-
 	if password, ok := c.Gopass.cache[id]; ok {
 		return password
 	}
@@ -57,13 +49,6 @@ func (c *Config) gopassTemplateFunc(id string) string {
 }
 
 func (c *Config) gopassRawTemplateFunc(id string) string {
-	if !c.Gopass.versionOK {
-		if err := c.gopassVersionCheck(); err != nil {
-			panic(err)
-		}
-		c.Gopass.versionOK = true
-	}
-
 	if output, ok := c.Gopass.rawCache[id]; ok {
 		return string(output)
 	}
@@ -92,28 +77,4 @@ func (c *Config) gopassOutput(args ...string) ([]byte, error) {
 		return nil, newCmdOutputError(cmd, output, err)
 	}
 	return output, nil
-}
-
-func (c *Config) gopassVersionCheck() error {
-	output, err := c.gopassOutput("--version")
-	if err != nil {
-		return err
-	}
-	m := gopassVersionRx.FindSubmatch(output)
-	if m == nil {
-		return &extractVersionError{
-			output: output,
-		}
-	}
-	version, err := semver.NewVersion(string(m[1]))
-	if err != nil {
-		return err
-	}
-	if version.LessThan(gopassMinVersion) {
-		return &versionTooOldError{
-			have: version,
-			need: &gopassMinVersion,
-		}
-	}
-	return nil
 }
