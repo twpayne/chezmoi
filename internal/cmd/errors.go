@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os/exec"
-
-	"github.com/coreos/go-semver/semver"
 )
 
 type cmdOutputError struct {
@@ -32,14 +30,6 @@ func (e *cmdOutputError) Error() string {
 
 func (e *cmdOutputError) Unwrap() error {
 	return e.err
-}
-
-type extractVersionError struct {
-	output []byte
-}
-
-func (e *extractVersionError) Error() string {
-	return fmt.Sprintf("%s: cannot extract version", e.output)
 }
 
 type parseCmdOutputError struct {
@@ -82,21 +72,4 @@ func (e *parseVersionError) Error() string {
 
 func (e *parseVersionError) Unwrap() error {
 	return e.err
-}
-
-type unsupportedVersionError struct {
-	version *semver.Version
-}
-
-func (e *unsupportedVersionError) Error() string {
-	return fmt.Sprintf("%s: unsupported version", e.version)
-}
-
-type versionTooOldError struct {
-	have *semver.Version
-	need *semver.Version
-}
-
-func (e *versionTooOldError) Error() string {
-	return fmt.Sprintf("found version %s, need version %s or later", e.have, e.need)
 }
