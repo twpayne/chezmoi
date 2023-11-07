@@ -296,6 +296,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   onepasswordVersionRx,
+			minVersion:  &onepasswordMinVersion,
 		},
 		&binaryCheck{
 			name:        "bitwarden-command",

@@ -10,10 +10,6 @@ elements of `details.fields` are returned as a map indexed by each field's `id`
 If there is no valid session in the environment, by default you will be
 interactively prompted to sign in.
 
-!!! info
-
-    For 1Password CLI 1.x, the map is indexed by each field's `designation`.
-
 The output from `op` is cached so calling `onepasswordDetailsFields` multiple
 times with the same *uuid* will only invoke `op` once. If the optional
 *vault-uuid* is supplied, it will be passed along to the `op get` call, which
@@ -74,19 +70,4 @@ accounts).
             "value": "examplepassword"
         }
     }
-    ```
-
-!!! warning
-
-    When using [1Password CLI 2.0](https://developer.1password.com/docs/cli),
-    note that the structure of the data returned by the
-    `onepasswordDetailsFields` template function is different and your templates
-    will need updating.
-
-    You may wish to use `onepassword`, `onepasswordItemFields`, or
-    `onepasswordRead` instead of this function, as it may not return expected
-    values. Testing the output of this function is recommended:
-
-    ```console
-    $ chezmoi execute-template "{{ onepasswordDetailsFields \"$UUID\" | toJson }}" | jq .
     ```

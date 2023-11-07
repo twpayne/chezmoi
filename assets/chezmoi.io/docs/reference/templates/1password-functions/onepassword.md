@@ -48,19 +48,3 @@ config variable.
         {{ (onepassword "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").details.password }}
         {{ (onepassword "$UUID" "" "$ACCOUNT_NAME").details.password }}
         ```
-
-!!! warning
-
-    When using [1Password CLI 2.0](https://developer.1password.com/), note that
-    the structure of the data returned by the `onepassword` template function
-    is different and your templates will need updating.
-
-    You may wish to use `onepasswordDetailsFields` or `onepasswordItemFields`
-    instead of this function, as `onepassword` returns fields as a list of
-    objects. However, this function may return values that are inaccessible from
-    the other functions. Testing the output of this function is recommended:
-
-    ```console
-    $ chezmoi execute-template "{{ onepassword \"$UUID\" | toJson }}" | jq .
-    ```
-

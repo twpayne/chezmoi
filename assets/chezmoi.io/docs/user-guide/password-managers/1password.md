@@ -4,12 +4,6 @@ chezmoi includes support for [1Password](https://1password.com/) using the
 [1Password CLI](https://support.1password.com/command-line-getting-started/) to
 expose data as a template function.
 
-!!! note
-
-    The [1Password CLI 2.0](https://developer.1password.com/) has been released.
-    Examples will be shown using the changed details for this version and
-    examples for 1Password CLI 1.x will follow.
-
 Log in and get a session using:
 
 ```console
@@ -18,14 +12,6 @@ $ eval $(op signin --account $SUBDOMAIN)
 ```
 
 This is not necessary if you are using biometric authentication.
-
-!!! info
-
-    For 1Password CLI 1.x, use:
-
-    ```console
-    $ eval $(op signin $SUBDOMAIN.1password.com $EMAIL)
-    ```
 
 The output of `op read $URL` is available as the `onepasswordRead` template
 function, for example:
