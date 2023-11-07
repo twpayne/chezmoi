@@ -20,7 +20,10 @@ const (
 	withoutSessionToken withSessionTokenType = false
 )
 
-var onepasswordVersionRx = regexp.MustCompile(`^(\d+\.\d+\.\d+\S*)`)
+var (
+	onepasswordVersionRx  = regexp.MustCompile(`^(\d+\.\d+\.\d+\S*)`)
+	onepasswordMinVersion = semver.Version{Major: 2}
+)
 
 type onepasswordAccount struct {
 	URL         string `json:"url"`
@@ -33,8 +36,6 @@ type onepasswordAccount struct {
 type onepasswordConfig struct {
 	Command       string `json:"command" mapstructure:"command" yaml:"command"`
 	Prompt        bool   `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
-	version       *semver.Version
-	versionErr    error
 	environFunc   func() []string
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
@@ -49,38 +50,12 @@ type onepasswordArgs struct {
 	args    []string
 }
 
-type onepasswordItemV1 struct {
-	Details struct {
-		Fields   []map[string]any `json:"fields"`
-		Sections []struct {
-			Fields []map[string]any `json:"fields,omitempty"`
-		} `json:"sections"`
-	} `json:"details"`
-}
-
-type onepasswordItemV2 struct {
+type onepasswordItem struct {
 	Fields []map[string]any `json:"fields"`
 }
 
 func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
-	version, err := c.onepasswordVersion()
-	if err != nil {
-		panic(err)
-	}
-
-	var baseArgs []string
-	switch {
-	case version.Major == 1:
-		baseArgs = []string{"get", "item"}
-	case version.Major >= 2:
-		baseArgs = []string{"item", "get", "--format", "json"}
-	default:
-		panic(&unsupportedVersionError{
-			version: version,
-		})
-	}
-
-	args, err := c.newOnepasswordArgs(baseArgs, userArgs)
+	args, err := c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -98,74 +73,30 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
 }
 
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[string]any {
-	version, err := c.onepasswordVersion()
+	item, err := c.onepasswordItem(userArgs)
 	if err != nil {
 		panic(err)
 	}
 
-	switch {
-	case version.Major == 1:
-		item, err := c.onepasswordItemV1(userArgs)
-		if err != nil {
-			panic(err)
+	result := make(map[string]any)
+	for _, field := range item.Fields {
+		if _, ok := field["section"]; ok {
+			continue
 		}
-
-		result := make(map[string]any)
-		for _, field := range item.Details.Fields {
-			if designation, ok := field["designation"].(string); ok {
-				result[designation] = field
-			}
+		if id, ok := field["id"].(string); ok && id != "" {
+			result[id] = field
+			continue
 		}
-		return result
-
-	case version.Major >= 2:
-		item, err := c.onepasswordItemV2(userArgs)
-		if err != nil {
-			panic(err)
+		if label, ok := field["label"].(string); ok && label != "" {
+			result[label] = field
+			continue
 		}
-
-		result := make(map[string]any)
-		for _, field := range item.Fields {
-			if _, ok := field["section"]; ok {
-				continue
-			}
-			if id, ok := field["id"].(string); ok && id != "" {
-				result[id] = field
-				continue
-			}
-			if label, ok := field["label"].(string); ok && label != "" {
-				result[label] = field
-				continue
-			}
-		}
-		return result
-
-	default:
-		panic(&unsupportedVersionError{
-			version: version,
-		})
 	}
+	return result
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
-	version, err := c.onepasswordVersion()
-	if err != nil {
-		panic(err)
-	}
-
-	var baseArgs []string
-	switch {
-	case version.Major == 1:
-		baseArgs = []string{"get", "document"}
-	case version.Major >= 2:
-		baseArgs = []string{"document", "get"}
-	default:
-		panic(&unsupportedVersionError{
-			version: version,
-		})
-	}
-
-	args, err := c.newOnepasswordArgs(baseArgs, userArgs)
+	args, err := c.newOnepasswordArgs([]string{"document", "get"}, userArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -178,50 +109,21 @@ func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
 }
 
 func (c *Config) onepasswordItemFieldsTemplateFunc(userArgs ...string) map[string]any {
-	version, err := c.onepasswordVersion()
+	item, err := c.onepasswordItem(userArgs)
 	if err != nil {
 		panic(err)
 	}
 
-	switch {
-	case version.Major == 1:
-		item, err := c.onepasswordItemV1(userArgs)
-		if err != nil {
-			panic(err)
+	result := make(map[string]any)
+	for _, field := range item.Fields {
+		if _, ok := field["section"]; !ok {
+			continue
 		}
-
-		result := make(map[string]any)
-		for _, section := range item.Details.Sections {
-			for _, field := range section.Fields {
-				if t, ok := field["t"].(string); ok {
-					result[t] = field
-				}
-			}
+		if label, ok := field["label"].(string); ok {
+			result[label] = field
 		}
-		return result
-
-	case version.Major >= 2:
-		item, err := c.onepasswordItemV2(userArgs)
-		if err != nil {
-			panic(err)
-		}
-
-		result := make(map[string]any)
-		for _, field := range item.Fields {
-			if _, ok := field["section"]; !ok {
-				continue
-			}
-			if label, ok := field["label"].(string); ok {
-				result[label] = field
-			}
-		}
-		return result
-
-	default:
-		panic(&unsupportedVersionError{
-			version: version,
-		})
 	}
+	return result
 }
 
 // onepasswordGetOrRefreshSessionToken will return the current session token if
@@ -254,27 +156,13 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 		}
 	}
 
-	var commandArgs []string
-
-	if args.account == "" {
-		commandArgs = []string{"signin", "--raw"}
-	} else {
-		sessionToken = os.Getenv("OP_SESSION_" + args.account)
-
-		switch {
-		case c.Onepassword.version.Major == 1:
-			commandArgs = []string{"signin", args.account, "--raw"}
-		case c.Onepassword.version.Major >= 2:
-			commandArgs = []string{"signin", "--account", args.account, "--raw"}
-		default:
-			panic(&unsupportedVersionError{
-				version: c.Onepassword.version,
-			})
-		}
+	commandArgs := []string{"signin"}
+	if args.account != "" {
+		commandArgs = append(commandArgs, "--account", args.account)
 	}
-
-	if sessionToken != "" {
-		commandArgs = append([]string{"--session", sessionToken}, commandArgs...)
+	commandArgs = append(commandArgs, "--raw")
+	if session := os.Getenv("OP_SESSION_" + args.account); session != "" {
+		commandArgs = append(commandArgs, "--session", session)
 	}
 
 	cmd := exec.Command(c.Onepassword.Command, commandArgs...) //nolint:gosec
@@ -296,25 +184,7 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 	return sessionToken, nil
 }
 
-func (c *Config) onepasswordItemV1(userArgs []string) (*onepasswordItemV1, error) {
-	args, err := c.newOnepasswordArgs([]string{"get", "item"}, userArgs)
-	if err != nil {
-		return nil, err
-	}
-
-	output, err := c.onepasswordOutput(args, withSessionToken)
-	if err != nil {
-		return nil, err
-	}
-
-	var item onepasswordItemV1
-	if err := json.Unmarshal(output, &item); err != nil {
-		return nil, newParseCmdOutputError(c.Onepassword.Command, args.args, output, err)
-	}
-	return &item, nil
-}
-
-func (c *Config) onepasswordItemV2(userArgs []string) (*onepasswordItemV2, error) {
+func (c *Config) onepasswordItem(userArgs []string) (*onepasswordItem, error) {
 	args, err := c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs)
 	if err != nil {
 		return nil, err
@@ -325,7 +195,7 @@ func (c *Config) onepasswordItemV2(userArgs []string) (*onepasswordItemV2, error
 		return nil, err
 	}
 
-	var item onepasswordItemV2
+	var item onepasswordItem
 	if err := json.Unmarshal(output, &item); err != nil {
 		return nil, newParseCmdOutputError(c.Onepassword.Command, args.args, output, err)
 	}
@@ -391,16 +261,6 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 }
 
 func (c *Config) onepasswordAccount(key string) string {
-	version, err := c.onepasswordVersion()
-	if err != nil {
-		panic(err)
-	}
-
-	// Account listing does not affect version 1
-	if version.Major == 1 {
-		return key
-	}
-
 	accounts, err := c.onepasswordAccounts()
 	if err != nil {
 		panic(err)
@@ -417,12 +277,6 @@ func (c *Config) onepasswordAccount(key string) string {
 func (c *Config) onepasswordAccounts() (map[string]string, error) {
 	if c.Onepassword.accountMap != nil || c.Onepassword.accountMapErr != nil {
 		return c.Onepassword.accountMap, c.Onepassword.accountMapErr
-	}
-
-	if version, err := c.onepasswordVersion(); err != nil {
-		if version.Major == 1 {
-			return make(map[string]string), nil
-		}
 	}
 
 	args := &onepasswordArgs{
@@ -443,41 +297,6 @@ func (c *Config) onepasswordAccounts() (map[string]string, error) {
 
 	c.Onepassword.accountMap = onepasswordAccountMap(accounts)
 	return c.Onepassword.accountMap, c.Onepassword.accountMapErr
-}
-
-func (c *Config) onepasswordVersion() (*semver.Version, error) {
-	if c.Onepassword.version != nil || c.Onepassword.versionErr != nil {
-		return c.Onepassword.version, c.Onepassword.versionErr
-	}
-
-	args := &onepasswordArgs{
-		args: []string{"--version"},
-	}
-	output, err := c.onepasswordOutput(args, withoutSessionToken)
-	if err != nil {
-		c.Onepassword.versionErr = err
-		return nil, c.Onepassword.versionErr
-	}
-
-	m := onepasswordVersionRx.FindSubmatch(output)
-	if m == nil {
-		c.Onepassword.versionErr = &extractVersionError{
-			output: output,
-		}
-		return nil, c.Onepassword.versionErr
-	}
-
-	version, err := semver.NewVersion(string(m[1]))
-	if err != nil {
-		c.Onepassword.versionErr = &parseVersionError{
-			output: m[1],
-			err:    err,
-		}
-		return nil, c.Onepassword.versionErr
-	}
-
-	c.Onepassword.version = version
-	return c.Onepassword.version, c.Onepassword.versionErr
 }
 
 func (c *Config) newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {

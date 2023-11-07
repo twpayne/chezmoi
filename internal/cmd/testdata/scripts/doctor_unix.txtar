@@ -145,7 +145,7 @@ echo "LastPass CLI v1.3.3.GIT"
 -- bin/op --
 #!/bin/sh
 
-echo "1.3.0"
+echo "2.0.0"
 -- bin/pass --
 #!/bin/sh
 

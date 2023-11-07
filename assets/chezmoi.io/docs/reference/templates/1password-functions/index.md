@@ -6,10 +6,10 @@ CLI](https://developer.1password.com/docs/cli) (`op`).
 
 !!! warning
 
-    When using 1Password CLI v2 with biometric authentication, account shorthand
-    names are not available. In order to assist with this, chezmoi supports
-    multiple derived values from `op account list` that can be changed into the
-    appropriate 1Password *account-uuid*.
+    When using the 1Password CLI with biometric authentication, account
+    shorthand names are not available. In order to assist with this, chezmoi
+    supports multiple derived values from `op account list` that can be changed
+    into the appropriate 1Password *account-uuid*.
 
     ### Example
 

@@ -26,20 +26,6 @@ interactively prompted to sign in.
     $ op item get abcdefghijklmnopqrstuvwxyz --fields exampleLabel
     ```
 
-    !!! info
-
-        For 1Password CLI 1.x.
-
-        ```
-        {{ (onepasswordItemFields "abcdefghijklmnopqrstuvwxyz").exampleLabel.v }}
-        ```
-
-        is equivalent to calling
-
-        ```console
-        $ op item get abcdefghijklmnopqrstuvwxyz --fields exampleLabel
-        ```
-
 !!! example
 
     Given the output from `op`:
@@ -128,17 +114,3 @@ interactively prompted to sign in.
             }
         }
         ```
-
-!!! warning
-
-    When using [1Password CLI 2.0](https://developer.1password.com/docs/cli),
-    note that the structure of the data returned by the `onepasswordItemFields`
-    template function is different and your templates will need updating.
-
-    You may wish to use `onepassword`, `onepasswordDetailsFields`, or
-    `onepasswordRead` instead of this function, as it may not return expected
-    values. Testing the output of this function is recommended:
-
-    ```console
-    $ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .
-    ```
