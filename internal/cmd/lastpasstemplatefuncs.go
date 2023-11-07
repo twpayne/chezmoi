@@ -27,9 +27,8 @@ var (
 )
 
 type lastpassConfig struct {
-	Command   string `json:"command" mapstructure:"command" yaml:"command"`
-	versionOK bool
-	cache     map[string][]map[string]any
+	Command string `json:"command" mapstructure:"command" yaml:"command"`
+	cache   map[string][]map[string]any
 }
 
 func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
@@ -57,13 +56,6 @@ func (c *Config) lastpassRawTemplateFunc(id string) []map[string]any {
 }
 
 func (c *Config) lastpassData(id string) ([]map[string]any, error) {
-	if !c.Lastpass.versionOK {
-		if err := c.lastpassVersionCheck(); err != nil {
-			return nil, err
-		}
-		c.Lastpass.versionOK = true
-	}
-
 	if data, ok := c.Lastpass.cache[id]; ok {
 		return data, nil
 	}
@@ -95,30 +87,6 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 		return nil, err
 	}
 	return output, nil
-}
-
-func (c *Config) lastpassVersionCheck() error {
-	output, err := c.lastpassOutput("--version")
-	if err != nil {
-		return err
-	}
-	m := lastpassVersionRx.FindSubmatch(output)
-	if m == nil {
-		return &extractVersionError{
-			output: output,
-		}
-	}
-	version, err := semver.NewVersion(string(m[1]))
-	if err != nil {
-		return err
-	}
-	if version.LessThan(lastpassMinVersion) {
-		return &versionTooOldError{
-			have: version,
-			need: &lastpassMinVersion,
-		}
-	}
-	return nil
 }
 
 func lastpassParseNote(note string) (map[string]string, error) {
