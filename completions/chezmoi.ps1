@@ -10,7 +10,7 @@ filter __chezmoi_escapeStringWithSpecialChars {
     $_ -replace '\s|#|@|\$|;|,|''|\{|\}|\(|\)|"|`|\||<|>|&','`$&'
 }
 
-[scriptblock]$__chezmoiCompleterBlock = {
+[scriptblock]${__chezmoiCompleterBlock} = {
     param(
             $WordToComplete,
             $CommandAst,
@@ -85,7 +85,7 @@ filter __chezmoi_escapeStringWithSpecialChars {
 
     __chezmoi_debug "Calling $RequestComp"
     # First disable ActiveHelp which is not supported for Powershell
-    $env:CHEZMOI_ACTIVE_HELP=0
+    ${env:CHEZMOI_ACTIVE_HELP}=0
 
     #call the command store the output in $out and redirect stderr and stdout to null
     # $Out is an array contains each line per element
@@ -242,4 +242,4 @@ filter __chezmoi_escapeStringWithSpecialChars {
     }
 }
 
-Register-ArgumentCompleter -CommandName 'chezmoi' -ScriptBlock $__chezmoiCompleterBlock
+Register-ArgumentCompleter -CommandName 'chezmoi' -ScriptBlock ${__chezmoiCompleterBlock}

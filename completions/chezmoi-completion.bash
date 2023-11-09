@@ -21,7 +21,7 @@ __chezmoi_get_completion_results() {
     local requestComp lastParam lastChar args
 
     # Prepare the command to request completions for the program.
-    # Calling ${words[0]} instead of directly chezmoi allows to handle aliases
+    # Calling ${words[0]} instead of directly chezmoi allows handling aliases
     args=("${words[@]:1}")
     requestComp="${words[0]} __complete ${args[*]}"
 
