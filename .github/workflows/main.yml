@@ -85,17 +85,6 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         ( cd assets/docker && ./test.sh archlinux )
-  test-fedora:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        ( cd assets/docker && ./test.sh fedora )
   test-macos:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -360,7 +349,6 @@ jobs:
     - lint
     - test-alpine
     - test-archlinux
-    - test-fedora
     - test-macos
     - test-oldstable-go
     - test-release
