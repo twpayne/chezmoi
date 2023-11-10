@@ -257,7 +257,7 @@ jobs:
         pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
         pip3 install -r assets/chezmoi.io/requirements.txt
     - name: build-website
-      run: ( cd assets/chezmoi.io && mkdocs build )
+      run: mkdocs build -f assets/chezmoi.io/mkdocs.yml
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
   test-windows:
@@ -410,7 +410,7 @@ jobs:
       run: |
         pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
         pip3 install -r assets/chezmoi.io/requirements.txt
-        ( cd assets/chezmoi.io && mkdocs build )
+        mkdocs build -f assets/chezmoi.io/mkdocs.yml
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
     - name: push-chezmoi.io

@@ -22,12 +22,13 @@ templates = [
 
 
 def on_pre_build(config, **kwargs):
-    docs_dir = PurePosixPath(config['docs_dir'])
+    config_dir = Path(config.config_file_path).parent
+    docs_dir = PurePosixPath(config.docs_dir)
     for src_path in templates:
         output_path = docs_dir.joinpath(src_path)
         template_path = output_path.parent / (output_path.name + '.tmpl')
         data_path = output_path.parent / (output_path.name + '.yaml')
-        args = ['go', 'run', '../../internal/cmds/execute-template']
+        args = ['go', 'run', Path(config_dir, '../../internal/cmds/execute-template')]
         if Path(data_path).exists():
             args.extend(['-data', data_path])
         args.extend(['-output', output_path, template_path])
@@ -50,15 +51,16 @@ def on_files(files, config, **kwargs):
 
 
 def on_post_build(config, **kwargs):
-    site_dir = config['site_dir']
+    config_dir = Path(config.config_file_path).parent
+    site_dir = config.site_dir
 
     # copy GitHub pages config
-    utils.copy_file('CNAME', Path(site_dir, 'CNAME'))
+    utils.copy_file(Path(config_dir, 'CNAME'), Path(site_dir, 'CNAME'))
 
     # copy installation scripts
-    utils.copy_file('../scripts/install.sh', Path(site_dir, 'get'))
-    utils.copy_file('../scripts/install-local-bin.sh', Path(site_dir, 'getlb'))
-    utils.copy_file('../scripts/install.ps1', Path(site_dir, 'get.ps1'))
+    utils.copy_file(Path(config_dir, '../scripts/install.sh'), Path(site_dir, 'get'))
+    utils.copy_file(Path(config_dir, '../scripts/install-local-bin.sh'), Path(site_dir, 'getlb'))
+    utils.copy_file(Path(config_dir, '../scripts/install.ps1'), Path(site_dir, 'get.ps1'))
 
     # copy cosign.pub
-    utils.copy_file('../cosign/cosign.pub', Path(site_dir, 'cosign.pub'))
+    utils.copy_file(Path(config_dir, '../cosign/cosign.pub'), Path(site_dir, 'cosign.pub'))
