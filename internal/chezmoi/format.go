@@ -59,11 +59,13 @@ var (
 
 // Marshal implements Format.Marshal.
 func (formatJSONC) Marshal(value any) ([]byte, error) {
-	data, err := json.Marshal(value)
-	if err != nil {
+	var builder strings.Builder
+	encoder := json.NewEncoder(&builder)
+	encoder.SetEscapeHTML(false)
+	if err := encoder.Encode(value); err != nil {
 		return nil, err
 	}
-	return hujson.Format(data)
+	return hujson.Format([]byte(builder.String()))
 }
 
 // Name implements Format.Name.
@@ -82,11 +84,14 @@ func (formatJSONC) Unmarshal(data []byte, value any) error {
 
 // Marshal implements Format.Marshal.
 func (formatJSON) Marshal(value any) ([]byte, error) {
-	data, err := json.MarshalIndent(value, "", "  ")
-	if err != nil {
+	var builder strings.Builder
+	encoder := json.NewEncoder(&builder)
+	encoder.SetEscapeHTML(false)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(value); err != nil {
 		return nil, err
 	}
-	return append(data, '\n'), nil
+	return []byte(builder.String()), nil
 }
 
 // Name implements Format.Name.

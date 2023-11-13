@@ -171,8 +171,8 @@ stdout '^value$'
 exec chezmoi execute-template '{{ dict "key" "value" | toToml }}'
 stdout '^key = .value.$'
 
-# test toPrettyJson template function
-exec chezmoi execute-template '{{ dict "a" (dict "b" "c") | toPrettyJson "    " }}'
+# test that the toPrettyJson template function does not escape HTML characters, see https://github.com/golang/go/blob/7a6ddbb425218b2f4866478d0c673ba82c8438e6/src/encoding/json/encode.go#L48-L55
+exec chezmoi execute-template '{{ dict "a" (dict "b" "&") | toPrettyJson "    " }}'
 cmp stdout golden/toPrettyJson
 
 # test fromYaml template function
@@ -270,7 +270,7 @@ subkey = subvalue
 -- golden/toPrettyJson --
 {
     "a": {
-        "b": "c"
+        "b": "&"
     }
 }
 -- home/user/.include --

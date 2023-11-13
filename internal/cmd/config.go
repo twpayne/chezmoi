@@ -574,7 +574,7 @@ func (c *Config) applyArgs(
 					return err
 				}
 			} else {
-				configStateValue, err := json.Marshal(configState{
+				configStateValue, err := chezmoi.FormatJSON.Marshal(configState{
 					ConfigTemplateContentsSHA256: chezmoi.HexBytes(currentConfigTemplateContentsSHA256),
 				})
 				if err != nil {
@@ -750,7 +750,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return err
 	}
 
-	configStateValue, err := json.Marshal(configState{
+	configStateValue, err := chezmoi.FormatJSON.Marshal(configState{
 		ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplate.contents)),
 	})
 	if err != nil {
