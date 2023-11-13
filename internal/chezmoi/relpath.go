@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"encoding/json"
 	"path"
 	"strings"
 )
@@ -92,7 +91,7 @@ func (p RelPath) Less(other RelPath) bool {
 
 // MarshalJSON implements encoding.TextMarshaler.MarshalJSON.
 func (p RelPath) MarshalJSON() ([]byte, error) {
-	return json.Marshal(p.relPath)
+	return FormatJSON.Marshal(p.relPath)
 }
 
 // Slice returns a part of p.
