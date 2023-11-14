@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
       
@@ -2830,6 +2830,8 @@
       
         
       
+        
+      
     
     
     
@@ -3196,6 +3198,26 @@
   
   <span class="md-ellipsis">
     edit-config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../commands/edit-config-template/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    edit-config-template
   </span>
   
 
@@ -7725,15 +7747,6 @@ interactively prompted to sign in.</p>
 <span class="gp"># </span>or
 <span class="gp">$ </span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span>abcdefghijklmnopqrstuvwxyz<span class="w"> </span>--fields<span class="w"> </span>exampleLabel
 </code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>For 1Password CLI 1.x.</p>
-<div class="highlight"><pre><span></span><code>{{ (onepasswordItemFields &quot;abcdefghijklmnopqrstuvwxyz&quot;).exampleLabel.v }}
-</code></pre></div>
-<p>is equivalent to calling</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>op<span class="w"> </span>item<span class="w"> </span>get<span class="w"> </span>abcdefghijklmnopqrstuvwxyz<span class="w"> </span>--fields<span class="w"> </span>exampleLabel
-</code></pre></div>
-</div>
 </div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -7814,17 +7827,6 @@ interactively prompted to sign in.</p>
 </code></pre></div>
 </div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When using <a href="https://developer.1password.com/docs/cli">1Password CLI 2.0</a>,
-note that the structure of the data returned by the <code>onepasswordItemFields</code>
-template function is different and your templates will need updating.</p>
-<p>You may wish to use <code>onepassword</code>, <code>onepasswordDetailsFields</code>, or
-<code>onepasswordRead</code> instead of this function, as it may not return expected
-values. Testing the output of this function is recommended:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordItemFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
-</code></pre></div>
-</div>
 
 
 
@@ -7876,7 +7878,7 @@ values. Testing the output of this function is recommended:</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.aecac24b.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
         <script src="../../../../extra/refresh_on_toggle_dark_light.js"></script>
       

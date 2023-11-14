@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
       
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#generate-file" class="md-skip">
+        <a href="#generate-output" class="md-skip">
           Skip to content
         </a>
       
@@ -2832,6 +2832,8 @@
       
         
       
+        
+      
     
     
     
@@ -3196,6 +3198,26 @@
   
   <span class="md-ellipsis">
     edit-config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-config-template/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    edit-config-template
   </span>
   
 
@@ -7706,16 +7728,20 @@
   
 
 
-<h1 id="generate-file"><code>generate</code> <em>file</em></h1>
-<p>Generates <em>file</em> for use with chezmoi. The currently supported <em>file</em>s are:</p>
+<h1 id="generate-output"><code>generate</code> <em>output</em></h1>
+<p>Generates <em>output</em> for use with chezmoi. The currently supported <em>output</em>s are:</p>
 <table>
 <thead>
 <tr>
-<th>File</th>
+<th>Output</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>git-commit-message</code></td>
+<td>A git commit message, describing the changes to the source directory.</td>
+</tr>
 <tr>
 <td><code>install.sh</code></td>
 <td>An install script, suitable for use with Github Codespaces</td>
@@ -7725,6 +7751,7 @@
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>generate<span class="w"> </span>install.sh<span class="w"> </span>&gt;<span class="w"> </span>install.sh
+<span class="gp">$ </span>chezmoi<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>chezmoi<span class="w"> </span>generate<span class="w"> </span>git-commit-message<span class="k">)</span><span class="s2">&quot;</span>
 </code></pre></div>
 </div>
 
@@ -7778,7 +7805,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.aecac24b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

@@ -11,7 +11,7 @@
 <link href="../setup/" rel="prev"/>
 <link href="../manage-different-types-of-file/" rel="next"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.5.3, mkdocs-material-9.4.7" name="generator"/>
+<meta content="mkdocs-1.5.3, mkdocs-material-9.4.8" name="generator"/>
 <title>Daily operations - chezmoi</title>
 <link href="../../assets/stylesheets/main.4b4a2bd9.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.356b1318.min.css" rel="stylesheet"/>
@@ -1110,6 +1110,13 @@
 <a class="md-nav__link" href="../../reference/commands/edit-config/">
 <span class="md-ellipsis">
     edit-config
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../reference/commands/edit-config-template/">
+<span class="md-ellipsis">
+    edit-config-template
   </span>
 </a>
 </li>
@@ -2666,6 +2673,13 @@ message each time, use:</p>
 <span class="w">    </span><span class="n">autoCommit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="n">commitMessageTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"{{ promptString \"Commit message\" }}"</span>
 </code></pre></div>
+<p>If your commit message is longer than fits in a string then you can set
+<code>git.commitMessageTemplateFile</code> to specify a path to the commit message template
+relative to the source directory, for example:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[git]</span>
+<span class="w">    </span><span class="n">autoCommit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="n">commitMessageTemplateFile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">".commit_message.tmpl"</span>
+</code></pre></div>
 <p>Be careful when using <code>autoPush</code>. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.</p>
@@ -2724,7 +2738,7 @@ with a single command:</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
-<script src="../../assets/javascripts/bundle.aecac24b.min.js"></script>
+<script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
 <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
 <script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
 mermaid.initialize({

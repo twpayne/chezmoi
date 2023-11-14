@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
       
@@ -1899,6 +1899,26 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#how-to-re-encrypt-encrypted-files" class="md-nav__link">
+    How to re-encrypt encrypted files
+  </a>
+  
+    <nav class="md-nav" aria-label="How to re-encrypt encrypted files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-migrate-from-gpg-to-age" class="md-nav__link">
+    Example: Migrate from GPG to age
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2877,6 +2897,8 @@
       
         
       
+        
+      
     
     
     
@@ -3243,6 +3265,26 @@
   
   <span class="md-ellipsis">
     edit-config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/commands/edit-config-template/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    edit-config-template
   </span>
   
 
@@ -7740,6 +7782,26 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#how-to-re-encrypt-encrypted-files" class="md-nav__link">
+    How to re-encrypt encrypted files
+  </a>
+  
+    <nav class="md-nav" aria-label="How to re-encrypt encrypted files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-migrate-from-gpg-to-age" class="md-nav__link">
+    Example: Migrate from GPG to age
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -7830,6 +7892,41 @@ add</code>, for example:</p>
 <p>When you run <code>chezmoi init</code> on a new machine you will be prompted to enter your
 passphrase once to decrypt <code>key.txt.age</code>. Your decrypted private key will be
 stored in <code>~/.config/chezmoi/key.txt</code>.</p>
+<h2 id="how-to-re-encrypt-encrypted-files">How to re-encrypt encrypted files</h2>
+<p>To rotate from an expired GPG key to its replacement, or change from GPG to age
+encryption, the following steps can be used:</p>
+<ol>
+<li>Make sure you have applied all encrypted files (e.g. <code>chezmoi apply</code> decrypts
+   files and places them in their destinations).</li>
+<li>Update chezmoi configuration to use the new encryption method (examples:
+   <a href="/user-guide/encryption/gpg">gpg</a>, <a href="/user-guide/encryption/age">age</a>,
+   <a href="#how-do-i-configure-chezmoi-to-encrypt-files-but-only-request-a-passphrase-the-first-time-chezmoi-init-is-run">age with one-time passphrase</a>).</li>
+<li>Remove all encrypted files from the state via <code>chezmoi forget</code> or <code>chezmoi unmanage</code>.</li>
+<li>Add them back with <code>chezmoi add --encrypt</code>.</li>
+</ol>
+<h3 id="example-migrate-from-gpg-to-age">Example: Migrate from GPG to age</h3>
+<p>Update chezmoi configuration to use age encryption (with <code>chezmoi edit-config</code>
+or manually editing the corresponding template):</p>
+<div class="highlight"><pre><span></span><code><span class="gd">- encryption = &quot;gpg&quot;</span>
+<span class="gd">- [gpg]</span>
+<span class="gd">-     recipient = &quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;</span>
+<span class="gi">+ encryption = &quot;age&quot;</span>
+<span class="gi">+ [age]</span>
+<span class="gi">+     recipient = &quot;age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>
+<span class="gi">+     identity = &quot;/home/user/key.txt&quot;</span>
+</code></pre></div>
+<p>Re-encrypt the files with a script like this:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span>encrypted_file<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>managed<span class="w"> </span>--include<span class="w"> </span>encrypted<span class="w"> </span>--path-style<span class="w"> </span>absolute<span class="k">)</span>
+<span class="k">do</span>
+<span class="w">  </span><span class="c1"># optionally, add --force to avoid prompts</span>
+<span class="w">  </span>chezmoi<span class="w"> </span>forget<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$encrypted_file</span><span class="s2">&quot;</span>
+
+<span class="w">  </span><span class="c1"># strip the .asc extension</span>
+<span class="w">  </span><span class="nv">decrypted_file</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">encrypted_file</span><span class="p">%.asc</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="w">  </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--encrypt<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$decrypted_file</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+</code></pre></div>
 
 
 
@@ -7881,7 +7978,7 @@ stored in <code>~/.config/chezmoi/key.txt</code>.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.aecac24b.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
     
     
       
@@ -2830,6 +2830,8 @@
       
         
       
+        
+      
     
     
     
@@ -3196,6 +3198,26 @@
   
   <span class="md-ellipsis">
     edit-config
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../commands/edit-config-template/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    edit-config-template
   </span>
   
 
@@ -7715,10 +7737,6 @@ elements of <code>details.fields</code> are returned as a map indexed by each fi
 (if set) or <code>label</code> (if set and <code>id</code> is not present).</p>
 <p>If there is no valid session in the environment, by default you will be
 interactively prompted to sign in.</p>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>For 1Password CLI 1.x, the map is indexed by each field's <code>designation</code>.</p>
-</div>
 <p>The output from <code>op</code> is cached so calling <code>onepasswordDetailsFields</code> multiple
 times with the same <em>uuid</em> will only invoke <code>op</code> once. If the optional
 <em>vault-uuid</em> is supplied, it will be passed along to the <code>op get</code> call, which
@@ -7774,18 +7792,6 @@ accounts).</p>
 <span class="p">}</span>
 </code></pre></div>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When using <a href="https://developer.1password.com/docs/cli">1Password CLI 2.0</a>,
-note that the structure of the data returned by the
-<code>onepasswordDetailsFields</code> template function is different and your templates
-will need updating.</p>
-<p>You may wish to use <code>onepassword</code>, <code>onepasswordItemFields</code>, or
-<code>onepasswordRead</code> instead of this function, as it may not return expected
-values. Testing the output of this function is recommended:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordDetailsFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
-</code></pre></div>
-</div>
 
 
 
@@ -7837,7 +7843,7 @@ values. Testing the output of this function is recommended:</p>
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.aecac24b.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
       
         <script src="../../../../extra/refresh_on_toggle_dark_light.js"></script>
       
