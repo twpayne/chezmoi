@@ -92,7 +92,9 @@ echo "(devel)"
 -- bin/bw --
 #!/bin/sh
 
-echo "1.12.1"
+echo '(node:84023) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.' 1>&2
+echo '(Use `node --trace-deprecation ...` to show where the warning was created)' 1>&2
+echo "2023.10.0"
 -- bin/bws --
 #!/bin/sh
 
