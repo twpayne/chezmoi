@@ -304,7 +304,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			versionRx:   regexp.MustCompile(`(?m)^(\d+\.\d+\.\d+)$`),
 		},
 		&binaryCheck{
 			name:        "bitwarden-secrets-command",
