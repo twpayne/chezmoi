@@ -1,29 +1,41 @@
 # Hooks
 
-chezmoi runs hooks before and after each chezmoi command as specified by the
-`hooks` configuration variable.
+Hook commands are executed before and after events. Unlike scripts, hooks are
+always run, even if `--dry-run` is specified. Hooks should be fast and
+idempotent.
 
-Before running *command*, chezmoi runs `hooks.`*command*`.pre.command` with the
-arguments `hooks.`*command*`.pre.args`. Similarly, after running *command*,
-chezmoi runs `hooks.`*command*`.post.command` with
-`hooks.`*command*`.post.args`.
+!!! warning
 
-When running hooks, the `CHEZMOI=1` and `CHEZMOI_*` environment variables will
-be set. Notably, `CHEZMOI_COMMAND` is set to the chezmoi command being run and
-`CHEZMOI_ARGS` contains the full arguments to chezmoi, starting with the path to
-chezmoi's executable.
+    Hooks are an experimental feature that might change in the future. If you
+    use them then please [report how you are using
+    them](https://github.com/twpayne/chezmoi/discussions/3342).
 
-Unlike scripts, hooks are always run, irrespective of whether `--dry-run` is
-specified or not.
+The following events are defined:
+
+| Event                 | Trigger                                       |
+| --------------------- | --------------------------------------------- |
+| *command*, e.g. `add` | Running `chezmoi command`, e.g. `chezmoi add` |
+| `read-source-state`   | Reading the source state                      |
+
+Each event can have a `.pre` and/or a `.post` command. The *event*.`pre` command
+is executed before *event* occurs and the *event*`.post` command is executed
+after *event* has occurred.
+
+ A command contains a `command` and an optional array of strings `args`.
 
 !!! example
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
-    [hooks.add.pre]
+    [hooks.read-source-state.pre]
     command = "echo"
-    args = ["pre-add-hook"]
+    args = ["pre-read-source-state-hook"]
 
     [hooks.apply.post]
     command = "echo"
     args = ["post-apply-hook"]
     ```
+
+When running hooks, the `CHEZMOI=1` and `CHEZMOI_*` environment variables will
+be set. `CHEZMOI_COMMAND` is set to the chezmoi command being run and
+`CHEZMOI_ARGS` contains the full arguments to chezmoi, starting with the path to
+chezmoi's executable.

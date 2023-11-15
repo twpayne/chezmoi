@@ -25,6 +25,8 @@ import (
 const (
 	gitHubOwner = "twpayne"
 	gitHubRepo  = "chezmoi"
+
+	readSourceStateHookName = "read-source-state"
 )
 
 var (
