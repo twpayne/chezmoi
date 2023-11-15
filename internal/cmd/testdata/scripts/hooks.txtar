@@ -4,10 +4,17 @@
 exec chezmoi add $HOME${/}.file
 cmp stdout golden/stdout
 
+# test that chezmoi does not run irrelevant hooks
+exec chezmoi help
+! stdout add-hook
+! stdout source-state-hook
+
 -- bin/echo.cmd --
 @echo %*
 -- golden/stdout --
 pre-add-hook
+pre-read-source-state-hook
+post-read-source-state-hook
 post-add-hook
 -- home/user/.config/chezmoi/chezmoi.yaml --
 hooks:
@@ -20,5 +27,14 @@ hooks:
             command: 'echo'
             args:
             - 'post-add-hook'
+    read-source-state:
+        pre:
+            command: 'echo'
+            args:
+            - 'pre-read-source-state-hook'
+        post:
+            command: 'echo'
+            args:
+            - 'post-read-source-state-hook'
 -- home/user/.file --
 # contents of .file

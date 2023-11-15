@@ -1732,6 +1732,12 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
+	if command := c.Hooks[readSourceStateHookName].Pre; command.Command != "" {
+		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
+			return nil, err
+		}
+	}
+
 	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
@@ -1758,6 +1764,12 @@ func (c *Config) newSourceState(
 		ReadHTTPResponse: c.readHTTPResponse,
 	}); err != nil {
 		return nil, err
+	}
+
+	if command := c.Hooks[readSourceStateHookName].Post; command.Command != "" {
+		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
+			return nil, err
+		}
 	}
 
 	return sourceState, nil
