@@ -1732,10 +1732,8 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
-	if command := c.Hooks[readSourceStateHookName].Pre; command.Command != "" {
-		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
-			return nil, err
-		}
+	if err := c.runHookPre(readSourceStateHookName); err != nil {
+		return nil, err
 	}
 
 	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
@@ -1766,10 +1764,8 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
-	if command := c.Hooks[readSourceStateHookName].Post; command.Command != "" {
-		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
-			return nil, err
-		}
+	if err := c.runHookPost(readSourceStateHookName); err != nil {
+		return nil, err
 	}
 
 	return sourceState, nil
@@ -1843,10 +1839,8 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
-	if command := c.Hooks[cmd.Name()].Post; command.Command != "" {
-		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
-			return err
-		}
+	if err := c.runHookPost(cmd.Name()); err != nil {
+		return err
 	}
 
 	return nil
@@ -2195,10 +2189,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		os.Setenv(key, value)
 	}
 
-	if command := c.Hooks[cmd.Name()].Pre; command.Command != "" {
-		if err := c.run(c.homeDirAbsPath, command.Command, command.Args); err != nil {
-			return err
-		}
+	if err := c.runHookPre(cmd.Name()); err != nil {
+		return err
 	}
 
 	return nil
@@ -2413,6 +2405,24 @@ func (c *Config) runEditor(args []string) error {
 		}
 	}
 	return err
+}
+
+// runHookPost runs the hook's post command, if it is set.
+func (c *Config) runHookPost(hook string) error {
+	command := c.Hooks[hook].Post
+	if command.Command == "" {
+		return nil
+	}
+	return c.run(c.homeDirAbsPath, command.Command, command.Args)
+}
+
+// runHookPre runs the hook's pre command, if it is set.
+func (c *Config) runHookPre(hook string) error {
+	command := c.Hooks[hook].Pre
+	if command.Command == "" {
+		return nil
+	}
+	return c.run(c.homeDirAbsPath, command.Command, command.Args)
 }
 
 // setEncryption configures c's encryption.
