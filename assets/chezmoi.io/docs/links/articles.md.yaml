@@ -250,6 +250,10 @@ articles:
   lang: CN
   title: 使用chezmoi管理dotfiles
   url: https://zhaohongxuan.github.io/2022/08/05/use-chezmoi-manage-dotfiles/
+- date: '2022-08-11'
+  version: 2.20.0
+  title: Chezmoi - a very cool tool to manage your dotfiles
+  url: https://wyssmann.com/blog/2022/08/chezmoi-a-very-cool-tool-to-manage-your-dotfiles/
 - date: '2022-09-13'
   version: 2.22.1
   lang: IT
@@ -343,3 +347,8 @@ articles:
   lang: JP
   title: 複数OSに対応しているchezmoiを使ってdotfilesを効率的に管理する
   url: https://www.asobou.co.jp/blog/web/chezmoi
+- date: '2023-10-29'
+  version: 2.40.4
+  lang: CN
+  title: 用 chezmoi 管理 dotfiles
+  url: https://thewang.net/blog/manage-dotfiles-with-chezmoi
