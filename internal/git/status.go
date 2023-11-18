@@ -136,7 +136,7 @@ func (e ParseError) Error() string {
 //
 // See https://git-scm.com/docs/git-status.
 func ParseStatusPorcelainV2(output []byte) (*Status, error) {
-	status := &Status{}
+	var status Status
 	s := bufio.NewScanner(bytes.NewReader(output))
 	for s.Scan() {
 		text := s.Text()
@@ -268,18 +268,25 @@ func ParseStatusPorcelainV2(output []byte) (*Status, error) {
 	if err := s.Err(); err != nil {
 		return nil, err
 	}
-	if status.Empty() {
-		return nil, nil
-	}
-	return status, nil
+	return &status, nil
 }
 
 // Empty returns true if s is empty.
 func (s *Status) Empty() bool {
-	return s == nil || true &&
-		len(s.Ignored) == 0 &&
-		len(s.Ordinary) == 0 &&
-		len(s.RenamedOrCopied) == 0 &&
-		len(s.Unmerged) == 0 &&
-		len(s.Untracked) == 0
+	switch {
+	case s == nil:
+		return true
+	case len(s.Ignored) != 0:
+		return false
+	case len(s.Ordinary) != 0:
+		return false
+	case len(s.RenamedOrCopied) != 0:
+		return false
+	case len(s.Unmerged) != 0:
+		return false
+	case len(s.Untracked) != 0:
+		return false
+	default:
+		return true
+	}
 }

@@ -14,9 +14,9 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		expectedStatus *Status
 	}{
 		{
-			name:          "empty",
-			outputStr:     "",
-			expectedEmpty: true,
+			name:           "empty",
+			outputStr:      "",
+			expectedStatus: &Status{},
 		},
 		{
 			name:      "added",
@@ -185,7 +185,6 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			actualStatus, err := ParseStatusPorcelainV2([]byte(tc.outputStr))
 			assert.NoError(t, err)
-			assert.Equal(t, tc.expectedEmpty, actualStatus.Empty())
 			assert.Equal(t, tc.expectedStatus, actualStatus)
 		})
 	}

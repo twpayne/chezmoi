@@ -43,6 +43,9 @@ func (p SourceRelPath) Empty() bool {
 
 // Join appends sourceRelPaths to p.
 func (p SourceRelPath) Join(sourceRelPaths ...SourceRelPath) SourceRelPath {
+	if len(sourceRelPaths) == 0 {
+		return p
+	}
 	relPaths := make([]RelPath, 0, len(sourceRelPaths))
 	for _, sourceRelPath := range sourceRelPaths {
 		relPaths = append(relPaths, sourceRelPath.relPath)
