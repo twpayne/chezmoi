@@ -12,3 +12,9 @@ updates:
     interval: monthly
   labels:
   - enhancement
+- package-ecosystem: pip
+  directory: /assets
+  schedule:
+    interval: monthly
+  labels:
+  - enhancement

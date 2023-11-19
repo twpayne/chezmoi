@@ -1,4 +1,3 @@
-__pycache__
 /docs/index.md
 /docs/install.md
 /docs/links/articles.md
@@ -7,8 +6,3 @@ __pycache__
 /docs/reference/configuration-file/variables.md
 /docs/reference/release-history.md
 /site
-
-/.venv
-/.virtualenv
-/venv
-/virtualenv
