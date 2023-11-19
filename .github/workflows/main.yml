@@ -18,7 +18,6 @@ env:
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
   FIND_TYPOS_VERSION: 0.0.3
-  MKDOCS_VERSION: 1.5.3
 jobs:
   changes:
     runs-on: ubuntu-20.04
@@ -254,7 +253,6 @@ jobs:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
       run: |
-        pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
         pip3 install -r assets/chezmoi.io/requirements.txt
     - name: build-website
       run: mkdocs build -f assets/chezmoi.io/mkdocs.yml
@@ -408,7 +406,6 @@ jobs:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
       run: |
-        pip3 install mkdocs==${{ env.MKDOCS_VERSION }}
         pip3 install -r assets/chezmoi.io/requirements.txt
         mkdocs build -f assets/chezmoi.io/mkdocs.yml
       env:

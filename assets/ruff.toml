@@ -1,0 +1,20 @@
+[lint]
+extend-select = [
+    "A",
+    "B",
+    "E",
+    "F",
+    "I",
+    "W",
+    "ANN",
+    "COM",
+    "FA",
+    "UP",
+    "PL",
+    "PTH",
+    "SIM",
+]
+ignore = ["ANN003"]
+
+[format]
+quote-style = "single"
