@@ -21,7 +21,7 @@ $ cd assets/chezmoi.io
         $ pip3 install --user -r requirements.txt
         ```
 
-    === "virutalenv (Recommended)"
+    === "virtualenv (Recommended)"
 
         Create a virtualenv with:
 
