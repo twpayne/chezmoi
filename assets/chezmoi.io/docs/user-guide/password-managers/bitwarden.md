@@ -83,7 +83,7 @@ in a template variable, e.g.
     accessToken = "0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow=="
 ```
 
-You can then retrive secrets using the `bitwardenSecrets` template function, for
+You can then retrieve secrets using the `bitwardenSecrets` template function, for
 example:
 
 ```
