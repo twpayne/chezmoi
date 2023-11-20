@@ -384,8 +384,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		stderr: os.Stderr,
 	}
 
-	// Override sprig's toPrettyJson template function. Delete it from the
-	// template function map first to avoid a duplication function panic.
+	// Override sprig template functions. Delete them from the template function
+	// map first to avoid a duplicate function panic.
+	delete(c.templateFuncs, "fromJson")
 	delete(c.templateFuncs, "toPrettyJson")
 
 	// The completion template function is added in persistentPreRunRootE as
@@ -413,6 +414,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"findExecutable":           c.findExecutableTemplateFunc,
 		"findOneExecutable":        c.findOneExecutableTemplateFunc,
 		"fromIni":                  c.fromIniTemplateFunc,
+		"fromJson":                 c.fromJsonTemplateFunc,
 		"fromJsonc":                c.fromJsoncTemplateFunc,
 		"fromToml":                 c.fromTomlTemplateFunc,
 		"fromYaml":                 c.fromYamlTemplateFunc,

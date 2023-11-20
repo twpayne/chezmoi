@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -17,6 +18,7 @@ import (
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
+	"github.com/tailscale/hujson"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
@@ -175,12 +177,34 @@ func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 	return iniFileToMap(file)
 }
 
-func (c *Config) fromJsoncTemplateFunc(s string) any {
+// fromJsonTemplateFunc parses s as JSON and returns the result. In contrast to
+// encoding/json, numbers are represented as int64s or float64s if possible.
+//
+//nolint:revive,stylecheck
+func (c *Config) fromJsonTemplateFunc(s string) any {
+	decoder := json.NewDecoder(bytes.NewBufferString(s))
+	decoder.UseNumber()
 	var data any
-	if err := chezmoi.FormatJSONC.Unmarshal([]byte(s), &data); err != nil {
+	if err := decoder.Decode(&data); err != nil {
+		return err
+	}
+	return replaceJSONNumbersWithNumericValues(data)
+}
+
+// fromJsoncTemplateFunc parses s as JSONC and returns the result. In contrast
+// to encoding/json, numbers are represented as int64s or float64s if possible.
+func (c *Config) fromJsoncTemplateFunc(s string) any {
+	jsonData, err := hujson.Standardize([]byte(s))
+	if err != nil {
 		panic(err)
 	}
-	return data
+	decoder := json.NewDecoder(bytes.NewBuffer(jsonData))
+	decoder.UseNumber()
+	var data any
+	if err := decoder.Decode(&data); err != nil {
+		return err
+	}
+	return replaceJSONNumbersWithNumericValues(data)
 }
 
 func (c *Config) fromTomlTemplateFunc(s string) any {
@@ -719,6 +743,38 @@ func pruneEmptyMaps(m map[string]any) bool {
 		}
 	}
 	return len(m) == 0
+}
+
+// replaceJSONNumbersWithNumericValues replaces any json.Numbers in value with
+// int64s or float64s if possible and returns the new value. If value is a slice
+// or a map then it is mutated in place.
+func replaceJSONNumbersWithNumericValues(value any) any {
+	switch value := value.(type) {
+	case json.Number:
+		if int64Value, err := value.Int64(); err == nil {
+			return int64Value
+		}
+		if float64Value, err := value.Float64(); err == nil {
+			return float64Value
+		}
+		// If value cannot be represented as an int64 or a float64 then return
+		// it as a string to preserve its value. Such values are valid JSON but
+		// are unlikely to occur in practice. See
+		// https://www.rfc-editor.org/rfc/rfc7159#section-6.
+		return value.String()
+	case []any:
+		for i, e := range value {
+			value[i] = replaceJSONNumbersWithNumericValues(e)
+		}
+		return value
+	case map[string]any:
+		for k, v := range value {
+			value[k] = replaceJSONNumbersWithNumericValues(v)
+		}
+		return value
+	default:
+		return value
+	}
 }
 
 func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {

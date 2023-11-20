@@ -192,6 +192,7 @@ nav:
       - findExecutable: reference/templates/functions/findExecutable.md
       - findOneExecutable: reference/templates/functions/findOneExecutable.md
       - fromIni: reference/templates/functions/fromIni.md
+      - fromJson: reference/templates/functions/fromJson.md
       - fromJsonc: reference/templates/functions/fromJsonc.md
       - fromToml: reference/templates/functions/fromToml.md
       - fromYaml: reference/templates/functions/fromYaml.md

@@ -1,0 +1,6 @@
+# test that integer types are preserved in fromJson | toToml template function pipelines
+exec chezmoi execute-template '{{ "{\"key\":1}" | fromJson | toToml }}'
+cmp stdout golden/stdout
+
+-- golden/stdout --
+key = 1
