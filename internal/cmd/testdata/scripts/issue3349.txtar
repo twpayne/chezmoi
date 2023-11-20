@@ -1,0 +1,21 @@
+symlink $CHEZMOISOURCEDIR/home/dot_symlink_to_file -> dot_file
+symlink $CHEZMOISOURCEDIR/home/dot_symlink_to_dir -> dot_dir
+
+# test that chezmoi apply follows symlinks to files but not symlinks to directories
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+cmp $HOME/.symlink_to_file golden/.file
+cmp $HOME/.dir/file golden/.dir/file
+isdir $HOME/.symlink_to_dir
+! exists $HOME/.symlink_to_dir/file
+
+-- golden/.dir/file --
+# contents of .dir/file
+-- golden/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/home/dot_dir/file --
+# contents of .dir/file
+-- home/user/.local/share/chezmoi/home/dot_file --
+# contents of .file
