@@ -6,6 +6,13 @@ import (
 	"github.com/alecthomas/assert/v2"
 )
 
+func TestFormatJSONSingleValue(t *testing.T) {
+	var value any
+	assert.NoError(t, FormatJSON.Unmarshal([]byte(`{}`), &value))
+	assert.NoError(t, FormatJSON.Unmarshal([]byte(`{} `), &value))
+	assert.Error(t, FormatJSON.Unmarshal([]byte(`{} 1`), &value))
+}
+
 func TestFormats(t *testing.T) {
 	assert.NotZero(t, FormatsByName["json"])
 	assert.NotZero(t, FormatsByName["jsonc"])

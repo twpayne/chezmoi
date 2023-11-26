@@ -162,36 +162,38 @@ func TestDeleteValueAtPathTemplateFunc(t *testing.T) {
 func TestFromJson(t *testing.T) {
 	c, err := newConfig()
 	assert.NoError(t, err)
-	for _, tc := range []struct {
+	for i, tc := range []struct {
 		s        string
 		expected any
 	}{
 		{
-			s:        "1",
-			expected: 1,
+			s:        `{"key":1}`,
+			expected: map[string]any{"key": int64(1)},
 		},
 		{
-			s:        "2.2",
-			expected: 2.2,
+			s:        `{"key":2.2}`,
+			expected: map[string]any{"key": 2.2},
 		},
 		{
-			s:        "[1,2.2,3]",
-			expected: []any{int64(1), 2.2, int64(3)},
+			s:        `{"key":[1,2.2,3]}`,
+			expected: map[string]any{"key": []any{int64(1), 2.2, int64(3)}},
 		},
 		{
-			s:        `{"k":1}`,
-			expected: map[string]any{"k": int64(1)},
+			s:        `{"key":1}`,
+			expected: map[string]any{"key": int64(1)},
 		},
 		{
-			s:        "1E400",
-			expected: "1E400",
+			s:        `{"key":1E400}`,
+			expected: map[string]any{"key": "1E400"},
 		},
 		{
-			s:        "3.141592653589793238462643383279",
-			expected: 3.141592653589793238462643383279,
+			s:        `{"key":3.141592653589793238462643383279}`,
+			expected: map[string]any{"key": 3.141592653589793238462643383279},
 		},
 	} {
-		assert.Equal(t, tc.expected, c.fromJsonTemplateFunc(tc.s))
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			assert.Equal(t, tc.expected, c.fromJsonTemplateFunc(tc.s))
+		})
 	}
 }
 

@@ -2,5 +2,51 @@
 exec chezmoi execute-template '{{ "{\"key\":1}" | fromJson | toToml }}'
 cmp stdout golden/stdout
 
+# test that integer types are preserved in the .data section of JSONC config files
+exec chezmoi execute-template '{{ .data | toToml }}'
+cmp stdout golden/config.toml
+
+# test that integer and floating point types are preserved from .chezmoidata.json files
+exec chezmoi execute-template '{{ .json | toToml }}'
+cmp stdout golden/json.toml
+
+# test that integer and floating point types are preserved from .chezmoidata.jsonc files
+exec chezmoi execute-template '{{ .jsonc | toToml }}'
+cmp stdout golden/jsonc.toml
+
+-- golden/config.toml --
+dataFloat64 = 1.1
+dataInt64 = 2
+-- golden/json.toml --
+jsonFloat64 = 3.3
+jsonInt64 = 4
+-- golden/jsonc.toml --
+jsoncFloat64 = 5.5
+jsoncInt64 = 6
 -- golden/stdout --
 key = 1
+-- home/user/.config/chezmoi/chezmoi.jsonc --
+{
+    // Comment
+    "data": {
+        "data": {
+            "dataFloat64": 1.1,
+            "dataInt64": 2,
+        }
+    }
+}
+-- home/user/.local/share/chezmoi/.chezmoidata.json --
+{
+    "json": {
+        "jsonFloat64": 3.3,
+        "jsonInt64": 4
+    }
+}
+-- home/user/.local/share/chezmoi/.chezmoidata.jsonc --
+{
+    // Comment
+    "jsonc": {
+        "jsoncFloat64": 5.5,
+        "jsoncInt64": 6,
+    }
+}
