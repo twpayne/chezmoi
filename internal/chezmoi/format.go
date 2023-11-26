@@ -1,8 +1,11 @@
 package chezmoi
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
@@ -17,6 +20,8 @@ var (
 	FormatTOML  Format = formatTOML{}
 	FormatYAML  Format = formatYAML{}
 )
+
+var errExpectedEOF = errors.New("expected EOF")
 
 // A Format is a serialization format.
 type Format interface {
@@ -79,7 +84,7 @@ func (formatJSONC) Unmarshal(data []byte, value any) error {
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(data, value)
+	return FormatJSON.Unmarshal(data, value)
 }
 
 // Marshal implements Format.Marshal.
@@ -101,7 +106,32 @@ func (formatJSON) Name() string {
 
 // Unmarshal implements Format.Unmarshal.
 func (formatJSON) Unmarshal(data []byte, value any) error {
-	return json.Unmarshal(data, value)
+	switch value := value.(type) {
+	case *[]any:
+		decoder := json.NewDecoder(bytes.NewReader(data))
+		decoder.UseNumber()
+		if err := decoder.Decode(value); err != nil {
+			return err
+		}
+		if _, err := decoder.Token(); !errors.Is(err, io.EOF) {
+			return errExpectedEOF
+		}
+		*value = replaceJSONNumbersWithNumericValuesSlice(*value)
+		return nil
+	case *map[string]any:
+		decoder := json.NewDecoder(bytes.NewReader(data))
+		decoder.UseNumber()
+		if err := decoder.Decode(value); err != nil {
+			return err
+		}
+		if _, err := decoder.Token(); !errors.Is(err, io.EOF) {
+			return errExpectedEOF
+		}
+		*value = replaceJSONNumbersWithNumericValuesMap(*value)
+		return nil
+	default:
+		return json.Unmarshal(data, value)
+	}
 }
 
 // Marshal implements Format.Marshal.
@@ -168,4 +198,44 @@ func isPrefixDotFormatDotTmpl(name, prefix string) bool {
 		}
 	}
 	return false
+}
+
+// replaceJSONNumbersWithNumericValues replaces any json.Numbers in value with
+// int64s or float64s if possible and returns the new value. If value is a slice
+// or a map then it is mutated in place.
+func replaceJSONNumbersWithNumericValues(value any) any {
+	switch value := value.(type) {
+	case json.Number:
+		if int64Value, err := value.Int64(); err == nil {
+			return int64Value
+		}
+		if float64Value, err := value.Float64(); err == nil {
+			return float64Value
+		}
+		// If value cannot be represented as an int64 or a float64 then return
+		// it as a string to preserve its value. Such values are valid JSON but
+		// are unlikely to occur in practice. See
+		// https://www.rfc-editor.org/rfc/rfc7159#section-6.
+		return value.String()
+	case []any:
+		return replaceJSONNumbersWithNumericValuesSlice(value)
+	case map[string]any:
+		return replaceJSONNumbersWithNumericValuesMap(value)
+	default:
+		return value
+	}
+}
+
+func replaceJSONNumbersWithNumericValuesMap(value map[string]any) map[string]any {
+	for k, v := range value {
+		value[k] = replaceJSONNumbersWithNumericValues(v)
+	}
+	return value
+}
+
+func replaceJSONNumbersWithNumericValuesSlice(value []any) []any {
+	for i, e := range value {
+		value[i] = replaceJSONNumbersWithNumericValues(e)
+	}
+	return value
 }
