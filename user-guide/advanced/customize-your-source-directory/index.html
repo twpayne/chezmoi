@@ -18,11 +18,11 @@
         <link rel="prev" href="../../machines/containers-and-vms/">
       
       
-        <link rel="next" href="../use-chezmoi-with-watchman/">
+        <link rel="next" href="../install-your-password-manager-on-init/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.356b1318.min.css">
@@ -1667,6 +1667,8 @@
       
         
       
+        
+      
     
     
     
@@ -1753,14 +1755,18 @@
       
         <li class="md-nav__item">
   <a href="#use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state" class="md-nav__link">
-    Use a subdirectory of your dotfiles repo as the root of the source state
+    <span class="md-ellipsis">
+      Use a subdirectory of your dotfiles repo as the root of the source state
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#use-a-different-version-control-system-to-git" class="md-nav__link">
-    Use a different version control system to git
+    <span class="md-ellipsis">
+      Use a different version control system to git
+    </span>
   </a>
   
 </li>
@@ -1769,6 +1775,26 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -4090,6 +4116,8 @@
       
         
       
+        
+      
     
     
     
@@ -4303,6 +4331,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7764,14 +7812,18 @@
       
         <li class="md-nav__item">
   <a href="#use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state" class="md-nav__link">
-    Use a subdirectory of your dotfiles repo as the root of the source state
+    <span class="md-ellipsis">
+      Use a subdirectory of your dotfiles repo as the root of the source state
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#use-a-different-version-control-system-to-git" class="md-nav__link">
-    Use a different version control system to git
+    <span class="md-ellipsis">
+      Use a different version control system to git
+    </span>
   </a>
   
 </li>
@@ -7849,8 +7901,8 @@ required for chezmoi to be able to identify the work tree.</p>
 <p>For updates, you can set the <code>update.command</code> and <code>update.args</code> configuration
 variables and <code>chezmoi update</code> will use these instead of <code>git pull</code>, for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[update]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;fossil&quot;</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;update&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;fossil&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;update&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Currently, it is not possible to override the auto add, commit, and push
 behavior for non-git VCSs, so you will have to commit changes manually, for
@@ -7910,7 +7962,7 @@ example:</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

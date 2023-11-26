@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.356b1318.min.css">
@@ -1495,21 +1495,27 @@
       
         <li class="md-nav__item">
   <a href="#symmetric-encryption" class="md-nav__link">
-    Symmetric encryption
+    <span class="md-ellipsis">
+      Symmetric encryption
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#symmetric-encryption-with-a-passphrase" class="md-nav__link">
-    Symmetric encryption with a passphrase
+    <span class="md-ellipsis">
+      Symmetric encryption with a passphrase
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#builtin-age-encryption" class="md-nav__link">
-    Builtin age encryption
+    <span class="md-ellipsis">
+      Builtin age encryption
+    </span>
   </a>
   
 </li>
@@ -1726,6 +1732,8 @@
       
         
       
+        
+      
     
     
     
@@ -1772,6 +1780,26 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
   </span>
   
 
@@ -4097,6 +4125,8 @@
       
         
       
+        
+      
     
     
     
@@ -4310,6 +4340,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7771,21 +7821,27 @@
       
         <li class="md-nav__item">
   <a href="#symmetric-encryption" class="md-nav__link">
-    Symmetric encryption
+    <span class="md-ellipsis">
+      Symmetric encryption
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#symmetric-encryption-with-a-passphrase" class="md-nav__link">
-    Symmetric encryption with a passphrase
+    <span class="md-ellipsis">
+      Symmetric encryption with a passphrase
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#builtin-age-encryption" class="md-nav__link">
-    Builtin age encryption
+    <span class="md-ellipsis">
+      Builtin age encryption
+    </span>
   </a>
   
 </li>
@@ -7816,25 +7872,25 @@
 </code></pre></div>
 <p>Specify age encryption in your configuration file, being sure to specify at
 least the identity and one recipient:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age&quot;</span>
 <span class="k">[age]</span>
-<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/home/user/key.txt&quot;</span>
-<span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&quot;</span>
+<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/home/user/key.txt&quot;</span>
+<span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&quot;</span>
 </code></pre></div>
 <p>chezmoi supports multiple recipients and recipient files, and multiple
 identities.</p>
 <h2 id="symmetric-encryption">Symmetric encryption</h2>
 <p>To use age's symmetric encryption, specify a single identity and enable
 symmetric encryption in your config file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age&quot;</span>
 <span class="k">[age]</span>
-<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;~/.ssh/id_rsa&quot;</span>
+<span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;~/.ssh/id_rsa&quot;</span>
 <span class="w">    </span><span class="n">symmetric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <h2 id="symmetric-encryption-with-a-passphrase">Symmetric encryption with a passphrase</h2>
 <p>To use age's symmetric encryption with a passphrase, set <code>age.passphrase</code> to
 <code>true</code> in your config file, for example:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;age&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age&quot;</span>
 <span class="k">[age]</span>
 <span class="w">    </span><span class="n">passphrase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
@@ -7914,7 +7970,7 @@ manual encryption operations.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

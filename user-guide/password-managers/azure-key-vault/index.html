@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.356b1318.min.css">
@@ -1675,6 +1675,8 @@
       
         
       
+        
+      
     
     
     
@@ -1721,6 +1723,26 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
   </span>
   
 
@@ -4046,6 +4068,8 @@
       
         
       
+        
+      
     
     
     
@@ -4259,6 +4283,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7737,7 +7781,7 @@
 The logged in user must have the <code>Key Vault Secrets User</code> RBAC role on the Azure Key Vault resource.</p>
 <p>Alternatively, use alternate <a href="https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication?tabs=bash#2-authenticate-with-azure">authentication options</a>.</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[azureKeyVault]</span>
-<span class="w">  </span><span class="n">defaultVault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;contoso-vault2&quot;</span>
+<span class="w">  </span><span class="n">defaultVault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;contoso-vault2&quot;</span>
 </code></pre></div>
 <p>A secret value can be retrieved with the <code>azureKeyVault</code> template function.</p>
 <p>Retrieve the secret <code>my-secret-name</code> from the default configured vault.</p>
@@ -7749,10 +7793,10 @@ The logged in user must have the <code>Key Vault Secrets User</code> RBAC role o
 <p>It is also possible to define an alias in the configuration file for an
 additional vault.</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[data]</span>
-<span class="w">  </span><span class="n">vault42</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;contoso-vault42&quot;</span>
+<span class="w">  </span><span class="n">vault42</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;contoso-vault42&quot;</span>
 
 <span class="k">[azureKeyVault]</span>
-<span class="w">  </span><span class="n">defaultVault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;contoso-vault2&quot;</span>
+<span class="w">  </span><span class="n">defaultVault</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;contoso-vault2&quot;</span>
 </code></pre></div>
 <p>Retrieve the secret <code>my-secret-name</code> from the vault named <code>contoso-vault42</code>
 through the alias.</p>
@@ -7809,7 +7853,7 @@ through the alias.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

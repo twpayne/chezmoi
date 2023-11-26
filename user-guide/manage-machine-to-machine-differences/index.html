@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
@@ -796,28 +796,36 @@
       
         <li class="md-nav__item">
   <a href="#use-templates" class="md-nav__link">
-    Use templates
+    <span class="md-ellipsis">
+      Use templates
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#ignore-files-or-a-directory-on-different-machines" class="md-nav__link">
-    Ignore files or a directory on different machines
+    <span class="md-ellipsis">
+      Ignore files or a directory on different machines
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#handle-different-file-locations-on-different-systems-with-the-same-contents" class="md-nav__link">
-    Handle different file locations on different systems with the same contents
+    <span class="md-ellipsis">
+      Handle different file locations on different systems with the same contents
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#use-completely-different-dotfiles-on-different-machines" class="md-nav__link">
-    Use completely different dotfiles on different machines
+    <span class="md-ellipsis">
+      Use completely different dotfiles on different machines
+    </span>
   </a>
   
 </li>
@@ -1733,6 +1741,8 @@
       
         
       
+        
+      
     
     
     
@@ -1779,6 +1789,26 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
   </span>
   
 
@@ -4104,6 +4134,8 @@
       
         
       
+        
+      
     
     
     
@@ -4317,6 +4349,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7778,28 +7830,36 @@
       
         <li class="md-nav__item">
   <a href="#use-templates" class="md-nav__link">
-    Use templates
+    <span class="md-ellipsis">
+      Use templates
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#ignore-files-or-a-directory-on-different-machines" class="md-nav__link">
-    Ignore files or a directory on different machines
+    <span class="md-ellipsis">
+      Ignore files or a directory on different machines
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#handle-different-file-locations-on-different-systems-with-the-same-contents" class="md-nav__link">
-    Handle different file locations on different systems with the same contents
+    <span class="md-ellipsis">
+      Handle different file locations on different systems with the same contents
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#use-completely-different-dotfiles-on-different-machines" class="md-nav__link">
-    Use completely different dotfiles on different machines
+    <span class="md-ellipsis">
+      Use completely different dotfiles on different machines
+    </span>
   </a>
   
 </li>
@@ -7833,17 +7893,17 @@ addresses, credentials, etc. chezmoi achieves this functionality by using
 needed.</p>
 <p>For example, your home <code>~/.gitconfig</code> on your personal machine might look like:</p>
 <div class="highlight"><span class="filename">~/.gitconfig</span><pre><span></span><code><span class="k">[user]</span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;me@home.org&quot;</span>
 </code></pre></div>
 <p>Whereas at work it might be:</p>
 <div class="highlight"><span class="filename">~/.gitconfig</span><pre><span></span><code><span class="k">[user]</span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;firstname.lastname@company.com&quot;</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;firstname.lastname@company.com&quot;</span>
 </code></pre></div>
 <p>To handle this, on each machine create a configuration file called
 <code>~/.config/chezmoi/chezmoi.toml</code> defining variables that might vary from
 machine to machine. For example, for your home machine:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[data]</span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;me@home.org&quot;</span>
 </code></pre></div>
 <p>If you intend to store private data (e.g. access tokens) in
 <code>~/.config/chezmoi/chezmoi.toml</code>, make sure it has permissions <code>0600</code>.</p>
@@ -7860,7 +7920,7 @@ into a template:</p>
 </code></pre></div>
 <p>Edit the file so it looks something like:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_gitconfig.tmpl</span><pre><span></span><code><span class="k">[user]</span>
-<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="w"> </span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="n">quote</span><span class="w"> </span><span class="p">}}</span>
+<span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="p">.</span><span class="n">email</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="n">quote</span><span class="w"> </span><span class="p">}</span><span class="err">}</span>
 </code></pre></div>
 <p>Templates are often used to capture machine-specific differences. For example,
 in your <code>~/.local/share/chezmoi/dot_bashrc.tmpl</code> you might have:</p>
@@ -8031,7 +8091,7 @@ on macOS and <code>~/.local/share/chezmoi/.bashrc_linux</code> on Linux.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
       

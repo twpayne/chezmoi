@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.356b1318.min.css">
@@ -927,35 +927,45 @@
       
         <li class="md-nav__item">
   <a href="#use-a-custom-diff-tool" class="md-nav__link">
-    Use a custom diff tool
+    <span class="md-ellipsis">
+      Use a custom diff tool
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#dont-show-scripts-in-the-diff-output" class="md-nav__link">
-    Don't show scripts in the diff output
+    <span class="md-ellipsis">
+      Don't show scripts in the diff output
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#dont-show-externals-in-the-diff-output" class="md-nav__link">
-    Don't show externals in the diff output
+    <span class="md-ellipsis">
+      Don't show externals in the diff output
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#customize-the-diff-pager" class="md-nav__link">
-    Customize the diff pager
+    <span class="md-ellipsis">
+      Customize the diff pager
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#show-human-friendly-diffs-for-binary-files" class="md-nav__link">
-    Show human-friendly diffs for binary files
+    <span class="md-ellipsis">
+      Show human-friendly diffs for binary files
+    </span>
   </a>
   
 </li>
@@ -1740,6 +1750,8 @@
       
         
       
+        
+      
     
     
     
@@ -1786,6 +1798,26 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
   </span>
   
 
@@ -4111,6 +4143,8 @@
       
         
       
+        
+      
     
     
     
@@ -4324,6 +4358,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7785,35 +7839,45 @@
       
         <li class="md-nav__item">
   <a href="#use-a-custom-diff-tool" class="md-nav__link">
-    Use a custom diff tool
+    <span class="md-ellipsis">
+      Use a custom diff tool
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#dont-show-scripts-in-the-diff-output" class="md-nav__link">
-    Don't show scripts in the diff output
+    <span class="md-ellipsis">
+      Don't show scripts in the diff output
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#dont-show-externals-in-the-diff-output" class="md-nav__link">
-    Don't show externals in the diff output
+    <span class="md-ellipsis">
+      Don't show externals in the diff output
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#customize-the-diff-pager" class="md-nav__link">
-    Customize the diff pager
+    <span class="md-ellipsis">
+      Customize the diff pager
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#show-human-friendly-diffs-for-binary-files" class="md-nav__link">
-    Show human-friendly diffs for binary files
+    <span class="md-ellipsis">
+      Show human-friendly diffs for binary files
+    </span>
   </a>
   
 </li>
@@ -7845,8 +7909,8 @@ the <code>diff.command</code> and <code>diff.args</code> configuration variables
 target state respectively. For example, to use <a href="https://meldmerge.org/">meld</a>,
 specify:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;meld&quot;</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--diff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Target }}&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;meld&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--diff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="p">]</span>
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -7860,7 +7924,7 @@ scripts that will be run. You can exclude scripts from the diff output by
 setting the <code>diff.exclude</code> configuration variable in your configuration file,
 for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
-<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;scripts&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;scripts&quot;</span><span class="p">]</span>
 </code></pre></div>
 <h2 id="dont-show-externals-in-the-diff-output">Don't show externals in the diff output</h2>
 <p>To exclude diffs from externals, either pass the <code>--exclude=externals</code> flag or
@@ -7870,7 +7934,7 @@ set <code>diff.exclude</code> to <code>["externals"]</code> in your config file.
 choice by setting <code>diff.pager</code> configuration variable. For example, to use
 <a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
-<span class="w">    </span><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;diff-so-fancy&quot;</span>
+<span class="w">    </span><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;diff-so-fancy&quot;</span>
 </code></pre></div>
 <p>The pager can be disabled using the <code>--no-pager</code> flag or by setting <code>diff.pager</code>
 to an empty string.</p>
@@ -7900,9 +7964,9 @@ configuration file:</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[[textconv]]</span>
-<span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;**/*.plist&quot;</span>
-<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;plutil&quot;</span>
-<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-convert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;xml1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="p">]</span>
+<span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span>
+<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span>
+<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -7972,7 +8036,7 @@ showing differences.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

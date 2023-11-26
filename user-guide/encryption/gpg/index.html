@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.356b1318.min.css">
@@ -1515,28 +1515,36 @@
       
         <li class="md-nav__item">
   <a href="#asymmetric-privatepublic-key-encryption" class="md-nav__link">
-    Asymmetric (private/public-key) encryption
+    <span class="md-ellipsis">
+      Asymmetric (private/public-key) encryption
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#symmetric-encryption" class="md-nav__link">
-    Symmetric encryption
+    <span class="md-ellipsis">
+      Symmetric encryption
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#encrypting-files-with-a-passphrase" class="md-nav__link">
-    Encrypting files with a passphrase
+    <span class="md-ellipsis">
+      Encrypting files with a passphrase
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#muting-gpg-output" class="md-nav__link">
-    Muting gpg output
+    <span class="md-ellipsis">
+      Muting gpg output
+    </span>
   </a>
   
 </li>
@@ -1733,6 +1741,8 @@
       
         
       
+        
+      
     
     
     
@@ -1779,6 +1789,26 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
   </span>
   
 
@@ -4104,6 +4134,8 @@
       
         
       
+        
+      
     
     
     
@@ -4317,6 +4349,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7778,28 +7830,36 @@
       
         <li class="md-nav__item">
   <a href="#asymmetric-privatepublic-key-encryption" class="md-nav__link">
-    Asymmetric (private/public-key) encryption
+    <span class="md-ellipsis">
+      Asymmetric (private/public-key) encryption
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#symmetric-encryption" class="md-nav__link">
-    Symmetric encryption
+    <span class="md-ellipsis">
+      Symmetric encryption
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#encrypting-files-with-a-passphrase" class="md-nav__link">
-    Encrypting files with a passphrase
+    <span class="md-ellipsis">
+      Encrypting files with a passphrase
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#muting-gpg-output" class="md-nav__link">
-    Muting gpg output
+    <span class="md-ellipsis">
+      Muting gpg output
+    </span>
   </a>
   
 </li>
@@ -7829,9 +7889,9 @@ generating the target state or editing a file contents with <code>chezmoi edit</
 <h2 id="asymmetric-privatepublic-key-encryption">Asymmetric (private/public-key) encryption</h2>
 <p>Specify the encryption key to use in your configuration file (<code>chezmoi.toml</code>)
 with the <code>gpg.recipient</code> key:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;gpg&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gpg&quot;</span>
 <span class="k">[gpg]</span>
-<span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;...&quot;</span>
+<span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
 </code></pre></div>
 <p>chezmoi will encrypt files:</p>
 <div class="highlight"><pre><span></span><code>gpg<span class="w"> </span>--armor<span class="w"> </span>--recipient<span class="w"> </span><span class="nv">$RECIPIENT</span><span class="w"> </span>--encrypt
@@ -7840,7 +7900,7 @@ with the <code>gpg.recipient</code> key:</p>
 be decrypted when generating the target state.</p>
 <h2 id="symmetric-encryption">Symmetric encryption</h2>
 <p>Specify symmetric encryption in your configuration file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;gpg&quot;</span>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gpg&quot;</span>
 <span class="k">[gpg]</span>
 <span class="w">    </span><span class="n">symmetric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
@@ -7868,7 +7928,7 @@ some output even if you redirect stdout to <code>/dev/null</code>.</p>
 <p>You can mute this by adding <code>--quiet</code> to the <code>gpg.args</code> key in your
 configuration:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.toml.tmpl</span><pre><span></span><code><span class="k">[gpg]</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;--quiet&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--quiet&quot;</span><span class="p">]</span>
 </code></pre></div>
 
 
@@ -7921,7 +7981,7 @@ configuration:</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       

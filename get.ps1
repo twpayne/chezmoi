@@ -70,7 +70,7 @@ function log {
         [string] $Message
     )
 
-    if ([int]$LogLevel -ge [int]$MesageLevel) {
+    if ([int]$LogLevel -ge [int]$MessageLevel) {
         Write-Host $Message
     }
 }

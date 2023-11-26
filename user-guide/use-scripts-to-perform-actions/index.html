@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.8">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.4b4a2bd9.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.fad675c6.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.356b1318.min.css">
@@ -816,35 +816,45 @@
       
         <li class="md-nav__item">
   <a href="#understand-how-scripts-work" class="md-nav__link">
-    Understand how scripts work
+    <span class="md-ellipsis">
+      Understand how scripts work
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#set-environment-variables" class="md-nav__link">
-    Set environment variables
+    <span class="md-ellipsis">
+      Set environment variables
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#install-packages-with-scripts" class="md-nav__link">
-    Install packages with scripts
+    <span class="md-ellipsis">
+      Install packages with scripts
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#run-a-script-when-the-contents-of-another-file-changes" class="md-nav__link">
-    Run a script when the contents of another file changes
+    <span class="md-ellipsis">
+      Run a script when the contents of another file changes
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#clear-the-state-of-all-run_onchange_-and-run_once_-scripts" class="md-nav__link">
-    Clear the state of all run_onchange_ and run_once_ scripts
+    <span class="md-ellipsis">
+      Clear the state of all run_onchange_ and run_once_ scripts
+    </span>
   </a>
   
 </li>
@@ -1740,6 +1750,8 @@
       
         
       
+        
+      
     
     
     
@@ -1786,6 +1798,26 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/install-your-password-manager-on-init/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install your password manager on init
   </span>
   
 
@@ -4111,6 +4143,8 @@
       
         
       
+        
+      
     
     
     
@@ -4324,6 +4358,26 @@
   
   <span class="md-ellipsis">
     fromIni
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/fromJson/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    fromJson
   </span>
   
 
@@ -7785,35 +7839,45 @@
       
         <li class="md-nav__item">
   <a href="#understand-how-scripts-work" class="md-nav__link">
-    Understand how scripts work
+    <span class="md-ellipsis">
+      Understand how scripts work
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#set-environment-variables" class="md-nav__link">
-    Set environment variables
+    <span class="md-ellipsis">
+      Set environment variables
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#install-packages-with-scripts" class="md-nav__link">
-    Install packages with scripts
+    <span class="md-ellipsis">
+      Install packages with scripts
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#run-a-script-when-the-contents-of-another-file-changes" class="md-nav__link">
-    Run a script when the contents of another file changes
+    <span class="md-ellipsis">
+      Run a script when the contents of another file changes
+    </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#clear-the-state-of-all-run_onchange_-and-run_once_-scripts" class="md-nav__link">
-    Clear the state of all run_onchange_ and run_once_ scripts
+    <span class="md-ellipsis">
+      Clear the state of all run_onchange_ and run_once_ scripts
+    </span>
   </a>
   
 </li>
@@ -7870,7 +7934,7 @@ include a <code>#!</code> line or be an executable binary.</p>
 section of your config file. For example, to set the <code>MY_VAR</code> environment
 variable to <code>my_value</code>, specify:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[scriptEnv]</span>
-<span class="w">    </span><span class="n">MY_VAR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my_value&quot;</span>
+<span class="w">    </span><span class="n">MY_VAR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_value&quot;</span>
 </code></pre></div>
 <p>chezmoi sets a number of environment variables when running scripts, including
 <code>CHEZMOI=1</code> and common template data like <code>CHEZMOI_OS</code> and <code>CHEZMOI_ARCH</code>.</p>
@@ -7880,7 +7944,7 @@ variable to <code>my_value</code>, specify:</p>
 run by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezmoi
 diff</code>, set <code>diff.exclude</code> in your configuration file, for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
-<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;scripts&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;scripts&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Similarly, <code>chezmoi status</code> will print the names of the scripts that it
 will execute with the status <code>R</code>. This can similarly disabled by setting
@@ -7987,7 +8051,7 @@ been run in the <code>scriptState</code> bucket of its persistent state. To clea
     <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.81fa17fe.min.js"></script>
+      <script src="../../assets/javascripts/bundle.6c14ae12.min.js"></script>
       
         <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
       
