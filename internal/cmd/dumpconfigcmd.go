@@ -4,12 +4,13 @@ import "github.com/spf13/cobra"
 
 func (c *Config) newDumpConfigCmd() *cobra.Command {
 	dumpConfigCmd := &cobra.Command{
-		Use:     "dump-config",
-		Short:   "Dump the configuration values",
-		Long:    mustLongHelp("dump-config"),
-		Example: example("dump-config"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runDumpConfigCmd,
+		Use:         "dump-config",
+		Short:       "Dump the configuration values",
+		Long:        mustLongHelp("dump-config"),
+		Example:     example("dump-config"),
+		Args:        cobra.NoArgs,
+		RunE:        c.runDumpConfigCmd,
+		Annotations: newAnnotations(),
 	}
 
 	flags := dumpConfigCmd.Flags()

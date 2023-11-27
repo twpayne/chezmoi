@@ -6,11 +6,12 @@ import (
 
 func (c *Config) newDecryptCommand() *cobra.Command {
 	decryptCmd := &cobra.Command{
-		Use:     "decrypt [file...]",
-		Short:   "Decrypt file or standard input",
-		Long:    mustLongHelp("decrypt"),
-		Example: example("decrypt"),
-		RunE:    c.runDecryptCmd,
+		Use:         "decrypt [file...]",
+		Short:       "Decrypt file or standard input",
+		Long:        mustLongHelp("decrypt"),
+		Example:     example("decrypt"),
+		RunE:        c.runDecryptCmd,
+		Annotations: newAnnotations(),
 	}
 
 	return decryptCmd

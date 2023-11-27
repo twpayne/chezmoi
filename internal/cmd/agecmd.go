@@ -25,15 +25,17 @@ type ageCmdConfig struct {
 
 func (c *Config) newAgeCmd() *cobra.Command {
 	ageCmd := &cobra.Command{
-		Use:   "age",
-		Args:  cobra.NoArgs,
-		Short: "Interact with age",
+		Use:         "age",
+		Args:        cobra.NoArgs,
+		Short:       "Interact with age",
+		Annotations: newAnnotations(),
 	}
 
 	ageDecryptCmd := &cobra.Command{
-		Use:   "decrypt [file...]",
-		Short: "Decrypt file or standard input",
-		RunE:  c.runAgeDecryptCmd,
+		Use:         "decrypt [file...]",
+		Short:       "Decrypt file or standard input",
+		RunE:        c.runAgeDecryptCmd,
+		Annotations: newAnnotations(),
 	}
 	ageDecryptFlags := ageDecryptCmd.Flags()
 	ageDecryptFlags.BoolVarP(
@@ -46,9 +48,10 @@ func (c *Config) newAgeCmd() *cobra.Command {
 	ageCmd.AddCommand(ageDecryptCmd)
 
 	ageEncryptCmd := &cobra.Command{
-		Use:   "encrypt [file...]",
-		Short: "Encrypt file or standard input",
-		RunE:  c.runAgeEncryptCmd,
+		Use:         "encrypt [file...]",
+		Short:       "Encrypt file or standard input",
+		RunE:        c.runAgeEncryptCmd,
+		Annotations: newAnnotations(),
 	}
 	ageEncryptFlags := ageEncryptCmd.Flags()
 	ageEncryptFlags.BoolVarP(

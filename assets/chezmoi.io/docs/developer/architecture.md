@@ -110,7 +110,8 @@ line arguments, and computed and cached values.
 
 The `Config.persistentPreRunRootE` and `Config.persistentPostRunRootE` methods
 set up and tear down state for individual commands based on the command's
-`Annotations` field.
+`Annotations` field, which defines how the command interacts with the file
+system and persistent state.
 
 ## Path handling
 
