@@ -9,11 +9,12 @@ import (
 
 func (c *Config) newHelpCmd() *cobra.Command {
 	helpCmd := &cobra.Command{
-		Use:     "help [command]",
-		Short:   "Print help about a command",
-		Long:    mustLongHelp("help"),
-		Example: example("help"),
-		RunE:    c.runHelpCmd,
+		Use:         "help [command]",
+		Short:       "Print help about a command",
+		Long:        mustLongHelp("help"),
+		Example:     example("help"),
+		RunE:        c.runHelpCmd,
+		Annotations: newAnnotations(),
 	}
 
 	return helpCmd

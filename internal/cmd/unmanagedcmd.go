@@ -18,12 +18,13 @@ type unmanagedCmdConfig struct {
 
 func (c *Config) newUnmanagedCmd() *cobra.Command {
 	unmanagedCmd := &cobra.Command{
-		Use:     "unmanaged [path]...",
-		Short:   "List the unmanaged files in the destination directory",
-		Long:    mustLongHelp("unmanaged"),
-		Example: example("unmanaged"),
-		Args:    cobra.ArbitraryArgs,
-		RunE:    c.makeRunEWithSourceState(c.runUnmanagedCmd),
+		Use:         "unmanaged [path]...",
+		Short:       "List the unmanaged files in the destination directory",
+		Long:        mustLongHelp("unmanaged"),
+		Example:     example("unmanaged"),
+		Args:        cobra.ArbitraryArgs,
+		RunE:        c.makeRunEWithSourceState(c.runUnmanagedCmd),
+		Annotations: newAnnotations(),
 	}
 
 	flags := unmanagedCmd.Flags()

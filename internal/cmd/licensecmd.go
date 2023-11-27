@@ -11,12 +11,13 @@ import (
 
 func (c *Config) newLicenseCmd() *cobra.Command {
 	licenseCmd := &cobra.Command{
-		Use:     "license",
-		Short:   "Print license",
-		Long:    mustLongHelp("license"),
-		Example: example("license"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runLicenseCmd,
+		Use:         "license",
+		Short:       "Print license",
+		Long:        mustLongHelp("license"),
+		Example:     example("license"),
+		Args:        cobra.NoArgs,
+		RunE:        c.runLicenseCmd,
+		Annotations: newAnnotations(),
 	}
 
 	return licenseCmd

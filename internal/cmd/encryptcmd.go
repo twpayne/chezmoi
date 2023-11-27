@@ -6,11 +6,12 @@ import (
 
 func (c *Config) newEncryptCommand() *cobra.Command {
 	encryptCmd := &cobra.Command{
-		Use:     "encrypt [file...]",
-		Short:   "Encrypt file or standard input",
-		Long:    mustLongHelp("encrypt"),
-		Example: example("encrypt"),
-		RunE:    c.runEncryptCmd,
+		Use:         "encrypt [file...]",
+		Short:       "Encrypt file or standard input",
+		Long:        mustLongHelp("encrypt"),
+		Example:     example("encrypt"),
+		RunE:        c.runEncryptCmd,
+		Annotations: newAnnotations(),
 	}
 
 	return encryptCmd

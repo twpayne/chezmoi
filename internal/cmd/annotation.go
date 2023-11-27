@@ -1,6 +1,11 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+
+	"github.com/spf13/cobra"
+	"golang.org/x/exp/slices"
+)
 
 // Annotations.
 var (
@@ -11,6 +16,7 @@ var (
 	modifiesDestinationDirectory  = tagAnnotation("chezmoi_modifies_destination_directory")
 	modifiesSourceDirectory       = tagAnnotation("chezmoi_modifies_source_directory")
 	outputsDiff                   = tagAnnotation("chezmoi_outputs_diff")
+	persistentStateModeKey        = tagAnnotation("chezmoi_persistent_state_mode")
 	requiresConfigDirectory       = tagAnnotation("chezmoi_requires_config_directory")
 	requiresSourceDirectory       = tagAnnotation("chezmoi_requires_source_directory")
 	requiresWorkingTree           = tagAnnotation("chezmoi_requires_working_tree")
@@ -19,12 +25,10 @@ var (
 
 // Persistent state modes.
 const (
-	persistentStateModeKey = "chezmoi_persistent_state_mode"
-
-	persistentStateModeEmpty         persistentStateMode = "empty"
-	persistentStateModeReadOnly      persistentStateMode = "read-only"
-	persistentStateModeReadMockWrite persistentStateMode = "read-mock-write"
-	persistentStateModeReadWrite     persistentStateMode = "read-write"
+	persistentStateModeEmpty         persistentStateModeValue = "empty"
+	persistentStateModeReadOnly      persistentStateModeValue = "read-only"
+	persistentStateModeReadMockWrite persistentStateModeValue = "read-mock-write"
+	persistentStateModeReadWrite     persistentStateModeValue = "read-write"
 )
 
 type annotation interface {
@@ -35,6 +39,13 @@ type annotation interface {
 type annotationsSet map[string]string
 
 func getAnnotations(cmd *cobra.Command) annotationsSet {
+	thirdPartyCommandNames := []string{
+		"__complete",
+		"generate-fig-spec",
+	}
+	if cmd.Annotations == nil && !slices.Contains(thirdPartyCommandNames, cmd.Name()) {
+		panic(fmt.Sprintf("%q: no annotations", cmd.Name()))
+	}
 	return annotationsSet(cmd.Annotations)
 }
 
@@ -50,17 +61,17 @@ func (a annotationsSet) hasTag(tag annotation) bool {
 	return a[tag.key()] == tag.value()
 }
 
-func (a annotationsSet) persistentStateMode() persistentStateMode {
-	return persistentStateMode(a[persistentStateModeKey])
+func (a annotationsSet) persistentStateMode() persistentStateModeValue {
+	return persistentStateModeValue(a[string(persistentStateModeKey)])
 }
 
-type persistentStateMode string
+type persistentStateModeValue string
 
-func (m persistentStateMode) key() string {
-	return persistentStateModeKey
+func (m persistentStateModeValue) key() string {
+	return string(persistentStateModeKey)
 }
 
-func (m persistentStateMode) value() string {
+func (m persistentStateModeValue) value() string {
 	return string(m)
 }
 
