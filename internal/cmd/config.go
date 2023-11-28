@@ -766,7 +766,16 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &c.ConfigFile); err != nil {
 		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
 	}
-	return c.setEncryption()
+
+	if err := c.setEncryption(); err != nil {
+		return err
+	}
+
+	if err := c.setEnvironmentVariables(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // createConfigFile creates a config file using a template and returns its
@@ -2175,20 +2184,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			os.Setenv(key, valueStr)
 		}
 	}
-	var env map[string]string
-	switch {
-	case len(c.Env) != 0 && len(c.ScriptEnv) != 0:
-		return errors.New("only one of env or scriptEnv may be set")
-	case len(c.Env) != 0:
-		env = c.Env
-	case len(c.ScriptEnv) != 0:
-		env = c.ScriptEnv
-	}
-	for key, value := range env {
-		if strings.HasPrefix(key, "CHEZMOI_") {
-			c.errorf("warning: %s: overriding reserved environment variable", key)
-		}
-		os.Setenv(key, value)
+
+	if err := c.setEnvironmentVariables(); err != nil {
+		return err
 	}
 
 	if err := c.runHookPre(cmd.Name()); err != nil {
@@ -2462,6 +2460,28 @@ func (c *Config) setEncryption() error {
 		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
 	}
 
+	return nil
+}
+
+// setEnvironmentVariables sets all environment variables defined in c.
+func (c *Config) setEnvironmentVariables() error {
+	var env map[string]string
+	switch {
+	case len(c.Env) != 0 && len(c.ScriptEnv) != 0:
+		return errors.New("only one of env or scriptEnv may be set")
+	case len(c.Env) != 0:
+		env = c.Env
+	case len(c.ScriptEnv) != 0:
+		env = c.ScriptEnv
+	}
+	for key, value := range env {
+		if strings.HasPrefix(key, "CHEZMOI_") {
+			c.errorf("warning: %s: overriding reserved environment variable", key)
+		}
+		if err := os.Setenv(key, value); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
