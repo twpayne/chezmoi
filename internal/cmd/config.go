@@ -33,6 +33,7 @@ import (
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/mitchellh/mapstructure"
 	"github.com/muesli/termenv"
+	"github.com/pbnjay/memory"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -255,6 +256,7 @@ type templateData struct {
 	command           string
 	config            map[string]any
 	configFile        chezmoi.AbsPath
+	cpus              int
 	executable        chezmoi.AbsPath
 	fqdnHostname      string
 	gid               string
@@ -267,6 +269,7 @@ type templateData struct {
 	pathListSeparator string
 	pathSeparator     string
 	sourceDir         chezmoi.AbsPath
+	totalMemoryMB     uint64
 	uid               string
 	username          string
 	version           map[string]any
@@ -1420,6 +1423,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"command":           templateData.command,
 			"config":            templateData.config,
 			"configFile":        templateData.configFile.String(),
+			"cpus":              templateData.cpus,
 			"executable":        templateData.executable.String(),
 			"fqdnHostname":      templateData.fqdnHostname,
 			"gid":               templateData.gid,
@@ -1432,6 +1436,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"pathListSeparator": templateData.pathListSeparator,
 			"pathSeparator":     templateData.pathSeparator,
 			"sourceDir":         templateData.sourceDir.String(),
+			"totalMemoryMB":     templateData.totalMemoryMB,
 			"uid":               templateData.uid,
 			"username":          templateData.username,
 			"version":           templateData.version,
@@ -2327,6 +2332,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		command:           cmd.Name(),
 		config:            c.ConfigFile.toMap(),
 		configFile:        c.configFileAbsPath,
+		cpus:              runtime.NumCPU(),
 		executable:        chezmoi.NewAbsPath(executable),
 		fqdnHostname:      fqdnHostname,
 		gid:               gid,
@@ -2339,6 +2345,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		pathListSeparator: string(os.PathListSeparator),
 		pathSeparator:     string(os.PathSeparator),
 		sourceDir:         sourceDirAbsPath,
+		totalMemoryMB:     memory.TotalMemory() / (1024 * 1024),
 		uid:               uid,
 		username:          username,
 		version: map[string]any{
