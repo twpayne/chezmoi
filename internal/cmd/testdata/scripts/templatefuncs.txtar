@@ -24,6 +24,14 @@ cmp stdout golden/deleteValueAtPath
 exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
 stdout '^true$'
 
+# test that the fromJson template function can deserialize JSON values
+exec chezmoi execute-template '{{ fromJson "1" }}'
+stdout '^1$'
+
+# test that the fromJson template function can deserialize JSON arrays
+exec chezmoi execute-template '{{ fromJson "[1, 2]" }}'
+stdout '^\[1 2\]$'
+
 # test fromJsonc template function
 stdin golden/example.jsonc
 exec chezmoi execute-template --with-stdin '{{ fromJsonc .chezmoi.stdin | toJson }}'

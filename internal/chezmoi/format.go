@@ -107,7 +107,7 @@ func (formatJSON) Name() string {
 // Unmarshal implements Format.Unmarshal.
 func (formatJSON) Unmarshal(data []byte, value any) error {
 	switch value := value.(type) {
-	case *[]any:
+	case *any, *[]any, *map[string]any:
 		decoder := json.NewDecoder(bytes.NewReader(data))
 		decoder.UseNumber()
 		if err := decoder.Decode(value); err != nil {
@@ -116,18 +116,14 @@ func (formatJSON) Unmarshal(data []byte, value any) error {
 		if _, err := decoder.Token(); !errors.Is(err, io.EOF) {
 			return errExpectedEOF
 		}
-		*value = replaceJSONNumbersWithNumericValuesSlice(*value)
-		return nil
-	case *map[string]any:
-		decoder := json.NewDecoder(bytes.NewReader(data))
-		decoder.UseNumber()
-		if err := decoder.Decode(value); err != nil {
-			return err
+		switch value := value.(type) {
+		case *any:
+			*value = replaceJSONNumbersWithNumericValues(*value)
+		case *[]any:
+			*value = replaceJSONNumbersWithNumericValuesSlice(*value)
+		case *map[string]any:
+			*value = replaceJSONNumbersWithNumericValuesMap(*value)
 		}
-		if _, err := decoder.Token(); !errors.Is(err, io.EOF) {
-			return errExpectedEOF
-		}
-		*value = replaceJSONNumbersWithNumericValuesMap(*value)
 		return nil
 	default:
 		return json.Unmarshal(data, value)

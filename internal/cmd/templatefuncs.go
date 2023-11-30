@@ -180,7 +180,7 @@ func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 //
 //nolint:revive,stylecheck
 func (c *Config) fromJsonTemplateFunc(s string) any {
-	var value map[string]any
+	var value any
 	if err := chezmoi.FormatJSON.Unmarshal([]byte(s), &value); err != nil {
 		panic(err)
 	}
@@ -190,7 +190,7 @@ func (c *Config) fromJsonTemplateFunc(s string) any {
 // fromJsoncTemplateFunc parses s as JSONC and returns the result. In contrast
 // to encoding/json, numbers are represented as int64s or float64s if possible.
 func (c *Config) fromJsoncTemplateFunc(s string) any {
-	var value map[string]any
+	var value any
 	if err := chezmoi.FormatJSONC.Unmarshal([]byte(s), &value); err != nil {
 		panic(err)
 	}
@@ -198,7 +198,7 @@ func (c *Config) fromJsoncTemplateFunc(s string) any {
 }
 
 func (c *Config) fromTomlTemplateFunc(s string) any {
-	var value map[string]any
+	var value any
 	if err := chezmoi.FormatTOML.Unmarshal([]byte(s), &value); err != nil {
 		panic(err)
 	}
@@ -206,7 +206,7 @@ func (c *Config) fromTomlTemplateFunc(s string) any {
 }
 
 func (c *Config) fromYamlTemplateFunc(s string) any {
-	var value map[string]any
+	var value any
 	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &value); err != nil {
 		panic(err)
 	}
