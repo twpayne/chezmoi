@@ -1,0 +1,8 @@
+# test that chezmoi copes with extra slashes in path arguments
+exec chezmoi cat $HOME//.file
+cmp stdout golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file

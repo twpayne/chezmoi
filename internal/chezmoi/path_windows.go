@@ -11,6 +11,7 @@ var devNullAbsPath = NewAbsPath("NUL:")
 // slashes, performing tilde expansion, making the path absolute, and converting
 // the volume name to uppercase.
 func NewAbsPathFromExtPath(extPath string, homeDirAbsPath AbsPath) (AbsPath, error) {
+	extPath = filepath.Clean(extPath)
 	switch {
 	case extPath == "~":
 		return homeDirAbsPath, nil
