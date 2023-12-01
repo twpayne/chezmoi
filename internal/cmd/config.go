@@ -226,6 +226,7 @@ type Config struct {
 	logger               *zerolog.Logger
 
 	// Computed configuration.
+	commandDirAbsPath   chezmoi.AbsPath
 	homeDirAbsPath      chezmoi.AbsPath
 	encryption          chezmoi.Encryption
 	sourceDirAbsPath    chezmoi.AbsPath
@@ -253,6 +254,7 @@ type templateData struct {
 	args              []string
 	cacheDir          chezmoi.AbsPath
 	command           string
+	commandDir        chezmoi.AbsPath
 	config            map[string]any
 	configFile        chezmoi.AbsPath
 	executable        chezmoi.AbsPath
@@ -482,6 +484,14 @@ func newConfig(options ...configOption) (*Config, error) {
 		}
 	}
 
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	c.commandDirAbsPath, err = chezmoi.NormalizePath(wd)
+	if err != nil {
+		return nil, err
+	}
 	c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
 	if err != nil {
 		return nil, err
@@ -1418,6 +1428,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"args":              templateData.args,
 			"cacheDir":          templateData.cacheDir.String(),
 			"command":           templateData.command,
+			"commandDir":        templateData.commandDir.String(),
 			"config":            templateData.config,
 			"configFile":        templateData.configFile.String(),
 			"executable":        templateData.executable.String(),
@@ -2154,6 +2165,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"ARGS":          strings.Join(templateData.args, " "),
 		"CACHE_DIR":     templateData.cacheDir.String(),
 		"COMMAND":       templateData.command,
+		"COMMAND_DIR":   templateData.commandDir.String(),
 		"CONFIG_FILE":   templateData.configFile.String(),
 		"EXECUTABLE":    templateData.executable.String(),
 		"FQDN_HOSTNAME": templateData.fqdnHostname,
@@ -2325,6 +2337,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		args:              os.Args,
 		cacheDir:          c.CacheDirAbsPath,
 		command:           cmd.Name(),
+		commandDir:        c.commandDirAbsPath,
 		config:            c.ConfigFile.toMap(),
 		configFile:        c.configFileAbsPath,
 		executable:        chezmoi.NewAbsPath(executable),
@@ -2648,13 +2661,8 @@ func (c *Config) targetValidArgs(
 	}
 
 	if !filepath.IsAbs(toComplete) {
-		wd, err := os.Getwd()
-		if err != nil {
-			cobra.CompErrorln(err.Error())
-			return nil, cobra.ShellCompDirectiveError
-		}
 		for i, completion := range completions {
-			completions[i] = strings.TrimPrefix(completion, wd+"/")
+			completions[i] = strings.TrimPrefix(completion, c.commandDirAbsPath.String()+"/")
 		}
 	}
 

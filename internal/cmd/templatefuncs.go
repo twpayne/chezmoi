@@ -214,13 +214,9 @@ func (c *Config) fromYamlTemplateFunc(s string) any {
 }
 
 func (c *Config) globTemplateFunc(pattern string) []string {
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
 	defer func() {
 		value := recover()
-		err := os.Chdir(wd)
+		err := os.Chdir(c.commandDirAbsPath.String())
 		if value != nil {
 			panic(value)
 		}
