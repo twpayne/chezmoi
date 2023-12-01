@@ -36,6 +36,7 @@ after *event* has occurred.
     ```
 
 When running hooks, the `CHEZMOI=1` and `CHEZMOI_*` environment variables will
-be set. `CHEZMOI_COMMAND` is set to the chezmoi command being run and
+be set. `CHEZMOI_COMMAND` is set to the chezmoi command being run,
+`CHEZMOI_COMMAND_DIR` is set to the directory where chezmoi was run from, and
 `CHEZMOI_ARGS` contains the full arguments to chezmoi, starting with the path to
 chezmoi's executable.
