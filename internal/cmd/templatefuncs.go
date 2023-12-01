@@ -198,7 +198,7 @@ func (c *Config) fromJsoncTemplateFunc(s string) any {
 }
 
 func (c *Config) fromTomlTemplateFunc(s string) any {
-	var value any
+	var value map[string]any
 	if err := chezmoi.FormatTOML.Unmarshal([]byte(s), &value); err != nil {
 		panic(err)
 	}
