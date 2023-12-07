@@ -88,6 +88,7 @@ nav:
     - Containers and VMs: user-guide/machines/containers-and-vms.md
   - Advanced:
     - Customize your source directory: user-guide/advanced/customize-your-source-directory.md
+    - Install packages declaratively: user-guide/advanced/install-packages-declaratively.md
     - Install your password manager on init: user-guide/advanced/install-your-password-manager-on-init.md
     - Use chezmoi with Watchman: user-guide/advanced/use-chezmoi-with-watchman.md
     - Migrate away from chezmoi: user-guide/advanced/migrate-away-from-chezmoi.md
