@@ -60,13 +60,12 @@ func (err OSExecExitErrorLogObject) MarshalZerologObject(event *zerolog.Event) {
 	if err.Err == nil {
 		return
 	}
-	var osExecExitError *exec.ExitError
-	if !errors.As(err.Err, &osExecExitError) {
-		return
-	}
-	event.EmbedObject(OSProcessStateLogObject{osExecExitError.ProcessState})
-	if osExecExitError.Stderr != nil {
-		event.Bytes("stderr", osExecExitError.Stderr)
+	if osExecExitError := (&exec.ExitError{}); errors.As(err.Err, &osExecExitError) {
+		event.EmbedObject(OSProcessStateLogObject{osExecExitError.ProcessState})
+		if osExecExitError.Stderr != nil {
+			event.Bytes("stderr", osExecExitError.Stderr)
+			return
+		}
 	}
 }
 

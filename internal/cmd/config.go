@@ -2523,8 +2523,7 @@ func (c *Config) sourceAbsPaths(
 
 func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error) {
 	relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath)
-	var notInAbsDirError *chezmoi.NotInAbsDirError
-	if errors.As(err, &notInAbsDirError) {
+	if notInAbsDirError := (&chezmoi.NotInAbsDirError{}); errors.As(err, &notInAbsDirError) {
 		return chezmoi.EmptyRelPath, fmt.Errorf(
 			"%s: not in destination directory (%s)",
 			absPath,
