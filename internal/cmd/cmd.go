@@ -120,8 +120,7 @@ func Main(versionInfo VersionInfo, args []string) int {
 		}
 	}
 	if err != nil {
-		var errExitCode chezmoi.ExitCodeError
-		if errors.As(err, &errExitCode) {
+		if errExitCode := chezmoi.ExitCodeError(0); errors.As(err, &errExitCode) {
 			return int(errExitCode)
 		}
 		fmt.Fprintf(os.Stderr, "chezmoi: %s\n", deDuplicateError(err))
