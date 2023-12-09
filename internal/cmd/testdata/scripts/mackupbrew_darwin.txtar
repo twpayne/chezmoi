@@ -1,7 +1,10 @@
 [!darwin] skip 'Darwin only'
 
-chmod 755 bin/brew
-chmod 755 bin/mackup
+# simulate a brew installation of mackup
+chmod 755 opt/homebrew/Cellar/mackup/0.8.32/bin/mackup
+chmod 755 opt/homebrew/bin/brew
+symlink opt/homebrew/bin/mackup -> ../Cellar/mackup/0.8.32/bin/mackup
+env PATH=$WORK/opt/homebrew/bin:$PATH
 
 # test that chezmoi mackup add adds normal dotfiles
 exec chezmoi mackup add curl
@@ -11,28 +14,6 @@ cmp $CHEZMOISOURCEDIR/dot_curlrc golden/dot_curlrc
 exec chezmoi mackup add vscode
 cmp $CHEZMOISOURCEDIR/dot_config/Code/User/settings.json golden/settings.json
 
--- bin/brew --
-#!/bin/sh
-
-case "$*" in
-"--prefix")
-    echo "opt/homebrew"
-    ;;
-*)
-    echo "Error: Unknown command $*"
-    ;;
-esac
--- bin/mackup --
-#!/bin/sh
-
-case "$*" in
-"--version")
-    echo "Mackup 0.8.32"
-    ;;
-*)
-    echo "Usage:"
-    ;;
-esac
 -- golden/dot_curlrc --
 # contents of .curlrc
 -- golden/settings.json --
@@ -48,6 +29,17 @@ name = Curl
 [configuration_files]
 .netrc
 .curlrc
+-- opt/homebrew/Cellar/mackup/0.8.32/bin/mackup --
+#!/bin/sh
+
+case "$*" in
+"--version")
+    echo "Mackup 0.8.32"
+    ;;
+*)
+    echo "Usage:"
+    ;;
+esac
 -- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/vscode.cfg --
 [application]
 name = Visual Studio Code
@@ -61,3 +53,14 @@ Library/Application Support/Code/User/settings.json
 Code/User/snippets
 Code/User/keybindings.json
 Code/User/settings.json
+-- opt/homebrew/bin/brew --
+#!/bin/sh
+
+case "$*" in
+"--prefix")
+    echo "opt/homebrew"
+    ;;
+*)
+    echo "Error: Unknown command $*"
+    ;;
+esac
