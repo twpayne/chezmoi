@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -21,7 +22,6 @@ var (
 	mackupCommentRx  = regexp.MustCompile(`\A#.*\z`)
 	mackupKeyValueRx = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
 	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\z`)
-	mackupVersionRx  = regexp.MustCompile(`\AMackup\s+(\d+\.\d+\.\d+)\s*\z`)
 )
 
 type mackupApplicationApplicationConfig struct {
@@ -122,28 +122,17 @@ func (c *Config) runMackupAddCmd(
 }
 
 func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
-	brewPrefixCmd := exec.Command("brew", "--prefix")
-	brewPrefixData, err := brewPrefixCmd.Output()
+	mackupBinaryPath, err := exec.LookPath("mackup")
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	brewPrefix := chezmoi.NewAbsPath(strings.TrimRight(string(brewPrefixData), "\n"))
-
-	mackupVersionCmd := exec.Command("mackup", "--version")
-	mackupVersionData, err := mackupVersionCmd.Output()
+	mackupBinaryPathResolved, err := filepath.EvalSymlinks(mackupBinaryPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	mackupVersionMatch := mackupVersionRx.FindSubmatch(mackupVersionData)
-	if mackupVersionMatch == nil {
-		return chezmoi.EmptyAbsPath, fmt.Errorf(
-			"%q: cannot determine Mackup version",
-			mackupVersionData,
-		)
-	}
-	mackupVersion := string(mackupVersionMatch[1])
+	mackupBinaryPathAbs := chezmoi.NewAbsPath(mackupBinaryPathResolved)
 
-	libDirAbsPath := brewPrefix.JoinString("Cellar", "mackup", mackupVersion, "libexec", "lib")
+	libDirAbsPath := mackupBinaryPathAbs.Dir().Dir().JoinString("lib")
 	dirEntries, err := c.baseSystem.ReadDir(libDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
