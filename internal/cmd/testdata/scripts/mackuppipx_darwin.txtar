@@ -1,11 +1,10 @@
 [!darwin] skip 'Darwin only'
 
-# simulate a brew installation of mackup
-chmod 755 opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup
-mkdir opt/homebrew/Cellar/mackup/0.8.32/bin opt/homebrew/bin
-symlink opt/homebrew/Cellar/mackup/0.8.32/bin/mackup -> ../libexec/bin/mackup
-symlink opt/homebrew/bin/mackup -> ../Cellar/mackup/0.8.32/bin/mackup
-env PATH=$WORK/opt/homebrew/bin:$PATH
+# simulate a pipx installation of mackup
+chmod 755 home/.local/pipx/venvs/mackup/bin/mackup
+mkdir home/.local/bin
+symlink home/.local/bin/mackup -> ../pipx/venvs/mackup/bin/mackup
+env PATH=$WORK/home/.local/bin:$PATH
 
 # test that chezmoi mackup add adds normal dotfiles
 exec chezmoi mackup add curl
@@ -19,20 +18,9 @@ cmp $CHEZMOISOURCEDIR/dot_config/Code/User/settings.json golden/settings.json
 # contents of .curlrc
 -- golden/settings.json --
 # contents of .config/Code/User/settings.json
--- home/user/.config/Code/User/settings.json --
-# contents of .config/Code/User/settings.json
--- home/user/.curlrc --
-# contents of .curlrc
--- home/user/.mackup/curl.cfg --
-[application]
-name = Curl
-
-[configuration_files]
-.netrc
-.curlrc
--- opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup --
+-- home/.local/pipx/venvs/mackup/bin/mackup --
 # mackup binary
--- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/vscode.cfg --
+-- home/.local/pipx/venvs/mackup/lib/python3.11/site-packages/mackup/applications/vscode.cfg --
 [application]
 name = Visual Studio Code
 
@@ -45,3 +33,14 @@ Library/Application Support/Code/User/settings.json
 Code/User/snippets
 Code/User/keybindings.json
 Code/User/settings.json
+-- home/user/.config/Code/User/settings.json --
+# contents of .config/Code/User/settings.json
+-- home/user/.curlrc --
+# contents of .curlrc
+-- home/user/.mackup/curl.cfg --
+[application]
+name = Curl
+
+[configuration_files]
+.netrc
+.curlrc

@@ -1,11 +1,10 @@
 [!darwin] skip 'Darwin only'
 
-# simulate a brew installation of mackup
-chmod 755 opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup
-mkdir opt/homebrew/Cellar/mackup/0.8.32/bin opt/homebrew/bin
-symlink opt/homebrew/Cellar/mackup/0.8.32/bin/mackup -> ../libexec/bin/mackup
-symlink opt/homebrew/bin/mackup -> ../Cellar/mackup/0.8.32/bin/mackup
-env PATH=$WORK/opt/homebrew/bin:$PATH
+# simulate a pip installation of mackup
+chmod 755 usr/local/bin/mackup
+# version 3.9 of python without mackup
+mkdir usr/local/lib/python3.9/site-packages
+env PATH=$WORK/usr/local/bin:$PATH
 
 # test that chezmoi mackup add adds normal dotfiles
 exec chezmoi mackup add curl
@@ -30,9 +29,9 @@ name = Curl
 [configuration_files]
 .netrc
 .curlrc
--- opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup --
+-- usr/local/bin/mackup --
 # mackup binary
--- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/vscode.cfg --
+-- usr/local/lib/python3.11/site-packages/mackup/applications/vscode.cfg --
 [application]
 name = Visual Studio Code
 

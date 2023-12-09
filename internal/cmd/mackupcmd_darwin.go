@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -21,7 +22,6 @@ var (
 	mackupCommentRx  = regexp.MustCompile(`\A#.*\z`)
 	mackupKeyValueRx = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
 	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\z`)
-	mackupVersionRx  = regexp.MustCompile(`\AMackup\s+(\d+\.\d+\.\d+)\s*\z`)
 )
 
 type mackupApplicationApplicationConfig struct {
@@ -122,49 +122,42 @@ func (c *Config) runMackupAddCmd(
 }
 
 func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
-	brewPrefixCmd := exec.Command("brew", "--prefix")
-	brewPrefixData, err := brewPrefixCmd.Output()
+	mackupBinaryPath, err := exec.LookPath("mackup")
+	if err != nil {
+		return chezmoi.EmptyAbsPath, fmt.Errorf("mackup binary not found in PATH (%w)", err)
+	}
+	mackupBinaryPathResolved, err := filepath.EvalSymlinks(mackupBinaryPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	brewPrefix := chezmoi.NewAbsPath(strings.TrimRight(string(brewPrefixData), "\n"))
+	mackupBinaryPathAbs := chezmoi.NewAbsPath(mackupBinaryPathResolved)
 
-	mackupVersionCmd := exec.Command("mackup", "--version")
-	mackupVersionData, err := mackupVersionCmd.Output()
-	if err != nil {
-		return chezmoi.EmptyAbsPath, err
-	}
-	mackupVersionMatch := mackupVersionRx.FindSubmatch(mackupVersionData)
-	if mackupVersionMatch == nil {
-		return chezmoi.EmptyAbsPath, fmt.Errorf(
-			"%q: cannot determine Mackup version",
-			mackupVersionData,
-		)
-	}
-	mackupVersion := string(mackupVersionMatch[1])
-
-	libDirAbsPath := brewPrefix.JoinString("Cellar", "mackup", mackupVersion, "libexec", "lib")
+	libDirAbsPath := mackupBinaryPathAbs.Dir().Dir().JoinString("lib")
 	dirEntries, err := c.baseSystem.ReadDir(libDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	var pythonDirRelPath chezmoi.RelPath
+
 	for _, dirEntry := range dirEntries {
-		if dirEntry.IsDir() && strings.HasPrefix(dirEntry.Name(), "python") {
-			pythonDirRelPath = chezmoi.NewRelPath(dirEntry.Name())
-			break
+		if !dirEntry.IsDir() || !strings.HasPrefix(dirEntry.Name(), "python") {
+			continue
 		}
-	}
-	if pythonDirRelPath.Empty() {
-		return chezmoi.EmptyAbsPath, fmt.Errorf(
-			"%s: could not find python directory",
-			libDirAbsPath,
-		)
+
+		pythonDirRelPath := chezmoi.NewRelPath(dirEntry.Name())
+		mackupAppsDir := libDirAbsPath.Join(pythonDirRelPath).
+			JoinString("site-packages", "mackup", "applications")
+
+		if _, err := os.Stat(mackupAppsDir.String()); errors.Is(err, os.ErrNotExist) {
+			continue
+		}
+
+		return mackupAppsDir, nil
 	}
 
-	return libDirAbsPath.Join(pythonDirRelPath).
-			JoinString("site-packages", "mackup", "applications"),
-		nil
+	return chezmoi.EmptyAbsPath, fmt.Errorf(
+		"mackup python directory cannot be found: %s",
+		libDirAbsPath,
+	)
 }
 
 func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
