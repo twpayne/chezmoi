@@ -144,9 +144,10 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 		}
 
 		pythonDirRelPath := chezmoi.NewRelPath(dirEntry.Name())
-		mackupAppsDir := libDirAbsPath.Join(pythonDirRelPath).JoinString("site-packages", "mackup", "applications")
+		mackupAppsDir := libDirAbsPath.Join(pythonDirRelPath).
+			JoinString("site-packages", "mackup", "applications")
 
-		if _, err := os.Stat(mackupAppsDir.String()); os.IsNotExist(err) {
+		if _, err := os.Stat(mackupAppsDir.String()); errors.Is(err, os.ErrNotExist) {
 			continue
 		}
 

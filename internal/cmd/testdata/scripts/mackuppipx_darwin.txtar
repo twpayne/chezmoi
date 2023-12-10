@@ -17,17 +17,6 @@ cmp $CHEZMOISOURCEDIR/dot_config/Code/User/settings.json golden/settings.json
 # contents of .curlrc
 -- golden/settings.json --
 # contents of .config/Code/User/settings.json
--- home/user/.config/Code/User/settings.json --
-# contents of .config/Code/User/settings.json
--- home/user/.curlrc --
-# contents of .curlrc
--- home/user/.mackup/curl.cfg --
-[application]
-name = Curl
-
-[configuration_files]
-.netrc
-.curlrc
 -- home/.local/pipx/venvs/mackup/bin/mackup --
 # mackup binary
 -- home/.local/pipx/venvs/mackup/lib/python3.11/site-packages/mackup/applications/vscode.cfg --
@@ -43,3 +32,14 @@ Library/Application Support/Code/User/settings.json
 Code/User/snippets
 Code/User/keybindings.json
 Code/User/settings.json
+-- home/user/.config/Code/User/settings.json --
+# contents of .config/Code/User/settings.json
+-- home/user/.curlrc --
+# contents of .curlrc
+-- home/user/.mackup/curl.cfg --
+[application]
+name = Curl
+
+[configuration_files]
+.netrc
+.curlrc
