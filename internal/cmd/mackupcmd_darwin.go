@@ -137,23 +137,26 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	var pythonDirRelPath chezmoi.RelPath
+
 	for _, dirEntry := range dirEntries {
-		if dirEntry.IsDir() && strings.HasPrefix(dirEntry.Name(), "python") {
-			pythonDirRelPath = chezmoi.NewRelPath(dirEntry.Name())
-			break
+		if !dirEntry.IsDir() || !strings.HasPrefix(dirEntry.Name(), "python") {
+			continue
 		}
-	}
-	if pythonDirRelPath.Empty() {
-		return chezmoi.EmptyAbsPath, fmt.Errorf(
-			"%s: could not find python directory",
-			libDirAbsPath,
-		)
+
+		pythonDirRelPath := chezmoi.NewRelPath(dirEntry.Name())
+		mackupAppsDir := libDirAbsPath.Join(pythonDirRelPath).JoinString("site-packages", "mackup", "applications")
+
+		if _, err := os.Stat(mackupAppsDir.String()); os.IsNotExist(err) {
+			continue
+		}
+
+		return mackupAppsDir, nil
 	}
 
-	return libDirAbsPath.Join(pythonDirRelPath).
-			JoinString("site-packages", "mackup", "applications"),
-		nil
+	return chezmoi.EmptyAbsPath, fmt.Errorf(
+		"%s: could not find python directory",
+		libDirAbsPath,
+	)
 }
 
 func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
