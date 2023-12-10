@@ -1,8 +1,9 @@
 [!darwin] skip 'Darwin only'
 
 # simulate a brew installation of mackup
-chmod 755 opt/homebrew/Cellar/mackup/0.8.32/bin/mackup
-chmod 755 opt/homebrew/bin/brew
+chmod 755 opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup
+mkdir opt/homebrew/Cellar/mackup/0.8.32/bin opt/homebrew/bin
+symlink opt/homebrew/Cellar/mackup/0.8.32/bin/mackup -> ../libexec/bin/mackup
 symlink opt/homebrew/bin/mackup -> ../Cellar/mackup/0.8.32/bin/mackup
 env PATH=$WORK/opt/homebrew/bin:$PATH
 
@@ -29,17 +30,8 @@ name = Curl
 [configuration_files]
 .netrc
 .curlrc
--- opt/homebrew/Cellar/mackup/0.8.32/bin/mackup --
-#!/bin/sh
-
-case "$*" in
-"--version")
-    echo "Mackup 0.8.32"
-    ;;
-*)
-    echo "Usage:"
-    ;;
-esac
+-- opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup --
+# mackup binary
 -- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/vscode.cfg --
 [application]
 name = Visual Studio Code
@@ -53,14 +45,3 @@ Library/Application Support/Code/User/settings.json
 Code/User/snippets
 Code/User/keybindings.json
 Code/User/settings.json
--- opt/homebrew/bin/brew --
-#!/bin/sh
-
-case "$*" in
-"--prefix")
-    echo "opt/homebrew"
-    ;;
-*)
-    echo "Error: Unknown command $*"
-    ;;
-esac
