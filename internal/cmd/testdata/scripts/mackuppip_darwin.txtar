@@ -1,6 +1,7 @@
 [!darwin] skip 'Darwin only'
 
 # simulate a pip installation of mackup
+chmod 755 usr/local/bin/mackup
 # version 3.9 of python without mackup
 mkdir usr/local/lib/python3.9/site-packages
 env PATH=$WORK/usr/local/bin:$PATH

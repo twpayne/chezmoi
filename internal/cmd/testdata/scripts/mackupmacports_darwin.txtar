@@ -1,6 +1,7 @@
 [!darwin] skip 'Darwin only'
 
 # simulate a macports installation of mackup
+chmod 755 opt/local/Library/Frameworks/Python.framework/Versions/3.11/bin/mackup
 mkdir opt/local/bin
 symlink opt/local/bin/mackup -> ../Library/Frameworks/Python.framework/Versions/3.11/bin/mackup
 env PATH=$WORK/opt/local/bin:$PATH
@@ -28,6 +29,8 @@ name = Curl
 [configuration_files]
 .netrc
 .curlrc
+-- opt/local/Library/Frameworks/Python.framework/Versions/3.11/bin/mackup --
+# mackup binary
 -- opt/local/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/mackup/applications/vscode.cfg --
 [application]
 name = Visual Studio Code

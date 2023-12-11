@@ -1,6 +1,7 @@
 [!darwin] skip 'Darwin only'
 
 # simulate a pipx installation of mackup
+chmod 755 home/.local/pipx/venvs/mackup/bin/mackup
 mkdir home/.local/bin
 symlink home/.local/bin/mackup -> ../pipx/venvs/mackup/bin/mackup
 env PATH=$WORK/home/.local/bin:$PATH
