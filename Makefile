@@ -116,6 +116,7 @@ lint: ensure-actionlint ensure-find-typos ensure-golangci-lint
 	${GO} run ./internal/cmds/lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
 	./bin/find-typos chezmoi .
+	go run ./internal/cmds/lint-commit-messages origin/master..HEAD
 
 .PHONY: format
 format: ensure-gofumpt ensure-golines

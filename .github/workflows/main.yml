@@ -303,6 +303,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+      with:
+        fetch-depth: 0
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -327,6 +329,14 @@ jobs:
       run: |
         go install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}"
         find-typos -format=github-actions chezmoi .
+    - name: lint-commit-messages
+      if: github.event_name == 'push'
+      run: |
+        go run ./internal/cmds/lint-commit-messages HEAD~1..HEAD
+    - name: lint-commit-messages
+      if: github.event_name == 'pull_request'
+      run: |
+        go run ./internal/cmds/lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
   lint:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
