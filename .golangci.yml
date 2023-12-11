@@ -114,7 +114,7 @@ linters-settings:
     - ^compress/gzip\.
     - ^fmt\.Print.*$
     - ^ioutil\..*$
-    - ^os\.(DirEntry|FileInfo|FileMode|Is.*|Mode.*)$
+    - ^os\.(DirEntry|ErrExist|ErrNotExist|FileInfo|FileMode|Is.*|Mode.*)$
   gci:
     sections:
     - standard

@@ -7,8 +7,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"os"
-	"os/exec"
+	"io/fs"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -77,7 +76,7 @@ func (c *Config) runMackupAddCmd(
 	for _, arg := range args {
 		configRelPath := chezmoi.NewRelPath(arg + ".cfg")
 		data, err := c.baseSystem.ReadFile(mackupDirAbsPath.Join(configRelPath))
-		if errors.Is(err, os.ErrNotExist) {
+		if errors.Is(err, fs.ErrNotExist) {
 			data, err = c.baseSystem.ReadFile(mackupApplicationsDir.Join(configRelPath))
 		}
 		if err != nil {
@@ -122,17 +121,17 @@ func (c *Config) runMackupAddCmd(
 }
 
 func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
-	mackupBinaryPath, err := exec.LookPath("mackup")
+	mackupBinaryPath, err := chezmoi.LookPath("mackup")
 	if err != nil {
-		return chezmoi.EmptyAbsPath, fmt.Errorf("mackup binary not found in PATH (%w)", err)
+		return chezmoi.EmptyAbsPath, err
 	}
 	mackupBinaryPathResolved, err := filepath.EvalSymlinks(mackupBinaryPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	mackupBinaryPathAbs := chezmoi.NewAbsPath(mackupBinaryPathResolved)
+	mackupBinaryAbsPath := chezmoi.NewAbsPath(mackupBinaryPathResolved)
 
-	libDirAbsPath := mackupBinaryPathAbs.Dir().Dir().JoinString("lib")
+	libDirAbsPath := mackupBinaryAbsPath.Dir().Dir().JoinString("lib")
 	dirEntries, err := c.baseSystem.ReadDir(libDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
@@ -142,22 +141,13 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 		if !dirEntry.IsDir() || !strings.HasPrefix(dirEntry.Name(), "python") {
 			continue
 		}
-
-		pythonDirRelPath := chezmoi.NewRelPath(dirEntry.Name())
-		mackupAppsDir := libDirAbsPath.Join(pythonDirRelPath).
-			JoinString("site-packages", "mackup", "applications")
-
-		if _, err := os.Stat(mackupAppsDir.String()); errors.Is(err, os.ErrNotExist) {
-			continue
+		mackupApplicationsDirAbsPath := libDirAbsPath.JoinString(dirEntry.Name(), "site-packages", "mackup", "applications")
+		if fileInfo, err := c.baseSystem.Stat(mackupApplicationsDirAbsPath); err == nil && fileInfo.IsDir() {
+			return mackupApplicationsDirAbsPath, nil
 		}
-
-		return mackupAppsDir, nil
 	}
 
-	return chezmoi.EmptyAbsPath, fmt.Errorf(
-		"mackup python directory cannot be found: %s",
-		libDirAbsPath,
-	)
+	return chezmoi.EmptyAbsPath, fmt.Errorf("%s: mackup application directory not found", libDirAbsPath)
 }
 
 func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
