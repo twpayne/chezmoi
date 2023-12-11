@@ -124,7 +124,7 @@ func (c *Config) runMackupAddCmd(
 func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	mackupBinaryPath, err := exec.LookPath("mackup")
 	if err != nil {
-		return chezmoi.EmptyAbsPath, err
+		return chezmoi.EmptyAbsPath, fmt.Errorf("Mackup binary not found in PATH (%w)", err)
 	}
 	mackupBinaryPathResolved, err := filepath.EvalSymlinks(mackupBinaryPath)
 	if err != nil {
@@ -155,7 +155,7 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	}
 
 	return chezmoi.EmptyAbsPath, fmt.Errorf(
-		"%s: could not find python directory",
+		"Mackup python directory cannot be found: %s",
 		libDirAbsPath,
 	)
 }
