@@ -141,13 +141,22 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 		if !dirEntry.IsDir() || !strings.HasPrefix(dirEntry.Name(), "python") {
 			continue
 		}
-		mackupApplicationsDirAbsPath := libDirAbsPath.JoinString(dirEntry.Name(), "site-packages", "mackup", "applications")
-		if fileInfo, err := c.baseSystem.Stat(mackupApplicationsDirAbsPath); err == nil && fileInfo.IsDir() {
+		mackupApplicationsDirAbsPath := libDirAbsPath.JoinString(
+			dirEntry.Name(),
+			"site-packages",
+			"mackup",
+			"applications",
+		)
+		if fileInfo, err := c.baseSystem.Stat(mackupApplicationsDirAbsPath); err == nil &&
+			fileInfo.IsDir() {
 			return mackupApplicationsDirAbsPath, nil
 		}
 	}
 
-	return chezmoi.EmptyAbsPath, fmt.Errorf("%s: mackup application directory not found", libDirAbsPath)
+	return chezmoi.EmptyAbsPath, fmt.Errorf(
+		"%s: mackup application directory not found",
+		libDirAbsPath,
+	)
 }
 
 func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
