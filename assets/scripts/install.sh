@@ -7,7 +7,7 @@
 
 set -e
 
-BINDIR="${BINDIR:-./bin}"
+BINDIR="${BINDIR:-$HOME/bin}"
 CHEZMOI_USER_REPO="${CHEZMOI_USER_REPO:-twpayne/chezmoi}"
 TAGARG=latest
 LOG_LEVEL=2
