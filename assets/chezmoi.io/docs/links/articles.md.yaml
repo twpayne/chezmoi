@@ -352,3 +352,8 @@ articles:
   lang: CN
   title: 用 chezmoi 管理 dotfiles
   url: https://thewang.net/blog/manage-dotfiles-with-chezmoi
+- date: '2023-12-10'
+  version: 2.42.2
+  lang: JP
+  title: chezmoi で dotfiles を管理するときに便利な機能についてまとめる
+  url: https://zenn.dev/ganariya/articles/useful-features-of-chezmoi
