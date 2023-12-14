@@ -222,7 +222,7 @@ function unpack-file {
     Install the Chezmoi dotfile manager
 
     .DESCRIPTION
-    Installs Chezmoi to the given directory, defaulting to ./bin
+    Installs Chezmoi to the given directory, defaulting to %USERPROFILE%/bin
 
     You can specify a particular git tag using the -Tag option.
 
@@ -235,7 +235,7 @@ function Install-Chezmoi {
     param(
         [Parameter(Mandatory = $false)]
         [string]
-        $BinDir = (Join-Path (Resolve-Path '.') 'bin'),
+        $BinDir = (Join-Path (Resolve-Path '%USERPROFILE%') 'bin'),
 
         [Parameter(Mandatory = $false)]
         [string] $Tag = 'latest',
