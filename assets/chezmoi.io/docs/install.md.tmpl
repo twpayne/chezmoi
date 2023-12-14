@@ -130,7 +130,7 @@ repology.org](https://repology.org/project/chezmoi/versions).
 
 ## One-line binary install
 
-Install the correct binary for your operating system and architecture in `./bin`
+Install the correct binary for your operating system and architecture in `$HOME/bin`
 with a single command:
 
 === "curl"
@@ -170,7 +170,7 @@ with a single command:
 
 !!! hint
 
-    If you want to install chezmoi in `./.local/bin` instead of `./bin` you can
+    If you want to install chezmoi in `$HOME/.local/bin` instead of `$HOME/bin` you can
     use `get.chezmoi.io/lb` or `chezmoi.io/getlb` instead.
 
 !!! hint
@@ -179,7 +179,7 @@ with a single command:
     for example:
 
     ```sh
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b .local/bin
     ```
 
 ## Download a pre-built Linux package
