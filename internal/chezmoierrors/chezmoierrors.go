@@ -25,12 +25,6 @@ func Combine(errs ...error) error {
 	}
 }
 
-// CombineClose combines the error pointed to by errp with the result of calling
-// closer.Close().
-func CombineClose(errp *error, closer interface{ Close() error }) {
-	CombineFunc(errp, closer.Close)
-}
-
 // CombineFunc combines the error pointed to by errp with the result of calling
 // f.
 func CombineFunc(errp *error, f func() error) {

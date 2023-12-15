@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -149,48 +147,4 @@ func TestUpperSnakeCaseToCamelCaseMap(t *testing.T) {
 		"bugReportURL": "",
 		"id":           "",
 	}, actual)
-}
-
-func Test_flattenStringList(t *testing.T) {
-	tests := []struct {
-		name   string
-		vpaths []any
-		want   []string
-	}{
-		{
-			name: "Nothing",
-		},
-		{
-			name:   "Just a string",
-			vpaths: []any{"1"},
-			want:   []string{"1"},
-		},
-		{
-			name:   "Just a array of string",
-			vpaths: []any{[]string{"1", "2"}},
-			want:   []string{"1", "2"},
-		},
-		{
-			name:   "Just a array of any containing string",
-			vpaths: []any{[]any{"1", "2"}},
-			want:   []string{"1", "2"},
-		},
-		{
-			name:   "Just a array of any containing string",
-			vpaths: []any{[]any{"1", "2"}},
-			want:   []string{"1", "2"},
-		},
-		{
-			name:   "Hybrid",
-			vpaths: []any{"0", []any{"1", "2"}, []any{[]string{"3", "4"}}, []any{[]any{"5", "6"}}},
-			want:   strings.Split("0123456", ""),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := flattenStringList(tt.vpaths); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("flattenStringList() = %v, want %v", got, tt.want)
-			}
-		})
-	}
 }
