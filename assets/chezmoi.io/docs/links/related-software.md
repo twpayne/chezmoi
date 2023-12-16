@@ -15,6 +15,10 @@ Convenience functions for interacting with chezmoi in Emacs.
 
 A plugin for VIM to apply the dotfile you are editing on `:w`.
 
+### [`github.com/xvzc/chezmoi.nvim`](https://github.com/xvzc/chezmoi.nvim)
+
+Edit your chezmoi-managed files and automatically apply.
+
 ## Other
 
 ### [`atuin.sh`](https://atuin.sh/)
