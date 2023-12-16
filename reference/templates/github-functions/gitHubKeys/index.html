@@ -1716,6 +1716,8 @@
       
         
       
+        
+      
     
     
     
@@ -1763,6 +1765,27 @@
   
   <span class="md-ellipsis">
     Customize your source directory
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../user-guide/advanced/install-packages-declaratively/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install packages declaratively
   </span>
   
 
@@ -8055,6 +8078,13 @@ employees. You should not use this function on publicly-accessible machines
 and should always verify that no unwanted keys have been added, for example
 by using the <code>-v</code> / <code>--verbose</code> option when running <code>chezmoi apply</code> or
 <code>chezmoi update</code>.</p>
+<p>Additionally, GitHub automatically <a href="https://docs.github.com/en/authentication/troubleshooting-ssh/deleted-or-missing-ssh-keys">removes keys which haven't been used in
+the last
+year</a>.
+This may cause your keys to be removed from <code>~/.ssh/authorized_keys</code>
+suddenly, and without any warning or indication of the removal. You should
+provide one or more keys in plain text alongside this function to avoid
+unknowingly losing remote access to your machine.</p>
 </div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
