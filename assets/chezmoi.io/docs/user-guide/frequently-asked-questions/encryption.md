@@ -46,7 +46,7 @@ $ cat > run_once_before_decrypt-private-key.sh.tmpl <<EOF
 if [ ! -f "${HOME}/.config/chezmoi/key.txt" ]; then
     mkdir -p "${HOME}/.config/chezmoi"
     chezmoi age decrypt --output "${HOME}/.config/chezmoi/key.txt" --passphrase "{{ .chezmoi.sourceDir }}/key.txt.age"
-    chmod 600 "${HOME}/key.txt"
+    chmod 600 "${HOME}/.config/chezmoi/key.txt"
 fi
 EOF
 ```
