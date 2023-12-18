@@ -1,0 +1,14 @@
+# test that chezmoi execute-template --init does read .chezmoitemplates
+stdin $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi execute-template
+stdout 'contents of template'
+
+# test that chezmoi execute-template --init does not read .chezmoitemplates
+stdin $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+! exec chezmoi execute-template --init
+! stdout 'contents of template'
+
+-- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+{{ template "template" }}
+-- home/user/.local/share/chezmoi/.chezmoitemplates/template --
+# contents of template
