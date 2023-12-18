@@ -131,6 +131,7 @@ type SourceState struct {
 	defaultTemplateDataFunc func() map[string]any
 	templateDataOnly        bool
 	readTemplateData        bool
+	readTemplates           bool
 	defaultTemplateData     map[string]any
 	userTemplateData        map[string]any
 	priorityTemplateData    map[string]any
@@ -222,6 +223,13 @@ func WithReadTemplateData(readTemplateData bool) SourceStateOption {
 	}
 }
 
+// WithReadTemplates sets whether to read .chezmoitemplates directories.
+func WithReadTemplates(readTemplates bool) SourceStateOption {
+	return func(s *SourceState) {
+		s.readTemplates = readTemplates
+	}
+}
+
 // WithSourceDir sets the source directory.
 func WithSourceDir(sourceDirAbsPath AbsPath) SourceStateOption {
 	return func(s *SourceState) {
@@ -286,6 +294,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		httpClient:           http.DefaultClient,
 		logger:               &log.Logger,
 		readTemplateData:     true,
+		readTemplates:        true,
 		priorityTemplateData: make(map[string]any),
 		userTemplateData:     make(map[string]any),
 		templateOptions:      DefaultTemplateOptions,
@@ -945,8 +954,10 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return s.addTemplateData(sourceAbsPath)
 		case fileInfo.Name() == TemplatesDirName:
-			if err := s.addTemplatesDir(ctx, sourceAbsPath); err != nil {
-				return err
+			if s.readTemplates {
+				if err := s.addTemplatesDir(ctx, sourceAbsPath); err != nil {
+					return err
+				}
 			}
 			return fs.SkipDir
 		case s.templateDataOnly:
