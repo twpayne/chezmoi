@@ -44,7 +44,7 @@ require (
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/zalando/go-keyring v0.2.3
 	go.etcd.io/bbolt v1.3.8
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611
 	golang.org/x/oauth2 v0.15.0
 	golang.org/x/sync v0.5.0
