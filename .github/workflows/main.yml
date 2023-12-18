@@ -12,6 +12,7 @@ env:
   ACTIONLINT_VERSION: 1.6.26
   AGE_VERSION: 1.1.1
   CHOCOLATEY_VERSION: 2.2.2
+  EDITORCONFIG_CHECKER_VERSION: 2.7.2
   GO_VERSION: 1.21.5
   GOFUMPT_VERSION: 0.5.0
   GOLANGCI_LINT_VERSION: 1.55.2
@@ -319,6 +320,12 @@ jobs:
     - uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
       with:
         ignore_paths: completions
+    - name: editorconfig-checker
+      run: |
+        GOOS="$(go env GOOS)"
+        GOARCH="$(go env GOARCH)"
+        curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf -
+        "bin/ec-${GOOS}-${GOARCH}"
     - name: lint-whitespace
       run: |
         go run ./internal/cmds/lint-whitespace
@@ -334,7 +341,7 @@ jobs:
       run: |
         go run ./internal/cmds/lint-commit-messages HEAD~1..HEAD
     - name: lint-commit-messages
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
       run: |
         go run ./internal/cmds/lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
   lint:

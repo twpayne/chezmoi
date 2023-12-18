@@ -11,3 +11,15 @@ charset = utf-8
 end_of_line = crlf
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.py]
+indent_size = 4
+indent_style = space
+
+[*.sh]
+indent_size = 1
+indent_style = tab
+
+[{*.yaml,*.yml}]
+indent_size = 2
+indent_style = space

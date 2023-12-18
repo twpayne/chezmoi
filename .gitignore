@@ -2,6 +2,7 @@
 /COMMIT
 /bin/actionlint
 /bin/chezmoi
+/bin/editorconfig-checker
 /bin/find-typos
 /bin/gofumpt
 /bin/golines

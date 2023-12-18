@@ -1,5 +1,8 @@
 GO?=go
+GOOS=$(shell ${GO} env GOOS)
+GOARCH=$(shell ${GO} env GOARCH)
 ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+EDITORCONFIG_CHECKER_VERSION=$(shell awk '/EDITORCONFIG_CHECKER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 FIND_TYPOS_VERSION=$(shell awk '/FIND_TYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
@@ -110,8 +113,9 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-actionlint ensure-find-typos ensure-golangci-lint
+lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-golangci-lint
 	./bin/actionlint
+	./bin/editorconfig-checker
 	./bin/golangci-lint run
 	${GO} run ./internal/cmds/lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
@@ -140,6 +144,13 @@ ensure-actionlint:
 	if [ ! -x bin/actionlint ] || ( ./bin/actionlint --version | grep -Fqv "v${ACTIONLINT_VERSION}" ) ; then \
 		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}" ; \
+	fi
+
+.PHONY: ensure-editorconfig-checker
+ensure-editorconfig-checker:
+	if [ ! -x bin/editorconfig-checker ] || ( ./bin/editorconfig-checker --version | grep -Fqv "v${EDITORCONFIG_CHECKER_VERSION}" ) ; then \
+		curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf - ; \
+		mv "bin/ec-${GOOS}-${GOARCH}" bin/editorconfig-checker ; \
 	fi
 
 .PHONY: ensure-find-typos
