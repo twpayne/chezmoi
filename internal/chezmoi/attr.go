@@ -7,21 +7,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// A SourceDirTargetType is the type of a target represented by a directory in
-// the source state.
-type SourceDirTargetType int
-
-// Source dir types.
-const (
-	SourceDirTypeDir SourceDirTargetType = iota
-	SourceDirTypeRemove
-)
-
-var sourceDirTypeStrs = map[SourceDirTargetType]string{
-	SourceDirTypeDir:    "dir",
-	SourceDirTypeRemove: "remove",
-}
-
 // A SourceFileTargetType is a the type of a target represented by a file in the
 // source state. A file in the source state can represent a file, script, or
 // symlink in the target state.
@@ -70,11 +55,11 @@ const (
 // DirAttr holds attributes parsed from a source directory name.
 type DirAttr struct {
 	TargetName string
-	Type       SourceDirTargetType
 	Exact      bool
 	External   bool
 	Private    bool
 	ReadOnly   bool
+	Remove     bool
 }
 
 // A FileAttr holds attributes parsed from a source file name.
@@ -92,25 +77,12 @@ type FileAttr struct {
 }
 
 // parseDirAttr parses a single directory name in the source state.
-func parseDirAttr(sourceName string) DirAttr {
-	var (
-		sourceDirType = SourceDirTypeDir
-		name          = sourceName
-		external      = false
-		exact         = false
-		private       = false
-		readOnly      = false
-	)
-	switch {
-	case strings.HasPrefix(name, removePrefix):
-		sourceDirType = SourceDirTypeRemove
-		name = name[len(removePrefix):]
-	default:
-		name, external = strings.CutPrefix(name, externalPrefix)
-		name, exact = strings.CutPrefix(name, exactPrefix)
-		name, private = strings.CutPrefix(name, privatePrefix)
-		name, readOnly = strings.CutPrefix(name, readOnlyPrefix)
-	}
+func parseDirAttr(name string) DirAttr {
+	name, remove := strings.CutPrefix(name, removePrefix)
+	name, external := strings.CutPrefix(name, externalPrefix)
+	name, exact := strings.CutPrefix(name, exactPrefix)
+	name, private := strings.CutPrefix(name, privatePrefix)
+	name, readOnly := strings.CutPrefix(name, readOnlyPrefix)
 	switch {
 	case strings.HasPrefix(name, dotPrefix):
 		name = "." + name[len(dotPrefix):]
@@ -119,11 +91,11 @@ func parseDirAttr(sourceName string) DirAttr {
 	}
 	return DirAttr{
 		TargetName: name,
-		Type:       sourceDirType,
 		Exact:      exact,
 		External:   external,
 		Private:    private,
 		ReadOnly:   readOnly,
+		Remove:     remove,
 	}
 }
 
@@ -131,32 +103,30 @@ func parseDirAttr(sourceName string) DirAttr {
 // github.com/rs/zerolog.ObjectMarshaler.MarshalZerologObject.
 func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("TargetName", da.TargetName)
-	e.Str("Type", sourceDirTypeStrs[da.Type])
 	e.Bool("Exact", da.Exact)
 	e.Bool("External", da.External)
 	e.Bool("Private", da.Private)
 	e.Bool("ReadOnly", da.ReadOnly)
+	e.Bool("Remove", da.Remove)
 }
 
 // SourceName returns da's source name.
 func (da DirAttr) SourceName() string {
 	sourceName := ""
-	switch da.Type {
-	case SourceDirTypeDir:
-		if da.External {
-			sourceName += externalPrefix
-		}
-		if da.Exact {
-			sourceName += exactPrefix
-		}
-		if da.Private {
-			sourceName += privatePrefix
-		}
-		if da.ReadOnly {
-			sourceName += readOnlyPrefix
-		}
-	case SourceDirTypeRemove:
+	if da.Remove {
 		sourceName += removePrefix
+	}
+	if da.External {
+		sourceName += externalPrefix
+	}
+	if da.Exact {
+		sourceName += exactPrefix
+	}
+	if da.Private {
+		sourceName += privatePrefix
+	}
+	if da.ReadOnly {
+		sourceName += readOnlyPrefix
 	}
 	switch {
 	case strings.HasPrefix(da.TargetName, "."):

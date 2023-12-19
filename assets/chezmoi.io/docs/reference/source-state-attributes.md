@@ -42,8 +42,7 @@ prefixes is important.
 
 | Target type      | Source type | Allowed prefixes in order                                                         | Allowed suffixes |
 | ---------------- | ----------- | --------------------------------------------------------------------------------- | ---------------- |
-| Directory        | Directory   | `external_`, `exact_`, `private_`, `readonly_`, `dot_`                            | *none*           |
-| Remove directory | Directory   | `remove_`, `dot_`                                                                 | *none*           |
+| Directory        | Directory   | `remove_`, `external_`, `exact_`, `private_`, `readonly_`, `dot_`                 | *none*           |
 | Regular file     | File        | `encrypted_`, `private_`, `readonly_`, `empty_`, `executable_`, `dot_`            | `.tmpl`          |
 | Create file      | File        | `create_`, `encrypted_`, `private_`, `readonly_`, `empty_`, `executable_`, `dot_` | `.tmpl`          |
 | Modify file      | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_`           | `.tmpl`          |
