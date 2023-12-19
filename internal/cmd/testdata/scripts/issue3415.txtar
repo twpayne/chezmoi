@@ -1,0 +1,26 @@
+# test that chezmoi apply does not remove remove_ directories if they are not empty
+exec chezmoi apply
+exists $HOME/.dir/file
+
+# test that chezmoi apply does remove remove_ directories if they are empty
+rm $HOME/.dir/file
+exec chezmoi apply
+! exists $HOME/.dir
+
+chhome home2/user
+
+# test that chezmoi apply does not remove remove_ directories if they are not empty, recursively
+exec chezmoi apply
+exists $HOME/.dir/subdir/file
+
+# test that chezmoi apply does remove remove_ directories if they are empty, recursively
+rm $HOME/.dir/subdir/file
+exec chezmoi apply
+! exists $HOME/.dir
+
+-- home/user/.dir/file --
+# contents of .dir/file
+-- home/user/.local/share/chezmoi/remove_dot_dir/.keep --
+-- home2/user/.dir/subdir/file --
+# contents of .dir/subdir/file
+-- home2/user/.local/share/chezmoi/remove_dot_dir/remove_subdir/.keep --

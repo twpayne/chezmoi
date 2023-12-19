@@ -24,26 +24,19 @@ func TestDirAttr(t *testing.T) {
 		"symlink_dir",
 	}
 	assert.NoError(t, combinator.Generate(&dirAttrs, struct {
-		Type       SourceDirTargetType
 		TargetName []string
 		Exact      []bool
 		External   []bool
 		Private    []bool
 		ReadOnly   []bool
+		Remove     []bool
 	}{
-		Type:       SourceDirTypeDir,
 		TargetName: targetNames,
 		Exact:      []bool{false, true},
 		External:   []bool{false, true},
 		Private:    []bool{false, true},
 		ReadOnly:   []bool{false, true},
-	}))
-	assert.NoError(t, combinator.Generate(&dirAttrs, struct {
-		Type       SourceDirTargetType
-		TargetName []string
-	}{
-		Type:       SourceDirTypeRemove,
-		TargetName: targetNames,
+		Remove:     []bool{false, true},
 	}))
 	for _, dirAttr := range dirAttrs {
 		actualSourceName := dirAttr.SourceName()

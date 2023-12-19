@@ -91,16 +91,11 @@ exists $CHEZMOISOURCEDIR/exact_readonly_dot_dir
 # test that chezmoi chattr remove sets the remove attribute on a directory
 exec chezmoi chattr remove $HOME${/}.dir
 ! exists $CHEZMOISOURCEDIR/exact_readonly_dot_dir
-exists $CHEZMOISOURCEDIR/remove_dot_dir
+exists $CHEZMOISOURCEDIR/remove_exact_readonly_dot_dir
 
 # test that chezmoi chattr noremove removes the remove attribute on a directory
 exec chezmoi chattr noremove $HOME${/}.dir
-! exists $CHEZMOISOURCEDIR/remove_dot_dir
-exists $CHEZMOISOURCEDIR/dot_dir
-
-# test that chezmoi chattr exact,readonly sets the exact and readonly attributes on a directory
-exec chezmoi chattr exact,readonly $HOME${/}.dir
-! exists $CHEZMOISOURCEDIR/dot_dir
+! exists $CHEZMOISOURCEDIR/remove_exact_readonly_dot_dir
 exists $CHEZMOISOURCEDIR/exact_readonly_dot_dir
 
 # test that chezmoi chattr +t sets the template attribute on a symlink

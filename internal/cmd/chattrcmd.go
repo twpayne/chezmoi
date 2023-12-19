@@ -42,14 +42,6 @@ const (
 	orderModifierSetAfter       orderModifier = 2
 )
 
-type sourceDirTypeModifier int
-
-const (
-	sourceDirTypeModifierLeaveUnchanged sourceDirTypeModifier = iota
-	sourceDirTypeModifierSetRemove
-	sourceDirTypeModifierClearRemove
-)
-
 type sourceFileTypeModifier int
 
 const (
@@ -67,7 +59,6 @@ const (
 )
 
 type modifier struct {
-	sourceDirType  sourceDirTypeModifier
 	sourceFileType sourceFileTypeModifier
 	condition      conditionModifier
 	empty          boolModifier
@@ -78,6 +69,7 @@ type modifier struct {
 	order          orderModifier
 	private        boolModifier
 	readOnly       boolModifier
+	remove         boolModifier
 	template       boolModifier
 }
 
@@ -309,25 +301,6 @@ func (m orderModifier) modify(order chezmoi.ScriptOrder) chezmoi.ScriptOrder {
 }
 
 // modify returns the modified value of type.
-func (m sourceDirTypeModifier) modify(
-	sourceDirType chezmoi.SourceDirTargetType,
-) chezmoi.SourceDirTargetType {
-	switch m {
-	case sourceDirTypeModifierLeaveUnchanged:
-		return sourceDirType
-	case sourceDirTypeModifierSetRemove:
-		return chezmoi.SourceDirTypeRemove
-	case sourceDirTypeModifierClearRemove:
-		if sourceDirType == chezmoi.SourceDirTypeRemove {
-			return chezmoi.SourceDirTypeDir
-		}
-		return sourceDirType
-	default:
-		panic(fmt.Sprintf("%d: unknown type modifier", m))
-	}
-}
-
-// modify returns the modified value of type.
 func (m sourceFileTypeModifier) modify(
 	sourceFileType chezmoi.SourceFileTargetType,
 ) chezmoi.SourceFileTargetType {
@@ -462,10 +435,10 @@ func parseModifier(s string) (*modifier, error) {
 		case "remove":
 			switch bm {
 			case boolModifierClear:
-				m.sourceDirType = sourceDirTypeModifierClearRemove
+				m.remove = bm
 				m.sourceFileType = sourceFileTypeModifierClearRemove
 			case boolModifierSet:
-				m.sourceDirType = sourceDirTypeModifierSetRemove
+				m.remove = bm
 				m.sourceFileType = sourceFileTypeModifierSetRemove
 			}
 		case "script":
@@ -493,23 +466,13 @@ func parseModifier(s string) (*modifier, error) {
 
 // modifyDirAttr returns the modified value of dirAttr.
 func (m *modifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
-	switch m.sourceDirType.modify(dirAttr.Type) {
-	case chezmoi.SourceDirTypeDir:
-		return chezmoi.DirAttr{
-			TargetName: dirAttr.TargetName,
-			Type:       chezmoi.SourceDirTypeDir,
-			Exact:      m.exact.modify(dirAttr.Exact),
-			External:   m.external.modify(dirAttr.External),
-			Private:    m.private.modify(dirAttr.Private),
-			ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
-		}
-	case chezmoi.SourceDirTypeRemove:
-		return chezmoi.DirAttr{
-			TargetName: dirAttr.TargetName,
-			Type:       chezmoi.SourceDirTypeRemove,
-		}
-	default:
-		panic(fmt.Sprintf("%d: unknown source dir type", dirAttr.Type))
+	return chezmoi.DirAttr{
+		TargetName: dirAttr.TargetName,
+		Exact:      m.exact.modify(dirAttr.Exact),
+		External:   m.external.modify(dirAttr.External),
+		Private:    m.private.modify(dirAttr.Private),
+		ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
+		Remove:     m.remove.modify(dirAttr.Remove),
 	}
 }
 
