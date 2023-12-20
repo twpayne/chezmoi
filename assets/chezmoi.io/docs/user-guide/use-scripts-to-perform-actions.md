@@ -133,7 +133,15 @@ does not create `dconf.ini` in your home directory.
 ## Clear the state of all `run_onchange_` and `run_once_` scripts
 
 chezmoi stores whether and when `run_onchange_` and `run_once_` scripts have
-been run in the `scriptState` bucket of its persistent state. To clear the state, run:
+been run in its persistent state.
+
+To clear the state of `run_onchange_` scripts, run:
+
+```console
+$ chezmoi state delete-bucket --bucket=entryState
+```
+
+To clear the state of `run_once_` scripts, run:
 
 ```console
 $ chezmoi state delete-bucket --bucket=scriptState

@@ -1,0 +1,29 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi runs run_once_ and run_onchange_ scripts only once
+exec chezmoi apply
+stdout once
+stdout onchange
+exec chezmoi apply
+! stdout .
+
+# test that chezmoi runs run_once_ scripts after chezmoi state delete-bucket --bucket=scriptState
+exec chezmoi state delete-bucket --bucket=scriptState
+exec chezmoi apply
+stdout once
+! stdout onchange
+
+# test that chezmoi runs run_once_ scripts after chezmoi state delete-bucket --bucket=entryState
+exec chezmoi state delete-bucket --bucket=entryState
+exec chezmoi apply
+! stdout once
+stdout onchange
+
+-- home/user/.local/share/chezmoi/run_once_once.sh --
+#!/bin/sh
+
+echo once
+-- home/user/.local/share/chezmoi/run_onchange_onchange.sh --
+#!/bin/sh
+
+echo onchange
