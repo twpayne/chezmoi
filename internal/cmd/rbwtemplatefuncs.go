@@ -18,8 +18,8 @@ type rbwConfig struct {
 
 var rbwMinVersion = semver.Version{Major: 1, Minor: 7, Patch: 0}
 
-func (c *Config) rbwFieldsTemplateFunc(name string) map[string]any {
-	args := []string{"get", "--raw", name}
+func (c *Config) rbwFieldsTemplateFunc(name string, extraArgs ...string) map[string]any {
+	args := append([]string{"get", "--raw", name}, extraArgs...)
 	output, err := c.rbwOutput(args)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (c *Config) rbwFieldsTemplateFunc(name string) map[string]any {
 	return result
 }
 
-func (c *Config) rbwTemplateFunc(name string) map[string]any {
-	args := []string{"get", "--raw", name}
+func (c *Config) rbwTemplateFunc(name string, extraArgs ...string) map[string]any {
+	args := append([]string{"get", "--raw", name}, extraArgs...)
 	output, err := c.rbwOutput(args)
 	if err != nil {
 		panic(err)

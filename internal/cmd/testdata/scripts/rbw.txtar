@@ -5,9 +5,17 @@
 exec chezmoi execute-template '{{ (rbw "test-entry").data.password }}'
 stdout ^hunter2$
 
+# test rbw template function with extra args
+exec chezmoi execute-template '{{ (rbw "test-entry" "--folder" "my-folder").data.password }}'
+stdout ^correcthorsebatterystaple$
+
 # test rbwFields template function
 exec chezmoi execute-template '{{ (rbwFields "test-entry").something.value }}'
 stdout ^secret$
+
+# test rbwFields template function with extra args
+exec chezmoi execute-template '{{ (rbwFields "test-entry" "--folder" "my-folder").something.value }}'
+stdout ^enigma$
 
 -- bin/rbw --
 #!/bin/sh
@@ -46,6 +54,39 @@ case "$*" in
 }
 EOF
     ;;
+"get --raw test-entry --folder my-folder")
+    cat <<EOF
+{
+  "id": "adf723e1-ab03-4ff3-81aa-f5f3c2b68a5f",
+  "folder": null,
+  "name": "test-entry",
+  "data": {
+    "username": "foo",
+    "password": "correcthorsebatterystaple",
+    "totp": null,
+    "uris": [
+      {
+        "uri": "example.com",
+        "match_type": null
+      }
+    ]
+  },
+  "fields": [
+    {
+      "name": "something",
+      "value": "enigma"
+    }
+  ],
+  "notes": "blah",
+  "history": [
+    {
+      "last_used_date": "2022-08-18T23:24:47.994Z",
+      "password": "hunter2"
+    }
+  ]
+}
+EOF
+    ;;
 *)
     exit 1
     ;;
@@ -72,6 +113,36 @@ IF "%*" == "get --raw test-entry" (
     echo.    {
     echo.      "name": "something",
     echo.      "value": "secret"
+    echo.    }
+    echo.  ],
+    echo.  "notes": "blah",
+    echo.  "history": [
+    echo.    {
+    echo.      "last_used_date": "2022-08-18T23:24:47.994Z",
+    echo.      "password": "hunter2"
+    echo.    }
+    echo.  ]
+    echo.}
+) ELSE IF "%*" == "get --raw test-entry --folder my-folder" (
+    echo.{
+    echo.  "id": "adf723e1-ab03-4ff3-81aa-f5f3c2b68a5f",
+    echo.  "folder": null,
+    echo.  "name": "test-entry",
+    echo.  "data": {
+    echo.    "username": "foo",
+    echo.    "password": "correcthorsebatterystaple",
+    echo.    "totp": null,
+    echo.    "uris": [
+    echo.      {
+    echo.        "uri": "example.com",
+    echo.        "match_type": null
+    echo.      }
+    echo.    ]
+    echo.  },
+    echo.  "fields": [
+    echo.    {
+    echo.      "name": "something",
+    echo.      "value": "enigma"
     echo.    }
     echo.  ],
     echo.  "notes": "blah",
