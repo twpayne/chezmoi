@@ -64,6 +64,15 @@ type SourceStateFile struct {
 	targetStateEntryErr  error
 }
 
+// A SourceStateImplicitDir represents the state of a directory that is implicit
+// in the source state, typically because it is a parent directory of an
+// external. Implicit directories have no attributes and are considered
+// equivalent to any other directory.
+type SourceStateImplicitDir struct {
+	origin           SourceStateOrigin
+	targetStateEntry TargetStateEntry
+}
+
 // A SourceStateRemove represents that an entry should be removed.
 type SourceStateRemove struct {
 	origin        SourceStateOrigin
@@ -206,6 +215,39 @@ func (s *SourceStateFile) TargetStateEntry(
 		s.targetStateEntryFunc = nil
 	}
 	return s.targetStateEntry, s.targetStateEntryErr
+}
+
+// Evaluate evaluates s and returns any error.
+func (s *SourceStateImplicitDir) Evaluate() error {
+	return nil
+}
+
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
+func (s *SourceStateImplicitDir) MarshalZerologObject(e *zerolog.Event) {
+}
+
+// Order returns s's order.
+func (s *SourceStateImplicitDir) Order() ScriptOrder {
+	return ScriptOrderDuring
+}
+
+// Origin returns s's origin.
+func (s *SourceStateImplicitDir) Origin() SourceStateOrigin {
+	return s.origin
+}
+
+// SourceRelPath returns s's source relative path.
+func (s *SourceStateImplicitDir) SourceRelPath() SourceRelPath {
+	return emptySourceRelPath
+}
+
+// TargetStateEntry returns s's target state entry.
+func (s *SourceStateImplicitDir) TargetStateEntry(
+	destSystem System,
+	destDirAbsPath AbsPath,
+) (TargetStateEntry, error) {
+	return s.targetStateEntry, nil
 }
 
 // Evaluate evaluates s and returns any error.

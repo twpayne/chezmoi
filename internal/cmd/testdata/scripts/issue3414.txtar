@@ -1,0 +1,26 @@
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that running chezmoi apply twice does not complain about modified files
+exec chezmoi apply
+exec chezmoi apply --no-tty
+
+-- archive/shell/completion.bash --
+# contents of shell/completion.bash
+-- archive/shell/key-bindings.bash --
+# contents of shell/key-bindings.bash
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".bashrc.d/additional/fzf/shell/completion.bash"]
+        type = "archive-file"
+        path = "shell/completion.bash"
+        url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+        stripComponents = 1
+[".bashrc.d/additional/fzf/shell/key-bindings.bash"]
+        type = "archive-file"
+        path = "shell/key-bindings.bash"
+        url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+        stripComponents = 1
+-- home/user/.local/share/chezmoi/exact_dot_bashrc.d/file.sh --
+# contents of .bashrc.d/file.sh
+-- www/.keep --

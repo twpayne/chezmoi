@@ -134,7 +134,7 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 		default:
 			return false
 		}
-	case *SourceStateDir:
+	case *SourceStateDir, *SourceStateImplicitDir:
 		switch {
 		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
