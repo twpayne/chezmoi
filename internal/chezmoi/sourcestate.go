@@ -2224,6 +2224,25 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	}, nil
 }
 
+// populateImplicitDirs creates implicit parent directories for externalRelPath.
+func (s *SourceState) populateImplicitParentDirs(
+	externalRelPath RelPath,
+	external *External,
+	sourceStateEntries map[RelPath][]SourceStateEntry,
+) map[RelPath][]SourceStateEntry {
+	for relPath := externalRelPath.Dir(); relPath != DotRelPath; relPath = relPath.Dir() {
+		sourceStateEntries[relPath] = append(sourceStateEntries[relPath],
+			&SourceStateImplicitDir{
+				origin: external,
+				targetStateEntry: &TargetStateDir{
+					perm: fs.ModePerm &^ s.umask,
+				},
+			},
+		)
+	}
+	return sourceStateEntries
+}
+
 // readExternal reads an external and returns its SourceStateEntries.
 func (s *SourceState) readExternal(
 	ctx context.Context,
@@ -2414,7 +2433,7 @@ func (s *SourceState) readExternalArchive(
 		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 	}
 
-	return sourceStateEntries, nil
+	return s.populateImplicitParentDirs(externalRelPath, external, sourceStateEntries), nil
 }
 
 // readExternalArchiveData reads an external archive's data and returns its data
@@ -2554,9 +2573,9 @@ func (s *SourceState) readExternalArchiveFile(
 		return nil, fmt.Errorf("%s: path not found in %s", external.ArchivePath, external.URL)
 	}
 
-	return map[RelPath][]SourceStateEntry{
+	return s.populateImplicitParentDirs(externalRelPath, external, map[RelPath][]SourceStateEntry{
 		externalRelPath: {sourceStateEntry},
-	}, nil
+	}), nil
 }
 
 // ReadExternalDir returns all source state entries in an external_ dir.
@@ -2685,9 +2704,9 @@ func (s *SourceState) readExternalFile(
 		),
 		targetStateEntry: targetStateEntry,
 	}
-	return map[RelPath][]SourceStateEntry{
+	return s.populateImplicitParentDirs(externalRelPath, external, map[RelPath][]SourceStateEntry{
 		externalRelPath: {sourceStateEntry},
-	}, nil
+	}), nil
 }
 
 // readScriptsDir reads all scripts in scriptsDirAbsPath.
@@ -2829,19 +2848,39 @@ func (e *External) OriginString() string {
 // allEquivalentDirs returns if sourceStateEntries are all equivalent
 // directories.
 func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
-	sourceStateDir0, ok := sourceStateEntries[0].(*SourceStateDir)
-	if !ok {
+	// Find all directories to check for equivalence.
+	var firstSourceStateDir *SourceStateDir
+	sourceStateDirs := make([]SourceStateEntry, 0, len(sourceStateEntries))
+	for _, sourceStateEntry := range sourceStateEntries {
+		switch sourceStateEntry := sourceStateEntry.(type) {
+		case *SourceStateDir:
+			firstSourceStateDir = sourceStateEntry
+			sourceStateDirs = append(sourceStateDirs, sourceStateEntry)
+		case *SourceStateImplicitDir:
+			sourceStateDirs = append(sourceStateDirs, sourceStateEntry)
+		default:
+			return false
+		}
+	}
+
+	// If there are no SourceStateDirs then there are no equivalent directories.
+	if len(sourceStateDirs) == 0 {
 		return false
 	}
-	for _, sourceStateEntry := range sourceStateEntries[1:] {
-		sourceStateDir, ok := sourceStateEntry.(*SourceStateDir)
-		if !ok {
-			return false
-		}
-		if sourceStateDir0.Attr != sourceStateDir.Attr {
-			return false
+
+	// Check for equivalence.
+	for _, sourceStateDir := range sourceStateDirs {
+		switch sourceStateDir := sourceStateDir.(type) {
+		case *SourceStateDir:
+			if sourceStateDir.Attr != firstSourceStateDir.Attr {
+				return false
+			}
+		case *SourceStateImplicitDir:
+			// SourceStateImplicitDirs are considered equivalent to all other
+			// directories.
 		}
 	}
+
 	return true
 }
 
