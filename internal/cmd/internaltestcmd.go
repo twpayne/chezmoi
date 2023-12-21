@@ -21,6 +21,9 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Short: "Run promptBool",
 		RunE:  c.runInternalTestPromptBoolCmd,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptBoolCmd)
 
@@ -29,6 +32,9 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(2),
 		Short: "Run promptChoice",
 		RunE:  c.runInternalTestPromptChoiceCmd,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptChoiceCmd)
 
@@ -37,6 +43,9 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Short: "Run promptInt",
 		RunE:  c.runInternalTestPromptIntCmd,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptIntCmd)
 
@@ -45,6 +54,9 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Short: "Run promptString",
 		RunE:  c.runInternalTestPromptStringCmd,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptStringCmd)
 
@@ -53,6 +65,9 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: "Read a password",
 		RunE:  c.runInternalTestReadPasswordCmd,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	internalTestCmd.AddCommand(internalTestReadPasswordCmd)
 

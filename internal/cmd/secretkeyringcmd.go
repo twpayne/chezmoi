@@ -41,6 +41,9 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: "Delete a value from keyring",
 		RunE:  c.runSecretKeyringDeleteCmdE,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	secretKeyringDeletePersistentFlags := keyringDeleteCmd.PersistentFlags()
 	secretKeyringDeletePersistentFlags.StringVar(
@@ -58,6 +61,9 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: "Get a value from keyring",
 		RunE:  c.runSecretKeyringGetCmdE,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	secretKeyringGetPersistentFlags := keyringGetCmd.PersistentFlags()
 	secretKeyringGetPersistentFlags.StringVar(
@@ -75,6 +81,9 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: "Set a value in keyring",
 		RunE:  c.runSecretKeyringSetCmdE,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 	secretKeyringSetPersistentFlags := keyringSetCmd.PersistentFlags()
 	secretKeyringSetPersistentFlags.StringVar(
