@@ -25,10 +25,9 @@ type ageCmdConfig struct {
 
 func (c *Config) newAgeCmd() *cobra.Command {
 	ageCmd := &cobra.Command{
-		Use:         "age",
-		Args:        cobra.NoArgs,
-		Short:       "Interact with age",
-		Annotations: newAnnotations(),
+		Use:   "age",
+		Args:  cobra.NoArgs,
+		Short: "Interact with age",
 	}
 
 	ageDecryptCmd := &cobra.Command{
