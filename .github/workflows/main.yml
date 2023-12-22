@@ -123,7 +123,7 @@ jobs:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
-        go-version: oldstable
+        go-version: stable
     - name: build
       run: |
         go build ./...
@@ -214,6 +214,10 @@ jobs:
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
         go-version: ${{ env.GO_VERSION }}
+    - name: install-gotip
+      run: |
+        go install golang.org/dl/gotip@latest
+        gotip download
     - name: install-age
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
@@ -223,22 +227,22 @@ jobs:
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: build
       run: |
-        go build ./...
+        gotip build ./...
     - name: run
       run: |
-        go run . --version
+        gotip run . --version
     - name: test-umask-022
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o022" -race -timeout=1h ./...
+        gotip test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o022" -race -timeout=1h ./...
     - name: test-umask-002
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o002" -race -timeout=1h ./...
+        gotip test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o002" -race -timeout=1h ./...
     - name: test-install.sh
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
