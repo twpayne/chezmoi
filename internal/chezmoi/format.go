@@ -11,6 +11,8 @@ import (
 	"github.com/pelletier/go-toml/v2"
 	"github.com/tailscale/hujson"
 	"gopkg.in/yaml.v3"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 // Formats.
@@ -59,7 +61,7 @@ var (
 		"yaml":  FormatYAML,
 		"yml":   FormatYAML,
 	}
-	FormatExtensions = sortedKeys(FormatsByExtension)
+	FormatExtensions = chezmoimaps.SortedKeys(FormatsByExtension)
 )
 
 // Marshal implements Format.Marshal.

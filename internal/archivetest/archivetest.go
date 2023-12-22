@@ -3,10 +3,6 @@ package archivetest
 
 import (
 	"io/fs"
-
-	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
 )
 
 // A Dir represents a directory.
@@ -24,10 +20,4 @@ type File struct {
 // A Symlink represents a symlink.
 type Symlink struct {
 	Target string
-}
-
-func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
-	keys := maps.Keys(m)
-	slices.Sort(keys)
-	return keys
 }

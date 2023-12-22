@@ -17,14 +17,12 @@ import (
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
-	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
 	"gopkg.in/ini.v1"
 	"howett.net/plist"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 type ioregData struct {
@@ -662,7 +660,7 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 		value map[string]any
 	}
 	var subsections []subsection
-	for _, key := range sortedKeys(data) {
+	for _, key := range chezmoimaps.SortedKeys(data) {
 		switch value := data[key].(type) {
 		case bool:
 			fmt.Fprintf(w, "%s = %t\n", key, value)
@@ -729,10 +727,4 @@ func pruneEmptyMaps(m map[string]any) bool {
 		}
 	}
 	return len(m) == 0
-}
-
-func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
-	keys := maps.Keys(m)
-	slices.Sort(keys)
-	return keys
 }

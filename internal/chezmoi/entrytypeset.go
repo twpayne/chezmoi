@@ -8,6 +8,8 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cobra"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 // An EntryTypeSet is a set of entry types. It parses and prints as a
@@ -62,7 +64,7 @@ var (
 		"templates": EntryTypeTemplates,
 	}
 
-	entryTypeStrings = sortedKeys(entryTypeBits)
+	entryTypeStrings = chezmoimaps.SortedKeys(entryTypeBits)
 
 	entryTypeCompletions = []string{
 		"all",

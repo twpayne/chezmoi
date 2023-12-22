@@ -10,6 +10,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
@@ -70,8 +71,8 @@ func TestTargetStateEntryApply(t *testing.T) {
 		TargetStateKey        []string
 		ActualDestDirStateKey []string
 	}{
-		TargetStateKey:        sortedKeys(targetStates),
-		ActualDestDirStateKey: sortedKeys(actualStates),
+		TargetStateKey:        chezmoimaps.SortedKeys(targetStates),
+		ActualDestDirStateKey: chezmoimaps.SortedKeys(actualStates),
 	}
 	var testCases []struct {
 		TargetStateKey        string
