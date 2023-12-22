@@ -2,10 +2,9 @@ package chezmoi
 
 import (
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
-
-	"golang.org/x/exp/slices"
 )
 
 // A templateVariable is a template variable. It is used instead of a

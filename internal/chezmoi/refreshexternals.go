@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"golang.org/x/exp/maps"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 type RefreshExternals int
@@ -23,7 +23,7 @@ var (
 	}
 
 	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(
-		maps.Keys(refreshExternalsWellKnownStrings),
+		chezmoimaps.Keys(refreshExternalsWellKnownStrings),
 	)
 )
 

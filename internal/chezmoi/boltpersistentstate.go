@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"slices"
 	"syscall"
 	"time"
 
 	"go.etcd.io/bbolt"
-	"golang.org/x/exp/slices"
 )
 
 // A BoltPersistentStateMode is a mode for opening a PersistentState.

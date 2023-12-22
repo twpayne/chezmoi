@@ -19,6 +19,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"slices"
 	"sort"
 	"strings"
 	"sync"
@@ -30,11 +31,10 @@ import (
 	"github.com/mitchellh/copystructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 // An ExternalType is a type of external source.
@@ -340,7 +340,7 @@ func (s *SourceState) Add(
 	options *AddOptions,
 ) error {
 	// Filter out excluded and ignored paths.
-	destAbsPaths := AbsPaths(maps.Keys(destAbsPathInfos))
+	destAbsPaths := AbsPaths(chezmoimaps.Keys(destAbsPathInfos))
 	sort.Sort(destAbsPaths)
 	n := 0
 	for _, destAbsPath := range destAbsPaths {
