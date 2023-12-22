@@ -357,3 +357,18 @@ articles:
   lang: JP
   title: chezmoi で dotfiles を管理するときに便利な機能についてまとめる
   url: https://zenn.dev/ganariya/articles/useful-features-of-chezmoi
+- date: '2023-12-16'
+  version: 2.42.3
+  lang: JP
+  title: chezmoi を使った dotfiles の管理方法
+  url: https://zenn.dev/yukionodera/articles/how-to-manage-dotfiles
+- date: '2023-12-17'
+  version: 2.42.3
+  lang: JP
+  title: chezmoi を サブマシンにも導入する
+  url: https://zenn.dev/yukionodera/articles/setup-second-machine
+- date: '2023-12-18'
+  version: 2.42.3
+  lang: JP
+  title: chezmoi 管理のdotfiles でマシン毎に設定を変えたい
+  url: https://zenn.dev/yukionodera/articles/chezmoi-use-template
