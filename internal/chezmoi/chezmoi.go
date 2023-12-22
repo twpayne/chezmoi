@@ -20,9 +20,6 @@ import (
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
-	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
 )
 
 var (
@@ -361,13 +358,6 @@ func sha384Sum(data []byte) []byte {
 func sha512Sum(data []byte) []byte {
 	sha512SumArr := sha512.Sum512(data)
 	return sha512SumArr[:]
-}
-
-// sortedKeys returns the keys of V in order.
-func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
-	keys := maps.Keys(m)
-	slices.Sort(keys)
-	return keys
 }
 
 // ensureSuffix adds suffix to s if s is not suffixed by suffix.

@@ -8,6 +8,8 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/muesli/combinator"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 func TestEntryStateEquivalent(t *testing.T) {
@@ -76,7 +78,7 @@ func TestEntryStateEquivalent(t *testing.T) {
 		"symlink_symlink_copy":  true,
 	}
 
-	entryStateKeys := sortedKeys(entryStates)
+	entryStateKeys := chezmoimaps.SortedKeys(entryStates)
 
 	testData := struct {
 		EntryState1Key []string
