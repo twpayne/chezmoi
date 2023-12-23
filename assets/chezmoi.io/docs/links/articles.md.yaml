@@ -372,3 +372,8 @@ articles:
   lang: JP
   title: chezmoi 管理のdotfiles でマシン毎に設定を変えたい
   url: https://zenn.dev/yukionodera/articles/chezmoi-use-template
+- date: '2023-12-23'
+  version: 2.42.3
+  lang: DE
+  title: Lokale Kofigurationsdateien sicher mit chezmoi und Git synchronisieren
+  url: https://www.heise.de/ratgeber/Lokale-Kofigurationsdateien-sicher-mit-chezmoi-und-Git-synchronisieren-9580741.html
