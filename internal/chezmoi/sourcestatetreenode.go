@@ -47,10 +47,7 @@ func (n *sourceStateEntryTreeNode) GetNode(targetRelPath RelPath) *sourceStateEn
 }
 
 // ForEach calls f for each SourceStateEntry in the tree.
-func (n *sourceStateEntryTreeNode) ForEach(
-	targetRelPath RelPath,
-	f func(RelPath, SourceStateEntry) error,
-) error {
+func (n *sourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
 	return n.ForEachNode(
 		targetRelPath,
 		func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
@@ -63,9 +60,7 @@ func (n *sourceStateEntryTreeNode) ForEach(
 }
 
 // ForEachNode calls f for each node in the tree.
-func (n *sourceStateEntryTreeNode) ForEachNode(
-	targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error,
-) error {
+func (n *sourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error) error {
 	switch err := f(targetRelPath, n); {
 	case errors.Is(err, fs.SkipDir):
 		return nil
@@ -98,7 +93,9 @@ func (n *sourceStateEntryTreeNode) Map() map[RelPath]SourceStateEntry {
 // MkdirAll creates SourceStateDirs for all components of targetRelPath if they
 // do not already exist and returns the SourceStateDir of relPath.
 func (n *sourceStateEntryTreeNode) MkdirAll(
-	targetRelPath RelPath, origin SourceStateOrigin, umask fs.FileMode,
+	targetRelPath RelPath,
+	origin SourceStateOrigin,
+	umask fs.FileMode,
 ) (*SourceStateDir, error) {
 	if targetRelPath == EmptyRelPath {
 		return nil, nil

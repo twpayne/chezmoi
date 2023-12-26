@@ -89,12 +89,7 @@ func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RunScript(
-	scriptname RelPath,
-	dir AbsPath,
-	data []byte,
-	options RunScriptOptions,
-) error {
+func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	panic("update to no update system")
 }
 
@@ -241,7 +236,10 @@ func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc W
 }
 
 func concurrentWalkSourceDir(
-	ctx context.Context, system System, dirAbsPath AbsPath, walkFunc concurrentWalkSourceDirFunc,
+	ctx context.Context,
+	system System,
+	dirAbsPath AbsPath,
+	walkFunc concurrentWalkSourceDirFunc,
 ) error {
 	dirEntries, err := system.ReadDir(dirAbsPath)
 	if err != nil {

@@ -39,12 +39,7 @@ type parseCmdOutputError struct {
 	err     error
 }
 
-func newParseCmdOutputError(
-	command string,
-	args []string,
-	output []byte,
-	err error,
-) *parseCmdOutputError {
+func newParseCmdOutputError(command string, args []string, output []byte, err error) *parseCmdOutputError {
 	return &parseCmdOutputError{
 		command: command,
 		args:    args,

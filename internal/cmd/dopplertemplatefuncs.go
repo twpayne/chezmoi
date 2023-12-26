@@ -69,9 +69,7 @@ func (c *Config) dopplerProjectJSONTemplateFunc(additionalArgs ...string) any {
 	return value
 }
 
-func (c *Config) appendDopplerAdditionalArgs(
-	args, additionalArgs []string,
-) []string {
+func (c *Config) appendDopplerAdditionalArgs(args, additionalArgs []string) []string {
 	if len(additionalArgs) > 0 && additionalArgs[0] != "" {
 		args = append(args, "--project", additionalArgs[0])
 	} else if c.Doppler.Project != "" {

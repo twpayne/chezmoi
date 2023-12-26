@@ -61,11 +61,7 @@ func (c *Config) newMackupCmd() *cobra.Command {
 	return mackupCmd
 }
 
-func (c *Config) runMackupAddCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	mackupApplicationsDir, err := c.mackupApplicationsDir()
 	if err != nil {
 		return err

@@ -53,12 +53,10 @@ func TestTarWriterSystem(t *testing.T) {
 		b := &bytes.Buffer{}
 		tarWriterSystem := NewTarWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
-		assert.NoError(
-			t,
-			s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
-				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
-			}),
-		)
+		err := s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+		})
+		assert.NoError(t, err)
 		assert.NoError(t, tarWriterSystem.Close())
 
 		r := tar.NewReader(b)
@@ -107,7 +105,7 @@ func TestTarWriterSystem(t *testing.T) {
 				}
 			})
 		}
-		_, err := r.Next()
+		_, err = r.Next()
 		assert.Equal(t, io.EOF, err)
 	})
 }

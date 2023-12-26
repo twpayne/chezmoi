@@ -124,7 +124,7 @@ lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-gol
 
 .PHONY: format
 format: ensure-gofumpt ensure-golines
-	find . -name \*.go | xargs ./bin/golines --base-formatter="./bin/gofumpt -extra" -w
+	find . -name \*.go | xargs ./bin/golines --base-formatter="./bin/gofumpt -extra" --max-len=128 --write-output
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
 .PHONY: format-yaml

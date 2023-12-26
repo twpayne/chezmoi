@@ -26,11 +26,7 @@ func (c *Config) newCatCmd() *cobra.Command {
 	return catCmd
 }
 
-func (c *Config) runCatCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeManaged: true,
 	})
@@ -41,10 +37,7 @@ func (c *Config) runCatCmd(
 	builder := strings.Builder{}
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
-		targetStateEntry, err := sourceStateEntry.TargetStateEntry(
-			c.destSystem,
-			c.DestDirAbsPath.Join(targetRelPath),
-		)
+		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 		if err != nil {
 			return fmt.Errorf("%s: %w", targetRelPath, err)
 		}

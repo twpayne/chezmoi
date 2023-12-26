@@ -734,11 +734,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey)
 	}
 
-	configFileContents, err := c.createConfigFile(
-		configTemplate.targetRelPath,
-		configTemplate.contents,
-		cmd,
-	)
+	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents, cmd)
 	if err != nil {
 		return err
 	}
@@ -790,11 +786,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 
 // createConfigFile creates a config file using a template and returns its
 // contents.
-func (c *Config) createConfigFile(
-	filename chezmoi.RelPath,
-	data []byte,
-	cmd *cobra.Command,
-) ([]byte, error) {
+func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *cobra.Command) ([]byte, error) {
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	initTemplateFuncs := map[string]any{
@@ -828,10 +820,7 @@ func (c *Config) createConfigFile(
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
-func (c *Config) defaultConfigFile(
-	fileSystem vfs.FS,
-	bds *xdg.BaseDirectorySpecification,
-) (chezmoi.AbsPath, error) {
+func (c *Config) defaultConfigFile(fileSystem vfs.FS, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
 	// Search XDG Base Directory Specification config directories first.
 CONFIG_DIR:
 	for _, configDir := range bds.ConfigDirs {
@@ -885,11 +874,7 @@ CONFIG_DIR:
 }
 
 // decodeConfigBytes decodes data in format into configFile.
-func (c *Config) decodeConfigBytes(
-	format chezmoi.Format,
-	data []byte,
-	configFile *ConfigFile,
-) error {
+func (c *Config) decodeConfigBytes(format chezmoi.Format, data []byte, configFile *ConfigFile) error {
 	var configMap map[string]any
 	if err := format.Unmarshal(data, &configMap); err != nil {
 		return err
@@ -984,11 +969,8 @@ func (c *Config) defaultPreApplyFunc(
 			case err != nil:
 				return err
 			case choice == "diff":
-				if err := c.diffFile(
-					targetRelPath,
-					actualContents, actualEntryState.Mode,
-					targetContents, targetEntryState.Mode,
-				); err != nil {
+				err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode)
+				if err != nil {
 					return err
 				}
 			case choice == "yes":
@@ -1054,10 +1036,7 @@ func (c *Config) defaultPreApplyFunc(
 
 // defaultSourceDir returns the default source directory according to the XDG
 // Base Directory Specification.
-func (c *Config) defaultSourceDir(
-	fileSystem vfs.Stater,
-	bds *xdg.BaseDirectorySpecification,
-) (chezmoi.AbsPath, error) {
+func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
 	// Check for XDG Base Directory Specification data directories first.
 	for _, dataDir := range bds.DataDirs {
 		dataDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dataDir, c.homeDirAbsPath)
@@ -1087,7 +1066,9 @@ type destAbsPathInfosOptions struct {
 // args, recursing into subdirectories and following symlinks if configured in
 // options.
 func (c *Config) destAbsPathInfos(
-	sourceState *chezmoi.SourceState, args []string, options destAbsPathInfosOptions,
+	sourceState *chezmoi.SourceState,
+	args []string,
+	options destAbsPathInfosOptions,
 ) (map[chezmoi.AbsPath]fs.FileInfo, error) {
 	destAbsPathInfos := make(map[chezmoi.AbsPath]fs.FileInfo)
 	for _, arg := range args {
@@ -1113,12 +1094,7 @@ func (c *Config) destAbsPathInfos(
 						return err
 					}
 				}
-				return sourceState.AddDestAbsPathInfos(
-					destAbsPathInfos,
-					c.destSystem,
-					destAbsPath,
-					fileInfo,
-				)
+				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, fileInfo)
 			}
 			if err := chezmoi.Walk(c.destSystem, destAbsPath, walkFunc); err != nil {
 				return nil, err
@@ -1148,8 +1124,10 @@ func (c *Config) destAbsPathInfos(
 // at path.
 func (c *Config) diffFile(
 	path chezmoi.RelPath,
-	fromData []byte, fromMode fs.FileMode,
-	toData []byte, toMode fs.FileMode,
+	fromData []byte,
+	fromMode fs.FileMode,
+	toData []byte,
+	toMode fs.FileMode,
 ) error {
 	builder := strings.Builder{}
 	unifiedEncoder := diff.NewUnifiedEncoder(&builder, diff.DefaultContextLines)
@@ -1399,10 +1377,7 @@ func (c *Config) getSourceDirAbsPath(options *getSourceDirAbsPathOptions) (chezm
 	return c.sourceDirAbsPath, c.sourceDirAbsPathErr
 }
 
-func (c *Config) getSourceState(
-	ctx context.Context,
-	cmd *cobra.Command,
-) (*chezmoi.SourceState, error) {
+func (c *Config) getSourceState(ctx context.Context, cmd *cobra.Command) (*chezmoi.SourceState, error) {
 	if c.sourceState != nil || c.sourceStateErr != nil {
 		return c.sourceState, c.sourceStateErr
 	}
@@ -1708,11 +1683,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 // newDiffSystem returns a system that logs all changes to s to w using
 // diff.command if set or the builtin git diff otherwise.
-func (c *Config) newDiffSystem(
-	s chezmoi.System,
-	w io.Writer,
-	dirAbsPath chezmoi.AbsPath,
-) chezmoi.System {
+func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
 			Color: c.Color.Value(c.colorAutoFunc),
@@ -1736,7 +1707,9 @@ func (c *Config) newDiffSystem(
 
 // newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(
-	ctx context.Context, cmd *cobra.Command, options ...chezmoi.SourceStateOption,
+	ctx context.Context,
+	cmd *cobra.Command,
+	options ...chezmoi.SourceStateOption,
 ) (*chezmoi.SourceState, error) {
 	if err := c.checkVersion(); err != nil {
 		return nil, err
@@ -2410,11 +2383,7 @@ func (c *Config) runEditor(args []string) error {
 	err = c.run(chezmoi.EmptyAbsPath, editor, editorArgs)
 	if runtime.GOOS != "windows" && c.Edit.MinDuration != 0 {
 		if duration := time.Since(start); duration < c.Edit.MinDuration {
-			c.errorf(
-				"warning: %s: returned in less than %s\n",
-				shellQuoteCommand(editor, editorArgs),
-				c.Edit.MinDuration,
-			)
+			c.errorf("warning: %s: returned in less than %s\n", shellQuoteCommand(editor, editorArgs), c.Edit.MinDuration)
 		}
 	}
 	return err
@@ -2500,10 +2469,7 @@ func (c *Config) setEnvironmentVariables() error {
 
 // sourceAbsPaths returns the source absolute paths for each target path in
 // args.
-func (c *Config) sourceAbsPaths(
-	sourceState *chezmoi.SourceState,
-	args []string,
-) ([]chezmoi.AbsPath, error) {
+func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 		mustBeManaged:       true,
@@ -2542,7 +2508,9 @@ type targetRelPathsOptions struct {
 // targetRelPaths returns the target relative paths for each target path in
 // args. The returned paths are sorted and de-duplicated.
 func (c *Config) targetRelPaths(
-	sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions,
+	sourceState *chezmoi.SourceState,
+	args []string,
+	options targetRelPathsOptions,
 ) (chezmoi.RelPaths, error) {
 	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
 	for _, arg := range args {
@@ -2594,9 +2562,7 @@ func (c *Config) targetRelPaths(
 
 // targetRelPathsBySourcePath returns the target relative paths for each arg in
 // args.
-func (c *Config) targetRelPathsBySourcePath(
-	sourceState *chezmoi.SourceState, args []string,
-) ([]chezmoi.RelPath, error) {
+func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
 	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
 	_ = sourceState.ForEach(
@@ -2625,9 +2591,7 @@ func (c *Config) targetRelPathsBySourcePath(
 }
 
 // targetValidArgs returns target completions for toComplete given args.
-func (c *Config) targetValidArgs(
-	cmd *cobra.Command, args []string, toComplete string,
-) ([]string, cobra.ShellCompDirective) {
+func (c *Config) targetValidArgs(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if !c.Completion.Custom {
 		return nil, cobra.ShellCompDirectiveDefault
 	}

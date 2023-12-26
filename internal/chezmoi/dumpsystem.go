@@ -98,12 +98,7 @@ func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DumpSystem) RunScript(
-	scriptname RelPath,
-	dir AbsPath,
-	data []byte,
-	options RunScriptOptions,
-) error {
+func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	scriptnameStr := scriptname.String()
 	scriptData := &scriptData{
 		Type:     dataTypeScript,

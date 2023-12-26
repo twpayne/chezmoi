@@ -54,12 +54,10 @@ func TestZIPWriterSystem(t *testing.T) {
 		b := &bytes.Buffer{}
 		zipWriterSystem := NewZIPWriterSystem(b, time.Now().UTC())
 		persistentState := NewMockPersistentState()
-		assert.NoError(
-			t,
-			s.applyAll(zipWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
-				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
-			}),
-		)
+		err := s.applyAll(zipWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+		})
+		assert.NoError(t, err)
 		assert.NoError(t, zipWriterSystem.Close())
 
 		r, err := zip.NewReader(bytes.NewReader(b.Bytes()), int64(b.Len()))

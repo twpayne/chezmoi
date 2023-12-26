@@ -40,12 +40,7 @@ type ActualStateSymlink struct {
 
 // NewActualStateEntry returns a new ActualStateEntry populated with absPath
 // from system.
-func NewActualStateEntry(
-	system System,
-	absPath AbsPath,
-	fileInfo fs.FileInfo,
-	err error,
-) (ActualStateEntry, error) {
+func NewActualStateEntry(system System, absPath AbsPath, fileInfo fs.FileInfo, err error) (ActualStateEntry, error) {
 	if fileInfo == nil {
 		fileInfo, err = system.Lstat(absPath)
 	}

@@ -105,9 +105,7 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 
 // appendVariables appends all template variables in data to variables
 // and returns variables. data is assumed to be rooted at parent.
-func appendVariables(
-	variables []templateVariable, parent []string, data map[string]any,
-) []templateVariable {
+func appendVariables(variables []templateVariable, parent []string, data map[string]any) []templateVariable {
 	for name, value := range data {
 		switch value := value.(type) {
 		case string:

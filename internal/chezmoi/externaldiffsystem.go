@@ -181,12 +181,7 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ExternalDiffSystem) RunScript(
-	scriptname RelPath,
-	dir AbsPath,
-	data []byte,
-	options RunScriptOptions,
-) error {
+func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	bits := EntryTypeScripts
 	if options.Condition == ScriptConditionAlways {
 		bits |= EntryTypeAlways

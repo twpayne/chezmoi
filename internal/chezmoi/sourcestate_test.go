@@ -536,15 +536,9 @@ func TestSourceStateAdd(t *testing.T) {
 
 				destAbsPathInfos := make(map[AbsPath]fs.FileInfo)
 				for _, destAbsPath := range tc.destAbsPaths {
-					assert.NoError(
-						t,
-						s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil),
-					)
+					assert.NoError(t, s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil))
 				}
-				assert.NoError(
-					t,
-					s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions),
-				)
+				assert.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions))
 
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
@@ -556,14 +550,7 @@ func TestSourceStateAddInExternal(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
 	assert.NoError(t, tarWriterSystem.Mkdir(NewAbsPath("dir"), fs.ModePerm))
-	assert.NoError(
-		t,
-		tarWriterSystem.WriteFile(
-			NewAbsPath("dir/file"),
-			[]byte("# contents of dir/file\n"),
-			0o666,
-		),
-	)
+	assert.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("dir/file"), []byte("# contents of dir/file\n"), 0o666))
 	assert.NoError(t, tarWriterSystem.Close())
 	archiveData := buffer.Bytes()
 
@@ -1965,23 +1952,21 @@ func (s *SourceState) applyAll(
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	assert.NoError(
-		t,
-		s.root.ForEach(
-			EmptyRelPath,
-			func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
-				if err := sourceStateEntry.Evaluate(); err != nil {
-					return err
-				}
-				destAbsPath := s.destDirAbsPath.Join(targetRelPath)
-				targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
-				if err != nil {
-					return err
-				}
-				return targetStateEntry.Evaluate()
-			},
-		),
+	err := s.root.ForEach(
+		EmptyRelPath,
+		func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+			if err := sourceStateEntry.Evaluate(); err != nil {
+				return err
+			}
+			destAbsPath := s.destDirAbsPath.Join(targetRelPath)
+			targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
+			if err != nil {
+				return err
+			}
+			return targetStateEntry.Evaluate()
+		},
 	)
+	assert.NoError(t, err)
 }
 
 func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {

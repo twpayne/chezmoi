@@ -60,11 +60,7 @@ func (c *Config) newImportCmd() *cobra.Command {
 	return importCmd
 }
 
-func (c *Config) runImportCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	var (
 		name string
 		data []byte

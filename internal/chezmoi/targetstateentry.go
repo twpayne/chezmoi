@@ -80,7 +80,9 @@ type scriptState struct {
 
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateModifyDirWithCmd) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+	system System,
+	persistentState PersistentState,
+	actualStateEntry ActualStateEntry,
 ) (bool, error) {
 	if _, ok := actualStateEntry.(*ActualStateDir); !ok {
 		if err := actualStateEntry.Remove(system); err != nil {
@@ -119,10 +121,7 @@ func (t *TargetStateModifyDirWithCmd) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateModifyDirWithCmd) SkipApply(
-	persistentState PersistentState,
-	targetAbsPath AbsPath,
-) (bool, error) {
+func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	if t.forceRefresh {
 		return false, nil
 	}
@@ -151,7 +150,9 @@ func (t *TargetStateModifyDirWithCmd) SourceAttr() SourceAttr {
 
 // Apply updates actualStateEntry to match t. It does not recurse.
 func (t *TargetStateDir) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+	system System,
+	persistentState PersistentState,
+	actualStateEntry ActualStateEntry,
 ) (bool, error) {
 	if actualStateDir, ok := actualStateEntry.(*ActualStateDir); ok {
 		if runtime.GOOS == "windows" || actualStateDir.perm == t.perm {
@@ -179,10 +180,7 @@ func (t *TargetStateDir) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateDir) SkipApply(
-	persistentState PersistentState,
-	targetAbsPath AbsPath,
-) (bool, error) {
+func (t *TargetStateDir) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -193,7 +191,9 @@ func (t *TargetStateDir) SourceAttr() SourceAttr {
 
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateFile) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+	system System,
+	persistentState PersistentState,
+	actualStateEntry ActualStateEntry,
 ) (bool, error) {
 	contents, err := t.Contents()
 	if err != nil {
@@ -265,10 +265,7 @@ func (t *TargetStateFile) Perm(umask fs.FileMode) fs.FileMode {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateFile) SkipApply(
-	persistentState PersistentState,
-	targetAbsPath AbsPath,
-) (bool, error) {
+func (t *TargetStateFile) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -279,7 +276,9 @@ func (t *TargetStateFile) SourceAttr() SourceAttr {
 
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateRemove) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+	system System,
+	persistentState PersistentState,
+	actualStateEntry ActualStateEntry,
 ) (bool, error) {
 	if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
 		return false, nil
@@ -300,10 +299,7 @@ func (t *TargetStateRemove) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateRemove) SkipApply(
-	persistentState PersistentState,
-	targetAbsPath AbsPath,
-) (bool, error) {
+func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -314,7 +310,9 @@ func (t *TargetStateRemove) SourceAttr() SourceAttr {
 
 // Apply runs t.
 func (t *TargetStateScript) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+	system System,
+	persistentState PersistentState,
+	actualStateEntry ActualStateEntry,
 ) (bool, error) {
 	skipApply, err := t.SkipApply(persistentState, actualStateEntry.Path())
 	if err != nil {
@@ -381,10 +379,7 @@ func (t *TargetStateScript) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateScript) SkipApply(
-	persistentState PersistentState,
-	targetAbsPath AbsPath,
-) (bool, error) {
+func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	switch contents, err := t.Contents(); {
 	case err != nil:
 		return false, err
@@ -435,7 +430,9 @@ func (t *TargetStateScript) SourceAttr() SourceAttr {
 
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateSymlink) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+	system System,
+	persistentState PersistentState,
+	actualStateEntry ActualStateEntry,
 ) (bool, error) {
 	linkname, err := t.Linkname()
 	if err != nil {
@@ -495,9 +492,7 @@ func (t *TargetStateSymlink) Evaluate() error {
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateSymlink) SkipApply(
-	persistentState PersistentState, targetAbsPath AbsPath,
-) (bool, error) {
+func (t *TargetStateSymlink) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 

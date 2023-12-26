@@ -27,11 +27,7 @@ func (c *Config) newEditConfigTemplateCmd() *cobra.Command {
 	return editConfigCmd
 }
 
-func (c *Config) runEditConfigTemplateCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runEditConfigTemplateCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	var configTemplateAbsPath chezmoi.AbsPath
 	switch configTemplate, err := c.findConfigTemplate(); {
 	case err != nil:

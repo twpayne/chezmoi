@@ -101,11 +101,7 @@ func FirstFewBytes(data []byte) []byte {
 
 // LogHTTPRequest calls httpClient.Do, logs the result to logger, and returns
 // the result.
-func LogHTTPRequest(
-	logger *zerolog.Logger,
-	client *http.Client,
-	req *http.Request,
-) (*http.Response, error) {
+func LogHTTPRequest(logger *zerolog.Logger, client *http.Client, req *http.Request) (*http.Response, error) {
 	start := time.Now()
 	resp, err := client.Do(req)
 	if resp != nil {

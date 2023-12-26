@@ -24,11 +24,8 @@ type TooOldError struct {
 }
 
 func (e *TooOldError) Error() string {
-	return fmt.Sprintf(
-		"source state requires chezmoi version %s or later, chezmoi is version %s",
-		e.Need,
-		e.Have,
-	)
+	format := "source state requires chezmoi version %s or later, chezmoi is version %s"
+	return fmt.Sprintf(format, e.Need, e.Have)
 }
 
 type inconsistentStateError struct {
@@ -37,11 +34,8 @@ type inconsistentStateError struct {
 }
 
 func (e *inconsistentStateError) Error() string {
-	return fmt.Sprintf(
-		"%s: inconsistent state (%s)",
-		e.targetRelPath,
-		strings.Join(e.origins, ", "),
-	)
+	format := "%s: inconsistent state (%s)"
+	return fmt.Sprintf(format, e.targetRelPath, strings.Join(e.origins, ", "))
 }
 
 type NotInAbsDirError struct {

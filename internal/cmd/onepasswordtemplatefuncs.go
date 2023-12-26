@@ -202,10 +202,7 @@ func (c *Config) onepasswordItem(userArgs []string) (*onepasswordItem, error) {
 	return &item, nil
 }
 
-func (c *Config) onepasswordOutput(
-	args *onepasswordArgs,
-	withSessionToken withSessionTokenType,
-) ([]byte, error) {
+func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withSessionTokenType) ([]byte, error) {
 	key := strings.Join(args.args, "\x00")
 	if output, ok := c.Onepassword.outputCache[key]; ok {
 		return output, nil

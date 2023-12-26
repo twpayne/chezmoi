@@ -77,12 +77,7 @@ func (c *Config) promptBoolInteractiveTemplateFunc(prompt string, args ...bool) 
 	return value
 }
 
-func (c *Config) promptBoolOnceInteractiveTemplateFunc(
-	m map[string]any,
-	path any,
-	prompt string,
-	args ...bool,
-) bool {
+func (c *Config) promptBoolOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, args ...bool) bool {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 3 or 4 arguments, got %d", len(args)+2)
 		panic(err)
@@ -108,11 +103,7 @@ func (c *Config) promptBoolOnceInteractiveTemplateFunc(
 	return c.promptBoolInteractiveTemplateFunc(prompt, args...)
 }
 
-func (c *Config) promptChoiceInteractiveTemplateFunc(
-	prompt string,
-	choices []any,
-	args ...string,
-) string {
+func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices []any, args ...string) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -178,12 +169,7 @@ func (c *Config) promptIntInteractiveTemplateFunc(prompt string, args ...int64) 
 	return value
 }
 
-func (c *Config) promptIntOnceInteractiveTemplateFunc(
-	m map[string]any,
-	path any,
-	prompt string,
-	args ...int64,
-) int64 {
+func (c *Config) promptIntOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, args ...int64) int64 {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -221,12 +207,7 @@ func (c *Config) promptStringInteractiveTemplateFunc(prompt string, args ...stri
 	return value
 }
 
-func (c *Config) promptStringOnceInteractiveTemplateFunc(
-	m map[string]any,
-	path any,
-	prompt string,
-	args ...string,
-) string {
+func (c *Config) promptStringOnceInteractiveTemplateFunc(m map[string]any, path any, prompt string, args ...string) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)

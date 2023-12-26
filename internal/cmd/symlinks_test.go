@@ -77,10 +77,7 @@ func TestSymlinks(t *testing.T) {
 				if tc.extraRoot != nil {
 					assert.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				assert.NoError(
-					t,
-					newTestConfig(t, fileSystem).execute(append([]string{"apply"}, tc.args...)),
-				)
+				assert.NoError(t, newTestConfig(t, fileSystem).execute(append([]string{"apply"}, tc.args...)))
 				vfst.RunTests(t, fileSystem, "", tc.tests)
 				assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"verify"}))
 			})

@@ -49,12 +49,10 @@ func TestDumpSystem(t *testing.T) {
 
 		dumpSystem := NewDumpSystem()
 		persistentState := NewMockPersistentState()
-		assert.NoError(
-			t,
-			s.applyAll(dumpSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
-				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
-			}),
-		)
+		err := s.applyAll(dumpSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+		})
+		assert.NoError(t, err)
 		expectedData := map[string]any{
 			".dir": &dirData{
 				Type: dataTypeDir,
