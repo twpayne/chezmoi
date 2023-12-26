@@ -37,9 +37,9 @@ func (n *sourceStateEntryTreeNode) GetNode(targetRelPath RelPath) *sourceStateEn
 
 	node := n
 	for _, childRelPath := range targetRelPath.SplitAll() {
-		var ok bool
-		node, ok = node.children[childRelPath]
-		if !ok {
+		if childNode, ok := node.children[childRelPath]; ok {
+			node = childNode
+		} else {
 			return nil
 		}
 	}
