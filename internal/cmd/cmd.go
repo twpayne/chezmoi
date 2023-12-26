@@ -155,9 +155,7 @@ func example(command string) string {
 }
 
 // extractHelps returns the helps parse from r.
-func extractHelp(
-	command string, data []byte, longHelpTermRenderer, exampleTermRenderer *glamour.TermRenderer,
-) (*help, error) {
+func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermRenderer *glamour.TermRenderer) (*help, error) {
 	type stateType int
 	const (
 		stateReadTitle stateType = iota

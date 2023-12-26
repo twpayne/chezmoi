@@ -140,11 +140,8 @@ func TestBoltPersistentStateGeneric(t *testing.T) {
 	testPersistentState(t, func() PersistentState {
 		tempDir, err := os.MkdirTemp("", "chezmoi-test")
 		assert.NoError(t, err)
-		b, err := NewBoltPersistentState(
-			system,
-			NewAbsPath(tempDir).JoinString("chezmoistate.boltdb"),
-			BoltPersistentStateReadWrite,
-		)
+		absPath := NewAbsPath(tempDir).JoinString("chezmoistate.boltdb")
+		b, err := NewBoltPersistentState(system, absPath, BoltPersistentStateReadWrite)
 		assert.NoError(t, err)
 		return b
 	})

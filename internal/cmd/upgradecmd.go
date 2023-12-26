@@ -125,12 +125,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		case err != nil:
 			return err
 		case method == "":
-			return fmt.Errorf(
-				"%s/%s: cannot determine upgrade method for %s",
-				runtime.GOOS,
-				runtime.GOARCH,
-				executableAbsPath,
-			)
+			return fmt.Errorf("%s/%s: cannot determine upgrade method for %s", runtime.GOOS, runtime.GOARCH, executableAbsPath)
 		}
 	}
 	c.logger.Info().
@@ -188,10 +183,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	return chezmoilog.LogCmdRun(chezmoiVersionCmd)
 }
 
-func (c *Config) getChecksums(
-	ctx context.Context,
-	rr *github.RepositoryRelease,
-) (map[string][]byte, error) {
+func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
 	name := fmt.Sprintf(
 		"%s_%s_checksums.txt",
 		c.upgrade.repo,
@@ -247,7 +239,9 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 }
 
 func (c *Config) replaceExecutable(
-	ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version,
+	ctx context.Context,
+	executableFilenameAbsPath chezmoi.AbsPath,
+	releaseVersion *semver.Version,
 	rr *github.RepositoryRelease,
 ) (err error) {
 	var archiveFormat chezmoi.ArchiveFormat
@@ -259,40 +253,16 @@ func (c *Config) replaceExecutable(
 		if libc, err = getLibc(); err != nil {
 			return
 		}
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s-%s_%s.tar.gz",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-			libc,
-			runtime.GOARCH,
-		)
+		archiveName = fmt.Sprintf("%s_%s_%s-%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, libc, runtime.GOARCH)
 	case runtime.GOOS == "linux" && runtime.GOARCH == "386":
 		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s_i386.tar.gz",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-		)
+		archiveName = fmt.Sprintf("%s_%s_%s_i386.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS)
 	case runtime.GOOS == "windows":
 		archiveFormat = chezmoi.ArchiveFormatZip
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s_%s.zip",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-			runtime.GOARCH,
-		)
+		archiveName = fmt.Sprintf("%s_%s_%s_%s.zip", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
 	default:
 		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf(
-			"%s_%s_%s_%s.tar.gz",
-			c.upgrade.repo,
-			releaseVersion,
-			runtime.GOOS,
-			runtime.GOARCH,
-		)
+		archiveName = fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
 	}
 	releaseAsset := getReleaseAssetByName(rr, archiveName)
 	if releaseAsset == nil {
@@ -344,12 +314,7 @@ func (c *Config) replaceExecutable(
 	return
 }
 
-func (c *Config) verifyChecksum(
-	ctx context.Context,
-	rr *github.RepositoryRelease,
-	name string,
-	data []byte,
-) error {
+func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryRelease, name string, data []byte) error {
 	checksums, err := c.getChecksums(ctx, rr)
 	if err != nil {
 		return err

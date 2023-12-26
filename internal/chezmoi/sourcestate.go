@@ -49,10 +49,8 @@ const (
 )
 
 var (
-	lineEndingRx     = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
-	modifyTemplateRx = regexp.MustCompile(
-		`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`,
-	)
+	lineEndingRx                    = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
+	modifyTemplateRx                = regexp.MustCompile(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
 	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
 	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 
@@ -369,11 +367,8 @@ func (s *SourceState) Add(
 				continue
 			}
 			if strings.HasPrefix(destAbsPath.String(), protectedAbsPath.String()) {
-				return fmt.Errorf(
-					"%s: cannot add chezmoi file to chezmoi (%s is protected)",
-					destAbsPath,
-					protectedAbsPath,
-				)
+				format := "%s: cannot add chezmoi file to chezmoi (%s is protected)"
+				return fmt.Errorf(format, destAbsPath, protectedAbsPath)
 			}
 		}
 	}
@@ -692,12 +687,7 @@ func (s *SourceState) Apply(
 	if options.PreApplyFunc != nil {
 		var lastWrittenEntryState *EntryState
 		var entryState EntryState
-		ok, err := PersistentStateGet(
-			persistentState,
-			EntryStateBucket,
-			targetAbsPath.Bytes(),
-			&entryState,
-		)
+		ok, err := PersistentStateGet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), &entryState)
 		if err != nil {
 			return err
 		}
@@ -718,24 +708,14 @@ func (s *SourceState) Apply(
 		// apply as the last written state.
 		if targetEntryState.Equivalent(actualEntryState) &&
 			!lastWrittenEntryState.Equivalent(actualEntryState) {
-			err := PersistentStateSet(
-				persistentState,
-				EntryStateBucket,
-				targetAbsPath.Bytes(),
-				targetEntryState,
-			)
+			err := PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 			if err != nil {
 				return err
 			}
 			lastWrittenEntryState = targetEntryState
 		}
 
-		err = options.PreApplyFunc(
-			targetRelPath,
-			targetEntryState,
-			lastWrittenEntryState,
-			actualEntryState,
-		)
+		err = options.PreApplyFunc(targetRelPath, targetEntryState, lastWrittenEntryState, actualEntryState)
 		if err != nil {
 			return err
 		}
@@ -747,12 +727,7 @@ func (s *SourceState) Apply(
 		return nil
 	}
 
-	return PersistentStateSet(
-		persistentState,
-		EntryStateBucket,
-		targetAbsPath.Bytes(),
-		targetEntryState,
-	)
+	return PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 }
 
 // Encryption returns s's encryption.
@@ -839,11 +814,7 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 }
 
 // PostApply performs all updates required after s.Apply.
-func (s *SourceState) PostApply(
-	targetSystem System,
-	targetDirAbsPath AbsPath,
-	targetRelPaths RelPaths,
-) error {
+func (s *SourceState) PostApply(targetSystem System, targetDirAbsPath AbsPath, targetRelPaths RelPaths) error {
 	// Remove empty directories with the remove_ attribute. This assumes that
 	// targetRelPaths is already sorted and iterates in reverse order so that
 	// children are removed before their parents.
@@ -906,9 +877,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	addSourceStateEntries := func(relPath RelPath, sourceStateEntries ...SourceStateEntry) {
 		allSourceStateEntriesMu.Lock()
 		defer allSourceStateEntriesMu.Unlock()
-		allSourceStateEntries[relPath] = append(
-			allSourceStateEntries[relPath],
-			sourceStateEntries...)
+		allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], sourceStateEntries...)
 	}
 	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
@@ -1035,12 +1004,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry
-			targetRelPath, sourceStateEntry = s.newSourceStateFile(
-				sourceAbsPath,
-				sourceRelPath,
-				fa,
-				targetRelPath,
-			)
+			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceAbsPath, sourceRelPath, fa, targetRelPath)
 			addSourceStateEntries(targetRelPath, sourceStateEntry)
 			return nil
 		default:
@@ -1077,13 +1041,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			case parentSourceStateEntry != nil:
 				parentSourceRelPath = parentSourceStateEntry.SourceRelPath()
 			}
-			externalSourceStateEntries, err := s.readExternal(
-				ctx,
-				externalRelPath,
-				parentSourceRelPath,
-				external,
-				options,
-			)
+			externalSourceStateEntries, err := s.readExternal(ctx, externalRelPath, parentSourceRelPath, external, options)
 			if err != nil {
 				return err
 			}
@@ -1106,10 +1064,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Generate SourceStateRemoves for existing targets.
-	matches, err := s.remove.glob(
-		s.system.UnderlyingFS(),
-		ensureSuffix(s.destDirAbsPath.String(), "/"),
-	)
+	matches, err := s.remove.glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
 	if err != nil {
 		return err
 	}
@@ -1123,10 +1078,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 			targetRelPath: targetRelPath,
 		}
-		allSourceStateEntries[targetRelPath] = append(
-			allSourceStateEntries[targetRelPath],
-			sourceStateEntry,
-		)
+		allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 	}
 
 	// Generate SourceStateRemoves for exact directories.
@@ -1398,11 +1350,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 
 // addPatterns executes the template at sourceAbsPath, interprets the result as
 // a list of patterns, and adds all patterns found to patternSet.
-func (s *SourceState) addPatterns(
-	patternSet *patternSet,
-	sourceAbsPath AbsPath,
-	sourceRelPath SourceRelPath,
-) error {
+func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath, sourceRelPath SourceRelPath) error {
 	data, err := s.executeTemplate(sourceAbsPath)
 	if err != nil {
 		return err
@@ -1558,7 +1506,10 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 // getExternalDataRaw returns the raw data for external at externalRelPath,
 // possibly from the external cache.
 func (s *SourceState) getExternalDataRaw(
-	ctx context.Context, externalRelPath RelPath, external *External, options *ReadOptions,
+	ctx context.Context,
+	externalRelPath RelPath,
+	external *External,
+	options *ReadOptions,
 ) ([]byte, error) {
 	var now time.Time
 	if options != nil && options.TimeNow != nil {
@@ -1633,7 +1584,10 @@ func (s *SourceState) getExternalDataRaw(
 // getExternalDataRaw reads the external data for externalRelPath from
 // external.URL.
 func (s *SourceState) getExternalData(
-	ctx context.Context, externalRelPath RelPath, external *External, options *ReadOptions,
+	ctx context.Context,
+	externalRelPath RelPath,
+	external *External,
+	options *ReadOptions,
 ) ([]byte, error) {
 	data, err := s.getExternalDataRaw(ctx, externalRelPath, external, options)
 	if err != nil {
@@ -1644,39 +1598,38 @@ func (s *SourceState) getExternalData(
 
 	if external.Checksum.Size != 0 {
 		if len(data) != external.Checksum.Size {
-			errs = append(errs, fmt.Errorf("size mismatch: expected %d, got %d",
-				external.Checksum.Size, len(data)))
+			err := fmt.Errorf("size mismatch: expected %d, got %d", external.Checksum.Size, len(data))
+			errs = append(errs, err)
 		}
 	}
 
 	if external.Checksum.MD5 != nil {
 		if gotMD5Sum := md5Sum(data); !bytes.Equal(gotMD5Sum, external.Checksum.MD5) {
-			errs = append(errs, fmt.Errorf("MD5 mismatch: expected %s, got %s",
-				external.Checksum.MD5, hex.EncodeToString(gotMD5Sum)))
+			err := fmt.Errorf("MD5 mismatch: expected %s, got %s", external.Checksum.MD5, hex.EncodeToString(gotMD5Sum))
+			errs = append(errs, err)
 		}
 	}
 
 	if external.Checksum.RIPEMD160 != nil {
-		if gotRIPEMD160Sum := ripemd160Sum(data); !bytes.Equal(
-			gotRIPEMD160Sum,
-			external.Checksum.RIPEMD160,
-		) {
-			errs = append(errs, fmt.Errorf("RIPEMD-160 mismatch: expected %s, got %s",
-				external.Checksum.RIPEMD160, hex.EncodeToString(gotRIPEMD160Sum)))
+		if gotRIPEMD160Sum := ripemd160Sum(data); !bytes.Equal(gotRIPEMD160Sum, external.Checksum.RIPEMD160) {
+			format := "RIPEMD-160 mismatch: expected %s, got %s"
+			err := fmt.Errorf(format, external.Checksum.RIPEMD160, hex.EncodeToString(gotRIPEMD160Sum))
+			errs = append(errs, err)
 		}
 	}
 
 	if external.Checksum.SHA1 != nil {
 		if gotSHA1Sum := sha1Sum(data); !bytes.Equal(gotSHA1Sum, external.Checksum.SHA1) {
-			errs = append(errs, fmt.Errorf("SHA1 mismatch: expected %s, got %s",
-				external.Checksum.SHA1, hex.EncodeToString(gotSHA1Sum)))
+			err := fmt.Errorf("SHA1 mismatch: expected %s, got %s", external.Checksum.SHA1, hex.EncodeToString(gotSHA1Sum))
+			errs = append(errs, err)
 		}
 	}
 
 	if external.Checksum.SHA256 != nil {
 		if gotSHA256Sum := SHA256Sum(data); !bytes.Equal(gotSHA256Sum, external.Checksum.SHA256) {
-			errs = append(errs, fmt.Errorf("SHA256 mismatch: expected %s, got %s",
-				external.Checksum.SHA256, hex.EncodeToString(gotSHA256Sum)))
+			format := "SHA256 mismatch: expected %s, got %s"
+			err := fmt.Errorf(format, external.Checksum.SHA256, hex.EncodeToString(gotSHA256Sum))
+			errs = append(errs, err)
 		}
 	}
 
@@ -1719,11 +1672,7 @@ func (s *SourceState) getExternalData(
 }
 
 // newSourceStateDir returns a new SourceStateDir.
-func (s *SourceState) newSourceStateDir(
-	absPath AbsPath,
-	sourceRelPath SourceRelPath,
-	dirAttr DirAttr,
-) *SourceStateDir {
+func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
 	targetStateDir := &TargetStateDir{
 		perm: dirAttr.perm() &^ s.umask,
 	}
@@ -1739,7 +1688,9 @@ func (s *SourceState) newSourceStateDir(
 // file with sourceLazyContents if the file does not already exist, or returns
 // the actual file's contents unchanged if the file already exists.
 func (s *SourceState) newCreateTargetStateEntryFunc(
-	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents,
+	sourceRelPath SourceRelPath,
+	fileAttr FileAttr,
+	sourceLazyContents *lazyContents,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		var lazyContents *lazyContents
@@ -1782,7 +1733,9 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 // newFileTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with sourceLazyContents.
 func (s *SourceState) newFileTargetStateEntryFunc(
-	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents,
+	sourceRelPath SourceRelPath,
+	fileAttr FileAttr,
+	sourceLazyContents *lazyContents,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable &&
@@ -1794,9 +1747,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			case isEmpty(contents) && !fileAttr.Empty:
 				return &TargetStateRemove{}, nil
 			default:
-				linkname := normalizeLinkname(
-					s.sourceDirAbsPath.Join(sourceRelPath.RelPath()).String(),
-				)
+				linkname := normalizeLinkname(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()).String())
 				return &TargetStateSymlink{
 					lazyLinkname: newLazyLinkname(linkname),
 					sourceAttr: SourceAttr{
@@ -1939,9 +1890,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 // newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
 // target.
-func (s *SourceState) newRemoveTargetStateEntryFunc(
-	sourceRelPath SourceRelPath, fileAttr FileAttr,
-) targetStateEntryFunc {
+func (s *SourceState) newRemoveTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		return &TargetStateRemove{}, nil
 	}
@@ -1989,7 +1938,9 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 // newSymlinkTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // symlink with the linkname sourceLazyContents.
 func (s *SourceState) newSymlinkTargetStateEntryFunc(
-	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents,
+	sourceRelPath SourceRelPath,
+	fileAttr FileAttr,
+	sourceLazyContents *lazyContents,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
@@ -2019,7 +1970,10 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 // newSourceStateFile returns a possibly new target RalPath and a new
 // SourceStateFile.
 func (s *SourceState) newSourceStateFile(
-	absPath AbsPath, sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath,
+	absPath AbsPath,
+	sourceRelPath SourceRelPath,
+	fileAttr FileAttr,
+	targetRelPath RelPath,
 ) (RelPath, *SourceStateFile) {
 	sourceLazyContents := newLazyContentsFunc(func() ([]byte, error) {
 		contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
@@ -2038,17 +1992,9 @@ func (s *SourceState) newSourceStateFile(
 	var targetStateEntryFunc targetStateEntryFunc
 	switch fileAttr.Type {
 	case SourceFileTypeCreate:
-		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(
-			sourceRelPath,
-			fileAttr,
-			sourceLazyContents,
-		)
+		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	case SourceFileTypeFile:
-		targetStateEntryFunc = s.newFileTargetStateEntryFunc(
-			sourceRelPath,
-			fileAttr,
-			sourceLazyContents,
-		)
+		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	case SourceFileTypeModify:
 		// If the target has an extension, determine if it indicates an
 		// interpreter to use.
@@ -2059,12 +2005,7 @@ func (s *SourceState) newSourceStateFile(
 			// of the target name, so remove it.
 			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(extension)-1)
 		}
-		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(
-			sourceRelPath,
-			fileAttr,
-			sourceLazyContents,
-			interpreter,
-		)
+		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
 	case SourceFileTypeRemove:
 		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc(sourceRelPath, fileAttr)
 	case SourceFileTypeScript:
@@ -2076,11 +2017,7 @@ func (s *SourceState) newSourceStateFile(
 			sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, interpreter,
 		)
 	case SourceFileTypeSymlink:
-		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(
-			sourceRelPath,
-			fileAttr,
-			sourceLazyContents,
-		)
+		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	default:
 		panic(fmt.Sprintf("%d: unsupported type", fileAttr.Type))
 	}
@@ -2160,9 +2097,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 		}
 	}
 	lazyContents := newLazyContents(contents)
-	sourceRelPath := parentSourceRelPath.Join(
-		NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())),
-	)
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
 		Attr:          fileAttr,
 		origin:        actualStateFile,
@@ -2179,7 +2114,9 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 // newSourceStateFileEntryFromSymlink returns a SourceStateEntry constructed
 // from a symlink in s.
 func (s *SourceState) newSourceStateFileEntryFromSymlink(
-	actualStateSymlink *ActualStateSymlink, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath,
+	actualStateSymlink *ActualStateSymlink,
+	fileInfo fs.FileInfo,
+	parentSourceRelPath SourceRelPath,
 	options *AddOptions,
 ) (*SourceStateFile, error) {
 	linkname, err := actualStateSymlink.Linkname()
@@ -2210,9 +2147,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 		Type:       SourceFileTypeSymlink,
 		Template:   template,
 	}
-	sourceRelPath := parentSourceRelPath.Join(
-		NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())),
-	)
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
 		Attr:          fileAttr,
 		sourceRelPath: sourceRelPath,
@@ -2255,13 +2190,7 @@ func (s *SourceState) readExternal(
 	case ExternalTypeArchive:
 		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeArchiveFile:
-		return s.readExternalArchiveFile(
-			ctx,
-			externalRelPath,
-			parentSourceRelPath,
-			external,
-			options,
-		)
+		return s.readExternalArchiveFile(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeFile:
 		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeGitRepo:
@@ -2451,12 +2380,8 @@ func (s *SourceState) readExternalArchiveData(
 
 	url, err := url.Parse(external.URL)
 	if err != nil {
-		return nil, ArchiveFormatUnknown, fmt.Errorf(
-			"%s: %s: %w",
-			externalRelPath,
-			external.URL,
-			err,
-		)
+		err := fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+		return nil, ArchiveFormatUnknown, err
 	}
 	urlPath := url.Path
 	if external.Encrypted {
@@ -2580,7 +2505,9 @@ func (s *SourceState) readExternalArchiveFile(
 
 // ReadExternalDir returns all source state entries in an external_ dir.
 func (s *SourceState) readExternalDir(
-	rootSourceAbsPath AbsPath, rootSourceRelPath SourceRelPath, rootTargetRelPath RelPath,
+	rootSourceAbsPath AbsPath,
+	rootSourceRelPath SourceRelPath,
+	rootTargetRelPath RelPath,
 ) (map[RelPath][]SourceStateEntry, error) {
 	sourceStateEntries := make(map[RelPath][]SourceStateEntry)
 	walkFunc := func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
@@ -2662,10 +2589,7 @@ func (s *SourceState) readExternalDir(
 				},
 			}
 		}
-		sourceStateEntries[targetRelPath] = append(
-			sourceStateEntries[targetRelPath],
-			sourceStateEntry,
-		)
+		sourceStateEntries[targetRelPath] = append(sourceStateEntries[targetRelPath], sourceStateEntry)
 		return nil
 	}
 	if err := Walk(s.system, rootSourceAbsPath, walkFunc); err != nil {
@@ -2710,9 +2634,7 @@ func (s *SourceState) readExternalFile(
 }
 
 // readScriptsDir reads all scripts in scriptsDirAbsPath.
-func (s *SourceState) readScriptsDir(
-	ctx context.Context, scriptsDirAbsPath AbsPath,
-) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readScriptsDir(ctx context.Context, scriptsDirAbsPath AbsPath) (map[RelPath][]SourceStateEntry, error) {
 	var allSourceStateEntriesMu sync.Mutex
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
 	addSourceStateEntry := func(relPath RelPath, sourceStateEntry SourceStateEntry) {
@@ -2773,12 +2695,7 @@ func (s *SourceState) readScriptsDir(
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry
-			targetRelPath, sourceStateEntry = s.newSourceStateFile(
-				sourceAbsPath,
-				sourceRelPath,
-				fa,
-				targetRelPath,
-			)
+			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceAbsPath, sourceRelPath, fa, targetRelPath)
 			addSourceStateEntry(targetRelPath, sourceStateEntry)
 			return nil
 		default:

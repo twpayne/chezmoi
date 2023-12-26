@@ -41,11 +41,7 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	return reAddCmd
 }
 
-func (c *Config) runReAddCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	var targetRelPaths chezmoi.RelPaths
 	sourceStateEntries := make(map[chezmoi.RelPath]chezmoi.SourceStateEntry)
 	if len(args) == 0 {

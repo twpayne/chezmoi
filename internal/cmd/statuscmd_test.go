@@ -56,31 +56,17 @@ func TestStatusCmd(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				stdout := strings.Builder{}
-				assert.NoError(
-					t,
-					newTestConfig(
-						t,
-						fileSystem,
-						withStdout(&stdout),
-					).execute(append([]string{"status"}, tc.args...)),
-				)
+				config1 := newTestConfig(t, fileSystem, withStdout(&stdout))
+				assert.NoError(t, config1.execute(append([]string{"status"}, tc.args...)))
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 
-				assert.NoError(
-					t,
-					newTestConfig(t, fileSystem).execute(append([]string{"apply"}, tc.args...)),
-				)
+				config2 := newTestConfig(t, fileSystem)
+				assert.NoError(t, config2.execute(append([]string{"apply"}, tc.args...)))
 				vfst.RunTests(t, fileSystem, "", tc.postApplyTests...)
 
 				stdout.Reset()
-				assert.NoError(
-					t,
-					newTestConfig(
-						t,
-						fileSystem,
-						withStdout(&stdout),
-					).execute(append([]string{"status"}, tc.args...)),
-				)
+				config3 := newTestConfig(t, fileSystem, withStdout(&stdout))
+				assert.NoError(t, config3.execute(append([]string{"status"}, tc.args...)))
 				assert.Zero(t, stdout.String())
 			})
 		})

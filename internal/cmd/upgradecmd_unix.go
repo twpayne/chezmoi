@@ -67,11 +67,7 @@ func (c *Config) brewUpgrade() error {
 	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 }
 
-func (c *Config) getPackageFilename(
-	packageType string,
-	version *semver.Version,
-	os, arch string,
-) (string, error) {
+func (c *Config) getPackageFilename(packageType string, version *semver.Version, os, arch string) (string, error) {
 	if archReplacement, ok := archReplacements[packageType][arch]; ok {
 		arch = archReplacement
 	}
@@ -92,7 +88,10 @@ func (c *Config) snapRefresh() error {
 }
 
 func (c *Config) upgradeUNIXPackage(
-	ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool,
+	ctx context.Context,
+	version *semver.Version,
+	rr *github.RepositoryRelease,
+	useSudo bool,
 ) error {
 	switch runtime.GOOS {
 	case "linux":

@@ -44,13 +44,8 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 		panic(err)
 	}
 	if version.Compare(keepassxcHasAttachmentExportVersion) < 0 {
-		panic(
-			fmt.Sprintf(
-				"keepassxc-cli version %s required, found %s",
-				keepassxcHasAttachmentExportVersion,
-				version,
-			),
-		)
+		format := "keepassxc-cli version %s required, found %s"
+		panic(fmt.Sprintf(format, keepassxcHasAttachmentExportVersion, version))
 	}
 
 	if data, ok := c.Keepassxc.attachmentCache[entry][name]; ok {

@@ -151,12 +151,8 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Fatalf("%s unexpectedly has mode %03o", args[1], fileInfo.Mode().Perm())
 	}
 	if !neg && !equal {
-		ts.Fatalf(
-			"%s has mode %03o, expected %03o",
-			args[1],
-			fileInfo.Mode().Perm(),
-			fs.FileMode(mode64)&^chezmoitest.Umask,
-		)
+		format := "%s has mode %03o, expected %03o"
+		ts.Fatalf(format, args[1], fileInfo.Mode().Perm(), fs.FileMode(mode64)&^chezmoitest.Umask)
 	}
 }
 

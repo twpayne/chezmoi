@@ -160,9 +160,7 @@ func FQDNHostname(fileSystem vfs.FS) (string, error) {
 }
 
 // FlagCompletionFunc returns a flag completion function.
-func FlagCompletionFunc(allCompletions []string) func(*cobra.Command, []string, string) (
-	[]string, cobra.ShellCompDirective,
-) {
+func FlagCompletionFunc(allCompletions []string) func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
 	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		var completions []string
 		for _, completion := range allCompletions {
@@ -201,9 +199,8 @@ func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffix
 			return true
 		}
 		for _, encryptedSuffix := range encryptedSuffixes {
-			if fileAttr := parseFileAttr(fileInfo.Name(), encryptedSuffix); knownTargetFiles.contains(
-				fileAttr.TargetName,
-			) {
+			fileAttr := parseFileAttr(fileInfo.Name(), encryptedSuffix)
+			if knownTargetFiles.contains(fileAttr.TargetName) {
 				return true
 			}
 		}

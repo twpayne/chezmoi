@@ -22,9 +22,7 @@ var (
 		"never":  RefreshExternalsNever,
 	}
 
-	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(
-		maps.Keys(refreshExternalsWellKnownStrings),
-	)
+	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(maps.Keys(refreshExternalsWellKnownStrings))
 )
 
 func (re *RefreshExternals) Set(s string) error {

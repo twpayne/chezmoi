@@ -148,11 +148,7 @@ func (c *Config) defaultReplaceFunc(
 		return nil
 	}
 	removedAttributesStr := englishListWithNoun(removedAttributes, "attribute", "")
-	prompt := fmt.Sprintf(
-		"adding %s would remove %s, continue",
-		targetRelPath,
-		removedAttributesStr,
-	)
+	prompt := fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr)
 
 	for {
 		switch choice, err := c.promptChoice(prompt, choicesYesNoAllQuit); {
@@ -173,11 +169,7 @@ func (c *Config) defaultReplaceFunc(
 	}
 }
 
-func (c *Config) runAddCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, destAbsPathInfosOptions{
 		follow:    c.Mode == chezmoi.ModeSymlink || c.Add.follow,
 		recursive: c.Add.recursive,

@@ -58,9 +58,7 @@ func (c *Config) hcpVaultSecretJSONTemplateFunc(key string, additionalArgs ...st
 	return value
 }
 
-func (c *Config) appendHCPVaultSecretsAdditionalArgs(
-	args, additionalArgs []string,
-) ([]string, error) {
+func (c *Config) appendHCPVaultSecretsAdditionalArgs(args, additionalArgs []string) ([]string, error) {
 	if len(additionalArgs) > 0 && additionalArgs[0] != "" {
 		args = append(args, "--app-name", additionalArgs[0])
 	} else if c.HCPVaultSecrets.ApplicationName != "" {

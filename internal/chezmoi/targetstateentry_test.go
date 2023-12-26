@@ -91,12 +91,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 					system := NewRealSystem(fileSystem)
 
 					// Read the initial destination state entry from fileSystem.
-					actualStateEntry, err := NewActualStateEntry(
-						system,
-						NewAbsPath("/home/user/target"),
-						nil,
-						nil,
-					)
+					actualStateEntry, err := NewActualStateEntry(system, NewAbsPath("/home/user/target"), nil, nil)
 					assert.NoError(t, err)
 
 					// Apply the target state entry.
@@ -105,12 +100,8 @@ func TestTargetStateEntryApply(t *testing.T) {
 
 					// Verify that the actual state entry matches the desired
 					// state.
-					vfst.RunTests(
-						t,
-						fileSystem,
-						"",
-						vfst.TestPath("/home/user/target", targetStateTest(t, targetState)...),
-					)
+					tests := vfst.TestPath("/home/user/target", targetStateTest(t, targetState)...)
+					vfst.RunTests(t, fileSystem, "", tests)
 				})
 			},
 		)

@@ -159,12 +159,7 @@ func (s *DebugSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DebugSystem) RunScript(
-	scriptname RelPath,
-	dir AbsPath,
-	data []byte,
-	options RunScriptOptions,
-) error {
+func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	err := s.system.RunScript(scriptname, dir, data, options)
 	s.logger.Err(err).
 		Stringer("scriptname", scriptname).

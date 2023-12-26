@@ -40,11 +40,7 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	return managedCmd
 }
 
-func (c *Config) runManagedCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	// Build queued relPaths. When there are no arguments, start from root,
 	// otherwise start from arguments.
 	var relPaths chezmoi.RelPaths
@@ -65,10 +61,7 @@ func (c *Config) runManagedCmd(
 				return nil
 			}
 
-			targetStateEntry, err := sourceStateEntry.TargetStateEntry(
-				c.destSystem,
-				c.DestDirAbsPath.Join(targetRelPath),
-			)
+			targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 			if err != nil {
 				return err
 			}

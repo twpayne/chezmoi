@@ -41,27 +41,14 @@ func lintData(filename string, data []byte) error {
 	for i, line := range lines {
 		switch {
 		case crlfLineEndingRx.Match(line):
-			errs = append(
-				errs,
-				fmt.Errorf("::error file=%s,line=%d::CRLF line ending", filename, i+1),
-			)
+			errs = append(errs, fmt.Errorf("::error file=%s,line=%d::CRLF line ending", filename, i+1))
 		case trailingWhitespaceRx.Match(line):
-			errs = append(
-				errs,
-				fmt.Errorf("::error file=%s,line=%d::trailing whitespace", filename, i+1),
-			)
+			errs = append(errs, fmt.Errorf("::error file=%s,line=%d::trailing whitespace", filename, i+1))
 		}
 	}
 
 	if len(data) > 0 && len(lines[len(lines)-1]) != 0 {
-		errs = append(
-			errs,
-			fmt.Errorf(
-				"::error file=%s,line=%d::no newline at end of file",
-				filename,
-				len(lines)+1,
-			),
-		)
+		errs = append(errs, fmt.Errorf("::error file=%s,line=%d::no newline at end of file", filename, len(lines)+1))
 	}
 
 	return chezmoierrors.Combine(errs...)

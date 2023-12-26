@@ -371,9 +371,7 @@ func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 }
 
 // EntryTypeSetFlagCompletionFunc completes EntryTypeSet flags.
-func EntryTypeSetFlagCompletionFunc(
-	cmd *cobra.Command, args []string, toComplete string,
-) ([]string, cobra.ShellCompDirective) {
+func EntryTypeSetFlagCompletionFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var completions []string
 	entryTypes := strings.Split(toComplete, ",")
 	lastEntryType := entryTypes[len(entryTypes)-1]

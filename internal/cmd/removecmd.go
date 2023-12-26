@@ -43,11 +43,7 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 	return removeCmd
 }
 
-func (c *Config) runRemoveCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeManaged: true,
 		recursive:     c.remove.recursive,

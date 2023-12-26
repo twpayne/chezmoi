@@ -101,9 +101,7 @@ func (c *Config) newChattrCmd() *cobra.Command {
 }
 
 // chattrCmdValidArgs returns the completions for the chattr command.
-func (c *Config) chattrCmdValidArgs(
-	cmd *cobra.Command, args []string, toComplete string,
-) ([]string, cobra.ShellCompDirective) {
+func (c *Config) chattrCmdValidArgs(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	switch len(args) {
 	case 0:
 		prefixes := []string{"", "-", "+", "no"}
@@ -151,11 +149,7 @@ func (c *Config) chattrCmdValidArgs(
 	}
 }
 
-func (c *Config) runChattrCmd(
-	cmd *cobra.Command,
-	args []string,
-	sourceState *chezmoi.SourceState,
-) error {
+func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	// LATER should the core functionality of chattr move to chezmoi.SourceState?
 
 	m, err := parseModifier(args[0])
@@ -301,9 +295,7 @@ func (m orderModifier) modify(order chezmoi.ScriptOrder) chezmoi.ScriptOrder {
 }
 
 // modify returns the modified value of type.
-func (m sourceFileTypeModifier) modify(
-	sourceFileType chezmoi.SourceFileTargetType,
-) chezmoi.SourceFileTargetType {
+func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetType) chezmoi.SourceFileTargetType {
 	switch m {
 	case sourceFileTypeModifierLeaveUnchanged:
 		return sourceFileType

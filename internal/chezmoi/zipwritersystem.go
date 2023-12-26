@@ -48,12 +48,7 @@ func (s *ZIPWriterSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ZIPWriterSystem) RunScript(
-	scriptname RelPath,
-	dir AbsPath,
-	data []byte,
-	options RunScriptOptions,
-) error {
+func (s *ZIPWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 

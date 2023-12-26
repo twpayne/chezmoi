@@ -84,9 +84,8 @@ func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 		return e.builtinEncrypt(plaintext)
 	}
 
-	cmd := exec.Command( //nolint:gosec
-		e.Command,
-		append(append(e.encryptArgs(), e.Args...), plaintextAbsPath.String())...)
+	args := append(append(e.encryptArgs(), e.Args...), plaintextAbsPath.String())
+	cmd := exec.Command(e.Command, args...) //nolint:gosec
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(cmd)
 }

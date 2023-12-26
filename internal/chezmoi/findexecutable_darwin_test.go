@@ -47,12 +47,8 @@ func TestFindExecutable(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		name := fmt.Sprintf(
-			"FindExecutable %#v in %#v as %#v",
-			test.files,
-			test.paths,
-			test.expected,
-		)
+		format := "FindExecutable %#v in %#v as %#v"
+		name := fmt.Sprintf(format, test.files, test.paths, test.expected)
 		t.Run(name, func(t *testing.T) {
 			actual, err := FindExecutable(test.files, test.paths)
 			assert.NoError(t, err)

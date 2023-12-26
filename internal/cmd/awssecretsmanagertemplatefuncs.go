@@ -42,12 +42,9 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 		c.AWSSecretsManager.svc = secretsmanager.NewFromConfig(cfg)
 	}
 
-	result, err := c.AWSSecretsManager.svc.GetSecretValue(
-		context.Background(),
-		&secretsmanager.GetSecretValueInput{
-			SecretId: aws.String(arn),
-		},
-	)
+	result, err := c.AWSSecretsManager.svc.GetSecretValue(context.Background(), &secretsmanager.GetSecretValueInput{
+		SecretId: aws.String(arn),
+	})
 	if err != nil {
 		panic(err)
 	}

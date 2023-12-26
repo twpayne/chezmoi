@@ -206,10 +206,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						"--depth", strconv.Itoa(c.init.depth),
 					)
 				}
-				args = append(args,
-					repoURLStr,
-					workingTreeRawPath.String(),
-				)
+				args = append(args, repoURLStr, workingTreeRawPath.String())
 				if err := c.run(chezmoi.EmptyAbsPath, c.Git.Command, args); err != nil {
 					return err
 				}

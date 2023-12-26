@@ -106,14 +106,8 @@ func TestManagedCmd(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				stdout := &bytes.Buffer{}
-				assert.NoError(
-					t,
-					newTestConfig(
-						t,
-						fileSystem,
-						withStdout(stdout),
-					).execute(append([]string{"managed"}, tc.args...)),
-				)
+				config := newTestConfig(t, fileSystem, withStdout(stdout))
+				assert.NoError(t, config.execute(append([]string{"managed"}, tc.args...)))
 				assert.Equal(t, tc.expectedOutput, stdout.String())
 			})
 		})

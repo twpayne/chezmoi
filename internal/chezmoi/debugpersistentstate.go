@@ -12,10 +12,7 @@ type DebugPersistentState struct {
 
 // NewDebugPersistentState returns a new debugPersistentState that logs methods
 // on persistentState to logger.
-func NewDebugPersistentState(
-	persistentState PersistentState,
-	logger *zerolog.Logger,
-) *DebugPersistentState {
+func NewDebugPersistentState(persistentState PersistentState, logger *zerolog.Logger) *DebugPersistentState {
 	return &DebugPersistentState{
 		logger:          logger,
 		persistentState: persistentState,
