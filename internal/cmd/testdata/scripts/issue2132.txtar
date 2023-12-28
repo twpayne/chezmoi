@@ -1,0 +1,10 @@
+# test that chezmoi apply does not create a remove_ directory if it has no contents
+exec chezmoi apply
+! exists $HOME/.dir
+
+# test that running chezmoi apply a second time completes with no output
+exec chezmoi apply --no-tty
+! stdout .
+! exists $HOME/.dir
+
+-- home/user/.local/share/chezmoi/remove_dot_dir/non_existent_file --

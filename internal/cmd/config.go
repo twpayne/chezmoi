@@ -646,7 +646,7 @@ func (c *Config) applyArgs(
 		}
 	}
 
-	switch err := sourceState.PostApply(targetSystem, targetDirAbsPath, targetRelPaths); {
+	switch err := sourceState.PostApply(targetSystem, c.persistentState, targetDirAbsPath, targetRelPaths); {
 	case err != nil && c.keepGoing:
 		c.errorf("%v\n", err)
 		keptGoingAfterErr = true

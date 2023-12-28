@@ -814,7 +814,12 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 }
 
 // PostApply performs all updates required after s.Apply.
-func (s *SourceState) PostApply(targetSystem System, targetDirAbsPath AbsPath, targetRelPaths RelPaths) error {
+func (s *SourceState) PostApply(
+	targetSystem System,
+	persistentState PersistentState,
+	targetDirAbsPath AbsPath,
+	targetRelPaths RelPaths,
+) error {
 	// Remove empty directories with the remove_ attribute. This assumes that
 	// targetRelPaths is already sorted and iterates in reverse order so that
 	// children are removed before their parents.
@@ -846,6 +851,12 @@ TARGET:
 		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
 		default:
+			return err
+		}
+		entryState := &EntryState{
+			Type: EntryStateTypeRemove,
+		}
+		if err := PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), entryState); err != nil {
 			return err
 		}
 	}
