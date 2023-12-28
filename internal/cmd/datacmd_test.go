@@ -46,9 +46,8 @@ func TestDataCmd(t *testing.T) {
 					"data",
 					"--format", tc.format.Name(),
 				}
-				config := newTestConfig(t, fileSystem)
-				builder := strings.Builder{}
-				config.stdout = &builder
+				stdout := strings.Builder{}
+				config := newTestConfig(t, fileSystem, withStdout(&stdout))
 				assert.NoError(t, config.execute(args))
 
 				var data struct {
@@ -57,7 +56,7 @@ func TestDataCmd(t *testing.T) {
 					} `json:"chezmoi" yaml:"chezmoi"`
 					Test bool `json:"test" yaml:"test"`
 				}
-				assert.NoError(t, tc.format.Unmarshal([]byte(builder.String()), &data))
+				assert.NoError(t, tc.format.Unmarshal([]byte(stdout.String()), &data))
 				normalizedSourceDir, err := chezmoi.NormalizePath("/tmp/source")
 				assert.NoError(t, err)
 				assert.Equal(t, normalizedSourceDir.String(), data.Chezmoi.SourceDir)
