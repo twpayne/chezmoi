@@ -212,6 +212,27 @@ func TestApplyCmd(t *testing.T) {
 	}
 }
 
+func TestIssue2132(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]interface{}{
+		"/home/user/.local/share/chezmoi/remove_dot_dir/non_existent_file": "",
+	}, func(fileSystem vfs.FS) {
+		config1 := newTestConfig(t, fileSystem)
+		assert.NoError(t, config1.execute([]string{"apply"}))
+		vfst.RunTests(t, fileSystem, "",
+			vfst.TestPath("/home/user/.dir",
+				vfst.TestDoesNotExist,
+			),
+		)
+		config2 := newTestConfig(t, fileSystem)
+		assert.NoError(t, config2.execute([]string{"apply", "--no-tty"}))
+		vfst.RunTests(t, fileSystem, "",
+			vfst.TestPath("/home/user/.dir",
+				vfst.TestDoesNotExist,
+			),
+		)
+	})
+}
+
 func TestIssue3206(t *testing.T) {
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user": map[string]any{
