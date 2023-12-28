@@ -406,9 +406,7 @@ DEST_ABS_PATH:
 		if err != nil {
 			return err
 		}
-		newSourceStateEntry, err := s.sourceStateEntry(
-			actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options,
-		)
+		newSourceStateEntry, err := s.sourceStateEntry(actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options)
 		if err != nil {
 			return err
 		}
@@ -512,31 +510,28 @@ DEST_ABS_PATH:
 	// all existing source state entries that are in options.RemoveDir and not
 	// in the new source state.
 	if options.RemoveDir != EmptyRelPath {
-		_ = s.root.ForEach(
-			EmptyRelPath,
-			func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
-				if !targetRelPath.HasDirPrefix(options.RemoveDir) {
-					return nil
-				}
-				if _, ok := newSourceStateEntriesByTargetRelPath[targetRelPath]; ok {
-					return nil
-				}
-				sourceRelPath := sourceStateEntry.SourceRelPath()
-				sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
-					sourceRelPath: sourceRelPath,
-					targetRelPath: targetRelPath,
-				})
-				update := sourceUpdate{
-					destAbsPath: s.destDirAbsPath.Join(targetRelPath),
-					entryState: &EntryState{
-						Type: EntryStateTypeRemove,
-					},
-					sourceRelPaths: []SourceRelPath{sourceRelPath},
-				}
-				sourceUpdates = append(sourceUpdates, update)
+		_ = s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+			if !targetRelPath.HasDirPrefix(options.RemoveDir) {
 				return nil
-			},
-		)
+			}
+			if _, ok := newSourceStateEntriesByTargetRelPath[targetRelPath]; ok {
+				return nil
+			}
+			sourceRelPath := sourceStateEntry.SourceRelPath()
+			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
+				sourceRelPath: sourceRelPath,
+				targetRelPath: targetRelPath,
+			})
+			update := sourceUpdate{
+				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
+				entryState: &EntryState{
+					Type: EntryStateTypeRemove,
+				},
+				sourceRelPaths: []SourceRelPath{sourceRelPath},
+			}
+			sourceUpdates = append(sourceUpdates, update)
+			return nil
+		})
 	}
 
 	targetSourceState := &SourceState{
@@ -561,9 +556,7 @@ DEST_ABS_PATH:
 			}
 		}
 		if !sourceUpdate.destAbsPath.Empty() {
-			if err := PersistentStateSet(
-				persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState,
-			); err != nil {
+			if err := PersistentStateSet(persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState); err != nil {
 				return err
 			}
 		}
@@ -630,9 +623,7 @@ func (s *SourceState) AddDestAbsPathInfos(
 }
 
 // A PreApplyFunc is called before a target is applied.
-type PreApplyFunc func(
-	targetRelPath RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *EntryState,
-) error
+type PreApplyFunc func(targetRelPath RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *EntryState) error
 
 // ApplyOptions are options to SourceState.ApplyAll and SourceState.ApplyOne.
 type ApplyOptions struct {
@@ -972,19 +963,13 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceStateDir := s.newSourceStateDir(sourceAbsPath, sourceRelPath, da)
 			addSourceStateEntries(targetRelPath, sourceStateDir)
 			if da.External {
-				sourceStateEntries, err := s.readExternalDir(
-					sourceAbsPath,
-					sourceRelPath,
-					targetRelPath,
-				)
+				sourceStateEntries, err := s.readExternalDir(sourceAbsPath, sourceRelPath, targetRelPath)
 				if err != nil {
 					return err
 				}
 				allSourceStateEntriesMu.Lock()
 				for relPath, entries := range sourceStateEntries {
-					allSourceStateEntries[relPath] = append(
-						allSourceStateEntries[relPath],
-						entries...)
+					allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], entries...)
 				}
 				allSourceStateEntriesMu.Unlock()
 				return fs.SkipDir
@@ -1049,9 +1034,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				if s.Ignore(targetRelPath) {
 					continue
 				}
-				allSourceStateEntries[targetRelPath] = append(
-					allSourceStateEntries[targetRelPath],
-					sourceStateEntries...)
+				allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntries...)
 			}
 		}
 	}
@@ -1114,10 +1097,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					sourceRelPath: sourceStateDir.sourceRelPath,
 					targetRelPath: destEntryRelPath,
 				}
-				allSourceStateEntries[destEntryRelPath] = append(
-					allSourceStateEntries[destEntryRelPath],
-					sourceStateRemove,
-				)
+				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], sourceStateRemove)
 			}
 		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
@@ -1163,10 +1143,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 						External: true,
 					},
 				}
-				allSourceStateEntries[externalRelPath] = append(
-					allSourceStateEntries[externalRelPath],
-					sourceStateCommand,
-				)
+				allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
 			case err != nil:
 				return err
 			default:
@@ -1187,10 +1164,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 						External: true,
 					},
 				}
-				allSourceStateEntries[externalRelPath] = append(
-					allSourceStateEntries[externalRelPath],
-					sourceStateCommand,
-				)
+				allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
 			}
 		}
 	}
@@ -2014,7 +1988,11 @@ func (s *SourceState) newSourceStateFile(
 		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
 		interpreter := s.interpreters[extension]
 		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
-			sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, interpreter,
+			sourceRelPath,
+			fileAttr,
+			targetRelPath,
+			sourceLazyContents,
+			interpreter,
 		)
 	case SourceFileTypeSymlink:
 		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)

@@ -46,12 +46,7 @@ func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {
 	}
 
 	if a.vaults[vaultName].client == nil {
-		a.vaults[vaultName].client, err = azsecrets.NewClient(
-			a.vaults[vaultName].URL(vaultName),
-			a.cred,
-			nil,
-		)
-
+		a.vaults[vaultName].client, err = azsecrets.NewClient(a.vaults[vaultName].URL(vaultName), a.cred, nil)
 		if err != nil {
 			panic(err)
 		}

@@ -81,30 +81,28 @@ func TestTargetStateEntryApply(t *testing.T) {
 	assert.NoError(t, combinator.Generate(&testCases, testData))
 
 	for _, tc := range testCases {
-		t.Run(
-			fmt.Sprintf("target_%s_actual_%s", tc.TargetStateKey, tc.ActualDestDirStateKey),
-			func(t *testing.T) {
-				targetState := targetStates[tc.TargetStateKey]
-				actualState := actualStates[tc.ActualDestDirStateKey]
+		name := fmt.Sprintf("target_%s_actual_%s", tc.TargetStateKey, tc.ActualDestDirStateKey)
+		t.Run(name, func(t *testing.T) {
+			targetState := targetStates[tc.TargetStateKey]
+			actualState := actualStates[tc.ActualDestDirStateKey]
 
-				chezmoitest.WithTestFS(t, actualState, func(fileSystem vfs.FS) {
-					system := NewRealSystem(fileSystem)
+			chezmoitest.WithTestFS(t, actualState, func(fileSystem vfs.FS) {
+				system := NewRealSystem(fileSystem)
 
-					// Read the initial destination state entry from fileSystem.
-					actualStateEntry, err := NewActualStateEntry(system, NewAbsPath("/home/user/target"), nil, nil)
-					assert.NoError(t, err)
+				// Read the initial destination state entry from fileSystem.
+				actualStateEntry, err := NewActualStateEntry(system, NewAbsPath("/home/user/target"), nil, nil)
+				assert.NoError(t, err)
 
-					// Apply the target state entry.
-					_, err = targetState.Apply(system, nil, actualStateEntry)
-					assert.NoError(t, err)
+				// Apply the target state entry.
+				_, err = targetState.Apply(system, nil, actualStateEntry)
+				assert.NoError(t, err)
 
-					// Verify that the actual state entry matches the desired
-					// state.
-					tests := vfst.TestPath("/home/user/target", targetStateTest(t, targetState)...)
-					vfst.RunTests(t, fileSystem, "", tests)
-				})
-			},
-		)
+				// Verify that the actual state entry matches the desired
+				// state.
+				tests := vfst.TestPath("/home/user/target", targetStateTest(t, targetState)...)
+				vfst.RunTests(t, fileSystem, "", tests)
+			})
+		})
 	}
 }
 

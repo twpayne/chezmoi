@@ -62,12 +62,7 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 	}
 
 	flags := upgradeCmd.Flags()
-	flags.StringVar(
-		&c.upgrade.executable,
-		"executable",
-		c.upgrade.method,
-		"Set executable to replace",
-	)
+	flags.StringVar(&c.upgrade.executable, "executable", c.upgrade.method, "Set executable to replace")
 	flags.StringVar(&c.upgrade.method, "method", c.upgrade.method, "Set upgrade method")
 	flags.StringVar(&c.upgrade.owner, "owner", c.upgrade.owner, "Set owner")
 	flags.StringVar(&c.upgrade.repo, "repo", c.upgrade.repo, "Set repo")
@@ -81,9 +76,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 
 	var zeroVersion semver.Version
 	if c.version == zeroVersion && !c.force {
-		return errors.New(
-			"cannot upgrade dev version to latest released version unless --force is set",
-		)
+		return errors.New("cannot upgrade dev version to latest released version unless --force is set")
 	}
 
 	httpClient, err := c.getHTTPClient()
@@ -184,11 +177,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
-	name := fmt.Sprintf(
-		"%s_%s_checksums.txt",
-		c.upgrade.repo,
-		strings.TrimPrefix(rr.GetTagName(), "v"),
-	)
+	name := fmt.Sprintf("%s_%s_checksums.txt", c.upgrade.repo, strings.TrimPrefix(rr.GetTagName(), "v"))
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
 		return nil, fmt.Errorf("%s: cannot find release asset", name)
@@ -325,12 +314,8 @@ func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryReleas
 	}
 	checksum := sha256.Sum256(data)
 	if !bytes.Equal(checksum[:], expectedChecksum) {
-		return fmt.Errorf(
-			"%s: checksum failed (want %s, got %s)",
-			name,
-			hex.EncodeToString(expectedChecksum),
-			hex.EncodeToString(checksum[:]),
-		)
+		format := "%s: checksum failed (want %s, got %s)"
+		return fmt.Errorf(format, name, hex.EncodeToString(expectedChecksum), hex.EncodeToString(checksum[:]))
 	}
 	return nil
 }

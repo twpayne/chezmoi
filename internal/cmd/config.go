@@ -346,11 +346,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		init: initCmdConfig{
-			data: true,
-			filter: chezmoi.NewEntryTypeFilter(
-				chezmoi.EntryTypesAll,
-				chezmoi.EntryTypesNone,
-			),
+			data:              true,
+			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			guessRepoURL:      true,
 			recurseSubmodules: true,
 		},
@@ -633,9 +630,7 @@ func (c *Config) applyArgs(
 
 	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
-		switch err := sourceState.Apply(
-			targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions,
-		); {
+		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
 		case errors.Is(err, fs.SkipDir):
 			continue
 		case err != nil && c.keepGoing:
@@ -1012,11 +1007,7 @@ func (c *Config) defaultPreApplyFunc(
 		case err != nil:
 			return err
 		case choice == "diff":
-			if err := c.diffFile(
-				targetRelPath,
-				actualContents, actualEntryState.Mode,
-				targetContents, targetEntryState.Mode,
-			); err != nil {
+			if err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode); err != nil {
 				return err
 			}
 		case choice == "overwrite":
@@ -1170,11 +1161,7 @@ func (c *Config) editor(args []string) (string, []string, error) {
 	}
 
 	// Prefer $VISUAL over $EDITOR and fallback to the OS's default editor.
-	editCommand = firstNonEmptyString(
-		os.Getenv("VISUAL"),
-		os.Getenv("EDITOR"),
-		defaultEditor,
-	)
+	editCommand = firstNonEmptyString(os.Getenv("VISUAL"), os.Getenv("EDITOR"), defaultEditor)
 
 	return parseCommand(editCommand, append(editArgs, args...))
 }
@@ -1290,10 +1277,7 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 			sourceAbsPathStr := configTemplate.sourceAbsPath.String()
 			sourceAbsPathStrs = append(sourceAbsPathStrs, sourceAbsPathStr)
 		}
-		return nil, fmt.Errorf(
-			"multiple config file templates: %s ",
-			englishList(sourceAbsPathStrs),
-		)
+		return nil, fmt.Errorf("multiple config file templates: %s ", englishList(sourceAbsPathStrs))
 	}
 }
 
@@ -1432,11 +1416,7 @@ func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
 	}
-	output, err := c.cmdOutput(
-		c.WorkingTreeAbsPath,
-		c.Git.Command,
-		[]string{"status", "--porcelain=v2"},
-	)
+	output, err := c.cmdOutput(c.WorkingTreeAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
 	if err != nil {
 		return nil, err
 	}
@@ -1453,11 +1433,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 	if err != nil {
 		return err
 	}
-	return c.run(
-		c.WorkingTreeAbsPath,
-		c.Git.Command,
-		[]string{"commit", "--message", string(commitMessage)},
-	)
+	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)})
 }
 
 // gitAutoPush pushes all changes to the remote if status is not empty.
@@ -1492,9 +1468,7 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *git.Status) ([]byt
 		if c.sourceDirAbsPathErr != nil {
 			return nil, c.sourceDirAbsPathErr
 		}
-		commitMessageTemplateFileAbsPath := c.sourceDirAbsPath.JoinString(
-			c.Git.CommitMessageTemplateFile,
-		)
+		commitMessageTemplateFileAbsPath := c.sourceDirAbsPath.JoinString(c.Git.CommitMessageTemplateFile)
 		name = c.sourceDirAbsPath.String()
 		var err error
 		commitMessageTemplateData, err = c.baseSystem.ReadFile(commitMessageTemplateFileAbsPath)
@@ -1505,14 +1479,9 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *git.Status) ([]byt
 		name = "COMMIT_MESSAGE"
 		commitMessageTemplateData = []byte(templates.CommitMessageTmpl)
 	}
-	commitMessageTmpl, err := chezmoi.ParseTemplate(
-		name,
-		commitMessageTemplateData,
-		funcMap,
-		chezmoi.TemplateOptions{
-			Options: slices.Clone(c.Template.Options),
-		},
-	)
+	commitMessageTmpl, err := chezmoi.ParseTemplate(name, commitMessageTemplateData, funcMap, chezmoi.TemplateOptions{
+		Options: slices.Clone(c.Template.Options),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1579,33 +1548,16 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.configFormat, "config-format", "Set config file format")
 	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
-	persistentFlags.BoolVarP(
-		&c.dryRun,
-		"dry-run",
-		"n",
-		c.dryRun,
-		"Do not make any modifications to the destination directory",
-	)
+	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
 	persistentFlags.BoolVar(&c.interactive, "interactive", c.interactive, "Prompt for all changes")
-	persistentFlags.BoolVarP(
-		&c.keepGoing,
-		"keep-going",
-		"k",
-		c.keepGoing,
-		"Keep going as far as possible after an error",
-	)
+	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
-	persistentFlags.BoolVar(
-		&c.sourcePath,
-		"source-path",
-		c.sourcePath,
-		"Specify targets by source path",
-	)
+	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
 
 	if err := chezmoierrors.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
@@ -1686,11 +1638,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
-			Color: c.Color.Value(c.colorAutoFunc),
-			Filter: chezmoi.NewEntryTypeFilter(
-				c.Diff.include.Bits(),
-				c.Diff.Exclude.Bits(),
-			),
+			Color:          c.Color.Value(c.colorAutoFunc),
+			Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 			Reverse:        c.Diff.Reverse,
 			ScriptContents: c.Diff.ScriptContents,
 			TextConvFunc:   c.TextConv.convert,
@@ -1883,9 +1832,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	if runtime.GOOS == "windows" {
 		var err error
-		c.restoreWindowsConsole, err = termenv.EnableVirtualTerminalProcessing(
-			termenv.DefaultOutput(),
-		)
+		c.restoreWindowsConsole, err = termenv.EnableVirtualTerminalProcessing(termenv.DefaultOutput())
 		if err != nil {
 			return err
 		}
@@ -1971,7 +1918,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		c.persistentState, err = chezmoi.NewBoltPersistentState(
-			c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadOnly,
+			c.baseSystem,
+			persistentStateFileAbsPath,
+			chezmoi.BoltPersistentStateReadOnly,
 		)
 		if err != nil {
 			return err
@@ -1984,7 +1933,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		persistentState, err := chezmoi.NewBoltPersistentState(
-			c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadOnly,
+			c.baseSystem,
+			persistentStateFileAbsPath,
+			chezmoi.BoltPersistentStateReadOnly,
 		)
 		if err != nil {
 			return err
@@ -2003,7 +1954,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		c.persistentState, err = chezmoi.NewBoltPersistentState(
-			c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadWrite,
+			c.baseSystem,
+			persistentStateFileAbsPath,
+			chezmoi.BoltPersistentStateReadWrite,
 		)
 		if err != nil {
 			return err
@@ -2015,10 +1968,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		persistentStateLogger := c.logger.With().
 			Str(logComponentKey, logComponentValuePersistentState).
 			Logger()
-		c.persistentState = chezmoi.NewDebugPersistentState(
-			c.persistentState,
-			&persistentStateLogger,
-		)
+		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState, &persistentStateLogger)
 	}
 
 	// Set up the source and destination systems.
@@ -2484,9 +2434,7 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 	}
 	sourceAbsPaths := make([]chezmoi.AbsPath, 0, len(targetRelPaths))
 	for _, targetRelPath := range targetRelPaths {
-		sourceAbsPath := c.SourceDirAbsPath.Join(
-			sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath(),
-		)
+		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
 	}
 	return sourceAbsPaths, nil
@@ -2495,11 +2443,7 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error) {
 	relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath)
 	if notInAbsDirError := (&chezmoi.NotInAbsDirError{}); errors.As(err, &notInAbsDirError) {
-		return chezmoi.EmptyRelPath, fmt.Errorf(
-			"%s: not in destination directory (%s)",
-			absPath,
-			c.DestDirAbsPath,
-		)
+		return chezmoi.EmptyRelPath, fmt.Errorf("%s: not in destination directory (%s)", absPath, c.DestDirAbsPath)
 	}
 	return relPath, err
 }
@@ -2809,11 +2753,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Update: updateCmdConfig{
 			RecurseSubmodules: true,
 			apply:             true,
-			filter: chezmoi.NewEntryTypeFilter(
-				chezmoi.EntryTypesAll,
-				chezmoi.EntryTypesNone,
-			),
-			recursive: true,
+			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			recursive:         true,
 		},
 		Verify: verifyCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),

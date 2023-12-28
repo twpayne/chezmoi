@@ -57,9 +57,7 @@ func isWinGetInstall(fileSystem vfs.Stater, executableAbsPath string) (bool, err
 		},
 	}
 	settingsPaths := []string{
-		os.ExpandEnv(
-			`${LOCALAPPDATA}\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\settings.json`,
-		),
+		os.ExpandEnv(`${LOCALAPPDATA}\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\settings.json`),
 		os.ExpandEnv(`${LOCALAPPDATA}\Microsoft\WinGet\Settings\settings.json`),
 	}
 	for _, settingsPath := range settingsPaths {
@@ -98,11 +96,8 @@ func (c *Config) upgradeUNIXPackage(
 }
 
 func (c *Config) winGetUpgrade() error {
-	return fmt.Errorf(
-		"upgrade command is not currently supported for WinGet installations. chezmoi can still be upgraded via WinGet by running `winget upgrade --id %s.%s --source winget`",
-		c.upgrade.owner,
-		c.upgrade.repo,
-	)
+	format := "upgrade command is not currently supported for WinGet installations. chezmoi can still be upgraded via WinGet by running `winget upgrade --id %s.%s --source winget`"
+	return fmt.Errorf(format, c.upgrade.owner, c.upgrade.repo)
 }
 
 // getLibc attempts to determine the system's libc.

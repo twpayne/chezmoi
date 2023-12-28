@@ -31,13 +31,7 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 	flags.VarP(c.Verify.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.Verify.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Verify.init, "init", c.Verify.init, "Recreate config file from template")
-	flags.BoolVarP(
-		&c.Verify.recursive,
-		"recursive",
-		"r",
-		c.Verify.recursive,
-		"Recurse into subdirectories",
-	)
+	flags.BoolVarP(&c.Verify.recursive, "recursive", "r", c.Verify.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(verifyCmd)
 

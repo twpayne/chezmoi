@@ -27,10 +27,7 @@ func (c *Config) dopplerTemplateFunc(key string, additionalArgs ...string) any {
 		panic(fmt.Errorf("expected 1 to 3 arguments, got %d", len(additionalArgs)+1))
 	}
 
-	args := c.appendDopplerAdditionalArgs(
-		[]string{"secrets", "download", "--json", "--no-file"},
-		additionalArgs,
-	)
+	args := c.appendDopplerAdditionalArgs([]string{"secrets", "download", "--json", "--no-file"}, additionalArgs)
 
 	data, err := c.dopplerOutput(args)
 	if err != nil {
@@ -53,10 +50,7 @@ func (c *Config) dopplerProjectJSONTemplateFunc(additionalArgs ...string) any {
 	if len(additionalArgs) > 2 {
 		panic(fmt.Errorf("expected 0 to 2 arguments, got %d", len(additionalArgs)))
 	}
-	args := c.appendDopplerAdditionalArgs(
-		[]string{"secrets", "download", "--json", "--no-file"},
-		additionalArgs,
-	)
+	args := c.appendDopplerAdditionalArgs([]string{"secrets", "download", "--json", "--no-file"}, additionalArgs)
 
 	data, err := c.dopplerOutput(args)
 	if err != nil {

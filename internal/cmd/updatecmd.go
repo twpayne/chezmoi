@@ -47,13 +47,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 		c.Update.RecurseSubmodules,
 		"Recursively update submodules",
 	)
-	flags.BoolVarP(
-		&c.Update.recursive,
-		"recursive",
-		"r",
-		c.Update.recursive,
-		"Recurse into subdirectories",
-	)
+	flags.BoolVarP(&c.Update.recursive, "recursive", "r", c.Update.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(updateCmd)
 

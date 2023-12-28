@@ -49,11 +49,7 @@ func TestChattrCmdValidArgs(t *testing.T) {
 		name := fmt.Sprintf("chattrValidArgs(_, %+v, %q)", tc.args, tc.toComplete)
 		t.Run(name, func(t *testing.T) {
 			c := &Config{}
-			actualCompletions, actualShellCompDirective := c.chattrCmdValidArgs(
-				&cobra.Command{},
-				tc.args,
-				tc.toComplete,
-			)
+			actualCompletions, actualShellCompDirective := c.chattrCmdValidArgs(&cobra.Command{}, tc.args, tc.toComplete)
 			assert.Equal(t, tc.expectedCompletions, actualCompletions)
 			assert.Equal(t, tc.expectedShellCompDirective, actualShellCompDirective)
 		})

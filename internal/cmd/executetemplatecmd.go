@@ -36,31 +36,15 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	}
 
 	flags := executeTemplateCmd.Flags()
-	flags.BoolVarP(
-		&c.executeTemplate.init,
-		"init",
-		"i",
-		c.executeTemplate.init,
-		"Simulate chezmoi init",
-	)
-	flags.StringToStringVar(
-		&c.executeTemplate.promptBool,
-		"promptBool",
-		c.executeTemplate.promptBool,
-		"Simulate promptBool",
-	)
+	flags.BoolVarP(&c.executeTemplate.init, "init", "i", c.executeTemplate.init, "Simulate chezmoi init")
+	flags.StringToStringVar(&c.executeTemplate.promptBool, "promptBool", c.executeTemplate.promptBool, "Simulate promptBool")
 	flags.StringToStringVar(
 		&c.executeTemplate.promptChoice,
 		"promptChoice",
 		c.executeTemplate.promptChoice,
 		"Simulate promptChoice",
 	)
-	flags.StringToIntVar(
-		&c.executeTemplate.promptInt,
-		"promptInt",
-		c.executeTemplate.promptInt,
-		"Simulate promptInt",
-	)
+	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
 	flags.StringToStringVarP(
 		&c.executeTemplate.promptString,
 		"promptString",
@@ -68,12 +52,7 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 		c.executeTemplate.promptString,
 		"Simulate promptString",
 	)
-	flags.BoolVar(
-		&c.executeTemplate.stdinIsATTY,
-		"stdinisatty",
-		c.executeTemplate.stdinIsATTY,
-		"Simulate stdinIsATTY",
-	)
+	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
 	flags.StringVar(
 		&c.executeTemplate.templateOptions.LeftDelimiter,
 		"left-delimiter",

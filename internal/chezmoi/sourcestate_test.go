@@ -820,19 +820,11 @@ func TestSourceStateApplyAll(t *testing.T) {
 				s := NewSourceState(sourceStateOptions...)
 				assert.NoError(t, s.Read(ctx, nil))
 				requireEvaluateAll(t, s, system)
-				assert.NoError(
-					t,
-					s.applyAll(
-						system,
-						system,
-						persistentState,
-						NewAbsPath("/home/user"),
-						ApplyOptions{
-							Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
-							Umask:  chezmoitest.Umask,
-						},
-					),
-				)
+				err := s.applyAll(system, system, persistentState, NewAbsPath("/home/user"), ApplyOptions{
+					Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+					Umask:  chezmoitest.Umask,
+				})
+				assert.NoError(t, err)
 
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
@@ -1636,10 +1628,7 @@ func TestSourceStateReadScriptsConcurrent(t *testing.T) {
 func TestSourceStateReadExternalCache(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
-	assert.NoError(
-		t,
-		tarWriterSystem.WriteFile(NewAbsPath("file"), []byte("# contents of file\n"), 0o666),
-	)
+	assert.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("file"), []byte("# contents of file\n"), 0o666))
 	assert.NoError(t, tarWriterSystem.Close())
 	archiveData := buffer.Bytes()
 
@@ -1686,9 +1675,7 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 						Type:          "archive",
 						URL:           httpServer.URL + "/archive.tar",
 						RefreshPeriod: Duration(1 * time.Minute),
-						sourceAbsPath: NewAbsPath(
-							"/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
-						),
+						sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.yaml"),
 					},
 				},
 			}, s.externals)
@@ -1952,20 +1939,17 @@ func (s *SourceState) applyAll(
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	err := s.root.ForEach(
-		EmptyRelPath,
-		func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
-			if err := sourceStateEntry.Evaluate(); err != nil {
-				return err
-			}
-			destAbsPath := s.destDirAbsPath.Join(targetRelPath)
-			targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
-			if err != nil {
-				return err
-			}
-			return targetStateEntry.Evaluate()
-		},
-	)
+	err := s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+		if err := sourceStateEntry.Evaluate(); err != nil {
+			return err
+		}
+		destAbsPath := s.destDirAbsPath.Join(targetRelPath)
+		targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
+		if err != nil {
+			return err
+		}
+		return targetStateEntry.Evaluate()
+	})
 	assert.NoError(t, err)
 }
 

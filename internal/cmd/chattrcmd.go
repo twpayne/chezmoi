@@ -89,13 +89,7 @@ func (c *Config) newChattrCmd() *cobra.Command {
 	}
 
 	flags := chattrCmd.Flags()
-	flags.BoolVarP(
-		&c.chattr.recursive,
-		"recursive",
-		"r",
-		c.chattr.recursive,
-		"Recurse into subdirectories",
-	)
+	flags.BoolVarP(&c.chattr.recursive, "recursive", "r", c.chattr.recursive, "Recurse into subdirectories")
 
 	return chattrCmd
 }
