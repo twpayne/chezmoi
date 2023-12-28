@@ -137,9 +137,7 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 
 	cmd := exec.Command(name, args...)
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
-		password, err := c.readPassword(
-			fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database),
-		)
+		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
 		if err != nil {
 			return nil, err
 		}

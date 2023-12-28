@@ -277,10 +277,7 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 		case uid:
 			return upgradeMethodReplaceExecutable, nil
 		default:
-			return "", fmt.Errorf(
-				"%s: cannot upgrade executable owned by non-current non-root user",
-				executableAbsPath,
-			)
+			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current non-root user", executableAbsPath)
 		}
 	case "openbsd":
 		return upgradeMethodReplaceExecutable, nil

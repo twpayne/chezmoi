@@ -51,12 +51,7 @@ func (c *gitHubClient) gitHubListReleases(ownerRepo string) []*github.Repository
 		PerPage: 100,
 	}
 	for {
-		repositoryReleases, resp, err := c.client.Repositories.ListReleases(
-			c.ctx,
-			owner,
-			repo,
-			opts,
-		)
+		repositoryReleases, resp, err := c.client.Repositories.ListReleases(c.ctx, owner, repo, opts)
 		if err != nil {
 			panic(err)
 		}

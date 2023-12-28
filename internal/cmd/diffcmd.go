@@ -40,27 +40,10 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags.VarP(c.Diff.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Diff.init, "init", c.Diff.init, "Recreate config file from template")
 	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
-	flags.BoolVarP(
-		&c.Diff.recursive,
-		"recursive",
-		"r",
-		c.Diff.recursive,
-		"Recurse into subdirectories",
-	)
+	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "Recurse into subdirectories")
 	flags.BoolVar(&c.Diff.Reverse, "reverse", c.Diff.Reverse, "Reverse the direction of the diff")
-	flags.BoolVar(
-		&c.Diff.ScriptContents,
-		"script-contents",
-		c.Diff.ScriptContents,
-		"Show script contents",
-	)
-	flags.BoolVarP(
-		&c.Diff.useBuiltinDiff,
-		"use-builtin-diff",
-		"",
-		c.Diff.useBuiltinDiff,
-		"Use the builtin diff",
-	)
+	flags.BoolVar(&c.Diff.ScriptContents, "script-contents", c.Diff.ScriptContents, "Show script contents")
+	flags.BoolVarP(&c.Diff.useBuiltinDiff, "use-builtin-diff", "", c.Diff.useBuiltinDiff, "Use the builtin diff")
 
 	registerExcludeIncludeFlagCompletionFuncs(diffCmd)
 

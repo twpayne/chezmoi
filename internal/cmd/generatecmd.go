@@ -32,11 +32,7 @@ func (c *Config) runGenerateCmd(cmd *cobra.Command, args []string) error {
 	builder.Grow(16384)
 	switch args[0] {
 	case "git-commit-message":
-		output, err := c.cmdOutput(
-			c.WorkingTreeAbsPath,
-			c.Git.Command,
-			[]string{"status", "--porcelain=v2"},
-		)
+		output, err := c.cmdOutput(c.WorkingTreeAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
 		if err != nil {
 			return err
 		}

@@ -48,15 +48,12 @@ func (n *sourceStateEntryTreeNode) GetNode(targetRelPath RelPath) *sourceStateEn
 
 // ForEach calls f for each SourceStateEntry in the tree.
 func (n *sourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
-	return n.ForEachNode(
-		targetRelPath,
-		func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
-			if node.sourceStateEntry == nil {
-				return nil
-			}
-			return f(targetRelPath, node.sourceStateEntry)
-		},
-	)
+	return n.ForEachNode(targetRelPath, func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
+		if node.sourceStateEntry == nil {
+			return nil
+		}
+		return f(targetRelPath, node.sourceStateEntry)
+	})
 }
 
 // ForEachNode calls f for each node in the tree.
@@ -137,10 +134,7 @@ func (n *sourceStateEntryTreeNode) MkdirAll(
 			var ok bool
 			sourceStateDir, ok = node.sourceStateEntry.(*SourceStateDir)
 			if !ok {
-				return nil, fmt.Errorf(
-					"%s: not a directory",
-					componentRelPaths[0].Join(componentRelPaths[1:i+1]...),
-				)
+				return nil, fmt.Errorf("%s: not a directory", componentRelPaths[0].Join(componentRelPaths[1:i+1]...))
 			}
 			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(sourceStateDir.Attr.SourceName()))
 		}

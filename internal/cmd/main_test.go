@@ -636,10 +636,7 @@ func goosCondition(cond string) (result, valid bool) {
 }
 
 func prependDirToPath(dir, path string) string {
-	return strings.Join(
-		append([]string{dir}, filepath.SplitList(path)...),
-		string(os.PathListSeparator),
-	)
+	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
 }
 
 func setup(env *testscript.Env) error {

@@ -199,10 +199,7 @@ func (s *SourceStateFile) SourceRelPath() SourceRelPath {
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateFile) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	if s.targetStateEntryFunc != nil {
-		s.targetStateEntry, s.targetStateEntryErr = s.targetStateEntryFunc(
-			destSystem,
-			destDirAbsPath,
-		)
+		s.targetStateEntry, s.targetStateEntryErr = s.targetStateEntryFunc(destSystem, destDirAbsPath)
 		s.targetStateEntryFunc = nil
 	}
 	return s.targetStateEntry, s.targetStateEntryErr

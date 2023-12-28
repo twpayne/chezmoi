@@ -46,12 +46,7 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		),
 	}
 	secretKeyringDeletePersistentFlags := keyringDeleteCmd.PersistentFlags()
-	secretKeyringDeletePersistentFlags.StringVar(
-		&c.secret.keyring.delete.service,
-		"service",
-		"",
-		"service",
-	)
+	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.delete.service, "service", "", "service")
 	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.delete.user, "user", "", "user")
 	markPersistentFlagsRequired(keyringDeleteCmd, "service", "user")
 	keyringCmd.AddCommand(keyringDeleteCmd)
@@ -66,12 +61,7 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		),
 	}
 	secretKeyringGetPersistentFlags := keyringGetCmd.PersistentFlags()
-	secretKeyringGetPersistentFlags.StringVar(
-		&c.secret.keyring.get.service,
-		"service",
-		"",
-		"service",
-	)
+	secretKeyringGetPersistentFlags.StringVar(&c.secret.keyring.get.service, "service", "", "service")
 	secretKeyringGetPersistentFlags.StringVar(&c.secret.keyring.get.user, "user", "", "user")
 	markPersistentFlagsRequired(keyringGetCmd, "service", "user")
 	keyringCmd.AddCommand(keyringGetCmd)
@@ -86,12 +76,7 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		),
 	}
 	secretKeyringSetPersistentFlags := keyringSetCmd.PersistentFlags()
-	secretKeyringSetPersistentFlags.StringVar(
-		&c.secret.keyring.set.service,
-		"service",
-		"",
-		"service",
-	)
+	secretKeyringSetPersistentFlags.StringVar(&c.secret.keyring.set.service, "service", "", "service")
 	secretKeyringSetPersistentFlags.StringVar(&c.secret.keyring.set.user, "user", "", "user")
 	secretKeyringSetPersistentFlags.StringVar(&c.secret.keyring.set.value, "value", "", "value")
 	markPersistentFlagsRequired(keyringSetCmd, "service", "user")

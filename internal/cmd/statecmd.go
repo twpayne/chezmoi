@@ -76,12 +76,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		),
 	}
 	stateDeletePersistentFlags := stateDeleteCmd.PersistentFlags()
-	stateDeletePersistentFlags.StringVar(
-		&c.state.delete.bucket,
-		"bucket",
-		c.state.delete.bucket,
-		"Bucket",
-	)
+	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "Bucket")
 	stateDeletePersistentFlags.StringVar(&c.state.delete.key, "key", c.state.delete.key, "Key")
 	stateCmd.AddCommand(stateDeleteCmd)
 
@@ -95,12 +90,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		),
 	}
 	stateDeleteBucketPersistentFlags := stateDeleteBucketCmd.PersistentFlags()
-	stateDeleteBucketPersistentFlags.StringVar(
-		&c.state.deleteBucket.bucket,
-		"bucket",
-		c.state.deleteBucket.bucket,
-		"Bucket",
-	)
+	stateDeleteBucketPersistentFlags.StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "Bucket")
 	stateCmd.AddCommand(stateDeleteBucketCmd)
 
 	stateDumpCmd := &cobra.Command{
@@ -143,12 +133,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		),
 	}
 	stateGetBucketPersistentFlags := stateGetBucketCmd.PersistentFlags()
-	stateGetBucketPersistentFlags.StringVar(
-		&c.state.getBucket.bucket,
-		"bucket",
-		c.state.getBucket.bucket,
-		"bucket",
-	)
+	stateGetBucketPersistentFlags.StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
 	stateGetBucketPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
 	if err := stateGetBucketCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
@@ -226,10 +211,7 @@ func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) runStateGetBucketCmd(cmd *cobra.Command, args []string) error {
-	data, err := chezmoi.PersistentStateBucketData(
-		c.persistentState,
-		[]byte(c.state.getBucket.bucket),
-	)
+	data, err := chezmoi.PersistentStateBucketData(c.persistentState, []byte(c.state.getBucket.bucket))
 	if err != nil {
 		return err
 	}
@@ -262,9 +244,5 @@ func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) runStateSetCmd(cmd *cobra.Command, args []string) error {
-	return c.persistentState.Set(
-		[]byte(c.state.set.bucket),
-		[]byte(c.state.set.key),
-		[]byte(c.state.set.value),
-	)
+	return c.persistentState.Set([]byte(c.state.set.bucket), []byte(c.state.set.key), []byte(c.state.set.value))
 }

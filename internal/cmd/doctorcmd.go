@@ -53,11 +53,8 @@ const (
 
 // A check is an individual check.
 type check interface {
-	Name() string // Name returns the check's name.
-	Run(
-		system chezmoi.System,
-		homeDirAbsPath chezmoi.AbsPath,
-	) (checkResult, string) // Run runs the check.
+	Name() string                                                                    // Name returns the check's name.
+	Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) // Run runs the check.
 }
 
 var checkResultStr = map[checkResult]string{
@@ -491,11 +488,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	if c.versionRx != nil {
 		match := c.versionRx.FindSubmatch(versionBytes)
 		if len(match) != 2 {
-			s := fmt.Sprintf(
-				"found %s, cannot parse version from %s",
-				pathAbsPath,
-				bytes.TrimSpace(versionBytes),
-			)
+			s := fmt.Sprintf("found %s, cannot parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
 			return checkResultWarning, s
 		}
 		versionBytes = match[1]
@@ -506,12 +499,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	}
 
 	if c.minVersion != nil && version.LessThan(*c.minVersion) {
-		return checkResultError, fmt.Sprintf(
-			"found %s, version %s, need %s",
-			pathAbsPath,
-			version,
-			c.minVersion,
-		)
+		return checkResultError, fmt.Sprintf("found %s, version %s, need %s", pathAbsPath, version, c.minVersion)
 	}
 
 	return checkResultOK, fmt.Sprintf("found %s, version %s", pathAbsPath, version)
@@ -554,11 +542,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		if err != nil {
 			return checkResultError, fmt.Sprintf("%s: %v", filenameAbsPath, err)
 		}
-		message := fmt.Sprintf(
-			"%s, last modified %s",
-			filenameAbsPath.String(),
-			fileInfo.ModTime().Format(time.RFC3339),
-		)
+		message := fmt.Sprintf("%s, last modified %s", filenameAbsPath.String(), fileInfo.ModTime().Format(time.RFC3339))
 		return checkResultOK, message
 	default:
 		filenameStrs := make([]string, 0, len(filenameAbsPaths))
@@ -566,10 +550,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 			filenameStrs = append(filenameStrs, filenameAbsPath.String())
 		}
 		sort.Strings(filenameStrs)
-		return checkResultWarning, fmt.Sprintf(
-			"%s: multiple config files",
-			englishList(filenameStrs),
-		)
+		return checkResultWarning, fmt.Sprintf("%s: multiple config files", englishList(filenameStrs))
 	}
 }
 
