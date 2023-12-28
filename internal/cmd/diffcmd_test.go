@@ -129,14 +129,8 @@ func TestDiffCmd(t *testing.T) {
 					assert.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
 				stdout := strings.Builder{}
-				assert.NoError(
-					t,
-					newTestConfig(
-						t,
-						fileSystem,
-						withStdout(&stdout),
-					).execute(append([]string{"diff"}, tc.args...)),
-				)
+				config := newTestConfig(t, fileSystem, withStdout(&stdout))
+				assert.NoError(t, config.execute(append([]string{"diff"}, tc.args...)))
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 			})
 		})

@@ -1779,8 +1779,10 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		if err := c.diffPagerCmdStdin.Close(); err != nil {
 			return err
 		}
-		if err := chezmoilog.LogCmdWait(c.diffPagerCmd); err != nil {
-			return err
+		if c.diffPagerCmd.Process != nil {
+			if err := chezmoilog.LogCmdWait(c.diffPagerCmd); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -2046,12 +2048,15 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		default:
 			pipeReader, pipeWriter := io.Pipe()
 			pagerCmd.Stdin = pipeReader
-			if err := chezmoilog.LogCmdStart(pagerCmd); err != nil {
-				return err
-			}
-			writer = pipeWriter
+			lazyWriter := newLazyWriter(func() (io.WriteCloser, error) {
+				if err := chezmoilog.LogCmdStart(pagerCmd); err != nil {
+					return nil, err
+				}
+				return pipeWriter, nil
+			})
+			writer = lazyWriter
 			c.diffPagerCmd = pagerCmd
-			c.diffPagerCmdStdin = pipeWriter
+			c.diffPagerCmdStdin = lazyWriter
 		}
 		c.sourceSystem = c.newDiffSystem(c.sourceSystem, writer, c.SourceDirAbsPath)
 		c.destSystem = c.newDiffSystem(c.destSystem, writer, c.DestDirAbsPath)
