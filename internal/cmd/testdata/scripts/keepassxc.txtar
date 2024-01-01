@@ -1,5 +1,5 @@
-[unix] chmod 755 bin/keepass-test
-[windows] unix2dos bin/keepass-test.cmd
+[unix] chmod 755 bin/keepassxc-cli
+[windows] unix2dos bin/keepassxc-cli.cmd
 
 # test keepassxcAttachment template function
 stdin $HOME/input
@@ -16,17 +16,17 @@ stdin $HOME/input
 exec chezmoi execute-template --no-tty '{{ (keepassxc "example.com").UserName }}/{{ (keepassxc "example.com").Password }}'
 stdout examplelogin/examplepassword$
 
--- bin/keepass-test --
+-- bin/keepassxc-cli --
 #!/bin/sh
 
 case "$*" in
 "--version")
     echo "2.7.0"
     ;;
-"attachment-export --stdout --quiet /secrets.kdbx example.com attachment")
+"attachment-export /secrets.kdbx --quiet --stdout example.com attachment")
     echo "# contents of attachment"
     ;;
-"show --quiet --show-protected /secrets.kdbx example.com")
+"show /secrets.kdbx --quiet --show-protected example.com")
     cat <<EOF
 Title: example.com
 UserName: examplelogin
@@ -35,26 +35,26 @@ URL:
 Notes:
 EOF
     ;;
-"show --attributes host-name --quiet --show-protected /secrets.kdbx example.com")
+"show /secrets.kdbx example.com --attributes host-name --quiet --show-protected")
     echo "example.com"
     ;;
 *)
     echo "keepass-test: invalid command: $*"
     exit 1
 esac
--- bin/keepass-test.cmd --
+-- bin/keepassxc-cli.cmd --
 @echo off
 IF "%*" == "--version" (
     echo 2.7.0
-) ELSE IF "%*" == "attachment-export --stdout --quiet C:/secrets.kdbx example.com attachment" (
+) ELSE IF "%*" == "attachment-export C:/secrets.kdbx --quiet --stdout example.com attachment" (
     echo.# contents of attachment
-) ELSE IF "%*" == "show --quiet --show-protected C:/secrets.kdbx example.com" (
+) ELSE IF "%*" == "show C:/secrets.kdbx --quiet --show-protected example.com" (
     echo.Title: example.com
     echo.UserName: examplelogin
     echo.Password: examplepassword
     echo.URL:
     echo.Notes:
-) ELSE IF "%*" == "show --attributes host-name --quiet --show-protected C:/secrets.kdbx example.com" (
+) ELSE IF "%*" == "show C:/secrets.kdbx example.com --attributes host-name --quiet --show-protected" (
     echo.example.com
 ) ELSE (
     echo keepass-test: invalid command: %*
@@ -62,7 +62,6 @@ IF "%*" == "--version" (
 )
 -- home/user/.config/chezmoi/chezmoi.toml --
 [keepassxc]
-    command = "keepass-test"
     database = "/secrets.kdbx"
 -- home/user/input --
 fakepassword

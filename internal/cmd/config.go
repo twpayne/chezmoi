@@ -318,6 +318,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 
+	logger := zerolog.Nop()
+
 	c := &Config{
 		ConfigFile: newConfigFile(bds),
 
@@ -372,6 +374,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		// Configuration.
 		fileSystem: vfs.OSFS,
 		bds:        bds,
+		logger:     &logger,
 
 		// Computed configuration.
 		homeDirAbsPath: homeDirAbsPath,
@@ -1723,6 +1726,11 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		return err
 	}
 
+	// Close any connection to keepassxc-cli.
+	if err := c.keepassxcClose(); err != nil {
+		return err
+	}
+
 	// Wait for any diff pager process to terminate.
 	if c.diffPagerCmd != nil {
 		if err := c.diffPagerCmdStdin.Close(); err != nil {
@@ -2689,6 +2697,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Keepassxc: keepassxcConfig{
 			Command: "keepassxc-cli",
 			Prompt:  true,
+			Mode:    keepassxcModeCachePassword,
 		},
 		Keeper: keeperConfig{
 			Command: "keeper",
