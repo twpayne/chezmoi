@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-    - uses: reviewdog/action-misspell@4348e72b9038b006ffc37b6b0dd4421a2e9a68ef
+    - uses: reviewdog/action-misspell@06d6a480724fa783c220081bbc22336a78dbbe82
       with:
         locale: US
   test-alpine:
