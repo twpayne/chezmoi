@@ -106,6 +106,10 @@ jobs:
         curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
+    - name: install-keepassxc
+      run: |
+        brew install keepassxc
+        keepassxc-cli --version
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}

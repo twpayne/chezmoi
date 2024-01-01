@@ -8,7 +8,7 @@ chmod 755 bin/doppler
 chmod 755 bin/git
 chmod 755 bin/gopass
 chmod 755 bin/gpg
-chmod 755 bin/keepassxc
+chmod 755 bin/keepassxc-cli
 chmod 755 bin/keeper
 chmod 755 bin/lpass
 chmod 755 bin/op
@@ -132,10 +132,10 @@ echo "Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,"
 echo "        CAMELLIA128, CAMELLIA192, CAMELLIA256"
 echo "Hash: SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224"
 echo "Compression: Uncompressed, ZIP, ZLIB, BZIP2"
--- bin/keepassxc --
+-- bin/keepassxc-cli --
 #!/bin/sh
 
-echo "2.5.4"
+echo "2.7.0"
 -- bin/keeper --
 #!/bin/sh
 
@@ -192,8 +192,6 @@ echo "Vault v1.5.5 ('f5d1ddb3750e7c28e25036e1ef26a4c02379fc01+CHANGES')"
 
 echo "0.2.1, git sha (8d9af42c8b98c9527741a239b23a3e384812f514), go1.20.4 arm64"
 -- home/user/.config/chezmoi/chezmoi.toml --
-[keepassxc]
-    command = "keepassxc"
 [pinentry]
     command = "pinentry"
 [secret]

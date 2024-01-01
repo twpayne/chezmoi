@@ -26,11 +26,25 @@ called `private-key`, its value is available as:
 {{ keepassxcAttribute "SSH Key" "private-key" }}
 ```
 
-!!! info
+## Non-password-protected databases
 
-    The KeePassXC CLI does not currently support any persistent login, which
-    means that you will have to enter your password every time you run chezmoi.
+If your database is not password protected, add `--no-password` to
+`keepassxc.args` and `keepassxc.prompt = false`:
 
-    Support for non-password authentication methods (e.g. YubiKey) is currently
-    poor. For more information, see [this GitHub
-    issue](https://github.com/twpayne/chezmoi/issues/2002).
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[keepassxc]
+    args = ["--no-password"]
+    prompt = false
+```
+
+## YubiKey support
+
+chezmoi includes an experimental mode to support using KeePassXC with YubiKeys.
+Set `keepassxc.mode` to `open` and `keepassxc.args` to the arguments required to
+set your YubiKey, for example:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[keepassxc]
+    args = ["--yubikey", "1:7370001"]
+    mode = "open"
+```

@@ -9,7 +9,11 @@ file. You will be prompted for the database password the first time
 `keepassxc-cli` is run, and the password is cached, in plain text, in memory
 until chezmoi terminates.
 
-The command used can by changed by setting the `keepassxc.command`
-configuration variable, and extra arguments can be added by setting
-`keepassxc.args`. Also, you can disable the password prompt by setting
-`keepassxc.prompt` to `false`.
+The command used can by changed by setting the `keepassxc.command` configuration
+variable, and extra arguments can be added by setting `keepassxc.args`. The
+password prompt can be disabled by setting `keepassxc.prompt` to `false`.
+
+By default, chezmoi will prompt for the KeePassXC password when required and
+cache it for the duration of chezmoi's execution. Setting `keepassxc.mode` to
+`open` will tell chezmoi to instead open KeePassXC's console with `keepassxc-cli
+open`. chezmoi will use this console to request values from KeePassXC.

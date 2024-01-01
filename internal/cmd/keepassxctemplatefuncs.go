@@ -8,11 +8,21 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 
+	"github.com/Netflix/go-expect"
 	"github.com/coreos/go-semver/semver"
+	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+)
+
+type keepassxcMode string
+
+const (
+	keepassxcModeCachePassword keepassxcMode = "cache-password"
+	keepassxcModeOpen          keepassxcMode = "open"
 )
 
 type keepassxcAttributeCacheKey struct {
@@ -23,9 +33,12 @@ type keepassxcAttributeCacheKey struct {
 type keepassxcConfig struct {
 	Command         string          `json:"command"  mapstructure:"command"  yaml:"command"`
 	Database        chezmoi.AbsPath `json:"database" mapstructure:"database" yaml:"database"`
+	Mode            keepassxcMode   `json:"mode"     mapstructure:"mode"     yaml:"mode"`
 	Args            []string        `json:"args"     mapstructure:"args"     yaml:"args"`
 	Prompt          bool            `json:"prompt"   mapstructure:"prompt"   yaml:"prompt"`
-	version         *semver.Version
+	cmd             *exec.Cmd
+	console         *expect.Console
+	prompt          string
 	cache           map[string]map[string]string
 	attachmentCache map[string]map[string]string
 	attributeCache  map[keepassxcAttributeCacheKey]string
@@ -33,35 +46,47 @@ type keepassxcConfig struct {
 }
 
 var (
-	keepassxcPairRx                      = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
-	keepassxcHasAttachmentExportVersion  = semver.Version{Major: 2, Minor: 7, Patch: 0}
-	keepassxcNeedShowProtectedArgVersion = semver.Version{Major: 2, Minor: 5, Patch: 1}
+	keepassxcMinVersion = semver.Version{Major: 2, Minor: 7, Patch: 0}
+
+	keepassxcEnterPasswordToUnlockDatabaseRx = regexp.MustCompile(`^Enter password to unlock .*: `)
+	keepassxcPairRx                          = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
+	keepassxcPromptRx                        = regexp.MustCompile(`^.*> `)
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
-	version, err := c.keepassxcVersion()
-	if err != nil {
-		panic(err)
-	}
-	if version.Compare(keepassxcHasAttachmentExportVersion) < 0 {
-		format := "keepassxc-cli version %s required, found %s"
-		panic(fmt.Sprintf(format, keepassxcHasAttachmentExportVersion, version))
-	}
-
 	if data, ok := c.Keepassxc.attachmentCache[entry][name]; ok {
 		return data
 	}
 
-	args := []string{"attachment-export", "--stdout", "--quiet"}
-	args = append(args, c.Keepassxc.Args...)
-	args = append(args, c.Keepassxc.Database.String(), entry, name)
-
-	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
-	if err != nil {
-		panic(err)
+	switch c.Keepassxc.Mode {
+	case keepassxcModeCachePassword:
+		// In cache password mode use --stdout to read the attachment data directly.
+		output, err := c.keepassxcOutput("attachment-export", "--quiet", "--stdout", entry, name)
+		if err != nil {
+			panic(err)
+		}
+		return string(output)
+	case keepassxcModeOpen:
+		// In open mode write the attachment data to a temporary file.
+		tempDir, err := c.tempDir("chezmoi-keepassxc")
+		if err != nil {
+			panic(err)
+		}
+		tempFilename := tempDir.JoinString(name).String()
+		if _, err := c.keepassxcOutputOpen("attachment-export", "--quiet", entry, name, tempFilename); err != nil {
+			panic(err)
+		}
+		data, err := os.ReadFile(tempFilename)
+		if err != nil {
+			panic(err)
+		}
+		if err := os.Remove(tempFilename); err != nil {
+			panic(err)
+		}
+		return string(data)
+	default:
+		panic(fmt.Sprintf("%s: invalid mode", c.Keepassxc.Mode))
 	}
-
-	return string(output)
 }
 
 func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
@@ -69,24 +94,17 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 		return data
 	}
 
-	version, err := c.keepassxcVersion()
-	if err != nil {
-		panic(err)
-	}
-	args := []string{"show", "--quiet"}
-	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
-		args = append(args, "--show-protected")
-	}
-	args = append(args, c.Keepassxc.Args...)
-	args = append(args, c.Keepassxc.Database.String(), entry)
-	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
+	command := "show"
+	args := []string{"--quiet", "--show-protected", entry}
+	output, err := c.keepassxcOutput("show", args...)
 	if err != nil {
 		panic(err)
 	}
 
 	data, err := keepassxcParseOutput(output)
 	if err != nil {
-		panic(newParseCmdOutputError(c.Keepassxc.Command, args, output, err))
+		// FIXME the error below should vary depending on the mode
+		panic(newParseCmdOutputError(command, args, output, err))
 	}
 
 	if c.Keepassxc.cache == nil {
@@ -106,17 +124,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 		return data
 	}
 
-	args := []string{"show", "--attributes", attribute, "--quiet"}
-	version, err := c.keepassxcVersion()
-	if err != nil {
-		panic(err)
-	}
-	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
-		args = append(args, "--show-protected")
-	}
-	args = append(args, c.Keepassxc.Args...)
-	args = append(args, c.Keepassxc.Database.String(), entry)
-	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
+	output, err := c.keepassxcOutput("show", entry, "--attributes", attribute, "--quiet", "--show-protected")
 	if err != nil {
 		panic(err)
 	}
@@ -130,14 +138,29 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	return outputStr
 }
 
-func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
+// keepassxcOutputCachePassword returns the output of command and args.
+func (c *Config) keepassxcOutput(command string, args ...string) ([]byte, error) {
 	if c.Keepassxc.Database.Empty() {
 		panic(errors.New("keepassxc.database not set"))
 	}
 
-	cmd := exec.Command(name, args...)
+	switch c.Keepassxc.Mode {
+	case keepassxcModeCachePassword:
+		return c.keepassxcOutputCachePassword(command, args...)
+	case keepassxcModeOpen:
+		return c.keepassxcOutputOpen(command, args...)
+	default:
+		panic(fmt.Sprintf("%s: invalid mode", c.Keepassxc.Mode))
+	}
+}
+
+// keepassxcOutputCachePassword returns the output of command and args,
+// prompting the user for the password and caching it for later use.
+func (c *Config) keepassxcOutputCachePassword(command string, args ...string) ([]byte, error) {
+	cmdArgs := append([]string{command, c.Keepassxc.Database.String()}, args...)
+	cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
-		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
+		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database))
 		if err != nil {
 			return nil, err
 		}
@@ -157,6 +180,89 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 	return output, nil
 }
 
+// keepassxcOutputOpen returns the output of command and args using an
+// interactive connection via keepassxc-cli open command's interactive console.
+func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, error) {
+	// Create the console if it is not already created.
+	if c.Keepassxc.console == nil {
+		// Create the console.
+		console, err := expect.NewConsole()
+		if err != nil {
+			return nil, err
+		}
+
+		// Start the keepassxc-cli open command.
+		cmdArgs := append(slices.Clone(c.Keepassxc.Args), "open", c.Keepassxc.Database.String())
+		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
+		cmd.Stdin = console.Tty()
+		cmd.Stdout = console.Tty()
+		cmd.Stderr = console.Tty()
+		if err := chezmoilog.LogCmdStart(cmd); err != nil {
+			return nil, err
+		}
+
+		if c.Keepassxc.Prompt {
+			// Expect the password prompt, e.g. "Enter password to unlock $HOME/Passwords.kdbx: ".
+			enterPasswordToUnlockPrompt, err := console.Expect(expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRx))
+			if err != nil {
+				return nil, err
+			}
+
+			// Read the password from the user, if necessary.
+			var password string
+			if c.Keepassxc.password != "" {
+				password = c.Keepassxc.password
+			} else {
+				password, err = c.readPassword(enterPasswordToUnlockPrompt)
+				if err != nil {
+					return nil, err
+				}
+			}
+
+			// Send the password.
+			if _, err := console.SendLine(password); err != nil {
+				return nil, err
+			}
+
+			// Wait for the end of the password prompt.
+			if _, err := console.ExpectString("\r\n"); err != nil {
+				return nil, err
+			}
+		}
+
+		// Read the prompt, e.g "Passwords> ", so we can expect it later.
+		output, err := console.Expect(expect.Regexp(keepassxcPromptRx))
+		if err != nil {
+			return nil, err
+		}
+
+		c.Keepassxc.cmd = cmd
+		c.Keepassxc.console = console
+		c.Keepassxc.prompt = keepassxcPromptRx.FindString(output)
+	}
+
+	// Send the command.
+	line := strings.Join(append([]string{command}, args...), " ")
+	if _, err := c.Keepassxc.console.SendLine(line); err != nil {
+		return nil, err
+	}
+
+	// Read everything up to and including the prompt.
+	output, err := c.Keepassxc.console.ExpectString(c.Keepassxc.prompt)
+	if err != nil {
+		return nil, err
+	}
+
+	// Trim the command from the output.
+	output = strings.TrimPrefix(output, line+"\r\n")
+
+	// Trim the prompt from the output.
+	output = strings.TrimSuffix(output, c.Keepassxc.prompt)
+
+	return []byte(output), nil
+}
+
+// keepassxcParseOutput parses a list of key-value pairs.
 func keepassxcParseOutput(output []byte) (map[string]string, error) {
 	data := make(map[string]string)
 	s := bufio.NewScanner(bytes.NewReader(output))
@@ -176,25 +282,23 @@ func keepassxcParseOutput(output []byte) (map[string]string, error) {
 	return data, nil
 }
 
-func (c *Config) keepassxcVersion() (*semver.Version, error) {
-	if c.Keepassxc.version != nil {
-		return c.Keepassxc.version, nil
+// keepassxcClose closes any open connection to keepassxc-cli.
+func (c *Config) keepassxcClose() error {
+	// FIXME should we wait for EOF somewhere?
+	if c.Keepassxc.console == nil {
+		return nil
 	}
-
-	name := c.Keepassxc.Command
-	args := []string{"--version"}
-	cmd := exec.Command(name, args...)
-	output, err := chezmoilog.LogCmdOutput(cmd)
-	if err != nil {
-		return nil, newCmdOutputError(cmd, output, err)
+	if _, err := c.Keepassxc.console.SendLine("exit"); err != nil {
+		return err
 	}
-
-	c.Keepassxc.version, err = semver.NewVersion(string(bytes.TrimSpace(output)))
-	if err != nil {
-		return nil, &parseVersionError{
-			output: output,
-			err:    err,
-		}
+	if _, err := c.Keepassxc.console.ExpectString("exit\r\n"); err != nil {
+		return err
 	}
-	return c.Keepassxc.version, nil
+	if err := chezmoilog.LogCmdWait(c.Keepassxc.cmd); err != nil {
+		return err
+	}
+	if err := c.Keepassxc.console.Close(); err != nil {
+		return err
+	}
+	return nil
 }

@@ -55,16 +55,3 @@ func (e *parseCmdOutputError) Error() string {
 func (e *parseCmdOutputError) Unwrap() error {
 	return e.err
 }
-
-type parseVersionError struct {
-	output []byte
-	err    error
-}
-
-func (e *parseVersionError) Error() string {
-	return fmt.Sprintf("%s: cannot parse version: %v", e.output, e.err)
-}
-
-func (e *parseVersionError) Unwrap() error {
-	return e.err
-}

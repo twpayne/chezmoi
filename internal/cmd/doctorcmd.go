@@ -343,6 +343,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			minVersion:  &keepassxcMinVersion,
 		},
 		&fileCheck{
 			name:       "keepassxc-db",

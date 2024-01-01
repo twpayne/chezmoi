@@ -286,6 +286,9 @@ sections:
       description: KeePassXC CLI command
     database:
       description: KeePassXC database
+    mode:
+      default: '`cache-password`'
+      description: See section on KeePassXC
     prompt:
       type: bool
       default: '`true`'
