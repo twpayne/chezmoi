@@ -41,7 +41,9 @@ type platformValue struct {
 type platformSet map[platform]platformValue
 
 func goToolDistList() (platformSet, error) {
-	data, err := exec.Command("go", "tool", "dist", "list", "-json").Output()
+	cmd := exec.Command("go", "tool", "dist", "list", "-json")
+	cmd.Stderr = os.Stderr
+	data, err := cmd.Output()
 	if err != nil {
 		return nil, err
 	}
