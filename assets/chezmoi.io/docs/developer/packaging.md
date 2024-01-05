@@ -67,5 +67,5 @@ include these in the package and install them in the shell-appropriate
 directory, if possible.
 
 If the instructions for installing chezmoi in chezmoi's [install
-guide](/install/) are absent or incorrect, please open an issue or submit a PR
-to correct them.
+guide](../install.md) are absent or incorrect, please open an issue or submit a
+PR to correct them.

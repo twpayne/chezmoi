@@ -12,4 +12,4 @@ have entries in the source state. They cannot be externals.
 !!! info
 
     To remove targets from both the source state and destination directory, use
-    [`remove`](/reference/commands/remov).
+    [`remove`](remove.md).

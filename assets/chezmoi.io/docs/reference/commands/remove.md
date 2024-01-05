@@ -8,5 +8,4 @@ Remove without prompting.
 
 !!! info
 
-    To remove targets only from the source state, use
-    [`forget`](/reference/commands/forget).
+    To remove targets only from the source state, use [`forget`](forget.md).

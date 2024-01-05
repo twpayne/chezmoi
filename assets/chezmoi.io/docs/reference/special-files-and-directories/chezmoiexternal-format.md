@@ -147,5 +147,5 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         include = ["*/plugins/**"]
     ```
 
-    Some more examples can be found in the
-    [user guide](/user-guide/include-files-from-elsewhere/).
+    Some more examples can be found in the [user
+    guide](../../user-guide/include-files-from-elsewhere.md).

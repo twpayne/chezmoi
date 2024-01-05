@@ -22,7 +22,7 @@ that:
 
 * The documentation is updated, if necessary. For new features you should add an
   entry in `assets/chezmoi.io/docs/user-guide/` and a complete description in
-  `assets/chezmoi.io/docs/reference/`. See [website](/developer/website/) for
+  `assets/chezmoi.io/docs/reference/`. See [website](website.md) for
   instructions on how to build and view a local version of the documentation.
 
 * All generated files are up to date. You can ensure this by running `make

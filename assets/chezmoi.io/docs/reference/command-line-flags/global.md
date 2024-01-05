@@ -16,7 +16,7 @@ if the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 
 ## `-c`, `--config` *filename*
 
-Read the [configuration](/reference/configuration-file) from *filename*.
+Read the [configuration](../configuration-file/index.md) from *filename*.
 
 ## `--config-format` `json`|`jsonc`|`toml`|`yaml`
 

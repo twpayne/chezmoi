@@ -269,13 +269,13 @@ the `text/template` format that contains many helper functions. Take a look at
 their documentation for a list.
 
 chezmoi adds a few functions of its own as well. Take a look at the
-[reference](/reference/templates/functions/) for complete list.
+[reference](../reference/templates/functions/index.md) for complete list.
 
 ## Template variables
 
 chezmoi defines a few useful templates variables that depend on the system you
 are currently on. A list of the variables defined by chezmoi can be found
-[here](/reference/templates/variables/).
+[here](../reference/templates/variables.md).
 
 There are, however more variables than that. To view the variables available on
 your system, execute:

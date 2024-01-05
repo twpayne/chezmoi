@@ -26,12 +26,12 @@ The important directories in chezmoi are:
 
 ## Key concepts
 
-As described in the [reference manual](/reference/concepts/), chezmoi evaluates
-the source state to compute a target state for the destination directory
-(typically your home directory). It then compares the target state to the
-actual state of the destination directory and performs any changes necessary to
-update the destination directory to match the target state. These concepts are
-represented directly in chezmoi's code.
+As described in the [reference manual](../reference/concepts.md), chezmoi
+evaluates the source state to compute a target state for the destination
+directory (typically your home directory). It then compares the target state to
+the actual state of the destination directory and performs any changes necessary
+to update the destination directory to match the target state. These concepts
+are represented directly in chezmoi's code.
 
 chezmoi uses the generic term *entry* to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.

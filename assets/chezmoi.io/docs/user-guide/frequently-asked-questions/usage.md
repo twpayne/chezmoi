@@ -51,7 +51,7 @@ called `.chezmoiignore` in the source state.
 
 Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the [reference
-manual](/reference/special-files-and-directories/chezmoiignore/).
+manual](../../reference/special-files-and-directories/chezmoiignore.md).
 
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 
@@ -73,7 +73,7 @@ You have several options:
 
 * You can configure chezmoi to automatically commit and push changes to your
   source state, as [described in the how-to
-  guide](/user-guide/daily-operations/#automatically-commit-and-push-changes-to-your-repo).
+  guide](../daily-operations.md#automatically-commit-and-push-changes-to-your-repo).
 
 ## I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?
 
