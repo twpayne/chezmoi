@@ -251,7 +251,7 @@ $ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
 ```
 
 Secondly, you can install chezmoi with any of the [many supported install
-methods](/install/) instead of snap.
+methods](../../install.md) instead of snap.
 
 ## chezmoi reports `fork/exec ...: no such file or directory` when running scripts on Termux
 

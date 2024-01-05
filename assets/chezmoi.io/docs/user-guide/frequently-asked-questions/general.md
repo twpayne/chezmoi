@@ -20,12 +20,12 @@ GitHub](https://github.com/twpayne/chezmoi/stargazers), and if you're happy to
 share your public dotfile repo then [tag it with
 `chezmoi`](https://github.com/topics/chezmoi?o=desc&s=updated).
 
-If you write an article or give a talk on chezmoi please inform the author
-(e.g. by [opening an
-issue](https://github.com/twpayne/chezmoi/issues/new/choose)) so it can be
-added to chezmoi's [articles, podcasts, and videos page](/links/articles-podcasts-and-videos/).
+If you write an article or give a talk on chezmoi please inform the author (e.g.
+by [opening an issue](https://github.com/twpayne/chezmoi/issues/new/choose)) so
+it can be added to chezmoi's [articles](../../links/articles.md),
+[podcasts](../../links/podcasts.md), and [videos](../../links/videos.md) pages.
 
-[Contributions are very welcome](/developer/contributing-changes/) and every [bug report, support
-request, and feature
+[Contributions are very welcome](../../developer/contributing-changes.md) and
+every [bug report, support request, and feature
 request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
 chezmoi better. Thank you :)

@@ -84,7 +84,7 @@ For more advanced usage, you can use the full power of the
 [`text/template`](https://pkg.go.dev/text/template) language. chezmoi includes
 all of the text functions from [sprig](http://masterminds.github.io/sprig/) and
 its own [functions for interacting with password
-managers](/reference/templates/functions/).
+managers](../reference/templates/functions/index.md).
 
 Templates can be executed directly from the command line, without the need to
 create a file on disk, with the `execute-template` command, for example:

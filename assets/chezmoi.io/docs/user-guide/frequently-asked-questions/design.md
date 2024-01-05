@@ -66,9 +66,9 @@ the `--watch` flag to `chezmoi edit` or set `edit.watch` to `true` in your
 configuration file.
 
 If you really want to use symlinks, then chezmoi provides a [symlink
-mode](/reference/target-types/#symlink-mode) which uses symlinks where possible.
-This configures chezmoi to work like GNU Stow and have it create a set of
-symlinks back to a central directory, but this currently requires a bit of
+mode](../../reference/target-types.md#symlink-mode) which uses symlinks where
+possible. This configures chezmoi to work like GNU Stow and have it create a set
+of symlinks back to a central directory, but this currently requires a bit of
 manual work (as described in
 [#167](https://github.com/twpayne/chezmoi/issues/167)). chezmoi might get some
 automation to help (see [#886](https://github.com/twpayne/chezmoi/issues/886)

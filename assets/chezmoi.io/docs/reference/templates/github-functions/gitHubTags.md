@@ -22,8 +22,7 @@ same *owner-repo* will only result in one call to the GitHub API.
 !!! warning
 
     The values returned by `gitHubTags` are not directly queryable via the
-    [`jq`](/reference/templates/functions/jq/) function and must instead be
-    converted through JSON:
+    [`jq`](../functions/jq.md) function and must instead be converted through JSON:
 
     ```
     {{ gitHubTags "docker/compose" | toJson | fromJson | jq ".[0].name" }}

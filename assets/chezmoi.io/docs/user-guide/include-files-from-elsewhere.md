@@ -2,7 +2,7 @@
 
 The sections below contain examples of how to use `.chezmoiexternal.toml` to
 include files from external sources. For more details, check the [reference
-manual](/reference/special-files-and-directories/chezmoiexternal-format/) .
+manual](../reference/special-files-and-directories/chezmoiexternal-format.md) .
 
 ## Include a subdirectory from a URL
 
@@ -76,9 +76,9 @@ update Oh My Zsh and its plugins, refresh the downloaded archives.
 !!! note
 
     If your external dependency target directory can contain cache files that are
-    added during normal use, chezmoi will report that files have changed on
-    `chezmoi apply`. To avoid this, add the cache directory to your
-    [`.chezmoiignore`](/reference/special-files-and-directories/chezmoiignore/)
+    added during normal use, chezmoi will report that files have changed on `chezmoi
+    apply`. To avoid this, add the cache directory to your
+    [`.chezmoiignore`](../reference/special-files-and-directories/chezmoiignore.md)
     file.
 
     For example, Oh My Zsh may cache completions in `.oh-my-zsh/cache/completions/`,

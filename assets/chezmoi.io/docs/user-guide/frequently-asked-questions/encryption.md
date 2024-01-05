@@ -109,8 +109,8 @@ encryption, the following steps can be used:
 1. Make sure you have applied all encrypted files (e.g. `chezmoi apply` decrypts
    files and places them in their destinations).
 2. Update chezmoi configuration to use the new encryption method (examples:
-   [gpg](/user-guide/encryption/gpg), [age](/user-guide/encryption/age),
-   [age with one-time passphrase](#how-do-i-configure-chezmoi-to-encrypt-files-but-only-request-a-passphrase-the-first-time-chezmoi-init-is-run)).
+   [gpg](../encryption/gpg.md), [age](../encryption/age.md), [age with one-time
+   passphrase](#how-do-i-configure-chezmoi-to-encrypt-files-but-only-request-a-passphrase-the-first-time-chezmoi-init-is-run)).
 3. Remove all encrypted files from the state via `chezmoi forget` or `chezmoi unmanage`.
 4. Add them back with `chezmoi add --encrypt`.
 

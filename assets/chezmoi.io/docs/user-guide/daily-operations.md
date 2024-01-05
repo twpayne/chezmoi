@@ -119,7 +119,7 @@ $ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
 dotfiles on a different service, then see the [reference manual for `chezmoi
-init`](/reference/commands/init/).
+init`](../reference/commands/init.md).
 
 For setting up transitory environments (e.g. short-lived Linux containers) you
 can install chezmoi, install your dotfiles, and then remove all traces of
