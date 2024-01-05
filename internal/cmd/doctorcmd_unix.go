@@ -5,6 +5,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 
@@ -43,6 +44,7 @@ func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (ch
 		return checkResultSkipped, ""
 	}
 	cmd := exec.Command("uname", "-a")
+	cmd.Stderr = os.Stderr
 	data, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()

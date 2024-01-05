@@ -576,6 +576,7 @@ func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 			"status",
 			"--porcelain=v2",
 		)
+		cmd.Stderr = os.Stderr
 		output, err := cmd.Output()
 		if err != nil {
 			gitStatus = gitStatusError

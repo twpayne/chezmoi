@@ -118,7 +118,9 @@ func run() error {
 	// FIXME we should use chezmoi's template functions if/when needed,
 	// for now we use a bespoke output function
 	funcMap["output"] = func(name string, args ...string) string {
-		out, err := exec.Command(name, args...).Output()
+		cmd := exec.Command(name, args...)
+		cmd.Stderr = os.Stderr
+		out, err := cmd.Output()
 		if err != nil {
 			panic(err)
 		}

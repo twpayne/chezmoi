@@ -4,6 +4,7 @@ package chezmoitest
 import (
 	"fmt"
 	"io/fs"
+	"os"
 	"os/exec"
 	"regexp"
 	"runtime"
@@ -49,6 +50,8 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 		"--pinentry-mode", "loopback",
 		"--quick-generate-key", key,
 	)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	err = chezmoilog.LogCmdRun(cmd)
 	return
 }
