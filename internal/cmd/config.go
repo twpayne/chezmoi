@@ -96,184 +96,159 @@ type warningsConfig struct {
 
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
-	// Global configuration.
-	CacheDirAbsPath        chezmoi.AbsPath                 `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
-	Color                  autoBool                        `json:"color"           mapstructure:"color"           yaml:"color"`
-	Data                   map[string]any                  `json:"data"            mapstructure:"data"            yaml:"data"`
+	HCPVaultSecrets        hcpVaultSecretConfig            `json:"hcpVaultSecrets"   mapstructure:"hcpVaultSecrets"   yaml:"hcpVaultSecrets"`
+	Doppler                dopplerConfig                   `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
+	Onepassword            onepasswordConfig               `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
+	AWSSecretsManager      awsSecretsManagerConfig         `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
+	Dashlane               dashlaneConfig                  `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
+	Secret                 secretConfig                    `json:"secret"            mapstructure:"secret"            yaml:"secret"`
+	Keeper                 keeperConfig                    `json:"keeper"            mapstructure:"keeper"            yaml:"keeper"`
+	Ejson                  ejsonConfig                     `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
+	Gopass                 gopassConfig                    `json:"gopass"            mapstructure:"gopass"            yaml:"gopass"`
+	AzureKeyVault          azureKeyVaultConfig             `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
+	RBW                    rbwConfig                       `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
+	Vault                  vaultConfig                     `json:"vault"             mapstructure:"vault"             yaml:"vault"`
+	BitwardenSecrets       bitwardenSecretsConfig          `json:"bitwardenSecrets"  mapstructure:"bitwardenSecrets"  yaml:"bitwardenSecrets"`
+	Bitwarden              bitwardenConfig                 `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
+	Lastpass               lastpassConfig                  `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
+	Pass                   passConfig                      `json:"pass"              mapstructure:"pass"              yaml:"pass"`
 	Env                    map[string]string               `json:"env"             mapstructure:"env"             yaml:"env"`
-	Format                 writeDataFormat                 `json:"format"          mapstructure:"format"          yaml:"format"`
-	DestDirAbsPath         chezmoi.AbsPath                 `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
-	GitHub                 gitHubConfig                    `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
 	Hooks                  map[string]hookConfig           `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
 	Interpreters           map[string]*chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
+	Data                   map[string]any                  `json:"data"            mapstructure:"data"            yaml:"data"`
+	ScriptEnv              map[string]string               `json:"scriptEnv"       mapstructure:"scriptEnv"       yaml:"scriptEnv"`
+	Keepassxc              keepassxcConfig                 `json:"keepassxc"         mapstructure:"keepassxc"         yaml:"keepassxc"`
+	GPG                    chezmoi.GPGEncryption           `json:"gpg"        mapstructure:"gpg"        yaml:"gpg"`
+	Diff                   diffCmdConfig                   `json:"diff"       mapstructure:"diff"       yaml:"diff"`
+	Edit                   editCmdConfig                   `json:"edit"       mapstructure:"edit"       yaml:"edit"`
+	Passhole               passholeConfig                  `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
+	Update                 updateCmdConfig                 `json:"update"     mapstructure:"update"     yaml:"update"`
+	Git                    gitCmdConfig                    `json:"git"        mapstructure:"git"        yaml:"git"`
+	Status                 statusCmdConfig                 `json:"status"     mapstructure:"status"     yaml:"status"`
+	Add                    addCmdConfig                    `json:"add"        mapstructure:"add"        yaml:"add"`
+	Verify                 verifyCmdConfig                 `json:"verify"     mapstructure:"verify"     yaml:"verify"`
+	Encryption             string                          `json:"encryption" mapstructure:"encryption" yaml:"encryption"`
+	CacheDirAbsPath        chezmoi.AbsPath                 `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
+	DestDirAbsPath         chezmoi.AbsPath                 `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
+	Format                 writeDataFormat                 `json:"format"          mapstructure:"format"          yaml:"format"`
 	Mode                   chezmoi.Mode                    `json:"mode"            mapstructure:"mode"            yaml:"mode"`
 	Pager                  string                          `json:"pager"           mapstructure:"pager"           yaml:"pager"`
+	WorkingTreeAbsPath     chezmoi.AbsPath                 `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
 	PersistentStateAbsPath chezmoi.AbsPath                 `json:"persistentState" mapstructure:"persistentState" yaml:"persistentState"`
-	PINEntry               pinEntryConfig                  `json:"pinentry"        mapstructure:"pinentry"        yaml:"pinentry"`
-	Progress               autoBool                        `json:"progress"        mapstructure:"progress"        yaml:"progress"`
-	Safe                   bool                            `json:"safe"            mapstructure:"safe"            yaml:"safe"`
-	ScriptEnv              map[string]string               `json:"scriptEnv"       mapstructure:"scriptEnv"       yaml:"scriptEnv"`
-	ScriptTempDir          chezmoi.AbsPath                 `json:"scriptTempDir"   mapstructure:"scriptTempDir"   yaml:"scriptTempDir"`
 	SourceDirAbsPath       chezmoi.AbsPath                 `json:"sourceDir"       mapstructure:"sourceDir"       yaml:"sourceDir"`
+	ScriptTempDir          chezmoi.AbsPath                 `json:"scriptTempDir"   mapstructure:"scriptTempDir"   yaml:"scriptTempDir"`
+	Age                    chezmoi.AgeEncryption           `json:"age"        mapstructure:"age"        yaml:"age"`
+	PINEntry               pinEntryConfig                  `json:"pinentry"        mapstructure:"pinentry"        yaml:"pinentry"`
+	Merge                  mergeCmdConfig                  `json:"merge"      mapstructure:"merge"      yaml:"merge"`
+	CD                     cdCmdConfig                     `json:"cd"         mapstructure:"cd"         yaml:"cd"`
 	Template               templateConfig                  `json:"template"        mapstructure:"template"        yaml:"template"`
 	TextConv               textConv                        `json:"textConv"        mapstructure:"textConv"        yaml:"textConv"`
+	GitHub                 gitHubConfig                    `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
 	Umask                  fs.FileMode                     `json:"umask"           mapstructure:"umask"           yaml:"umask"`
 	UseBuiltinAge          autoBool                        `json:"useBuiltinAge"   mapstructure:"useBuiltinAge"   yaml:"useBuiltinAge"`
+	Color                  autoBool                        `json:"color"           mapstructure:"color"           yaml:"color"`
 	UseBuiltinGit          autoBool                        `json:"useBuiltinGit"   mapstructure:"useBuiltinGit"   yaml:"useBuiltinGit"`
+	Progress               autoBool                        `json:"progress"        mapstructure:"progress"        yaml:"progress"`
+	Completion             completionCmdConfig             `json:"completion" mapstructure:"completion" yaml:"completion"`
 	Verbose                bool                            `json:"verbose"         mapstructure:"verbose"         yaml:"verbose"`
+	Safe                   bool                            `json:"safe"            mapstructure:"safe"            yaml:"safe"`
 	Warnings               warningsConfig                  `json:"warnings"        mapstructure:"warnings"        yaml:"warnings"`
-	WorkingTreeAbsPath     chezmoi.AbsPath                 `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
-
-	// Password manager configurations.
-	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
-	AzureKeyVault     azureKeyVaultConfig     `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
-	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
-	BitwardenSecrets  bitwardenSecretsConfig  `json:"bitwardenSecrets"  mapstructure:"bitwardenSecrets"  yaml:"bitwardenSecrets"`
-	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
-	Doppler           dopplerConfig           `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
-	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
-	Gopass            gopassConfig            `json:"gopass"            mapstructure:"gopass"            yaml:"gopass"`
-	HCPVaultSecrets   hcpVaultSecretConfig    `json:"hcpVaultSecrets"   mapstructure:"hcpVaultSecrets"   yaml:"hcpVaultSecrets"`
-	Keepassxc         keepassxcConfig         `json:"keepassxc"         mapstructure:"keepassxc"         yaml:"keepassxc"`
-	Keeper            keeperConfig            `json:"keeper"            mapstructure:"keeper"            yaml:"keeper"`
-	Lastpass          lastpassConfig          `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
-	Onepassword       onepasswordConfig       `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
-	Pass              passConfig              `json:"pass"              mapstructure:"pass"              yaml:"pass"`
-	Passhole          passholeConfig          `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
-	RBW               rbwConfig               `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
-	Secret            secretConfig            `json:"secret"            mapstructure:"secret"            yaml:"secret"`
-	Vault             vaultConfig             `json:"vault"             mapstructure:"vault"             yaml:"vault"`
-
-	// Encryption configurations.
-	Encryption string                `json:"encryption" mapstructure:"encryption" yaml:"encryption"`
-	Age        chezmoi.AgeEncryption `json:"age"        mapstructure:"age"        yaml:"age"`
-	GPG        chezmoi.GPGEncryption `json:"gpg"        mapstructure:"gpg"        yaml:"gpg"`
-
-	// Command configurations.
-	Add        addCmdConfig        `json:"add"        mapstructure:"add"        yaml:"add"`
-	CD         cdCmdConfig         `json:"cd"         mapstructure:"cd"         yaml:"cd"`
-	Completion completionCmdConfig `json:"completion" mapstructure:"completion" yaml:"completion"`
-	Diff       diffCmdConfig       `json:"diff"       mapstructure:"diff"       yaml:"diff"`
-	Edit       editCmdConfig       `json:"edit"       mapstructure:"edit"       yaml:"edit"`
-	Git        gitCmdConfig        `json:"git"        mapstructure:"git"        yaml:"git"`
-	Merge      mergeCmdConfig      `json:"merge"      mapstructure:"merge"      yaml:"merge"`
-	Status     statusCmdConfig     `json:"status"     mapstructure:"status"     yaml:"status"`
-	Update     updateCmdConfig     `json:"update"     mapstructure:"update"     yaml:"update"`
-	Verify     verifyCmdConfig     `json:"verify"     mapstructure:"verify"     yaml:"verify"`
 }
 
 // A Config represents a configuration.
 type Config struct {
-	ConfigFile
-
-	// Global configuration.
-	configFormat     readDataFormat
-	cpuProfile       chezmoi.AbsPath
-	debug            bool
-	dryRun           bool
-	force            bool
-	homeDir          string
-	interactive      bool
-	keepGoing        bool
-	noPager          bool
-	noTTY            bool
-	outputAbsPath    chezmoi.AbsPath
-	refreshExternals chezmoi.RefreshExternals
-	sourcePath       bool
-	templateFuncs    template.FuncMap
-
-	// Password manager data.
-	gitHub  gitHubData
-	keyring keyringData
-
-	// Command configurations, not settable in the config file.
-	age             ageCmdConfig
-	apply           applyCmdConfig
-	archive         archiveCmdConfig
-	chattr          chattrCmdConfig
-	dump            dumpCmdConfig
-	executeTemplate executeTemplateCmdConfig
-	_import         importCmdConfig
-	init            initCmdConfig
-	managed         managedCmdConfig
-	mergeAll        mergeAllCmdConfig
-	purge           purgeCmdConfig
-	reAdd           reAddCmdConfig
-	remove          removeCmdConfig
-	secret          secretCmdConfig
-	state           stateCmdConfig
-	unmanaged       unmanagedCmdConfig
-	upgrade         upgradeCmdConfig
-
-	// Common configuration.
+	gitHub                   gitHubData
 	interactiveTemplateFuncs interactiveTemplateFuncsConfig
-
-	// Version information.
-	version     semver.Version
-	versionInfo VersionInfo
-	versionStr  string
-
-	// Configuration.
-	fileSystem           vfs.FS
-	bds                  *xdg.BaseDirectorySpecification
-	configFileAbsPath    chezmoi.AbsPath
-	configFileAbsPathErr error
-	baseSystem           chezmoi.System
-	sourceSystem         chezmoi.System
-	destSystem           chezmoi.System
-	persistentState      chezmoi.PersistentState
-	httpClient           *http.Client
-	logger               *zerolog.Logger
-
-	// Computed configuration.
-	commandDirAbsPath   chezmoi.AbsPath
-	homeDirAbsPath      chezmoi.AbsPath
-	encryption          chezmoi.Encryption
-	sourceDirAbsPath    chezmoi.AbsPath
-	sourceDirAbsPathErr error
-	sourceState         *chezmoi.SourceState
-	sourceStateErr      error
-	templateData        *templateData
-
-	stdin             io.Reader
-	stdout            io.Writer
-	stderr            io.Writer
-	bufioReader       *bufio.Reader
-	diffPagerCmdStdin io.WriteCloser
-	diffPagerCmd      *exec.Cmd
-
-	tempDirs map[string]chezmoi.AbsPath
-
-	ioregData ioregData
-
-	restoreWindowsConsole func() error
+	fileSystem               vfs.FS
+	configFileAbsPathErr     error
+	baseSystem               chezmoi.System
+	diffPagerCmdStdin        io.WriteCloser
+	sourceSystem             chezmoi.System
+	stderr                   io.Writer
+	stdout                   io.Writer
+	stdin                    io.Reader
+	destSystem               chezmoi.System
+	sourceStateErr           error
+	persistentState          chezmoi.PersistentState
+	sourceDirAbsPathErr      error
+	encryption               chezmoi.Encryption
+	keyring                  keyringData
+	reAdd                    reAddCmdConfig
+	templateFuncs            template.FuncMap
+	logger                   *zerolog.Logger
+	httpClient               *http.Client
+	sourceState              *chezmoi.SourceState
+	templateData             *templateData
+	bufioReader              *bufio.Reader
+	diffPagerCmd             *exec.Cmd
+	restoreWindowsConsole    func() error
+	tempDirs                 map[string]chezmoi.AbsPath
+	bds                      *xdg.BaseDirectorySpecification
+	ioregData                ioregData
+	ConfigFile
+	state             stateCmdConfig
+	secret            secretCmdConfig
+	init              initCmdConfig
+	upgrade           upgradeCmdConfig
+	versionInfo       VersionInfo
+	version           semver.Version
+	managed           managedCmdConfig
+	homeDirAbsPath    chezmoi.AbsPath
+	configFileAbsPath chezmoi.AbsPath
+	configFormat      readDataFormat
+	cpuProfile        chezmoi.AbsPath
+	sourceDirAbsPath  chezmoi.AbsPath
+	homeDir           string
+	outputAbsPath     chezmoi.AbsPath
+	apply             applyCmdConfig
+	dump              dumpCmdConfig
+	versionStr        string
+	unmanaged         unmanagedCmdConfig
+	commandDirAbsPath chezmoi.AbsPath
+	_import           importCmdConfig
+	archive           archiveCmdConfig
+	executeTemplate   executeTemplateCmdConfig
+	refreshExternals  chezmoi.RefreshExternals
+	age               ageCmdConfig
+	mergeAll          mergeAllCmdConfig
+	purge             purgeCmdConfig
+	keepGoing         bool
+	noPager           bool
+	chattr            chattrCmdConfig
+	interactive       bool
+	remove            removeCmdConfig
+	force             bool
+	dryRun            bool
+	debug             bool
+	sourcePath        bool
+	noTTY             bool
 }
 
 type templateData struct {
-	arch              string
-	args              []string
-	cacheDir          chezmoi.AbsPath
-	command           string
-	commandDir        chezmoi.AbsPath
 	config            map[string]any
-	configFile        chezmoi.AbsPath
+	windowsVersion    map[string]any
+	version           map[string]any
+	osRelease         map[string]any
+	kernel            map[string]any
+	hostname          string
+	os                string
 	executable        chezmoi.AbsPath
 	fqdnHostname      string
 	gid               string
 	group             string
 	homeDir           chezmoi.AbsPath
-	hostname          string
-	kernel            map[string]any
-	os                string
-	osRelease         map[string]any
+	arch              string
+	commandDir        chezmoi.AbsPath
+	configFile        chezmoi.AbsPath
+	command           string
 	pathListSeparator string
 	pathSeparator     string
 	sourceDir         chezmoi.AbsPath
 	uid               string
 	username          string
-	version           map[string]any
-	windowsVersion    map[string]any
+	cacheDir          chezmoi.AbsPath
 	workingTree       chezmoi.AbsPath
+	args              []string
 }
 
 // A configOption sets and option on a Config.
@@ -531,10 +506,10 @@ func (c *Config) addTemplateFunc(key string, value any) {
 type applyArgsOptions struct {
 	cmd          *cobra.Command
 	filter       *chezmoi.EntryTypeFilter
+	preApplyFunc chezmoi.PreApplyFunc
+	umask        fs.FileMode
 	init         bool
 	recursive    bool
-	umask        fs.FileMode
-	preApplyFunc chezmoi.PreApplyFunc
 }
 
 // applyArgs is the core of all commands that make changes to a target system.

@@ -34,13 +34,13 @@ type onepasswordAccount struct {
 }
 
 type onepasswordConfig struct {
-	Command       string `json:"command" mapstructure:"command" yaml:"command"`
-	Prompt        bool   `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
+	accountMapErr error
 	environFunc   func() []string
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
 	accountMap    map[string]string
-	accountMapErr error
+	Command       string `json:"command" mapstructure:"command" yaml:"command"`
+	Prompt        bool   `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
 }
 
 type onepasswordArgs struct {

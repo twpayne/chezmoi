@@ -9,9 +9,9 @@ import (
 func TestSourceRelPath(t *testing.T) {
 	for _, tc := range []struct {
 		name                  string
+		expectedTargetRelPath RelPath
 		sourceStatePath       SourceRelPath
 		expectedDirPath       SourceRelPath
-		expectedTargetRelPath RelPath
 	}{
 		{
 			name:            "empty",

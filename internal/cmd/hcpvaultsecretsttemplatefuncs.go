@@ -14,12 +14,12 @@ import (
 )
 
 type hcpVaultSecretConfig struct {
+	outputCache     map[string][]byte
 	Command         string   `json:"command"         mapstructure:"command"         yaml:"command"`
-	Args            []string `json:"args"            mapstructure:"args"            yaml:"args"`
 	ApplicationName string   `json:"applicationName" mapstructure:"applicationName" yaml:"applicationName"`
 	OrganizationID  string   `json:"organizationId"  mapstructure:"organizationId"  yaml:"organizationId"`
 	ProjectID       string   `json:"projectId"       mapstructure:"projectId"       yaml:"projectId"`
-	outputCache     map[string][]byte
+	Args            []string `json:"args"            mapstructure:"args"            yaml:"args"`
 }
 
 var vltMinVersion = semver.Version{Major: 0, Minor: 2, Patch: 1}

@@ -10,11 +10,11 @@ import (
 )
 
 type updateCmdConfig struct {
+	filter            *chezmoi.EntryTypeFilter
 	Command           string   `json:"command"           mapstructure:"command"           yaml:"command"`
 	Args              []string `json:"args"              mapstructure:"args"              yaml:"args"`
 	RecurseSubmodules bool     `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
 	apply             bool
-	filter            *chezmoi.EntryTypeFilter
 	init              bool
 	recursive         bool
 }

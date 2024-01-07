@@ -50,11 +50,11 @@ type fileData struct {
 
 // A scriptData contains data about a script.
 type scriptData struct {
+	Interpreter *Interpreter `json:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 	Type        dataType     `json:"type"                  yaml:"type"`
 	Name        AbsPath      `json:"name"                  yaml:"name"`
 	Contents    string       `json:"contents"              yaml:"contents"`
 	Condition   string       `json:"condition"             yaml:"condition"`
-	Interpreter *Interpreter `json:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 }
 
 // A symlinkData contains data about a symlink.

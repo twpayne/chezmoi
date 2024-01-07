@@ -18,11 +18,11 @@ import (
 // An RealSystem is a System that writes to a filesystem and executes scripts.
 type RealSystem struct {
 	fileSystem              vfs.FS
-	safe                    bool
-	createScriptTempDirOnce sync.Once
+	devCache                map[AbsPath]uint
+	tempDirCache            map[uint]string
 	scriptTempDir           AbsPath
-	devCache                map[AbsPath]uint // devCache maps directories to device numbers.
-	tempDirCache            map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
+	createScriptTempDirOnce sync.Once
+	safe                    bool
 }
 
 // RealSystemWithSafe sets the safe flag of the RealSystem.

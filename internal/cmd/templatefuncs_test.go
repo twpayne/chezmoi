@@ -163,8 +163,8 @@ func TestFromJson(t *testing.T) {
 	c, err := newConfig()
 	assert.NoError(t, err)
 	for i, tc := range []struct {
-		s        string
 		expected any
+		s        string
 	}{
 		{
 			s:        `{"key":1}`,
@@ -199,9 +199,9 @@ func TestFromJson(t *testing.T) {
 
 func TestPruneEmptyDicts(t *testing.T) {
 	for _, tc := range []struct {
-		name     string
 		dict     map[string]any
 		expected map[string]any
+		name     string
 	}{
 		{
 			name:     "nil",
@@ -399,8 +399,8 @@ func TestSetValueAtPathTemplateFunc(t *testing.T) {
 
 func TestFromIniTemplateFunc(t *testing.T) {
 	for i, tc := range []struct {
-		text     string
 		expected map[string]any
+		text     string
 	}{
 		{
 			text: chezmoitest.JoinLines(
@@ -444,11 +444,11 @@ func TestFromIniTemplateFunc(t *testing.T) {
 
 func TestKeysFromPath(t *testing.T) {
 	for _, tc := range []struct {
-		name            string
 		path            any
+		expectedErr     error
+		name            string
 		expectedLastKey string
 		expectedKeys    []string
-		expectedErr     error
 	}{
 		{
 			name:            "string_key",
@@ -568,12 +568,12 @@ func TestKeysFromPath(t *testing.T) {
 
 func TestNestedMapAtPath(t *testing.T) {
 	for _, tc := range []struct {
-		name            string
-		m               map[string]any
 		path            any
-		expectedMap     map[string]any
-		expectedLastKey string
 		expectedErr     error
+		m               map[string]any
+		expectedMap     map[string]any
+		name            string
+		expectedLastKey string
 	}{
 		{
 			name: "simple",

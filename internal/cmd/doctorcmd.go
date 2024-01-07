@@ -76,13 +76,13 @@ type argsCheck struct {
 // A binaryCheck checks that a binary called name is installed and optionally at
 // least version minVersion.
 type binaryCheck struct {
-	name        string
-	binaryname  string
-	ifNotSet    checkResult
-	ifNotExist  checkResult
-	versionArgs []string
 	versionRx   *regexp.Regexp
 	minVersion  *semver.Version
+	name        string
+	binaryname  string
+	versionArgs []string
+	ifNotSet    checkResult
+	ifNotExist  checkResult
 }
 
 // A configFileCheck checks that only one config file exists and that is

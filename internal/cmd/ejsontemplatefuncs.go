@@ -7,9 +7,9 @@ import (
 )
 
 type ejsonConfig struct {
+	cache  map[string]any
 	KeyDir string `json:"keyDir" mapstructure:"keyDir" yaml:"keyDir"`
 	Key    string `json:"key"    mapstructure:"key"    yaml:"key"`
-	cache  map[string]any
 }
 
 func (c *Config) ejsonDecryptWithKeyTemplateFunc(filePath, key string) any {

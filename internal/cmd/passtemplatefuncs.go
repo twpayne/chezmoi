@@ -9,8 +9,8 @@ import (
 )
 
 type passConfig struct {
-	Command string `json:"command" mapstructure:"command" yaml:"command"`
 	cache   map[string][]byte
+	Command string `json:"command" mapstructure:"command" yaml:"command"`
 }
 
 func (c *Config) passTemplateFunc(id string) string {

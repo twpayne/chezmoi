@@ -9,12 +9,12 @@ import (
 )
 
 type interactiveTemplateFuncsConfig struct {
-	forcePromptOnce bool
 	promptBool      map[string]string
 	promptChoice    map[string]string
-	promptDefaults  bool
 	promptInt       map[string]int
 	promptString    map[string]string
+	forcePromptOnce bool
+	promptDefaults  bool
 }
 
 func (c *Config) addInteractiveTemplateFuncFlags(flags *pflag.FlagSet) {

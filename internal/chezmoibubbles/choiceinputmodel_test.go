@@ -9,12 +9,12 @@ import (
 func TestChoiceInputModel(t *testing.T) {
 	choicesYesNoAll := []string{"yes", "no", "all"}
 	for _, tc := range []struct {
-		name             string
-		choices          []string
 		defaultValue     *string
+		name             string
 		input            string
-		expectedCanceled bool
 		expectedValue    string
+		choices          []string
+		expectedCanceled bool
 	}{
 		{
 			name:          "empty_with_default",

@@ -656,8 +656,8 @@ func nestedMapAtPath(m map[string]any, path any) (map[string]any, string, error)
 func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 	// Write keys in order and accumulate subsections.
 	type subsection struct {
-		key   string
 		value map[string]any
+		key   string
 	}
 	var subsections []subsection
 	for _, key := range chezmoimaps.SortedKeys(data) {

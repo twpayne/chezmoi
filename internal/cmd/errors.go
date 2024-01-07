@@ -6,10 +6,10 @@ import (
 )
 
 type cmdOutputError struct {
+	err    error
 	path   string
 	args   []string
 	output []byte
-	err    error
 }
 
 func newCmdOutputError(cmd *exec.Cmd, output []byte, err error) *cmdOutputError {
@@ -33,10 +33,10 @@ func (e *cmdOutputError) Unwrap() error {
 }
 
 type parseCmdOutputError struct {
+	err     error
 	command string
 	args    []string
 	output  []byte
-	err     error
 }
 
 func newParseCmdOutputError(command string, args []string, output []byte, err error) *parseCmdOutputError {
@@ -57,8 +57,8 @@ func (e *parseCmdOutputError) Unwrap() error {
 }
 
 type parseVersionError struct {
-	output []byte
 	err    error
+	output []byte
 }
 
 func (e *parseVersionError) Error() string {

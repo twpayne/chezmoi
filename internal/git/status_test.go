@@ -8,10 +8,10 @@ import (
 
 func TestParseStatusPorcelainV2(t *testing.T) {
 	for _, tc := range []struct {
+		expectedStatus *Status
 		name           string
 		outputStr      string
 		expectedEmpty  bool
-		expectedStatus *Status
 	}{
 		{
 			name:           "empty",

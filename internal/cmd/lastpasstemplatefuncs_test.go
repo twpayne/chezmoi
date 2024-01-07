@@ -11,8 +11,8 @@ import (
 
 func TestLastpassParseNote(t *testing.T) {
 	for i, tc := range []struct {
-		note     string
 		expected map[string]string
+		note     string
 	}{
 		{
 			note: "Foo:bar\n",

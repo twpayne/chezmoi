@@ -8,11 +8,11 @@ import (
 
 func TestStringInputModel(t *testing.T) {
 	for _, tc := range []struct {
-		name             string
 		defaultValue     *string
+		name             string
 		input            string
-		expectedCanceled bool
 		expectedValue    string
+		expectedCanceled bool
 	}{
 		{
 			name:  "empty",

@@ -13,9 +13,9 @@ import (
 
 func TestKernel(t *testing.T) {
 	for _, tc := range []struct {
-		name           string
 		root           any
 		expectedKernel map[string]any
+		name           string
 	}{
 		{
 			name: "windows_services_for_linux",
@@ -63,9 +63,9 @@ func TestKernel(t *testing.T) {
 
 func TestOSRelease(t *testing.T) {
 	for _, tc := range []struct {
-		name     string
 		root     map[string]any
 		expected map[string]any
+		name     string
 	}{
 		{
 			name: "archlinux",
@@ -169,9 +169,9 @@ func TestOSRelease(t *testing.T) {
 
 func TestParseOSRelease(t *testing.T) {
 	for _, tc := range []struct {
+		expected map[string]any
 		name     string
 		s        string
-		expected map[string]any
 	}{
 		{
 			name: "fedora",

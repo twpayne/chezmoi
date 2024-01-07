@@ -11,8 +11,8 @@ import (
 // A templateVariable is a template variable. It is used instead of a
 // map[string]string so that we can control order.
 type templateVariable struct {
-	components []string
 	value      string
+	components []string
 }
 
 var templateMarkerRx = regexp.MustCompile(`\{{2,}|\}{2,}`)

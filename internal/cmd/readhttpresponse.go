@@ -18,8 +18,8 @@ const httpProgressWidth = 38
 
 type httpProgressModel struct {
 	url           string
-	contentLength int
 	progress      progress.Model
+	contentLength int
 	canceled      bool
 }
 

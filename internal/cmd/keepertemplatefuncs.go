@@ -11,9 +11,9 @@ import (
 )
 
 type keeperConfig struct {
+	outputCache map[string][]byte
 	Command     string   `json:"command" mapstructure:"command" yaml:"command"`
 	Args        []string `json:"args"    mapstructure:"args"    yaml:"args"`
-	outputCache map[string][]byte
 }
 
 func (c *Config) keeperTemplateFunc(record string) map[string]any {
@@ -36,8 +36,8 @@ func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
 	var data struct {
 		Data struct {
 			Fields []struct {
-				Type  string `json:"type"`
 				Value any    `json:"value"`
+				Type  string `json:"type"`
 			} `json:"fields"`
 		} `json:"data"`
 	}

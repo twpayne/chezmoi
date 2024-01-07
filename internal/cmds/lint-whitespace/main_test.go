@@ -9,8 +9,8 @@ import (
 
 func TestLintData(t *testing.T) {
 	for i, tc := range []struct {
-		data           []byte
 		expectedErrStr string
+		data           []byte
 	}{
 		{
 			data:           nil,

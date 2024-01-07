@@ -13,13 +13,13 @@ import (
 )
 
 type executeTemplateCmdConfig struct {
-	init            bool
 	promptBool      map[string]string
 	promptChoice    map[string]string
 	promptInt       map[string]int
 	promptString    map[string]string
-	stdinIsATTY     bool
 	templateOptions chezmoi.TemplateOptions
+	init            bool
+	stdinIsATTY     bool
 	withStdin       bool
 }
 

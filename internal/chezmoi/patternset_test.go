@@ -11,9 +11,9 @@ import (
 
 func TestPatternSet(t *testing.T) {
 	for _, tc := range []struct {
-		name          string
 		ps            *patternSet
 		expectMatches map[string]patternSetMatchType
+		name          string
 	}{
 		{
 			name: "empty",

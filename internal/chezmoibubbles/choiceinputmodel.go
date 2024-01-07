@@ -11,9 +11,9 @@ import (
 )
 
 type ChoiceInputModel struct {
-	textInput           textinput.Model
 	uniqueAbbreviations map[string]string
 	defaultValue        *string
+	textInput           textinput.Model
 	canceled            bool
 }
 

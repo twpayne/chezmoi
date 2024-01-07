@@ -18,9 +18,9 @@ func (v *azureKeyVault) URL(vaultName string) string {
 }
 
 type azureKeyVaultConfig struct {
-	DefaultVault string `json:"defaultVault" mapstructure:"defaultVault" yaml:"defaultVault"`
 	vaults       map[string]*azureKeyVault
 	cred         *azidentity.DefaultAzureCredential
+	DefaultVault string `json:"defaultVault" mapstructure:"defaultVault" yaml:"defaultVault"`
 }
 
 func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {

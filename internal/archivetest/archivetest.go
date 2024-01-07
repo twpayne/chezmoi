@@ -7,14 +7,14 @@ import (
 
 // A Dir represents a directory.
 type Dir struct {
-	Perm    fs.FileMode
 	Entries map[string]any
+	Perm    fs.FileMode
 }
 
 // A File represents a file.
 type File struct {
-	Perm     fs.FileMode
 	Contents []byte
+	Perm     fs.FileMode
 }
 
 // A Symlink represents a symlink.

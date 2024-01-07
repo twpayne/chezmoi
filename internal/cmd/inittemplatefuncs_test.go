@@ -11,9 +11,9 @@ func TestPromptBoolInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
-		args              []bool
 		stdinStr          string
 		expectedStdoutStr string
+		args              []bool
 		expected          bool
 		expectedErr       bool
 	}{
@@ -84,11 +84,11 @@ func TestPromptChoiceInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
-		choices           []any
-		args              []string
 		stdinStr          string
 		expectedStdoutStr string
 		expected          string
+		choices           []any
+		args              []string
 		expectedErr       bool
 	}{
 		{
@@ -174,9 +174,9 @@ func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
-		args              []int64
 		stdinStr          string
 		expectedStdoutStr string
+		args              []int64
 		expected          int64
 		expectedErr       bool
 	}{
@@ -247,10 +247,10 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
-		args              []string
 		stdinStr          string
 		expectedStdoutStr string
 		expected          string
+		args              []string
 		expectedErr       bool
 	}{
 		{

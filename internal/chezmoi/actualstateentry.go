@@ -27,15 +27,15 @@ type ActualStateDir struct {
 
 // A ActualStateFile represents the state of a file in the filesystem.
 type ActualStateFile struct {
+	*lazyContents
 	absPath AbsPath
 	perm    fs.FileMode
-	*lazyContents
 }
 
 // A ActualStateSymlink represents the state of a symlink in the filesystem.
 type ActualStateSymlink struct {
-	absPath AbsPath
 	*lazyLinkname
+	absPath AbsPath
 }
 
 // NewActualStateEntry returns a new ActualStateEntry populated with absPath

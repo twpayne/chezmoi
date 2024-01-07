@@ -13,46 +13,46 @@ type ParseError string
 
 // An OrdinaryStatus is a status of a modified file.
 type OrdinaryStatus struct {
-	X    byte
-	Y    byte
 	Sub  string
-	MH   int64
-	MI   int64
-	MW   int64
 	HH   string
 	HI   string
 	Path string
+	MH   int64
+	MI   int64
+	MW   int64
+	X    byte
+	Y    byte
 }
 
 // A RenamedOrCopiedStatus is a status of a renamed or copied file.
 type RenamedOrCopiedStatus struct {
-	X        byte
-	Y        byte
 	Sub      string
+	HH       string
+	HI       string
+	Path     string
+	OrigPath string
 	MH       int64
 	MI       int64
 	MW       int64
-	HH       string
-	HI       string
-	RC       byte
 	Score    int64
-	Path     string
-	OrigPath string
+	X        byte
+	Y        byte
+	RC       byte
 }
 
 // An UnmergedStatus is the status of an unmerged file.
 type UnmergedStatus struct {
-	X    byte
-	Y    byte
 	Sub  string
-	M1   int64
-	M2   int64
-	M3   int64
-	MW   int64
 	H1   string
 	H2   string
 	H3   string
 	Path string
+	M1   int64
+	M2   int64
+	M3   int64
+	MW   int64
+	X    byte
+	Y    byte
 }
 
 // An UntrackedStatus is a status of an untracked file.

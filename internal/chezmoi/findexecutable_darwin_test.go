@@ -9,9 +9,9 @@ import (
 
 func TestFindExecutable(t *testing.T) {
 	tests := []struct {
+		expected string
 		files    []string
 		paths    []string
-		expected string
 	}{
 		{
 			files:    []string{"sh"},

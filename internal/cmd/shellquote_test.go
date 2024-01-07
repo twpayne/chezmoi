@@ -28,8 +28,8 @@ func TestShellQuote(t *testing.T) {
 func TestShellQuoteCommand(t *testing.T) {
 	for _, tc := range []struct {
 		command  string
-		args     []string
 		expected string
+		args     []string
 	}{
 		{
 			command:  "command",

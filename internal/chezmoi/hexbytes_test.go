@@ -9,8 +9,8 @@ import (
 
 func TestHexBytes(t *testing.T) {
 	for i, tc := range []struct {
-		b           HexBytes
 		expectedStr string
+		b           HexBytes
 	}{
 		{
 			b:           nil,

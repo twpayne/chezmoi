@@ -19,17 +19,17 @@ import (
 // An AgeEncryption uses age for encryption and decryption. See
 // https://age-encryption.org.
 type AgeEncryption struct {
-	UseBuiltin      bool      `json:"useBuiltin"      mapstructure:"useBuiltin"      yaml:"useBuiltin"`
 	Command         string    `json:"command"         mapstructure:"command"         yaml:"command"`
-	Args            []string  `json:"args"            mapstructure:"args"            yaml:"args"`
 	Identity        AbsPath   `json:"identity"        mapstructure:"identity"        yaml:"identity"`
-	Identities      []AbsPath `json:"identities"      mapstructure:"identities"      yaml:"identities"`
-	Passphrase      bool      `json:"passphrase"      mapstructure:"passphrase"      yaml:"passphrase"`
 	Recipient       string    `json:"recipient"       mapstructure:"recipient"       yaml:"recipient"`
-	Recipients      []string  `json:"recipients"      mapstructure:"recipients"      yaml:"recipients"`
 	RecipientsFile  AbsPath   `json:"recipientsFile"  mapstructure:"recipientsFile"  yaml:"recipientsFile"`
-	RecipientsFiles []AbsPath `json:"recipientsFiles" mapstructure:"recipientsFiles" yaml:"recipientsFiles"`
 	Suffix          string    `json:"suffix"          mapstructure:"suffix"          yaml:"suffix"`
+	Args            []string  `json:"args"            mapstructure:"args"            yaml:"args"`
+	Identities      []AbsPath `json:"identities"      mapstructure:"identities"      yaml:"identities"`
+	Recipients      []string  `json:"recipients"      mapstructure:"recipients"      yaml:"recipients"`
+	RecipientsFiles []AbsPath `json:"recipientsFiles" mapstructure:"recipientsFiles" yaml:"recipientsFiles"`
+	UseBuiltin      bool      `json:"useBuiltin"      mapstructure:"useBuiltin"      yaml:"useBuiltin"`
+	Passphrase      bool      `json:"passphrase"      mapstructure:"passphrase"      yaml:"passphrase"`
 	Symmetric       bool      `json:"symmetric"       mapstructure:"symmetric"       yaml:"symmetric"`
 }
 

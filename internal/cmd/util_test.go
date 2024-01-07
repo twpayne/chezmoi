@@ -37,8 +37,8 @@ func TestCamelCaseToUpperSnakeCase(t *testing.T) {
 
 func TestEnglishList(t *testing.T) {
 	for _, tc := range []struct {
-		ss       []string
 		expected string
+		ss       []string
 	}{
 		{
 			expected: "",
@@ -67,10 +67,10 @@ func TestEnglishList(t *testing.T) {
 
 func TestEnglishListWithNoun(t *testing.T) {
 	for _, tc := range []struct {
-		ss       []string
 		singular string
 		plural   string
 		expected string
+		ss       []string
 	}{
 		{
 			singular: "item",

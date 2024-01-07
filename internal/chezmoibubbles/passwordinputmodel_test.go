@@ -10,8 +10,8 @@ func TestPasswordInputModel(t *testing.T) {
 	for _, tc := range []struct {
 		name             string
 		input            string
-		expectedCanceled bool
 		expectedValue    string
+		expectedCanceled bool
 	}{
 		{
 			name:  "empty",

@@ -169,8 +169,8 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 
 func TestUniqueAbbreviations(t *testing.T) {
 	for _, tc := range []struct {
-		values   []string
 		expected map[string]string
+		values   []string
 	}{
 		{
 			values:   nil,

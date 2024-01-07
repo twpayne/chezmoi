@@ -10,8 +10,8 @@ import (
 )
 
 type bitwardenConfig struct {
-	Command     string `json:"command" mapstructure:"command" yaml:"command"`
 	outputCache map[string][]byte
+	Command     string `json:"command" mapstructure:"command" yaml:"command"`
 }
 
 func (c *Config) bitwardenAttachmentTemplateFunc(name, itemID string) string {

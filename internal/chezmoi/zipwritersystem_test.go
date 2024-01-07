@@ -64,9 +64,9 @@ func TestZIPWriterSystem(t *testing.T) {
 		assert.NoError(t, err)
 		expectedFiles := []struct {
 			name     string
-			method   uint16
-			mode     fs.FileMode
 			contents []byte
+			mode     fs.FileMode
+			method   uint16
 		}{
 			{
 				name: ".dir",

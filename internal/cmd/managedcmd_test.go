@@ -13,10 +13,10 @@ import (
 func TestManagedCmd(t *testing.T) {
 	templateContents := `{{ fail "Template should not be executed" }}`
 	for _, tc := range []struct {
-		name           string
 		root           any
-		args           []string
+		name           string
 		expectedOutput string
+		args           []string
 	}{
 		{
 			name: "simple",

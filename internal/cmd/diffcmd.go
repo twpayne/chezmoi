@@ -7,13 +7,13 @@ import (
 )
 
 type diffCmdConfig struct {
-	Command        string                `json:"command"        mapstructure:"command"        yaml:"command"`
-	Args           []string              `json:"args"           mapstructure:"args"           yaml:"args"`
 	Exclude        *chezmoi.EntryTypeSet `json:"exclude"        mapstructure:"exclude"        yaml:"exclude"`
-	Pager          string                `json:"pager"          mapstructure:"pager"          yaml:"pager"`
-	Reverse        bool                  `json:"reverse"        mapstructure:"reverse"        yaml:"reverse"`
-	ScriptContents bool                  `json:"scriptContents" mapstructure:"scriptContents" yaml:"scriptContents"`
 	include        *chezmoi.EntryTypeSet
+	Command        string   `json:"command"        mapstructure:"command"        yaml:"command"`
+	Pager          string   `json:"pager"          mapstructure:"pager"          yaml:"pager"`
+	Args           []string `json:"args"           mapstructure:"args"           yaml:"args"`
+	Reverse        bool     `json:"reverse"        mapstructure:"reverse"        yaml:"reverse"`
+	ScriptContents bool     `json:"scriptContents" mapstructure:"scriptContents" yaml:"scriptContents"`
 	init           bool
 	recursive      bool
 	useBuiltinDiff bool

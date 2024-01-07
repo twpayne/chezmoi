@@ -6,8 +6,8 @@ import (
 )
 
 type StringInputModel struct {
-	textInput    textinput.Model
 	defaultValue *string
+	textInput    textinput.Model
 	canceled     bool
 }
 

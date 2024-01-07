@@ -23,11 +23,11 @@ func TestFormats(t *testing.T) {
 
 func TestFormatRoundTrip(t *testing.T) {
 	type value struct {
-		Bool   bool
-		Bytes  []byte
-		Int    int
 		Object map[string]any
 		String string
+		Bytes  []byte
+		Int    int
+		Bool   bool
 	}
 
 	for _, format := range []Format{

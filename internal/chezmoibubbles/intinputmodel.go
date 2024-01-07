@@ -8,8 +8,8 @@ import (
 )
 
 type IntInputModel struct {
-	textInput    textinput.Model
 	defaultValue *int64
+	textInput    textinput.Model
 	canceled     bool
 }
 

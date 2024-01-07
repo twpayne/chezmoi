@@ -61,11 +61,11 @@ func TestTarWriterSystem(t *testing.T) {
 
 		r := tar.NewReader(b)
 		for _, tc := range []struct {
-			expectedTypeflag byte
 			expectedName     string
-			expectedMode     int64
 			expectedLinkname string
 			expectedContents []byte
+			expectedMode     int64
+			expectedTypeflag byte
 		}{
 			{
 				expectedTypeflag: tar.TypeDir,

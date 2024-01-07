@@ -17,10 +17,10 @@ func TestDiffCmd(t *testing.T) {
 		t.Skip("umask not 0o22")
 	}
 	for _, tc := range []struct {
-		name      string
 		extraRoot any
-		args      []string
+		name      string
 		stdoutStr string
+		args      []string
 	}{
 		{
 			name: "empty",

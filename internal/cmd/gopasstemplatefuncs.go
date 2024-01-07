@@ -21,9 +21,9 @@ var (
 )
 
 type gopassConfig struct {
-	Command  string `json:"command" mapstructure:"command" yaml:"command"`
 	cache    map[string]string
 	rawCache map[string][]byte
+	Command  string `json:"command" mapstructure:"command" yaml:"command"`
 }
 
 func (c *Config) gopassTemplateFunc(id string) string {

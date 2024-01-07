@@ -13,11 +13,11 @@ import (
 
 func TestStatusCmd(t *testing.T) {
 	for _, tc := range []struct {
-		name           string
 		root           any
+		name           string
+		stdoutStr      string
 		args           []string
 		postApplyTests []any
-		stdoutStr      string
 	}{
 		{
 			name: "add_file",

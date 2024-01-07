@@ -88,57 +88,57 @@ type externalPull struct {
 
 // An External is an external source.
 type External struct {
+	sourceAbsPath   AbsPath
+	URL             string           `json:"url"             toml:"url"             yaml:"url"`
 	Type            ExternalType     `json:"type"            toml:"type"            yaml:"type"`
-	Encrypted       bool             `json:"encrypted"       toml:"encrypted"       yaml:"encrypted"`
-	Exact           bool             `json:"exact"           toml:"exact"           yaml:"exact"`
-	Executable      bool             `json:"executable"      toml:"executable"      yaml:"executable"`
-	Checksum        externalChecksum `json:"checksum"        toml:"checksum"        yaml:"checksum"`
-	Clone           externalClone    `json:"clone"           toml:"clone"           yaml:"clone"`
-	Exclude         []string         `json:"exclude"         toml:"exclude"         yaml:"exclude"`
-	Filter          externalFilter   `json:"filter"          toml:"filter"          yaml:"filter"`
-	Format          ArchiveFormat    `json:"format"          toml:"format"          yaml:"format"`
-	Archive         externalArchive  `json:"archive"         toml:"archive"         yaml:"archive"`
-	Include         []string         `json:"include"         toml:"include"         yaml:"include"`
 	ArchivePath     string           `json:"path"            toml:"path"            yaml:"path"`
+	Format          ArchiveFormat    `json:"format"          toml:"format"          yaml:"format"`
+	Filter          externalFilter   `json:"filter"          toml:"filter"          yaml:"filter"`
 	Pull            externalPull     `json:"pull"            toml:"pull"            yaml:"pull"`
+	Exclude         []string         `json:"exclude"         toml:"exclude"         yaml:"exclude"`
+	Clone           externalClone    `json:"clone"           toml:"clone"           yaml:"clone"`
+	Include         []string         `json:"include"         toml:"include"         yaml:"include"`
+	Checksum        externalChecksum `json:"checksum"        toml:"checksum"        yaml:"checksum"`
 	RefreshPeriod   Duration         `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
 	StripComponents int              `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
-	URL             string           `json:"url"             toml:"url"             yaml:"url"`
-	sourceAbsPath   AbsPath
+	Archive         externalArchive  `json:"archive"         toml:"archive"         yaml:"archive"`
+	Executable      bool             `json:"executable"      toml:"executable"      yaml:"executable"`
+	Exact           bool             `json:"exact"           toml:"exact"           yaml:"exact"`
+	Encrypted       bool             `json:"encrypted"       toml:"encrypted"       yaml:"encrypted"`
 }
 
 // A SourceState is a source state.
 type SourceState struct {
-	sync.Mutex
 	root                    sourceStateEntryTreeNode
-	removeDirs              map[RelPath]struct{}
-	baseSystem              System
 	system                  System
-	sourceDirAbsPath        AbsPath
-	destDirAbsPath          AbsPath
-	cacheDirAbsPath         AbsPath
-	umask                   fs.FileMode
 	encryption              Encryption
+	baseSystem              System
+	defaultTemplateData     map[string]any
+	defaultTemplateDataFunc func() map[string]any
+	ignoredRelPaths         map[RelPath]struct{}
+	externals               map[RelPath][]*External
+	templates               map[string]*Template
+	removeDirs              map[RelPath]struct{}
 	ignore                  *patternSet
 	remove                  *patternSet
 	interpreters            map[string]*Interpreter
 	httpClient              *http.Client
 	logger                  *zerolog.Logger
-	version                 semver.Version
-	mode                    Mode
-	defaultTemplateDataFunc func() map[string]any
-	templateDataOnly        bool
-	readTemplateData        bool
-	readTemplates           bool
-	defaultTemplateData     map[string]any
-	userTemplateData        map[string]any
-	priorityTemplateData    map[string]any
-	templateData            map[string]any
 	templateFuncs           template.FuncMap
+	templateData            map[string]any
+	priorityTemplateData    map[string]any
+	userTemplateData        map[string]any
+	version                 semver.Version
+	sourceDirAbsPath        AbsPath
+	mode                    Mode
+	cacheDirAbsPath         AbsPath
+	destDirAbsPath          AbsPath
 	templateOptions         []string
-	templates               map[string]*Template
-	externals               map[RelPath][]*External
-	ignoredRelPaths         map[RelPath]struct{}
+	sync.Mutex
+	umask            fs.FileMode
+	readTemplateData bool
+	readTemplates    bool
+	templateDataOnly bool
 }
 
 // A SourceStateOption sets an option on a source state.
@@ -314,19 +314,19 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate      bool             // Automatically create templates, if possible.
-	Create            bool             // Add create_ entries instead of normal entries.
-	Encrypt           bool             // Encrypt files.
-	EncryptedSuffix   string           // Suffix for encrypted files.
-	Exact             bool             // Add the exact_ attribute to added directories.
-	Filter            *EntryTypeFilter // Entry type filter.
-	OnIgnoreFunc      func(RelPath)    // Function to call when a target is ignored.
-	PreAddFunc        PreAddFunc       // Function to be called before a source entry is added.
-	ProtectedAbsPaths []AbsPath        // Paths that must not be added.
-	RemoveDir         RelPath          // Directory to remove before adding.
-	ReplaceFunc       ReplaceFunc      // Function to be called before a source entry is replaced.
-	Template          bool             // Add the .tmpl attribute to added files.
-	TemplateSymlinks  bool             // Add symlinks with targets in the source or home directories as templates.
+	Filter            *EntryTypeFilter
+	ReplaceFunc       ReplaceFunc
+	PreAddFunc        PreAddFunc
+	OnIgnoreFunc      func(RelPath)
+	EncryptedSuffix   string
+	RemoveDir         RelPath
+	ProtectedAbsPaths []AbsPath
+	Exact             bool
+	AutoTemplate      bool
+	Encrypt           bool
+	Create            bool
+	Template          bool
+	TemplateSymlinks  bool
 }
 
 // Add adds destAbsPathInfos to s.
@@ -858,8 +858,8 @@ TARGET:
 // ReadOptions are options to SourceState.Read.
 type ReadOptions struct {
 	ReadHTTPResponse func(*http.Response) ([]byte, error)
-	RefreshExternals RefreshExternals
 	TimeNow          func() time.Time
+	RefreshExternals RefreshExternals
 }
 
 // Read reads the source state from the source directory.

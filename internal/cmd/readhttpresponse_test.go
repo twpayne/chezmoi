@@ -10,9 +10,9 @@ import (
 func TestMakeNightriderFrames(t *testing.T) {
 	for i, tc := range []struct {
 		shape    string
-		padding  rune
-		width    int
 		expected []string
+		width    int
+		padding  rune
 	}{
 		{
 			shape:   "+",

@@ -96,7 +96,6 @@ func TestFileAttr(t *testing.T) {
 		"template.tmpl",
 	}
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
 		TargetName []string
 		Empty      []bool
 		Encrypted  []bool
@@ -104,6 +103,7 @@ func TestFileAttr(t *testing.T) {
 		Private    []bool
 		ReadOnly   []bool
 		Template   []bool
+		Type       SourceFileTargetType
 	}{
 		Type:       SourceFileTypeCreate,
 		TargetName: []string{},
@@ -115,7 +115,6 @@ func TestFileAttr(t *testing.T) {
 		Template:   []bool{false, true},
 	}))
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
 		TargetName []string
 		Empty      []bool
 		Encrypted  []bool
@@ -123,6 +122,7 @@ func TestFileAttr(t *testing.T) {
 		Private    []bool
 		ReadOnly   []bool
 		Template   []bool
+		Type       SourceFileTargetType
 	}{
 		Type:       SourceFileTypeFile,
 		TargetName: targetNames,
@@ -134,13 +134,13 @@ func TestFileAttr(t *testing.T) {
 		Template:   []bool{false, true},
 	}))
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
 		TargetName []string
 		Encrypted  []bool
 		Executable []bool
 		Private    []bool
 		ReadOnly   []bool
 		Template   []bool
+		Type       SourceFileTargetType
 	}{
 		Type:       SourceFileTypeModify,
 		TargetName: targetNames,
@@ -151,17 +151,17 @@ func TestFileAttr(t *testing.T) {
 		Template:   []bool{false, true},
 	}))
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
 		TargetName []string
+		Type       SourceFileTargetType
 	}{
 		Type:       SourceFileTypeRemove,
 		TargetName: targetNames,
 	}))
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
 		Condition  []ScriptCondition
 		TargetName []string
 		Order      []ScriptOrder
+		Type       SourceFileTargetType
 	}{
 		Type: SourceFileTypeScript,
 		Condition: []ScriptCondition{
@@ -173,8 +173,8 @@ func TestFileAttr(t *testing.T) {
 		Order:      []ScriptOrder{ScriptOrderBefore, ScriptOrderDuring, ScriptOrderAfter},
 	}))
 	assert.NoError(t, combinator.Generate(&fileAttrs, struct {
-		Type       SourceFileTargetType
 		TargetName []string
+		Type       SourceFileTargetType
 	}{
 		Type:       SourceFileTypeSymlink,
 		TargetName: targetNames,

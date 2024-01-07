@@ -12,8 +12,8 @@ import (
 
 func TestKeepassxcParseOutput(t *testing.T) {
 	for i, tc := range []struct {
-		output   []byte
 		expected map[string]string
+		output   []byte
 	}{
 		{
 			expected: map[string]string{},

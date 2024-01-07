@@ -9,8 +9,8 @@ import (
 )
 
 type vaultConfig struct {
-	Command string `json:"command" mapstructure:"command" yaml:"command"`
 	cache   map[string]any
+	Command string `json:"command" mapstructure:"command" yaml:"command"`
 }
 
 func (c *Config) vaultTemplateFunc(key string) any {

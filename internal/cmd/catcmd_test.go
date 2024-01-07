@@ -16,10 +16,10 @@ func TestCatCmd(t *testing.T) {
 		t.Skip("fails due to Windows paths on GitHub Actions")
 	}
 	for _, tc := range []struct {
-		name        string
 		root        any
-		args        []string
+		name        string
 		expectedStr string
+		args        []string
 	}{
 		{
 			name: "template_delimiters",

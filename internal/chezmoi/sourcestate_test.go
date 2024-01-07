@@ -868,10 +868,10 @@ func TestSourceStateExecuteTemplateData(t *testing.T) {
 
 func TestSourceStateRead(t *testing.T) {
 	for _, tc := range []struct {
-		name                string
 		root                any
-		expectedError       string
 		expectedSourceState *SourceState
+		name                string
+		expectedError       string
 	}{
 		{
 			name: "empty",
@@ -1503,9 +1503,9 @@ func TestSourceStateReadExternal(t *testing.T) {
 	defer httpServer.Close()
 
 	for _, tc := range []struct {
-		name              string
 		root              any
 		expectedExternals map[RelPath][]*External
+		name              string
 	}{
 		{
 			name: "external_yaml",
@@ -1591,8 +1591,8 @@ func TestSourceStateReadExternal(t *testing.T) {
 
 func TestSourceStateReadScriptsConcurrent(t *testing.T) {
 	for _, tc := range []struct {
-		name string
 		root any
+		name string
 	}{
 		{
 			name: "with_ignore",
@@ -1761,8 +1761,8 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 	for _, tc := range []struct {
 		name            string
 		dataStr         string
-		expected        TemplateOptions
 		expectedDataStr string
+		expected        TemplateOptions
 	}{
 		{
 			name: "empty",

@@ -24,10 +24,10 @@ const (
 // A BoltPersistentState is a state persisted with bolt.
 type BoltPersistentState struct {
 	system  System
-	empty   bool
-	path    AbsPath
-	options bbolt.Options
 	db      *bbolt.DB
+	options bbolt.Options
+	path    AbsPath
+	empty   bool
 }
 
 // NewBoltPersistentState returns a new BoltPersistentState.

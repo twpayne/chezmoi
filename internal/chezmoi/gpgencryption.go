@@ -12,11 +12,11 @@ import (
 // A GPGEncryption uses gpg for encryption and decryption. See https://gnupg.org/.
 type GPGEncryption struct {
 	Command    string   `json:"command"    mapstructure:"command"    yaml:"command"`
-	Args       []string `json:"args"       mapstructure:"args"       yaml:"args"`
 	Recipient  string   `json:"recipient"  mapstructure:"recipient"  yaml:"recipient"`
+	Suffix     string   `json:"suffix"     mapstructure:"suffix"     yaml:"suffix"`
+	Args       []string `json:"args"       mapstructure:"args"       yaml:"args"`
 	Recipients []string `json:"recipients" mapstructure:"recipients" yaml:"recipients"`
 	Symmetric  bool     `json:"symmetric"  mapstructure:"symmetric"  yaml:"symmetric"`
-	Suffix     string   `json:"suffix"     mapstructure:"suffix"     yaml:"suffix"`
 }
 
 // Decrypt implements Encryption.Decrypt.

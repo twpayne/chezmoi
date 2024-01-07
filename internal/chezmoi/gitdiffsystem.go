@@ -21,21 +21,21 @@ type TextConvFunc func(string, []byte) ([]byte, error)
 // diff.
 type GitDiffSystem struct {
 	system         System
-	dirAbsPath     AbsPath
 	filter         *EntryTypeFilter
-	reverse        bool
-	scriptContents bool
 	textConvFunc   TextConvFunc
 	unifiedEncoder *diff.UnifiedEncoder
+	dirAbsPath     AbsPath
+	reverse        bool
+	scriptContents bool
 }
 
 // GitDiffSystemOptions are options for NewGitDiffSystem.
 type GitDiffSystemOptions struct {
-	Color          bool
 	Filter         *EntryTypeFilter
+	TextConvFunc   TextConvFunc
+	Color          bool
 	Reverse        bool
 	ScriptContents bool
-	TextConvFunc   TextConvFunc
 }
 
 // NewGitDiffSystem returns a new GitDiffSystem. Output is written to w, the

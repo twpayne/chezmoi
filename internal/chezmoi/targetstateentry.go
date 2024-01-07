@@ -27,24 +27,24 @@ type TargetStateEntry interface {
 // a directory.
 type TargetStateModifyDirWithCmd struct {
 	cmd           *exec.Cmd
-	forceRefresh  bool
-	refreshPeriod Duration
 	sourceAttr    SourceAttr
+	refreshPeriod Duration
+	forceRefresh  bool
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
 type TargetStateDir struct {
-	perm       fs.FileMode
 	sourceAttr SourceAttr
+	perm       fs.FileMode
 }
 
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
 	*lazyContents
+	sourceAttr SourceAttr
+	perm       fs.FileMode
 	empty      bool
 	overwrite  bool
-	perm       fs.FileMode
-	sourceAttr SourceAttr
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -68,14 +68,14 @@ type TargetStateSymlink struct {
 // A modifyDirWithCmdState records the state of a directory modified by a
 // command.
 type modifyDirWithCmdState struct {
-	Name  AbsPath   `json:"name"  yaml:"name"`
 	RunAt time.Time `json:"runAt" yaml:"runAt"`
+	Name  AbsPath   `json:"name"  yaml:"name"`
 }
 
 // A scriptState records the state of a script that has been run.
 type scriptState struct {
-	Name  RelPath   `json:"name"  yaml:"name"`
 	RunAt time.Time `json:"runAt" yaml:"runAt"`
+	Name  RelPath   `json:"name"  yaml:"name"`
 }
 
 // Apply updates actualStateEntry to match t.

@@ -19,11 +19,11 @@ import (
 // An ExternalDiffSystem is a DiffSystem that uses an external diff tool.
 type ExternalDiffSystem struct {
 	system         System
+	filter         *EntryTypeFilter
 	command        string
-	args           []string
 	destDirAbsPath AbsPath
 	tempDirAbsPath AbsPath
-	filter         *EntryTypeFilter
+	args           []string
 	reverse        bool
 	scriptContents bool
 }

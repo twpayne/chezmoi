@@ -10,12 +10,12 @@ import (
 )
 
 type addCmdConfig struct {
+	filter           *chezmoi.EntryTypeFilter
 	TemplateSymlinks bool `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
 	autoTemplate     bool
 	create           bool
 	encrypt          bool
 	exact            bool
-	filter           *chezmoi.EntryTypeFilter
 	follow           bool
 	prompt           bool
 	quiet            bool

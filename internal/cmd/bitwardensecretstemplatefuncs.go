@@ -11,8 +11,8 @@ import (
 )
 
 type bitwardenSecretsConfig struct {
-	Command     string `json:"command" mapstructure:"command" yaml:"command"`
 	outputCache map[string][]byte
+	Command     string `json:"command" mapstructure:"command" yaml:"command"`
 }
 
 func (c *Config) bitwardenSecretsTemplateFunc(secretID string, additionalArgs ...string) any {

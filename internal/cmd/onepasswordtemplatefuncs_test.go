@@ -8,9 +8,9 @@ import (
 
 func TestOnepasswordAccountMap(t *testing.T) {
 	for _, tc := range []struct {
+		expected map[string]string
 		name     string
 		accounts []onepasswordAccount
-		expected map[string]string
 	}{
 		{
 			name: "single_account_without_shorthand",

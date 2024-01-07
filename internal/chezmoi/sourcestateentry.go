@@ -38,30 +38,30 @@ type SourceStateEntry interface {
 
 // A SourceStateCommand represents a command that should be run.
 type SourceStateCommand struct {
-	cmd           *exec.Cmd
 	origin        SourceStateOrigin
-	forceRefresh  bool
-	refreshPeriod Duration
+	cmd           *exec.Cmd
 	sourceAttr    SourceAttr
+	refreshPeriod Duration
+	forceRefresh  bool
 }
 
 // A SourceStateDir represents the state of a directory in the source state.
 type SourceStateDir struct {
-	Attr             DirAttr
 	origin           SourceStateOrigin
-	sourceRelPath    SourceRelPath
 	targetStateEntry TargetStateEntry
+	Attr             DirAttr
+	sourceRelPath    SourceRelPath
 }
 
 // A SourceStateFile represents the state of a file in the source state.
 type SourceStateFile struct {
+	origin              SourceStateOrigin
+	targetStateEntry    TargetStateEntry
+	targetStateEntryErr error
 	*lazyContents
-	Attr                 FileAttr
-	origin               SourceStateOrigin
-	sourceRelPath        SourceRelPath
 	targetStateEntryFunc targetStateEntryFunc
-	targetStateEntry     TargetStateEntry
-	targetStateEntryErr  error
+	sourceRelPath        SourceRelPath
+	Attr                 FileAttr
 }
 
 // A SourceStateImplicitDir represents the state of a directory that is implicit
@@ -76,8 +76,8 @@ type SourceStateImplicitDir struct {
 // A SourceStateRemove represents that an entry should be removed.
 type SourceStateRemove struct {
 	origin        SourceStateOrigin
-	sourceRelPath SourceRelPath
 	targetRelPath RelPath
+	sourceRelPath SourceRelPath
 }
 
 // A SourceStateOriginRemove is used for removes. The source of the remove is

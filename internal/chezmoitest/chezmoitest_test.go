@@ -9,8 +9,8 @@ import (
 
 func TestJoinLines(t *testing.T) {
 	for i, tc := range []struct {
-		lines    []string
 		expected string
+		lines    []string
 	}{
 		{
 			lines:    nil,

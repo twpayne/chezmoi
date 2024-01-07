@@ -9,11 +9,11 @@ import (
 )
 
 type importCmdConfig struct {
-	destination       chezmoi.AbsPath
-	exact             bool
 	filter            *chezmoi.EntryTypeFilter
-	removeDestination bool
+	destination       chezmoi.AbsPath
 	stripComponents   int
+	exact             bool
+	removeDestination bool
 }
 
 func (c *Config) newImportCmd() *cobra.Command {

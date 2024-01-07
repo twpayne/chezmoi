@@ -13,9 +13,9 @@ import (
 
 func TestVerifyCmd(t *testing.T) {
 	for _, tc := range []struct {
-		name        string
 		root        any
 		expectedErr error
+		name        string
 	}{
 		{
 			name: "empty",

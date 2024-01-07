@@ -29,12 +29,12 @@ func TestArchiveReaderSystemTar(t *testing.T) {
 	assert.NoError(t, err)
 
 	for _, tc := range []struct {
-		absPath      AbsPath
 		lstatErr     error
-		readlink     string
 		readlinkErr  error
-		readFileData []byte
 		readFileErr  error
+		absPath      AbsPath
+		readlink     string
+		readFileData []byte
 	}{
 		{
 			absPath:      NewAbsPath("/home/user/file"),

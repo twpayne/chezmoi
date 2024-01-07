@@ -9,8 +9,8 @@ import (
 
 func TestIncludeMaskSet(t *testing.T) {
 	for _, tc := range []struct {
-		s           string
 		expected    *EntryTypeSet
+		s           string
 		expectedErr bool
 	}{
 		{
@@ -65,8 +65,8 @@ func TestIncludeMaskSet(t *testing.T) {
 
 func TestIncludeMaskStringSlice(t *testing.T) {
 	for _, tc := range []struct {
-		bits     EntryTypeBits
 		expected string
+		bits     EntryTypeBits
 	}{
 		{
 			bits:     EntryTypesAll,

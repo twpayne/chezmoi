@@ -13,9 +13,9 @@ import (
 )
 
 type secretConfig struct {
+	cache   map[string][]byte
 	Command string   `json:"command" mapstructure:"command" yaml:"command"`
 	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
-	cache   map[string][]byte
 }
 
 func (c *Config) secretTemplateFunc(args ...string) string {

@@ -18,12 +18,12 @@ import (
 )
 
 type initCmdConfig struct {
-	apply             bool
+	filter            *chezmoi.EntryTypeFilter
 	branch            string
 	configPath        chezmoi.AbsPath
-	data              bool
 	depth             int
-	filter            *chezmoi.EntryTypeFilter
+	apply             bool
+	data              bool
 	guessRepoURL      bool
 	oneShot           bool
 	purge             bool

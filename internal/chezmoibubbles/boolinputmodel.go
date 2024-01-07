@@ -10,8 +10,8 @@ import (
 )
 
 type BoolInputModel struct {
-	textInput    textinput.Model
 	defaultValue *bool
+	textInput    textinput.Model
 	canceled     bool
 }
 

@@ -58,8 +58,8 @@ func TestChattrCmdValidArgs(t *testing.T) {
 
 func TestParseAttrModifier(t *testing.T) {
 	for _, tc := range []struct {
-		s           string
 		expected    *modifier
+		s           string
 		expectedErr bool
 	}{
 		{
