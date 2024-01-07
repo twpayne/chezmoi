@@ -127,7 +127,6 @@ linters-settings:
     local-prefixes: github.com/twpayne/chezmoi
   govet:
     disable:
-    - fieldalignment
     - shadow
     enable-all: true
   ireturn:
