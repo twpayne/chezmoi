@@ -87,7 +87,7 @@ require (
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/lipgloss v0.9.1 // indirect
-	github.com/cloudflare/circl v1.3.6 // indirect
+	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 // indirect
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
 	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
