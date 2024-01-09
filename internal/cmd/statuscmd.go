@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"strings"
@@ -81,9 +82,9 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 			case chezmoi.PathStyleRelative:
 				path = targetRelPath.String()
 			case chezmoi.PathStyleSourceAbsolute:
-				return fmt.Errorf("source-absolute not supported for status")
+				return errors.New("source-absolute not supported for status")
 			case chezmoi.PathStyleSourceRelative:
-				return fmt.Errorf("source-relative not supported for status")
+				return errors.New("source-relative not supported for status")
 			}
 
 			fmt.Fprintf(&builder, "%c%c %s\n", x, y, path)

@@ -96,7 +96,7 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
 		case choice == "yes":
 			return nil
 		default:
-			panic(fmt.Sprintf("%s: unexpected choice", choice))
+			panic(choice + ": unexpected choice")
 		}
 	}
 }
@@ -147,7 +147,7 @@ func (c *Config) defaultReplaceFunc(
 		case choice == "yes":
 			return nil
 		default:
-			panic(fmt.Sprintf("%s: unexpected choice", choice))
+			panic(choice + ": unexpected choice")
 		}
 	}
 }

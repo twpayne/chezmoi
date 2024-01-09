@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
@@ -72,7 +73,7 @@ func (c *Config) azureKeyVaultTemplateFunc(args ...string) string {
 	switch len(args) {
 	case 1:
 		if c.AzureKeyVault.DefaultVault == "" {
-			panic(fmt.Errorf("no value set in azureKeyVault.defaultVault"))
+			panic(errors.New("no value set in azureKeyVault.defaultVault"))
 		}
 		secretName, vaultName = args[0], c.AzureKeyVault.DefaultVault
 	case 2:

@@ -93,7 +93,7 @@ func run() error {
 	}
 
 	if flag.NArg() == 0 {
-		return fmt.Errorf("no arguments")
+		return errors.New("no arguments")
 	}
 
 	templateName := path.Base(flag.Arg(0))

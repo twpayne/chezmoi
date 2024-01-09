@@ -465,7 +465,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	var pathAbsPath chezmoi.AbsPath
 	switch path, err := chezmoi.LookPath(c.binaryname); {
 	case errors.Is(err, exec.ErrNotFound):
-		return c.ifNotExist, fmt.Sprintf("%s not found in $PATH", c.binaryname)
+		return c.ifNotExist, c.binaryname + " not found in $PATH"
 	case err != nil:
 		return checkResultFailed, err.Error()
 	default:
@@ -551,7 +551,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 			filenameStrs = append(filenameStrs, filenameAbsPath.String())
 		}
 		sort.Strings(filenameStrs)
-		return checkResultWarning, fmt.Sprintf("%s: multiple config files", englishList(filenameStrs))
+		return checkResultWarning, englishList(filenameStrs) + ": multiple config files"
 	}
 }
 

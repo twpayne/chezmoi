@@ -42,7 +42,7 @@ func (e UnknownArchiveFormatError) Error() string {
 	if e == UnknownArchiveFormatError(ArchiveFormatUnknown) {
 		return "unknown archive format"
 	}
-	return fmt.Sprintf("%s: unknown archive format", string(e))
+	return string(e) + ": unknown archive format"
 }
 
 // An WalkArchiveFunc is called once for each entry in an archive.

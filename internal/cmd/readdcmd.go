@@ -140,7 +140,7 @@ TARGET_REL_PATH:
 				case choice == "quit":
 					return chezmoi.ExitCodeError(0)
 				default:
-					panic(fmt.Sprintf("%s: unexpected choice", choice))
+					panic(choice + ": unexpected choice")
 				}
 			}
 		}

@@ -526,7 +526,7 @@ func (c *Config) Close() error {
 // same key.
 func (c *Config) addTemplateFunc(key string, value any) {
 	if _, ok := c.templateFuncs[key]; ok {
-		panic(fmt.Sprintf("%s: already defined", key))
+		panic(key + ": already defined")
 	}
 	c.templateFuncs[key] = value
 }
@@ -981,7 +981,7 @@ func (c *Config) defaultPreApplyFunc(
 			case choice == "quit":
 				return chezmoi.ExitCodeError(0)
 			default:
-				panic(fmt.Sprintf("%s: unexpected choice", choice))
+				panic(choice + ": unexpected choice")
 			}
 		}
 	}
@@ -1023,7 +1023,7 @@ func (c *Config) defaultPreApplyFunc(
 		case choice == "quit":
 			return chezmoi.ExitCodeError(0)
 		default:
-			panic(fmt.Sprintf("%s: unexpected choice", choice))
+			panic(choice + ": unexpected choice")
 		}
 	}
 }

@@ -3,7 +3,6 @@ package git
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"regexp"
 	"strconv"
 )
@@ -127,7 +126,7 @@ var (
 )
 
 func (e ParseError) Error() string {
-	return fmt.Sprintf("%s: parse error", string(e))
+	return string(e) + ": parse error"
 }
 
 // ParseStatusPorcelainV2 parses the output of

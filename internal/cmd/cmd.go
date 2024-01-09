@@ -252,7 +252,7 @@ func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
 func mustLongHelp(command string) string {
 	help, ok := helps[command]
 	if !ok {
-		panic(fmt.Sprintf("missing long help for command %s", command))
+		panic(command + ": missing long help")
 	}
 	return help.longHelp
 }
