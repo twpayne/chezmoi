@@ -1260,6 +1260,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    KeePassXC
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1269,6 +1280,43 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#non-password-protected-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-password-protected databases
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yubikey-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      YubiKey support
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -7519,7 +7567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/release-history/" class="md-nav__link">
+      <a href="../../../reference/release-history.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -8050,6 +8098,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#non-password-protected-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Non-password-protected databases
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yubikey-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      YubiKey support
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -8083,14 +8157,21 @@ For example, if you have an entry called <code>SSH Key</code> with an additional
 called <code>private-key</code>, its value is available as:</p>
 <div class="highlight"><pre><span></span><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
 </code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>The KeePassXC CLI does not currently support any persistent login, which
-means that you will have to enter your password every time you run chezmoi.</p>
-<p>Support for non-password authentication methods (e.g. YubiKey) is currently
-poor. For more information, see <a href="https://github.com/twpayne/chezmoi/issues/2002">this GitHub
-issue</a>.</p>
-</div>
+<h2 id="non-password-protected-databases">Non-password-protected databases</h2>
+<p>If your database is not password protected, add <code>--no-password</code> to
+<code>keepassxc.args</code> and <code>keepassxc.prompt = false</code>:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[keepassxc]</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--no-password&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</code></pre></div>
+<h2 id="yubikey-support">YubiKey support</h2>
+<p>chezmoi includes an experimental mode to support using KeePassXC with YubiKeys.
+Set <code>keepassxc.mode</code> to <code>open</code> and <code>keepassxc.args</code> to the arguments required to
+set your YubiKey, for example:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[keepassxc]</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--yubikey&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;1:7370001&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;open&quot;</span>
+</code></pre></div>
 
 
 
@@ -8126,7 +8207,7 @@ issue</a>.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2023
+      Copyright © Tom Payne 2018-2024
     </div>
   
   

@@ -7558,7 +7558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../release-history/" class="md-nav__link">
+      <a href="../../release-history.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -8127,7 +8127,50 @@
 similar to <a href="https://git-scm.com/docs/git-status"><code>git status</code></a>.</p>
 <p>The first column of output indicates the difference between the last state
 written by chezmoi and the actual state. The second column indicates the
-difference between the actual state and the target state.</p>
+difference between the actual state and the target state, and what effect
+running <a href="/apply.md"><code>chezmoi apply</code></a> will have.</p>
+<table>
+<thead>
+<tr>
+<th>Character</th>
+<th>Meaning</th>
+<th>First column</th>
+<th>Second column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Space</td>
+<td>No change</td>
+<td>No change</td>
+<td>No change</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td>Added</td>
+<td>Entry was created</td>
+<td>Entry will be created</td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td>Deleted</td>
+<td>Entry was deleted</td>
+<td>Entry will be deleted</td>
+</tr>
+<tr>
+<td><code>M</code></td>
+<td>Modified</td>
+<td>Entry was modified</td>
+<td>Entry will be modified</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>Run</td>
+<td>Not applicable</td>
+<td>Script will be run</td>
+</tr>
+</tbody>
+</table>
 <h2 id="-i-include-types"><code>-i</code>, <code>--include</code> <em>types</em></h2>
 <p>Only include entries of type <em>types</em>.</p>
 <div class="admonition example">
@@ -8170,7 +8213,7 @@ difference between the actual state and the target state.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2023
+      Copyright © Tom Payne 2018-2024
     </div>
   
   
