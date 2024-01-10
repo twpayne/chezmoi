@@ -141,6 +141,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://chezmoi.io/reference/release-history/</loc>
+         <lastmod>2024-01-10</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://chezmoi.io/reference/source-state-attributes/</loc>
          <lastmod>2024-01-10</lastmod>
          <changefreq>daily</changefreq>
