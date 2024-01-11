@@ -20,5 +20,12 @@ exec chezmoi add --force $HOME${/}.encrypted
 ! exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
 cmp $CHEZMOISOURCEDIR/dot_encrypted golden/.encrypted
 
+# test that chezmoi add always encrypts when add.encrypt is true
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '[add]'
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '    encrypt = true'
+cp golden/.encrypted $HOME/.encrypted2
+exec chezmoi add $HOME/.encrypted2
+exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted2.asc
+
 -- golden/.encrypted --
 # contents of .encrypted

@@ -10,10 +10,10 @@ import (
 )
 
 type addCmdConfig struct {
+	Encrypt          bool `json:"encrypt"          mapstructure:"encrypt"          yaml:"encrypt"`
 	TemplateSymlinks bool `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
 	autoTemplate     bool
 	create           bool
-	encrypt          bool
 	exact            bool
 	filter           *chezmoi.EntryTypeFilter
 	follow           bool
@@ -49,7 +49,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 		"Generate the template when adding files as templates",
 	)
 	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
-	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
+	flags.BoolVar(&c.Add.Encrypt, "encrypt", c.Add.Encrypt, "Encrypt files")
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
 	flags.VarP(c.Add.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
@@ -174,7 +174,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		&chezmoi.AddOptions{
 			AutoTemplate:    c.Add.autoTemplate,
 			Create:          c.Add.create,
-			Encrypt:         c.Add.encrypt,
+			Encrypt:         c.Add.Encrypt,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
 			Exact:           c.Add.exact,
 			Filter:          c.Add.filter,
