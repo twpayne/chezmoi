@@ -68,6 +68,9 @@ sections:
       default: '*source directory*'
       description: git working tree directory
   add:
+    encrypt:
+      type: bool
+      description: Encrypt by default
     templateSymlinks:
       type: bool
       description: Template symlinks to source and home dirs
