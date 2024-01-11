@@ -194,9 +194,11 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 			return nil, err
 		}
 
-		// Start the keepassxc-cli open command.
+		// Start the keepassxc-cli open command. Set the LANGUAGE environment
+		// variable to ensure that the prompt is in US English.
 		cmdArgs := append(slices.Clone(c.Keepassxc.Args), "open", c.Keepassxc.Database.String())
 		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
+		cmd.Env = append(os.Environ(), "LANGUAGE=en")
 		cmd.Stdin = console.Tty()
 		cmd.Stdout = console.Tty()
 		cmd.Stderr = console.Tty()
