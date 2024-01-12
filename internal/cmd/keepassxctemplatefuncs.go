@@ -8,7 +8,9 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Netflix/go-expect"
 	"github.com/coreos/go-semver/semver"
@@ -72,7 +74,7 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 		if err != nil {
 			panic(err)
 		}
-		tempFilename := tempDir.JoinString(name).String()
+		tempFilename := tempDir.JoinString("attachment-" + strconv.FormatInt(time.Now().UnixNano(), 10)).String()
 		if _, err := c.keepassxcOutputOpen("attachment-export", "--quiet", entry, name, tempFilename); err != nil {
 			panic(err)
 		}
@@ -246,8 +248,15 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		c.Keepassxc.prompt = keepassxcPromptRx.FindString(output)
 	}
 
-	// Send the command.
-	line := strings.Join(append([]string{command}, args...), " ")
+	// Build the command line. Strings with spaces and other non-word characters
+	// need to be quoted.
+	quotedArgs := make([]string, 0, len(args))
+	for _, arg := range args {
+		quotedArgs = append(quotedArgs, maybeQuote(arg))
+	}
+	line := strings.Join(append([]string{command}, quotedArgs...), " ")
+
+	// Send the line.
 	if _, err := c.Keepassxc.console.SendLine(line); err != nil {
 		return nil, err
 	}
@@ -257,14 +266,22 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 	if err != nil {
 		return nil, err
 	}
+	outputLines := strings.Split(output, "\r\n")
 
-	// Trim the command from the output.
-	output = strings.TrimPrefix(output, line+"\r\n")
+	// Trim the echoed command from the output, which is the first line.
+	// keepassxc-cli version 2.7.6 on macOS inserts " \b" somewhere in the
+	// echoed command. Rather than trying to match this, remove the first line
+	// entirely.
+	if len(outputLines) > 0 {
+		outputLines = outputLines[1:]
+	}
 
-	// Trim the prompt from the output.
-	output = strings.TrimSuffix(output, c.Keepassxc.prompt)
+	// Trim the prompt from the output, which is the last line.
+	if len(outputLines) > 0 {
+		outputLines = outputLines[:len(outputLines)-1]
+	}
 
-	return []byte(output), nil
+	return []byte(strings.Join(outputLines, "\r\n")), nil
 }
 
 // keepassxcParseOutput parses a list of key-value pairs.

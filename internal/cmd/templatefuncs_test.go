@@ -640,15 +640,17 @@ func TestToIniTemplateFunc(t *testing.T) {
 	}{
 		{
 			data: map[string]any{
-				"bool":   true,
-				"float":  1.0,
-				"int":    1,
-				"string": "string",
+				"bool":         true,
+				"float":        1.0,
+				"int":          1,
+				"quotedString": "\"",
+				"string":       "string",
 			},
 			expected: chezmoitest.JoinLines(
 				`bool = true`,
 				`float = 1.000000`,
 				`int = 1`,
+				`quotedString = "\""`,
 				`string = string`,
 			),
 		},

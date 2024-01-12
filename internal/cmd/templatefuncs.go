@@ -675,11 +675,7 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 			}
 			subsections = append(subsections, subsection)
 		case string:
-			if needsQuote(value) {
-				fmt.Fprintf(w, "%s = %q\n", key, value)
-			} else {
-				fmt.Fprintf(w, "%s = %s\n", key, value)
-			}
+			fmt.Fprintf(w, "%s = %s\n", key, maybeQuote(value))
 		default:
 			return fmt.Errorf("%s%s: %T: unsupported type", sectionPrefix, key, value)
 		}
@@ -696,6 +692,13 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 	}
 
 	return nil
+}
+
+func maybeQuote(s string) string {
+	if needsQuote(s) {
+		return strconv.Quote(s)
+	}
+	return s
 }
 
 func needsQuote(s string) bool {
