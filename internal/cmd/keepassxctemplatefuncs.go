@@ -157,7 +157,10 @@ func (c *Config) keepassxcOutput(command string, args ...string) ([]byte, error)
 // keepassxcOutputCachePassword returns the output of command and args,
 // prompting the user for the password and caching it for later use.
 func (c *Config) keepassxcOutputCachePassword(command string, args ...string) ([]byte, error) {
-	cmdArgs := append([]string{command, c.Keepassxc.Database.String()}, args...)
+	cmdArgs := []string{command}
+	cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
+	cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
+	cmdArgs = append(cmdArgs, args...)
 	cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
 		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database))
