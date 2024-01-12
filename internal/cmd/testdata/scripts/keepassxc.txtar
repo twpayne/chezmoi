@@ -23,10 +23,10 @@ case "$*" in
 "--version")
     echo "2.7.0"
     ;;
-"attachment-export /secrets.kdbx --quiet --stdout example.com attachment")
+"attachment-export --key-file /secrets.key /secrets.kdbx --quiet --stdout example.com attachment")
     echo "# contents of attachment"
     ;;
-"show /secrets.kdbx --quiet --show-protected example.com")
+"show --key-file /secrets.key /secrets.kdbx --quiet --show-protected example.com")
     cat <<EOF
 Title: example.com
 UserName: examplelogin
@@ -35,7 +35,7 @@ URL:
 Notes:
 EOF
     ;;
-"show /secrets.kdbx example.com --attributes host-name --quiet --show-protected")
+"show --key-file /secrets.key /secrets.kdbx example.com --attributes host-name --quiet --show-protected")
     echo "example.com"
     ;;
 *)
@@ -46,15 +46,15 @@ esac
 @echo off
 IF "%*" == "--version" (
     echo 2.7.0
-) ELSE IF "%*" == "attachment-export C:/secrets.kdbx --quiet --stdout example.com attachment" (
+) ELSE IF "%*" == "attachment-export --key-file /secrets.key C:/secrets.kdbx --quiet --stdout example.com attachment" (
     echo.# contents of attachment
-) ELSE IF "%*" == "show C:/secrets.kdbx --quiet --show-protected example.com" (
+) ELSE IF "%*" == "show --key-file /secrets.key C:/secrets.kdbx --quiet --show-protected example.com" (
     echo.Title: example.com
     echo.UserName: examplelogin
     echo.Password: examplepassword
     echo.URL:
     echo.Notes:
-) ELSE IF "%*" == "show C:/secrets.kdbx example.com --attributes host-name --quiet --show-protected" (
+) ELSE IF "%*" == "show --key-file /secrets.key C:/secrets.kdbx example.com --attributes host-name --quiet --show-protected" (
     echo.example.com
 ) ELSE (
     echo keepass-test: invalid command: %*
@@ -62,6 +62,7 @@ IF "%*" == "--version" (
 )
 -- home/user/.config/chezmoi/chezmoi.toml --
 [keepassxc]
+    args = ["--key-file", "/secrets.key"]
     database = "/secrets.kdbx"
 -- home/user/input --
 fakepassword
