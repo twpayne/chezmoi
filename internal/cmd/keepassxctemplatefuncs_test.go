@@ -63,15 +63,16 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	assert.NoError(t, err)
 
 	tempDir := t.TempDir()
-	database := filepath.Join(tempDir, "Passwords.kdbx")
-	databasePassword := "test-database-password"
-	entryName := "test-entry"
-	entryUsername := "test-username"
-	entryPassword := "test-password"
-	attachmentName := "test-attachment-name"
-	attachmentData := "test-attachment-data"
-	importFile := filepath.Join(tempDir, "import-file")
-	assert.NoError(t, os.WriteFile(importFile, []byte(attachmentData), 0o666))
+
+	// The following test data includes spaces and slashes to test quoting.
+	database := filepath.Join(tempDir, "KeePassXC Passwords.kdbx")
+	databasePassword := "test / database / password"
+	groupName := "test group"
+	entryName := groupName + "/test entry"
+	entryUsername := "test / username"
+	entryPassword := "test / password"
+	attachmentName := "test / attachment name"
+	attachmentData := "test / attachment data"
 
 	// Create a KeePassXC database.
 	dbCreateCmd := exec.Command(command, "db-create", "--set-password", database)
@@ -82,6 +83,15 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	dbCreateCmd.Stdout = os.Stdout
 	dbCreateCmd.Stderr = os.Stderr
 	assert.NoError(t, dbCreateCmd.Run())
+
+	// Create a group in the database.
+	mkdirCmd := exec.Command(command, "mkdir", database, groupName)
+	mkdirCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
+		databasePassword,
+	))
+	mkdirCmd.Stdout = os.Stdout
+	mkdirCmd.Stderr = os.Stderr
+	assert.NoError(t, mkdirCmd.Run())
 
 	// Create an entry in the database.
 	addCmd := exec.Command(command, "add", database, entryName, "--username", entryUsername, "--password-prompt")
@@ -94,6 +104,8 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	assert.NoError(t, addCmd.Run())
 
 	// Import an attachment to the entry in the database.
+	importFile := filepath.Join(tempDir, "import file")
+	assert.NoError(t, os.WriteFile(importFile, []byte(attachmentData), 0o666))
 	attachmentImportCmd := exec.Command(command, "attachment-import", database, entryName, attachmentName, importFile)
 	attachmentImportCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
 		databasePassword,
