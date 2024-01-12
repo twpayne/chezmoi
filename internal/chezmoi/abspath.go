@@ -32,7 +32,7 @@ func (ps AbsPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
 // NewAbsPath returns a new AbsPath.
 func NewAbsPath(absPath string) AbsPath {
 	return AbsPath{
-		absPath: absPath,
+		absPath: filepath.ToSlash(absPath),
 	}
 }
 
