@@ -307,7 +307,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 }
 
 // A PreAddFunc is called before a new source state entry is added.
-type PreAddFunc func(targetRelPath RelPath) error
+type PreAddFunc func(targetRelPath RelPath, fileInfo fs.FileInfo) error
 
 // A ReplaceFunc is called before a source state entry is replaced.
 type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceStateEntry SourceStateEntry) error
@@ -415,7 +415,7 @@ DEST_ABS_PATH:
 		}
 
 		if options.PreAddFunc != nil {
-			switch err := options.PreAddFunc(targetRelPath); {
+			switch err := options.PreAddFunc(targetRelPath, destAbsPathInfo); {
 			case errors.Is(err, fs.SkipDir):
 				continue DEST_ABS_PATH
 			case err != nil:

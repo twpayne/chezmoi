@@ -10,8 +10,9 @@ import (
 )
 
 type addCmdConfig struct {
-	Encrypt          bool `json:"encrypt"          mapstructure:"encrypt"          yaml:"encrypt"`
-	TemplateSymlinks bool `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
+	Encrypt          bool     `json:"encrypt"          mapstructure:"encrypt"          yaml:"encrypt"`
+	Secrets          severity `json:"secrets"          mapstructure:"secrets"          yaml:"secrets"`
+	TemplateSymlinks bool     `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
 	autoTemplate     bool
 	create           bool
 	exact            bool
@@ -57,6 +58,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.Add.prompt, "prompt", "p", c.Add.prompt, "Prompt before adding each entry")
 	flags.BoolVarP(&c.Add.quiet, "quiet", "q", c.Add.quiet, "Suppress warnings")
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
+	flags.Var(&c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
 	flags.BoolVar(
 		&c.Add.TemplateSymlinks,
@@ -66,6 +68,9 @@ func (c *Config) newAddCmd() *cobra.Command {
 	)
 
 	registerExcludeIncludeFlagCompletionFuncs(addCmd)
+	if err := addCmd.RegisterFlagCompletionFunc("secrets", severityFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 
 	return addCmd
 }
@@ -76,7 +81,27 @@ func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
 	}
 }
 
-func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
+func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, fileInfo fs.FileInfo) error {
+	// Scan unencrypted files for secrets, if configured.
+	if c.Add.Secrets != severityIgnore && fileInfo.Mode().Type() == 0 && !c.Add.Encrypt {
+		absPath := c.DestDirAbsPath.Join(targetRelPath)
+		content, err := c.destSystem.ReadFile(absPath)
+		if err != nil {
+			return err
+		}
+		gitleaksDetector, err := c.getGitleaksDetector()
+		if err != nil {
+			return err
+		}
+		findings := gitleaksDetector.DetectBytes(content)
+		for _, finding := range findings {
+			c.errorf("%s:%d: %s\n", absPath, finding.StartLine+1, finding.Description)
+		}
+		if !c.force && c.Add.Secrets == severityError && len(findings) > 0 {
+			return chezmoi.ExitCodeError(1)
+		}
+	}
+
 	if !c.Add.prompt {
 		return nil
 	}

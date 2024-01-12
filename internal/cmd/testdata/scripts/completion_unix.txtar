@@ -4,6 +4,10 @@
 exec chezmoi __complete apply --include=d
 cmp stdout golden/complete-apply-include-d
 
+# test chezmoi --secrets completion
+exec chezmoi __complete add --secrets=e
+cmp stdout golden/complete-secrets-e
+
 # test chezmoi cat completion of targets in a directory
 exec chezmoi __complete cat $HOME
 cmpenv stdout golden/complete-target-home
@@ -34,6 +38,10 @@ private
 :4
 -- golden/complete-dot-f-in-home --
 .file
+:4
+-- golden/complete-secrets-e --
+e
+error
 :4
 -- golden/complete-target-home --
 $HOME/.dir/
