@@ -965,9 +965,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return nil
 		case fileInfo.IsDir():
 			da := parseDirAttr(sourceName.String())
-			targetRelPath := parentSourceRelPath.Dir().
-				TargetRelPath(s.encryption.EncryptedSuffix()).
-				JoinString(da.TargetName)
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
 				return fs.SkipDir
 			}
@@ -993,9 +991,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return nil
 		case fileInfo.Mode().IsRegular():
 			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
-			targetRelPath := parentSourceRelPath.Dir().
-				TargetRelPath(s.encryption.EncryptedSuffix()).
-				JoinString(fa.TargetName)
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}
@@ -2677,9 +2673,7 @@ func (s *SourceState) readScriptsDir(ctx context.Context, scriptsDirAbsPath AbsP
 			if fa.Type != SourceFileTypeScript {
 				return fmt.Errorf("%s: not a script", sourceAbsPath)
 			}
-			targetRelPath := parentSourceRelPath.Dir().
-				TargetRelPath(s.encryption.EncryptedSuffix()).
-				JoinString(fa.TargetName)
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}

@@ -746,8 +746,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	// Write the config.
 	configPath := c.init.configPath
 	if c.init.configPath.Empty() {
-		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).
-			Join(chezmoiRelPath, configTemplate.targetRelPath)
+		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
 	}
 	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), fs.ModePerm); err != nil {
 		return err
@@ -1456,9 +1455,7 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *git.Status) ([]byt
 		"promptInt":    c.promptIntInteractiveTemplateFunc,
 		"promptString": c.promptStringInteractiveTemplateFunc,
 		"targetRelPath": func(source string) string {
-			return chezmoi.NewSourceRelPath(source).
-				TargetRelPath(c.encryption.EncryptedSuffix()).
-				String()
+			return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
 		},
 	})
 	var name string
