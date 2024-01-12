@@ -41,6 +41,7 @@ import (
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
+	"github.com/zricethezav/gitleaks/v8/detect"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"golang.org/x/term"
@@ -234,6 +235,8 @@ type Config struct {
 	sourceState         *chezmoi.SourceState
 	sourceStateErr      error
 	templateData        *templateData
+	gitleaksDetector    *detect.Detector
+	gitleaksDetectorErr error
 
 	stdin             io.Reader
 	stdout            io.Writer
@@ -1320,6 +1323,13 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 	pagerCmd.Stdout = c.stdout
 	pagerCmd.Stderr = c.stderr
 	return pagerCmd, nil
+}
+
+func (c *Config) getGitleaksDetector() (*detect.Detector, error) {
+	if c.gitleaksDetector == nil && c.gitleaksDetectorErr == nil {
+		c.gitleaksDetector, c.gitleaksDetectorErr = detect.NewDetectorDefaultConfig()
+	}
+	return c.gitleaksDetector, c.gitleaksDetectorErr
 }
 
 func (c *Config) getHTTPClient() (*http.Client, error) {
@@ -2726,6 +2736,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 
 		// Command configurations.
 		Add: addCmdConfig{
+			Secrets:   severityWarning,
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},

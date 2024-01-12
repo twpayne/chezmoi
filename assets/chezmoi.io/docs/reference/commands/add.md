@@ -51,6 +51,11 @@ Suppress warnings about adding ignored entries.
 
 Recursively add all files, directories, and symlinks.
 
+## `-s`, `--secrets` `ignore`|`warning`|`error`
+
+Action to take when a secret is found when adding a file. The default is
+`warning`.
+
 ## `-T`, `--template`
 
 Set the `template` attribute on added files and symlinks.

@@ -263,3 +263,13 @@ func TestAddCmdChmod(t *testing.T) {
 		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "--force", "/home/user/.dir"}))
 	})
 }
+
+func TestAddCmdSecretsError(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".secret": "AWS_ACCESS_KEY_ID=AKIA0000000000000000\n",
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.Error(t, newTestConfig(t, fileSystem).execute([]string{"add", "--secrets=error", "/home/user/.secret"}))
+	})
+}

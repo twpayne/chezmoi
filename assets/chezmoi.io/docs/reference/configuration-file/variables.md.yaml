@@ -45,6 +45,9 @@ sections:
       description: Extra environment variables for scripts and commands
     scriptTempDir:
       description: Temporary directory for scripts
+    secrets:
+      default: '`warning`'
+      description: Action when secrets are found when adding files
     sourceDir:
       default: >-
         `$XDG_SHARE_HOME/chezmoi` <br/>
