@@ -28,8 +28,7 @@ func (t textConv) convert(path string, data []byte) ([]byte, error) {
 		if !ok {
 			continue
 		}
-		if longestPatternElement == nil ||
-			len(command.Pattern) > len(longestPatternElement.Pattern) {
+		if longestPatternElement == nil || len(command.Pattern) > len(longestPatternElement.Pattern) {
 			longestPatternElement = command
 		}
 	}

@@ -114,8 +114,7 @@ func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	if s.safe && s.fileSystem == vfs.OSFS {
 		return renameio.Symlink(oldname, newname.String())
 	}
-	if err := s.fileSystem.RemoveAll(newname.String()); err != nil &&
-		!errors.Is(err, fs.ErrNotExist) {
+	if err := s.fileSystem.RemoveAll(newname.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
 	return s.fileSystem.Symlink(oldname, newname.String())

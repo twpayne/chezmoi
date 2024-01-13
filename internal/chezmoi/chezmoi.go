@@ -139,8 +139,7 @@ func FQDNHostname(fileSystem vfs.FS) (string, error) {
 
 	// Otherwise, if we're on OpenBSD, try /etc/myname.
 	if runtime.GOOS == "openbsd" {
-		if fqdnHostname, err := etcMynameFQDNHostname(fileSystem); err == nil &&
-			fqdnHostname != "" {
+		if fqdnHostname, err := etcMynameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
 			return fqdnHostname, nil
 		}
 	}

@@ -88,13 +88,11 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 				return nil
 			}
 		}
-		if err := c.destSystem.RemoveAll(destAbsPath); err != nil &&
-			!errors.Is(err, fs.ErrNotExist) {
+		if err := c.destSystem.RemoveAll(destAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 		if !sourceAbsPath.Empty() {
-			if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil &&
-				!errors.Is(err, fs.ErrNotExist) {
+			if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return err
 			}
 		}

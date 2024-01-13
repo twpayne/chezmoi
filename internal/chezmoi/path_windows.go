@@ -64,8 +64,7 @@ func volumeNameLen(path string) int {
 		return 2
 	}
 	// is it UNC? https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx
-	if l := len(path); l >= 5 && isSlash(path[0]) && isSlash(path[1]) &&
-		!isSlash(path[2]) && path[2] != '.' {
+	if l := len(path); l >= 5 && isSlash(path[0]) && isSlash(path[1]) && !isSlash(path[2]) && path[2] != '.' {
 		// first, leading `\\` and next shouldn't be `\`. its server name.
 		for n := 3; n < l-1; n++ {
 			// second, next '\' shouldn't be repeated.

@@ -57,8 +57,7 @@ func NewExternalDiffSystem(
 // Close frees all resources held by s.
 func (s *ExternalDiffSystem) Close() error {
 	if !s.tempDirAbsPath.Empty() {
-		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil &&
-			!errors.Is(err, fs.ErrNotExist) {
+		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 		s.tempDirAbsPath = EmptyAbsPath
@@ -333,8 +332,7 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 
 	// Swallow exit status 1 errors if the files differ as diff commands
 	// traditionally exit with code 1 in this case.
-	if exitError := (&exec.ExitError{}); errors.As(err, &exitError) &&
-		exitError.ProcessState.ExitCode() == 1 {
+	if exitError := (&exec.ExitError{}); errors.As(err, &exitError) && exitError.ProcessState.ExitCode() == 1 {
 		destData, err2 := s.ReadFile(destAbsPath)
 		switch {
 		case errors.Is(err2, fs.ErrNotExist):

@@ -55,8 +55,8 @@ var (
 	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 
 	// AppleDouble constants.
-	appleDoubleMagicCode = []byte{0x00, 0x05, 0x16, 0x07}
-	appleDoubleVersion   = []byte{0x00, 0x02, 0x00, 0x00}
+	appleDoubleNamePrefix     = "._"
+	appleDoubleContentsPrefix = []byte{0x00, 0x05, 0x16, 0x07, 0x00, 0x02, 0x00, 0x00}
 )
 
 type externalArchive struct {
@@ -697,8 +697,7 @@ func (s *SourceState) Apply(
 		// the source and target states: instead of reporting a diff with
 		// respect to the last written state, we record the effect of the last
 		// apply as the last written state.
-		if targetEntryState.Equivalent(actualEntryState) &&
-			!lastWrittenEntryState.Equivalent(actualEntryState) {
+		if targetEntryState.Equivalent(actualEntryState) && !lastWrittenEntryState.Equivalent(actualEntryState) {
 			err := PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 			if err != nil {
 				return err
@@ -894,8 +893,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			// Some programs (notably emacs) use invalid symlinks as lockfiles.
 			// To avoid following them and getting an ENOENT error, check first
 			// if this is an entry that we will ignore anyway.
-			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) &&
-				!strings.HasPrefix(fileInfo.Name(), Prefix) {
+			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) && !strings.HasPrefix(fileInfo.Name(), Prefix) {
 				return nil
 			}
 			fileInfo, err = s.system.Stat(sourceAbsPath)
@@ -1512,8 +1510,7 @@ func (s *SourceState) getExternalDataRaw(
 	case RefreshExternalsAuto:
 		// Use the cache, if available and within the refresh period.
 		if fileInfo, err := s.baseSystem.Stat(cachedDataAbsPath); err == nil {
-			if external.RefreshPeriod == 0 ||
-				fileInfo.ModTime().Add(time.Duration(external.RefreshPeriod)).After(now) {
+			if external.RefreshPeriod == 0 || fileInfo.ModTime().Add(time.Duration(external.RefreshPeriod)).After(now) {
 				if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
 					return data, nil
 				}
@@ -1719,9 +1716,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 	sourceLazyContents *lazyContents,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable &&
-			!fileAttr.Private &&
-			!fileAttr.Template {
+		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
 			switch contents, err := sourceLazyContents.Contents(); {
 			case err != nil:
 				return nil, err
@@ -2640,8 +2635,7 @@ func (s *SourceState) readScriptsDir(ctx context.Context, scriptsDirAbsPath AbsP
 			// Some programs (notably emacs) use invalid symlinks as lockfiles.
 			// To avoid following them and getting an ENOENT error, check first
 			// if this is an entry that we will ignore anyway.
-			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) &&
-				!strings.HasPrefix(fileInfo.Name(), Prefix) {
+			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) && !strings.HasPrefix(fileInfo.Name(), Prefix) {
 				return nil
 			}
 			fileInfo, err = s.system.Stat(sourceAbsPath)
@@ -2787,8 +2781,5 @@ func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
 // isAppleDoubleFile returns true if the file looks like and has the
 // expected signature of an AppleDouble file.
 func isAppleDoubleFile(name string, contents []byte) bool {
-	return strings.HasPrefix(path.Base(name), "._") &&
-		len(contents) >= 8 &&
-		bytes.Equal(appleDoubleMagicCode, contents[0:4]) &&
-		bytes.Equal(appleDoubleVersion, contents[4:8])
+	return strings.HasPrefix(path.Base(name), appleDoubleNamePrefix) && bytes.HasPrefix(contents, appleDoubleContentsPrefix)
 }

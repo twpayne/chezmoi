@@ -578,8 +578,7 @@ func (c *Config) applyArgs(
 		}
 		previousConfigTemplateContentsSHA256 = []byte(configState.ConfigTemplateContentsSHA256)
 	}
-	configTemplatesEmpty := currentConfigTemplateContentsSHA256 == nil &&
-		previousConfigTemplateContentsSHA256 == nil
+	configTemplatesEmpty := currentConfigTemplateContentsSHA256 == nil && previousConfigTemplateContentsSHA256 == nil
 	configTemplateContentsUnchanged := configTemplatesEmpty ||
 		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
 	if !configTemplateContentsUnchanged {
@@ -905,8 +904,7 @@ func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile 
 		return fmt.Errorf("%s: %w", configFileAbsPath, err)
 	}
 
-	if configFile.Git.CommitMessageTemplate != "" &&
-		configFile.Git.CommitMessageTemplateFile != "" {
+	if configFile.Git.CommitMessageTemplate != "" && configFile.Git.CommitMessageTemplateFile != "" {
 		return fmt.Errorf(
 			"%s: cannot specify both git.commitMessageTemplate and git.commitMessageTemplateFile",
 			configFileAbsPath,
@@ -2000,8 +1998,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
 	if annotations.hasTag(outputsDiff) ||
-		c.Verbose &&
-			(annotations.hasTag(modifiesDestinationDirectory) || annotations.hasTag(modifiesSourceDirectory)) {
+		c.Verbose && (annotations.hasTag(modifiesDestinationDirectory) || annotations.hasTag(modifiesSourceDirectory)) {
 		// If the user has configured a diff pager, then start it as a process.
 		// Otherwise, write the diff output directly to stdout.
 		var writer io.Writer

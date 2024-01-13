@@ -109,8 +109,8 @@ func (v VersionInfo) MarshalZerologObject(e *zerolog.Event) {
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
 	err := runMain(versionInfo, args)
-	if err != nil && strings.Contains(err.Error(), "unknown command") &&
-		len(args) > 0 { // FIXME find a better way of detecting unknown commands
+	// FIXME find a better way of detecting unknown commands
+	if err != nil && strings.Contains(err.Error(), "unknown command") && len(args) > 0 {
 		if name, err2 := exec.LookPath("chezmoi-" + args[0]); err2 == nil {
 			cmd := exec.Command(name, args[1:]...)
 			cmd.Stdin = os.Stdin

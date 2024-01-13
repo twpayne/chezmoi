@@ -143,8 +143,7 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 			continue
 		}
 		mackupApplicationsDirAbsPath := libDirAbsPath.JoinString(dirEntry.Name(), "site-packages", "mackup", "applications")
-		if fileInfo, err := c.baseSystem.Stat(mackupApplicationsDirAbsPath); err == nil &&
-			fileInfo.IsDir() {
+		if fileInfo, err := c.baseSystem.Stat(mackupApplicationsDirAbsPath); err == nil && fileInfo.IsDir() {
 			return mackupApplicationsDirAbsPath, nil
 		}
 	}
