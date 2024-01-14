@@ -196,11 +196,17 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 			return nil, err
 		}
 
-		// Start the keepassxc-cli open command. Set the LANGUAGE environment
-		// variable to ensure that the prompt is in US English.
+		// Start the keepassxc-cli open command.
 		cmdArgs := append(slices.Clone(c.Keepassxc.Args), "open", c.Keepassxc.Database.String())
 		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
-		cmd.Env = append(os.Environ(), "LANGUAGE=en")
+		env := os.Environ()
+		// Ensure prompt is in English.
+		env = append(env, "LANGUAGE=en")
+		// Reduce injection of terminal control characters.
+		env = slices.DeleteFunc(env, func(s string) bool {
+			return strings.HasPrefix(s, "TERM=")
+		})
+		cmd.Env = env
 		cmd.Stdin = console.Tty()
 		cmd.Stdout = console.Tty()
 		cmd.Stderr = console.Tty()
@@ -269,9 +275,6 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 	outputLines := strings.Split(output, "\r\n")
 
 	// Trim the echoed command from the output, which is the first line.
-	// keepassxc-cli version 2.7.6 on macOS inserts " \b" somewhere in the
-	// echoed command. Rather than trying to match this, remove the first line
-	// entirely.
 	if len(outputLines) > 0 {
 		outputLines = outputLines[1:]
 	}
