@@ -112,19 +112,19 @@ archives:
 changelog:
   groups:
   - title: Features
-    regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+    regexp: ^.*?feat(\([[:word:]]+\))??!?:.+$
     order: 0
   - title: Fixes
-    regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+    regexp: ^.*?fix(\([[:word:]]+\))??!?:.+$
     order: 1
   - title: Documentation updates
-    regexp: '^.*?docs?(\([[:word:]]+\))??!?:.+$'
+    regexp: ^.*?docs?(\([[:word:]]+\))??!?:.+$
     order: 2
   - title: Other
     order: 999
   filters:
     exclude:
-      - '^.*?chore(\([[:word:]]+\))??!?:.+$'
+    - ^.*?chore(\([[:word:]]+\))??!?:.+$
 
 checksum:
   extra_files:
@@ -204,7 +204,7 @@ chocolateys:
 - owners: twpayne
   authors: Tom Payne
   project_url: https://chezmoi.io
-  url_template: "https://github.com/twpayne/chezmoi/releases/download/v{{ .Version }}/{{ .ArtifactName }}"
+  url_template: https://github.com/twpayne/chezmoi/releases/download/v{{ .Version }}/{{ .ArtifactName }}
   icon_url: https://github.com/twpayne/chezmoi/raw/master/assets/images/logo-144px.png
   copyright: Copyright © Tom Payne, 2018-2023
   license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
@@ -223,7 +223,7 @@ chocolateys:
     chezmoi scales from the trivial (e.g. copying a few dotfiles onto a Raspberry Pi, development container, or virtual machine) to complex long-lived multi-machine development environments (e.g. keeping any number of home and work, Linux, macOS, and Windows machines in sync). In all cases you only need to maintain a single source of truth (a single branch in git) and getting started only requires adding a single binary to your machine (which you can do with `curl`, `wget`, or `scp`).
 
     chezmoi has strong support for security, allowing you to manage secrets (e.g. passwords, access tokens, and private keys) securely and seamlessly using a password manager and/or encrypt whole files with your favorite encryption tool.
-  release_notes: "https://github.com/twpayne/chezmoi/releases/tag/v{{ .Version }}"
+  release_notes: https://github.com/twpayne/chezmoi/releases/tag/v{{ .Version }}
   api_key: '{{ .Env.CHOCOLATEY_API_KEY }}'
 
 release:
@@ -298,7 +298,7 @@ winget:
   license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
   copyright: Copyright (c) 2018-2023 Tom Payne
   release_notes: '{{ .Changelog }}'
-  release_notes_url: 'https://github.com/twpayne/chezmoi/releases/tag/{{ .Tag }}'
+  release_notes_url: https://github.com/twpayne/chezmoi/releases/tag/{{ .Tag }}
   tags:
   - cli
   - configuration
@@ -312,7 +312,7 @@ winget:
   repository:
     owner: twpayne
     name: winget-pkgs
-    branch: 'chezmoi-{{ .Version }}'
+    branch: chezmoi-{{ .Version }}
     token: '{{ .Env.WINGET_GITHUB_TOKEN }}'
     pull_request:
       enabled: true

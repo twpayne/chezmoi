@@ -5,7 +5,7 @@ sections:
         `$XDG_CACHE_HOME/chezmoi` <br/>
         `$HOME/.cache/chezmoi` <br/>
         `%USERPROFILE%/.cache/chezmoi`
-      description: 'Cache directory'
+      description: Cache directory
     color:
       default: '`auto`'
       description: Colorize output
@@ -196,10 +196,10 @@ sections:
       description: Automatically apply changes when files are saved
   ejson:
     keyDir:
-      type: 'string'
+      type: string
       description: Path to directory containing private keys. Defaults to /opt/ejson/keys. Setting the EJSON_KEYDIR environment will also set this value, with lower precedence.
     key:
-      type: 'string'
+      type: string
       description: The private key to use for decryption, will supersede using the keyDir if set.
   git:
     autoAdd:
@@ -215,10 +215,10 @@ sections:
       default: '`git`'
       description: git CLI command
     commitMessageTemplate:
-      type: 'string'
+      type: string
       description: Commit message template
     commitMessageTemplateFile:
-      type: 'string'
+      type: string
       description: Commit message template file (relative to source directory)
   gitHub:
     refreshPeriod:
@@ -369,7 +369,7 @@ sections:
       type: '[]string'
       description: Entry types to exclude from status
     pathStyle:
-      type: 'string'
+      type: string
       default: '`relative`'
       description: How to present the path to files in status output
   template:
