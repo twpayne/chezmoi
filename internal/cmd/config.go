@@ -748,7 +748,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	// Write the config.
 	configPath := c.init.configPath
 	if c.init.configPath.Empty() {
-		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
+		configPath = c.configFileAbsPath
 	}
 	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), fs.ModePerm); err != nil {
 		return err
