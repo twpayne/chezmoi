@@ -4,12 +4,6 @@ Hook commands are executed before and after events. Unlike scripts, hooks are
 always run, even if `--dry-run` is specified. Hooks should be fast and
 idempotent.
 
-!!! warning
-
-    Hooks are an experimental feature that might change in the future. If you
-    use them then please [report how you are using
-    them](https://github.com/twpayne/chezmoi/discussions/3342).
-
 The following events are defined:
 
 | Event                 | Trigger                                       |
