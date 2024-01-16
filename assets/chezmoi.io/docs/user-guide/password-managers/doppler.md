@@ -4,11 +4,6 @@ chezmoi includes support for [Doppler](https://www.doppler.com) using the `doppl
 CLI to expose data through the `doppler` and `dopplerProjectJson`
 template functions.
 
-!!! warning
-
-    Doppler is in beta and chezmoi's interface to it may change.
-    Note: Doppler only supports secrets in the `UPPER_SNAKE_CASE` format.
-
 Log in using:
 
 ```console
