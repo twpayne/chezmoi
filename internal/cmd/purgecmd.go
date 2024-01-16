@@ -60,7 +60,7 @@ func (c *Config) doPurge(options *doPurgeOptions) error {
 	}
 
 	if options.config {
-		absPaths = append(absPaths, c.configFileAbsPath.Dir(), c.configFileAbsPath)
+		absPaths = append(absPaths, c.getConfigFileAbsPath().Dir(), c.getConfigFileAbsPath())
 	}
 
 	if options.persistentState {

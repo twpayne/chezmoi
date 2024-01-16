@@ -1,0 +1,27 @@
+mkdir $CHEZMOISOURCEDIR
+
+# test that chezmoi --config=path init --config-path=path writes the initial config into path
+cp golden/config1.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi --config=$HOME/config/athome.toml init --config-path=$HOME/config/athome.toml
+cmp $HOME/config/athome.toml golden/config1.toml
+
+# test that chezmoi --config=path init --config-path=path writes an updated config into path
+cp golden/config2.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi --config=$HOME/config/athome.toml init --config-path=$HOME/config/athome.toml
+cmp $HOME/config/athome.toml golden/config2.toml
+
+# test that chezmoi --config=path init writes an updated config into path
+cp golden/config3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi --config=$HOME/config/athome.toml init
+cmp $HOME/config/athome.toml golden/config3.toml
+
+
+-- golden/config1.toml --
+[data]
+    email = "mail1@example.com"
+-- golden/config2.toml --
+[data]
+    email = "mail2@example.com"
+-- golden/config3.toml --
+[data]
+    email = "mail3@example.com"

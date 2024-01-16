@@ -191,7 +191,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&configFileCheck{
 			basename: chezmoiRelPath,
 			bds:      c.bds,
-			expected: c.configFileAbsPath,
+			expected: c.getConfigFileAbsPath(),
 		},
 		&dirCheck{
 			name:    "source-dir",
