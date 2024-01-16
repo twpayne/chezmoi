@@ -39,9 +39,9 @@ func (c *Config) runEditConfigTemplateCmd(cmd *cobra.Command, args []string, sou
 			!errors.Is(err, fs.ErrExist) {
 			return err
 		}
-		configFileBase := "." + c.configFileAbsPath.Base() + ".tmpl"
+		configFileBase := "." + c.getConfigFileAbsPath().Base() + ".tmpl"
 		configTemplateAbsPath = c.sourceDirAbsPath.JoinString(configFileBase)
-		switch data, err := c.baseSystem.ReadFile(c.configFileAbsPath); {
+		switch data, err := c.baseSystem.ReadFile(c.getConfigFileAbsPath()); {
 		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
 		case err != nil:

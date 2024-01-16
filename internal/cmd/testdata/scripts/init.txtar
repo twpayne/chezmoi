@@ -94,6 +94,14 @@ grep '# edited' $HOME/.file
 
 chhome home10/user
 
+# test chezmoi --config init
+mkgitconfig
+exec chezmoi --config=$HOME/.chezmoi.toml init file://$WORK/home/user/.local/share/chezmoi
+cmp $HOME/.chezmoi.toml golden/chezmoi.toml
+! exists $CHEZMOICONFIGDIR/chezmoi.toml
+
+chhome home10-old/user
+
 # test chezmoi init --config-path
 mkgitconfig
 exec chezmoi init --config-path=$HOME/.chezmoi.toml file://$WORK/home/user/.local/share/chezmoi

@@ -208,7 +208,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			ProtectedAbsPaths: []chezmoi.AbsPath{
 				c.CacheDirAbsPath,
 				c.WorkingTreeAbsPath,
-				c.configFileAbsPath,
+				c.getConfigFileAbsPath(),
 				persistentStateFileAbsPath,
 				c.sourceDirAbsPath,
 			},

@@ -1,0 +1,135 @@
+[windows] skip 'test requires path separator to be forward slash'
+# test the init command with 3 different sets of --config/--config-format options
+
+
+#### test chezmoi init
+
+chhome home1/user
+mkdir $CHEZMOISOURCEDIR
+
+# test that chezmoi init writes the initial config into the defaul config dir
+cp golden/chezmoi1.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+exec chezmoi init
+cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi1.yaml
+
+# test that chezmoi init writes an updated config into the defaul config dir
+cp golden/chezmoi2.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+exec chezmoi init
+cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi2.yaml
+
+# test that chezmoi init writes a config of a new format into the defaul config dir
+rm $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+cp golden/chezmoi3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi init
+cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi2.yaml
+cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi3.toml
+
+# check that the last operation broke chezmoi
+! exec chezmoi status
+! stdout .
+cmpenv stderr golden/error1.log
+
+# check that deleting the old config file fixes the issue
+rm $CHEZMOICONFIGDIR/chezmoi.yaml
+exec chezmoi status
+! stdout .
+! stderr .
+
+# check that the state file was written into the default config dir
+exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+
+#### test chezmoi --config=path init
+
+chhome home2/user
+mkdir $CHEZMOISOURCEDIR
+
+# test that chezmoi --config=path init writes the initial config into path
+cp golden/chezmoi1.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+exec chezmoi --config=$HOME/.chezmoi/athome.yaml init
+cmp $HOME/.chezmoi/athome.yaml golden/chezmoi1.yaml
+
+# test that chezmoi --config=path init writes an updated config into path
+cp golden/chezmoi2.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+exec chezmoi --config=$HOME/.chezmoi/athome.yaml init
+cmp $HOME/.chezmoi/athome.yaml golden/chezmoi2.yaml
+
+# test that chezmoi --config=path init writes a config of a new format into path
+rm $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+cp golden/chezmoi3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi --config=$HOME/.chezmoi/athome.yaml init
+cmp $HOME/.chezmoi/athome.yaml golden/chezmoi3.toml
+
+# check that the last operation broke chezmoi
+! exec chezmoi --config=$HOME/.chezmoi/athome.yaml status
+! stdout .
+cmpenv stderr golden/error2.log
+
+# check that renaming the file and updating the config path fixes the issue
+mv $HOME/.chezmoi/athome.yaml $HOME/.chezmoi/athome.toml
+exec chezmoi --config=$HOME/.chezmoi/athome.toml status
+! stdout .
+! stderr .
+
+# check that the state file was written next to the config file
+exists $HOME/.chezmoi/chezmoistate.boltdb
+
+# check that nothing was ever written into the default config dir
+! exists $CHEZMOICONFIGDIR/chezmoi.toml
+! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+
+#### test chezmoi --config=path --config-format=format init
+
+chhome home3/user
+mkdir $CHEZMOISOURCEDIR
+
+# test that chezmoi --config=path --config-format=format init writes the initial config into path
+cp golden/chezmoi1.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=yaml init
+cmp $HOME/.chezmoi/athome.txt golden/chezmoi1.yaml
+
+# test that chezmoi --config=path --config-format=format init writes an updated config into path
+cp golden/chezmoi2.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=yaml init
+cmp $HOME/.chezmoi/athome.txt golden/chezmoi2.yaml
+
+# test that chezmoi --config=path --config-format=format init writes a config of a new format into path
+rm $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
+cp golden/chezmoi3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=yaml init
+cmp $HOME/.chezmoi/athome.txt golden/chezmoi3.toml
+
+# check that the last operation broke chezmoi
+! exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=yaml status
+! stdout .
+cmpenv stderr golden/error3.log
+
+# check that updating the config format fixes the issue
+exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=toml status
+! stdout .
+! stderr .
+
+# check that the state file was written next to the config file
+exists $HOME/.chezmoi/chezmoistate.boltdb
+
+# check that nothing was ever written into the default config dir
+! exists $CHEZMOICONFIGDIR/chezmoi.toml
+! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+
+-- golden/chezmoi1.yaml --
+data:
+    email: "mail1@example.com"
+-- golden/chezmoi2.yaml --
+data:
+    email: "mail2@example.com"
+-- golden/chezmoi3.toml --
+[data]
+    email = "mail3@example.com"
+-- golden/error1.log --
+chezmoi: multiple config files: $CHEZMOICONFIGDIR/chezmoi.toml and $CHEZMOICONFIGDIR/chezmoi.yaml
+-- golden/error2.log --
+chezmoi: invalid config: $HOME/.chezmoi/athome.yaml: yaml: unmarshal errors: line 1: cannot unmarshal !!seq into map[string]interface {}
+-- golden/error3.log --
+chezmoi: invalid config: $HOME/.chezmoi/athome.txt: yaml: unmarshal errors: line 1: cannot unmarshal !!seq into map[string]interface {}
