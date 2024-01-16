@@ -1,11 +1,5 @@
 # Install your password manager on init
 
-!!! warning
-
-    The approach described here is experimental and may change in a future version
-    of chezmoi. If you use this, please contribute to [the
-    discussion](https://github.com/twpayne/chezmoi/discussions/3342).
-
 If you use a password manager to store your secrets then you may need to install
 your password manager after you have run `chezmoi init` on a new machine but
 before `chezmoi init --apply` or `chezmoi apply` executes your `run_before_`
