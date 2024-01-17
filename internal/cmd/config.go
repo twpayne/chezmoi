@@ -364,7 +364,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		reAdd: reAddCmdConfig{
-			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			recursive: true,
 		},
 		unmanaged: unmanagedCmdConfig{
 			pathStyle: chezmoi.PathStyleRelative,

@@ -21,3 +21,11 @@ exec chezmoi re-add ~/.dir/file
 grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_file
 grep -count=2 '# edited' $CHEZMOISOURCEDIR/dot_dir/file
 grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
+
+# test that chezmoi re-add --recursive=false does not recurse into subdirectories
+exec chezmoi re-add --recursive=false ~/.dir/subdir
+grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
+
+# test that chezmoi re-add is recursive by default
+exec chezmoi re-add ~/.dir/subdir
+grep -count=2 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
