@@ -97,11 +97,11 @@ sections:
     recipients:
       type: '[]string'
       description: age recipients
-    recipientFile:
-      description: age recipient file
-    recipientFiles:
+    recipientsFile:
+      description: age recipients file
+    recipientsFiles:
       type: '[]string'
-      description: age recipient files
+      description: age recipients files
     suffix:
       default: '`.age`'
       description: Suffix appended to age-encrypted files
