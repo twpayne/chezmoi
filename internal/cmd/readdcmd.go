@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
-	"path/filepath"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -13,7 +12,8 @@ import (
 )
 
 type reAddCmdConfig struct {
-	filter *chezmoi.EntryTypeFilter
+	filter    *chezmoi.EntryTypeFilter
+	recursive bool
 }
 
 func (c *Config) newReAddCmd() *cobra.Command {
@@ -35,6 +35,7 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	flags := reAddCmd.Flags()
 	flags.VarP(c.reAdd.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.reAdd.filter.Include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.reAdd.recursive, "recursive", "r", c.reAdd.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(reAddCmd)
 
@@ -53,17 +54,15 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 			},
 		)
 	} else {
-		for _, arg := range args {
-			arg = filepath.Clean(arg)
-			destAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
-			if err != nil {
-				return err
-			}
-			targetRelPath, err := c.targetRelPath(destAbsPath)
-			if err != nil {
-				return err
-			}
-			targetRelPaths = append(targetRelPaths, targetRelPath)
+		var err error
+		targetRelPaths, err = c.targetRelPaths(sourceState, args, targetRelPathsOptions{
+			mustBeManaged: true,
+			recursive:     c.reAdd.recursive,
+		})
+		if err != nil {
+			return err
+		}
+		for _, targetRelPath := range targetRelPaths {
 			sourceStateEntries[targetRelPath] = sourceState.Get(targetRelPath)
 		}
 	}
