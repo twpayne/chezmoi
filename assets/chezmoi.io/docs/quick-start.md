@@ -124,7 +124,7 @@ $ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 
 !!! hint
 
-    Private GitHub repos requires other
+    Private GitHub repos require other
     [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
 
     ```console
@@ -199,7 +199,7 @@ $ chezmoi init --apply $GITHUB_USERNAME
 
 !!! hint
 
-    Private GitHub repos requires other
+    Private GitHub repos require other
     [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
 
     ```console
