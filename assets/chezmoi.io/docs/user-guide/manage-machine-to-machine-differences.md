@@ -157,8 +157,8 @@ Create the common file in the `.chezmoitemplates` directory in the source
 state. For example, create `.chezmoitemplates/file.conf`. The contents of this
 file are available in templates with the `template $NAME .` function where
 `$NAME` is the name of the file (`.` passes the current data to the template
-code in `file.conf`; see https://pkg.go.dev/text/template#hdr-Actions for
-details).
+code in `file.conf`; see 
+[`template` action](https://pkg.go.dev/text/template#hdr-Actions) for details).
 
 Then create files for each system, for example `Library/Application
 Support/App/file.conf.tmpl` for macOS and `dot_config/app/file.conf.tmpl` for
