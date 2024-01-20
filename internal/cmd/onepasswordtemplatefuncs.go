@@ -36,7 +36,6 @@ type onepasswordAccount struct {
 type onepasswordConfig struct {
 	Command       string `json:"command" mapstructure:"command" yaml:"command"`
 	Prompt        bool   `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
-	environFunc   func() []string
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
 	accountMap    map[string]string
@@ -144,13 +143,7 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 	// If no account has been given then look for any session tokens in the
 	// environment.
 	if args.account == "" {
-		var environ []string
-		if c.Onepassword.environFunc != nil {
-			environ = c.Onepassword.environFunc()
-		} else {
-			environ = os.Environ()
-		}
-		sessionToken = onepasswordUniqueSessionToken(environ)
+		sessionToken = onepasswordUniqueSessionToken(os.Environ())
 		if sessionToken != "" {
 			return sessionToken, nil
 		}
