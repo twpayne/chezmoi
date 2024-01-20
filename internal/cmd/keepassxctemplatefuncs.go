@@ -51,6 +51,7 @@ var (
 	keepassxcMinVersion = semver.Version{Major: 2, Minor: 7, Patch: 0}
 
 	keepassxcEnterPasswordToUnlockDatabaseRx = regexp.MustCompile(`^Enter password to unlock .*: `)
+	keepassxcAnyResponseRx                   = regexp.MustCompile(`(?m)\A.*\r\n`)
 	keepassxcPairRx                          = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
 	keepassxcPromptRx                        = regexp.MustCompile(`^.*> `)
 )
@@ -216,9 +217,15 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 
 		if c.Keepassxc.Prompt {
 			// Expect the password prompt, e.g. "Enter password to unlock $HOME/Passwords.kdbx: ".
-			enterPasswordToUnlockPrompt, err := console.Expect(expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRx))
+			enterPasswordToUnlockPrompt, err := console.Expect(
+				expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRx),
+				expect.Regexp(keepassxcAnyResponseRx),
+			)
 			if err != nil {
 				return nil, err
+			}
+			if !keepassxcEnterPasswordToUnlockDatabaseRx.MatchString(enterPasswordToUnlockPrompt) {
+				return nil, errors.New(strings.TrimSpace(enterPasswordToUnlockPrompt))
 			}
 
 			// Read the password from the user, if necessary.
@@ -244,9 +251,15 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		}
 
 		// Read the prompt, e.g "Passwords> ", so we can expect it later.
-		output, err := console.Expect(expect.Regexp(keepassxcPromptRx))
+		output, err := console.Expect(
+			expect.Regexp(keepassxcPromptRx),
+			expect.Regexp(keepassxcAnyResponseRx),
+		)
 		if err != nil {
 			return nil, err
+		}
+		if !keepassxcPromptRx.MatchString(output) {
+			return nil, errors.New(strings.TrimSpace(output))
 		}
 
 		c.Keepassxc.cmd = cmd
