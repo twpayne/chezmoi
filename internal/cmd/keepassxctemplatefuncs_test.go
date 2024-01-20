@@ -119,15 +119,53 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 		keepassxcModeOpen,
 	} {
 		t.Run(string(mode), func(t *testing.T) {
-			config := newTestConfig(t, vfs.OSFS)
-			config.Keepassxc.Database = chezmoi.NewAbsPath(database)
-			config.Keepassxc.Mode = mode
-			config.Keepassxc.Prompt = true
-			config.Keepassxc.password = databasePassword
+			t.Run("correct_password", func(t *testing.T) {
+				config := newTestConfig(t, vfs.OSFS)
+				defer config.keepassxcClose()
+				config.Keepassxc.Database = chezmoi.NewAbsPath(database)
+				config.Keepassxc.Mode = mode
+				config.Keepassxc.Prompt = true
+				config.Keepassxc.password = databasePassword
+				assert.Equal(t, entryPassword, config.keepassxcTemplateFunc(entryName)["Password"])
+				assert.Equal(t, entryUsername, config.keepassxcAttributeTemplateFunc(entryName, "UserName"))
+				assert.Equal(t, attachmentData, config.keepassxcAttachmentTemplateFunc(entryName, attachmentName))
+			})
 
-			assert.Equal(t, entryPassword, config.keepassxcTemplateFunc(entryName)["Password"])
-			assert.Equal(t, entryUsername, config.keepassxcAttributeTemplateFunc(entryName, "UserName"))
-			assert.Equal(t, attachmentData, config.keepassxcAttachmentTemplateFunc(entryName, attachmentName))
+			t.Run("incorrect_password", func(t *testing.T) {
+				config := newTestConfig(t, vfs.OSFS)
+				defer config.keepassxcClose()
+				config.Keepassxc.Database = chezmoi.NewAbsPath(database)
+				config.Keepassxc.Mode = mode
+				config.Keepassxc.Prompt = true
+				config.Keepassxc.password = "incorrect-" + databasePassword
+				assert.Panics(t, func() {
+					config.keepassxcTemplateFunc(entryName)
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttributeTemplateFunc(entryName, "UserName")
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttachmentTemplateFunc(entryName, attachmentName)
+				})
+			})
+
+			t.Run("incorrect_database", func(t *testing.T) {
+				config := newTestConfig(t, vfs.OSFS)
+				defer config.keepassxcClose()
+				config.Keepassxc.Database = chezmoi.NewAbsPath(filepath.Join(tempDir, "Non-existent database.kdbx"))
+				config.Keepassxc.Mode = mode
+				config.Keepassxc.Prompt = true
+				config.Keepassxc.password = databasePassword
+				assert.Panics(t, func() {
+					config.keepassxcTemplateFunc(entryName)
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttributeTemplateFunc(entryName, "UserName")
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttachmentTemplateFunc(entryName, attachmentName)
+				})
+			})
 		})
 	}
 }
