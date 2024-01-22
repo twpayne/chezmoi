@@ -315,6 +315,7 @@ nav:
   - Release history: reference/release-history.md
 - Developer:
   - Developing locally: developer/developing-locally.md
+  - Testing: developer/testing.md
   - Contributing changes: developer/contributing-changes.md
   - Website: developer/website.md
   - Install script: developer/install-script.md
