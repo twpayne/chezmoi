@@ -13,7 +13,7 @@ way:
 | Bitwarden         | `bw`             | `{{ secretJSON "get" "$ID" }}`                                   |
 | Doppler           | `doppler`        | `{{ secretJSON "secrets" "download" "--json" "--no-file" }}`     |
 | HashiCorp Vault   | `vault`          | `{{ secretJSON "kv" "get" "-format=json" "$ID" }}`               |
-| HCP Vault Secrets | `vlt`            | `{{ secret "secrets" "get" "--plaintext" "$ID }}`                |
+| HCP Vault Secrets | `vlt`            | `{{ secret "secrets" "get" "--plaintext" "$ID" }}`               |
 | LastPass          | `lpass`          | `{{ secretJSON "show" "--json" "$ID" }}`                         |
 | KeePassXC         | `keepassxc-cli`  | Not possible (interactive command only)                          |
 | Keeper            | `keeper`         | `{{ secretJSON "get" "--format=json" "$ID" }}`                   |
