@@ -45,3 +45,7 @@ videos:
   version: 2.42.2
   title: The ultimate dotfiles setup
   url: https://www.youtube.com/watch?v=-RkANM9FfTM
+- date: '2024-01-14'
+  version: 2.24.0
+  title: 'managing dotfiles: a guided tour through my own setup'
+  url: https://www.youtube.com/watch?v=fQ3txCIxiiU

@@ -377,3 +377,7 @@ articles:
   lang: DE
   title: Lokale Kofigurationsdateien sicher mit chezmoi und Git synchronisieren
   url: https://www.heise.de/ratgeber/Lokale-Kofigurationsdateien-sicher-mit-chezmoi-und-Git-synchronisieren-9580741.html
+- date: '2024-01-07'
+  version: 2.43.0
+  title: Chezmore Chezmoi
+  url: https://www.grumpymetalguy.com/tech_stack/chezmore/
