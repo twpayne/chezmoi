@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	vfs "github.com/twpayne/go-vfs/v4"
-	"github.com/twpayne/go-vfs/v4/vfst"
+	vfs "github.com/twpayne/go-vfs/v5"
+	"github.com/twpayne/go-vfs/v5/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -30,7 +30,7 @@ func TestStatusCmd(t *testing.T) {
 			),
 			postApplyTests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .bashrc\n"),
 				),

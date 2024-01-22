@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/twpayne/go-vfs/v4"
-	"github.com/twpayne/go-vfs/v4/vfst"
+	"github.com/twpayne/go-vfs/v5"
+	"github.com/twpayne/go-vfs/v5/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -32,7 +32,7 @@ func TestBoltPersistentState(t *testing.T) {
 		assert.NoError(t, err)
 		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath(path.String(),
-				vfst.TestDoesNotExist,
+				vfst.TestDoesNotExist(),
 			),
 		)
 		assert.Equal(t, []byte(nil), actualValue)
@@ -42,7 +42,7 @@ func TestBoltPersistentState(t *testing.T) {
 		assert.NoError(t, b1.Delete(bucket, key))
 		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath(path.String(),
-				vfst.TestDoesNotExist,
+				vfst.TestDoesNotExist(),
 			),
 		)
 
@@ -50,7 +50,7 @@ func TestBoltPersistentState(t *testing.T) {
 		assert.NoError(t, b1.Set(bucket, key, value))
 		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath(path.String(),
-				vfst.TestModeIsRegular,
+				vfst.TestModeIsRegular(),
 			),
 		)
 		actualValue, err = b1.Get(bucket, key)

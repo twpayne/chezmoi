@@ -7,8 +7,8 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/muesli/combinator"
-	vfs "github.com/twpayne/go-vfs/v4"
-	"github.com/twpayne/go-vfs/v4/vfst"
+	vfs "github.com/twpayne/go-vfs/v5"
+	"github.com/twpayne/go-vfs/v5/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
@@ -111,18 +111,18 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 	switch ts := ts.(type) {
 	case *TargetStateRemove:
 		return []vfst.PathTest{
-			vfst.TestDoesNotExist,
+			vfst.TestDoesNotExist(),
 		}
 	case *TargetStateDir:
 		return []vfst.PathTest{
-			vfst.TestIsDir,
+			vfst.TestIsDir(),
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
 	case *TargetStateFile:
 		expectedContents, err := ts.Contents()
 		assert.NoError(t, err)
 		return []vfst.PathTest{
-			vfst.TestModeIsRegular,
+			vfst.TestModeIsRegular(),
 			vfst.TestContents(expectedContents),
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}

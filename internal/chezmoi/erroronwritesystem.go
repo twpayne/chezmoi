@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"time"
 
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 )
 
 // An ErrorOnWriteSystem is an System that passes reads to the wrapped System

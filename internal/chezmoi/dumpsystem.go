@@ -4,7 +4,7 @@ import (
 	"io/fs"
 	"os/exec"
 
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 )
 
 // A dataType is a data type.

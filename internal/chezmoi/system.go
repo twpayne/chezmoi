@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 	"golang.org/x/sync/errgroup"
 )
 

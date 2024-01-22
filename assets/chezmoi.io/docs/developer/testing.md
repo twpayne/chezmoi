@@ -9,7 +9,7 @@ chezmoi uses multiple levels of testing:
    `internal/chezmoi/*_test.go`.
 
 2. Filesystem integration tests, using `testing` and
-   [`github.com/twpayne/go-vfs/v4`](https://pkg.go.dev/github.com/twpayne/go-vfs/v4),
+   [`github.com/twpayne/go-vfs/v5`](https://pkg.go.dev/github.com/twpayne/go-vfs/v4),
    test chezmoi's effects on the filesystem. This include some tests in
    `internal/chezmoi/*_test.go`, and higher level command tests in
    `internal/cmd/*cmd_test.go`.

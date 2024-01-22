@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"io/fs"
 
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 )
 
 // A ReadOnlySystem is a system that may only be read from.

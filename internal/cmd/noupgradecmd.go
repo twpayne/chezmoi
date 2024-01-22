@@ -4,7 +4,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )

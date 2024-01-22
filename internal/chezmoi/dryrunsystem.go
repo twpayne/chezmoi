@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"time"
 
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 )
 
 // DryRunSystem is an System that reads from, but does not write to, to

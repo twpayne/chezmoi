@@ -4,7 +4,7 @@ import (
 	"io/fs"
 
 	"github.com/bmatcuk/doublestar/v4"
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 )
 
 // A lstatFS implements io/fs.StatFS but uses Lstat instead of Stat.
