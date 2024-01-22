@@ -38,7 +38,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 	"github.com/zricethezav/gitleaks/v8/detect"

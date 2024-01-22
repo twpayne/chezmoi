@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )

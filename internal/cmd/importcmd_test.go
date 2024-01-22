@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/twpayne/go-vfs/v4"
-	"github.com/twpayne/go-vfs/v4/vfst"
+	"github.com/twpayne/go-vfs/v5"
+	"github.com/twpayne/go-vfs/v5/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/archivetest"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
@@ -38,16 +38,16 @@ func TestImportCmd(t *testing.T) {
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
-					vfst.TestIsDir,
+					vfst.TestIsDir(),
 					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/dot_file",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of archive/.dir/.file\n"),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/symlink_dot_symlink",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString(".file\n"),
 				),
@@ -63,16 +63,16 @@ func TestImportCmd(t *testing.T) {
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir",
-					vfst.TestIsDir,
+					vfst.TestIsDir(),
 					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir/dot_file",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of archive/.dir/.file\n"),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir/symlink_dot_symlink",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString(".file\n"),
 				),
@@ -89,19 +89,19 @@ func TestImportCmd(t *testing.T) {
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir",
-					vfst.TestIsDir,
+					vfst.TestIsDir(),
 					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/file",
-					vfst.TestDoesNotExist,
+					vfst.TestDoesNotExist(),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir/dot_file",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of archive/.dir/.file\n"),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir/symlink_dot_symlink",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString(".file\n"),
 				),
@@ -118,16 +118,16 @@ func TestImportCmd(t *testing.T) {
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/exact_dot_dir",
-					vfst.TestIsDir,
+					vfst.TestIsDir(),
 					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/exact_dot_dir/dot_file",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of archive/.dir/.file\n"),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/exact_dot_dir/symlink_dot_symlink",
-					vfst.TestModeIsRegular,
+					vfst.TestModeIsRegular(),
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString(".file\n"),
 				),

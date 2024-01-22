@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 	xdg "github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"

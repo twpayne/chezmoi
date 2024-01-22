@@ -431,6 +431,8 @@ github.com/twpayne/go-shell v0.4.0 h1:RAAMbjEj7mcwDdwC7SiFHGUKR+WDAURU6mnyd3r2p2
 github.com/twpayne/go-shell v0.4.0/go.mod h1:MP3aUA0TQ3IGoJc15ahjb+7A7wZH4NeGrvLZ/aFQsHc=
 github.com/twpayne/go-vfs/v4 v4.3.0 h1:rTqFzzOQ/6ESKTSiwVubHlCBedJDOhQyVSnw8rQNZhU=
 github.com/twpayne/go-vfs/v4 v4.3.0/go.mod h1:tq2UVhnUepesc0lSnPJH/jQ8HruGhzwZe2r5kDFpEIw=
+github.com/twpayne/go-vfs/v5 v5.0.1 h1:5g2H6D/r4BlukZn21ysaPqracmsNb2lRCoiJt55tjqk=
+github.com/twpayne/go-vfs/v5 v5.0.1/go.mod h1:x4tZII+nP25/KlZ2lTPXxnTiS1ZSE10yNJ/mGiBoR8s=
 github.com/twpayne/go-xdg/v6 v6.1.2 h1:KbfCsAP4bBR5+dzfTIh/M9onOPCSqlYsIER79IKwt+s=
 github.com/twpayne/go-xdg/v6 v6.1.2/go.mod h1:BFHclQaEPLq3jRRYjf1PdFzUEvAfPeLjNymIO/7/7o4=
 github.com/ulikunitz/xz v0.5.11 h1:kpFauv27b6ynzBNT/Xy+1k+fK4WswhN/6PN5WhFAGw8=

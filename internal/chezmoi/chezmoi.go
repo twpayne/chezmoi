@@ -18,7 +18,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
 )
 

@@ -148,7 +148,7 @@ linters-settings:
     - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.SourceStateEntry
     - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.System
     - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.TargetStateEntry
-    - github\.com/twpayne/go-vfs/v4\.FS
+    - github\.com/twpayne/go-vfs/v5\.FS
     - stdlib
   misspell:
     locale: US

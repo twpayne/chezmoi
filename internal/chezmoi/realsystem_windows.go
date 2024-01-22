@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 )
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.

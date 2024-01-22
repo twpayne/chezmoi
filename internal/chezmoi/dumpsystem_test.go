@@ -7,7 +7,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	"github.com/coreos/go-semver/semver"
-	vfs "github.com/twpayne/go-vfs/v4"
+	vfs "github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
