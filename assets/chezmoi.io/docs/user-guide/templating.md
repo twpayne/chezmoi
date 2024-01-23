@@ -93,20 +93,28 @@ $ chezmoi edit --apply ~/.zshrc
 
 ## Testing templates
 
-Templates can be tested with the `chezmoi execute-template` command which treats
-each of its arguments as a template and executes it. This can be useful for
-testing small fragments of templates, for example:
+Templates can be tested and debugged with `chezmoi execute-template`,
+which treats each of its arguments as a template and executes it.
+The templates are interpreted and the results are output to standard
+output, making it useful for testing small template fragments:
 
 ```console
 $ chezmoi execute-template '{{ .chezmoi.hostname }}'
 ```
 
-If there are no arguments, `chezmoi execute-template` will read the template
-from the standard input. This can be useful for testing whole files, for example:
+Without arguments, `chezmoi execute-template` will read the template from
+standard input, which is useful for testing whole files:
 
 ```console
 $ chezmoi cd
 $ chezmoi execute-template < dot_zshrc.tmpl
+```
+
+If file redirection does not work (as when using PowerShell), the contents
+of a file can be piped into `chezmoi execute-template`:
+
+```console
+$ cat foo.txt | chezmoi execute-template
 ```
 
 ## Template syntax
@@ -159,29 +167,6 @@ HOSTNAME=myhostname
 
 Notice that this will remove any number of tabs, spaces and even newlines and
 carriage returns.
-
-## Debugging templates
-
-If there is a mistake in one of your templates and you want to debug it, chezmoi
-can help you. You can use this subcommand to test and play with the examples in
-these docs as well.
-
-There is a very handy subcommand called `execute-template`. chezmoi will
-interpret any data coming from stdin or at the end of the command. It will then
-interpret all templates and output the result to stdout. For example with the
-command:
-
-```console
-$ chezmoi execute-template '{{ .chezmoi.os }}/{{ .chezmoi.arch }}'
-```
-
-chezmoi will output the current OS and architecture to stdout.
-
-You can also feed the contents of a file to this command by typing:
-
-```console
-$ cat foo.txt | chezmoi execute-template
-```
 
 ## Simple logic
 
