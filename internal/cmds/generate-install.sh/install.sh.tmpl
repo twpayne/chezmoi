@@ -118,6 +118,13 @@ get_goos() {
 	os="$(uname -s | tr '[:upper:]' '[:lower:]')"
 	case "${os}" in
 	cygwin_nt*) goos="windows" ;;
+	linux)
+		if is_command termux-info; then
+			goos=android
+		else
+			goos=linux
+		fi
+		;;
 	mingw*) goos="windows" ;;
 	msys_nt*) goos="windows" ;;
 	*) goos="${os}" ;;

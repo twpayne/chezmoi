@@ -118,6 +118,13 @@ get_goos() {
 	os="$(uname -s | tr '[:upper:]' '[:lower:]')"
 	case "${os}" in
 	cygwin_nt*) goos="windows" ;;
+	linux)
+		if is_command termux-info; then
+			goos=android
+		else
+			goos=linux
+		fi
+		;;
 	mingw*) goos="windows" ;;
 	msys_nt*) goos="windows" ;;
 	*) goos="${os}" ;;
@@ -142,6 +149,7 @@ get_goarch() {
 
 check_goos_goarch() {
 	case "${1}" in
+	android/arm64) return 0 ;;
 	darwin/amd64) return 0 ;;
 	darwin/arm64) return 0 ;;
 	freebsd/386) return 0 ;;
