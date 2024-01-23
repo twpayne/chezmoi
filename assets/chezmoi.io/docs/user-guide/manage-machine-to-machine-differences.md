@@ -93,7 +93,8 @@ create a file on disk, with the `execute-template` command, for example:
 $ chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
 ```
 
-This is useful when developing or debugging templates.
+This is useful when developing or [debugging
+templates](../user-guide/templating.md#testing-templates).
 
 Some password managers allow you to store complete files. The files can be
 retrieved with chezmoi's template functions. For example, if you have a file
