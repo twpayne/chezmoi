@@ -44,13 +44,13 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *GPGEncryption) DecryptToFile(plaintextFilename AbsPath, ciphertext []byte) error {
+func (e *GPGEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
 	return withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
 		ciphertextAbsPath := tempDirAbsPath.JoinString("ciphertext" + e.EncryptedSuffix())
 		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
-		args := e.decryptArgs(plaintextFilename, ciphertextAbsPath)
+		args := e.decryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		return e.run(args)
 	})
 }
@@ -80,12 +80,12 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *GPGEncryption) EncryptFile(plaintextFilename AbsPath) ([]byte, error) {
+func (e *GPGEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	var ciphertext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
 		ciphertextAbsPath := tempDirAbsPath.JoinString("ciphertext" + e.EncryptedSuffix())
 
-		args := e.encryptArgs(plaintextFilename, ciphertextAbsPath)
+		args := e.encryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
 			return err
 		}
@@ -105,18 +105,18 @@ func (e *GPGEncryption) EncryptedSuffix() string {
 }
 
 // decryptArgs returns the arguments for decryption.
-func (e *GPGEncryption) decryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
-	args := []string{"--output", plaintextFilename.String()}
+func (e *GPGEncryption) decryptArgs(plaintextAbsPath, ciphertextAbsPath AbsPath) []string {
+	args := []string{"--output", plaintextAbsPath.String()}
 	args = append(args, e.Args...)
-	args = append(args, "--decrypt", ciphertextFilename.String())
+	args = append(args, "--decrypt", ciphertextAbsPath.String())
 	return args
 }
 
 // encryptArgs returns the arguments for encryption.
-func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
+func (e *GPGEncryption) encryptArgs(plaintextAbsPath, ciphertextAbsPath AbsPath) []string {
 	args := []string{
 		"--armor",
-		"--output", ciphertextFilename.String(),
+		"--output", ciphertextAbsPath.String(),
 	}
 	if e.Symmetric {
 		args = append(args, "--symmetric")
@@ -132,7 +132,7 @@ func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPat
 	if !e.Symmetric {
 		args = append(args, "--encrypt")
 	}
-	args = append(args, plaintextFilename.String())
+	args = append(args, plaintextAbsPath.String())
 	return args
 }
 
