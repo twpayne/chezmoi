@@ -11,66 +11,83 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
+var ageCommands = []string{
+	"age",
+	"rage",
+}
+
 func TestAgeEncryption(t *testing.T) {
-	command := lookPathOrSkip(t, "age")
+	forEachAgeCommand(t, func(t *testing.T, command string) {
+		t.Helper()
 
-	identityFile := filepath.Join(t.TempDir(), "chezmoi-test-age-key.txt")
-	recipient, err := chezmoitest.AgeGenerateKey(identityFile)
-	assert.NoError(t, err)
+		identityFile := filepath.Join(t.TempDir(), "chezmoi-test-age-key.txt")
+		recipient, err := chezmoitest.AgeGenerateKey(command, identityFile)
+		assert.NoError(t, err)
 
-	testEncryption(t, &AgeEncryption{
-		Command:   command,
-		Identity:  NewAbsPath(identityFile),
-		Recipient: recipient,
+		testEncryption(t, &AgeEncryption{
+			Command:   command,
+			Identity:  NewAbsPath(identityFile),
+			Recipient: recipient,
+		})
 	})
 }
 
 func TestAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
-	command := lookPathOrSkip(t, "age")
+	forEachAgeCommand(t, func(t *testing.T, command string) {
+		t.Helper()
 
-	tempDir := t.TempDir()
-	identityFile1 := filepath.Join(tempDir, "chezmoi-test-age-key1.txt")
-	recipient1, err := chezmoitest.AgeGenerateKey(identityFile1)
-	assert.NoError(t, err)
-	identityFile2 := filepath.Join(tempDir, "chezmoi-test-age-key2.txt")
-	recipient2, err := chezmoitest.AgeGenerateKey(identityFile2)
-	assert.NoError(t, err)
+		tempDir := t.TempDir()
 
-	testEncryption(t, &AgeEncryption{
-		Command: command,
-		Identities: []AbsPath{
-			NewAbsPath(identityFile1),
-			NewAbsPath(identityFile2),
-		},
-		Recipients: []string{
-			recipient1,
-			recipient2,
-		},
+		identityFile1 := filepath.Join(tempDir, "chezmoi-test-age-key1.txt")
+		recipient1, err := chezmoitest.AgeGenerateKey(command, identityFile1)
+		assert.NoError(t, err)
+
+		identityFile2 := filepath.Join(tempDir, "chezmoi-test-age-key2.txt")
+		recipient2, err := chezmoitest.AgeGenerateKey(command, identityFile2)
+		assert.NoError(t, err)
+
+		testEncryption(t, &AgeEncryption{
+			Command: command,
+			Identities: []AbsPath{
+				NewAbsPath(identityFile1),
+				NewAbsPath(identityFile2),
+			},
+			Recipients: []string{
+				recipient1,
+				recipient2,
+			},
+		})
 	})
 }
 
 func TestAgeRecipientsFile(t *testing.T) {
-	command := lookPathOrSkip(t, "age")
+	t.Helper()
 
-	tempDir := t.TempDir()
-	identityFile := filepath.Join(tempDir, "chezmoi-test-age-key.txt")
-	recipient, err := chezmoitest.AgeGenerateKey(identityFile)
-	assert.NoError(t, err)
-	recipientsFile := filepath.Join(t.TempDir(), "chezmoi-test-age-recipients.txt")
-	assert.NoError(t, os.WriteFile(recipientsFile, []byte(recipient), 0o666))
+	forEachAgeCommand(t, func(t *testing.T, command string) {
+		t.Helper()
 
-	testEncryption(t, &AgeEncryption{
-		Command:        command,
-		Identity:       NewAbsPath(identityFile),
-		RecipientsFile: NewAbsPath(recipientsFile),
-	})
+		tempDir := t.TempDir()
 
-	testEncryption(t, &AgeEncryption{
-		Command:  command,
-		Identity: NewAbsPath(identityFile),
-		RecipientsFiles: []AbsPath{
-			NewAbsPath(recipientsFile),
-		},
+		identityFile := filepath.Join(tempDir, "chezmoi-test-age-key.txt")
+		recipient, err := chezmoitest.AgeGenerateKey(command, identityFile)
+		assert.NoError(t, err)
+
+		recipientsFile := filepath.Join(t.TempDir(), "chezmoi-test-age-recipients.txt")
+		assert.NoError(t, os.WriteFile(recipientsFile, []byte(recipient), 0o666))
+
+		testEncryption(t, &AgeEncryption{
+			Command:        command,
+			Identity:       NewAbsPath(identityFile),
+			RecipientsFile: NewAbsPath(recipientsFile),
+		})
+
+		testEncryption(t, &AgeEncryption{
+			Command:  command,
+			Identity: NewAbsPath(identityFile),
+			RecipientsFiles: []AbsPath{
+				NewAbsPath(recipientsFile),
+			},
+		})
 	})
 }
 
@@ -128,4 +145,13 @@ func builtinAgeGenerateKey(t *testing.T) (*age.X25519Recipient, AbsPath) {
 	identityFile := filepath.Join(t.TempDir(), "chezmoi-test-builtin-age-key.txt")
 	assert.NoError(t, os.WriteFile(identityFile, []byte(identity.String()), 0o600))
 	return identity.Recipient(), NewAbsPath(identityFile)
+}
+
+func forEachAgeCommand(t *testing.T, f func(*testing.T, string)) {
+	t.Helper()
+	for _, command := range ageCommands {
+		t.Run(command, func(t *testing.T) {
+			f(t, lookPathOrSkip(t, command))
+		})
+	}
 }

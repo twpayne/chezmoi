@@ -80,6 +80,7 @@ nav:
     - user-guide/encryption/index.md
     - age: user-guide/encryption/age.md
     - gpg: user-guide/encryption/gpg.md
+    - rage: user-guide/encryption/rage.md
   - Machines:
     - General: user-guide/machines/general.md
     - Linux: user-guide/machines/linux.md
