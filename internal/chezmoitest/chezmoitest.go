@@ -23,8 +23,8 @@ var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
 
 // AgeGenerateKey generates an identity in identityFile and returns the
 // recipient.
-func AgeGenerateKey(identityFile string) (string, error) {
-	cmd := exec.Command("age-keygen", "--output", identityFile)
+func AgeGenerateKey(command, identityFile string) (string, error) {
+	cmd := exec.Command(command+"-keygen", "--output", identityFile) //nolint:gosec
 	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
 	if err != nil {
 		return "", err

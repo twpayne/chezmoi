@@ -306,7 +306,7 @@ func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	homeDir := ts.Getenv("HOME")
 	ts.Check(os.MkdirAll(homeDir, fs.ModePerm))
 	identityFile := filepath.Join(homeDir, "key.txt")
-	recipient, err := chezmoitest.AgeGenerateKey(ts.MkAbs(identityFile))
+	recipient, err := chezmoitest.AgeGenerateKey("age", ts.MkAbs(identityFile))
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), fs.ModePerm))

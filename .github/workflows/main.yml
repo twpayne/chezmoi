@@ -13,12 +13,13 @@ env:
   AGE_VERSION: 1.1.1
   CHOCOLATEY_VERSION: 2.2.2
   EDITORCONFIG_CHECKER_VERSION: 2.7.2
+  FIND_TYPOS_VERSION: 0.0.3
   GO_VERSION: 1.21.6
   GOFUMPT_VERSION: 0.5.0
   GOLANGCI_LINT_VERSION: 1.55.2
   GOLINES_VERSION: 0.11.0
   GOVERSIONINFO_VERSION: 1.4.0
-  FIND_TYPOS_VERSION: 0.0.3
+  RAGE_VERSION: 0.9.2
 jobs:
   changes:
     runs-on: ubuntu-20.04
@@ -102,10 +103,13 @@ jobs:
         go run . --version
     - name: install-age
       run: |
-        cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz" | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
+        brew install age
+        age --version
+    - name: install-rage
+      run: |
+        brew tap str4d.xyz/rage https://str4d.xyz/rage
+        brew install rage
+        rage --version
     - name: install-keepassxc
       run: |
         brew install keepassxc
@@ -140,6 +144,12 @@ jobs:
         curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
+    - name: install-rage
+      run: |
+        cd "$(mktemp -d)"
+        curl -fsSL "https://github.com/str4d/rage/releases/download/v${RAGE_VERSION}/rage-v${RAGE_VERSION}-x86_64-linux.tar.gz" | tar xzf -
+        sudo install -m 755 rage/rage /usr/local/bin
+        sudo install -m 755 rage/rage-keygen /usr/local/bin
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -225,6 +235,12 @@ jobs:
         curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
+    - name: install-rage
+      run: |
+        cd "$(mktemp -d)"
+        curl -fsSL "https://github.com/str4d/rage/releases/download/v${RAGE_VERSION}/rage-v${RAGE_VERSION}-x86_64-linux.tar.gz" | tar xzf -
+        sudo install -m 755 rage/rage /usr/local/bin
+        sudo install -m 755 rage/rage-keygen /usr/local/bin
     - name: build
       run: |
         go build ./...
