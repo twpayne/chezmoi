@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - id: filter
-      uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
+      uses: dorny/paths-filter@0bc4621a3135347011ad047f9ecf449bf72ce2bd
       with:
         filters: |
           code:
@@ -190,31 +190,31 @@ jobs:
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+      uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-darwin-arm64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+      uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+      uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-linux-musl-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+      uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
       with:
         name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-windows-amd64.exe
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@1eb3cb2b3e0f29609092a73eb033bb759a334595
+      uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
@@ -288,7 +288,7 @@ jobs:
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c
+    - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
