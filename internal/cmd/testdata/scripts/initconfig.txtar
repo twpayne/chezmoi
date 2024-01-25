@@ -1,23 +1,18 @@
 [windows] skip 'test requires path separator to be forward slash'
-# test the init command with 3 different sets of --config/--config-format options
 
-
-#### test chezmoi init
-
-chhome home1/user
 mkdir $CHEZMOISOURCEDIR
 
-# test that chezmoi init writes the initial config into the defaul config dir
+# test that chezmoi init writes the initial config into the default config dir
 cp golden/chezmoi1.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
 exec chezmoi init
 cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi1.yaml
 
-# test that chezmoi init writes an updated config into the defaul config dir
+# test that chezmoi init writes an updated config into the default config dir
 cp golden/chezmoi2.yaml $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
 exec chezmoi init
 cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi2.yaml
 
-# test that chezmoi init writes a config of a new format into the defaul config dir
+# test that chezmoi init writes a config of a new format into the default config dir
 rm $CHEZMOISOURCEDIR/.chezmoi.yaml.tmpl
 cp golden/chezmoi3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
 exec chezmoi init
@@ -38,10 +33,8 @@ exec chezmoi status
 # check that the state file was written into the default config dir
 exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
-
-#### test chezmoi --config=path init
-
 chhome home2/user
+
 mkdir $CHEZMOISOURCEDIR
 
 # test that chezmoi --config=path init writes the initial config into path
@@ -78,10 +71,8 @@ exists $HOME/.chezmoi/chezmoistate.boltdb
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
-
-#### test chezmoi --config=path --config-format=format init
-
 chhome home3/user
+
 mkdir $CHEZMOISOURCEDIR
 
 # test that chezmoi --config=path --config-format=format init writes the initial config into path
@@ -116,7 +107,6 @@ exists $HOME/.chezmoi/chezmoistate.boltdb
 # check that nothing was ever written into the default config dir
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
-
 
 -- golden/chezmoi1.yaml --
 data:

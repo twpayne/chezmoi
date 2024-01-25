@@ -100,7 +100,7 @@ exec chezmoi --config=$HOME/.chezmoi.toml init file://$WORK/home/user/.local/sha
 cmp $HOME/.chezmoi.toml golden/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 
-chhome home10-old/user
+chhome home11/user
 
 # test chezmoi init --config-path
 mkgitconfig
@@ -108,7 +108,7 @@ exec chezmoi init --config-path=$HOME/.chezmoi.toml file://$WORK/home/user/.loca
 cmp $HOME/.chezmoi.toml golden/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 
-chhome home11/user
+chhome home12/user
 
 # test chezmoi init when the source dir is already in a git working copy
 mkgitconfig
@@ -116,13 +116,13 @@ exec git init $HOME/.local/share
 exec chezmoi init
 ! exists $CHEZMOISOURCEDIR/.git
 
-chhome home12/user
+chhome home13/user
 
 # test chezmoi init --prompt*
 exec chezmoi init --promptBool bool=true,boolOncePrompt=true --promptChoice=choice=one,choiceOncePrompt=two --promptInt int=1,intOncePrompt=2 --promptString bool=string,stringOncePrompt=once
 cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi.yaml
 
-chhome home13/user
+chhome home14/user
 
 # test that chezmoi init creates a config file with a .yml extension
 exec chezmoi init
@@ -148,7 +148,7 @@ data:
   intOnce: 2
   string: string
   stringOnce: once
--- home12/user/.local/share/chezmoi/.chezmoi.yaml.tmpl --
+-- home13/user/.local/share/chezmoi/.chezmoi.yaml.tmpl --
 data:
   bool: {{ promptBool "bool" }}
   boolOnce: {{ promptBoolOnce . "boolOnce" "boolOncePrompt" }}
@@ -158,7 +158,7 @@ data:
   intOnce: {{ promptIntOnce . "intOnce" "intOncePrompt" }}
   string: {{ promptString "bool" }}
   stringOnce: {{ promptStringOnce . "stringOnce" "stringOncePrompt" }}
--- home13/user/.local/share/chezmoi/.chezmoi.yml.tmpl --
+-- home14/user/.local/share/chezmoi/.chezmoi.yml.tmpl --
 data:
     key: value
 -- home4/user/.config/chezmoi/chezmoi.toml --
