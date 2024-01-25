@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/fs"
-	"os/exec"
 	"runtime"
 	"time"
 )
@@ -26,7 +25,7 @@ type TargetStateEntry interface {
 // A TargetStateModifyDirWithCmd represents running a command that modifies
 // a directory.
 type TargetStateModifyDirWithCmd struct {
-	cmd           *exec.Cmd
+	cmd           *lazyCommand
 	forceRefresh  bool
 	refreshPeriod Duration
 	sourceAttr    SourceAttr
@@ -91,7 +90,7 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 	}
 
 	runAt := time.Now().UTC()
-	if err := system.RunCmd(t.cmd); err != nil {
+	if err := system.RunCmd(t.cmd.Command()); err != nil {
 		return false, fmt.Errorf("%s: %w", actualStateEntry.Path(), err)
 	}
 
