@@ -1,8 +1,9 @@
 # Release history
 
 {{- $releases := gitHubListReleases "twpayne/chezmoi" }}
+{{- $latestRelease := index $releases 0 }}
 
-[Upcoming changes](https://github.com/twpayne/chezmoi/compare/{{ $releases | index 0 | .Name }}...master)
+[Upcoming changes](https://github.com/twpayne/chezmoi/compare/{{ $latestRelease.Name }}...master)
 
 {{- $lastReleaseIndex := sub (len $releases) 1 }}
 {{- range $index, $release := $releases }}
