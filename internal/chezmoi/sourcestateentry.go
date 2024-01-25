@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"encoding/hex"
-	"os/exec"
 
 	"github.com/rs/zerolog"
 
@@ -38,7 +37,7 @@ type SourceStateEntry interface {
 
 // A SourceStateCommand represents a command that should be run.
 type SourceStateCommand struct {
-	cmd           *exec.Cmd
+	cmd           *lazyCommand
 	origin        SourceStateOrigin
 	forceRefresh  bool
 	refreshPeriod Duration
@@ -96,7 +95,7 @@ func (s *SourceStateCommand) Evaluate() error {
 // MarshalZerologObject implements
 // github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *SourceStateCommand) MarshalZerologObject(e *zerolog.Event) {
-	e.EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: s.cmd})
+	e.EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: s.cmd.Command()})
 	e.Str("origin", s.origin.OriginString())
 }
 

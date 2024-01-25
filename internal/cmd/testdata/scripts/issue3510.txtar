@@ -1,0 +1,21 @@
+[windows] skip 'UNIX only'
+
+expandenv $CHEZMOISOURCEDIR/.chezmoiexternal.toml
+
+# test that chezmoi apply does not cache the absence of git in $PATH at startup
+exec chezmoi apply
+stdout 'using newly-installed git'
+
+-- golden/git --
+#!/bin/sh
+
+echo "using newly-installed git"
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "git-repo"
+    url = "file://$WORK/repo"
+-- home/user/.local/share/chezmoi/run_once_before_install-git.sh --
+#!/bin/sh
+
+mkdir -p $WORK/bin
+install -m 755 $WORK/golden/git $WORK/bin

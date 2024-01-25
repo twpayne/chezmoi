@@ -1,8 +1,22 @@
 package chezmoi
 
+import "os/exec"
+
+// A commandFunc is a function that returns an *os/exec.Cmd.
+type commandFunc func() *exec.Cmd
+
 // A contentsFunc is a function that returns the contents of a file or an error.
 // It is typically used for lazy evaluation of a file's contents.
 type contentsFunc func() ([]byte, error)
+
+// A lazyCommand returns an *os/exec.Cmd lazily. It is needed to defer the call
+// to os/exec.Command because os/exec.Command calls os/exec.LookupPath and
+// therefore depends on the state of $PATH when os/exec.Command is called, not
+// the state of $PATH when os/exec.Cmd.{Run,Start} is called.
+type lazyCommand struct {
+	commandFunc commandFunc
+	command     *exec.Cmd
+}
 
 // A lazyContents evaluates its contents lazily.
 type lazyContents struct {
@@ -24,6 +38,22 @@ type lazyLinkname struct {
 	linknameSHA256 []byte
 }
 
+// newLazyCommandFunc returns a new lazyCommand with commandFunc.
+func newLazyCommandFunc(commandFunc func() *exec.Cmd) *lazyCommand {
+	return &lazyCommand{
+		commandFunc: commandFunc,
+	}
+}
+
+// Command returns lc's command.
+func (lc *lazyCommand) Command() *exec.Cmd {
+	if lc.commandFunc != nil {
+		lc.command = lc.commandFunc()
+		lc.commandFunc = nil
+	}
+	return lc.command
+}
+
 // newLazyContents returns a new lazyContents with contents.
 func newLazyContents(contents []byte) *lazyContents {
 	return &lazyContents{
@@ -32,7 +62,7 @@ func newLazyContents(contents []byte) *lazyContents {
 }
 
 // newLazyContentsFunc returns a new lazyContents with contentsFunc.
-func newLazyContentsFunc(contentsFunc func() ([]byte, error)) *lazyContents {
+func newLazyContentsFunc(contentsFunc contentsFunc) *lazyContents {
 	return &lazyContents{
 		contentsFunc: contentsFunc,
 	}
