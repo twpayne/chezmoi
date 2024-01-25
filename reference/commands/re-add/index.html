@@ -1437,6 +1437,8 @@
       
         
       
+        
+      
     
     
     
@@ -1515,6 +1517,27 @@
   
   <span class="md-ellipsis">
     gpg
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/encryption/rage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rage
   </span>
   
 
@@ -3751,6 +3774,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    re-add
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -3760,6 +3794,34 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-r-recursive" class="md-nav__link">
+    <span class="md-ellipsis">
+      -r, --recursive
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -7569,6 +7631,8 @@
       
         
       
+        
+      
     
     
     
@@ -7616,6 +7680,27 @@
   
   <span class="md-ellipsis">
     Developing locally
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
   </span>
   
 
@@ -8050,6 +8135,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#-r-recursive" class="md-nav__link">
+    <span class="md-ellipsis">
+      -r, --recursive
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -8069,9 +8171,11 @@
 <h1 id="re-add-target"><code>re-add</code> [<em>target</em>...]</h1>
 <p>Re-add modified files in the target state, preserving any <code>encrypted_</code>
 attributes. chezmoi will not overwrite templates, and all entries that are not
-files are ignored.</p>
+files are ignored. Directories are recursed into by default.</p>
 <p>If no <em>target</em>s are specified then all modified files are re-added. If one or
 more <em>target</em>s are given then only those targets are re-added.</p>
+<h2 id="-r-recursive"><code>-r</code>, <code>--recursive</code></h2>
+<p>Recursively add files in subdirectories.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>If you want to re-add a single file unconditionally, use <code>chezmoi add --force</code> instead.</p>
@@ -8080,6 +8184,7 @@ more <em>target</em>s are given then only those targets are re-added.</p>
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>re-add
 <span class="gp">$ </span>chezmoi<span class="w"> </span>re-add<span class="w"> </span>~/.bashrc
+<span class="gp">$ </span>chezmoi<span class="w"> </span>re-add<span class="w"> </span>--recursive<span class="o">=</span><span class="nb">false</span><span class="w"> </span>~/.config/git
 </code></pre></div>
 </div>
 

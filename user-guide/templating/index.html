@@ -920,15 +920,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debugging-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debugging templates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#simple-logic" class="md-nav__link">
     <span class="md-ellipsis">
       Simple logic
@@ -1687,6 +1678,8 @@
       
         
       
+        
+      
     
     
     
@@ -1765,6 +1758,27 @@
   
   <span class="md-ellipsis">
     gpg
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryption/rage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rage
   </span>
   
 
@@ -7809,6 +7823,8 @@
       
         
       
+        
+      
     
     
     
@@ -7856,6 +7872,27 @@
   
   <span class="md-ellipsis">
     Developing locally
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
   </span>
   
 
@@ -8366,15 +8403,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debugging-templates" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debugging templates
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#simple-logic" class="md-nav__link">
     <span class="md-ellipsis">
       Simple logic
@@ -8604,15 +8632,20 @@ editor, use the <code>--apply</code> option, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span>~/.zshrc
 </code></pre></div>
 <h2 id="testing-templates">Testing templates</h2>
-<p>Templates can be tested with the <code>chezmoi execute-template</code> command which treats
-each of its arguments as a template and executes it. This can be useful for
-testing small fragments of templates, for example:</p>
+<p>Templates can be tested and debugged with <code>chezmoi execute-template</code>,
+which treats each of its arguments as a template and executes it.
+The templates are interpreted and the results are output to standard
+output, making it useful for testing small template fragments:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.hostname }}&#39;</span>
 </code></pre></div>
-<p>If there are no arguments, <code>chezmoi execute-template</code> will read the template
-from the standard input. This can be useful for testing whole files, for example:</p>
+<p>Without arguments, <code>chezmoi execute-template</code> will read the template from
+standard input, which is useful for testing whole files:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
 <span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>&lt;<span class="w"> </span>dot_zshrc.tmpl
+</code></pre></div>
+<p>If file redirection does not work (as when using PowerShell), the contents
+of a file can be piped into <code>chezmoi execute-template</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>foo.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
 </code></pre></div>
 <h2 id="template-syntax">Template syntax</h2>
 <p>Template actions are written inside double curly brackets, <code>{{</code> and <code>}}</code>.
@@ -8647,20 +8680,6 @@ example:</p>
 </code></pre></div>
 <p>Notice that this will remove any number of tabs, spaces and even newlines and
 carriage returns.</p>
-<h2 id="debugging-templates">Debugging templates</h2>
-<p>If there is a mistake in one of your templates and you want to debug it, chezmoi
-can help you. You can use this subcommand to test and play with the examples in
-these docs as well.</p>
-<p>There is a very handy subcommand called <code>execute-template</code>. chezmoi will
-interpret any data coming from stdin or at the end of the command. It will then
-interpret all templates and output the result to stdout. For example with the
-command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&#39;</span>
-</code></pre></div>
-<p>chezmoi will output the current OS and architecture to stdout.</p>
-<p>You can also feed the contents of a file to this command by typing:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>foo.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
-</code></pre></div>
 <h2 id="simple-logic">Simple logic</h2>
 <p>A very useful feature of chezmoi templates is the ability to perform logical
 operations.</p>

@@ -1513,6 +1513,8 @@
       
         
       
+        
+      
     
     
     
@@ -1591,6 +1593,27 @@
   
   <span class="md-ellipsis">
     gpg
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../encryption/rage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rage
   </span>
   
 
@@ -7635,6 +7658,8 @@
       
         
       
+        
+      
     
     
     
@@ -7682,6 +7707,27 @@
   
   <span class="md-ellipsis">
     Developing locally
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
   </span>
   
 
@@ -8238,7 +8284,8 @@ managers</a>.</p>
 create a file on disk, with the <code>execute-template</code> command, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;</span>
 </code></pre></div>
-<p>This is useful when developing or debugging templates.</p>
+<p>This is useful when developing or <a href="../templating/#testing-templates">debugging
+templates</a>.</p>
 <p>Some password managers allow you to store complete files. The files can be
 retrieved with chezmoi's template functions. For example, if you have a file
 stored in 1Password with the UUID <code>uuid</code> then you can retrieve it with the
@@ -8278,12 +8325,12 @@ by default, so we have to turn the logic around and instead write "ignore
 <p>If you want to have the same file contents in different locations on different
 systems, but maintain only a single file in your source state, you can use a
 shared template.</p>
-<p>Create the common file in the <code>.chezmoitemplates</code> directory in the source
-state. For example, create <code>.chezmoitemplates/file.conf</code>. The contents of this
-file are available in templates with the <code>template $NAME .</code> function where
-<code>$NAME</code> is the name of the file (<code>.</code> passes the current data to the template
-code in <code>file.conf</code>; see https://pkg.go.dev/text/template#hdr-Actions for
-details).</p>
+<p>Create the common file in the <code>.chezmoitemplates</code> directory in the source state.
+For example, create <code>.chezmoitemplates/file.conf</code>. The contents of this file are
+available in templates with the <code>template $NAME .</code> function where <code>$NAME</code> is the
+name of the file (<code>.</code> passes the current data to the template code in
+<code>file.conf</code>; see <a href="https://pkg.go.dev/text/template#hdr-Actions"><code>template</code>
+action</a> for details).</p>
 <p>Then create files for each system, for example <code>Library/Application
 Support/App/file.conf.tmpl</code> for macOS and <code>dot_config/app/file.conf.tmpl</code> for
 Linux. Both template files should contain <code>{{- template "file.conf" . -}}</code>.</p>

@@ -1437,6 +1437,8 @@
       
         
       
+        
+      
     
     
     
@@ -1515,6 +1517,27 @@
   
   <span class="md-ellipsis">
     gpg
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/encryption/rage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    rage
   </span>
   
 
@@ -7626,6 +7649,8 @@
       
         
       
+        
+      
     
     
     
@@ -7673,6 +7698,27 @@
   
   <span class="md-ellipsis">
     Developing locally
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer/testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
   </span>
   
 
@@ -8175,12 +8221,9 @@ command line flag is set.</p>
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.</p>
 <h2 id="-watch"><code>--watch</code></h2>
-<p>Automatically apply changes when files are saved.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><code>--watch</code> is a beta feature with limitations. Known limitations include:</p>
+<p>Automatically apply changes when files are saved, with the following limitations:</p>
 <ul>
-<li>Only works when <code>chezmoi edit</code> is invoked with arguments (i.e.
+<li>Only available when <code>chezmoi edit</code> is invoked with arguments (i.e.
   argument-free <code>chezmoi edit</code> is not supported).</li>
 <li>All edited files are applied when any file is saved.</li>
 <li>Only the edited files are watched, not any dependent files (e.g.
@@ -8188,7 +8231,6 @@ correctly. This is the default.</p>
 <li>Only works on operating systems supported by
   <a href="https://github.com/fsnotify/fsnotify">fsnotify</a>.</li>
 </ul>
-</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.bashrc
