@@ -1,10 +1,24 @@
-[windows] skip
+[windows] skip 'UNIX only'
 
 # test that chezmoi sets environment variables for modify_ scripts
-exec chezmoi apply
-grep ^${CHEZMOISOURCEDIR@R}$ $HOME/.modify
+exec chezmoi apply $HOME${/}.modify
+grep ^CHEZMOI_SOURCE_DIR=${CHEZMOISOURCEDIR@R}$ $HOME/.modify
+grep ^CHEZMOI_SOURCE_FILE=modify_dot_modify$ $HOME/.modify
+
+chhome home2/user
+
+# test that CHEZMOI_SOURCE_FILE environment variable is set when running scripts
+exec chezmoi apply $HOME${/}script.sh
+stdout ^CHEZMOI_SOURCE_DIR=${CHEZMOISOURCEDIR@R}$
+stdout ^CHEZMOI_SOURCE_FILE=run_script.sh$
 
 -- home/user/.local/share/chezmoi/modify_dot_modify --
 #!/bin/sh
 
-echo ${CHEZMOI_SOURCE_DIR}
+echo CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}
+echo CHEZMOI_SOURCE_FILE=${CHEZMOI_SOURCE_FILE}
+-- home2/user/.local/share/chezmoi/run_script.sh --
+#!/bin/sh
+
+echo CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}
+echo CHEZMOI_SOURCE_FILE=${CHEZMOI_SOURCE_FILE}

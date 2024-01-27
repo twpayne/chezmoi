@@ -14,8 +14,9 @@ import (
 )
 
 type RunScriptOptions struct {
-	Interpreter *Interpreter
-	Condition   ScriptCondition
+	Interpreter   *Interpreter
+	Condition     ScriptCondition
+	SourceRelPath SourceRelPath
 }
 
 // A System reads from and writes to a filesystem, runs scripts, and persists
