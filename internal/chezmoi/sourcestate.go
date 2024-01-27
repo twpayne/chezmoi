@@ -1855,6 +1855,9 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 			// Run the modifier on the current contents.
 			cmd := interpreter.ExecCommand(tempFile.Name())
+			cmd.Env = append(os.Environ(),
+				"CHEZMOI_SOURCE_FILE="+sourceRelPath.String(),
+			)
 			cmd.Stdin = bytes.NewReader(currentContents)
 			cmd.Stderr = os.Stderr
 			contents, err = chezmoilog.LogCmdOutput(cmd)
@@ -1911,6 +1914,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 			sourceAttr: SourceAttr{
 				Condition: fileAttr.Condition,
 			},
+			sourceRelPath: sourceRelPath,
 		}, nil
 	}
 }

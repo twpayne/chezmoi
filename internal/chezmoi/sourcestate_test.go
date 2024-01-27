@@ -1016,6 +1016,7 @@ func TestSourceStateRead(t *testing.T) {
 							sourceAttr: SourceAttr{
 								Condition: ScriptConditionAlways,
 							},
+							sourceRelPath: NewSourceRelPath("run_script"),
 						},
 					},
 				}),
@@ -1046,6 +1047,7 @@ func TestSourceStateRead(t *testing.T) {
 							sourceAttr: SourceAttr{
 								Condition: ScriptConditionAlways,
 							},
+							sourceRelPath: NewSourceRelPath("run_script"),
 						},
 					},
 				}),

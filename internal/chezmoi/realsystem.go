@@ -123,6 +123,9 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, opt
 	if err != nil {
 		return err
 	}
+	cmd.Env = append(os.Environ(),
+		"CHEZMOI_SOURCE_FILE="+options.SourceRelPath.String(),
+	)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

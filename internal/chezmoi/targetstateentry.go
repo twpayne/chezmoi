@@ -52,10 +52,11 @@ type TargetStateRemove struct{}
 // A TargetStateScript represents the state of a script.
 type TargetStateScript struct {
 	*lazyContents
-	name        RelPath
-	interpreter *Interpreter
-	condition   ScriptCondition
-	sourceAttr  SourceAttr
+	name          RelPath
+	interpreter   *Interpreter
+	condition     ScriptCondition
+	sourceAttr    SourceAttr
+	sourceRelPath SourceRelPath
 }
 
 // A TargetStateSymlink represents the state of a symlink in the target state.
@@ -333,8 +334,9 @@ func (t *TargetStateScript) Apply(
 	runAt := time.Now().UTC()
 	if !isEmpty(contents) {
 		if err := system.RunScript(t.name, actualStateEntry.Path().Dir(), contents, RunScriptOptions{
-			Condition:   t.condition,
-			Interpreter: t.interpreter,
+			Condition:     t.condition,
+			Interpreter:   t.interpreter,
+			SourceRelPath: t.sourceRelPath,
 		}); err != nil {
 			return false, err
 		}
