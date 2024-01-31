@@ -288,8 +288,8 @@ type configState struct {
 }
 
 var (
-	chezmoiRelPath             = chezmoi.NewRelPath("chezmoi")
-	httpCacheDirRelPath        = chezmoi.NewRelPath("httpcache")
+	chezmoiRelPath      = chezmoi.NewRelPath("chezmoi")
+	httpCacheDirRelPath = chezmoi.NewRelPath("httpcache")
 
 	configStateKey = []byte("configState")
 
@@ -2169,7 +2169,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 		return c.PersistentStateAbsPath, nil
 	}
 
-        // Fallback to XDG Base Directory Specification default.
+	// Fallback to XDG Base Directory Specification default.
 	stateHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(c.bds.StateHome, c.homeDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
