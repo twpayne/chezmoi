@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
-	"github.com/twpayne/chezmoi/v2/internal/git"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoigit"
 )
 
 func (c *Config) newGenerateCmd() *cobra.Command {
@@ -36,7 +36,7 @@ func (c *Config) runGenerateCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		status, err := git.ParseStatusPorcelainV2(output)
+		status, err := chezmoigit.ParseStatusPorcelainV2(output)
 		if err != nil {
 			return err
 		}

@@ -25,8 +25,8 @@ import (
 	"github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoigit"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
-	"github.com/twpayne/chezmoi/v2/internal/git"
 )
 
 // A checkResult is the result of a check.
@@ -583,7 +583,7 @@ func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 			gitStatus = gitStatusError
 			break
 		}
-		switch status, err := git.ParseStatusPorcelainV2(output); {
+		switch status, err := chezmoigit.ParseStatusPorcelainV2(output); {
 		case err != nil:
 			gitStatus = gitStatusError
 		case status.Empty():
