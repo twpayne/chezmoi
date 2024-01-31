@@ -3,11 +3,11 @@
 # test that the persistent state is only created on demand
 exec chezmoi state dump --format=yaml
 cmp stdout golden/dump.yaml
-! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+! exists $CHEZMOISTATEDIR/chezmoistate.boltdb
 
 # test that chezmoi apply updates the persistent state
 exec chezmoi apply --force
-exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+exists $CHEZMOISTATEDIR/chezmoistate.boltdb
 
 # test that the persistent state records that script was run
 exec chezmoi state dump --format=yaml
@@ -25,15 +25,15 @@ exec chezmoi state dump --format=yaml
 
 # test that chezmoi state reset removes the persistent state
 exec chezmoi --force state reset
-! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+! exists $CHEZMOISTATEDIR/chezmoistate.boltdb
 
 # test that the --persistent-state option sets the persistent state file
 exec chezmoi apply --force
 stdout script
-exec chezmoi apply --force --persistent-state=$CHEZMOICONFIGDIR${/}chezmoistate2.boltdb
-exists $CHEZMOICONFIGDIR${/}chezmoistate2.boltdb
+exec chezmoi apply --force --persistent-state=$CHEZMOISTATEDIR${/}chezmoistate2.boltdb
+exists $CHEZMOISTATEDIR${/}chezmoistate2.boltdb
 stdout script
-exec chezmoi state dump --format=yaml --persistent-state=$CHEZMOICONFIGDIR${/}chezmoistate2.boltdb
+exec chezmoi state dump --format=yaml --persistent-state=$CHEZMOISTATEDIR${/}chezmoistate2.boltdb
 stdout 70396a619400b7f78dbb83ab8ddb76ffe0b8e31557e64bab2ca9677818a52135:
 stdout runAt:
 

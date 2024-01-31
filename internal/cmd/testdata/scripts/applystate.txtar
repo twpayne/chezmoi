@@ -4,8 +4,8 @@ mksourcedir
 
 # test that chezmoi apply does not modify the state if nothing needs to be done
 exec chezmoi apply --force
-exec sha256sum $CHEZMOICONFIGDIR/chezmoistate.boltdb
+exec sha256sum $CHEZMOISTATEDIR/chezmoistate.boltdb
 cp stdout chezmoistate.boltdb-sha256-pre-apply
 exec chezmoi apply --force
-exec sha256sum $CHEZMOICONFIGDIR/chezmoistate.boltdb
+exec sha256sum $CHEZMOISTATEDIR/chezmoistate.boltdb
 cmp stdout chezmoistate.boltdb-sha256-pre-apply

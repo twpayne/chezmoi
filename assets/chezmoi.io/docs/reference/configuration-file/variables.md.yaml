@@ -33,9 +33,9 @@ sections:
       description: Default pager CLI command
     persistentState:
       default: >-
-        `$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb` <br/>
-        `$HOME/.config/chezmoi/chezmoi.boltdb` <br/>
-        `%USERPROFILE%/.config/chezmoi/chezmoi.boltdb`
+        `$XDG_STATE_HOME/chezmoi/chezmoi.boltdb` <br/>
+        `$HOME/.local/state/chezmoi/chezmoi.boltdb` <br/>
+        `%USERPROFILE%/.local/state/chezmoi/chezmoi.boltdb`
       description: Location of the persistent state file
     progress:
       type: bool

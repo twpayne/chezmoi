@@ -4,12 +4,12 @@ mkhomedir
 
 # test that chezmoi add --dry-run does not modify anything
 exec chezmoi add --dry-run $HOME${/}.file
-! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+! exists $CHEZMOISTATEDIR/chezmoistate.boltdb
 ! exists $CHEZMOISOURCEDIR/dot_file
 
 # test that chezmoi add updates the persistent state
 exec chezmoi add $HOME${/}.file
-exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+exists $CHEZMOISTATEDIR/chezmoistate.boltdb
 exists $CHEZMOISOURCEDIR/dot_file
 exec chezmoi state dump
 stdout 634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663 # sha256sum of "# contents of .file\n"

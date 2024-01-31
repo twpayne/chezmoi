@@ -30,8 +30,8 @@ exec chezmoi status
 ! stdout .
 ! stderr .
 
-# check that the state file was written into the default config dir
-exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+# check that the state file was written into the default state dir
+exists $CHEZMOISTATEDIR/chezmoistate.boltdb
 
 chhome home2/user
 
@@ -64,12 +64,8 @@ exec chezmoi --config=$HOME/.chezmoi/athome.toml status
 ! stdout .
 ! stderr .
 
-# check that the state file was written next to the config file
-exists $HOME/.chezmoi/chezmoistate.boltdb
-
 # check that nothing was ever written into the default config dir
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
-! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 chhome home3/user
 
@@ -101,12 +97,8 @@ exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=toml status
 ! stdout .
 ! stderr .
 
-# check that the state file was written next to the config file
-exists $HOME/.chezmoi/chezmoistate.boltdb
-
 # check that nothing was ever written into the default config dir
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
-! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 -- golden/chezmoi1.yaml --
 data:

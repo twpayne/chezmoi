@@ -289,7 +289,6 @@ type configState struct {
 
 var (
 	chezmoiRelPath             = chezmoi.NewRelPath("chezmoi")
-	persistentStateFileRelPath = chezmoi.NewRelPath("chezmoistate.boltdb")
 	httpCacheDirRelPath        = chezmoi.NewRelPath("httpcache")
 
 	configStateKey = []byte("configState")
@@ -2169,24 +2168,13 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	if !c.PersistentStateAbsPath.Empty() {
 		return c.PersistentStateAbsPath, nil
 	}
-	if !c.getConfigFileAbsPath().Empty() {
-		return c.getConfigFileAbsPath().Dir().Join(persistentStateFileRelPath), nil
-	}
-	for _, configDir := range c.bds.ConfigDirs {
-		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
-		if err != nil {
-			return chezmoi.EmptyAbsPath, err
-		}
-		persistentStateFile := configDirAbsPath.Join(chezmoiRelPath, persistentStateFileRelPath)
-		if _, err := os.Stat(persistentStateFile.String()); err == nil {
-			return persistentStateFile, nil
-		}
-	}
-	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fileSystem, c.bds)
+
+        // Fallback to XDG Base Directory Specification default.
+	stateHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(c.bds.StateHome, c.homeDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	return defaultConfigFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
+	return stateHomeAbsPath.JoinString("chezmoi", "chezmoistate.boltdb"), nil
 }
 
 // progressAutoFunc detects whether progress bars should be displayed.

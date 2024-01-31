@@ -120,11 +120,13 @@ func cmdChHome(ts *testscript.TestScript, neg bool, args []string) {
 		homeDir          = ts.MkAbs(args[0])
 		chezmoiConfigDir = path.Join(homeDir, ".config", "chezmoi")
 		chezmoiSourceDir = path.Join(homeDir, ".local", "share", "chezmoi")
+                chezmoiStateDir  = path.Join(homeDir, ".local", "state", "chezmoi")
 	)
 	ts.Check(os.MkdirAll(homeDir, fs.ModePerm))
 	ts.Setenv("HOME", homeDir)
 	ts.Setenv("CHEZMOICONFIGDIR", chezmoiConfigDir)
 	ts.Setenv("CHEZMOISOURCEDIR", chezmoiSourceDir)
+        ts.Setenv("CHEZMOISTATEDIR", chezmoiStateDir)
 	if runtime.GOOS == "windows" {
 		ts.Setenv("USERPROFILE", homeDir)
 	}
@@ -658,6 +660,7 @@ func setup(env *testscript.Env) error {
 	}
 	env.Setenv("CHEZMOICONFIGDIR", path.Join(absSlashHomeDir, ".config", "chezmoi"))
 	env.Setenv("CHEZMOISOURCEDIR", path.Join(absSlashHomeDir, ".local", "share", "chezmoi"))
+        env.Setenv("CHEZMOISTATEDIR", path.Join(absSlashHomeDir, ".local", "state", "chezmoi"))
 	env.Setenv("CHEZMOI_GITHUB_TOKEN", os.Getenv("CHEZMOI_GITHUB_TOKEN"))
 
 	switch runtime.GOOS {
