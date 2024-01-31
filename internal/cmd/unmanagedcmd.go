@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/maps"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 type unmanagedCmdConfig struct {
@@ -97,7 +97,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	}
 
 	builder := strings.Builder{}
-	sortedRelPaths := chezmoi.RelPaths(maps.Keys(unmanagedRelPaths))
+	sortedRelPaths := chezmoi.RelPaths(chezmoimaps.Keys(unmanagedRelPaths))
 	sort.Sort(sortedRelPaths)
 	for _, relPath := range sortedRelPaths {
 		switch c.unmanaged.pathStyle {

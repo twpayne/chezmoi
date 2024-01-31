@@ -6,7 +6,7 @@ import (
 	"io/fs"
 	"sort"
 
-	"golang.org/x/exp/maps"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 // A sourceStateEntryTreeNode is a node in a tree of SourceStateEntries.
@@ -65,7 +65,7 @@ func (n *sourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(Rel
 		return err
 	}
 
-	childrenByRelPath := RelPaths(maps.Keys(n.children))
+	childrenByRelPath := RelPaths(chezmoimaps.Keys(n.children))
 	sort.Sort(childrenByRelPath)
 	for _, childRelPath := range childrenByRelPath {
 		child := n.children[childRelPath]
