@@ -2,7 +2,7 @@
 
 chezmoi is written in [Go](https://golang.org) and development happens on
 [GitHub](https://github.com). chezmoi is a standard Go project, using standard
-Go tooling. chezmoi requires Go 1.20 or later.
+Go tooling. chezmoi requires Go 1.21 or later.
 
 Checkout chezmoi:
 
@@ -16,15 +16,6 @@ Build chezmoi:
 ```console
 $ go build
 ```
-
-!!! hint
-
-    If you try to build chezmoi with an unsupported version of Go you will get
-    the error:
-
-    ```
-    package github.com/twpayne/chezmoi/v2: build constraints exclude all Go files in /home/twp/src/github.com/twpayne/chezmoi
-    ```
 
 Run all tests:
 
