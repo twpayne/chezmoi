@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+	"slices"
 	"strings"
-
-	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )

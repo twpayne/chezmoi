@@ -12,12 +12,12 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
-	"golang.org/x/exp/slices"
 	"gopkg.in/ini.v1"
 	"howett.net/plist"
 

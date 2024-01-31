@@ -5,9 +5,9 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"slices"
 
 	"github.com/coreos/go-semver/semver"
-	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )

@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/slices"
 )
 
 // Annotations.

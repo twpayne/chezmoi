@@ -5,10 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/rogpeppe/go-internal/txtar"
-	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
