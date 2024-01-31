@@ -27,7 +27,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
-	gogit "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
@@ -51,8 +51,8 @@ import (
 	"github.com/twpayne/chezmoi/v2/assets/templates"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoigit"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
-	"github.com/twpayne/chezmoi/v2/internal/git"
 )
 
 // defaultSentinel is a string value used to indicate that the default value
@@ -1436,7 +1436,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 }
 
 // gitAutoAdd adds all changes to the git index and returns the new git status.
-func (c *Config) gitAutoAdd() (*git.Status, error) {
+func (c *Config) gitAutoAdd() (*chezmoigit.Status, error) {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
 	}
@@ -1444,12 +1444,12 @@ func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err != nil {
 		return nil, err
 	}
-	return git.ParseStatusPorcelainV2(output)
+	return chezmoigit.ParseStatusPorcelainV2(output)
 }
 
 // gitAutoCommit commits all changes in the git index, including generating a
 // commit message from status.
-func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
+func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) error {
 	if status.Empty() {
 		return nil
 	}
@@ -1461,7 +1461,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *git.Status) error {
 }
 
 // gitAutoPush pushes all changes to the remote if status is not empty.
-func (c *Config) gitAutoPush(status *git.Status) error {
+func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 	if status.Empty() {
 		return nil
 	}
@@ -1469,7 +1469,7 @@ func (c *Config) gitAutoPush(status *git.Status) error {
 }
 
 // gitCommitMessage returns the git commit message for the given status.
-func (c *Config) gitCommitMessage(cmd *cobra.Command, status *git.Status) ([]byte, error) {
+func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status) ([]byte, error) {
 	funcMap := maps.Clone(c.templateFuncs)
 	maps.Copy(funcMap, map[string]any{
 		"promptBool":   c.promptBoolInteractiveTemplateFunc,
@@ -1786,7 +1786,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	}
 
 	if annotations.hasTag(modifiesSourceDirectory) {
-		var status *git.Status
+		var status *chezmoigit.Status
 		if c.Git.AutoAdd || c.Git.AutoCommit || c.Git.AutoPush {
 			var err error
 			status, err = c.gitAutoAdd()
@@ -2088,7 +2088,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
 		for {
-			gitDirAbsPath := workingTreeAbsPath.JoinString(gogit.GitDirName)
+			gitDirAbsPath := workingTreeAbsPath.JoinString(git.GitDirName)
 			if _, err := c.baseSystem.Stat(gitDirAbsPath); err == nil {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
 				break FOR
