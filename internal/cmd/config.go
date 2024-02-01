@@ -26,6 +26,7 @@ import (
 	"unicode"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/adrg/xdg"
 	"github.com/coreos/go-semver/semver"
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
@@ -39,7 +40,6 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v5"
-	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 	"github.com/zricethezav/gitleaks/v8/detect"
 	"golang.org/x/exp/maps"
@@ -216,7 +216,12 @@ type Config struct {
 
 	// Configuration.
 	fileSystem                  vfs.FS
-	bds                         *xdg.BaseDirectorySpecification
+	xdgConfigHome               string
+	xdgConfigDirs               []string
+	xdgDataHome                 string
+	xdgDataDirs                 []string
+	xdgCacheHome                string
+	xdgRuntimeDir               string
 	defaultConfigFileAbsPath    chezmoi.AbsPath
 	defaultConfigFileAbsPathErr error
 	customConfigFileAbsPath     chezmoi.AbsPath
@@ -317,15 +322,17 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 
-	bds, err := xdg.NewBaseDirectorySpecification()
-	if err != nil {
-		return nil, err
-	}
+	xdgConfigHome := xdg.ConfigHome
+	xdgConfigDirs := append([]string{xdgConfigHome}, xdg.ConfigDirs...)
+	xdgDataHome := xdg.DataHome
+	xdgDataDirs := append([]string{xdgDataHome}, xdg.DataDirs...)
+	xdgCacheHome := xdg.CacheHome
+	xdgRuntimeDir := xdg.RuntimeDir
 
 	logger := zerolog.Nop()
 
 	c := &Config{
-		ConfigFile: newConfigFile(bds),
+		ConfigFile: newConfigFile(xdgCacheHome),
 
 		// Global configuration.
 		homeDir:       userHomeDir,
@@ -377,9 +384,14 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 
 		// Configuration.
-		fileSystem: vfs.OSFS,
-		bds:        bds,
-		logger:     &logger,
+		fileSystem:    vfs.OSFS,
+		xdgConfigHome: xdgConfigHome,
+		xdgConfigDirs: xdgConfigDirs,
+		xdgDataHome:   xdgDataHome,
+		xdgDataDirs:   xdgDataDirs,
+		xdgCacheHome:  xdgCacheHome,
+		xdgRuntimeDir: xdgRuntimeDir,
+		logger:        &logger,
 
 		// Computed configuration.
 		homeDirAbsPath: homeDirAbsPath,
@@ -501,8 +513,8 @@ func newConfig(options ...configOption) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr = c.defaultConfigFile(c.fileSystem, c.bds)
-	c.SourceDirAbsPath, err = c.defaultSourceDir(c.fileSystem, c.bds)
+	c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr = c.defaultConfigFile(c.fileSystem)
+	c.SourceDirAbsPath, err = c.defaultSourceDir(c.fileSystem)
 	if err != nil {
 		return nil, err
 	}
@@ -758,7 +770,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	configPath := c.init.configPath
 	if c.init.configPath.Empty() {
 		if c.customConfigFileAbsPath.Empty() {
-			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
+			configPath = chezmoi.NewAbsPath(c.xdgConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
 		} else {
 			configPath = c.customConfigFileAbsPath
 		}
@@ -832,10 +844,10 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *co
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
-func (c *Config) defaultConfigFile(fileSystem vfs.FS, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultConfigFile(fileSystem vfs.FS) (chezmoi.AbsPath, error) {
 	// Search XDG Base Directory Specification config directories first.
 CONFIG_DIR:
-	for _, configDir := range bds.ConfigDirs {
+	for _, configDir := range c.xdgConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
@@ -878,7 +890,7 @@ CONFIG_DIR:
 	}
 
 	// Fallback to XDG Base Directory Specification default.
-	configHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.ConfigHome, c.homeDirAbsPath)
+	configHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(c.xdgConfigHome, c.homeDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
@@ -1043,9 +1055,9 @@ func (c *Config) defaultPreApplyFunc(
 
 // defaultSourceDir returns the default source directory according to the XDG
 // Base Directory Specification.
-func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultSourceDir(fileSystem vfs.Stater) (chezmoi.AbsPath, error) {
 	// Check for XDG Base Directory Specification data directories first.
-	for _, dataDir := range bds.DataDirs {
+	for _, dataDir := range c.xdgDataDirs {
 		dataDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dataDir, c.homeDirAbsPath)
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
@@ -1056,7 +1068,7 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 		}
 	}
 	// Fallback to XDG Base Directory Specification default.
-	dataHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.DataHome, c.homeDirAbsPath)
+	dataHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(c.xdgDataHome, c.homeDirAbsPath)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
@@ -2070,14 +2082,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	// Create the runtime directory if needed.
 	if annotations.hasTag(runsCommands) {
-		if runtime.GOOS == "linux" && c.bds.RuntimeDir != "" {
+		if runtime.GOOS == "linux" && c.xdgRuntimeDir != "" {
 			// Snap sets the $XDG_RUNTIME_DIR environment variable to
 			// /run/user/$uid/snap.$snap_name, but does not create this
 			// directory. Consequently, any spawned processes that need
 			// $XDG_DATA_DIR will fail. As a work-around, create the directory
 			// if it does not exist. See
 			// https://forum.snapcraft.io/t/wayland-dconf-and-xdg-runtime-dir/186/13.
-			if err := chezmoi.MkdirAll(c.baseSystem, chezmoi.NewAbsPath(c.bds.RuntimeDir), 0o700); err != nil {
+			if err := chezmoi.MkdirAll(c.baseSystem, chezmoi.NewAbsPath(c.xdgRuntimeDir), 0o700); err != nil {
 				return err
 			}
 		}
@@ -2172,7 +2184,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	if !c.getConfigFileAbsPath().Empty() {
 		return c.getConfigFileAbsPath().Dir().Join(persistentStateFileRelPath), nil
 	}
-	for _, configDir := range c.bds.ConfigDirs {
+	for _, configDir := range c.xdgConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
@@ -2182,7 +2194,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 			return persistentStateFile, nil
 		}
 	}
-	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fileSystem, c.bds)
+	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fileSystem)
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
@@ -2660,10 +2672,10 @@ func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
 }
 
-func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
+func newConfigFile(cache string) ConfigFile {
 	return ConfigFile{
 		// Global configuration.
-		CacheDirAbsPath: chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath),
+		CacheDirAbsPath: chezmoi.NewAbsPath(cache).Join(chezmoiRelPath),
 		Color: autoBool{
 			auto: true,
 		},

@@ -91,7 +91,7 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 			addArg := c.DestDirAbsPath.Join(filename)
 			addArgs = append(addArgs, addArg.String())
 		}
-		configHomeAbsPath := chezmoi.NewAbsPath(c.bds.ConfigHome)
+		configHomeAbsPath := chezmoi.NewAbsPath(c.xdgConfigHome)
 		for _, filename := range config.XDGConfigurationFiles {
 			addArg := configHomeAbsPath.Join(filename)
 			addArgs = append(addArgs, addArg.String())

@@ -40,7 +40,6 @@ require (
 	github.com/twpayne/go-pinentry v0.3.0
 	github.com/twpayne/go-shell v0.4.0
 	github.com/twpayne/go-vfs/v5 v5.0.1
-	github.com/twpayne/go-xdg/v6 v6.1.2
 	github.com/ulikunitz/xz v0.5.11
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/zalando/go-keyring v0.2.3
@@ -69,6 +68,7 @@ require (
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/ProtonMail/go-crypto v1.0.0 // indirect
+	github.com/adrg/xdg v0.4.0 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alecthomas/repr v0.3.0 // indirect
 	github.com/alessio/shellescape v1.4.2 // indirect

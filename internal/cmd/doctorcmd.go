@@ -18,11 +18,11 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"github.com/adrg/xdg"
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v58/github"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
@@ -89,7 +89,6 @@ type binaryCheck struct {
 // readable.
 type configFileCheck struct {
 	basename chezmoi.RelPath
-	bds      *xdg.BaseDirectorySpecification
 	expected chezmoi.AbsPath
 }
 
@@ -190,7 +189,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		upgradeMethodCheck{},
 		&configFileCheck{
 			basename: chezmoiRelPath,
-			bds:      c.bds,
 			expected: c.getConfigFileAbsPath(),
 		},
 		&dirCheck{
@@ -512,7 +510,7 @@ func (c *configFileCheck) Name() string {
 
 func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	filenameAbsPaths := make(map[chezmoi.AbsPath]struct{})
-	for _, dir := range append([]string{c.bds.ConfigHome}, c.bds.ConfigDirs...) {
+	for _, dir := range append([]string{xdg.ConfigHome}, xdg.ConfigDirs...) {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dir, homeDirAbsPath)
 		if err != nil {
 			return checkResultFailed, err.Error()

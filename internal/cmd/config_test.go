@@ -10,7 +10,6 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	vfs "github.com/twpayne/go-vfs/v5"
-	xdg "github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
@@ -249,16 +248,14 @@ func withTestUser(t *testing.T, username string) configOption {
 		config.SourceDirAbsPath = config.homeDirAbsPath.JoinString(".local", "share", "chezmoi")
 		config.DestDirAbsPath = config.homeDirAbsPath
 		config.Umask = 0o22
-		configHome := filepath.Join(config.homeDir, ".config")
-		dataHome := filepath.Join(config.homeDir, ".local", "share")
-		config.bds = &xdg.BaseDirectorySpecification{
-			ConfigHome: configHome,
-			ConfigDirs: []string{configHome},
-			DataHome:   dataHome,
-			DataDirs:   []string{dataHome},
-			CacheHome:  filepath.Join(config.homeDir, ".cache"),
-			RuntimeDir: filepath.Join(config.homeDir, ".run"),
-		}
+
+		config.xdgConfigHome = filepath.Join(config.homeDir, ".config")
+		config.xdgConfigDirs = []string{config.xdgConfigHome}
+		config.xdgDataHome = filepath.Join(config.homeDir, ".local", "share")
+		config.xdgDataDirs = []string{config.xdgDataHome}
+		config.xdgCacheHome = filepath.Join(config.homeDir, ".cache")
+		config.xdgRuntimeDir = filepath.Join(config.homeDir, ".run")
+
 		return nil
 	}
 }
