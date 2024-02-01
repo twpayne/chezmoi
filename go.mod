@@ -25,7 +25,7 @@ require (
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.14
-	github.com/klauspost/compress v1.17.4
+	github.com/klauspost/compress v1.17.5
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
