@@ -44,8 +44,3 @@ CLI](https://developer.1password.com/docs/cli) (`op`).
     `account1.1password.ca` will not be a valid lookup value, but `my@account1`,
     `my@account1.1password.ca`, `your@account1`, and
     `your@account1.1password.ca` would all be valid lookups.
-
-!!! warning
-
-    Support for 1Password CLI v1 will be removed with the next major release of
-    chezmoi.
