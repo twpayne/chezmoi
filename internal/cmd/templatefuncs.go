@@ -17,6 +17,7 @@ import (
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
+	"golang.org/x/exp/slices"
 	"gopkg.in/ini.v1"
 	"howett.net/plist"
 
@@ -276,7 +277,7 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 	}
 
 	templateOptions := chezmoi.TemplateOptions{
-		Options: append([]string(nil), c.Template.Options...),
+		Options: slices.Clone(c.Template.Options),
 	}
 	tmpl, err := chezmoi.ParseTemplate(filename, contents, c.templateFuncs, templateOptions)
 	if err != nil {
