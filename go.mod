@@ -15,7 +15,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.26.2
 	github.com/bmatcuk/doublestar/v4 v4.6.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
-	github.com/charmbracelet/bubbles v0.17.1
+	github.com/charmbracelet/bubbles v0.18.0
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/glamour v0.6.0
 	github.com/coreos/go-semver v0.3.1
@@ -25,14 +25,14 @@ require (
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.14
-	github.com/klauspost/compress v1.17.4
+	github.com/klauspost/compress v1.17.6
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
 	github.com/muesli/termenv v0.15.2
 	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/rogpeppe/go-internal v1.12.0
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
@@ -44,7 +44,7 @@ require (
 	github.com/ulikunitz/xz v0.5.11
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
 	github.com/zalando/go-keyring v0.2.3
-	github.com/zricethezav/gitleaks/v8 v8.18.2-0.20240110190900-a59289ca9bd3
+	github.com/zricethezav/gitleaks/v8 v8.18.2
 	go.etcd.io/bbolt v1.3.8
 	golang.org/x/crypto v0.18.0
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
@@ -90,7 +90,7 @@ require (
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/lipgloss v0.9.1 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
-	github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 // indirect
+	github.com/containerd/console v1.0.4 // indirect
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
 	github.com/cyphar/filepath-securejoin v0.2.4 // indirect
 	github.com/danieljoos/wincred v1.2.1 // indirect
@@ -135,7 +135,7 @@ require (
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.6 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
@@ -146,7 +146,7 @@ require (
 	github.com/spf13/viper v1.18.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	github.com/yuin/goldmark v1.6.0 // indirect
+	github.com/yuin/goldmark v1.7.0 // indirect
 	github.com/yuin/goldmark-emoji v1.0.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/mod v0.14.0 // indirect
