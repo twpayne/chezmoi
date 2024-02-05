@@ -200,6 +200,6 @@ shellcheck:
 test-release:
 	goreleaser release \
 		--clean \
-		--skip=sign \
+		--skip=chocolatey,sign \
 		--snapshot \
 		${GORELEASER_FLAGS}
