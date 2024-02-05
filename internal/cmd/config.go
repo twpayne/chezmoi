@@ -2779,8 +2779,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			recursive: true,
 		},
 		Update: updateCmdConfig{
+			Apply:             true,
 			RecurseSubmodules: true,
-			apply:             true,
 			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive:         true,
 		},

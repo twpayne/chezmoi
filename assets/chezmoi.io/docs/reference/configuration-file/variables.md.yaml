@@ -386,6 +386,10 @@ sections:
       default: '`vault`'
       description: Vault CLI command
   update:
+    apply:
+      type: 'bool'
+      default: '`true`'
+      description: Apply after pulling
     args:
       type: '[]string'
       description: Extra args to update command
