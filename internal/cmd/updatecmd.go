@@ -12,8 +12,8 @@ import (
 type updateCmdConfig struct {
 	Command           string   `json:"command"           mapstructure:"command"           yaml:"command"`
 	Args              []string `json:"args"              mapstructure:"args"              yaml:"args"`
+	Apply             bool     `json:"apply"             mapstructure:"apply"             yaml:"apply"`
 	RecurseSubmodules bool     `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
-	apply             bool
 	filter            *chezmoi.EntryTypeFilter
 	init              bool
 	recursive         bool
@@ -37,7 +37,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 	}
 
 	flags := updateCmd.Flags()
-	flags.BoolVarP(&c.Update.apply, "apply", "a", c.Update.apply, "Apply after pulling")
+	flags.BoolVarP(&c.Update.Apply, "apply", "a", c.Update.Apply, "Apply after pulling")
 	flags.VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.Update.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
@@ -94,7 +94,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if c.Update.apply {
+	if c.Update.Apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			cmd:          cmd,
 			filter:       c.Update.filter,
