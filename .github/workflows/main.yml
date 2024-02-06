@@ -8,6 +8,8 @@ on:
     - master
     tags:
     - v*
+  schedule:
+  - cron: 22 2 * * *
 env:
   ACTIONLINT_VERSION: 1.6.26
   AGE_VERSION: 1.1.1
