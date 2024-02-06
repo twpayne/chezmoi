@@ -14,6 +14,9 @@ concurrency:
 jobs:
   action:
     runs-on: ubuntu-22.04
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
     - uses: dessant/lock-threads@1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771
       with:
