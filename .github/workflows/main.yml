@@ -22,7 +22,7 @@ env:
   RAGE_VERSION: 0.9.2
 jobs:
   changes:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       code: ${{ steps.filter.outputs.code }}
     permissions:
@@ -48,7 +48,7 @@ jobs:
   codeql:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       security-events: write
     steps:
@@ -71,7 +71,7 @@ jobs:
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -84,7 +84,7 @@ jobs:
   test-archlinux:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -136,7 +136,7 @@ jobs:
   test-oldstable-go:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -169,7 +169,7 @@ jobs:
         go test ./...
   test-release:
     needs: changes
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
     permissions:
       contents: read
     steps:
@@ -234,7 +234,7 @@ jobs:
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
     needs: changes
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
     permissions:
       contents: read
     steps:
@@ -282,7 +282,7 @@ jobs:
         sh assets/scripts/install.sh
         bin/chezmoi --version
   test-website:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -341,7 +341,7 @@ jobs:
         (iwr -useb https://get.chezmoi.io/ps1).ToString() | powershell -c -
         bin/chezmoi.exe --version
   check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -389,7 +389,7 @@ jobs:
   lint:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
@@ -414,7 +414,7 @@ jobs:
     - test-ubuntu
     - test-website
     - test-windows
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
     permissions:
       contents: write
     steps:
@@ -459,7 +459,7 @@ jobs:
   deploy-website:
     needs:
     - release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
