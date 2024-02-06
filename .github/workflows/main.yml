@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       code: ${{ steps.filter.outputs.code }}
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - id: filter
@@ -59,6 +61,8 @@ jobs:
     - uses: github/codeql-action/analyze@b7bf0a3ed3ecfa44160715d7c442788f65f0f923
   misspell:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: reviewdog/action-misspell@06d6a480724fa783c220081bbc22336a78dbbe82
@@ -68,6 +72,8 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - name: test
@@ -79,6 +85,8 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - name: test
@@ -90,6 +98,8 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
@@ -127,6 +137,8 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
@@ -158,6 +170,8 @@ jobs:
   test-release:
     needs: changes
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
@@ -221,6 +235,8 @@ jobs:
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
@@ -267,6 +283,8 @@ jobs:
         bin/chezmoi --version
   test-website:
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
@@ -283,6 +301,8 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2022
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
@@ -322,6 +342,8 @@ jobs:
         bin/chezmoi.exe --version
   check:
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
@@ -368,6 +390,8 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
@@ -391,6 +415,8 @@ jobs:
     - test-website
     - test-windows
     runs-on: ubuntu-20.04
+    permissions:
+      contents: write
     steps:
     - name: install-build-dependencies
       run: |
@@ -434,6 +460,8 @@ jobs:
     needs:
     - release
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
