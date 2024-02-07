@@ -66,7 +66,7 @@ func (c *Config) passholeOutput(name string, args []string, stdin io.Reader) (st
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = stdin
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		return "", newCmdOutputError(cmd, output, err)
 	}

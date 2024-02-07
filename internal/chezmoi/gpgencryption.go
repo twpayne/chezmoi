@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"log/slog"
 	"os"
 	"os/exec"
 	"runtime"
@@ -142,7 +143,7 @@ func (e *GPGEncryption) run(args []string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdRun(cmd)
+	return chezmoilog.LogCmdRun(slog.Default(), cmd)
 }
 
 // withPrivateTempDir creates a private temporary and calls f.

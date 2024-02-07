@@ -64,7 +64,7 @@ func (c *Config) dashlaneOutput(args ...string) ([]byte, error) {
 	args = append(slices.Clone(c.Dashlane.Args), args...)
 	cmd := exec.Command(name, args...)
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		return nil, err
 	}

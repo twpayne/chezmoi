@@ -10,7 +10,6 @@ linters:
   - contextcheck
   - decorder
   - dogsled
-  - dupl
   - dupword
   - durationcheck
   - errcheck
@@ -81,6 +80,7 @@ linters:
   - asasalint
   - cyclop
   - depguard
+  - dupl
   - exhaustive
   - exhaustruct
   - funlen

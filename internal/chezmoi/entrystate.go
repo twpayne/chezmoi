@@ -3,9 +3,8 @@ package chezmoi
 import (
 	"bytes"
 	"io/fs"
+	"log/slog"
 	"runtime"
-
-	"github.com/rs/zerolog"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
@@ -60,24 +59,26 @@ func (s *EntryState) Equivalent(other *EntryState) bool {
 	}
 }
 
+// LogValue implements log/slog.LogValuer.LogValue.
+func (s *EntryState) LogValue() slog.Value {
+	if s == nil {
+		return slog.Value{}
+	}
+	attrs := []slog.Attr{
+		slog.String("Type", string(s.Type)),
+		slog.Int("Mode", int(s.Mode)),
+		chezmoilog.Stringer("ContentsSHA256", s.ContentsSHA256),
+	}
+	if len(s.contents) != 0 {
+		attrs = append(attrs, chezmoilog.FirstFewBytes("contents", s.contents))
+	}
+	if s.overwrite {
+		attrs = append(attrs, slog.Bool("overwrite", s.overwrite))
+	}
+	return slog.GroupValue(attrs...)
+}
+
 // Overwrite returns true if s should be overwritten by default.
 func (s *EntryState) Overwrite() bool {
 	return s.overwrite
-}
-
-// MarshalZerologObject implements
-// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
-func (s *EntryState) MarshalZerologObject(e *zerolog.Event) {
-	if s == nil {
-		return
-	}
-	e.Str("Type", string(s.Type))
-	e.Int("Mode", int(s.Mode))
-	e.Stringer("ContentsSHA256", s.ContentsSHA256)
-	if len(s.contents) != 0 {
-		e.Bytes("contents", chezmoilog.FirstFewBytes(s.contents))
-	}
-	if s.overwrite {
-		e.Bool("overwrite", s.overwrite)
-	}
 }

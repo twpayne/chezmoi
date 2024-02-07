@@ -32,12 +32,11 @@ require (
 	github.com/muesli/termenv v0.15.2
 	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/rogpeppe/go-internal v1.12.0
-	github.com/rs/zerolog v1.32.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a
-	github.com/twpayne/go-pinentry v0.3.0
+	github.com/twpayne/go-pinentry/v3 v3.0.1
 	github.com/twpayne/go-shell v0.4.0
 	github.com/twpayne/go-vfs/v5 v5.0.1
 	github.com/twpayne/go-xdg/v6 v6.1.2
@@ -133,8 +132,8 @@ require (
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.6 // indirect
+	github.com/rs/zerolog v1.32.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect

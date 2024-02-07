@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io/fs"
+	"log/slog"
 	"os"
 	"os/exec"
 	"strconv"
@@ -328,7 +329,7 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err := chezmoilog.LogCmdRun(cmd)
+	err := chezmoilog.LogCmdRun(slog.Default(), cmd)
 
 	// Swallow exit status 1 errors if the files differ as diff commands
 	// traditionally exit with code 1 in this case.

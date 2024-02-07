@@ -4,6 +4,7 @@ package chezmoitest
 import (
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"os"
 	"os/exec"
 	"regexp"
@@ -25,7 +26,7 @@ var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
 // recipient.
 func AgeGenerateKey(command, identityFile string) (string, error) {
 	cmd := exec.Command(command+"-keygen", "--output", identityFile) //nolint:gosec
-	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
+	output, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
 	if err != nil {
 		return "", err
 	}
@@ -52,7 +53,7 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 	)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err = chezmoilog.LogCmdRun(cmd)
+	err = chezmoilog.LogCmdRun(slog.Default(), cmd)
 	return
 }
 

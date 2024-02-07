@@ -1,26 +1,14 @@
 package chezmoi
 
 import (
-	"os"
 	"strings"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"github.com/rs/zerolog/pkgerrors"
 	"github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
-
-func init() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{
-		Out:     os.Stderr,
-		NoColor: true,
-	})
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack //nolint:reassign
-}
 
 func TestEtcHostsFQDNHostname(t *testing.T) {
 	for _, tc := range []struct {

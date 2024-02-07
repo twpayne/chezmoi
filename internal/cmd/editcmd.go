@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log/slog"
 	"os"
 	"runtime"
 	"time"
@@ -9,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 type editCmdConfig struct {
@@ -222,20 +224,14 @@ TARGET_REL_PATH:
 					if !ok {
 						return
 					}
-					c.logger.Debug().
-						Stringer("Op", event.Op).
-						Str("Name", event.Name).
-						Msg("watcher.Events")
+					c.logger.Debug("watcher.Events", slog.String("Name", event.Name), chezmoilog.Stringer("Op", event.Op))
 					err := postEditFunc()
-					c.logger.Err(err).
-						Msg("postEditFunc")
+					chezmoilog.InfoOrError(c.logger, "postEditFunc", err)
 				case _, ok := <-watcher.Errors:
 					if !ok {
 						return
 					}
-					c.logger.Error().
-						Err(err).
-						Msg("watcher.Errors")
+					chezmoilog.InfoOrError(c.logger, "watcher.Errors", err)
 				}
 			}
 		}()

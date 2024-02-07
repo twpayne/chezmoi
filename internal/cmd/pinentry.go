@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/twpayne/go-pinentry"
+	"github.com/twpayne/go-pinentry/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
