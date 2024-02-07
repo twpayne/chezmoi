@@ -54,7 +54,7 @@ func TestDataCmd(t *testing.T) {
 					Chezmoi struct {
 						SourceDir string `json:"sourceDir" yaml:"sourceDir"`
 					} `json:"chezmoi" yaml:"chezmoi"`
-					Test bool `json:"test" yaml:"test"`
+					Test bool `json:"test"    yaml:"test"`
 				}
 				assert.NoError(t, tc.format.Unmarshal([]byte(stdout.String()), &data))
 				normalizedSourceDir, err := chezmoi.NormalizePath("/tmp/source")
