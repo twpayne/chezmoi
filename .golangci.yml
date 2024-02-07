@@ -1,5 +1,5 @@
 run:
-  go: '1.19'
+  go: '1.21'
 
 linters:
   enable:
@@ -59,12 +59,15 @@ linters:
   - revive
   - rowserrcheck
   - sloglint
+  - spancheck
   - sqlclosecheck
   - staticcheck
   - stylecheck
+  - tagalign
   - tagliatelle
   - tenv
   - testableexamples
+  - testifylint
   - thelper
   - typecheck
   - unconvert
@@ -100,7 +103,6 @@ linters:
   - nlreturn
   - nonamedreturns
   - paralleltest
-  - tagalign
   - testpackage
   - tparallel
   - varnamelen
