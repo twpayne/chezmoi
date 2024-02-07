@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/exec"
@@ -480,7 +481,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	}
 
 	cmd := exec.Command(pathAbsPath.String(), c.versionArgs...) //nolint:gosec
-	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
+	output, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()
 	}

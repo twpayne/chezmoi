@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"log/slog"
 	"os"
 	"os/exec"
 
@@ -39,5 +40,5 @@ func (t textConv) convert(path string, data []byte) ([]byte, error) {
 	cmd := exec.Command(longestPatternElement.Command, longestPatternElement.Args...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(data)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdOutput(cmd)
+	return chezmoilog.LogCmdOutput(slog.Default(), cmd)
 }

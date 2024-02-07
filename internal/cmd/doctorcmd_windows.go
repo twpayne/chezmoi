@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"log/slog"
 	"os/exec"
 	"strings"
 
@@ -23,7 +24,7 @@ func (systeminfoCheck) Name() string {
 
 func (systeminfoCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	cmd := exec.Command("systeminfo")
-	data, err := chezmoilog.LogCmdOutput(cmd)
+	data, err := chezmoilog.LogCmdOutput(slog.Default(), cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()
 	}

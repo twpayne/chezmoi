@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"errors"
 	"io/fs"
+	"log/slog"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -79,7 +80,7 @@ func (s *RealSystem) Rename(oldpath, newpath AbsPath) error {
 
 // RunCmd implements System.RunCmd.
 func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
-	return chezmoilog.LogCmdRun(cmd)
+	return chezmoilog.LogCmdRun(slog.Default(), cmd)
 }
 
 // RunScript implements System.RunScript.

@@ -179,7 +179,7 @@ func (c *Config) keepassxcOutputCachePassword(command string, args ...string) ([
 	}
 	cmd.Stderr = os.Stderr
 
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
 	}
@@ -211,7 +211,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		cmd.Stdin = console.Tty()
 		cmd.Stdout = console.Tty()
 		cmd.Stderr = console.Tty()
-		if err := chezmoilog.LogCmdStart(cmd); err != nil {
+		if err := chezmoilog.LogCmdStart(c.logger, cmd); err != nil {
 			return nil, err
 		}
 
@@ -332,7 +332,7 @@ func (c *Config) keepassxcClose() error {
 	if _, err := c.Keepassxc.console.ExpectString("exit\r\n"); err != nil {
 		return err
 	}
-	if err := chezmoilog.LogCmdWait(c.Keepassxc.cmd); err != nil {
+	if err := chezmoilog.LogCmdWait(c.logger, c.Keepassxc.cmd); err != nil {
 		return err
 	}
 	if err := c.Keepassxc.console.Close(); err != nil {

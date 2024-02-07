@@ -22,7 +22,7 @@ func (c *Config) vaultTemplateFunc(key string) any {
 	cmd := exec.Command(c.Vault.Command, args...) //nolint:gosec
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}

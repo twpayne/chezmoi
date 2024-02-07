@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"regexp"
 	"strconv"
 
@@ -11,10 +12,10 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
-	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 type initCmdConfig struct {
@@ -79,9 +80,9 @@ var repoGuesses = []struct {
 	},
 }
 
-// A loggableGitCloneOptions is a git.CloneOptions that implements
-// github.com/rs/zerolog.LogObjectMarshaler.
-type loggableGitCloneOptions git.CloneOptions
+// A gitCloneOptionsLogValuer is a git.CloneOptions that implements
+// log/slog.LogValuer.
+type gitCloneOptionsLogValuer git.CloneOptions
 
 func (c *Config) newInitCmd() *cobra.Command {
 	initCmd := &cobra.Command{
@@ -250,11 +251,11 @@ func (c *Config) builtinGitClone(repoURLStr string, workingTreeRawPath chezmoi.A
 
 	for {
 		_, err := git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
-		c.logger.Err(err).
-			Stringer("path", workingTreeRawPath).
-			Bool("isBare", isBare).
-			Object("o", loggableGitCloneOptions(cloneOptions)).
-			Msg("PlainClone")
+		chezmoilog.InfoOrError(c.logger, "PlainClone", err,
+			chezmoilog.Stringer("path", workingTreeRawPath),
+			slog.Bool("isBare", isBare),
+			slog.Any("options", gitCloneOptionsLogValuer(cloneOptions)),
+		)
 		if !errors.Is(err, transport.ErrAuthenticationRequired) {
 			return err
 		}
@@ -277,52 +278,50 @@ func (c *Config) builtinGitClone(repoURLStr string, workingTreeRawPath chezmoi.A
 func (c *Config) builtinGitInit(workingTreeRawPath chezmoi.AbsPath) error {
 	isBare := false
 	_, err := git.PlainInit(workingTreeRawPath.String(), isBare)
-	c.logger.Err(err).
-		Stringer("path", workingTreeRawPath).
-		Bool("isBare", isBare).
-		Msg("PlainInit")
+	chezmoilog.InfoOrError(c.logger, "PlainInit", err,
+		chezmoilog.Stringer("path", workingTreeRawPath),
+		slog.Bool("isBare", isBare),
+	)
 	return err
 }
 
-// MarshalZerologObject implements
-// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
-//
-// We cannot use zerolog's default object marshaler because it logs the auth
-// credentials.
-func (o loggableGitCloneOptions) MarshalZerologObject(e *zerolog.Event) {
+// LogValue implements log/slog.LogValuer.LogValue.
+func (o gitCloneOptionsLogValuer) LogValue() slog.Value {
+	var attrs []slog.Attr
 	if o.URL != "" {
-		e.Str("URL", o.URL)
+		attrs = append(attrs, slog.String("URL", o.URL))
 	}
 	if o.Auth != nil {
-		e.Stringer("Auth", o.Auth)
+		attrs = append(attrs, chezmoilog.Stringer("Auth", o.Auth))
 	}
 	if o.RemoteName != "" {
-		e.Str("RemoteName", o.RemoteName)
+		attrs = append(attrs, slog.String("RemoteName", o.RemoteName))
 	}
 	if o.ReferenceName != "" {
-		e.Stringer("ReferenceName", o.ReferenceName)
+		attrs = append(attrs, slog.String("ReferenceName", string(o.ReferenceName)))
 	}
 	if o.SingleBranch {
-		e.Bool("SingleBranch", o.SingleBranch)
+		attrs = append(attrs, slog.Bool("SingleBranch", o.SingleBranch))
 	}
 	if o.NoCheckout {
-		e.Bool("NoCheckout", o.NoCheckout)
+		attrs = append(attrs, slog.Bool("NoCheckout", o.NoCheckout))
 	}
 	if o.Depth != 0 {
-		e.Int("Depth", o.Depth)
+		attrs = append(attrs, slog.Int("Depth", o.Depth))
 	}
 	if o.RecurseSubmodules != 0 {
-		e.Uint("RecurseSubmodules", uint(o.RecurseSubmodules))
+		attrs = append(attrs, slog.Int("RecurseSubmodules", int(o.RecurseSubmodules)))
 	}
 	if o.Tags != 0 {
-		e.Int("Tags", int(o.Tags))
+		attrs = append(attrs, slog.Int("Tags", int(o.Tags)))
 	}
 	if o.InsecureSkipTLS {
-		e.Bool("InsecureSkipTLS", o.InsecureSkipTLS)
+		attrs = append(attrs, slog.Bool("InsecureSkipTLS", o.InsecureSkipTLS))
 	}
 	if o.CABundle != nil {
-		e.Bytes("CABundle", o.CABundle)
+		attrs = append(attrs, slog.Any("CABundle", o.CABundle))
 	}
+	return slog.GroupValue(attrs...)
 }
 
 // guessRepoURL guesses the user's username and repo from arg.

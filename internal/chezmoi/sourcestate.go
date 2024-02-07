@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"os"
@@ -29,8 +30,6 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/mitchellh/copystructure"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
@@ -123,7 +122,7 @@ type SourceState struct {
 	remove                  *patternSet
 	interpreters            map[string]*Interpreter
 	httpClient              *http.Client
-	logger                  *zerolog.Logger
+	logger                  *slog.Logger
 	version                 semver.Version
 	mode                    Mode
 	defaultTemplateDataFunc func() map[string]any
@@ -194,7 +193,7 @@ func WithInterpreters(interpreters map[string]*Interpreter) SourceStateOption {
 }
 
 // WithLogger sets the logger.
-func WithLogger(logger *zerolog.Logger) SourceStateOption {
+func WithLogger(logger *slog.Logger) SourceStateOption {
 	return func(s *SourceState) {
 		s.logger = logger
 	}
@@ -290,7 +289,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		ignore:               newPatternSet(),
 		remove:               newPatternSet(),
 		httpClient:           http.DefaultClient,
-		logger:               &log.Logger,
+		logger:               slog.Default(),
 		readTemplateData:     true,
 		readTemplates:        true,
 		priorityTemplateData: make(map[string]any),
@@ -1644,7 +1643,7 @@ func (s *SourceState) getExternalData(
 		cmd := exec.Command(external.Filter.Command, external.Filter.Args...) //nolint:gosec
 		cmd.Stdin = bytes.NewReader(data)
 		cmd.Stderr = os.Stderr
-		data, err = chezmoilog.LogCmdOutput(cmd)
+		data, err = chezmoilog.LogCmdOutput(s.logger, cmd)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 		}
@@ -1860,7 +1859,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			)
 			cmd.Stdin = bytes.NewReader(currentContents)
 			cmd.Stderr = os.Stderr
-			contents, err = chezmoilog.LogCmdOutput(cmd)
+			contents, err = chezmoilog.LogCmdOutput(s.logger, cmd)
 			return
 		}
 		return &TargetStateFile{

@@ -304,7 +304,7 @@ func (c *Config) ioregTemplateFunc() map[string]any {
 	args := []string{"-a", "-l"}
 	cmd := exec.Command(command, args...)
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}
@@ -391,7 +391,7 @@ func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	cmd := exec.Command(name, args...)
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}

@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/exec"
@@ -121,10 +122,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("%s/%s: cannot determine upgrade method for %s", runtime.GOOS, runtime.GOARCH, executableAbsPath)
 		}
 	}
-	c.logger.Info().
-		Str("executable", c.upgrade.executable).
-		Str("method", method).
-		Msg("upgradeMethod")
+	c.logger.Info("upgradeMethod", slog.String("executable", c.upgrade.executable), slog.String("method", method))
 
 	// Replace the executable with the updated version.
 	switch method {
@@ -173,7 +171,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	chezmoiVersionCmd.Stdin = os.Stdin
 	chezmoiVersionCmd.Stdout = os.Stdout
 	chezmoiVersionCmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdRun(chezmoiVersionCmd)
+	return chezmoilog.LogCmdRun(c.logger, chezmoiVersionCmd)
 }
 
 func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {

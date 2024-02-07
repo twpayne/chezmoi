@@ -161,7 +161,7 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 	cmd := exec.Command(c.Onepassword.Command, commandArgs...) //nolint:gosec
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		return "", newCmdOutputError(cmd, output, err)
 	}
@@ -215,7 +215,7 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 	cmd := exec.Command(c.Onepassword.Command, commandArgs...) //nolint:gosec
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
 	}

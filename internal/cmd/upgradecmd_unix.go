@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"os"
 	"os/exec"
 	"regexp"
@@ -175,7 +176,7 @@ func getLibc() (string, error) {
 	// writes to stdout and exits with code 0. On musl libc systems it writes to
 	// stderr and exits with code 1.
 	lddCmd := exec.Command("ldd", "--version")
-	switch output, _ := chezmoilog.LogCmdCombinedOutput(lddCmd); {
+	switch output, _ := chezmoilog.LogCmdCombinedOutput(slog.Default(), lddCmd); {
 	case libcTypeGlibcRx.Match(output):
 		return libcTypeGlibc, nil
 	case libcTypeMuslRx.Match(output):
@@ -184,7 +185,7 @@ func getLibc() (string, error) {
 
 	// Second, try getconf GNU_LIBC_VERSION.
 	getconfCmd := exec.Command("getconf", "GNU_LIBC_VERSION")
-	if output, _ := chezmoilog.LogCmdCombinedOutput(getconfCmd); libcTypeGlibcRx.Match(output) {
+	if output, _ := chezmoilog.LogCmdCombinedOutput(slog.Default(), getconfCmd); libcTypeGlibcRx.Match(output) {
 		return libcTypeGlibc, nil
 	}
 

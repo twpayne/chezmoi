@@ -6,6 +6,7 @@ package chezmoi
 import (
 	"bytes"
 	"io"
+	"log/slog"
 	"os"
 	"os/exec"
 
@@ -42,7 +43,7 @@ func (e *AgeEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdOutput(cmd)
+	return chezmoilog.LogCmdOutput(slog.Default(), cmd)
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
@@ -59,7 +60,7 @@ func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 	cmd := exec.Command(e.Command, args...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdRun(cmd)
+	return chezmoilog.LogCmdRun(slog.Default(), cmd)
 }
 
 // Encrypt implements Encryption.Encrypt.
@@ -71,7 +72,7 @@ func (e *AgeEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(plaintext)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdOutput(cmd)
+	return chezmoilog.LogCmdOutput(slog.Default(), cmd)
 }
 
 // EncryptFile implements Encryption.EncryptFile.
@@ -87,7 +88,7 @@ func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	args := append(append(e.encryptArgs(), e.Args...), plaintextAbsPath.String())
 	cmd := exec.Command(e.Command, args...) //nolint:gosec
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdOutput(cmd)
+	return chezmoilog.LogCmdOutput(slog.Default(), cmd)
 }
 
 // EncryptedSuffix implements Encryption.EncryptedSuffix.

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
 	"maps"
 	"net/http"
 	"os"
@@ -35,8 +36,6 @@ import (
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/mitchellh/mapstructure"
 	"github.com/muesli/termenv"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/twpayne/go-shell"
@@ -225,7 +224,7 @@ type Config struct {
 	destSystem                  chezmoi.System
 	persistentState             chezmoi.PersistentState
 	httpClient                  *http.Client
-	logger                      *zerolog.Logger
+	logger                      *slog.Logger
 
 	// Computed configuration.
 	commandDirAbsPath   chezmoi.AbsPath
@@ -322,7 +321,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 
-	logger := zerolog.Nop()
+	logger := slog.Default()
 
 	c := &Config{
 		ConfigFile: newConfigFile(bds),
@@ -379,7 +378,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		// Configuration.
 		fileSystem: vfs.OSFS,
 		bds:        bds,
-		logger:     &logger,
+		logger:     logger,
 
 		// Computed configuration.
 		homeDirAbsPath: homeDirAbsPath,
@@ -524,9 +523,9 @@ func (c *Config) Close() error {
 	errs := make([]error, 0, len(c.tempDirs))
 	for _, tempDirAbsPath := range c.tempDirs {
 		err := os.RemoveAll(tempDirAbsPath.String())
-		c.logger.Err(err).
-			Stringer("tempDir", tempDirAbsPath).
-			Msg("RemoveAll")
+		chezmoilog.InfoOrError(c.logger, "RemoveAll", err,
+			chezmoilog.Stringer("tempDir", tempDirAbsPath),
+		)
 		errs = append(errs, err)
 	}
 	pprof.StopCPUProfile()
@@ -705,7 +704,7 @@ func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []strin
 		}
 		cmd.Dir = dirRawAbsPath.String()
 	}
-	return chezmoilog.LogCmdOutput(cmd)
+	return chezmoilog.LogCmdOutput(slog.Default(), cmd)
 }
 
 // colorAutoFunc detects whether color should be used.
@@ -952,12 +951,12 @@ func (c *Config) defaultPreApplyFunc(
 	targetRelPath chezmoi.RelPath,
 	targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
 ) error {
-	c.logger.Info().
-		Stringer("targetRelPath", targetRelPath).
-		Object("targetEntryState", targetEntryState).
-		Object("lastWrittenEntryState", lastWrittenEntryState).
-		Object("actualEntryState", actualEntryState).
-		Msg("defaultPreApplyFunc")
+	c.logger.Info("defaultPreApplyFunc",
+		chezmoilog.Stringer("targetRelPath", targetRelPath),
+		slog.Any("targetEntryState", targetEntryState),
+		slog.Any("lastWrittenEntryState", lastWrittenEntryState),
+		slog.Any("actualEntryState", actualEntryState),
+	)
 
 	switch {
 	case c.force:
@@ -1691,7 +1690,7 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
-	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
+	sourceStateLogger := c.logger.With(logComponentKey, logComponentValueSourceState)
 
 	c.SourceDirAbsPath, err = c.getSourceDirAbsPath(nil)
 	if err != nil {
@@ -1712,7 +1711,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithHTTPClient(httpClient),
 		chezmoi.WithInterpreters(c.Interpreters),
-		chezmoi.WithLogger(&sourceStateLogger),
+		chezmoi.WithLogger(sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
@@ -1756,7 +1755,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			return err
 		}
 		if c.diffPagerCmd.Process != nil {
-			if err := chezmoilog.LogCmdWait(c.diffPagerCmd); err != nil {
+			if err := chezmoilog.LogCmdWait(c.logger, c.diffPagerCmd); err != nil {
 				return err
 			}
 		}
@@ -1828,7 +1827,7 @@ func (c *Config) pageDiffOutput(output string) error {
 		return c.writeOutputString(output)
 	default:
 		pagerCmd.Stdin = bytes.NewBufferString(output)
-		return chezmoilog.LogCmdRun(pagerCmd)
+		return chezmoilog.LogCmdRun(c.logger, pagerCmd)
 	}
 }
 
@@ -1905,34 +1904,29 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Configure the logger.
-	log.Logger = log.Output(zerolog.NewConsoleWriter(
-		func(w *zerolog.ConsoleWriter) {
-			w.Out = c.stderr
-			w.NoColor = !c.Color.Value(c.colorAutoFunc)
-			w.TimeFormat = time.RFC3339
-		},
-	))
+	var handler slog.Handler
 	if c.debug {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+		handler = slog.NewTextHandler(c.stderr, nil)
 	} else {
-		zerolog.SetGlobalLevel(zerolog.Disabled)
+		handler = chezmoilog.NullHandler{}
 	}
-	c.logger = &log.Logger
+	c.logger = slog.New(handler)
+	slog.SetDefault(c.logger)
 
 	// Log basic information.
-	c.logger.Info().
-		Object("version", c.versionInfo).
-		Strs("args", os.Args).
-		Str("goVersion", runtime.Version()).
-		Msg("persistentPreRunRootE")
+	c.logger.Info("persistentPreRunRootE",
+		slog.Any("version", c.versionInfo),
+		slog.Any("args", os.Args),
+		slog.String("goVersion", runtime.Version()),
+	)
 	realSystem := chezmoi.NewRealSystem(c.fileSystem,
 		chezmoi.RealSystemWithSafe(c.Safe),
 		chezmoi.RealSystemWithScriptTempDir(c.ScriptTempDir),
 	)
 	c.baseSystem = realSystem
 	if c.debug {
-		systemLogger := c.logger.With().Str(logComponentKey, logComponentValueSystem).Logger()
-		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem, &systemLogger)
+		systemLogger := c.logger.With(slog.String(logComponentKey, logComponentValueSystem))
+		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem, systemLogger)
 	}
 
 	// Set up the persistent state.
@@ -1992,10 +1986,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.persistentState = chezmoi.NullPersistentState{}
 	}
 	if c.debug && c.persistentState != nil {
-		persistentStateLogger := c.logger.With().
-			Str(logComponentKey, logComponentValuePersistentState).
-			Logger()
-		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState, &persistentStateLogger)
+		persistentStateLogger := c.logger.With(slog.String(logComponentKey, logComponentValuePersistentState))
+		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState, persistentStateLogger)
 	}
 
 	// Set up the source and destination systems.
@@ -2025,7 +2017,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			pipeReader, pipeWriter := io.Pipe()
 			pagerCmd.Stdin = pipeReader
 			lazyWriter := newLazyWriter(func() (io.WriteCloser, error) {
-				if err := chezmoilog.LogCmdStart(pagerCmd); err != nil {
+				if err := chezmoilog.LogCmdStart(c.logger, pagerCmd); err != nil {
 					return nil, err
 				}
 				return pipeWriter, nil
@@ -2232,39 +2224,27 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
 				group = rawGroup.Name
 			} else {
-				c.logger.Info().
-					Str("gid", currentUser.Gid).
-					Err(err).
-					Msg("user.LookupGroupId")
+				c.logger.Info("user.LookupGroupId", slog.Any("err", err), slog.String("gid", currentUser.Gid))
 			}
 		}
 	} else {
-		c.logger.Info().
-			Err(err).
-			Msg("user.Current")
+		c.logger.Error("user.Current", slog.Any("err", err))
 		var ok bool
 		username, ok = os.LookupEnv("USER")
 		if !ok {
-			c.logger.Info().
-				Str("key", "USER").
-				Bool("ok", ok).
-				Msg("os.LookupEnv")
+			c.logger.Info("os.LookupEnv", slog.String("key", "USER"), slog.Bool("ok", ok))
 		}
 	}
 
 	fqdnHostname, err := chezmoi.FQDNHostname(c.fileSystem)
 	if err != nil {
-		c.logger.Info().
-			Err(err).
-			Msg("chezmoi.FQDNHostname")
+		c.logger.Info("chezmoi.FQDNHostname", slog.Any("err", err))
 	}
 	hostname, _, _ := strings.Cut(fqdnHostname, ".")
 
 	kernel, err := chezmoi.Kernel(c.fileSystem)
 	if err != nil {
-		c.logger.Info().
-			Err(err).
-			Msg("chezmoi.Kernel")
+		c.logger.Info("chezmoi.Kernel", slog.Any("err", err))
 	}
 
 	var osRelease map[string]any
@@ -2276,9 +2256,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		if rawOSRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
 			osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
 		} else {
-			c.logger.Info().
-				Err(err).
-				Msg("chezmoi.OSRelease")
+			c.logger.Info("chezmoi.OSRelease", slog.Any("err", err))
 		}
 	}
 
@@ -2417,10 +2395,8 @@ func (c *Config) setEncryption() error {
 	}
 
 	if c.debug {
-		encryptionLogger := c.logger.With().
-			Str(logComponentKey, logComponentValueEncryption).
-			Logger()
-		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
+		encryptionLogger := c.logger.With(logComponentKey, logComponentValueEncryption)
+		c.encryption = chezmoi.NewDebugEncryption(c.encryption, encryptionLogger)
 	}
 
 	return nil
@@ -2614,9 +2590,7 @@ func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
 		return tempDirAbsPath, nil
 	}
 	tempDir, err := os.MkdirTemp("", key)
-	c.logger.Err(err).
-		Str("tempDir", tempDir).
-		Msg("MkdirTemp")
+	chezmoilog.InfoOrError(c.logger, "MkirTemp", err, slog.String("tempDir", tempDir))
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
