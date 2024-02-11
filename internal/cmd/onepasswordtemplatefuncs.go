@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,6 +12,14 @@ import (
 	"github.com/coreos/go-semver/semver"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+)
+
+type onepasswordMode string
+
+const (
+	onepasswordModeAccount onepasswordMode = "account"
+	onepasswordModeConnect onepasswordMode = "connect"
+	onepasswordModeService onepasswordMode = "service"
 )
 
 type withSessionTokenType bool
@@ -34,12 +43,14 @@ type onepasswordAccount struct {
 }
 
 type onepasswordConfig struct {
-	Command       string `json:"command" mapstructure:"command" yaml:"command"`
-	Prompt        bool   `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
+	Command       string          `json:"command" mapstructure:"command" yaml:"command"`
+	Prompt        bool            `json:"prompt"  mapstructure:"prompt"  yaml:"prompt"`
+	Mode          onepasswordMode `json:"mode"    mapstructure:"mode"    yaml:"mode"`
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
 	accountMap    map[string]string
 	accountMapErr error
+	modeChecked   bool
 }
 
 type onepasswordArgs struct {
@@ -54,6 +65,10 @@ type onepasswordItem struct {
 }
 
 func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
+	if err := c.onepasswordCheckMode(); err != nil {
+		panic(err)
+	}
+
 	args, err := c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs)
 	if err != nil {
 		panic(err)
@@ -95,6 +110,14 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[st
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
+	if err := c.onepasswordCheckMode(); err != nil {
+		panic(err)
+	}
+
+	if c.Onepassword.Mode == onepasswordModeConnect {
+		panic(fmt.Errorf("onepasswordDocument cannot be used in %s mode", onepasswordModeConnect))
+	}
+
 	args, err := c.newOnepasswordArgs([]string{"document", "get"}, userArgs)
 	if err != nil {
 		panic(err)
@@ -202,7 +225,7 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 	}
 
 	commandArgs := args.args
-	if withSessionToken {
+	if c.Onepassword.Mode == onepasswordModeAccount && withSessionToken {
 		sessionToken, err := c.onepasswordGetOrRefreshSessionToken(args)
 		if err != nil {
 			return nil, err
@@ -229,6 +252,10 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 }
 
 func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string {
+	if err := c.onepasswordCheckMode(); err != nil {
+		panic(err)
+	}
+
 	onepasswordArgs := &onepasswordArgs{
 		args: []string{"read", "--no-newline", url},
 	}
@@ -237,10 +264,14 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 	case 0:
 		// Do nothing.
 	case 1:
+		if err := onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode); err != nil {
+			panic(err)
+		}
+
 		onepasswordArgs.account = c.onepasswordAccount(args[0])
 		onepasswordArgs.args = append(onepasswordArgs.args, "--account", onepasswordArgs.account)
 	default:
-		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
+		panic(fmt.Errorf("expected 1..2 arguments, got %d", len(args)+1))
 	}
 
 	output, err := c.onepasswordOutput(onepasswordArgs, withSessionToken)
@@ -251,6 +282,11 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 }
 
 func (c *Config) onepasswordAccount(key string) string {
+	// This should not happen, but better to be safe
+	if err := onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode); err != nil {
+		panic(err)
+	}
+
 	accounts, err := c.onepasswordAccounts()
 	if err != nil {
 		panic(err)
@@ -265,6 +301,11 @@ func (c *Config) onepasswordAccount(key string) string {
 
 // onepasswordAccounts returns a map of keys to unique account UUIDs.
 func (c *Config) onepasswordAccounts() (map[string]string, error) {
+	// This should not happen, but better to be safe
+	if err := onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode); err != nil {
+		return nil, err
+	}
+
 	if c.Onepassword.accountMap != nil || c.Onepassword.accountMapErr != nil {
 		return c.Onepassword.accountMap, c.Onepassword.accountMapErr
 	}
@@ -290,8 +331,19 @@ func (c *Config) onepasswordAccounts() (map[string]string, error) {
 }
 
 func (c *Config) newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {
-	if len(userArgs) < 1 || 3 < len(userArgs) {
-		return nil, fmt.Errorf("expected 1, 2, or 3 arguments, got %d", len(userArgs))
+	maxArgs := 3
+	if c.Onepassword.Mode != onepasswordModeAccount {
+		maxArgs = 2
+	}
+
+	// `session` and `connect` modes do not support the account parameter. Better
+	// to error out early.
+	if len(userArgs) < 1 || maxArgs < len(userArgs) {
+		if err := onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode); maxArgs < len(userArgs) && err != nil {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("expected 1..%d arguments in %s mode, got %d", maxArgs, c.Onepassword.Mode, len(userArgs))
 	}
 
 	a := &onepasswordArgs{
@@ -370,4 +422,59 @@ func onepasswordUniqueSessionToken(environ []string) string {
 		}
 	}
 	return token
+}
+
+// onepasswordCheckMode verifies that things are set up correctly for the
+// 1Password mode.
+func (c *Config) onepasswordCheckMode() error {
+	if c.Onepassword.modeChecked {
+		return nil
+	}
+
+	c.Onepassword.modeChecked = true
+
+	switch c.Onepassword.Mode {
+	case onepasswordModeAccount:
+		if os.Getenv("OP_SERVICE_ACCOUNT_TOKEN") != "" {
+			return errors.New("onepassword.mode is account, but OP_SERVICE_ACCOUNT_TOKEN is set")
+		}
+
+		if os.Getenv("OP_CONNECT_HOST") != "" && os.Getenv("OP_CONNECT_TOKEN") != "" {
+			return errors.New("onepassword.mode is account, but OP_CONNECT_HOST and OP_CONNECT_TOKEN are set")
+		}
+
+	case onepasswordModeConnect:
+		if os.Getenv("OP_CONNECT_HOST") == "" {
+			return errors.New("onepassword.mode is connect, but OP_CONNECT_HOST is not set")
+		}
+
+		if os.Getenv("OP_CONNECT_TOKEN") == "" {
+			return errors.New("onepassword.mode is connect, but OP_CONNECT_TOKEN is not set")
+		}
+
+		if os.Getenv("OP_SERVICE_ACCOUNT_TOKEN") != "" {
+			return errors.New("onepassword.mode is connect, but OP_SERVICE_ACCOUNT_TOKEN is set")
+		}
+
+	case onepasswordModeService:
+		if os.Getenv("OP_SERVICE_ACCOUNT_TOKEN") == "" {
+			return errors.New("onepassword.mode is service, but OP_SERVICE_ACCOUNT_TOKEN is not set")
+		}
+
+		if os.Getenv("OP_CONNECT_HOST") != "" && os.Getenv("OP_CONNECT_TOKEN") != "" {
+			return errors.New("onepassword.mode is service, but OP_CONNECT_HOST and OP_CONNECT_TOKEN are set")
+		}
+	}
+
+	return nil
+}
+
+// onepasswordCheckInvalidAccountParameters returns the error "1Password
+// account parameters cannot be used in %s mode" if the provided mode is not
+// account mode.
+func onepasswordCheckInvalidAccountParameters(mode onepasswordMode) error {
+	if mode != onepasswordModeAccount {
+		return fmt.Errorf("1Password account parameters cannot be used in %s mode", mode)
+	}
+	return nil
 }

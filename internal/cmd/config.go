@@ -2700,6 +2700,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Onepassword: onepasswordConfig{
 			Command: "op",
 			Prompt:  true,
+			Mode:    onepasswordModeAccount,
 		},
 		Pass: passConfig{
 			Command: "pass",

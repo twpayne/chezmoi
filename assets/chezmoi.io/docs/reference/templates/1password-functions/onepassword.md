@@ -1,4 +1,4 @@
-# `onepassword` *uuid* [*vault-uuid* [*account-name*]]
+# `onepassword` *uuid* [*vault* [*account*]]
 
 `onepassword` returns structured data from [1Password](https://1password.com/)
 using the [1Password
@@ -6,8 +6,8 @@ CLI](https://support.1password.com/command-line-getting-started/) (`op`).
 *uuid* is passed to `op item get $UUID --format json` and the output from `op`
 is parsed as JSON. The output from `op` is cached so calling `onepassword`
 multiple times with the same *uuid* will only invoke `op` once. If the optional
-*vault-uuid* is supplied, it will be passed along to the `op item get` call,
-which can significantly improve performance. If the optional *account-name* is
+*vault* is supplied, it will be passed along to the `op item get` call,
+which can significantly improve performance. If the optional *account* is
 supplied, it will be passed along to the `op item get` call, which will help it
 look in the right account, in case you have multiple accounts (e.g., personal
 and work accounts).
@@ -38,13 +38,8 @@ config variable.
     {{ end }}
     ```
 
-    !!! info
+!!! warning
 
-        For 1Password CLI 1.x.
-
-        ```
-        {{ (onepassword "$UUID").details.password }}
-        {{ (onepassword "$UUID" "$VAULT_UUID").details.password }}
-        {{ (onepassword "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").details.password }}
-        {{ (onepassword "$UUID" "" "$ACCOUNT_NAME").details.password }}
-        ```
+    When using [1Password secrets
+    automation](../../user-guide/password-managers/1password.md#secrets-automation),
+    the *account* parameter is not allowed.

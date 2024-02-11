@@ -1,4 +1,4 @@
-# `onepasswordItemFields` *uuid* [*vault-uuid* [*account-name*]]
+# `onepasswordItemFields` *uuid* [*vault* [*account*]]
 
 `onepasswordItemFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
@@ -72,45 +72,8 @@ interactively prompted to sign in.
     }
     ```
 
-    !!! info
+!!! warning
 
-        For 1Password CLI 1.x, the output is this:
-
-        ```json
-        {
-            "uuid": "$UUID",
-            "details": {
-                "sections": [
-                    {
-                        "name": "linked items",
-                        "title": "Related Items"
-                    },
-                    {
-                        "fields": [
-                            {
-                                "k": "string",
-                                "n": "D4328E0846D2461E8E455D7A07B93397",
-                                "t": "exampleLabel",
-                                "v": "exampleValue"
-                            }
-                          ],
-                        "name": "Section_20E0BD380789477D8904F830BFE8A121",
-                        "title": ""
-                    }
-                ]
-            },
-        }
-        ```
-
-        the return value of `onepasswordItemFields` will be the map:
-
-        ```json
-        {
-            "exampleLabel": {
-                "k": "string",
-                "n": "D4328E0846D2461E8E455D7A07B93397",
-                "t": "exampleLabel",
-                "v": "exampleValue"
-            }
-        }
-        ```
+    When using [1Password secrets
+    automation](../../user-guide/password-managers/1password.md#secrets-automation),
+    the *account* parameter is not allowed.
