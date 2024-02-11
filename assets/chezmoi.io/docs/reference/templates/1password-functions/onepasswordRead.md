@@ -21,3 +21,9 @@ interactively prompted to sign in.
     ```console
     $ op read --no-newline op://vault/item/field
     ```
+
+!!! warning
+
+    When using [1Password secrets
+    automation](../../user-guide/password-managers/1password.md#secrets-automation),
+    the *account* parameter is not allowed.

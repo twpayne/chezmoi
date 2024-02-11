@@ -329,6 +329,9 @@ sections:
       type: bool
       default: '`true`'
       description: Prompt for sign-in when no valid session is available
+    mode:
+      default: '`account`'
+      description: See [1Password Secrets Automation](../../user-guide/password-managers/1password.md#secrets-automation)
   pass:
     command:
       default: '`pass`'

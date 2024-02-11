@@ -4,16 +4,14 @@ The `onepassword*` template functions return structured data from
 [1Password](https://1password.com/) using the [1Password
 CLI](https://developer.1password.com/docs/cli) (`op`).
 
-!!! warning
+!!! info
 
-    When using the 1Password CLI with biometric authentication, account
-    shorthand names are not available. In order to assist with this, chezmoi
-    supports multiple derived values from `op account list` that can be changed
-    into the appropriate 1Password *account-uuid*.
+    When using the 1Password CLI with biometric authentication, chezmoi derives
+    values from `op account list` that can resolves into the appropriate
+    1Password *account-uuid*.
 
-    ### Example
-
-    If `op account list --format=json` returns the following structure:
+    As an example, if `op account list --format=json` returns the following
+    structure:
 
     ```json
     [
@@ -44,3 +42,11 @@ CLI](https://developer.1password.com/docs/cli) (`op`).
     `account1.1password.ca` will not be a valid lookup value, but `my@account1`,
     `my@account1.1password.ca`, `your@account1`, and
     `your@account1.1password.ca` would all be valid lookups.
+
+!!! warning
+
+    Chezmoi has experimental support for [1Password secrets
+    automation](../../user-guide/password-managers/1password.md#secrets-automation)
+    modes. These modes change how the 1Password CLI works and affect all
+    functions. Most notably, `account` parameters are not allowed on all
+    1Password template functions.
