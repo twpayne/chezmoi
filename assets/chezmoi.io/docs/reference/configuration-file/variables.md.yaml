@@ -144,7 +144,7 @@ sections:
   diff:
     args:
       type: '[]string'
-      default: '*see `diff` below*'
+      default: '*see [`diff`](../../user-guide/tools/diff.md)*'
       description: Extra args to external diff command
     command:
       description: External diff command
@@ -279,10 +279,10 @@ sections:
   interpreters:
     '*extension*.`args`':
       type: '[]string'
-      description: See section on "Scripts on Windows"
+      description: See [Scripts on Windows](../target-types.md#scripts-on-windows)
     '*extension*.`command`':
       default: '*special*'
-      description: See section on "Scripts on Windows"
+      description: See [Scripts on Windows](../target-types.md#scripts-on-windows)
   keepassxc:
     args:
       type: '[]string'
@@ -294,7 +294,7 @@ sections:
       description: KeePassXC database
     mode:
       default: '`cache-password`'
-      description: See section on KeePassXC
+      description: See [KeePassXC functions](../../templates/keepassxc-functions/)
     prompt:
       type: bool
       default: '`true`'
@@ -313,7 +313,7 @@ sections:
   merge:
     args:
       type: '[]string'
-      default: '*see `merge` below*'
+      default: See [`merge`](../../user-guide/tools/merge.md)
       description: Extra args to three-way merge CLI command
     command:
       description: Three-way merge CLI command
@@ -352,7 +352,7 @@ sections:
       description: pinentry CLI command
     options:
       type: '[]string'
-      default: '*see `pinentry` below*'
+      default: See [`pinentry`](./pinentry.md)
       description: Extra options for pinentry
   rbw:
     command:
@@ -380,7 +380,7 @@ sections:
   textconv:
     '':
       type: '[]object'
-      description: See section on "textconv"
+      description: See [textconv](./textconv.md)
   vault:
     command:
       default: '`vault`'
@@ -406,4 +406,5 @@ sections:
   warnings:
     '':
       type: object
-      description: See section on "Warnings"
+      description: See [Warnings](./warnings.md)
+
