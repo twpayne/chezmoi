@@ -53,7 +53,7 @@ func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {
 		}
 	}
 
-	resp, err := a.vaults[vaultName].client.GetSecret(context.TODO(), secretName, "", nil)
+	resp, err := a.vaults[vaultName].client.GetSecret(context.Background(), secretName, "", nil)
 	if err != nil {
 		panic(err)
 	}

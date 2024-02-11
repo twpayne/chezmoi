@@ -119,7 +119,7 @@ func FirstFewBytes(key string, data []byte) slog.Attr {
 
 // LogHTTPRequest calls httpClient.Do, logs the result to logger, and returns
 // the result.
-func LogHTTPRequest(logger *slog.Logger, client *http.Client, req *http.Request) (*http.Response, error) {
+func LogHTTPRequest(ctx context.Context, logger *slog.Logger, client *http.Client, req *http.Request) (*http.Response, error) {
 	start := time.Now()
 	resp, err := client.Do(req)
 	attrs := []slog.Attr{
@@ -134,7 +134,7 @@ func LogHTTPRequest(logger *slog.Logger, client *http.Client, req *http.Request)
 			slog.Int("contentLength", int(resp.ContentLength)),
 		)
 	}
-	InfoOrError(logger, "HTTPRequest", err, attrs...)
+	InfoOrErrorContext(ctx, logger, "HTTPRequest", err, attrs...)
 	return resp, err
 }
 
@@ -149,7 +149,7 @@ func LogCmdCombinedOutput(logger *slog.Logger, cmd *exec.Cmd) ([]byte, error) {
 		slog.Any("combinedOutput", firstFewBytes(combinedOutput)),
 	}
 	attrs = AppendExitErrorAttrs(attrs, err)
-	InfoOrError(logger, "Output", err, attrs...)
+	InfoOrErrorContext(context.Background(), logger, "Output", err, attrs...)
 	return combinedOutput, err
 }
 
@@ -164,7 +164,7 @@ func LogCmdOutput(logger *slog.Logger, cmd *exec.Cmd) ([]byte, error) {
 		slog.Any("output", firstFewBytes(output)),
 	}
 	attrs = AppendExitErrorAttrs(attrs, err)
-	InfoOrError(logger, "Output", err, attrs...)
+	InfoOrErrorContext(context.Background(), logger, "Output", err, attrs...)
 	return output, err
 }
 
@@ -177,7 +177,7 @@ func LogCmdRun(logger *slog.Logger, cmd *exec.Cmd) error {
 		slog.Duration("duration", time.Since(start)),
 	}
 	attrs = AppendExitErrorAttrs(attrs, err)
-	InfoOrError(logger, "Run", err, attrs...)
+	InfoOrErrorContext(context.Background(), logger, "Run", err, attrs...)
 	return err
 }
 
@@ -190,7 +190,7 @@ func LogCmdStart(logger *slog.Logger, cmd *exec.Cmd) error {
 		slog.Time("start", start),
 	}
 	attrs = AppendExitErrorAttrs(attrs, err)
-	InfoOrError(logger, "Start", err, attrs...)
+	InfoOrErrorContext(context.Background(), logger, "Start", err, attrs...)
 	return err
 }
 
@@ -208,6 +208,10 @@ func LogCmdWait(logger *slog.Logger, cmd *exec.Cmd) error {
 }
 
 func InfoOrError(logger *slog.Logger, msg string, err error, attrs ...slog.Attr) {
+	InfoOrErrorContext(context.Background(), logger, msg, err, attrs...)
+}
+
+func InfoOrErrorContext(ctx context.Context, logger *slog.Logger, msg string, err error, attrs ...slog.Attr) {
 	if logger == nil {
 		return
 	}
@@ -222,7 +226,7 @@ func InfoOrError(logger *slog.Logger, msg string, err error, attrs ...slog.Attr)
 	if err != nil {
 		level = slog.LevelError
 	}
-	logger.Log(context.TODO(), level, msg, args...)
+	logger.Log(ctx, level, msg, args...)
 }
 
 // Stringer returns an slog.Attr with value.

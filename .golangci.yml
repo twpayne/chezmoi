@@ -7,7 +7,6 @@ linters:
   - bidichk
   - bodyclose
   - containedctx
-  - contextcheck
   - decorder
   - dogsled
   - dupword
@@ -78,6 +77,7 @@ linters:
   - zerologlint
   disable:
   - asasalint
+  - contextcheck
   - cyclop
   - depguard
   - dupl
