@@ -131,7 +131,7 @@ changelog:
     order: 999
   filters:
     exclude:
-    - ^.*?chore(\([[:word:]]+\))??!?:.+$
+    - ^.*?chore(\(.*\))??!?:.+$
 
 checksum:
   extra_files:
