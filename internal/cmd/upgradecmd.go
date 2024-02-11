@@ -207,7 +207,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := chezmoilog.LogHTTPRequest(c.logger, httpClient, req)
+	resp, err := chezmoilog.LogHTTPRequest(ctx, c.logger, httpClient, req)
 	if err != nil {
 		return nil, err
 	}

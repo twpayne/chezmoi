@@ -1531,7 +1531,7 @@ func (s *SourceState) getExternalDataRaw(
 	if err != nil {
 		return nil, err
 	}
-	resp, err := chezmoilog.LogHTTPRequest(s.logger, s.httpClient, req)
+	resp, err := chezmoilog.LogHTTPRequest(ctx, s.logger, s.httpClient, req)
 	if err != nil {
 		return nil, err
 	}
