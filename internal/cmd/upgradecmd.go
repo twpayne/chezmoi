@@ -21,7 +21,7 @@ import (
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v58/github"
+	"github.com/google/go-github/v59/github"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
