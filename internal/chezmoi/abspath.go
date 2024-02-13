@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"path/filepath"
 	"reflect"
@@ -176,7 +175,7 @@ func (p *AbsPath) UnmarshalText(text []byte) error {
 
 // HomeDirAbsPath returns the user's home directory as an AbsPath.
 func HomeDirAbsPath() (AbsPath, error) {
-	userHomeDir, err := os.UserHomeDir()
+	userHomeDir, err := UserHomeDir()
 	if err != nil {
 		return EmptyAbsPath, err
 	}

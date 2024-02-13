@@ -44,6 +44,17 @@ func IsExecutable(fileInfo fs.FileInfo) bool {
 	})
 }
 
+// UserHomeDir on Windows returns the value of $HOME if it is set and either
+// Cygwin or msys2 is detected, otherwise it falls back to os.UserHomeDir.
+func UserHomeDir() (string, error) {
+	if os.Getenv("CYGWIN") != "" || os.Getenv("MSYSTEM") != "" {
+		if userHomeDir := os.Getenv("HOME"); userHomeDir != "" {
+			return userHomeDir, nil
+		}
+	}
+	return os.UserHomeDir()
+}
+
 // isPrivate returns false on Windows.
 func isPrivate(fileInfo fs.FileInfo) bool {
 	return false
