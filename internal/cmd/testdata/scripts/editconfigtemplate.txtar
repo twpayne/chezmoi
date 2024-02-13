@@ -1,4 +1,7 @@
-[windows] skip # FIXME make this test pass on Windows
+[windows] unix2dos golden/edited
+[windows] unix2dos golden/edited-chezmoi.yaml
+[windows] unix2dos home3/user/.config/chezmoi/chezmoi.yaml
+[windows] unix2dos home4/user/.local/share/chezmoi/home/.chezmoi.yaml.tmpl
 
 # test that chezmoi edit-config-template creates a new config file template
 exec chezmoi edit-config-template
