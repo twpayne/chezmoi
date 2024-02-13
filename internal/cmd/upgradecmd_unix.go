@@ -230,7 +230,7 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 
 	// If the executable is in the user's home directory, then always use
 	// replace-executable.
-	switch userHomeDir, err := os.UserHomeDir(); {
+	switch userHomeDir, err := chezmoi.UserHomeDir(); {
 	case errors.Is(err, fs.ErrNotExist):
 	case err != nil:
 		return "", err

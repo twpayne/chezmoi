@@ -4,6 +4,7 @@ package chezmoi
 
 import (
 	"io/fs"
+	"os"
 
 	"golang.org/x/sys/unix"
 )
@@ -24,6 +25,11 @@ func findExecutableExtensions(path string) []string {
 // IsExecutable returns if fileInfo is executable.
 func IsExecutable(fileInfo fs.FileInfo) bool {
 	return fileInfo.Mode().Perm()&0o111 != 0
+}
+
+// UserHomeDir on UNIX returns the value of os.UserHomeDir.
+func UserHomeDir() (string, error) {
+	return os.UserHomeDir()
 }
 
 // isPrivate returns if fileInfo is private.

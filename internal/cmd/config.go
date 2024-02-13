@@ -307,7 +307,7 @@ var (
 
 // newConfig creates a new Config with the given options.
 func newConfig(options ...configOption) (*Config, error) {
-	userHomeDir, err := os.UserHomeDir()
+	userHomeDir, err := chezmoi.UserHomeDir()
 	if err != nil {
 		return nil, err
 	}
