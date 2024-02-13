@@ -1,5 +1,3 @@
-[windows] skip # FIXME make this test pass on windows
-
 mksourcedir
 
 # test that chezmoi apply sets the state

@@ -686,7 +686,7 @@ func setup(env *testscript.Env) error {
 					`	copy /y NUL "%~1\.edited" >NUL`,
 					// FIXME recursively edit all files if in a directory
 					`) ELSE (`,
-					`	echo # edited >> "%~1"`,
+					`	echo.# edited>>"%~1"`,
 					`)`,
 					`shift`,
 					`IF NOT "%~1"=="" goto loop`,
