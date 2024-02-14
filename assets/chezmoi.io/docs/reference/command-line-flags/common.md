@@ -55,6 +55,11 @@ Recurse into subdirectories, `true` by default.
 Interpret *targets* passed to the command as paths in the source directory
 rather than the destination directory.
 
+## `--use-builtin-diff`
+
+Use chezmoi's builtin diff, even if the `diff.command` configuration variable
+is set.
+
 ## `-x`, `--exclude` *types*
 
 Exclude target state entries of type *types*. *types* is defined as in the
