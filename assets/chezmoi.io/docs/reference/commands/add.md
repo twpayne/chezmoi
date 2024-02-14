@@ -19,6 +19,8 @@ This implies the `--template` option.
 
 ## `--encrypt`
 
+> Configuration: `add.encrypt`
+
 Encrypt files using the defined encryption method.
 
 ## `-f`, `--force`
@@ -53,6 +55,8 @@ Recursively add all files, directories, and symlinks.
 
 ## `-s`, `--secrets` `ignore`|`warning`|`error`
 
+> Configuration: `add.secrets`
+
 Action to take when a secret is found when adding a file. The default is
 `warning`.
 
@@ -61,6 +65,8 @@ Action to take when a secret is found when adding a file. The default is
 Set the `template` attribute on added files and symlinks.
 
 ## `--template-symlinks`
+
+> Configuration: `add.templateSymlinks`
 
 When adding symlink to an absolute path in the source directory or destination
 directory, create a symlink template with `.chezmoi.sourceDir` or
