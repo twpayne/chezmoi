@@ -42,6 +42,10 @@ computing the target state.
 
 Prompt before applying each target.
 
+## `-o`, `--output` *filename*
+
+Write the output to *filename* instead of stdout.
+
 ## `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default.
