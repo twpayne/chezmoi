@@ -27,8 +27,7 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 		Annotations: newAnnotations(),
 	}
 
-	flags := unmanagedCmd.Flags()
-	flags.VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
+	unmanagedCmd.Flags().VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
 
 	if err := unmanagedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleFlagCompletionFunc); err != nil {
 		panic(err)

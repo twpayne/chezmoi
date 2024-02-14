@@ -238,10 +238,10 @@ func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, er
 	return renderedLines, nil
 }
 
-// markPersistentFlagsRequired marks all of flags as required for cmd.
-func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
+// markFlagsRequired marks all of flags as required for cmd.
+func markFlagsRequired(cmd *cobra.Command, flags ...string) {
 	for _, flag := range flags {
-		if err := cmd.MarkPersistentFlagRequired(flag); err != nil {
+		if err := cmd.MarkFlagRequired(flag); err != nil {
 			panic(err)
 		}
 	}

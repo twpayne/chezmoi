@@ -59,8 +59,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadOnly,
 		),
 	}
-	stateDataPersistentFlags := stateDataCmd.PersistentFlags()
-	stateDataPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
+	stateDataCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
 	if err := stateDataCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
 	}
@@ -75,9 +74,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadWrite,
 		),
 	}
-	stateDeletePersistentFlags := stateDeleteCmd.PersistentFlags()
-	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "Bucket")
-	stateDeletePersistentFlags.StringVar(&c.state.delete.key, "key", c.state.delete.key, "Key")
+	stateDeleteCmd.Flags().StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "Bucket")
+	stateDeleteCmd.Flags().StringVar(&c.state.delete.key, "key", c.state.delete.key, "Key")
 	stateCmd.AddCommand(stateDeleteCmd)
 
 	stateDeleteBucketCmd := &cobra.Command{
@@ -89,8 +87,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadWrite,
 		),
 	}
-	stateDeleteBucketPersistentFlags := stateDeleteBucketCmd.PersistentFlags()
-	stateDeleteBucketPersistentFlags.StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "Bucket")
+	stateDeleteBucketCmd.Flags().StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "Bucket")
 	stateCmd.AddCommand(stateDeleteBucketCmd)
 
 	stateDumpCmd := &cobra.Command{
@@ -102,8 +99,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadOnly,
 		),
 	}
-	stateDumpPersistentFlags := stateDumpCmd.PersistentFlags()
-	stateDumpPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
+	stateDumpCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
 	if err := stateDumpCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
 	}
@@ -118,9 +114,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadOnly,
 		),
 	}
-	stateGetPersistentFlags := stateGetCmd.PersistentFlags()
-	stateGetPersistentFlags.StringVar(&c.state.get.bucket, "bucket", c.state.get.bucket, "Bucket")
-	stateGetPersistentFlags.StringVar(&c.state.get.key, "key", c.state.get.key, "Key")
+	stateGetCmd.Flags().StringVar(&c.state.get.bucket, "bucket", c.state.get.bucket, "Bucket")
+	stateGetCmd.Flags().StringVar(&c.state.get.key, "key", c.state.get.key, "Key")
 	stateCmd.AddCommand(stateGetCmd)
 
 	stateGetBucketCmd := &cobra.Command{
@@ -132,9 +127,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadOnly,
 		),
 	}
-	stateGetBucketPersistentFlags := stateGetBucketCmd.PersistentFlags()
-	stateGetBucketPersistentFlags.StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
-	stateGetBucketPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
+	stateGetBucketCmd.Flags().StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
+	stateGetBucketCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
 	if err := stateGetBucketCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
 	}
@@ -160,10 +154,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadWrite,
 		),
 	}
-	stateSetPersistentFlags := stateSetCmd.PersistentFlags()
-	stateSetPersistentFlags.StringVar(&c.state.set.bucket, "bucket", c.state.set.bucket, "Bucket")
-	stateSetPersistentFlags.StringVar(&c.state.set.key, "key", c.state.set.key, "Key")
-	stateSetPersistentFlags.StringVar(&c.state.set.value, "value", c.state.set.value, "Value")
+	stateSetCmd.Flags().StringVar(&c.state.set.bucket, "bucket", c.state.set.bucket, "Bucket")
+	stateSetCmd.Flags().StringVar(&c.state.set.key, "key", c.state.set.key, "Key")
+	stateSetCmd.Flags().StringVar(&c.state.set.value, "value", c.state.set.value, "Value")
 	stateCmd.AddCommand(stateSetCmd)
 
 	return stateCmd

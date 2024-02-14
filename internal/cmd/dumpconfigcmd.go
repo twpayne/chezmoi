@@ -13,8 +13,7 @@ func (c *Config) newDumpConfigCmd() *cobra.Command {
 		Annotations: newAnnotations(),
 	}
 
-	flags := dumpConfigCmd.Flags()
-	flags.VarP(&c.Format, "format", "f", "Output format")
+	dumpConfigCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
 
 	return dumpConfigCmd
 }

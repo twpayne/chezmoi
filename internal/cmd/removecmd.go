@@ -31,8 +31,7 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		),
 	}
 
-	flags := removeCmd.Flags()
-	flags.BoolVarP(&c.remove.recursive, "recursive", "r", c.remove.recursive, "Recurse into subdirectories")
+	removeCmd.Flags().BoolVarP(&c.remove.recursive, "recursive", "r", c.remove.recursive, "Recurse into subdirectories")
 
 	return removeCmd
 }

@@ -41,31 +41,21 @@ func (c *Config) newAddCmd() *cobra.Command {
 		),
 	}
 
-	flags := addCmd.Flags()
-	flags.BoolVarP(
-		&c.Add.autoTemplate,
-		"autotemplate",
-		"a",
-		c.Add.autoTemplate,
-		"Generate the template when adding files as templates",
-	)
-	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
-	flags.BoolVar(&c.Add.Encrypt, "encrypt", c.Add.Encrypt, "Encrypt files")
-	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
-	flags.VarP(c.Add.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
-	flags.VarP(c.Add.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVarP(&c.Add.prompt, "prompt", "p", c.Add.prompt, "Prompt before adding each entry")
-	flags.BoolVarP(&c.Add.quiet, "quiet", "q", c.Add.quiet, "Suppress warnings")
-	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
-	flags.Var(&c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
-	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
-	flags.BoolVar(
-		&c.Add.TemplateSymlinks,
-		"template-symlinks",
-		c.Add.TemplateSymlinks,
-		"Add symlinks with target in source or home dirs as templates",
-	)
+	addCmd.Flags().
+		BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates")
+	addCmd.Flags().BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
+	addCmd.Flags().BoolVar(&c.Add.Encrypt, "encrypt", c.Add.Encrypt, "Encrypt files")
+	addCmd.Flags().BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
+	addCmd.Flags().VarP(c.Add.filter.Exclude, "exclude", "x", "Exclude entry types")
+	addCmd.Flags().BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
+	addCmd.Flags().VarP(c.Add.filter.Include, "include", "i", "Include entry types")
+	addCmd.Flags().BoolVarP(&c.Add.prompt, "prompt", "p", c.Add.prompt, "Prompt before adding each entry")
+	addCmd.Flags().BoolVarP(&c.Add.quiet, "quiet", "q", c.Add.quiet, "Suppress warnings")
+	addCmd.Flags().BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
+	addCmd.Flags().Var(&c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
+	addCmd.Flags().BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
+	addCmd.Flags().
+		BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates")
 
 	registerExcludeIncludeFlagCompletionFuncs(addCmd)
 	if err := addCmd.RegisterFlagCompletionFunc("secrets", severityFlagCompletionFunc); err != nil {

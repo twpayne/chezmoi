@@ -62,11 +62,10 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 		),
 	}
 
-	flags := upgradeCmd.Flags()
-	flags.StringVar(&c.upgrade.executable, "executable", c.upgrade.method, "Set executable to replace")
-	flags.StringVar(&c.upgrade.method, "method", c.upgrade.method, "Set upgrade method")
-	flags.StringVar(&c.upgrade.owner, "owner", c.upgrade.owner, "Set owner")
-	flags.StringVar(&c.upgrade.repo, "repo", c.upgrade.repo, "Set repo")
+	upgradeCmd.Flags().StringVar(&c.upgrade.executable, "executable", c.upgrade.method, "Set executable to replace")
+	upgradeCmd.Flags().StringVar(&c.upgrade.method, "method", c.upgrade.method, "Set upgrade method")
+	upgradeCmd.Flags().StringVar(&c.upgrade.owner, "owner", c.upgrade.owner, "Set owner")
+	upgradeCmd.Flags().StringVar(&c.upgrade.repo, "repo", c.upgrade.repo, "Set repo")
 
 	return upgradeCmd
 }

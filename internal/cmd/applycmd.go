@@ -27,11 +27,10 @@ func (c *Config) newApplyCmd() *cobra.Command {
 		),
 	}
 
-	flags := applyCmd.Flags()
-	flags.VarP(c.apply.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.apply.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.apply.init, "init", c.apply.init, "Recreate config file from template")
-	flags.BoolVarP(&c.apply.recursive, "recursive", "r", c.apply.recursive, "Recurse into subdirectories")
+	applyCmd.Flags().VarP(c.apply.filter.Exclude, "exclude", "x", "Exclude entry types")
+	applyCmd.Flags().VarP(c.apply.filter.Include, "include", "i", "Include entry types")
+	applyCmd.Flags().BoolVar(&c.apply.init, "init", c.apply.init, "Recreate config file from template")
+	applyCmd.Flags().BoolVarP(&c.apply.recursive, "recursive", "r", c.apply.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(applyCmd)
 

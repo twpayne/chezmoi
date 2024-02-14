@@ -27,15 +27,8 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 		),
 	}
 
-	flags := mergeAllCmd.Flags()
-	flags.BoolVar(&c.mergeAll.init, "init", c.mergeAll.init, "Recreate config file from template")
-	flags.BoolVarP(
-		&c.mergeAll.recursive,
-		"recursive",
-		"r",
-		c.mergeAll.recursive,
-		"Recurse into subdirectories",
-	)
+	mergeAllCmd.Flags().BoolVar(&c.mergeAll.init, "init", c.mergeAll.init, "Recreate config file from template")
+	mergeAllCmd.Flags().BoolVarP(&c.mergeAll.recursive, "recursive", "r", c.mergeAll.recursive, "Recurse into subdirectories")
 
 	return mergeAllCmd
 }

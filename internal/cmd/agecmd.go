@@ -36,14 +36,8 @@ func (c *Config) newAgeCmd() *cobra.Command {
 		RunE:        c.runAgeDecryptCmd,
 		Annotations: newAnnotations(),
 	}
-	ageDecryptFlags := ageDecryptCmd.Flags()
-	ageDecryptFlags.BoolVarP(
-		&c.age.decrypt.passphrase,
-		"passphrase",
-		"p",
-		c.age.decrypt.passphrase,
-		"Decrypt with a passphrase",
-	)
+	ageDecryptCmd.Flags().
+		BoolVarP(&c.age.decrypt.passphrase, "passphrase", "p", c.age.decrypt.passphrase, "Decrypt with a passphrase")
 	ageCmd.AddCommand(ageDecryptCmd)
 
 	ageEncryptCmd := &cobra.Command{
@@ -52,14 +46,8 @@ func (c *Config) newAgeCmd() *cobra.Command {
 		RunE:        c.runAgeEncryptCmd,
 		Annotations: newAnnotations(),
 	}
-	ageEncryptFlags := ageEncryptCmd.Flags()
-	ageEncryptFlags.BoolVarP(
-		&c.age.encrypt.passphrase,
-		"passphrase",
-		"p",
-		c.age.encrypt.passphrase,
-		"Encrypt with a passphrase",
-	)
+	ageEncryptCmd.Flags().
+		BoolVarP(&c.age.encrypt.passphrase, "passphrase", "p", c.age.encrypt.passphrase, "Encrypt with a passphrase")
 	ageCmd.AddCommand(ageEncryptCmd)
 
 	return ageCmd
