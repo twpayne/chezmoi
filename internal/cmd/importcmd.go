@@ -31,29 +31,14 @@ func (c *Config) newImportCmd() *cobra.Command {
 		),
 	}
 
-	flags := importCmd.Flags()
-	flags.VarP(&c._import.destination, "destination", "d", "Set destination prefix")
-	flags.BoolVar(
-		&c._import.exact,
-		"exact",
-		c._import.exact,
-		"Set exact_ attribute on imported directories",
-	)
-	flags.VarP(c._import.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c._import.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVarP(
-		&c._import.removeDestination,
-		"remove-destination",
-		"r",
-		c._import.removeDestination,
-		"Remove destination before import",
-	)
-	flags.IntVar(
-		&c._import.stripComponents,
-		"strip-components",
-		c._import.stripComponents,
-		"Strip leading path components",
-	)
+	importCmd.Flags().VarP(&c._import.destination, "destination", "d", "Set destination prefix")
+	importCmd.Flags().BoolVar(&c._import.exact, "exact", c._import.exact, "Set exact_ attribute on imported directories")
+	importCmd.Flags().VarP(c._import.filter.Exclude, "exclude", "x", "Exclude entry types")
+	importCmd.Flags().VarP(c._import.filter.Include, "include", "i", "Include entry types")
+	importCmd.Flags().
+		BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import")
+	importCmd.Flags().
+		IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")
 
 	registerExcludeIncludeFlagCompletionFuncs(importCmd)
 

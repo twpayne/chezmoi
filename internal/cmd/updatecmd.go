@@ -36,18 +36,13 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 		),
 	}
 
-	flags := updateCmd.Flags()
-	flags.BoolVarP(&c.Update.Apply, "apply", "a", c.Update.Apply, "Apply after pulling")
-	flags.VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.Update.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
-	flags.BoolVar(
-		&c.Update.RecurseSubmodules,
-		"recurse-submodules",
-		c.Update.RecurseSubmodules,
-		"Recursively update submodules",
-	)
-	flags.BoolVarP(&c.Update.recursive, "recursive", "r", c.Update.recursive, "Recurse into subdirectories")
+	updateCmd.Flags().BoolVarP(&c.Update.Apply, "apply", "a", c.Update.Apply, "Apply after pulling")
+	updateCmd.Flags().VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
+	updateCmd.Flags().VarP(c.Update.filter.Include, "include", "i", "Include entry types")
+	updateCmd.Flags().BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
+	updateCmd.Flags().
+		BoolVar(&c.Update.RecurseSubmodules, "recurse-submodules", c.Update.RecurseSubmodules, "Recursively update submodules")
+	updateCmd.Flags().BoolVarP(&c.Update.recursive, "recursive", "r", c.Update.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(updateCmd)
 

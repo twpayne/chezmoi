@@ -31,8 +31,7 @@ func (c *Config) newPurgeCmd() *cobra.Command {
 		),
 	}
 
-	flags := purgeCmd.Flags()
-	flags.BoolVarP(&c.purge.binary, "binary", "P", c.purge.binary, "Purge chezmoi binary")
+	purgeCmd.Flags().BoolVarP(&c.purge.binary, "binary", "P", c.purge.binary, "Purge chezmoi binary")
 
 	return purgeCmd
 }

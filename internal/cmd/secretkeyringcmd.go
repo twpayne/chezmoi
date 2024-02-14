@@ -30,13 +30,13 @@ type secretKeyringSetCmdConfig struct {
 }
 
 func (c *Config) newSecretKeyringCmd() *cobra.Command {
-	keyringCmd := &cobra.Command{
+	secretKeyringCmd := &cobra.Command{
 		Use:   "keyring",
 		Args:  cobra.NoArgs,
 		Short: "Interact with keyring",
 	}
 
-	keyringDeleteCmd := &cobra.Command{
+	secretKeyringDeleteCmd := &cobra.Command{
 		Use:   "delete",
 		Args:  cobra.NoArgs,
 		Short: "Delete a value from keyring",
@@ -45,13 +45,12 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 			doesNotRequireValidConfig,
 		),
 	}
-	secretKeyringDeletePersistentFlags := keyringDeleteCmd.PersistentFlags()
-	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.delete.service, "service", "", "service")
-	secretKeyringDeletePersistentFlags.StringVar(&c.secret.keyring.delete.user, "user", "", "user")
-	markPersistentFlagsRequired(keyringDeleteCmd, "service", "user")
-	keyringCmd.AddCommand(keyringDeleteCmd)
+	secretKeyringDeleteCmd.Flags().StringVar(&c.secret.keyring.delete.service, "service", "", "service")
+	secretKeyringDeleteCmd.Flags().StringVar(&c.secret.keyring.delete.user, "user", "", "user")
+	markFlagsRequired(secretKeyringDeleteCmd, "service", "user")
+	secretKeyringCmd.AddCommand(secretKeyringDeleteCmd)
 
-	keyringGetCmd := &cobra.Command{
+	secretKeyringGetCmd := &cobra.Command{
 		Use:   "get",
 		Args:  cobra.NoArgs,
 		Short: "Get a value from keyring",
@@ -60,13 +59,12 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 			doesNotRequireValidConfig,
 		),
 	}
-	secretKeyringGetPersistentFlags := keyringGetCmd.PersistentFlags()
-	secretKeyringGetPersistentFlags.StringVar(&c.secret.keyring.get.service, "service", "", "service")
-	secretKeyringGetPersistentFlags.StringVar(&c.secret.keyring.get.user, "user", "", "user")
-	markPersistentFlagsRequired(keyringGetCmd, "service", "user")
-	keyringCmd.AddCommand(keyringGetCmd)
+	secretKeyringGetCmd.Flags().StringVar(&c.secret.keyring.get.service, "service", "", "service")
+	secretKeyringGetCmd.Flags().StringVar(&c.secret.keyring.get.user, "user", "", "user")
+	markFlagsRequired(secretKeyringGetCmd, "service", "user")
+	secretKeyringCmd.AddCommand(secretKeyringGetCmd)
 
-	keyringSetCmd := &cobra.Command{
+	secretKeyringSetCmd := &cobra.Command{
 		Use:   "set",
 		Args:  cobra.NoArgs,
 		Short: "Set a value in keyring",
@@ -75,14 +73,13 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 			doesNotRequireValidConfig,
 		),
 	}
-	secretKeyringSetPersistentFlags := keyringSetCmd.PersistentFlags()
-	secretKeyringSetPersistentFlags.StringVar(&c.secret.keyring.set.service, "service", "", "service")
-	secretKeyringSetPersistentFlags.StringVar(&c.secret.keyring.set.user, "user", "", "user")
-	secretKeyringSetPersistentFlags.StringVar(&c.secret.keyring.set.value, "value", "", "value")
-	markPersistentFlagsRequired(keyringSetCmd, "service", "user")
-	keyringCmd.AddCommand(keyringSetCmd)
+	secretKeyringSetCmd.Flags().StringVar(&c.secret.keyring.set.service, "service", "", "service")
+	secretKeyringSetCmd.Flags().StringVar(&c.secret.keyring.set.user, "user", "", "user")
+	secretKeyringSetCmd.Flags().StringVar(&c.secret.keyring.set.value, "value", "", "value")
+	markFlagsRequired(secretKeyringSetCmd, "service", "user")
+	secretKeyringCmd.AddCommand(secretKeyringSetCmd)
 
-	return keyringCmd
+	return secretKeyringCmd
 }
 
 func (c *Config) runSecretKeyringDeleteCmdE(cmd *cobra.Command, args []string) error {

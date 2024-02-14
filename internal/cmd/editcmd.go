@@ -41,13 +41,12 @@ func (c *Config) newEditCmd() *cobra.Command {
 		),
 	}
 
-	flags := editCmd.Flags()
-	flags.BoolVarP(&c.Edit.Apply, "apply", "a", c.Edit.Apply, "Apply after editing")
-	flags.VarP(c.Edit.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
-	flags.VarP(c.Edit.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
-	flags.BoolVar(&c.Edit.Watch, "watch", c.Edit.Watch, "Apply on save")
+	editCmd.Flags().BoolVarP(&c.Edit.Apply, "apply", "a", c.Edit.Apply, "Apply after editing")
+	editCmd.Flags().VarP(c.Edit.filter.Exclude, "exclude", "x", "Exclude entry types")
+	editCmd.Flags().BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
+	editCmd.Flags().VarP(c.Edit.filter.Include, "include", "i", "Include entry types")
+	editCmd.Flags().BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
+	editCmd.Flags().BoolVar(&c.Edit.Watch, "watch", c.Edit.Watch, "Apply on save")
 
 	registerExcludeIncludeFlagCompletionFuncs(editCmd)
 

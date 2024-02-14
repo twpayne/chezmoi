@@ -36,18 +36,11 @@ func (c *Config) newStatusCmd() *cobra.Command {
 		),
 	}
 
-	flags := statusCmd.Flags()
-	flags.VarP(c.Status.Exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.Status.PathStyle, "path-style", "p", "Path style")
-	flags.VarP(c.Status.include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.Status.init, "init", c.Status.init, "Recreate config file from template")
-	flags.BoolVarP(
-		&c.Status.recursive,
-		"recursive",
-		"r",
-		c.Status.recursive,
-		"Recurse into subdirectories",
-	)
+	statusCmd.Flags().VarP(c.Status.Exclude, "exclude", "x", "Exclude entry types")
+	statusCmd.Flags().VarP(c.Status.PathStyle, "path-style", "p", "Path style")
+	statusCmd.Flags().VarP(c.Status.include, "include", "i", "Include entry types")
+	statusCmd.Flags().BoolVar(&c.Status.init, "init", c.Status.init, "Recreate config file from template")
+	statusCmd.Flags().BoolVarP(&c.Status.recursive, "recursive", "r", c.Status.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(statusCmd)
 
