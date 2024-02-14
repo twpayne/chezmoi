@@ -18,9 +18,6 @@ func (c *Config) newDataCmd() *cobra.Command {
 	}
 
 	dataCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
-	if err := dataCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
-		panic(err)
-	}
 
 	return dataCmd
 }

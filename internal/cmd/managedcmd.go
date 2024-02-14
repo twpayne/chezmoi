@@ -31,11 +31,6 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd.Flags().VarP(c.managed.filter.Include, "include", "i", "Include entry types")
 	managedCmd.Flags().VarP(&c.managed.pathStyle, "path-style", "p", "Path style")
 
-	registerExcludeIncludeFlagCompletionFuncs(managedCmd)
-	if err := managedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleFlagCompletionFunc); err != nil {
-		panic(err)
-	}
-
 	return managedCmd
 }
 

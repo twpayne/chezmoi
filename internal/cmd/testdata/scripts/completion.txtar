@@ -22,9 +22,17 @@ cmp stdout golden/use-builtin-flags
 exec chezmoi __complete --color t
 cmp stdout golden/auto-bool-t
 
+# test that entry type set values are completed
+exec chezmoi __complete apply --include ''
+cmp stdout golden/entry-type-set
+
 # test that mode values are completed
 exec chezmoi __complete --mode ''
 cmp stdout golden/mode
+
+# test that path style values are completed
+exec chezmoi __complete managed --path-style ''
+cmp stdout golden/path-style
 
 # test that write --format values are completed
 exec chezmoi __complete state dump --format ''
@@ -38,14 +46,37 @@ cmp stdout golden/write-data
 t
 true
 :4
+-- golden/entry-type-set --
+all
+always
+dirs
+encrypted
+externals
+files
+noalways
+nodirs
+noencrypted
+noexternals
+nofiles
+none
+noremove
+noscripts
+nosymlinks
+notemplates
+remove
+scripts
+symlinks
+templates
+:6
 -- golden/mode --
 file
 symlink
 :4
--- golden/read-data --
-json
-toml
-yaml
+-- golden/path-style --
+absolute
+relative
+source-absolute
+source-relative
 :4
 -- golden/use-builtin-flags --
 --use-builtin-age	Use builtin age
