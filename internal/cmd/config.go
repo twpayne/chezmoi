@@ -181,6 +181,7 @@ type Config struct {
 	refreshExternals chezmoi.RefreshExternals
 	sourcePath       bool
 	templateFuncs    template.FuncMap
+	useBuiltinDiff   bool
 
 	// Password manager data.
 	gitHub  gitHubData
@@ -1579,6 +1580,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
+	persistentFlags.BoolVarP(&c.useBuiltinDiff, "use-builtin-diff", "", c.useBuiltinDiff, "Use builtin diff")
 
 	if err := chezmoierrors.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
@@ -1657,7 +1659,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 // newDiffSystem returns a system that logs all changes to s to w using
 // diff.command if set or the builtin git diff otherwise.
 func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
-	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
+	if c.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
 			Color:          c.Color.Value(c.colorAutoFunc),
 			Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),

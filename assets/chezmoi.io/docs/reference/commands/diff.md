@@ -24,11 +24,6 @@ to match the destination.
 
 Pager to use for output.
 
-## `--use-builtin-diff`
-
-Use chezmoi's builtin diff, even if the `diff.command` configuration variable
-is set.
-
 !!! example
 
     ```console
