@@ -17,10 +17,14 @@ appended automatically.
 
 ## `--reverse`
 
+> Configuration: `diff.reverse`
+
 Reverse the direction of the diff, i.e. show the changes to the target required
 to match the destination.
 
 ## `--pager` *pager*
+
+> Configuration: `diff.pager`
 
 Pager to use for output.
 

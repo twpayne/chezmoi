@@ -14,15 +14,21 @@ command line flag is set.
 
 ## `-a`, `--apply`
 
+> Configuration: `edit.apply`
+
 Apply target immediately after editing. Ignored if there are no targets.
 
 ## `--hardlink` *bool*
+
+> Configuration: `edit.hardlink`
 
 Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
 
 ## `--watch`
+
+> Configuration: `edit.watch`
 
 Automatically apply changes when files are saved, with the following limitations:
 
