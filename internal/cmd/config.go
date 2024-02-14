@@ -304,6 +304,14 @@ var (
 	}
 
 	whitespaceRx = regexp.MustCompile(`\s+`)
+
+	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
+		"exclude":    chezmoi.EntryTypeSetFlagCompletionFunc,
+		"format":     writeDataFormatFlagCompletionFunc,
+		"include":    chezmoi.EntryTypeSetFlagCompletionFunc,
+		"path-style": chezmoi.PathStyleFlagCompletionFunc,
+		"secrets":    severityFlagCompletionFunc,
+	}
 )
 
 // newConfig creates a new Config with the given options.
@@ -1649,6 +1657,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		cobracompletefig.CreateCompletionSpecCommand(),
 	} {
 		if cmd != nil {
+			registerCommonFlagCompletionFuncs(cmd)
 			rootCmd.AddCommand(cmd)
 		}
 	}
@@ -2803,6 +2812,21 @@ func parseCommand(command string, args []string) (string, []string, error) {
 
 	// Fallback to the command only.
 	return command, args, nil
+}
+
+// registerCommonFlagCompletionFuncs registers completion functions for cmd's
+// common flags, recursively. It panics on any error.
+func registerCommonFlagCompletionFuncs(cmd *cobra.Command) {
+	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
+		if flagCompletionFunc, ok := commonFlagCompletionFuncs[flag.Name]; ok {
+			if err := cmd.RegisterFlagCompletionFunc(flag.Name, flagCompletionFunc); err != nil {
+				panic(err)
+			}
+		}
+	})
+	for _, command := range cmd.Commands() {
+		registerCommonFlagCompletionFuncs(command)
+	}
 }
 
 // withVersionInfo sets the version information.

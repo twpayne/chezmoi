@@ -57,11 +57,6 @@ func (c *Config) newAddCmd() *cobra.Command {
 	addCmd.Flags().
 		BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates")
 
-	registerExcludeIncludeFlagCompletionFuncs(addCmd)
-	if err := addCmd.RegisterFlagCompletionFunc("secrets", severityFlagCompletionFunc); err != nil {
-		panic(err)
-	}
-
 	return addCmd
 }
 

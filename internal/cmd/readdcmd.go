@@ -36,8 +36,6 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	reAddCmd.Flags().VarP(c.reAdd.filter.Include, "include", "i", "Include entry types")
 	reAddCmd.Flags().BoolVarP(&c.reAdd.recursive, "recursive", "r", c.reAdd.recursive, "Recurse into subdirectories")
 
-	registerExcludeIncludeFlagCompletionFuncs(reAddCmd)
-
 	return reAddCmd
 }
 

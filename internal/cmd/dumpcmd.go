@@ -31,11 +31,6 @@ func (c *Config) newDumpCmd() *cobra.Command {
 	dumpCmd.Flags().VarP(c.dump.filter.Include, "include", "i", "Include entry types")
 	dumpCmd.Flags().BoolVar(&c.dump.init, "init", c.dump.init, "Recreate config file from template")
 	dumpCmd.Flags().BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "Recurse into subdirectories")
-	if err := dumpCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
-		panic(err)
-	}
-
-	registerExcludeIncludeFlagCompletionFuncs(dumpCmd)
 
 	return dumpCmd
 }

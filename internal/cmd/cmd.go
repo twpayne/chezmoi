@@ -216,17 +216,6 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 	}, nil
 }
 
-// registerExcludeIncludeFlagCompletionFuncs registers the flag completion
-// functions for the include and exclude flags of cmd. It panics on any error.
-func registerExcludeIncludeFlagCompletionFuncs(cmd *cobra.Command) {
-	if err := chezmoierrors.Combine(
-		cmd.RegisterFlagCompletionFunc("exclude", chezmoi.EntryTypeSetFlagCompletionFunc),
-		cmd.RegisterFlagCompletionFunc("include", chezmoi.EntryTypeSetFlagCompletionFunc),
-	); err != nil {
-		panic(err)
-	}
-}
-
 // renderLines renders lines, trimming extraneous whitespace.
 func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, error) {
 	renderedLines, err := termRenderer.Render(strings.Join(lines, "\n"))

@@ -40,8 +40,6 @@ func (c *Config) newImportCmd() *cobra.Command {
 	importCmd.Flags().
 		IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")
 
-	registerExcludeIncludeFlagCompletionFuncs(importCmd)
-
 	return importCmd
 }
 

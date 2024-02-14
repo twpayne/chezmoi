@@ -42,8 +42,6 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	diffCmd.Flags().BoolVar(&c.Diff.Reverse, "reverse", c.Diff.Reverse, "Reverse the direction of the diff")
 	diffCmd.Flags().BoolVar(&c.Diff.ScriptContents, "script-contents", c.Diff.ScriptContents, "Show script contents")
 
-	registerExcludeIncludeFlagCompletionFuncs(diffCmd)
-
 	return diffCmd
 }
 

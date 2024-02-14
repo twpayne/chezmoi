@@ -53,9 +53,6 @@ func (c *Config) newMackupCmd() *cobra.Command {
 		),
 	}
 	mackupAddCmd.Flags().Var(&c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
-	if err := mackupAddCmd.RegisterFlagCompletionFunc("secrets", severityFlagCompletionFunc); err != nil {
-		panic(err)
-	}
 	mackupCmd.AddCommand(mackupAddCmd)
 
 	// FIXME add other subcommands like

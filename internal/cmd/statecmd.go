@@ -60,9 +60,6 @@ func (c *Config) newStateCmd() *cobra.Command {
 		),
 	}
 	stateDataCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
-	if err := stateDataCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
-		panic(err)
-	}
 	stateCmd.AddCommand(stateDataCmd)
 
 	stateDeleteCmd := &cobra.Command{
@@ -100,9 +97,6 @@ func (c *Config) newStateCmd() *cobra.Command {
 		),
 	}
 	stateDumpCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
-	if err := stateDumpCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
-		panic(err)
-	}
 	stateCmd.AddCommand(stateDumpCmd)
 
 	stateGetCmd := &cobra.Command{
@@ -129,9 +123,6 @@ func (c *Config) newStateCmd() *cobra.Command {
 	}
 	stateGetBucketCmd.Flags().StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
 	stateGetBucketCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
-	if err := stateGetBucketCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
-		panic(err)
-	}
 	stateCmd.AddCommand(stateGetBucketCmd)
 
 	stateResetCmd := &cobra.Command{
