@@ -56,10 +56,6 @@ Do not use the pager.
 
 Do not attempt to get a TTY for prompts. Instead, read them from stdin.
 
-## `-o`, `--output` *filename*
-
-Write the output to *filename* instead of stdout.
-
 ## `--persistent-state` *filename*
 
 > Configuration: `persistentState`
