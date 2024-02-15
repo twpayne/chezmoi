@@ -148,7 +148,13 @@ with a single command:
 === "PowerShell"
 
     ```powershell
-    (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
+    iex "&{$(irm 'https://get.chezmoi.io/ps1')}"
+    ```
+
+    To provide the script with arguments, place them at the end of the quote:
+
+    ```powershell
+    iex "&{$(irm 'https://get.chezmoi.io/ps1')} -b '~/bin'"
     ```
 
 !!! hint
