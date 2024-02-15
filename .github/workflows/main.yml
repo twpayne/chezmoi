@@ -135,6 +135,18 @@ jobs:
       run: |
         sh assets/scripts/install.sh
         bin/chezmoi --version
+    - name: test-install.ps1
+      shell: pwsh
+      run: |
+        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
+        assets/scripts/install.ps1 -d
+        bin/chezmoi --version
+    - name: test-install.ps1-irm
+      shell: pwsh
+      run: |
+        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
+        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
+        bin/chezmoi --version
   test-oldstable-go:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -283,6 +295,18 @@ jobs:
         rm -f bin/chezmoi
         sh assets/scripts/install.sh
         bin/chezmoi --version
+    - name: test-install.ps1
+      shell: pwsh
+      run: |
+        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
+        assets/scripts/install.ps1 -d
+        bin/chezmoi --version
+    - name: test-install.ps1-irm
+      shell: pwsh
+      run: |
+        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
+        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
+        bin/chezmoi --version
   test-website:
     runs-on: ubuntu-22.04
     permissions:
@@ -330,17 +354,17 @@ jobs:
     - name: test-install.ps1
       run: |
         if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        powershell -c assets/scripts/install.ps1
+        assets/scripts/install.ps1 -d
         bin/chezmoi.exe --version
-    - name: test-install-irm
+    - name: test-install.ps1-irm
       run: |
         if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
+        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
         bin/chezmoi.exe --version
-    - name: test-install-iwr
+    - name: test-install.ps1-iwr
       run: |
         if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        (iwr -useb https://get.chezmoi.io/ps1).ToString() | powershell -c -
+        iex "&{$(iwr 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
         bin/chezmoi.exe --version
   check:
     runs-on: ubuntu-22.04
