@@ -30,9 +30,25 @@ Or in chezmoi's configuration file:
     args = ["--wait"]
 ```
 
-## Configure VIM to run `chezmoi apply` whenever you save a dotfile
+## Use chezmoi with VIM
 
-Put the following in your `.vimrc`:
+[`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim)
+provides syntax highlighting for files managed by chezmoi, including for
+templates.
+
+[`github.com/Lilja/vim-chezmoi`](https://github.com/Lilja/vim-chezmoi) works
+with `chezmoi edit` to apply the edited dotfile on save.
+
+[`github.com/xvzc/chezmoi.nvim`](https://github.com/xvzc/chezmoi.nvim) allows
+you to edit your chezmoi-managed files and automatically apply.
+
+Alternatively, you can use an `autocmd` to run `chezmoi apply` whenever you save
+a dotfile, but you must disable `chezmoi edit`'s hardlinking:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[edit]
+    hardlink = false
+```
 
 ```vim title="~/.vimrc"
 autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
