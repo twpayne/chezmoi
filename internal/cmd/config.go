@@ -2337,7 +2337,10 @@ func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 	cmd.Stdin = c.stdin
 	cmd.Stdout = c.stdout
 	cmd.Stderr = c.stderr
-	return c.baseSystem.RunCmd(cmd)
+	if err := chezmoilog.LogCmdRun(c.logger, cmd); err != nil {
+		return fmt.Errorf("%s: %w", name, err)
+	}
+	return nil
 }
 
 // runEditor runs the configured editor with args.
