@@ -390,7 +390,7 @@ sections:
       description: Vault CLI command
   update:
     apply:
-      type: 'bool'
+      type: bool
       default: '`true`'
       description: Apply after pulling
     args:
