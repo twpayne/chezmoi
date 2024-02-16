@@ -379,10 +379,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		unmanaged: unmanagedCmdConfig{
 			pathStyle: chezmoi.PathStyleRelative,
 		},
-		upgrade: upgradeCmdConfig{
-			owner: gitHubOwner,
-			repo:  gitHubRepo,
-		},
 
 		// Configuration.
 		fileSystem: vfs.OSFS,
