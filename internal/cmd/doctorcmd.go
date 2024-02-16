@@ -118,8 +118,6 @@ type goVersionCheck struct{}
 type latestVersionCheck struct {
 	httpClient    *http.Client
 	httpClientErr error
-	owner         string
-	repo          string
 	version       semver.Version
 }
 
@@ -179,8 +177,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&latestVersionCheck{
 			httpClient:    httpClient,
 			httpClientErr: httpClientErr,
-			owner:         gitHubOwner,
-			repo:          gitHubRepo,
 			version:       c.version,
 		},
 		osArchCheck{},
@@ -663,7 +659,7 @@ func (c *latestVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.A
 	ctx := context.Background()
 
 	gitHubClient := chezmoi.NewGitHubClient(ctx, c.httpClient)
-	rr, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, c.owner, c.repo)
+	rr, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, "twpayne", "chezmoi")
 	var rateLimitErr *github.RateLimitError
 	var abuseRateLimitErr *github.AbuseRateLimitError
 	switch {

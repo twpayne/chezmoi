@@ -45,8 +45,6 @@ var (
 type upgradeCmdConfig struct {
 	executable string
 	method     string
-	owner      string
-	repo       string
 }
 
 func (c *Config) newUpgradeCmd() *cobra.Command {
@@ -64,8 +62,6 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 
 	upgradeCmd.Flags().StringVar(&c.upgrade.executable, "executable", c.upgrade.method, "Set executable to replace")
 	upgradeCmd.Flags().StringVar(&c.upgrade.method, "method", c.upgrade.method, "Set upgrade method")
-	upgradeCmd.Flags().StringVar(&c.upgrade.owner, "owner", c.upgrade.owner, "Set owner")
-	upgradeCmd.Flags().StringVar(&c.upgrade.repo, "repo", c.upgrade.repo, "Set repo")
 
 	return upgradeCmd
 }
@@ -86,7 +82,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	client := chezmoi.NewGitHubClient(ctx, httpClient)
 
 	// Get the latest release.
-	rr, _, err := client.Repositories.GetLatestRelease(ctx, c.upgrade.owner, c.upgrade.repo)
+	rr, _, err := client.Repositories.GetLatestRelease(ctx, "twpayne", "chezmoi")
 	if err != nil {
 		return err
 	}
@@ -159,7 +155,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// that, otherwise look in $PATH.
 	path := c.upgrade.executable
 	if method != upgradeMethodReplaceExecutable {
-		path, err = chezmoi.LookPath(c.upgrade.repo)
+		path, err = chezmoi.LookPath("chezmoi")
 		if err != nil {
 			return err
 		}
@@ -174,7 +170,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
-	name := fmt.Sprintf("%s_%s_checksums.txt", c.upgrade.repo, strings.TrimPrefix(rr.GetTagName(), "v"))
+	name := fmt.Sprintf("chezmoi_%s_checksums.txt", strings.TrimPrefix(rr.GetTagName(), "v"))
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
 		return nil, fmt.Errorf("%s: cannot find release asset", name)
@@ -239,16 +235,16 @@ func (c *Config) replaceExecutable(
 		if libc, err = getLibc(); err != nil {
 			return
 		}
-		archiveName = fmt.Sprintf("%s_%s_%s-%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, libc, runtime.GOARCH)
+		archiveName = fmt.Sprintf("chezmoi_%s_%s-%s_%s.tar.gz", releaseVersion, runtime.GOOS, libc, runtime.GOARCH)
 	case runtime.GOOS == "linux" && runtime.GOARCH == "386":
 		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf("%s_%s_%s_i386.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS)
+		archiveName = fmt.Sprintf("chezmoi_%s_%s_i386.tar.gz", releaseVersion, runtime.GOOS)
 	case runtime.GOOS == "windows":
 		archiveFormat = chezmoi.ArchiveFormatZip
-		archiveName = fmt.Sprintf("%s_%s_%s_%s.zip", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
+		archiveName = fmt.Sprintf("chezmoi_%s_%s_%s.zip", releaseVersion, runtime.GOOS, runtime.GOARCH)
 	default:
 		archiveFormat = chezmoi.ArchiveFormatTarGz
-		archiveName = fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
+		archiveName = fmt.Sprintf("chezmoi_%s_%s_%s.tar.gz", releaseVersion, runtime.GOOS, runtime.GOARCH)
 	}
 	releaseAsset := getReleaseAssetByName(rr, archiveName)
 	if releaseAsset == nil {
@@ -266,7 +262,7 @@ func (c *Config) replaceExecutable(
 
 	// Extract the executable from the archive.
 	var executableData []byte
-	executableName := c.upgrade.repo
+	executableName := "chezmoi"
 	if runtime.GOOS == "windows" {
 		executableName += ".exe"
 	}

@@ -5,7 +5,6 @@ package cmd
 import (
 	"context"
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -96,8 +95,9 @@ func (c *Config) upgradeUNIXPackage(
 }
 
 func (c *Config) winGetUpgrade() error {
-	format := "upgrade command is not currently supported for WinGet installations. chezmoi can still be upgraded via WinGet by running `winget upgrade --id %s.%s --source winget`"
-	return fmt.Errorf(format, c.upgrade.owner, c.upgrade.repo)
+	return errors.New(
+		"upgrade command is not currently supported for WinGet installations. chezmoi can still be upgraded via WinGet by running `winget upgrade --id twpayne.chezmoi --source winget`",
+	)
 }
 
 // getLibc attempts to determine the system's libc.

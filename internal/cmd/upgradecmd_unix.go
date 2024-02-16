@@ -65,7 +65,7 @@ var (
 )
 
 func (c *Config) brewUpgrade() error {
-	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
+	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", "chezmoi"})
 }
 
 func (c *Config) getPackageFilename(packageType string, version *semver.Version, os, arch string) (string, error) {
@@ -74,18 +74,18 @@ func (c *Config) getPackageFilename(packageType string, version *semver.Version,
 	}
 	switch packageType {
 	case packageTypeAPK:
-		return fmt.Sprintf("%s_%s_%s_%s.apk", c.upgrade.repo, version, os, arch), nil
+		return fmt.Sprintf("chezmoi_%s_%s_%s.apk", version, os, arch), nil
 	case packageTypeDEB:
-		return fmt.Sprintf("%s_%s_%s_%s.deb", c.upgrade.repo, version, os, arch), nil
+		return fmt.Sprintf("chezmoi_%s_%s_%s.deb", version, os, arch), nil
 	case packageTypeRPM:
-		return fmt.Sprintf("%s-%s-%s.rpm", c.upgrade.repo, version, arch), nil
+		return fmt.Sprintf("chezmoi-%s-%s.rpm", version, arch), nil
 	default:
 		return "", fmt.Errorf("%s: unsupported package type", packageType)
 	}
 }
 
 func (c *Config) snapRefresh() error {
-	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", c.upgrade.repo})
+	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", "chezmoi"})
 }
 
 func (c *Config) upgradeUNIXPackage(
@@ -109,7 +109,7 @@ func (c *Config) upgradeUNIXPackage(
 			if useSudo {
 				args = append(args, "sudo")
 			}
-			args = append(args, "pacman", "-S", c.upgrade.repo)
+			args = append(args, "pacman", "-S", "chezmoi")
 			return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 		}
 

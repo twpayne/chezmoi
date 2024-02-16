@@ -21,13 +21,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
 
-// GitHub owner and repo for chezmoi itself.
-const (
-	gitHubOwner = "twpayne"
-	gitHubRepo  = "chezmoi"
-
-	readSourceStateHookName = "read-source-state"
-)
+const readSourceStateHookName = "read-source-state"
 
 var (
 	noArgs = []string(nil)
