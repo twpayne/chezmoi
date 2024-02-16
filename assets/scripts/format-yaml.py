@@ -13,7 +13,7 @@ def main() -> int:
     for filename in sys.argv[1:]:
         with Path(filename).open('r') as file:
             data = yaml.load(file)
-        with Path(filename).open('w') as file:
+        with Path(filename).open('w', newline='\n') as file:
             yaml.dump(data, file)
     return 0
 
