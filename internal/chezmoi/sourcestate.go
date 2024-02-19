@@ -393,8 +393,28 @@ DEST_ABS_PATH:
 			parentSourceRelPath = SourceRelPath{}
 		} else if parentEntry, ok := newSourceStateEntriesByTargetRelPath[targetParentRelPath]; ok {
 			parentSourceRelPath = parentEntry.SourceRelPath()
-		} else if parentEntry := s.root.Get(targetParentRelPath); parentEntry != nil {
-			parentSourceRelPath = parentEntry.SourceRelPath()
+		} else if nodes := s.root.GetNodes(targetParentRelPath); nodes != nil {
+			for i, node := range nodes {
+				if i == 0 {
+					// nodes[0].sourceStateEntry should always be nil because it
+					// refers to the destination directory, which is not manged.
+					// chezmoi manages the destination directory's contents, not
+					// the destination directory itself. For example, chezmoi
+					// does not set the name or permissions of the user's home
+					// directory.
+					if node.sourceStateEntry != nil {
+						panic(fmt.Errorf("nodes[0]: expected nil, got %+v", node.sourceStateEntry))
+					}
+					continue
+				}
+				switch sourceStateDir, ok := node.sourceStateEntry.(*SourceStateDir); {
+				case i != len(nodes)-1 && !ok:
+					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.sourceStateEntry))
+				case sourceStateDir.Attr.External:
+					return fmt.Errorf("%s: cannot add entry in external_ directory", destAbsPath)
+				}
+			}
+			parentSourceRelPath = nodes[len(nodes)-1].sourceStateEntry.SourceRelPath()
 		} else {
 			return fmt.Errorf("%s: parent directory not in source state", destAbsPath)
 		}

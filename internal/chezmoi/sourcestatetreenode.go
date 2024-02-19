@@ -22,28 +22,30 @@ func newSourceStateTreeNode() *sourceStateEntryTreeNode {
 
 // Get returns the SourceStateEntry at relPath.
 func (n *sourceStateEntryTreeNode) Get(relPath RelPath) SourceStateEntry {
-	node := n.GetNode(relPath)
-	if node == nil {
+	nodes := n.GetNodes(relPath)
+	if nodes == nil {
 		return nil
 	}
-	return node.sourceStateEntry
+	return nodes[len(nodes)-1].sourceStateEntry
 }
 
-// GetNode returns the SourceStateTreeNode at relPath.
-func (n *sourceStateEntryTreeNode) GetNode(targetRelPath RelPath) *sourceStateEntryTreeNode {
+// GetNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
+func (n *sourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*sourceStateEntryTreeNode {
 	if targetRelPath.Empty() {
-		return n
+		return []*sourceStateEntryTreeNode{n}
 	}
 
-	node := n
-	for _, childRelPath := range targetRelPath.SplitAll() {
-		if childNode, ok := node.children[childRelPath]; ok {
-			node = childNode
+	targetRelPathComponents := targetRelPath.SplitAll()
+	nodes := make([]*sourceStateEntryTreeNode, 0, len(targetRelPathComponents))
+	nodes = append(nodes, n)
+	for _, childRelPath := range targetRelPathComponents {
+		if childNode, ok := nodes[len(nodes)-1].children[childRelPath]; ok {
+			nodes = append(nodes, childNode)
 		} else {
 			return nil
 		}
 	}
-	return node
+	return nodes
 }
 
 // ForEach calls f for each SourceStateEntry in the tree.
