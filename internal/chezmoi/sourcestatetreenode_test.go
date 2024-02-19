@@ -10,7 +10,7 @@ import (
 func TestSourceStateEntryTreeNodeEmpty(t *testing.T) {
 	n := newSourceStateTreeNode()
 	assert.Equal(t, nil, n.Get(EmptyRelPath))
-	assert.Equal(t, n, n.GetNode(EmptyRelPath))
+	assert.Equal(t, []*sourceStateEntryTreeNode{n}, n.GetNodes(EmptyRelPath))
 	assert.NoError(t, n.ForEach(EmptyRelPath, func(RelPath, SourceStateEntry) error {
 		return errors.New("should not be called")
 	}))
