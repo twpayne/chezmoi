@@ -20,17 +20,17 @@ func newSourceStateTreeNode() *sourceStateEntryTreeNode {
 	return &sourceStateEntryTreeNode{}
 }
 
-// Get returns the SourceStateEntry at relPath.
-func (n *sourceStateEntryTreeNode) Get(relPath RelPath) SourceStateEntry {
-	nodes := n.GetNodes(relPath)
+// get returns the SourceStateEntry at relPath.
+func (n *sourceStateEntryTreeNode) get(relPath RelPath) SourceStateEntry {
+	nodes := n.getNodes(relPath)
 	if nodes == nil {
 		return nil
 	}
 	return nodes[len(nodes)-1].sourceStateEntry
 }
 
-// GetNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
-func (n *sourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*sourceStateEntryTreeNode {
+// getNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
+func (n *sourceStateEntryTreeNode) getNodes(targetRelPath RelPath) []*sourceStateEntryTreeNode {
 	if targetRelPath.Empty() {
 		return []*sourceStateEntryTreeNode{n}
 	}
@@ -48,9 +48,9 @@ func (n *sourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*sourceStat
 	return nodes
 }
 
-// ForEach calls f for each SourceStateEntry in the tree.
-func (n *sourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
-	return n.ForEachNode(targetRelPath, func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
+// forEach calls f for each SourceStateEntry in the tree.
+func (n *sourceStateEntryTreeNode) forEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
+	return n.forEachNode(targetRelPath, func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
 		if node.sourceStateEntry == nil {
 			return nil
 		}
@@ -58,8 +58,8 @@ func (n *sourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath
 	})
 }
 
-// ForEachNode calls f for each node in the tree.
-func (n *sourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error) error {
+// forEachNode calls f for each node in the tree.
+func (n *sourceStateEntryTreeNode) forEachNode(targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error) error {
 	switch err := f(targetRelPath, n); {
 	case errors.Is(err, fs.SkipDir):
 		return nil
@@ -71,7 +71,7 @@ func (n *sourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(Rel
 	sort.Sort(childrenByRelPath)
 	for _, childRelPath := range childrenByRelPath {
 		child := n.children[childRelPath]
-		if err := child.ForEachNode(targetRelPath.Join(childRelPath), f); err != nil {
+		if err := child.forEachNode(targetRelPath.Join(childRelPath), f); err != nil {
 			return err
 		}
 	}
@@ -79,19 +79,19 @@ func (n *sourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(Rel
 	return nil
 }
 
-// Map returns a map of relPaths to SourceStateEntries.
-func (n *sourceStateEntryTreeNode) Map() map[RelPath]SourceStateEntry {
+// getMap returns a map of relPaths to SourceStateEntries.
+func (n *sourceStateEntryTreeNode) getMap() map[RelPath]SourceStateEntry {
 	m := make(map[RelPath]SourceStateEntry)
-	_ = n.ForEach(EmptyRelPath, func(relPath RelPath, sourceStateEntry SourceStateEntry) error {
+	_ = n.forEach(EmptyRelPath, func(relPath RelPath, sourceStateEntry SourceStateEntry) error {
 		m[relPath] = sourceStateEntry
 		return nil
 	})
 	return m
 }
 
-// MkdirAll creates SourceStateDirs for all components of targetRelPath if they
+// mkdirAll creates SourceStateDirs for all components of targetRelPath if they
 // do not already exist and returns the SourceStateDir of relPath.
-func (n *sourceStateEntryTreeNode) MkdirAll(
+func (n *sourceStateEntryTreeNode) mkdirAll(
 	targetRelPath RelPath,
 	origin SourceStateOrigin,
 	umask fs.FileMode,
@@ -144,8 +144,8 @@ func (n *sourceStateEntryTreeNode) MkdirAll(
 	return sourceStateDir, nil
 }
 
-// Set sets the SourceStateEntry at relPath to sourceStateEntry.
-func (n *sourceStateEntryTreeNode) Set(targetRelPath RelPath, sourceStateEntry SourceStateEntry) {
+// set sets the SourceStateEntry at relPath to sourceStateEntry.
+func (n *sourceStateEntryTreeNode) set(targetRelPath RelPath, sourceStateEntry SourceStateEntry) {
 	if targetRelPath.Empty() {
 		n.sourceStateEntry = sourceStateEntry
 		return

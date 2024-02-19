@@ -1941,7 +1941,7 @@ func (s *SourceState) applyAll(
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	err := s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+	err := s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 		if err := sourceStateEntry.Evaluate(); err != nil {
 			return err
 		}
@@ -1959,7 +1959,7 @@ func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 	return func(s *SourceState) {
 		s.root = sourceStateEntryTreeNode{}
 		for targetRelPath, sourceStateEntry := range sourceEntries {
-			s.root.Set(targetRelPath, sourceStateEntry)
+			s.root.set(targetRelPath, sourceStateEntry)
 		}
 	}
 }
