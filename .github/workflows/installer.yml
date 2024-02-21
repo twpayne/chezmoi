@@ -1,0 +1,88 @@
+name: installer
+on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+env:
+  SHA: ${{ github.event_name == 'push' && github.sha || github.event.pull_request.head.sha }}
+jobs:
+  changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      sh: ${{ steps.filter.outputs.sh }}
+      ps1: ${{ steps.filter.outputs.ps1 }}
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - id: filter
+      uses: dorny/paths-filter@0bc4621a3135347011ad047f9ecf449bf72ce2bd
+      with:
+        filters: |
+          shared: &shared
+          - '.github/workflows/installer.yml'
+          sh:
+          - *shared
+          - 'assets/scripts/install*.sh'
+          - 'internal/cmds/generate-install.sh/install.sh.tmpl'
+          ps1:
+          - *shared
+          - 'assets/scripts/install.ps1'
+  misspell:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: reviewdog/action-misspell@06d6a480724fa783c220081bbc22336a78dbbe82
+      with:
+        locale: US
+  test-install-sh:
+    if: ${{ needs.changes.outputs.sh == 'true' }}
+    strategy:
+      matrix:
+        os: [macos-11, ubuntu-20.04, windows-2022]
+    needs: changes
+    runs-on: ${{ matrix.os }}
+    env:
+      BINARY: ${{ matrix.os == 'windows-2022' && 'bin/chezmoi.exe' || 'bin/chezmoi' }}
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - name: test-${{ matrix.os }}-local
+      shell: bash
+      run: |
+        rm -f ${{ env.BINARY }}
+        sh assets/scripts/install.sh -d
+        ${{ env.BINARY }} --version
+    - name: test-${{ matrix.os }}-url
+      shell: bash
+      run: |
+        rm -f ${{ env.BINARY }}
+        sh -c "$(curl -fsLS https://raw.githubusercontent.com/twpayne/chezmoi/${{ env.SHA }}/assets/scripts/install.sh)" -- -d
+        ${{ env.BINARY }} --version
+  test-install-ps1:
+    if: ${{ needs.changes.outputs.ps1 == 'true' }}
+    strategy:
+      matrix:
+        os: [macos-11, ubuntu-20.04, windows-2022]
+    needs: changes
+    runs-on: ${{ matrix.os }}
+    env:
+      BINARY: ${{ matrix.os == 'windows-2022' && 'bin/chezmoi.exe' || 'bin/chezmoi' }}
+    steps:
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - name: test-${{ matrix.os }}-local
+      shell: pwsh
+      run: |
+        if (Test-Path -Path ${{ env.BINARY }}) { Remove-Item -Force ${{ env.BINARY }} }
+        assets/scripts/install.ps1 -d
+        ${{ env.BINARY }} --version
+    - name: test-${{ matrix.os }}-url
+      shell: pwsh
+      run: |
+        if (Test-Path -Path ${{ env.BINARY }}) { Remove-Item -Force ${{ env.BINARY }} }
+        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ env.SHA }}/assets/scripts/install.ps1')} -d"
+        ${{ env.BINARY }} --version

@@ -37,14 +37,16 @@ jobs:
         filters: |
           code:
           - '**/*.go'
-          - '**/*.ps1'
-          - '**/*.tmpl'
-          - '.github/workflows/**'
+          - '.github/workflows/main.yml'
           - '.goreleaser.yaml'
           - 'Makefile'
+          - 'assets/**/*.tmpl'
           - 'assets/docker/**'
-          - 'assets/scripts/**'
+          - 'assets/scripts/*.py'
+          - 'assets/scripts/generate-commit.sh'
+          - 'assets/scripts/stow-to-chezmoi.sh'
           - 'assets/vagrant/**'
+          - 'completions/**'
           - 'go.*'
           - 'internal/**'
   codeql:
@@ -131,22 +133,6 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         go test -race ./...
-    - name: test-install.sh
-      run: |
-        sh assets/scripts/install.sh
-        bin/chezmoi --version
-    - name: test-install.ps1
-      shell: pwsh
-      run: |
-        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
-        assets/scripts/install.ps1 -d
-        bin/chezmoi --version
-    - name: test-install.ps1-irm
-      shell: pwsh
-      run: |
-        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
-        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
-        bin/chezmoi --version
   test-oldstable-go:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -289,24 +275,6 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o002" -race -timeout=1h ./...
-    - name: test-install.sh
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        rm -f bin/chezmoi
-        sh assets/scripts/install.sh
-        bin/chezmoi --version
-    - name: test-install.ps1
-      shell: pwsh
-      run: |
-        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
-        assets/scripts/install.ps1 -d
-        bin/chezmoi --version
-    - name: test-install.ps1-irm
-      shell: pwsh
-      run: |
-        if (Test-Path -Path bin/chezmoi) { Remove-Item -Force bin/chezmoi }
-        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
-        bin/chezmoi --version
   test-website:
     runs-on: ubuntu-22.04
     permissions:
@@ -351,21 +319,6 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         go test -race ./...
-    - name: test-install.ps1
-      run: |
-        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        assets/scripts/install.ps1 -d
-        bin/chezmoi.exe --version
-    - name: test-install.ps1-irm
-      run: |
-        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
-        bin/chezmoi.exe --version
-    - name: test-install.ps1-iwr
-      run: |
-        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        iex "&{$(iwr 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ github.event.pull_request.head.sha }}/assets/scripts/install.ps1')} -d"
-        bin/chezmoi.exe --version
   check:
     runs-on: ubuntu-22.04
     permissions:
