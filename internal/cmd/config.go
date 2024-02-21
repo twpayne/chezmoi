@@ -631,9 +631,8 @@ func (c *Config) applyArgs(
 			return err
 		}
 	default:
-		targetRelPaths, err = c.targetRelPaths(sourceState, args, targetRelPathsOptions{
-			mustBeManaged: true,
-			recursive:     options.recursive,
+		targetRelPaths, err = c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
+			recursive: options.recursive,
 		})
 		if err != nil {
 			return err
@@ -2437,9 +2436,8 @@ func (c *Config) setEnvironmentVariables() error {
 // sourceAbsPaths returns the source absolute paths for each target path in
 // args.
 func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
-	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
+	targetRelPaths, err := c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
 		mustBeInSourceState: true,
-		mustBeManaged:       true,
 	})
 	if err != nil {
 		return nil, err
@@ -2462,7 +2460,6 @@ func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error)
 
 type targetRelPathsOptions struct {
 	mustBeInSourceState bool
-	mustBeManaged       bool
 	recursive           bool
 }
 
@@ -2471,7 +2468,7 @@ type targetRelPathsOptions struct {
 func (c *Config) targetRelPaths(
 	sourceState *chezmoi.SourceState,
 	args []string,
-	options targetRelPathsOptions,
+	options *targetRelPathsOptions,
 ) (chezmoi.RelPaths, error) {
 	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
 	for _, arg := range args {
@@ -2484,16 +2481,16 @@ func (c *Config) targetRelPaths(
 			return nil, err
 		}
 		sourceStateEntry := sourceState.Get(targetRelPath)
-		if options.mustBeManaged && sourceStateEntry == nil {
+		if sourceStateEntry == nil {
 			return nil, fmt.Errorf("%s: not managed", arg)
 		}
-		if options.mustBeInSourceState {
+		if options != nil && options.mustBeInSourceState {
 			if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); ok {
 				return nil, fmt.Errorf("%s: not in source state", arg)
 			}
 		}
 		targetRelPaths = append(targetRelPaths, targetRelPath)
-		if options.recursive {
+		if options != nil && options.recursive {
 			parentRelPath := targetRelPath
 			// FIXME we should not call s.TargetRelPaths() here - risk of
 			// accidentally quadratic
