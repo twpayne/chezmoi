@@ -1,0 +1,3 @@
+# test that chezmoi data does not include default sentinels
+exec chezmoi data
+! stdout '"\\u0000"'

@@ -2775,8 +2775,15 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 }
 
 func (f *ConfigFile) toMap() map[string]any {
+	// Make a copy of f and replace any default sentinels with the empty string
+	// to ensure that there are no default sentinels in the result.
+	configFile := *f
+	if configFile.Diff.Pager == defaultSentinel {
+		configFile.Diff.Pager = ""
+	}
+
 	var result map[string]any
-	if err := mapstructure.Decode(f, &result); err != nil {
+	if err := mapstructure.Decode(configFile, &result); err != nil {
 		panic(err)
 	}
 	return result
