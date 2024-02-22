@@ -15,9 +15,9 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.group`              | string   | The group of the user running chezmoi                                                                                                                 |
 | `.chezmoi.homeDir`            | string   | The home directory of the user running chezmoi                                                                                                        |
 | `.chezmoi.hostname`           | string   | The hostname of the machine chezmoi is running on, up to the first `.`                                                                                |
-| `.chezmoi.kernel`             | string   | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (e.g. Microsoft's WSL kernel)                         |
+| `.chezmoi.kernel`             | object   | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (e.g. Microsoft's WSL kernel)                         |
 | `.chezmoi.os`                 | string   | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants)                        |
-| `.chezmoi.osRelease`          | string   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output                                                              |
+| `.chezmoi.osRelease`          | object   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output                                                              |
 | `.chezmoi.pathListSeparator`  | string   | The path list separator, typically `;` on Windows and `:` on other systems. Used to separate paths in environment variables. ie `/bin:/sbin:/usr/bin` |
 | `.chezmoi.pathSeparator`      | string   | The path separator, typically `\` on windows and `/` on unix. Used to separate files and directories in a path. ie `c:\see\dos\run`                   |
 | `.chezmoi.sourceDir`          | string   | The source directory                                                                                                                                  |
