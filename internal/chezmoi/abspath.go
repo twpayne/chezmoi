@@ -17,9 +17,7 @@ var (
 )
 
 // An AbsPath is an absolute path.
-type AbsPath struct {
-	absPath string
-}
+type AbsPath string
 
 // AbsPaths is a slice of RelPaths that implements sort.Interface.
 type AbsPaths []AbsPath
@@ -30,45 +28,43 @@ func (ps AbsPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
 
 // NewAbsPath returns a new AbsPath.
 func NewAbsPath(absPath string) AbsPath {
-	return AbsPath{
-		absPath: filepath.ToSlash(absPath),
-	}
+	return AbsPath(filepath.ToSlash(absPath))
 }
 
 // Append appends s to p.
 func (p AbsPath) Append(s string) AbsPath {
-	return NewAbsPath(p.absPath + s)
+	return NewAbsPath(string(p) + s)
 }
 
 // Base returns p's basename.
 func (p AbsPath) Base() string {
-	return path.Base(p.absPath)
+	return path.Base(string(p))
 }
 
 // Bytes returns p as a []byte.
 func (p AbsPath) Bytes() []byte {
-	return []byte(p.absPath)
+	return []byte(p)
 }
 
 // Dir returns p's directory.
 func (p AbsPath) Dir() AbsPath {
-	return NewAbsPath(filepath.Dir(p.absPath)).ToSlash()
+	return NewAbsPath(filepath.Dir(string(p))).ToSlash()
 }
 
 // Empty returns if p is empty.
 func (p AbsPath) Empty() bool {
-	return p.absPath == ""
+	return p == ""
 }
 
 // Ext returns p's extension.
 func (p AbsPath) Ext() string {
-	return path.Ext(p.absPath)
+	return path.Ext(string(p))
 }
 
 // Join returns a new AbsPath with relPaths appended.
 func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
 	relPathStrs := make([]string, 0, len(relPaths)+1)
-	relPathStrs = append(relPathStrs, p.absPath)
+	relPathStrs = append(relPathStrs, string(p))
 	for _, relPath := range relPaths {
 		relPathStrs = append(relPathStrs, relPath.String())
 	}
@@ -78,24 +74,19 @@ func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
 // JoinString returns a new AbsPath with ss appended.
 func (p AbsPath) JoinString(ss ...string) AbsPath {
 	strs := make([]string, 0, len(ss)+1)
-	strs = append(strs, p.absPath)
+	strs = append(strs, string(p))
 	strs = append(strs, ss...)
 	return NewAbsPath(path.Join(strs...))
 }
 
 // Len returns the length of p.
 func (p AbsPath) Len() int {
-	return len(p.absPath)
+	return len(p)
 }
 
 // Less returns if p is less than other.
 func (p AbsPath) Less(other AbsPath) bool {
-	return p.absPath < other.absPath
-}
-
-// MarshalText implements encoding.TextMarshaler.MarshalText.
-func (p AbsPath) MarshalText() ([]byte, error) {
-	return []byte(p.absPath), nil
+	return p < other
 }
 
 // MustTrimDirPrefix is like TrimPrefix but panics on any error.
@@ -110,7 +101,7 @@ func (p AbsPath) MustTrimDirPrefix(dirPrefix AbsPath) RelPath {
 // Set implements github.com/spf13/pflag.Value.Set.
 func (p *AbsPath) Set(s string) error {
 	if s == "" {
-		p.absPath = ""
+		*p = ""
 		return nil
 	}
 	homeDirAbsPath, err := HomeDirAbsPath()
@@ -132,12 +123,12 @@ func (p AbsPath) Split() (AbsPath, RelPath) {
 }
 
 func (p AbsPath) String() string {
-	return p.absPath
+	return string(p)
 }
 
 // ToSlash calls filepath.ToSlash on p.
 func (p AbsPath) ToSlash() AbsPath {
-	return NewAbsPath(filepath.ToSlash(p.absPath))
+	return NewAbsPath(filepath.ToSlash(string(p)))
 }
 
 // TrimDirPrefix trims prefix from p.
@@ -146,31 +137,26 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 		return EmptyRelPath, nil
 	}
 	dirAbsPath := dirPrefixAbsPath
-	if !strings.HasSuffix(dirAbsPath.absPath, "/") {
-		dirAbsPath.absPath += "/"
+	if !strings.HasSuffix(string(dirAbsPath), "/") {
+		dirAbsPath += "/"
 	}
-	if !strings.HasPrefix(p.absPath, dirAbsPath.absPath) {
+	if !strings.HasPrefix(string(p), string(dirAbsPath)) {
 		return EmptyRelPath, &NotInAbsDirError{
 			pathAbsPath: p,
 			dirAbsPath:  dirPrefixAbsPath,
 		}
 	}
-	return NewRelPath(p.absPath[len(dirAbsPath.absPath):]), nil
+	return NewRelPath(string(p[len(dirAbsPath):])), nil
 }
 
 // TrimSuffix returns p with the optional suffix removed.
 func (p AbsPath) TrimSuffix(suffix string) AbsPath {
-	return NewAbsPath(strings.TrimSuffix(p.absPath, suffix))
+	return NewAbsPath(strings.TrimSuffix(string(p), suffix))
 }
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (p AbsPath) Type() string {
 	return "path"
-}
-
-// UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
-func (p *AbsPath) UnmarshalText(text []byte) error {
-	return p.Set(string(text))
 }
 
 // HomeDirAbsPath returns the user's home directory as an AbsPath.
