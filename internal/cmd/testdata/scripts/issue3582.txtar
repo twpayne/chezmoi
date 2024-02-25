@@ -1,0 +1,13 @@
+# test that chezmoi data shows data read from TOML config files
+exec chezmoi data --format=json
+stdout '"mode": "file"'
+stdout '"pager": "my-pager"'
+stdout '"pager": "my-diff-pager"'
+stdout '"identity": ".*/my-age-identity"'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+pager = "my-pager"
+[diff]
+    pager = "my-diff-pager"
+[age]
+    identity = "my-age-identity"

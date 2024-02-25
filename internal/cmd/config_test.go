@@ -28,6 +28,90 @@ func TestAddTemplateFuncPanic(t *testing.T) {
 	})
 }
 
+func TestConfigFileFormatRoundTrip(t *testing.T) {
+	for _, format := range []chezmoi.Format{
+		chezmoi.FormatJSON,
+		chezmoi.FormatYAML,
+	} {
+		t.Run(format.Name(), func(t *testing.T) {
+			configFile := ConfigFile{
+				Color:        autoBool{auto: true},
+				Data:         map[string]any{},
+				Env:          map[string]string{},
+				Hooks:        map[string]hookConfig{},
+				Interpreters: map[string]*chezmoi.Interpreter{},
+				Mode:         chezmoi.ModeFile,
+				PINEntry: pinEntryConfig{
+					Args:    []string{},
+					Options: []string{},
+				},
+				ScriptEnv: map[string]string{},
+				Template: templateConfig{
+					Options: []string{},
+				},
+				TextConv:      []*textConvElement{},
+				UseBuiltinAge: autoBool{value: false},
+				UseBuiltinGit: autoBool{value: true},
+				Dashlane: dashlaneConfig{
+					Args: []string{},
+				},
+				Doppler: dopplerConfig{
+					Args: []string{},
+				},
+				HCPVaultSecrets: hcpVaultSecretConfig{
+					Args: []string{},
+				},
+				Keepassxc: keepassxcConfig{
+					Args: []string{},
+				},
+				Keeper: keeperConfig{
+					Args: []string{},
+				},
+				Passhole: passholeConfig{
+					Args: []string{},
+				},
+				Secret: secretConfig{
+					Args: []string{},
+				},
+				Age: chezmoi.AgeEncryption{
+					Args:            []string{},
+					Identity:        chezmoi.NewAbsPath("/identity.txt"),
+					Identities:      []chezmoi.AbsPath{},
+					Recipients:      []string{},
+					RecipientsFiles: []chezmoi.AbsPath{},
+				},
+				GPG: chezmoi.GPGEncryption{
+					Args:       []string{},
+					Recipients: []string{},
+				},
+				Add: addCmdConfig{
+					Secrets: severityError,
+				},
+				CD: cdCmdConfig{
+					Args: []string{},
+				},
+				Diff: diffCmdConfig{
+					Args: []string{},
+				},
+				Edit: editCmdConfig{
+					Args: []string{},
+				},
+				Merge: mergeCmdConfig{
+					Args: []string{},
+				},
+				Update: updateCmdConfig{
+					Args: []string{},
+				},
+			}
+			data, err := format.Marshal(configFile)
+			assert.NoError(t, err)
+			var actualConfigFile ConfigFile
+			assert.NoError(t, format.Unmarshal(data, &actualConfigFile))
+			assert.Equal(t, configFile, actualConfigFile)
+		})
+	}
+}
+
 func TestParseCommand(t *testing.T) {
 	for i, tc := range []struct {
 		command         string
