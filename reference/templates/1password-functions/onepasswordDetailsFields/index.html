@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#onepassworddetailsfields-uuid-vault-uuid-account-name" class="md-skip">
+        <a href="#onepassworddetailsfields-uuid-vault-account" class="md-skip">
           Skip to content
         </a>
       
@@ -8112,7 +8112,7 @@
   
 
 
-<h1 id="onepassworddetailsfields-uuid-vault-uuid-account-name"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</h1>
+<h1 id="onepassworddetailsfields-uuid-vault-account"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault</em> [<em>account</em>]]</h1>
 <p><code>onepasswordDetailsFields</code> returns structured data from
 <a href="https://1password.com/">1Password</a> using the <a href="https://support.1password.com/command-line-getting-started/">1Password
 CLI</a> (<code>op</code>). <em>uuid</em>
@@ -8123,8 +8123,8 @@ elements of <code>details.fields</code> are returned as a map indexed by each fi
 interactively prompted to sign in.</p>
 <p>The output from <code>op</code> is cached so calling <code>onepasswordDetailsFields</code> multiple
 times with the same <em>uuid</em> will only invoke <code>op</code> once. If the optional
-<em>vault-uuid</em> is supplied, it will be passed along to the <code>op get</code> call, which
-can significantly improve performance. If the optional <em>account-name</em> is
+<em>vault</em> is supplied, it will be passed along to the <code>op get</code> call, which
+can significantly improve performance. If the optional <em>account</em> is
 supplied, it will be passed along to the <code>op get</code> call, which will help it look
 in the right account, in case you have multiple accounts (e.g. personal and work
 accounts).</p>
@@ -8175,6 +8175,12 @@ accounts).</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <a href="../../user-guide/password-managers/1password.md#secrets-automation">1Password secrets
+automation</a>,
+the <em>account</em> parameter is not allowed.</p>
 </div>
 
 

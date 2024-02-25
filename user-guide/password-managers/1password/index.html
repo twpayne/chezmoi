@@ -1116,6 +1116,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#secrets-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secrets Automation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secrets Automation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1password-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      1Password Connect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1password-service-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      1Password Service Accounts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8150,6 +8183,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#secrets-automation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secrets Automation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secrets Automation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1password-connect" class="md-nav__link">
+    <span class="md-ellipsis">
+      1Password Connect
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1password-service-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      1Password Service Accounts
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8187,9 +8253,9 @@ function, for example:</p>
 <p>Documents can be retrieved with:</p>
 <div class="highlight"><pre><span></span><code>{{- onepasswordDocument &quot;$UUID&quot; -}}
 </code></pre></div>
-<p>The output of <code>op item get $UUID--format json</code> (<code>op get item $UUID</code>) is
-available as the <code>onepassword</code> template function. chezmoi parses the JSON output
-and returns it as structured data. For example, if the output is:</p>
+<p>The output of <code>op item get $UUID --format json</code> is available as the
+<code>onepassword</code> template function. chezmoi parses the JSON output and returns it
+as structured data. For example, if the output is:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$UUID&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$TITLE&quot;</span><span class="p">,</span>
@@ -8239,20 +8305,6 @@ and returns it as structured data. For example, if the output is:</p>
 {{   end -}}
 {{ end }}
 </code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>1Password CLI 1.x returns a simpler structure:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$UUID&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$PASSWORD&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>This allows for the syntax:</p>
-<div class="highlight"><pre><span></span><code>{{ (onepassword &quot;$UUID&quot;).details.password }}
-</code></pre></div>
-</div>
 <p><code>onepasswordDetailsFields</code> returns a reworked version of the structure that
 allows the fields to be queried by key:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
@@ -8280,20 +8332,14 @@ allows the fields to be queried by key:</p>
 </code></pre></div>
 <p>Additional fields may be obtained with <code>onepasswordItemFields</code>; not all objects
 in 1Password have item fields. This can be tested with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordItemFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordItemFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>jq<span class="w"> </span>.
 </code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The extra <code>-</code> after the opening <code>{{</code> and before the closing <code>}}</code> instructs
-the template language to remove any whitespace before and after the
-substitution. This removes any trailing newline added by your editor when
-saving the template.</p>
-</div>
 <h2 id="sign-in-prompt">Sign-in prompt</h2>
 <p>chezmoi will verify the availability and validity of a session token in the
 current environment. If it is missing or expired, you will be interactively
 prompted to sign-in again.</p>
-<p>In the past chezmoi used to simply exit with an error when no valid session was
+<p>In the past chezmoi used to exit with an error when no valid session was
 available. If you'd like to restore this behavior, set the <code>onepassword.prompt</code>
 configuration variable to <code>false</code>, for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
@@ -8301,10 +8347,61 @@ configuration variable to <code>false</code>, for example:</p>
 </code></pre></div>
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
-<p>Do not use prompt on shared machines. A session token verified or acquired
+<p>Do not use <code>prompt</code> on shared machines. A session token verified or acquired
 interactively will be passed to the 1Password CLI through a command line
 parameter, which is visible to other users of the same system.</p>
 </div>
+<h2 id="secrets-automation">Secrets Automation</h2>
+<p>chezmoi has experimental support for secrets automation with <a href="https://developer.1password.com/docs/connect/">1Password
+Connect</a> and <a href="https://developer.1password.com/docs/service-accounts">1Password Service
+Accounts</a>. These might be
+used on restricted machines where you cannot or do not wish to install a full
+1Password desktop application.</p>
+<p>When these features are used, the behavior of the 1Password CLI changes, so
+chezmoi requires explicit configuration for either connect or service account
+modes using the <code>onepassword.mode</code> configuration option. The default, if not
+specified, is <code>account</code>:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
+<span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;account&quot;</span>
+</code></pre></div>
+<p>In <code>account</code> mode, chezmoi will stop with an error if the environment variable
+<code>OP_SERVICE_ACCOUNT_TOKEN</code> is set, or if both environment variables
+<code>OP_CONNECT_HOST</code> and <code>OP_CONNECT_TOKEN</code> are set.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Both 1Password Connect and Service Accounts prevent the CLI from working
+with multiple accounts. If you need access to secrets from more than one
+1Password account, do not use these features with chezmoi.</p>
+</div>
+<h3 id="1password-connect">1Password Connect</h3>
+<p>Once 1Password Connect is
+<a href="https://developer.1password.com/docs/connect/connect-cli#requirements">configured</a>,
+and <code>OP_CONNECT_HOST</code> and <code>OP_CONNECT_TOKEN</code> are properly set, set
+<code>onepassword.mode</code> to <code>connect</code>.</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
+<span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;connect&quot;</span>
+</code></pre></div>
+<p>In <code>connect</code> mode:</p>
+<ul>
+<li>the <code>onepasswordDocument</code> template function is not available,</li>
+<li><code>account</code> parameters are not allowed in 1Password template functions,</li>
+<li>chezmoi will stop with an error if one or both of <code>OP_CONNECT_HOST</code> and
+  <code>OP_CONNECT_TOKEN</code> are unset, or if <code>OP_SERVICE_ACCOUNT_TOKEN</code> is set.</li>
+</ul>
+<h3 id="1password-service-accounts">1Password Service Accounts</h3>
+<p>Once a 1Password service account has been
+<a href="https://developer.1password.com/docs/service-accounts/use-with-1password-cli/#requirements">created</a>
+and <code>OP_SERVICE_ACCOUNT_TOKEN</code> is properly set, set <code>onepassword.mode</code> to
+<code>service</code>.</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
+<span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;service&quot;</span>
+</code></pre></div>
+<p>In <code>service</code> mode:</p>
+<ul>
+<li><code>account</code> parameters are not allowed in 1Password template functions,</li>
+<li>chezmoi will stop with an error if <code>OP_SERVICE_ACCOUNT_TOKEN</code> is unset, or if
+  both of <code>OP_CONNECT_HOST</code> and <code>OP_CONNECT_TOKEN</code> are set.</li>
+</ul>
 
 
 

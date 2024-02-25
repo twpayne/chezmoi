@@ -933,9 +933,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile" class="md-nav__link">
+  <a href="#use-chezmoi-with-vim" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure VIM to run chezmoi apply whenever you save a dotfile
+      Use chezmoi with VIM
     </span>
   </a>
   
@@ -8169,9 +8169,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile" class="md-nav__link">
+  <a href="#use-chezmoi-with-vim" class="md-nav__link">
     <span class="md-ellipsis">
-      Configure VIM to run chezmoi apply whenever you save a dotfile
+      Use chezmoi with VIM
     </span>
   </a>
   
@@ -8225,8 +8225,19 @@ flag, for example, in your shell config:</p>
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;code&quot;</span>
 <span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--wait&quot;</span><span class="p">]</span>
 </code></pre></div>
-<h2 id="configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile</h2>
-<p>Put the following in your <code>.vimrc</code>:</p>
+<h2 id="use-chezmoi-with-vim">Use chezmoi with VIM</h2>
+<p><a href="https://github.com/alker0/chezmoi.vim"><code>github.com/alker0/chezmoi.vim</code></a>
+provides syntax highlighting for files managed by chezmoi, including for
+templates.</p>
+<p><a href="https://github.com/Lilja/vim-chezmoi"><code>github.com/Lilja/vim-chezmoi</code></a> works
+with <code>chezmoi edit</code> to apply the edited dotfile on save.</p>
+<p><a href="https://github.com/xvzc/chezmoi.nvim"><code>github.com/xvzc/chezmoi.nvim</code></a> allows
+you to edit your chezmoi-managed files and automatically apply.</p>
+<p>Alternatively, you can use an <code>autocmd</code> to run <code>chezmoi apply</code> whenever you save
+a dotfile, but you must disable <code>chezmoi edit</code>'s hardlinking:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[edit]</span>
+<span class="w">    </span><span class="n">hardlink</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</code></pre></div>
 <div class="highlight"><span class="filename">~/.vimrc</span><pre><span></span><code>autocmd <span class="nb">BufWritePost</span> <span class="p">~</span><span class="sr">/.local/</span>share<span class="sr">/chezmoi/</span>* <span class="p">!</span> chezmoi apply <span class="p">--</span>source<span class="p">-</span><span class="nb">path</span> <span class="s2">&quot;%&quot;</span>
 </code></pre></div>
 <h2 id="use-chezmoi-with-emacs">Use chezmoi with emacs</h2>

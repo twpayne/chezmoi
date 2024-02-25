@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#onepassworditemfields-uuid-vault-uuid-account-name" class="md-skip">
+        <a href="#onepassworditemfields-uuid-vault-account" class="md-skip">
           Skip to content
         </a>
       
@@ -8112,7 +8112,7 @@
   
 
 
-<h1 id="onepassworditemfields-uuid-vault-uuid-account-name"><code>onepasswordItemFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</h1>
+<h1 id="onepassworditemfields-uuid-vault-account"><code>onepasswordItemFields</code> <em>uuid</em> [<em>vault</em> [<em>account</em>]]</h1>
 <p><code>onepasswordItemFields</code> returns structured data from
 <a href="https://1password.com/">1Password</a> using the <a href="https://support.1password.com/command-line-getting-started/">1Password
 CLI</a> (<code>op</code>). <em>uuid</em>
@@ -8172,44 +8172,12 @@ interactively prompted to sign in.</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>For 1Password CLI 1.x, the output is this:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$UUID&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;sections&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;linked items&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Related Items&quot;</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">                </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                    </span><span class="p">{</span>
-<span class="w">                        </span><span class="nt">&quot;k&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nt">&quot;n&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D4328E0846D2461E8E455D7A07B93397&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exampleLabel&quot;</span><span class="p">,</span>
-<span class="w">                        </span><span class="nt">&quot;v&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exampleValue&quot;</span>
-<span class="w">                    </span><span class="p">}</span>
-<span class="w">                  </span><span class="p">],</span>
-<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Section_20E0BD380789477D8904F830BFE8A121&quot;</span><span class="p">,</span>
-<span class="w">                </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">]</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>the return value of <code>onepasswordItemFields</code> will be the map:</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;exampleLabel&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;k&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;n&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;D4328E0846D2461E8E455D7A07B93397&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;t&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exampleLabel&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;v&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exampleValue&quot;</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <a href="../../user-guide/password-managers/1password.md#secrets-automation">1Password secrets
+automation</a>,
+the <em>account</em> parameter is not allowed.</p>
 </div>
 
 

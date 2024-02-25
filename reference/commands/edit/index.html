@@ -8215,12 +8215,21 @@ editor with filenames which match the target filename, unless the
 <code>edit.hardlink</code> configuration variable is set to <code>false</code> the <code>--hardlink=false</code>
 command line flag is set.</p>
 <h2 id="-a-apply"><code>-a</code>, <code>--apply</code></h2>
+<blockquote>
+<p>Configuration: <code>edit.apply</code></p>
+</blockquote>
 <p>Apply target immediately after editing. Ignored if there are no targets.</p>
 <h2 id="-hardlink-bool"><code>--hardlink</code> <em>bool</em></h2>
+<blockquote>
+<p>Configuration: <code>edit.hardlink</code></p>
+</blockquote>
 <p>Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.</p>
 <h2 id="-watch"><code>--watch</code></h2>
+<blockquote>
+<p>Configuration: <code>edit.watch</code></p>
+</blockquote>
 <p>Automatically apply changes when files are saved, with the following limitations:</p>
 <ul>
 <li>Only available when <code>chezmoi edit</code> is invoked with arguments (i.e.

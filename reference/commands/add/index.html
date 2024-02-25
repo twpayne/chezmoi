@@ -8382,6 +8382,9 @@ templates with unwanted variable substitutions. Carefully review any
 templates it generates.</p>
 </div>
 <h2 id="-encrypt"><code>--encrypt</code></h2>
+<blockquote>
+<p>Configuration: <code>add.encrypt</code></p>
+</blockquote>
 <p>Encrypt files using the defined encryption method.</p>
 <h2 id="-f-force"><code>-f</code>, <code>--force</code></h2>
 <p>Add <em>target</em>s, even if doing so would cause a source template to be
@@ -8400,11 +8403,17 @@ instead of the symlink itself.</p>
 <h2 id="-r-recursive"><code>-r</code>, <code>--recursive</code></h2>
 <p>Recursively add all files, directories, and symlinks.</p>
 <h2 id="-s-secrets-ignorewarningerror"><code>-s</code>, <code>--secrets</code> <code>ignore</code>|<code>warning</code>|<code>error</code></h2>
+<blockquote>
+<p>Configuration: <code>add.secrets</code></p>
+</blockquote>
 <p>Action to take when a secret is found when adding a file. The default is
 <code>warning</code>.</p>
 <h2 id="-t-template"><code>-T</code>, <code>--template</code></h2>
 <p>Set the <code>template</code> attribute on added files and symlinks.</p>
 <h2 id="-template-symlinks"><code>--template-symlinks</code></h2>
+<blockquote>
+<p>Configuration: <code>add.templateSymlinks</code></p>
+</blockquote>
 <p>When adding symlink to an absolute path in the source directory or destination
 directory, create a symlink template with <code>.chezmoi.sourceDir</code> or
 <code>.chezmoi.homeDir</code>. This is useful for creating portable absolute symlinks.</p>

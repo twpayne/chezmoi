@@ -2401,6 +2401,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#-o-output-filename" class="md-nav__link">
+    <span class="md-ellipsis">
+      -o, --output filename
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-r-recursive" class="md-nav__link">
     <span class="md-ellipsis">
       -r, --recursive
@@ -2413,6 +2422,15 @@
   <a href="#-source-path" class="md-nav__link">
     <span class="md-ellipsis">
       --source-path
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-use-builtin-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      --use-builtin-diff
     </span>
   </a>
   
@@ -8232,6 +8250,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#-o-output-filename" class="md-nav__link">
+    <span class="md-ellipsis">
+      -o, --output filename
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-r-recursive" class="md-nav__link">
     <span class="md-ellipsis">
       -r, --recursive
@@ -8244,6 +8271,15 @@
   <a href="#-source-path" class="md-nav__link">
     <span class="md-ellipsis">
       --source-path
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-use-builtin-diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      --use-builtin-diff
     </span>
   </a>
   
@@ -8348,11 +8384,16 @@ of types:</p>
 computing the target state.</p>
 <h2 id="-interactive"><code>--interactive</code></h2>
 <p>Prompt before applying each target.</p>
+<h2 id="-o-output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></h2>
+<p>Write the output to <em>filename</em> instead of stdout.</p>
 <h2 id="-r-recursive"><code>-r</code>, <code>--recursive</code></h2>
 <p>Recurse into subdirectories, <code>true</code> by default.</p>
 <h2 id="-source-path"><code>--source-path</code></h2>
 <p>Interpret <em>targets</em> passed to the command as paths in the source directory
 rather than the destination directory.</p>
+<h2 id="-use-builtin-diff"><code>--use-builtin-diff</code></h2>
+<p>Use chezmoi's builtin diff, even if the <code>diff.command</code> configuration variable
+is set.</p>
 <h2 id="-x-exclude-types"><code>-x</code>, <code>--exclude</code> <em>types</em></h2>
 <p>Exclude target state entries of type <em>types</em>. <em>types</em> is defined as in the
 <code>--include</code> flag and defaults to <code>none</code>.</p>

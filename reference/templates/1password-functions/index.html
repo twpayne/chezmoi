@@ -8086,23 +8086,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -8123,14 +8106,13 @@
 <p>The <code>onepassword*</code> template functions return structured data from
 <a href="https://1password.com/">1Password</a> using the <a href="https://developer.1password.com/docs/cli">1Password
 CLI</a> (<code>op</code>).</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When using the 1Password CLI with biometric authentication, account
-shorthand names are not available. In order to assist with this, chezmoi
-supports multiple derived values from <code>op account list</code> that can be changed
-into the appropriate 1Password <em>account-uuid</em>.</p>
-<h3 id="example">Example</h3>
-<p>If <code>op account list --format=json</code> returns the following structure:</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>When using the 1Password CLI with biometric authentication, chezmoi derives
+values from <code>op account list</code> that can resolves into the appropriate
+1Password <em>account-uuid</em>.</p>
+<p>As an example, if <code>op account list --format=json</code> returns the following
+structure:</p>
 <div class="highlight"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;account1.1password.ca&quot;</span><span class="p">,</span>
@@ -8158,6 +8140,14 @@ into <code>my@email.com</code> and <code>your@email.com</code> for <code>account
 <code>account1.1password.ca</code> will not be a valid lookup value, but <code>my@account1</code>,
 <code>my@account1.1password.ca</code>, <code>your@account1</code>, and
 <code>your@account1.1password.ca</code> would all be valid lookups.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Chezmoi has experimental support for <a href="../../user-guide/password-managers/1password.md#secrets-automation">1Password secrets
+automation</a>
+modes. These modes change how the 1Password CLI works and affect all
+functions. Most notably, <code>account</code> parameters are not allowed on all
+1Password template functions.</p>
 </div>
 
 

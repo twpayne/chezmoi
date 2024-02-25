@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#onepassword-uuid-vault-uuid-account-name" class="md-skip">
+        <a href="#onepassword-uuid-vault-account" class="md-skip">
           Skip to content
         </a>
       
@@ -8112,15 +8112,15 @@
   
 
 
-<h1 id="onepassword-uuid-vault-uuid-account-name"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</h1>
+<h1 id="onepassword-uuid-vault-account"><code>onepassword</code> <em>uuid</em> [<em>vault</em> [<em>account</em>]]</h1>
 <p><code>onepassword</code> returns structured data from <a href="https://1password.com/">1Password</a>
 using the <a href="https://support.1password.com/command-line-getting-started/">1Password
 CLI</a> (<code>op</code>).
 <em>uuid</em> is passed to <code>op item get $UUID --format json</code> and the output from <code>op</code>
 is parsed as JSON. The output from <code>op</code> is cached so calling <code>onepassword</code>
 multiple times with the same <em>uuid</em> will only invoke <code>op</code> once. If the optional
-<em>vault-uuid</em> is supplied, it will be passed along to the <code>op item get</code> call,
-which can significantly improve performance. If the optional <em>account-name</em> is
+<em>vault</em> is supplied, it will be passed along to the <code>op item get</code> call,
+which can significantly improve performance. If the optional <em>account</em> is
 supplied, it will be passed along to the <code>op item get</code> call, which will help it
 look in the right account, in case you have multiple accounts (e.g., personal
 and work accounts).</p>
@@ -8143,15 +8143,12 @@ config variable.</p>
 {{   end -}}
 {{ end }}
 </code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>For 1Password CLI 1.x.</p>
-<div class="highlight"><pre><span></span><code>{{ (onepassword &quot;$UUID&quot;).details.password }}
-{{ (onepassword &quot;$UUID&quot; &quot;$VAULT_UUID&quot;).details.password }}
-{{ (onepassword &quot;$UUID&quot; &quot;$VAULT_UUID&quot; &quot;$ACCOUNT_NAME&quot;).details.password }}
-{{ (onepassword &quot;$UUID&quot; &quot;&quot; &quot;$ACCOUNT_NAME&quot;).details.password }}
-</code></pre></div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <a href="../../user-guide/password-managers/1password.md#secrets-automation">1Password secrets
+automation</a>,
+the <em>account</em> parameter is not allowed.</p>
 </div>
 
 
