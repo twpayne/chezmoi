@@ -12,9 +12,9 @@ import (
 )
 
 type textConvElement struct {
-	Pattern string   `json:"pattern" toml:"pattern" yaml:"pattern"`
-	Command string   `json:"command" toml:"command" yaml:"command"`
-	Args    []string `json:"args"    toml:"args"    yaml:"args"`
+	Pattern string   `json:"pattern" mapstructure:"pattern" yaml:"pattern"`
+	Command string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
 type textConv []*textConvElement
