@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
+	"gopkg.in/yaml.v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -69,6 +71,39 @@ func (b *autoBool) String() string {
 // Type implements github.com/spf13/pflag.Value.Type.
 func (b *autoBool) Type() string {
 	return "bool|auto"
+}
+
+// UnmarshalJSON implements encoding/json.Unmarshaler.UnmarshalJSON.
+func (b *autoBool) UnmarshalJSON(data []byte) error {
+	if string(data) == `"auto"` {
+		b.auto = true
+		return nil
+	}
+	value, err := chezmoi.ParseBool(string(data))
+	if err != nil {
+		return err
+	}
+	b.auto = false
+	b.value = value
+	return nil
+}
+
+// UnmarshalYAML implements gopkg.in/yaml.Unmarshaler.UnmarshalYAML.
+func (b *autoBool) UnmarshalYAML(value *yaml.Node) error {
+	if value.Kind != yaml.ScalarNode {
+		return errors.New("expected scalar node")
+	}
+	if value.Value == "auto" {
+		b.auto = true
+		return nil
+	}
+	boolValue, err := chezmoi.ParseBool(value.Value)
+	if err != nil {
+		return err
+	}
+	b.auto = false
+	b.value = boolValue
+	return nil
 }
 
 // Value returns b's value, calling b's autoFunc if needed.
