@@ -32,6 +32,132 @@ func TestAgeEncryption(t *testing.T) {
 	})
 }
 
+func TestAgeEncryptionMarshalUnmarshal(t *testing.T) {
+	for _, format := range []Format{
+		FormatJSON,
+		FormatYAML,
+	} {
+		t.Run(format.Name(), func(t *testing.T) {
+			expected := AgeEncryption{
+				UseBuiltin: true,
+				Command:    "command",
+				Args: []string{
+					"arg1",
+					"arg2",
+				},
+				Identity: NewAbsPath("/identity"),
+				Identities: []AbsPath{
+					NewAbsPath("/identity1"),
+					NewAbsPath("/identity2"),
+				},
+				Passphrase:     true,
+				Recipient:      "recipient",
+				RecipientsFile: NewAbsPath("/recipients-file"),
+				RecipientsFiles: []AbsPath{
+					NewAbsPath("/recipients-file1"),
+					NewAbsPath("/recipients-file2"),
+				},
+				Suffix:    "suffix",
+				Symmetric: true,
+			}
+			data, err := format.Marshal(expected)
+			assert.NoError(t, err)
+			var actual AgeEncryption
+			assert.NoError(t, format.Unmarshal(data, &actual))
+			assert.Equal(t, expected, actual)
+		})
+	}
+}
+
+func TestAgeEncryptionMarshalUnmarshalField(t *testing.T) {
+	type ConfigFile struct {
+		Age AgeEncryption `json:"age" yaml:"age"`
+	}
+	for _, format := range []Format{
+		FormatJSON,
+		FormatYAML,
+	} {
+		t.Run(format.Name(), func(t *testing.T) {
+			expected := ConfigFile{
+				Age: AgeEncryption{
+					UseBuiltin: true,
+					Command:    "command",
+					Args: []string{
+						"arg1",
+						"arg2",
+					},
+					Identity: NewAbsPath("/identity"),
+					Identities: []AbsPath{
+						NewAbsPath("/identity1"),
+						NewAbsPath("/identity2"),
+					},
+					Passphrase:     true,
+					Recipient:      "recipient",
+					RecipientsFile: NewAbsPath("/recipients-file"),
+					RecipientsFiles: []AbsPath{
+						NewAbsPath("/recipients-file1"),
+						NewAbsPath("/recipients-file2"),
+					},
+					Suffix:    "suffix",
+					Symmetric: true,
+				},
+			}
+			data, err := format.Marshal(expected)
+			assert.NoError(t, err)
+			var actual ConfigFile
+			assert.NoError(t, format.Unmarshal(data, &actual))
+			assert.Equal(t, expected, actual)
+		})
+	}
+}
+
+func TestAgeEncryptionMarshalUnmarshalFieldEmbedded(t *testing.T) {
+	type ConfigFile struct {
+		Age AgeEncryption `json:"age" yaml:"age"`
+	}
+	type Config struct {
+		ConfigFile
+	}
+	for _, format := range []Format{
+		FormatJSON,
+		FormatYAML,
+	} {
+		t.Run(format.Name(), func(t *testing.T) {
+			expected := Config{
+				ConfigFile: ConfigFile{
+					Age: AgeEncryption{
+						UseBuiltin: true,
+						Command:    "command",
+						Args: []string{
+							"arg1",
+							"arg2",
+						},
+						Identity: NewAbsPath("/identity"),
+						Identities: []AbsPath{
+							NewAbsPath("/identity1"),
+							NewAbsPath("/identity2"),
+						},
+						Passphrase:     true,
+						Recipient:      "recipient",
+						RecipientsFile: NewAbsPath("/recipients-file"),
+						RecipientsFiles: []AbsPath{
+							NewAbsPath("/recipients-file1"),
+							NewAbsPath("/recipients-file2"),
+						},
+						Suffix:    "suffix",
+						Symmetric: true,
+					},
+				},
+			}
+			data, err := format.Marshal(expected)
+			assert.NoError(t, err)
+			var actual Config
+			assert.NoError(t, format.Unmarshal(data, &actual))
+			assert.Equal(t, expected, actual)
+		})
+	}
+}
+
 func TestAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
 	forEachAgeCommand(t, func(t *testing.T, command string) {
 		t.Helper()

@@ -21,7 +21,14 @@ func TestDataCmd(t *testing.T) {
 			root: map[string]any{
 				"/home/user/.config/chezmoi/chezmoi.json": chezmoitest.JoinLines(
 					`{`,
+					`  "mode": "symlink",`,
 					`  "sourceDir": "/tmp/source",`,
+					`  "age": {`,
+					`    "args": [`,
+					`      "arg"`,
+					`    ],`,
+					`    "identity": "/my-age-identity"`,
+					`  },`,
 					`  "data": {`,
 					`    "test": true`,
 					`  }`,
@@ -33,7 +40,12 @@ func TestDataCmd(t *testing.T) {
 			format: chezmoi.FormatYAML,
 			root: map[string]any{
 				"/home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
+					`mode: symlink`,
 					`sourceDir: /tmp/source`,
+					`age:`,
+					`  args:`,
+					`  - arg`,
+					`  identity: /my-age-identity`,
 					`data:`,
 					`  test: true`,
 				),
@@ -52,11 +64,23 @@ func TestDataCmd(t *testing.T) {
 
 				var data struct {
 					Chezmoi struct {
+						Config struct {
+							Age struct {
+								Args     []string `json:"args"     yaml:"args"`
+								Identity string   `json:"identity" yaml:"identity"`
+							} `json:"age"  yaml:"age"`
+							Mode string `json:"mode" yaml:"mode"`
+						} `json:"config"    yaml:"config"`
 						SourceDir string `json:"sourceDir" yaml:"sourceDir"`
 					} `json:"chezmoi" yaml:"chezmoi"`
 					Test bool `json:"test"    yaml:"test"`
 				}
 				assert.NoError(t, tc.format.Unmarshal([]byte(stdout.String()), &data))
+				assert.Equal(t, []string{"arg"}, data.Chezmoi.Config.Age.Args)
+				normalizedAgeIdentity, err := chezmoi.NormalizePath("/my-age-identity")
+				assert.NoError(t, err)
+				assert.Equal(t, normalizedAgeIdentity.String(), data.Chezmoi.Config.Age.Identity)
+				assert.Equal(t, "symlink", data.Chezmoi.Config.Mode)
 				normalizedSourceDir, err := chezmoi.NormalizePath("/tmp/source")
 				assert.NoError(t, err)
 				assert.Equal(t, normalizedSourceDir.String(), data.Chezmoi.SourceDir)
