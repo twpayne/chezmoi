@@ -35,11 +35,6 @@ func (s severity) MarshalJSON() ([]byte, error) {
 	}
 }
 
-// MarshalYAML implements gopkg.in/yaml.v3.Marshaler.
-func (s severity) MarshalYAML() (any, error) {
-	return string(s), nil
-}
-
 // Set implements github.com/spf13/pflag.Value.Set.
 func (s *severity) Set(str string) error {
 	switch strings.ToLower(str) {
