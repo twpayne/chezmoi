@@ -25,5 +25,5 @@ interactively prompted to sign in.
 !!! warning
 
     When using [1Password secrets
-    automation](../../user-guide/password-managers/1password.md#secrets-automation),
+    automation](../../../user-guide/password-managers/1password.md#secrets-automation),
     the *account* parameter is not allowed.

@@ -294,7 +294,7 @@ sections:
       description: KeePassXC database
     mode:
       default: '`cache-password`'
-      description: See [KeePassXC functions](../../templates/keepassxc-functions/)
+      description: See [KeePassXC functions](../templates/keepassxc-functions/index.md)
     prompt:
       type: bool
       default: '`true`'
