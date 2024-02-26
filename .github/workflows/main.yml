@@ -48,7 +48,7 @@ jobs:
           - 'assets/vagrant/**'
           - 'completions/**'
           - 'go.*'
-          - 'internal/**'
+          - 'internal/**/!(install.sh.tmpl)'
   codeql:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
