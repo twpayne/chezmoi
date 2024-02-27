@@ -9,7 +9,7 @@ on:
     tags:
     - v*
   schedule:
-  - cron: 22 2 * * *
+  - cron: 2 2 * * *
 jobs:
   govulncheck:
     runs-on: ubuntu-22.04
