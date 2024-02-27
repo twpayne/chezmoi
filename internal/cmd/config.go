@@ -398,6 +398,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	// Override sprig template functions. Delete them from the template function
 	// map first to avoid a duplicate function panic.
 	delete(c.templateFuncs, "fromJson")
+	delete(c.templateFuncs, "splitList")
 	delete(c.templateFuncs, "toPrettyJson")
 
 	// The completion template function is added in persistentPreRunRootE as
@@ -477,6 +478,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
 		"setValueAtPath":           c.setValueAtPathTemplateFunc,
+		"splitList":                c.splitListTemplateFunc,
 		"stat":                     c.statTemplateFunc,
 		"toIni":                    c.toIniTemplateFunc,
 		"toPrettyJson":             c.toPrettyJsonTemplateFunc,

@@ -191,6 +191,10 @@ stdout '^value2$'
 exec chezmoi execute-template '{{ dict "key" "value" | toYaml }}'
 stdout '^key: value$'
 
+# test that the overridden splitList function's output is compatible with quoteList
+exec chezmoi execute-template '{{ "a b" | splitList " " | quoteList }}'
+stdout '["a" "b"]'
+
 -- bin/chezmoi-output-test --
 #!/bin/sh
 
