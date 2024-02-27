@@ -482,6 +482,15 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 	return result
 }
 
+func (c *Config) splitListTemplateFunc(sep, s string) []any {
+	strSlice := strings.Split(s, sep)
+	result := make([]interface{}, len(strSlice))
+	for i, v := range strSlice {
+		result[i] = v
+	}
+	return result
+}
+
 func (c *Config) statTemplateFunc(name string) any {
 	switch fileInfo, err := c.fileSystem.Stat(name); {
 	case err == nil:
