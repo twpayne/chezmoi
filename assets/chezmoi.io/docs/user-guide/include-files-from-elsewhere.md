@@ -250,7 +250,7 @@ will run git with the `--recurse-submodules` flag by default.
 chezmoi assumes that all files and directories in its source state are in
 chezmoi's format, i.e. their filenames include attributes like `private_` and
 `run_`.  Most git submodules are not in chezmoi's format and so files like
-`run_test.sh` will be be interpreted by chezmoi as a `run_` script. To avoid
+`run_test.sh` will be interpreted by chezmoi as a `run_` script. To avoid
 this problem, set the `external_` attribute on all subdirectories that contain
 submodules.
 
