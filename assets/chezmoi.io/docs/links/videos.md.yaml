@@ -49,3 +49,7 @@ videos:
   version: 2.24.0
   title: 'managing dotfiles: a guided tour through my own setup'
   url: https://www.youtube.com/watch?v=fQ3txCIxiiU
+- date: '2024-02-17'
+  version: 2.47.0
+  title: '12 GREAT command line programs YOU recommended!'
+  url: https://www.youtube.com/watch?v=nCS4BtJ34-o&t=324s
