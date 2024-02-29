@@ -2783,8 +2783,16 @@ func (f *ConfigFile) toMap() map[string]any {
 		configFile.Diff.Pager = ""
 	}
 
+	// This is a horrible hack. We want the returned map to contain only simple
+	// types because they are used with masterminds/sprig template functions
+	// which don't accept fmt.Stringers in place of strings. As a work-around,
+	// round-trip via JSON.
+	data, err := json.Marshal(configFile)
+	if err != nil {
+		return nil
+	}
 	var result map[string]any
-	if err := mapstructure.Decode(configFile, &result); err != nil {
+	if err := json.Unmarshal(data, &result); err != nil {
 		panic(err)
 	}
 	return result

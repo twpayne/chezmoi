@@ -1,0 +1,2 @@
+# test that the .chezmoi.config.destDir template variable is compatible with the replace template function
+exec chezmoi execute-template '{{ .chezmoi.config.destDir | replace "abc" "def "}}'
