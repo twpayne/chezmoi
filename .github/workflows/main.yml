@@ -302,7 +302,7 @@ jobs:
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2
+    - uses: actions/cache@ab5e6d0c87105b4c9c2047343972218f562e4319
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
