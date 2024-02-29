@@ -6,11 +6,14 @@ stderr 'unknown command'
 
 # test that chezmoi executes plugins
 exec chezmoi plugin
-stdout hello
+stdout CHEZMOI_COMMAND=plugin
+stdout CHEZMOI_SOURCE_DIR=${CHEZMOISOURCEDIR@R}
 
 -- bin/chezmoi-plugin --
 #!/bin/sh
 
-echo hello
+echo CHEZMOI_COMMAND=${CHEZMOI_COMMAND}
+echo CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}
 -- bin/chezmoi-plugin.cmd --
-@echo hello
+@echo CHEZMOI_COMMAND=%CHEZMOI_COMMAND%
+@echo CHEZMOI_SOURCE_DIR=%CHEZMOI_SOURCE_DIR%

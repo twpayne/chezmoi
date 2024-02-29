@@ -102,18 +102,7 @@ func (v VersionInfo) LogValue() slog.Value {
 
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
-	err := runMain(versionInfo, args)
-	// FIXME find a better way of detecting unknown commands
-	if err != nil && strings.Contains(err.Error(), "unknown command") && len(args) > 0 {
-		if name, err2 := exec.LookPath("chezmoi-" + args[0]); err2 == nil {
-			cmd := exec.Command(name, args[1:]...)
-			cmd.Stdin = os.Stdin
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			err = cmd.Run()
-		}
-	}
-	if err != nil {
+	if err := runMain(versionInfo, args); err != nil {
 		if errExitCode := chezmoi.ExitCodeError(0); errors.As(err, &errExitCode) {
 			return int(errExitCode)
 		}
@@ -276,12 +265,41 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 		return err
 	}
 	defer chezmoierrors.CombineFunc(&err, config.Close)
-	err = config.execute(args)
-	if errors.Is(err, bbolt.ErrTimeout) {
+
+	switch err = config.execute(args); {
+	case errors.Is(err, bbolt.ErrTimeout):
 		// Translate bbolt timeout errors into a friendlier message. As the
 		// persistent state is opened lazily, this error could occur at any
 		// time, so it's easiest to intercept it here.
-		err = errors.New("timeout obtaining persistent state lock, is another instance of chezmoi running?")
+		return errors.New("timeout obtaining persistent state lock, is another instance of chezmoi running?")
+	case err != nil && strings.Contains(err.Error(), "unknown command") && len(args) > 0:
+		// If the command is unknown then look for a plugin.
+		if name, lookPathErr := exec.LookPath("chezmoi-" + args[0]); lookPathErr == nil {
+			// The following is a bit of a hack, as cobra does not have a way to
+			// call a function if a command is not found. We need to run the
+			// pre- and post- run commands to set up the environment, so we
+			// create a fake cobra.Command that corresponds to the name of the
+			// plugin.
+			cmd := &cobra.Command{
+				Use: args[0],
+				Annotations: newAnnotations(
+					doesNotRequireValidConfig,
+					persistentStateModeEmpty,
+					runsCommands,
+				),
+			}
+			if err := config.persistentPreRunRootE(cmd, args[1:]); err != nil {
+				return err
+			}
+			pluginCmd := exec.Command(name, args[1:]...)
+			pluginCmd.Stdin = os.Stdin
+			pluginCmd.Stdout = os.Stdout
+			pluginCmd.Stderr = os.Stderr
+			err = config.run("", name, args[1:])
+			if persistentPostRunRootEErr := config.persistentPostRunRootE(cmd, args[1:]); persistentPostRunRootEErr != nil {
+				err = chezmoierrors.Combine(err, persistentPostRunRootEErr)
+			}
+		}
 	}
 	return
 }
