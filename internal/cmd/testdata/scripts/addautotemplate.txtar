@@ -8,15 +8,15 @@ exec chezmoi add --autotemplate $HOME${/}.symlink
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl golden/symlink_dot_symlink.tmpl
 
 # test that chezmoi add --autotemplate does not create a template if no replacements occurred
-exec chezmoi add --autotemplate $HOME${/}.file
-cmp $CHEZMOISOURCEDIR/dot_file golden/dot_file
+exec chezmoi add --autotemplate $HOME${/}.notatemplate
+cmp $CHEZMOISOURCEDIR/dot_notatemplate golden/dot_notatemplate
 
 # test that chezmoi add --autotemplate escapes brackets
 exec chezmoi add --autotemplate $HOME${/}.vimrc
 cmp $CHEZMOISOURCEDIR/dot_vimrc.tmpl golden/dot_vimrc.tmpl
 
--- golden/dot_file --
-# contents of .file
+-- golden/dot_notatemplate --
+# contents of .notatemplate
 -- golden/dot_template.tmpl --
 key = {{ .variable }}
 -- golden/dot_vimrc.tmpl --
@@ -26,8 +26,8 @@ set foldmarker={{ "{{" }},{{ "}}" }}
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
     variable = "value"
--- home/user/.file --
-# contents of .file
+-- home/user/.notatemplate --
+# contents of .notatemplate
 -- home/user/.template --
 key = value
 -- home/user/.vimrc --
