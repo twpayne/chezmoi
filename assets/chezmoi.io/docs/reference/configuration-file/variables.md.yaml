@@ -17,6 +17,11 @@ sections:
         `$HOME` <br/>
         `%USERPROFILE%`
       description: Destination directory
+    dns:
+      address:
+        description: DNS server address
+      network:
+        description: DNS server network (`tcp` or `udp`)
     encryption:
       description: Encryption type, either `age` or `gpg`
     env:

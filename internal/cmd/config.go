@@ -11,6 +11,7 @@ import (
 	"io/fs"
 	"log/slog"
 	"maps"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -81,6 +82,14 @@ type commandConfig struct {
 	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
+// A dnsConfig allows the user to override the DNS configuration globally. This
+// is to work around Go's DNS issues on Android when built without cgo. See
+// https://github.com/golang/go/issues/8877.
+type dnsConfig struct {
+	Network string `json:"network" mapstructure:"network" yaml:"network"`
+	Address string `json:"address" mapstructure:"address" yaml:"address"`
+}
+
 type hookConfig struct {
 	Pre  commandConfig `json:"pre"  mapstructure:"pre"  yaml:"pre"`
 	Post commandConfig `json:"post" mapstructure:"post" yaml:"post"`
@@ -100,6 +109,7 @@ type ConfigFile struct {
 	CacheDirAbsPath        chezmoi.AbsPath                 `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
 	Color                  autoBool                        `json:"color"           mapstructure:"color"           yaml:"color"`
 	Data                   map[string]any                  `json:"data"            mapstructure:"data"            yaml:"data"`
+	DNS                    dnsConfig                       `json:"dns"             mapstructure:"dns"             yaml:"dns"`
 	Env                    map[string]string               `json:"env"             mapstructure:"env"             yaml:"env"`
 	Format                 writeDataFormat                 `json:"format"          mapstructure:"format"          yaml:"format"`
 	DestDirAbsPath         chezmoi.AbsPath                 `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
@@ -786,6 +796,10 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	// Reload the config.
 	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &c.ConfigFile); err != nil {
 		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
+	}
+
+	if err := c.setDNS(); err != nil {
+		return err
 	}
 
 	if err := c.setEncryption(); err != nil {
@@ -2373,6 +2387,21 @@ func (c *Config) runHookPre(hook string) error {
 		return nil
 	}
 	return c.run(c.homeDirAbsPath, command.Command, command.Args)
+}
+
+// setDNS configures DNS globally.
+func (c *Config) setDNS() error {
+	if c.DNS.Network == "" || c.DNS.Address == "" {
+		net.DefaultResolver = &net.Resolver{}
+		return nil
+	}
+	var dialer net.Dialer
+	net.DefaultResolver = &net.Resolver{
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			return dialer.DialContext(ctx, c.DNS.Network, c.DNS.Address)
+		},
+	}
+	return nil
 }
 
 // setEncryption configures c's encryption.
