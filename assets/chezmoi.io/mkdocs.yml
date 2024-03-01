@@ -314,18 +314,18 @@ nav:
       - secretJSON: reference/templates/secret-functions/secretJSON.md
   - Plugins: reference/plugins.md
   - Release history: reference/release-history.md
-- Developer:
-  - Developing locally: developer/developing-locally.md
-  - Testing: developer/testing.md
-  - Contributing changes: developer/contributing-changes.md
-  - Website: developer/website.md
-  - Install script: developer/install-script.md
-  - Using make: developer/using-make.md
-  - Releases: developer/releases.md
-  - Packaging: developer/packaging.md
-  - Security: developer/security.md
-  - Architecture: developer/architecture.md
-  - Building on top of chezmoi: developer/building-on-top-of-chezmoi.md
+- Developer guide:
+  - developer-guide/index.md
+  - Testing: developer-guide/testing.md
+  - Contributing changes: developer-guide/contributing-changes.md
+  - Website: developer-guide/website.md
+  - Install script: developer-guide/install-script.md
+  - Using make: developer-guide/using-make.md
+  - Releases: developer-guide/releases.md
+  - Packaging: developer-guide/packaging.md
+  - Security: developer-guide/security.md
+  - Architecture: developer-guide/architecture.md
+  - Building on top of chezmoi: developer-guide/building-on-top-of-chezmoi.md
 - Links:
   - Articles: links/articles.md
   - Podcasts: links/podcasts.md

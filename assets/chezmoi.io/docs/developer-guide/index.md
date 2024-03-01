@@ -1,4 +1,4 @@
-# Developing locally
+# Developer
 
 chezmoi is written in [Go](https://golang.org) and development happens on
 [GitHub](https://github.com). chezmoi is a standard Go project, using standard

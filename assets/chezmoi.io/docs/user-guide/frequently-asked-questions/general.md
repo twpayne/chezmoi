@@ -25,7 +25,7 @@ by [opening an issue](https://github.com/twpayne/chezmoi/issues/new/choose)) so
 it can be added to chezmoi's [articles](../../links/articles.md),
 [podcasts](../../links/podcasts.md), and [videos](../../links/videos.md) pages.
 
-[Contributions are very welcome](../../developer/contributing-changes.md) and
-every [bug report, support request, and feature
+[Contributions are very welcome](../../developer-guide/contributing-changes.md)
+and every [bug report, support request, and feature
 request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
 chezmoi better. Thank you :)
