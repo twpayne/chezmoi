@@ -1,3 +1,3 @@
 # Contributing
 
-See https://chezmoi.io/developer/contributing-changes/.
+See https://chezmoi.io/developer-guide/contributing-changes/.
