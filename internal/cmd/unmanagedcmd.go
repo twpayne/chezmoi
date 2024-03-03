@@ -54,11 +54,11 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	unmanagedRelPaths := make(map[chezmoi.RelPath]struct{})
 	walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
-			if c.keepGoing {
-				c.errorf("%s: %v", destAbsPath, err)
-				return nil
+			c.errorf("%s: %v", destAbsPath, err)
+			if fileInfo == nil || fileInfo.IsDir() {
+				return fs.SkipDir
 			}
-			return err
+			return nil
 		}
 		if destAbsPath == c.DestDirAbsPath {
 			return nil
