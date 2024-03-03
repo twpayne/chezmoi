@@ -440,7 +440,7 @@ jobs:
     - release
     runs-on: ubuntu-22.04
     permissions:
-      contents: read
+      contents: write
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
