@@ -40,7 +40,7 @@ require (
 	github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a
 	github.com/twpayne/go-pinentry/v3 v3.0.1
 	github.com/twpayne/go-shell v0.4.0
-	github.com/twpayne/go-vfs/v5 v5.0.2
+	github.com/twpayne/go-vfs/v5 v5.0.3
 	github.com/twpayne/go-xdg/v6 v6.1.2
 	github.com/ulikunitz/xz v0.5.11
 	github.com/withfig/autocomplete-tools/integrations/cobra v1.2.1
