@@ -385,3 +385,7 @@ articles:
   version: 2.47.0
   title: Atuin and chezmoi are the dog's bollocks
   url: https://henry.catalinismith.com/2024/02/25/atuin-and-chezmoi-are-the-dogs-bollocks
+- date: '2024-03-02'
+  version: 2.47.0
+  title: The Ultimate Dotfiles Management Tool
+  url: https://medium.com/@bartelloni.guglielmo_39715/the-ultimate-dotfiles-management-tool-456177493974
