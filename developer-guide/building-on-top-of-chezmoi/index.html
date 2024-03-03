@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/using-make/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/building-on-top-of-chezmoi/">
       
       
-        <link rel="prev" href="../install-script/">
+        <link rel="prev" href="../architecture/">
       
       
-        <link rel="next" href="../releases/">
+        <link rel="next" href="../../links/articles/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Using make - chezmoi</title>
+        <title>Building on top of chezmoi - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#building-and-installing-with-make" class="md-skip">
+        <a href="#building-on-top-of-chezmoi" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Using make
+              Building on top of chezmoi
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,43 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7728,19 +7719,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../using-make/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7749,7 +7731,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -7843,10 +7824,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../building-on-top-of-chezmoi/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7855,6 +7845,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -8112,55 +8103,12 @@
   
 
 
-<h1 id="building-and-installing-with-make">Building and installing with <code>make</code></h1>
-<p>chezmoi can be built with GNU make, assuming you have the Go toolchain
-installed.</p>
-<p>Running <code>make</code> will build a <code>chezmoi</code> binary in the current directory for the
-host OS and architecture. To embed version information in the binary and
-control installation the following variables are available:</p>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Example</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$VERSION</code></td>
-<td><code>v2.0.0</code></td>
-<td>Set version</td>
-</tr>
-<tr>
-<td><code>$COMMIT</code></td>
-<td><code>3895680a</code>...</td>
-<td>Set the git commit at which the code was built</td>
-</tr>
-<tr>
-<td><code>$DATE</code></td>
-<td><code>2019-11-23T18:29:25Z</code></td>
-<td>The time of the build</td>
-</tr>
-<tr>
-<td><code>$BUILT_BY</code></td>
-<td><code>homebrew</code></td>
-<td>The packaging system performing the build</td>
-</tr>
-<tr>
-<td><code>$PREFIX</code></td>
-<td><code>/usr</code></td>
-<td>Installation prefix</td>
-</tr>
-<tr>
-<td><code>$DESTDIR</code></td>
-<td><code>install-root</code></td>
-<td>Fake installation root</td>
-</tr>
-</tbody>
-</table>
-<p>Running <code>make install</code> will install the <code>chezmoi</code> binary in
-<code>${DESTDIR}${PREFIX}/bin</code>.</p>
+<h1 id="building-on-top-of-chezmoi">Building on top of chezmoi</h1>
+<p>chezmoi is designed with UNIX-style composability in mind, and the command line
+tool is semantically versioned. Building on top of chezmoi should primarily be
+done by executing the binary with arguments and the standard input and output
+configured appropriately. The <code>chezmoi dump</code> and <code>chezmoi state</code> commands
+allows the inspection of chezmoi's internal state.</p>
 
 
 

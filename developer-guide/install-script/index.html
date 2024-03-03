@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/developing-locally/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/install-script/">
       
       
-        <link rel="prev" href="../../reference/release-history/">
+        <link rel="prev" href="../website/">
       
       
-        <link rel="next" href="../testing/">
+        <link rel="next" href="../using-make/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Developing locally - chezmoi</title>
+        <title>Install script - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#developing-locally" class="md-skip">
+        <a href="#install-script" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Developing locally
+              Install script
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,53 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-      
-    </li>
-  
-
               
             
               
@@ -7717,10 +7698,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../install-script/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7729,6 +7719,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -8112,45 +8103,24 @@
   
 
 
-<h1 id="developing-locally">Developing locally</h1>
-<p>chezmoi is written in <a href="https://golang.org">Go</a> and development happens on
-<a href="https://github.com">GitHub</a>. chezmoi is a standard Go project, using standard
-Go tooling. chezmoi requires Go 1.21 or later.</p>
-<p>Checkout chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/twpayne/chezmoi.git
-<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>chezmoi
+<h1 id="install-script">Install script</h1>
+<p>chezmoi generates the <a href="https://github.com/twpayne/chezmoi/blob/master/assets/scripts/install.sh">install
+script</a>
+from a single source of truth. You must run</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>generate
 </code></pre></div>
-<p>Build chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>build
-</code></pre></div>
-<p>Run all tests:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
-</code></pre></div>
-<p>chezmoi's tests include integration tests with other software. If the other
-software is not found in <code>$PATH</code> the tests will be skipped. Running the full set
-of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <code>gpg</code>, <code>perl</code>, <code>python3</code>, <code>rage</code>,
-<code>ruby</code>, <code>sed</code>, <code>sha256sum</code>, <code>unzip</code>, <code>xz</code>, <code>zip</code>, and <code>zstd</code>.</p>
-<p>Run chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>run<span class="w"> </span>.
-</code></pre></div>
-<p>Run a set of smoketests, including cross-compilation, tests, and linting:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>smoketest
-</code></pre></div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>If you use <code>fish</code> as your primary shell, you may get warnings from Fish
-during tests:</p>
-<div class="highlight"><pre><span></span><code>error: can not save history
-warning-path: Unable to locate data directory derived from $HOME: &#39;/home/user/.local/share/fish&#39;.
-warning-path: The error was &#39;Operation not supported&#39;.
-warning-path: Please set $HOME to a directory where you have write access.
-</code></pre></div>
-<p>These can be avoided with by running tests with <code>SHELL=bash</code> or <code>SHELL=zsh</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
-<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>zsh<span class="w"> </span>make<span class="w"> </span>smoketest
-<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
-</code></pre></div>
-</div>
+<p>if your change includes any of the following:</p>
+<ul>
+<li>
+<p>Modifications to the install script template.</p>
+</li>
+<li>
+<p>Additions or modifications to the list of supported OSs and architectures.</p>
+</li>
+</ul>
+<p>chezmoi's continuous integration verifies that all generated files are up to
+date. Changes to generated files should be included in the commit that modifies
+the source of truth.</p>
 
 
 

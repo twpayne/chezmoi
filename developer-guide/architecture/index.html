@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/security/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/architecture/">
       
       
-        <link rel="prev" href="../packaging/">
+        <link rel="prev" href="../security/">
       
       
-        <link rel="next" href="../architecture/">
+        <link rel="next" href="../building-on-top-of-chezmoi/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Security - chezmoi</title>
+        <title>Architecture - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#security" class="md-skip">
+        <a href="#architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Security
+              Architecture
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,43 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7791,6 +7782,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -7807,7 +7819,7 @@
           
   
   <span class="md-ellipsis">
-    Security
+    Architecture
   </span>
   
 
@@ -7818,7 +7830,7 @@
         
   
   <span class="md-ellipsis">
-    Security
+    Architecture
   </span>
   
 
@@ -7840,18 +7852,81 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#supported-versions" class="md-nav__link">
+  <a href="#directory-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      Supported versions
+      Directory structure
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#reporting-a-vulnerability" class="md-nav__link">
+  <a href="#key-concepts" class="md-nav__link">
     <span class="md-ellipsis">
-      Reporting a vulnerability
+      Key concepts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internalchezmoi-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      internal/chezmoi/ directory
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internalcmd-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      internal/cmd/ directory
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persistent-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persistent state
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Encryption
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_once_-and-run_onchange_-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_once_ and run_onchange_ scripts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
     </span>
   </a>
   
@@ -7861,27 +7936,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Architecture
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -8151,18 +8205,81 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#supported-versions" class="md-nav__link">
+  <a href="#directory-structure" class="md-nav__link">
     <span class="md-ellipsis">
-      Supported versions
+      Directory structure
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#reporting-a-vulnerability" class="md-nav__link">
+  <a href="#key-concepts" class="md-nav__link">
     <span class="md-ellipsis">
-      Reporting a vulnerability
+      Key concepts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internalchezmoi-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      internal/chezmoi/ directory
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internalcmd-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      internal/cmd/ directory
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#persistent-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      Persistent state
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#encryption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Encryption
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run_once_-and-run_onchange_-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_once_ and run_onchange_ scripts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
     </span>
   </a>
   
@@ -8186,14 +8303,167 @@
   
 
 
-<h1 id="security">Security</h1>
-<h2 id="supported-versions">Supported versions</h2>
-<p>Only the most recent version of chezmoi is supported with security updates.</p>
-<h2 id="reporting-a-vulnerability">Reporting a vulnerability</h2>
-<p>Please report vulnerabilities by <a href="https://github.com/twpayne/chezmoi/issues/new/choose">opening a GitHub
-issue</a> or sending an
-email to
-<a href="mailto:twpayne%2Bchezmoi-security@gmail.com"><code>twpayne+chezmoi-security@gmail.com</code></a>.</p>
+<h1 id="architecture">Architecture</h1>
+<p>This document gives a high-level overview of chezmoi's source code for anyone
+interested in contributing to chezmoi.</p>
+<p>You can generate Go documentation for chezmoi's source code with <code>go doc</code>, for
+example:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>doc<span class="w"> </span>-all<span class="w"> </span>-u<span class="w"> </span>github.com/twpayne/chezmoi/v2/internal/chezmoi
+</code></pre></div>
+<p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi's generated documentation
+online</a>.</p>
+<h2 id="directory-structure">Directory structure</h2>
+<p>The important directories in chezmoi are:</p>
+<table>
+<thead>
+<tr>
+<th>Directory</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assets/chezmoi.io/docs/</code></td>
+<td>The documentation single source of truth. Help text, examples, and the <a href="https://chezmoi.io">chezmoi.io</a> website are generated from the files in this directory</td>
+</tr>
+<tr>
+<td><code>internal/chezmoi/</code></td>
+<td>chezmoi's core functionality</td>
+</tr>
+<tr>
+<td><code>internal/cmd/</code></td>
+<td>Code for the <code>chezmoi</code> command</td>
+</tr>
+<tr>
+<td><code>internal/cmd/testdata/scripts/</code></td>
+<td>High-level tests of chezmoi's commands using <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>testscript</code></a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="key-concepts">Key concepts</h2>
+<p>As described in the <a href="../../reference/concepts/">reference manual</a>, chezmoi
+evaluates the source state to compute a target state for the destination
+directory (typically your home directory). It then compares the target state to
+the actual state of the destination directory and performs any changes necessary
+to update the destination directory to match the target state. These concepts
+are represented directly in chezmoi's code.</p>
+<p>chezmoi uses the generic term <em>entry</em> to describe something that it manages.
+Entries can be files, directories, symlinks, scripts, amongst other things.</p>
+<h2 id="internalchezmoi-directory"><code>internal/chezmoi/</code> directory</h2>
+<p>All of chezmoi's interaction with the operating system is abstracted through
+the <code>System</code> interface. A <code>System</code> includes functionality to read and write
+files and directories and execute commands. chezmoi makes a distinction between
+idempotent commands that can be run multiple times without modifying the
+underlying system and arbitrary commands that may modify the underlying system.</p>
+<p>The real underlying system is implemented via a <code>RealSystem</code> struct. Other
+<code>System</code>s are composed on top of this to provide further functionality. For
+example, the <code>--debug</code> flag is implemented by wrapping the <code>RealSystem</code> with a
+<code>DebugSystem</code> that logs all calls to the underlying <code>RealSystem</code>. <code>--dry-run</code>
+is implemented by wrapping the <code>RealSystem</code> with a <code>DryRunSystem</code> that allows
+reads to pass through but silently discards all writes.</p>
+<p>The <code>SourceState</code> struct represents a source state, including reading a source
+state from the source directory, executing templates, applying the source state
+(i.e. updating a <code>System</code> to match the desired source state), and adding more
+entries to the source state.</p>
+<p>Entries in the source state are abstracted by the <code>SourceStateEntry</code> interface
+implemented by the <code>SourceStateFile</code> and <code>SourceStateDir</code> structs, as the
+source state only consists of regular files and directories.</p>
+<p>A <code>SourceStateFile</code> includes a <code>FileAttr</code> struct describing the attributes
+parsed from its file name. Similarly, a <code>SourceStateDir</code> includes a <code>DirAttr</code>
+struct describing the directory attributes parsed from a directory name.</p>
+<p><code>SourceStateEntry</code>s can compute their target state entries, i.e. what the
+equivalent entry should be in the target state, abstracted by the
+<code>TargetStateEntry</code> interface.</p>
+<p>Actual target state entries include <code>TargetStateFile</code> structs, representing a
+file with contents and permissions, <code>TargetStateDir</code> structs, representing a
+directory, <code>TargetStateSymlink</code> for symlinks, <code>TargetStateRemove</code> for entries
+that should be removed, and <code>TargetStateScript</code> for scripts that should be run.</p>
+<p>The actual state of an entry in the target state is abstracted via the
+<code>ActualStateEntry</code> interface, with <code>ActualStateAbsent</code>, <code>ActualStateDir</code>,
+<code>ActualStateFile</code>, <code>ActualStateSymlink</code> structs implementing this interface.</p>
+<p>Finally, an <code>EntryState</code> struct represents a serialization of an
+<code>ActualEntryState</code> for storage in and retrieval from chezmoi's persistent
+state. It stores a SHA256 of the entry's contents, rather than the full
+contents, to avoid storing secrets in the persistent state.</p>
+<p>With these concepts, chezmoi's apply command is effectively:</p>
+<ol>
+<li>
+<p>Read the source state from the source directory.</p>
+</li>
+<li>
+<p>For each entry in the source state (<code>SourceStateEntry</code>), compute its
+   <code>TargetStateEntry</code> and read its actual state in the destination state
+   (<code>ActualStateEntry</code>).</p>
+</li>
+<li>
+<p>If the <code>ActualStateEntry</code> is not equivalent to the <code>TargetStateEntry</code> then
+   apply the minimal set of changes to the <code>ActualStateEntry</code> so that they are
+   equivalent.</p>
+</li>
+</ol>
+<p>Furthermore, chezmoi stores the <code>EntryState</code> of each entry that it writes in
+its persistent state. chezmoi can then detect if a third party has updated a
+target since chezmoi last wrote it by comparing the actual state entry in the
+target state with the entry state in the persistent state.</p>
+<h2 id="internalcmd-directory"><code>internal/cmd/</code> directory</h2>
+<p><code>internal/cmd/*cmd.go</code> contains the code for each individual command and
+<code>internal/cmd/*templatefuncs.go</code> contain the template functions.</p>
+<p>Commands are defined as methods on the <code>Config</code> struct. The <code>Config</code> struct is
+large, containing all configuration values read from the config file, command
+line arguments, and computed and cached values.</p>
+<p>The <code>Config.persistentPreRunRootE</code> and <code>Config.persistentPostRunRootE</code> methods
+set up and tear down state for individual commands based on the command's
+<code>Annotations</code> field, which defines how the command interacts with the file
+system and persistent state.</p>
+<h2 id="path-handling">Path handling</h2>
+<p>chezmoi uses separate types for absolute paths (<code>AbsPath</code>) and relative paths
+(<code>RelPath</code>) to avoid errors where paths are combined (e.g. joining two absolute
+paths). A further type <code>SourceRelPath</code> is a relative path within the source
+directory and handles file and directory attributes.</p>
+<p>Internally, chezmoi normalizes all paths to use forward slashes with an
+optional upper-cased Windows volume so they can be compared with string
+comparisons. Paths read from the user may include tilde (<code>~</code>) to represent the
+user's home directory, use forward or backward slashes, and are treated as
+external paths (<code>ExtPath</code>). These are normalized to absolute paths. chezmoi is
+case-sensitive internally and makes no attempt to handle case-insensitive or
+case-preserving filesystems.</p>
+<h2 id="persistent-state">Persistent state</h2>
+<p>Persistent state is treated as a two-level key-value store with the
+pseudo-structure <code>map[Bucket]map[Key]Value</code>, where <code>Bucket</code>, <code>Key</code>, and <code>Value</code>
+are all <code>[]byte</code>s. The <code>PersistentState</code> interface defines interaction with
+them. Sometimes temporary persistent states are used. For example, in dry run
+mode (<code>--dry-run</code>) the actual persistent state is copied into a temporary
+persistent state in memory which remembers writes but does not persist them to
+disk.</p>
+<h2 id="encryption">Encryption</h2>
+<p>Encryption tools are abstracted by the <code>Encryption</code> interface that contains
+methods of encrypting and decrypting files and <code>[]byte</code>s. Implementations are
+the <code>AGEEncryption</code> and <code>GPGEncryption</code> structs. A <code>DebugEncryption</code> struct
+wraps an <code>Encryption</code> interface and logs the methods called.</p>
+<h2 id="run_once_-and-run_onchange_-scripts"><code>run_once_</code> and <code>run_onchange_</code> scripts</h2>
+<p>The execution of a <code>run_once_</code> script is recorded by storing the SHA256 of its
+contents in the <code>scriptState</code> bucket in the persistent state. On future
+invocations the script is only run if no matching contents SHA256 is found in
+the persistent state.</p>
+<p>The execution of a <code>run_onchange_</code> script is recorded by storing its target
+name in the <code>entryState</code> bucket along with its contents SHA256 sum. On future
+invocations the script is only run if its contents SHA256 sum has changed, and
+its contents SHA256 sum is then updated in the persistent state.</p>
+<h2 id="testing">Testing</h2>
+<p>chezmoi has a mix of, unit, integration, and end-to-end tests. Unit and
+integration tests use the
+<a href="https://pkg.go.dev/github.com/alecthomas/assert"><code>github.com/alecthomas/assert/v2</code></a>
+framework. End-to-end tests use
+<a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
+with the test scripts themselves in
+<code>internal/cmd/testdata/scripts/$TEST_NAME.txtar</code>.</p>
+<p>You can run individual end-to-end tests with</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./internal/cmd<span class="w"> </span>-run<span class="o">=</span>TestScript/<span class="nv">$TEST_NAME</span>
+</code></pre></div>
+<p>Tests should, if at all possible, run unmodified on all operating systems
+tested in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need
+special handling due to its path separator and lack of POSIX-style file
+permissions.</p>
 
 
 

@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/contributing-changes/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/testing/">
       
       
-        <link rel="prev" href="../testing/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../website/">
+        <link rel="next" href="../contributing-changes/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Contributing changes - chezmoi</title>
+        <title>Testing - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#contributing-changes" class="md-skip">
+        <a href="#testing" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing changes
+              Testing
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,64 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../testing/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Testing
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7681,12 +7651,33 @@
         
   
   <span class="md-ellipsis">
-    Contributing changes
+    Testing
   </span>
   
 
       </a>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing-changes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing changes
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -8112,59 +8103,35 @@
   
 
 
-<h1 id="contributing-changes">Contributing changes</h1>
-<p>Bug reports, bug fixes, and documentation improvements are always welcome.
-Please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue</a> or
-<a href="https://help.github.com/en/articles/creating-a-pull-request">create a pull
-request</a> with your
-report, fix, or improvement.</p>
-<p>If you want to make a more significant change, please first <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an
-issue</a> to discuss the
-change that you want to make. Dave Cheney gives a <a href="https://dave.cheney.net/2019/02/18/talk-then-code">good
-rationale</a> as to why this is
-important.</p>
-<p>All changes are made via pull requests. In your pull request, please make sure
-that:</p>
-<ul>
+<h1 id="testing">Testing</h1>
+<p>chezmoi uses multiple levels of testing:</p>
+<ol>
 <li>
-<p>All existing tests pass. You can ensure this by running <code>make test</code>.</p>
+<p>Unit testing, using <a href="https://pkg.go.dev/testing"><code>testing</code></a>,  and
+   <a href="https://pkg.go.dev/github.com/alecthomas/assert/v2"><code>github.com/alecthomas/assert/v2</code></a>,
+   tests that functions and small components behave as expected for a wide range
+   of inputs, especially edge cases. These are generally found in
+   <code>internal/chezmoi/*_test.go</code>.</p>
 </li>
 <li>
-<p>There are appropriate additional tests that demonstrate that your PR works as
-  intended.</p>
+<p>Filesystem integration tests, using <code>testing</code> and
+   <a href="https://pkg.go.dev/github.com/twpayne/go-vfs/v5"><code>github.com/twpayne/go-vfs/v5</code></a>,
+   test chezmoi's effects on the filesystem. This include some tests in
+   <code>internal/chezmoi/*_test.go</code>, and higher level command tests in
+   <code>internal/cmd/*cmd_test.go</code>.</p>
 </li>
 <li>
-<p>The documentation is updated, if necessary. For new features you should add an
-  entry in <code>assets/chezmoi.io/docs/user-guide/</code> and a complete description in
-  <code>assets/chezmoi.io/docs/reference/</code>. See <a href="../website/">website</a> for
-  instructions on how to build and view a local version of the documentation.</p>
+<p>High-level integration tests using
+   <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
+   are in <code>internal/cmd/testdata/scripts/*.txtar</code> and are run by
+   <code>internal/cmd/main_test.go</code>.</p>
 </li>
 <li>
-<p>All generated files are up to date. You can ensure this by running <code>make
-  generate</code> and including any modified files in your commit.</p>
+<p>Linux distribution and OS tests run the full test suite using Docker for
+   different Linux distributions (in <code>assets/docker</code>) and Vagrant for different
+   OSes (in <code>assets/vagrant</code>). Windows tests are run in GitHub Actions.</p>
 </li>
-<li>
-<p>The code is correctly formatted, according to
-  <a href="https://mvdan.cc/gofumpt/"><code>gofumpt</code></a>. You can ensure this by running <code>make
-  format</code>.</p>
-</li>
-<li>
-<p>The code passes <a href="https://github.com/golangci/golangci-lint"><code>golangci-lint</code></a>.
-  You can ensure this by running <code>make lint</code>.</p>
-</li>
-<li>
-<p>The commit messages follow the <a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits
-  specification</a>. chezmoi's
-  release notes are generated directly from the commit messages. For trivial or
-  user-invisible changes, please use the prefix <code>chore:</code>.</p>
-</li>
-<li>
-<p>Commits are logically separate, with no merge or "fixup" commits.</p>
-</li>
-<li>
-<p>The branch applies cleanly to <code>master</code>.</p>
-</li>
-</ul>
+</ol>
 
 
 

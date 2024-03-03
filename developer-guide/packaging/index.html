@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/website/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/packaging/">
       
       
-        <link rel="prev" href="../contributing-changes/">
+        <link rel="prev" href="../releases/">
       
       
-        <link rel="next" href="../install-script/">
+        <link rel="next" href="../security/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Website - chezmoi</title>
+        <title>Packaging - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#website" class="md-skip">
+        <a href="#packaging" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Website
+              Packaging
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,43 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7686,19 +7677,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../website/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7707,7 +7689,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -7780,10 +7761,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../packaging/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7792,6 +7782,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -8112,41 +8103,62 @@
   
 
 
-<h1 id="website">Website</h1>
-<p>The <a href="https://chezmoi.io">website</a> is generated with <a href="https://squidfunk.github.io/mkdocs-material/">Material for
-MkDocs</a> from the contents of the
-<code>assets/chezmoi.io/docs/</code> directory. It hosted by <a href="https://pages.github.com/">GitHub pages</a> from
-the <a href="https://github.com/twpayne/chezmoi/tree/gh-pages"><code>gh-pages</code> branch</a>.</p>
-<p>Change into the website directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>assets/chezmoi.io
+<h1 id="packaging">Packaging</h1>
+<p>If you're packaging chezmoi for an operating system or distribution:</p>
+<p>chezmoi has no build dependencies other than the standard Go toolchain.</p>
+<p>chezmoi has no runtime dependencies, but is usually used with <code>git</code>, so many
+packagers choose to make <code>git</code> an install dependency or recommended package.</p>
+<p>Please set the version number, git commit, and build time in the binary. This
+greatly assists debugging when end users report problems or ask for help. You
+can do this by passing the following flags to <code>go build</code>:</p>
+<div class="highlight"><pre><span></span><code>-ldflags &quot;-X main.version=$VERSION
+          -X main.commit=$COMMIT
+          -X main.date=$DATE
+          -X main.builtBy=$BUILT_BY&quot;
 </code></pre></div>
-<div class="admonition note">
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Default</label><label for="__tabbed_1_2">virtualenv (Recommended)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>Install the website dependencies:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip3<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</code></pre></div>
+<p><code>$VERSION</code> should be the chezmoi version, e.g. <code>1.7.3</code>. Any <code>v</code> prefix is
+optional and will be stripped, so you can pass the git tag in directly.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The command <code>git describe --abbrev=0 --tags</code> will return a suitable value
+for <code>$VERSION</code>.</p>
 </div>
-<div class="tabbed-block">
-<p>Create a virtualenv with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-</code></pre></div>
-<p>and <a href="https://docs.python.org/3/library/venv.html#how-venvs-work">activate it</a>.</p>
-<p>Install the website dependencies:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip3<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</code></pre></div>
+<p><code>$COMMIT</code> should be the full git commit hash at which chezmoi is built, e.g.
+<code>4d678ce6850c9d81c7ab2fe0d8f20c1547688b91</code>.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The <code>assets/scripts/generate-commit.sh</code> script will return a suitable value
+for <code>$COMMIT</code>.</p>
 </div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The source archive contains a file called <code>COMMIT</code> containing the commit
+hash.</p>
 </div>
+<p><code>$DATE</code> should be the date of the build as a UNIX timestamp or in RFC3339
+format.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The command <code>git show -s --format=%ct HEAD</code> returns the UNIX timestamp of
+the last commit, e.g. <code>1636668628</code>.</p>
+<p>The command <code>date -u +%Y-%m-%dT%H:%M:%SZ</code> returns the current time in
+RFC3339 format, e.g. <code>2019-11-23T18:29:25Z</code>.</p>
 </div>
-</div>
-<p>Test the website locally by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>serve
-</code></pre></div>
-<p>and visiting <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>.</p>
-<p>Deploy the website with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>gh-deploy
-</code></pre></div>
+<p><code>$BUILT_BY</code> should be a string indicating what system was used to build the
+binary. Typically it should be the name of your packaging system, e.g.
+<code>homebrew</code>.</p>
+<p>Please enable cgo, if possible. chezmoi can be built and run without cgo, but
+the <code>.chezmoi.username</code> and <code>.chezmoi.group</code> template variables may not be set
+correctly on some systems.</p>
+<p>chezmoi includes an <code>upgrade</code> command which attempts to self-upgrade. You can
+remove this command completely by building chezmoi with the <code>noupgrade</code> build
+tag.</p>
+<p>chezmoi includes shell completions in the <code>completions</code> directory. Please
+include these in the package and install them in the shell-appropriate
+directory, if possible.</p>
+<p>If the instructions for installing chezmoi in chezmoi's <a href="../../install/">install
+guide</a> are absent or incorrect, please open an issue or submit a
+PR to correct them.</p>
 
 
 

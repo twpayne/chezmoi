@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/packaging/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/releases/">
       
       
-        <link rel="prev" href="../releases/">
+        <link rel="prev" href="../using-make/">
       
       
-        <link rel="next" href="../security/">
+        <link rel="next" href="../packaging/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Packaging - chezmoi</title>
+        <title>Releases - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#packaging" class="md-skip">
+        <a href="#releases" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Packaging
+              Releases
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,43 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7749,27 +7740,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../releases/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Releases
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -7782,7 +7752,86 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Releases
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Releases
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Publishing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signing
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../packaging/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7791,7 +7840,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -8096,6 +8144,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#publishing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Publishing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signing
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -8112,62 +8195,84 @@
   
 
 
-<h1 id="packaging">Packaging</h1>
-<p>If you're packaging chezmoi for an operating system or distribution:</p>
-<p>chezmoi has no build dependencies other than the standard Go toolchain.</p>
-<p>chezmoi has no runtime dependencies, but is usually used with <code>git</code>, so many
-packagers choose to make <code>git</code> an install dependency or recommended package.</p>
-<p>Please set the version number, git commit, and build time in the binary. This
-greatly assists debugging when end users report problems or ask for help. You
-can do this by passing the following flags to <code>go build</code>:</p>
-<div class="highlight"><pre><span></span><code>-ldflags &quot;-X main.version=$VERSION
-          -X main.commit=$COMMIT
-          -X main.date=$DATE
-          -X main.builtBy=$BUILT_BY&quot;
+<h1 id="releases">Releases</h1>
+<p>Releases are managed with <a href="https://goreleaser.com/"><code>goreleaser</code></a>.</p>
+<h2 id="testing">Testing</h2>
+<p>To build a test release, without publishing, (Ubuntu Linux only) first ensure
+that the <code>musl-tools</code> and <code>snapcraft</code> packages are installed:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>musl-tools<span class="w"> </span>snapcraft
 </code></pre></div>
-<p><code>$VERSION</code> should be the chezmoi version, e.g. <code>1.7.3</code>. Any <code>v</code> prefix is
-optional and will be stripped, so you can pass the git tag in directly.</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>The command <code>git describe --abbrev=0 --tags</code> will return a suitable value
-for <code>$VERSION</code>.</p>
+<p>Then run:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>test-release
+</code></pre></div>
+<h2 id="publishing">Publishing</h2>
+<p>Publish a new release by creating and pushing a tag, for example:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>tag<span class="w"> </span>v1.2.3
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>--tags
+</code></pre></div>
+<p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a>
+that builds and publishes archives, packages, and snaps, creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
+Release</a>, and deploys the
+<a href="https://chezmoi.io">website</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a
+<code>SNAPCRAFT_STORE_CREDENTIALS</code> <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
+secret</a>.</p>
+<p>Snapcraft store credentials periodically expire. Create new snapcraft store
+credentials by running:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>snapcraft<span class="w"> </span>export-login<span class="w"> </span>--snaps<span class="o">=</span>chezmoi<span class="w"> </span>--channels<span class="o">=</span>stable,candidate,beta,edge<span class="w"> </span>--acls<span class="o">=</span>package_upload<span class="w"> </span>-
+</code></pre></div>
 </div>
-<p><code>$COMMIT</code> should be the full git commit hash at which chezmoi is built, e.g.
-<code>4d678ce6850c9d81c7ab2fe0d8f20c1547688b91</code>.</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>The <code>assets/scripts/generate-commit.sh</code> script will return a suitable value
-for <code>$COMMIT</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a href="https://brew.sh/">brew</a> automation will automatically detect new releases
+of chezmoi within a few hours and open a pull request in
+<a href="https://github.com/Homebrew/homebrew-core">github.com/Homebrew/homebrew-core</a>
+to bump the version.</p>
+<p>If needed, the pull request can be created with:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>brew<span class="w"> </span>bump-formula-pr<span class="w"> </span>--tag<span class="o">=</span>v1.2.3<span class="w"> </span>chezmoi
+</code></pre></div>
 </div>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>The source archive contains a file called <code>COMMIT</code> containing the commit
-hash.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>chezmoi is in <a href="https://scoop.sh/">Scoop</a>'s Main bucket. Scoop's automation
+will automatically detect new releases within a few hours.</p>
 </div>
-<p><code>$DATE</code> should be the date of the build as a UNIX timestamp or in RFC3339
-format.</p>
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>The command <code>git show -s --format=%ct HEAD</code> returns the UNIX timestamp of
-the last commit, e.g. <code>1636668628</code>.</p>
-<p>The command <code>date -u +%Y-%m-%dT%H:%M:%SZ</code> returns the current time in
-RFC3339 format, e.g. <code>2019-11-23T18:29:25Z</code>.</p>
-</div>
-<p><code>$BUILT_BY</code> should be a string indicating what system was used to build the
-binary. Typically it should be the name of your packaging system, e.g.
-<code>homebrew</code>.</p>
-<p>Please enable cgo, if possible. chezmoi can be built and run without cgo, but
-the <code>.chezmoi.username</code> and <code>.chezmoi.group</code> template variables may not be set
-correctly on some systems.</p>
-<p>chezmoi includes an <code>upgrade</code> command which attempts to self-upgrade. You can
-remove this command completely by building chezmoi with the <code>noupgrade</code> build
-tag.</p>
-<p>chezmoi includes shell completions in the <code>completions</code> directory. Please
-include these in the package and install them in the shell-appropriate
-directory, if possible.</p>
-<p>If the instructions for installing chezmoi in chezmoi's <a href="../../install/">install
-guide</a> are absent or incorrect, please open an issue or submit a
-PR to correct them.</p>
+<h2 id="signing">Signing</h2>
+<p>chezmoi uses <a href="https://goreleaser.com/customization/sign/">GoReleaser's support for
+signing</a> to sign the checksums of
+its release assets with <a href="https://github.com/sigstore/cosign">cosign</a>.</p>
+<p>Details:</p>
+<ul>
+<li>
+<p>The cosign private key was generated with cosign v1.12.1 on a private
+  recently-installed Ubuntu 22.04.1 system with a single user and all available
+  updates applied.</p>
+</li>
+<li>
+<p>The private key uses a long (more than 32 character) password generated
+  locally by a password manager.</p>
+</li>
+<li>
+<p>The password-protected private key is stored in chezmoi's public GitHub repo.</p>
+</li>
+<li>
+<p>The private key's password is stored as a <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">GitHub Actions
+  secret</a>
+  and only available to the <code>release</code> step of <code>release</code> job of the <code>main</code>
+  workflow.</p>
+</li>
+<li>
+<p>The cosign public key is included in the release assets and also uploaded to
+  <a href="https://chezmoi.io/cosign.pub"><code>https://chezmoi.io/cosign.pub</code></a>. Since
+  <a href="https://chezmoi.io"><code>https://chezmoi.io</code></a> is served by <a href="https://pages.github.com/">GitHub
+  pages</a>, it probably has equivalent security to
+  <a href="https://github.com/twpayne/chezmoi/releases">chezmoi's GitHub Releases
+  page</a>, which is also managed by
+  GitHub.</p>
+</li>
+</ul>
 
 
 

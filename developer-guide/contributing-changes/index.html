@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/install-script/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/contributing-changes/">
       
       
-        <link rel="prev" href="../website/">
+        <link rel="prev" href="../testing/">
       
       
-        <link rel="next" href="../using-make/">
+        <link rel="next" href="../website/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Install script - chezmoi</title>
+        <title>Contributing changes - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#install-script" class="md-skip">
+        <a href="#contributing-changes" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Install script
+              Contributing changes
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,43 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7665,10 +7656,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../contributing-changes/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7677,6 +7677,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -7707,19 +7708,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../install-script/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7728,7 +7720,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -8112,24 +8103,59 @@
   
 
 
-<h1 id="install-script">Install script</h1>
-<p>chezmoi generates the <a href="https://github.com/twpayne/chezmoi/blob/master/assets/scripts/install.sh">install
-script</a>
-from a single source of truth. You must run</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>generate
-</code></pre></div>
-<p>if your change includes any of the following:</p>
+<h1 id="contributing-changes">Contributing changes</h1>
+<p>Bug reports, bug fixes, and documentation improvements are always welcome.
+Please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue</a> or
+<a href="https://help.github.com/en/articles/creating-a-pull-request">create a pull
+request</a> with your
+report, fix, or improvement.</p>
+<p>If you want to make a more significant change, please first <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an
+issue</a> to discuss the
+change that you want to make. Dave Cheney gives a <a href="https://dave.cheney.net/2019/02/18/talk-then-code">good
+rationale</a> as to why this is
+important.</p>
+<p>All changes are made via pull requests. In your pull request, please make sure
+that:</p>
 <ul>
 <li>
-<p>Modifications to the install script template.</p>
+<p>All existing tests pass. You can ensure this by running <code>make test</code>.</p>
 </li>
 <li>
-<p>Additions or modifications to the list of supported OSs and architectures.</p>
+<p>There are appropriate additional tests that demonstrate that your PR works as
+  intended.</p>
+</li>
+<li>
+<p>The documentation is updated, if necessary. For new features you should add an
+  entry in <code>assets/chezmoi.io/docs/user-guide/</code> and a complete description in
+  <code>assets/chezmoi.io/docs/reference/</code>. See <a href="../website/">website</a> for
+  instructions on how to build and view a local version of the documentation.</p>
+</li>
+<li>
+<p>All generated files are up to date. You can ensure this by running <code>make
+  generate</code> and including any modified files in your commit.</p>
+</li>
+<li>
+<p>The code is correctly formatted, according to
+  <a href="https://mvdan.cc/gofumpt/"><code>gofumpt</code></a>. You can ensure this by running <code>make
+  format</code>.</p>
+</li>
+<li>
+<p>The code passes <a href="https://github.com/golangci/golangci-lint"><code>golangci-lint</code></a>.
+  You can ensure this by running <code>make lint</code>.</p>
+</li>
+<li>
+<p>The commit messages follow the <a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits
+  specification</a>. chezmoi's
+  release notes are generated directly from the commit messages. For trivial or
+  user-invisible changes, please use the prefix <code>chore:</code>.</p>
+</li>
+<li>
+<p>Commits are logically separate, with no merge or "fixup" commits.</p>
+</li>
+<li>
+<p>The branch applies cleanly to <code>master</code>.</p>
 </li>
 </ul>
-<p>chezmoi's continuous integration verifies that all generated files are up to
-date. Changes to generated files should be included in the commit that modifies
-the source of truth.</p>
 
 
 

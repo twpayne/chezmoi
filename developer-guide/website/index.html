@@ -12,13 +12,13 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/releases/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/website/">
       
       
-        <link rel="prev" href="../using-make/">
+        <link rel="prev" href="../contributing-changes/">
       
       
-        <link rel="next" href="../packaging/">
+        <link rel="next" href="../install-script/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Releases - chezmoi</title>
+        <title>Website - chezmoi</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#releases" class="md-skip">
+        <a href="#website" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Releases
+              Website
             
           </span>
         </div>
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -7565,6 +7565,8 @@
     
       
         
+          
+        
       
         
       
@@ -7601,43 +7603,32 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
               
             
               
@@ -7686,10 +7677,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../website/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -7698,6 +7698,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -7749,30 +7750,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Releases
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../releases/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7781,53 +7762,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publishing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Publishing
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#signing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Signing
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -8153,41 +8087,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Testing
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publishing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Publishing
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#signing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Signing
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -8204,84 +8103,41 @@
   
 
 
-<h1 id="releases">Releases</h1>
-<p>Releases are managed with <a href="https://goreleaser.com/"><code>goreleaser</code></a>.</p>
-<h2 id="testing">Testing</h2>
-<p>To build a test release, without publishing, (Ubuntu Linux only) first ensure
-that the <code>musl-tools</code> and <code>snapcraft</code> packages are installed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>musl-tools<span class="w"> </span>snapcraft
+<h1 id="website">Website</h1>
+<p>The <a href="https://chezmoi.io">website</a> is generated with <a href="https://squidfunk.github.io/mkdocs-material/">Material for
+MkDocs</a> from the contents of the
+<code>assets/chezmoi.io/docs/</code> directory. It hosted by <a href="https://pages.github.com/">GitHub pages</a> from
+the <a href="https://github.com/twpayne/chezmoi/tree/gh-pages"><code>gh-pages</code> branch</a>.</p>
+<p>Change into the website directory:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>assets/chezmoi.io
 </code></pre></div>
-<p>Then run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>test-release
-</code></pre></div>
-<h2 id="publishing">Publishing</h2>
-<p>Publish a new release by creating and pushing a tag, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>tag<span class="w"> </span>v1.2.3
-<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>--tags
-</code></pre></div>
-<p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a>
-that builds and publishes archives, packages, and snaps, creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
-Release</a>, and deploys the
-<a href="https://chezmoi.io">website</a>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a
-<code>SNAPCRAFT_STORE_CREDENTIALS</code> <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
-secret</a>.</p>
-<p>Snapcraft store credentials periodically expire. Create new snapcraft store
-credentials by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>snapcraft<span class="w"> </span>export-login<span class="w"> </span>--snaps<span class="o">=</span>chezmoi<span class="w"> </span>--channels<span class="o">=</span>stable,candidate,beta,edge<span class="w"> </span>--acls<span class="o">=</span>package_upload<span class="w"> </span>-
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Default</label><label for="__tabbed_1_2">virtualenv (Recommended)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Install the website dependencies:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip3<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </code></pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a href="https://brew.sh/">brew</a> automation will automatically detect new releases
-of chezmoi within a few hours and open a pull request in
-<a href="https://github.com/Homebrew/homebrew-core">github.com/Homebrew/homebrew-core</a>
-to bump the version.</p>
-<p>If needed, the pull request can be created with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>brew<span class="w"> </span>bump-formula-pr<span class="w"> </span>--tag<span class="o">=</span>v1.2.3<span class="w"> </span>chezmoi
+<div class="tabbed-block">
+<p>Create a virtualenv with:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+</code></pre></div>
+<p>and <a href="https://docs.python.org/3/library/venv.html#how-venvs-work">activate it</a>.</p>
+<p>Install the website dependencies:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip3<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 </code></pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>chezmoi is in <a href="https://scoop.sh/">Scoop</a>'s Main bucket. Scoop's automation
-will automatically detect new releases within a few hours.</p>
 </div>
-<h2 id="signing">Signing</h2>
-<p>chezmoi uses <a href="https://goreleaser.com/customization/sign/">GoReleaser's support for
-signing</a> to sign the checksums of
-its release assets with <a href="https://github.com/sigstore/cosign">cosign</a>.</p>
-<p>Details:</p>
-<ul>
-<li>
-<p>The cosign private key was generated with cosign v1.12.1 on a private
-  recently-installed Ubuntu 22.04.1 system with a single user and all available
-  updates applied.</p>
-</li>
-<li>
-<p>The private key uses a long (more than 32 character) password generated
-  locally by a password manager.</p>
-</li>
-<li>
-<p>The password-protected private key is stored in chezmoi's public GitHub repo.</p>
-</li>
-<li>
-<p>The private key's password is stored as a <a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">GitHub Actions
-  secret</a>
-  and only available to the <code>release</code> step of <code>release</code> job of the <code>main</code>
-  workflow.</p>
-</li>
-<li>
-<p>The cosign public key is included in the release assets and also uploaded to
-  <a href="https://chezmoi.io/cosign.pub"><code>https://chezmoi.io/cosign.pub</code></a>. Since
-  <a href="https://chezmoi.io"><code>https://chezmoi.io</code></a> is served by <a href="https://pages.github.com/">GitHub
-  pages</a>, it probably has equivalent security to
-  <a href="https://github.com/twpayne/chezmoi/releases">chezmoi's GitHub Releases
-  page</a>, which is also managed by
-  GitHub.</p>
-</li>
-</ul>
+</div>
+</div>
+<p>Test the website locally by running:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>serve
+</code></pre></div>
+<p>and visiting <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>.</p>
+<p>Deploy the website with:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>gh-deploy
+</code></pre></div>
 
 
 

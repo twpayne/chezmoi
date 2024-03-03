@@ -12,28 +12,28 @@
         <meta name="author" content="Tom Payne">
       
       
-        <link rel="canonical" href="https://chezmoi.io/developer/testing/">
+        <link rel="canonical" href="https://chezmoi.io/developer-guide/">
       
       
-        <link rel="prev" href="../developing-locally/">
+        <link rel="prev" href="../reference/release-history/">
       
       
-        <link rel="next" href="../contributing-changes/">
+        <link rel="next" href="testing/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
     
     
       
-        <title>Testing - chezmoi</title>
+        <title>Developer - chezmoi</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.50c56a3b.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -52,7 +52,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#testing" class="md-skip">
+        <a href="#developer" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +92,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
+    <a href=".." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../logo.svg" alt="logo">
+  <img src="../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Testing
+              Developer
             
           </span>
         </div>
@@ -220,7 +220,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../.." class="md-tabs__link">
+        <a href=".." class="md-tabs__link">
           
   
     
@@ -240,7 +240,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../user-guide/command-overview/" class="md-tabs__link">
+        <a href="../user-guide/command-overview/" class="md-tabs__link">
           
   
     
@@ -260,7 +260,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../reference/" class="md-tabs__link">
+        <a href="../reference/" class="md-tabs__link">
           
   
     
@@ -282,12 +282,12 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../developing-locally/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
           
   
     
   
-  Developer
+  Developer guide
 
         </a>
       </li>
@@ -302,7 +302,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../links/articles/" class="md-tabs__link">
+        <a href="../links/articles/" class="md-tabs__link">
           
   
     
@@ -320,7 +320,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../license/" class="md-tabs__link">
+      <a href="../license/" class="md-tabs__link">
         
   
     
@@ -354,9 +354,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
+    <a href=".." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../logo.svg" alt="logo">
+  <img src="../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -420,7 +420,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../.." class="md-nav__link ">
+            <a href=".." class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -453,7 +453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/" class="md-nav__link">
+      <a href="../install/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -474,7 +474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../quick-start/" class="md-nav__link">
+      <a href="../quick-start/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -495,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../what-does-chezmoi-do/" class="md-nav__link">
+      <a href="../what-does-chezmoi-do/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -516,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../why-use-chezmoi/" class="md-nav__link">
+      <a href="../why-use-chezmoi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -537,7 +537,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../comparison-table/" class="md-nav__link">
+      <a href="../comparison-table/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -558,7 +558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrating-from-another-dotfile-manager/" class="md-nav__link">
+      <a href="../migrating-from-another-dotfile-manager/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -658,7 +658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/command-overview/" class="md-nav__link">
+      <a href="../user-guide/command-overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -679,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/setup/" class="md-nav__link">
+      <a href="../user-guide/setup/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -700,7 +700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/daily-operations/" class="md-nav__link">
+      <a href="../user-guide/daily-operations/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -721,7 +721,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/manage-different-types-of-file/" class="md-nav__link">
+      <a href="../user-guide/manage-different-types-of-file/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -742,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/include-files-from-elsewhere/" class="md-nav__link">
+      <a href="../user-guide/include-files-from-elsewhere/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -763,7 +763,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/manage-machine-to-machine-differences/" class="md-nav__link">
+      <a href="../user-guide/manage-machine-to-machine-differences/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -784,7 +784,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/use-scripts-to-perform-actions/" class="md-nav__link">
+      <a href="../user-guide/use-scripts-to-perform-actions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -805,7 +805,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/templating/" class="md-nav__link">
+      <a href="../user-guide/templating/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -878,7 +878,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/tools/editor/" class="md-nav__link">
+      <a href="../user-guide/tools/editor/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -899,7 +899,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/tools/diff/" class="md-nav__link">
+      <a href="../user-guide/tools/diff/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -920,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/tools/merge/" class="md-nav__link">
+      <a href="../user-guide/tools/merge/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -941,7 +941,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/tools/http-or-socks5-proxy/" class="md-nav__link">
+      <a href="../user-guide/tools/http-or-socks5-proxy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1029,7 +1029,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../user-guide/password-managers/" class="md-nav__link ">
+            <a href="../user-guide/password-managers/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1062,7 +1062,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/1password/" class="md-nav__link">
+      <a href="../user-guide/password-managers/1password/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1083,7 +1083,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/aws-secrets-manager/" class="md-nav__link">
+      <a href="../user-guide/password-managers/aws-secrets-manager/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1104,7 +1104,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/azure-key-vault/" class="md-nav__link">
+      <a href="../user-guide/password-managers/azure-key-vault/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1125,7 +1125,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/bitwarden/" class="md-nav__link">
+      <a href="../user-guide/password-managers/bitwarden/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1146,7 +1146,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/dashlane/" class="md-nav__link">
+      <a href="../user-guide/password-managers/dashlane/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1167,7 +1167,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/doppler/" class="md-nav__link">
+      <a href="../user-guide/password-managers/doppler/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1188,7 +1188,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/ejson/" class="md-nav__link">
+      <a href="../user-guide/password-managers/ejson/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1209,7 +1209,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/gopass/" class="md-nav__link">
+      <a href="../user-guide/password-managers/gopass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1230,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/hcp-vault-secrets/" class="md-nav__link">
+      <a href="../user-guide/password-managers/hcp-vault-secrets/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1251,7 +1251,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/keepassxc/" class="md-nav__link">
+      <a href="../user-guide/password-managers/keepassxc/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1272,7 +1272,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/keychain-and-windows-credentials-manager/" class="md-nav__link">
+      <a href="../user-guide/password-managers/keychain-and-windows-credentials-manager/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1293,7 +1293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/keeper/" class="md-nav__link">
+      <a href="../user-guide/password-managers/keeper/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1314,7 +1314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/lastpass/" class="md-nav__link">
+      <a href="../user-guide/password-managers/lastpass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1335,7 +1335,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/pass/" class="md-nav__link">
+      <a href="../user-guide/password-managers/pass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1356,7 +1356,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/passhole/" class="md-nav__link">
+      <a href="../user-guide/password-managers/passhole/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1377,7 +1377,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/vault/" class="md-nav__link">
+      <a href="../user-guide/password-managers/vault/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1398,7 +1398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/password-managers/custom/" class="md-nav__link">
+      <a href="../user-guide/password-managers/custom/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1458,7 +1458,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../user-guide/encryption/" class="md-nav__link ">
+            <a href="../user-guide/encryption/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1491,7 +1491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/encryption/age/" class="md-nav__link">
+      <a href="../user-guide/encryption/age/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1512,7 +1512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/encryption/gpg/" class="md-nav__link">
+      <a href="../user-guide/encryption/gpg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1533,7 +1533,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/encryption/rage/" class="md-nav__link">
+      <a href="../user-guide/encryption/rage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1616,7 +1616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/machines/general/" class="md-nav__link">
+      <a href="../user-guide/machines/general/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1637,7 +1637,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/machines/linux/" class="md-nav__link">
+      <a href="../user-guide/machines/linux/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1658,7 +1658,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/machines/macos/" class="md-nav__link">
+      <a href="../user-guide/machines/macos/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1679,7 +1679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/machines/windows/" class="md-nav__link">
+      <a href="../user-guide/machines/windows/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1700,7 +1700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/machines/containers-and-vms/" class="md-nav__link">
+      <a href="../user-guide/machines/containers-and-vms/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1783,7 +1783,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/advanced/customize-your-source-directory/" class="md-nav__link">
+      <a href="../user-guide/advanced/customize-your-source-directory/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1804,7 +1804,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/advanced/install-packages-declaratively/" class="md-nav__link">
+      <a href="../user-guide/advanced/install-packages-declaratively/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1825,7 +1825,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/advanced/install-your-password-manager-on-init/" class="md-nav__link">
+      <a href="../user-guide/advanced/install-your-password-manager-on-init/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1846,7 +1846,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/advanced/use-chezmoi-with-watchman/" class="md-nav__link">
+      <a href="../user-guide/advanced/use-chezmoi-with-watchman/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1867,7 +1867,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/advanced/migrate-away-from-chezmoi/" class="md-nav__link">
+      <a href="../user-guide/advanced/migrate-away-from-chezmoi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1950,7 +1950,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frequently-asked-questions/usage/" class="md-nav__link">
+      <a href="../user-guide/frequently-asked-questions/usage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1971,7 +1971,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frequently-asked-questions/encryption/" class="md-nav__link">
+      <a href="../user-guide/frequently-asked-questions/encryption/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1992,7 +1992,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frequently-asked-questions/troubleshooting/" class="md-nav__link">
+      <a href="../user-guide/frequently-asked-questions/troubleshooting/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2013,7 +2013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frequently-asked-questions/design/" class="md-nav__link">
+      <a href="../user-guide/frequently-asked-questions/design/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2034,7 +2034,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-guide/frequently-asked-questions/general/" class="md-nav__link">
+      <a href="../user-guide/frequently-asked-questions/general/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2117,7 +2117,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/" class="md-nav__link ">
+            <a href="../reference/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -2150,7 +2150,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/concepts/" class="md-nav__link">
+      <a href="../reference/concepts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2171,7 +2171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/source-state-attributes/" class="md-nav__link">
+      <a href="../reference/source-state-attributes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2192,7 +2192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/target-types/" class="md-nav__link">
+      <a href="../reference/target-types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2213,7 +2213,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/application-order/" class="md-nav__link">
+      <a href="../reference/application-order/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2265,7 +2265,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/command-line-flags/" class="md-nav__link ">
+            <a href="../reference/command-line-flags/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -2298,7 +2298,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/command-line-flags/global/" class="md-nav__link">
+      <a href="../reference/command-line-flags/global/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2319,7 +2319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/command-line-flags/common/" class="md-nav__link">
+      <a href="../reference/command-line-flags/common/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2340,7 +2340,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/command-line-flags/developer/" class="md-nav__link">
+      <a href="../reference/command-line-flags/developer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2408,7 +2408,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/configuration-file/" class="md-nav__link ">
+            <a href="../reference/configuration-file/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -2441,7 +2441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/variables/" class="md-nav__link">
+      <a href="../reference/configuration-file/variables/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2462,7 +2462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/editor/" class="md-nav__link">
+      <a href="../reference/configuration-file/editor/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2483,7 +2483,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/hooks/" class="md-nav__link">
+      <a href="../reference/configuration-file/hooks/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2504,7 +2504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/pinentry/" class="md-nav__link">
+      <a href="../reference/configuration-file/pinentry/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2525,7 +2525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/textconv/" class="md-nav__link">
+      <a href="../reference/configuration-file/textconv/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2546,7 +2546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/umask/" class="md-nav__link">
+      <a href="../reference/configuration-file/umask/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2567,7 +2567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/configuration-file/warnings/" class="md-nav__link">
+      <a href="../reference/configuration-file/warnings/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2641,7 +2641,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/special-files-and-directories/" class="md-nav__link ">
+            <a href="../reference/special-files-and-directories/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -2674,7 +2674,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoi-format-tmpl/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoi-format-tmpl/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2695,7 +2695,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoidata-format/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoidata-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2716,7 +2716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiexternal-format/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiexternal-format/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2737,7 +2737,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiexternals/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiexternals/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2758,7 +2758,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiignore/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiignore/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2779,7 +2779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiremove/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiremove/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2800,7 +2800,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiroot/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiroot/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2821,7 +2821,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiscripts/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiscripts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2842,7 +2842,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoitemplates/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoitemplates/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2863,7 +2863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/special-files-and-directories/chezmoiversion/" class="md-nav__link">
+      <a href="../reference/special-files-and-directories/chezmoiversion/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3030,7 +3030,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/add/" class="md-nav__link">
+      <a href="../reference/commands/add/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3051,7 +3051,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/age/" class="md-nav__link">
+      <a href="../reference/commands/age/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3072,7 +3072,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/apply/" class="md-nav__link">
+      <a href="../reference/commands/apply/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3093,7 +3093,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/archive/" class="md-nav__link">
+      <a href="../reference/commands/archive/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3114,7 +3114,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/cat/" class="md-nav__link">
+      <a href="../reference/commands/cat/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3135,7 +3135,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/cat-config/" class="md-nav__link">
+      <a href="../reference/commands/cat-config/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3156,7 +3156,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/cd/" class="md-nav__link">
+      <a href="../reference/commands/cd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3177,7 +3177,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/chattr/" class="md-nav__link">
+      <a href="../reference/commands/chattr/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3198,7 +3198,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/completion/" class="md-nav__link">
+      <a href="../reference/commands/completion/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3219,7 +3219,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/data/" class="md-nav__link">
+      <a href="../reference/commands/data/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3240,7 +3240,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/decrypt/" class="md-nav__link">
+      <a href="../reference/commands/decrypt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3261,7 +3261,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/diff/" class="md-nav__link">
+      <a href="../reference/commands/diff/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3282,7 +3282,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/doctor/" class="md-nav__link">
+      <a href="../reference/commands/doctor/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3303,7 +3303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/dump/" class="md-nav__link">
+      <a href="../reference/commands/dump/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3324,7 +3324,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/dump-config/" class="md-nav__link">
+      <a href="../reference/commands/dump-config/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3345,7 +3345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/edit/" class="md-nav__link">
+      <a href="../reference/commands/edit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3366,7 +3366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/edit-config/" class="md-nav__link">
+      <a href="../reference/commands/edit-config/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3387,7 +3387,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/edit-config-template/" class="md-nav__link">
+      <a href="../reference/commands/edit-config-template/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3408,7 +3408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/encrypt/" class="md-nav__link">
+      <a href="../reference/commands/encrypt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3429,7 +3429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/execute-template/" class="md-nav__link">
+      <a href="../reference/commands/execute-template/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3450,7 +3450,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/forget/" class="md-nav__link">
+      <a href="../reference/commands/forget/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3471,7 +3471,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/generate/" class="md-nav__link">
+      <a href="../reference/commands/generate/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3492,7 +3492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/git/" class="md-nav__link">
+      <a href="../reference/commands/git/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3513,7 +3513,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/help/" class="md-nav__link">
+      <a href="../reference/commands/help/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3534,7 +3534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/init/" class="md-nav__link">
+      <a href="../reference/commands/init/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3555,7 +3555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/import/" class="md-nav__link">
+      <a href="../reference/commands/import/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3576,7 +3576,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/ignored/" class="md-nav__link">
+      <a href="../reference/commands/ignored/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3597,7 +3597,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/license/" class="md-nav__link">
+      <a href="../reference/commands/license/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3618,7 +3618,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/list/" class="md-nav__link">
+      <a href="../reference/commands/list/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3639,7 +3639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/manage/" class="md-nav__link">
+      <a href="../reference/commands/manage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3660,7 +3660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/managed/" class="md-nav__link">
+      <a href="../reference/commands/managed/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3681,7 +3681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/merge/" class="md-nav__link">
+      <a href="../reference/commands/merge/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3702,7 +3702,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/merge-all/" class="md-nav__link">
+      <a href="../reference/commands/merge-all/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3723,7 +3723,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/purge/" class="md-nav__link">
+      <a href="../reference/commands/purge/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3744,7 +3744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
+      <a href="../reference/commands/remove/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3765,7 +3765,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/re-add/" class="md-nav__link">
+      <a href="../reference/commands/re-add/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3786,7 +3786,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
+      <a href="../reference/commands/rm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3807,7 +3807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/secret/" class="md-nav__link">
+      <a href="../reference/commands/secret/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3828,7 +3828,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/source-path/" class="md-nav__link">
+      <a href="../reference/commands/source-path/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3849,7 +3849,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/state/" class="md-nav__link">
+      <a href="../reference/commands/state/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3870,7 +3870,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/status/" class="md-nav__link">
+      <a href="../reference/commands/status/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3891,7 +3891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/target-path/" class="md-nav__link">
+      <a href="../reference/commands/target-path/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3912,7 +3912,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/unmanage/" class="md-nav__link">
+      <a href="../reference/commands/unmanage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3933,7 +3933,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/unmanaged/" class="md-nav__link">
+      <a href="../reference/commands/unmanaged/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3954,7 +3954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/update/" class="md-nav__link">
+      <a href="../reference/commands/update/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3975,7 +3975,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/upgrade/" class="md-nav__link">
+      <a href="../reference/commands/upgrade/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -3996,7 +3996,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/commands/verify/" class="md-nav__link">
+      <a href="../reference/commands/verify/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4094,7 +4094,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/" class="md-nav__link ">
+            <a href="../reference/templates/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -4127,7 +4127,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/variables/" class="md-nav__link">
+      <a href="../reference/templates/variables/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4148,7 +4148,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/directives/" class="md-nav__link">
+      <a href="../reference/templates/directives/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4261,7 +4261,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/functions/" class="md-nav__link ">
+            <a href="../reference/templates/functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -4294,7 +4294,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/comment/" class="md-nav__link">
+      <a href="../reference/templates/functions/comment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4315,7 +4315,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/completion/" class="md-nav__link">
+      <a href="../reference/templates/functions/completion/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4336,7 +4336,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/decrypt/" class="md-nav__link">
+      <a href="../reference/templates/functions/decrypt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4357,7 +4357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/deleteValueAtPath/" class="md-nav__link">
+      <a href="../reference/templates/functions/deleteValueAtPath/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4378,7 +4378,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/encrypt/" class="md-nav__link">
+      <a href="../reference/templates/functions/encrypt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4399,7 +4399,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/eqFold/" class="md-nav__link">
+      <a href="../reference/templates/functions/eqFold/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4420,7 +4420,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/findExecutable/" class="md-nav__link">
+      <a href="../reference/templates/functions/findExecutable/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4441,7 +4441,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/findOneExecutable/" class="md-nav__link">
+      <a href="../reference/templates/functions/findOneExecutable/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4462,7 +4462,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/fromIni/" class="md-nav__link">
+      <a href="../reference/templates/functions/fromIni/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4483,7 +4483,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/fromJson/" class="md-nav__link">
+      <a href="../reference/templates/functions/fromJson/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4504,7 +4504,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/fromJsonc/" class="md-nav__link">
+      <a href="../reference/templates/functions/fromJsonc/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4525,7 +4525,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/fromToml/" class="md-nav__link">
+      <a href="../reference/templates/functions/fromToml/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4546,7 +4546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/fromYaml/" class="md-nav__link">
+      <a href="../reference/templates/functions/fromYaml/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4567,7 +4567,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/glob/" class="md-nav__link">
+      <a href="../reference/templates/functions/glob/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4588,7 +4588,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/hexDecode/" class="md-nav__link">
+      <a href="../reference/templates/functions/hexDecode/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4609,7 +4609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/hexEncode/" class="md-nav__link">
+      <a href="../reference/templates/functions/hexEncode/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4630,7 +4630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/include/" class="md-nav__link">
+      <a href="../reference/templates/functions/include/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4651,7 +4651,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/includeTemplate/" class="md-nav__link">
+      <a href="../reference/templates/functions/includeTemplate/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4672,7 +4672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/ioreg/" class="md-nav__link">
+      <a href="../reference/templates/functions/ioreg/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4693,7 +4693,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/isExecutable/" class="md-nav__link">
+      <a href="../reference/templates/functions/isExecutable/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4714,7 +4714,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/joinPath/" class="md-nav__link">
+      <a href="../reference/templates/functions/joinPath/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4735,7 +4735,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/jq/" class="md-nav__link">
+      <a href="../reference/templates/functions/jq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4756,7 +4756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/lookPath/" class="md-nav__link">
+      <a href="../reference/templates/functions/lookPath/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4777,7 +4777,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/lstat/" class="md-nav__link">
+      <a href="../reference/templates/functions/lstat/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4798,7 +4798,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/mozillaInstallHash/" class="md-nav__link">
+      <a href="../reference/templates/functions/mozillaInstallHash/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4819,7 +4819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/output/" class="md-nav__link">
+      <a href="../reference/templates/functions/output/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4840,7 +4840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/pruneEmptyDicts/" class="md-nav__link">
+      <a href="../reference/templates/functions/pruneEmptyDicts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4861,7 +4861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/quoteList/" class="md-nav__link">
+      <a href="../reference/templates/functions/quoteList/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4882,7 +4882,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/replaceAllRegex/" class="md-nav__link">
+      <a href="../reference/templates/functions/replaceAllRegex/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4903,7 +4903,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/setValueAtPath/" class="md-nav__link">
+      <a href="../reference/templates/functions/setValueAtPath/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4924,7 +4924,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/stat/" class="md-nav__link">
+      <a href="../reference/templates/functions/stat/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4945,7 +4945,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/toIni/" class="md-nav__link">
+      <a href="../reference/templates/functions/toIni/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4966,7 +4966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/toPrettyJson/" class="md-nav__link">
+      <a href="../reference/templates/functions/toPrettyJson/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -4987,7 +4987,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/toToml/" class="md-nav__link">
+      <a href="../reference/templates/functions/toToml/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5008,7 +5008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/functions/toYaml/" class="md-nav__link">
+      <a href="../reference/templates/functions/toYaml/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5069,7 +5069,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/github-functions/" class="md-nav__link ">
+            <a href="../reference/templates/github-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -5102,7 +5102,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/github-functions/gitHubKeys/" class="md-nav__link">
+      <a href="../reference/templates/github-functions/gitHubKeys/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5123,7 +5123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/github-functions/gitHubLatestRelease/" class="md-nav__link">
+      <a href="../reference/templates/github-functions/gitHubLatestRelease/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5144,7 +5144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/github-functions/gitHubLatestTag/" class="md-nav__link">
+      <a href="../reference/templates/github-functions/gitHubLatestTag/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5165,7 +5165,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/github-functions/gitHubReleases/" class="md-nav__link">
+      <a href="../reference/templates/github-functions/gitHubReleases/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5186,7 +5186,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/github-functions/gitHubTags/" class="md-nav__link">
+      <a href="../reference/templates/github-functions/gitHubTags/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5259,7 +5259,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/init-functions/" class="md-nav__link ">
+            <a href="../reference/templates/init-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -5292,7 +5292,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/exit/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/exit/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5313,7 +5313,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptBool/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptBool/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5334,7 +5334,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptBoolOnce/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptBoolOnce/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5355,7 +5355,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptChoice/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptChoice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5376,7 +5376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptChoiceOnce/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptChoiceOnce/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5397,7 +5397,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptInt/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptInt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5418,7 +5418,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptIntOnce/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptIntOnce/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5439,7 +5439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptString/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptString/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5460,7 +5460,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/promptStringOnce/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/promptStringOnce/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5481,7 +5481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5502,7 +5502,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/writeToStdout/" class="md-nav__link">
+      <a href="../reference/templates/init-functions/writeToStdout/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5563,7 +5563,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/1password-functions/" class="md-nav__link ">
+            <a href="../reference/templates/1password-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -5596,7 +5596,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/1password-functions/onepassword/" class="md-nav__link">
+      <a href="../reference/templates/1password-functions/onepassword/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5617,7 +5617,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/1password-functions/onepasswordDocument/" class="md-nav__link">
+      <a href="../reference/templates/1password-functions/onepasswordDocument/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5638,7 +5638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/1password-functions/onepasswordDetailsFields/" class="md-nav__link">
+      <a href="../reference/templates/1password-functions/onepasswordDetailsFields/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5659,7 +5659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/1password-functions/onepasswordItemFields/" class="md-nav__link">
+      <a href="../reference/templates/1password-functions/onepasswordItemFields/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5680,7 +5680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/1password-functions/onepasswordRead/" class="md-nav__link">
+      <a href="../reference/templates/1password-functions/onepasswordRead/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5735,7 +5735,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/aws-secrets-manager-functions/" class="md-nav__link ">
+            <a href="../reference/templates/aws-secrets-manager-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -5768,7 +5768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/aws-secrets-manager-functions/awsSecretsManager/" class="md-nav__link">
+      <a href="../reference/templates/aws-secrets-manager-functions/awsSecretsManager/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5789,7 +5789,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw/" class="md-nav__link">
+      <a href="../reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5861,7 +5861,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/azure-key-vault-functions/azureKeyVault/" class="md-nav__link">
+      <a href="../reference/templates/azure-key-vault-functions/azureKeyVault/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5926,7 +5926,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/bitwarden-functions/" class="md-nav__link ">
+            <a href="../reference/templates/bitwarden-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -5959,7 +5959,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/bitwarden/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/bitwarden/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5980,7 +5980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/bitwardenAttachment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6001,7 +6001,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/bitwardenAttachmentByRef/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6022,7 +6022,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/bitwardenFields/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6043,7 +6043,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/bitwardenSecrets/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/bitwardenSecrets/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6064,7 +6064,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/rbw/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/rbw/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6085,7 +6085,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/bitwarden-functions/rbwFields/" class="md-nav__link">
+      <a href="../reference/templates/bitwarden-functions/rbwFields/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6140,7 +6140,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/dashlane-functions/" class="md-nav__link ">
+            <a href="../reference/templates/dashlane-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6173,7 +6173,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/dashlane-functions/dashlaneNote/" class="md-nav__link">
+      <a href="../reference/templates/dashlane-functions/dashlaneNote/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6194,7 +6194,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/dashlane-functions/dashlanePassword/" class="md-nav__link">
+      <a href="../reference/templates/dashlane-functions/dashlanePassword/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6249,7 +6249,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/doppler-functions/" class="md-nav__link ">
+            <a href="../reference/templates/doppler-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6282,7 +6282,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/doppler-functions/doppler/" class="md-nav__link">
+      <a href="../reference/templates/doppler-functions/doppler/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6303,7 +6303,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/doppler-functions/dopplerProjectJson/" class="md-nav__link">
+      <a href="../reference/templates/doppler-functions/dopplerProjectJson/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6358,7 +6358,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/ejson-functions/" class="md-nav__link ">
+            <a href="../reference/templates/ejson-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6391,7 +6391,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/ejson-functions/ejsonDecrypt/" class="md-nav__link">
+      <a href="../reference/templates/ejson-functions/ejsonDecrypt/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6412,7 +6412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/ejson-functions/ejsonDecryptWithKey/" class="md-nav__link">
+      <a href="../reference/templates/ejson-functions/ejsonDecryptWithKey/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6467,7 +6467,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/gopass-functions/" class="md-nav__link ">
+            <a href="../reference/templates/gopass-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6500,7 +6500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/gopass-functions/gopass/" class="md-nav__link">
+      <a href="../reference/templates/gopass-functions/gopass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6521,7 +6521,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/gopass-functions/gopassRaw/" class="md-nav__link">
+      <a href="../reference/templates/gopass-functions/gopassRaw/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6576,7 +6576,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/hcp-vault-secrets-functions/" class="md-nav__link ">
+            <a href="../reference/templates/hcp-vault-secrets-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6609,7 +6609,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/hcp-vault-secrets-functions/hcpVaultSecret/" class="md-nav__link">
+      <a href="../reference/templates/hcp-vault-secrets-functions/hcpVaultSecret/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6630,7 +6630,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/hcp-vault-secrets-functions/hcpVaultSecretJson/" class="md-nav__link">
+      <a href="../reference/templates/hcp-vault-secrets-functions/hcpVaultSecretJson/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6687,7 +6687,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/keepassxc-functions/" class="md-nav__link ">
+            <a href="../reference/templates/keepassxc-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6720,7 +6720,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keepassxc-functions/keepassxc/" class="md-nav__link">
+      <a href="../reference/templates/keepassxc-functions/keepassxc/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6741,7 +6741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keepassxc-functions/keepassxcAttachment/" class="md-nav__link">
+      <a href="../reference/templates/keepassxc-functions/keepassxcAttachment/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6762,7 +6762,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keepassxc-functions/keepassxcAttribute/" class="md-nav__link">
+      <a href="../reference/templates/keepassxc-functions/keepassxcAttribute/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6819,7 +6819,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/keeper-functions/" class="md-nav__link ">
+            <a href="../reference/templates/keeper-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -6852,7 +6852,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keeper-functions/keeper/" class="md-nav__link">
+      <a href="../reference/templates/keeper-functions/keeper/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6873,7 +6873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keeper-functions/keeperDataFields/" class="md-nav__link">
+      <a href="../reference/templates/keeper-functions/keeperDataFields/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6894,7 +6894,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keeper-functions/keeperFindPassword/" class="md-nav__link">
+      <a href="../reference/templates/keeper-functions/keeperFindPassword/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -6966,7 +6966,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/keyring-functions/keyring/" class="md-nav__link">
+      <a href="../reference/templates/keyring-functions/keyring/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7021,7 +7021,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/lastpass-functions/" class="md-nav__link ">
+            <a href="../reference/templates/lastpass-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -7054,7 +7054,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/lastpass-functions/lastpass/" class="md-nav__link">
+      <a href="../reference/templates/lastpass-functions/lastpass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7075,7 +7075,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/lastpass-functions/lastpassRaw/" class="md-nav__link">
+      <a href="../reference/templates/lastpass-functions/lastpassRaw/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7132,7 +7132,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/pass-functions/" class="md-nav__link ">
+            <a href="../reference/templates/pass-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -7165,7 +7165,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/pass-functions/pass/" class="md-nav__link">
+      <a href="../reference/templates/pass-functions/pass/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7186,7 +7186,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/pass-functions/passFields/" class="md-nav__link">
+      <a href="../reference/templates/pass-functions/passFields/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7207,7 +7207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/pass-functions/passRaw/" class="md-nav__link">
+      <a href="../reference/templates/pass-functions/passRaw/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7260,7 +7260,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/passhole-functions/" class="md-nav__link ">
+            <a href="../reference/templates/passhole-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -7293,7 +7293,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/passhole-functions/passhole/" class="md-nav__link">
+      <a href="../reference/templates/passhole-functions/passhole/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7365,7 +7365,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/vault-functions/vault/" class="md-nav__link">
+      <a href="../reference/templates/vault-functions/vault/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7420,7 +7420,7 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../reference/templates/secret-functions/" class="md-nav__link ">
+            <a href="../reference/templates/secret-functions/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -7453,7 +7453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/secret-functions/secret/" class="md-nav__link">
+      <a href="../reference/templates/secret-functions/secret/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7474,7 +7474,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/templates/secret-functions/secretJSON/" class="md-nav__link">
+      <a href="../reference/templates/secret-functions/secretJSON/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7511,7 +7511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/plugins/" class="md-nav__link">
+      <a href="../reference/plugins/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7532,7 +7532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../reference/release-history/" class="md-nav__link">
+      <a href="../reference/release-history/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7564,6 +7564,8 @@
     
     
       
+        
+          
         
       
         
@@ -7601,23 +7603,33 @@
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
-            
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
   
   <span class="md-ellipsis">
-    Developer
+    Developer guide
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4" id="__nav_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
         
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
-            Developer
+            Developer guide
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
             
               
                 
@@ -7626,37 +7638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../developing-locally/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Developing locally
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="testing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7665,7 +7647,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -7678,7 +7659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../contributing-changes/" class="md-nav__link">
+      <a href="contributing-changes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7699,7 +7680,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../website/" class="md-nav__link">
+      <a href="website/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7720,7 +7701,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../install-script/" class="md-nav__link">
+      <a href="install-script/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7741,7 +7722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../using-make/" class="md-nav__link">
+      <a href="using-make/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7762,7 +7743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../releases/" class="md-nav__link">
+      <a href="releases/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7783,7 +7764,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../packaging/" class="md-nav__link">
+      <a href="packaging/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7804,7 +7785,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../security/" class="md-nav__link">
+      <a href="security/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7825,7 +7806,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
+      <a href="architecture/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7846,7 +7827,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../building-on-top-of-chezmoi/" class="md-nav__link">
+      <a href="building-on-top-of-chezmoi/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7930,7 +7911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../links/articles/" class="md-nav__link">
+      <a href="../links/articles/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7951,7 +7932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../links/podcasts/" class="md-nav__link">
+      <a href="../links/podcasts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7972,7 +7953,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../links/videos/" class="md-nav__link">
+      <a href="../links/videos/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -7993,7 +7974,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../links/dotfile-repos/" class="md-nav__link">
+      <a href="../links/dotfile-repos/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -8014,7 +7995,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../links/related-software/" class="md-nav__link">
+      <a href="../links/related-software/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -8035,7 +8016,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../links/social-media/" class="md-nav__link">
+      <a href="../links/social-media/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -8063,7 +8044,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../license/" class="md-nav__link">
+      <a href="../license/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -8112,35 +8093,45 @@
   
 
 
-<h1 id="testing">Testing</h1>
-<p>chezmoi uses multiple levels of testing:</p>
-<ol>
-<li>
-<p>Unit testing, using <a href="https://pkg.go.dev/testing"><code>testing</code></a>,  and
-   <a href="https://pkg.go.dev/github.com/alecthomas/assert/v2"><code>github.com/alecthomas/assert/v2</code></a>,
-   tests that functions and small components behave as expected for a wide range
-   of inputs, especially edge cases. These are generally found in
-   <code>internal/chezmoi/*_test.go</code>.</p>
-</li>
-<li>
-<p>Filesystem integration tests, using <code>testing</code> and
-   <a href="https://pkg.go.dev/github.com/twpayne/go-vfs/v5"><code>github.com/twpayne/go-vfs/v5</code></a>,
-   test chezmoi's effects on the filesystem. This include some tests in
-   <code>internal/chezmoi/*_test.go</code>, and higher level command tests in
-   <code>internal/cmd/*cmd_test.go</code>.</p>
-</li>
-<li>
-<p>High-level integration tests using
-   <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
-   are in <code>internal/cmd/testdata/scripts/*.txtar</code> and are run by
-   <code>internal/cmd/main_test.go</code>.</p>
-</li>
-<li>
-<p>Linux distribution and OS tests run the full test suite using Docker for
-   different Linux distributions (in <code>assets/docker</code>) and Vagrant for different
-   OSes (in <code>assets/vagrant</code>). Windows tests are run in GitHub Actions.</p>
-</li>
-</ol>
+<h1 id="developer">Developer</h1>
+<p>chezmoi is written in <a href="https://golang.org">Go</a> and development happens on
+<a href="https://github.com">GitHub</a>. chezmoi is a standard Go project, using standard
+Go tooling. chezmoi requires Go 1.21 or later.</p>
+<p>Checkout chezmoi:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/twpayne/chezmoi.git
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>chezmoi
+</code></pre></div>
+<p>Build chezmoi:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>build
+</code></pre></div>
+<p>Run all tests:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+</code></pre></div>
+<p>chezmoi's tests include integration tests with other software. If the other
+software is not found in <code>$PATH</code> the tests will be skipped. Running the full set
+of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <code>gpg</code>, <code>perl</code>, <code>python3</code>, <code>rage</code>,
+<code>ruby</code>, <code>sed</code>, <code>sha256sum</code>, <code>unzip</code>, <code>xz</code>, <code>zip</code>, and <code>zstd</code>.</p>
+<p>Run chezmoi:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>run<span class="w"> </span>.
+</code></pre></div>
+<p>Run a set of smoketests, including cross-compilation, tests, and linting:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>smoketest
+</code></pre></div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you use <code>fish</code> as your primary shell, you may get warnings from Fish
+during tests:</p>
+<div class="highlight"><pre><span></span><code>error: can not save history
+warning-path: Unable to locate data directory derived from $HOME: &#39;/home/user/.local/share/fish&#39;.
+warning-path: The error was &#39;Operation not supported&#39;.
+warning-path: Please set $HOME to a directory where you have write access.
+</code></pre></div>
+<p>These can be avoided with by running tests with <code>SHELL=bash</code> or <code>SHELL=zsh</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
+<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>zsh<span class="w"> </span>make<span class="w"> </span>smoketest
+<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+</code></pre></div>
+</div>
 
 
 
@@ -8197,12 +8188,12 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      <script src="../assets/javascripts/bundle.e1c3ead8.min.js"></script>
       
-        <script src="../../extra/refresh_on_toggle_dark_light.js"></script>
+        <script src="../extra/refresh_on_toggle_dark_light.js"></script>
       
     
   </body>
