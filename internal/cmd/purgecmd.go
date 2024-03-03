@@ -92,7 +92,7 @@ func (c *Config) doPurge(options *doPurgeOptions) error {
 		case runtime.GOOS == "windows":
 			// On Windows the binary of a running process cannot be removed.
 			// Warn the user, but otherwise continue.
-			c.errorf("cannot purge binary (%s) on Windows", executable)
+			c.errorf("cannot purge binary (%s) on Windows\n", executable)
 		case strings.Contains(executable, "test"):
 			// Special case: do not purge the binary if it is a test binary created
 			// by go test as this will break later or concurrent tests.
