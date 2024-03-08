@@ -2599,7 +2599,7 @@ func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
 		return tempDirAbsPath, nil
 	}
 	tempDir, err := os.MkdirTemp("", key)
-	chezmoilog.InfoOrError(c.logger, "MkirTemp", err, slog.String("tempDir", tempDir))
+	chezmoilog.InfoOrError(c.logger, "MkdirTemp", err, slog.String("tempDir", tempDir))
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
