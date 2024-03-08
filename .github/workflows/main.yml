@@ -69,7 +69,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-    - uses: reviewdog/action-misspell@06d6a480724fa783c220081bbc22336a78dbbe82
+    - uses: reviewdog/action-misspell@32cdac969bc45951d79b89420a60c9b0102cf6ed
       with:
         locale: US
   test-alpine:
