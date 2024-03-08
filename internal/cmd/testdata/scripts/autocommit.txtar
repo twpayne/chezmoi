@@ -8,38 +8,47 @@ exec chezmoi init
 
 # test that chezmoi add creates and pushes a commit
 exec chezmoi add $HOME${/}.file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Add \.file'
 
 # test that chezmoi edit creates and pushes a commit
 exec chezmoi edit $HOME${/}.file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Update \.file'
 
 # test that chezmoi chattr creates and pushes a commit
 exec chezmoi chattr +executable $HOME${/}.file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Change attributes of \.file'
 
 # test that chezmoi add on a directory creates and pushes a commit
 exec chezmoi add $HOME${/}.dir
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Add \.dir/file'
+
+# test that copying a file creates a valid commit message
+cp $CHEZMOISOURCEDIR/executable_dot_file $CHEZMOISOURCEDIR/executable_dot_file2
+mv $CHEZMOISOURCEDIR/executable_dot_file $CHEZMOISOURCEDIR/executable_dot_file3
+exec git -C $CHEZMOISOURCEDIR config --local diff.renames copies
+exec git -C $CHEZMOISOURCEDIR add .
+exec chezmoi edit $HOME${/}.dir${/}file
+exec git -C $CHEZMOISOURCEDIR show HEAD
+stdout 'Copy \.file to \.file2'
 
 # test that chezmoi chattr on a file in a directory creates and pushes a commit
 exec chezmoi chattr --debug +private $HOME${/}.dir/file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Change attributes of \.dir'
 
 # test that chezmoi forget creates and pushes a commit
-exec chezmoi forget --force $HOME${/}.file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
-stdout 'Remove \.file'
+exec chezmoi forget --force $HOME${/}.file2
+exec git -C $CHEZMOISOURCEDIR show HEAD
+stdout 'Remove \.file2'
 
 # test that chezmoi edit uses a custom commit message template
 appendline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "{{ .prefix }}my commit message"'
 exec chezmoi edit $HOME${/}.dir${/}file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'feat: my commit message'
 
 # test that only one of git.commitMessageTemplate and git.commitMessageTemplateFile can be set
@@ -50,7 +59,7 @@ removeline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplate = "{{ .pref
 
 # test that chezmoi edit uses a custom commit message template file
 exec chezmoi edit $HOME${/}.dir${/}file
-exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'feat: my commit message file'
 removeline $CHEZMOICONFIGDIR/chezmoi.toml '    commitMessageTemplateFile = ".COMMIT_MESSAGE.tmpl"'
 

@@ -10,6 +10,7 @@
 
 {{- range .RenamedOrCopied -}}
 {{ if and (eq .X 'R') (eq .Y '.') }}Change attributes of {{ .Path | targetRelPath }}
+{{ else if and (eq .X 'C') (eq .Y '.') -}}Copy {{ .OrigPath | targetRelPath }} to {{ .Path | targetRelPath }}
 {{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
 {{ end }}
 {{- end -}}

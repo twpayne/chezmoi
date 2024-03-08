@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestParseStatusPorcelainV2(t *testing.T) {
@@ -52,6 +54,45 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 						HH:   "cea5c3500651a923bacd80f960dd20f04f71d509",
 						HI:   "0000000000000000000000000000000000000000",
 						Path: "main.go",
+					},
+				},
+			},
+		},
+		{
+			name: "copied",
+			outputStr: chezmoitest.JoinLines(
+				"2 C. N... 100644 100644 100644 4a58007052a65fbc2fc3f910f2855f45a4058e74 4a58007052a65fbc2fc3f910f2855f45a4058e74 C100 c\tb",
+				"2 R. N... 100644 100644 100644 4a58007052a65fbc2fc3f910f2855f45a4058e74 4a58007052a65fbc2fc3f910f2855f45a4058e74 R100 d\tb",
+			),
+			expectedStatus: &Status{
+				RenamedOrCopied: []RenamedOrCopiedStatus{
+					{
+						X:        'C',
+						Y:        '.',
+						Sub:      "N...",
+						MH:       0o100644,
+						MI:       0o100644,
+						MW:       0o100644,
+						HH:       "4a58007052a65fbc2fc3f910f2855f45a4058e74",
+						HI:       "4a58007052a65fbc2fc3f910f2855f45a4058e74",
+						RC:       'C',
+						Score:    100,
+						Path:     "c",
+						OrigPath: "b",
+					},
+					{
+						X:        'R',
+						Y:        '.',
+						Sub:      "N...",
+						MH:       0o100644,
+						MI:       0o100644,
+						MW:       0o100644,
+						HH:       "4a58007052a65fbc2fc3f910f2855f45a4058e74",
+						HI:       "4a58007052a65fbc2fc3f910f2855f45a4058e74",
+						RC:       'R',
+						Score:    100,
+						Path:     "d",
+						OrigPath: "b",
 					},
 				},
 			},
