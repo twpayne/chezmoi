@@ -8345,9 +8345,11 @@
 <ol>
 <li>
 <p>Use <code>chezmoi edit $FILE</code>. This will open the source file for <code>$FILE</code> in your
-   editor, including . For extra ease, use <code>chezmoi edit --apply $FILE</code> to apply
-   the changes when you quit your editor, and <code>chezmoi edit --watch $FILE</code> to
-   apply the changes whenever you save the file.</p>
+   editor, including opening the template if the file is templated and
+   transparently decrypting and re-encrypting it if it is encrypted. For extra
+   ease, use <code>chezmoi edit --apply $FILE</code> to apply the changes when you quit
+   your editor, and <code>chezmoi edit --watch $FILE</code> to apply the changes whenever
+   you save the file.</p>
 </li>
 <li>
 <p>Use <code>chezmoi cd</code> and edit the files in the source directory directly. Run
