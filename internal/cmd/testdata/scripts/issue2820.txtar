@@ -2,8 +2,12 @@
 ! exec chezmoi add $CHEZMOISOURCEDIR
 stderr 'cannot add chezmoi file to chezmoi'
 
-# test that chezmoi add refuses to add files in chezmoi's config directory
-! exec chezmoi add $CHEZMOICONFIGDIR
+# test that chezmoi add refuses to add chezmoi's config file
+! exec chezmoi add $CHEZMOICONFIGDIR/chezmoi.toml
+stderr 'cannot add chezmoi\x27s config file to chezmoi'
+
+# test that chezmoi add refuses to add files in chezmoi's cache directory
+! exec chezmoi add $HOME/.cache/chezmoi
 stderr 'cannot add chezmoi file to chezmoi'
 
 # test that chezmoi add refuses to add files in chezmoi's source directory when already in that directory
@@ -12,6 +16,7 @@ exists dot_file
 ! exec chezmoi add dot_file
 stderr 'cannot add chezmoi file to chezmoi'
 
+-- home/user/.cache/chezmoi/.keep --
 -- home/user/.config/chezmoi/chezmoi.toml --
 -- home/user/.local/share/chezmoi/dot_file --
 # contents of .file
