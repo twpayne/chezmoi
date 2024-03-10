@@ -321,6 +321,7 @@ type AddOptions struct {
 	Filter            *EntryTypeFilter // Entry type filter.
 	OnIgnoreFunc      func(RelPath)    // Function to call when a target is ignored.
 	PreAddFunc        PreAddFunc       // Function to be called before a source entry is added.
+	ConfigFileAbsPath AbsPath          // Path to config file.
 	ProtectedAbsPaths []AbsPath        // Paths that must not be added.
 	RemoveDir         RelPath          // Directory to remove before adding.
 	ReplaceFunc       ReplaceFunc      // Function to be called before a source entry is replaced.
@@ -361,11 +362,17 @@ func (s *SourceState) Add(
 
 	// Check for protected paths.
 	for _, destAbsPath := range destAbsPaths {
+		if destAbsPath == options.ConfigFileAbsPath {
+			format := "%s: cannot add chezmoi's config file to chezmoi, use a config file template instead"
+			return fmt.Errorf(format, destAbsPath)
+		}
+	}
+	for _, destAbsPath := range destAbsPaths {
 		for _, protectedAbsPath := range options.ProtectedAbsPaths {
-			if protectedAbsPath.Empty() {
-				continue
-			}
-			if strings.HasPrefix(destAbsPath.String(), protectedAbsPath.String()) {
+			switch {
+			case protectedAbsPath.Empty():
+				// Do nothing.
+			case strings.HasPrefix(destAbsPath.String(), protectedAbsPath.String()):
 				format := "%s: cannot add chezmoi file to chezmoi (%s is protected)"
 				return fmt.Errorf(format, destAbsPath, protectedAbsPath)
 			}
