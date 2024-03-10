@@ -1,20 +1,46 @@
 version: 2
 updates:
-- package-ecosystem: gomod
-  directory: /
-  schedule:
-    interval: monthly
-  labels:
-  - enhancement
-- package-ecosystem: github-actions
-  directory: /
-  schedule:
-    interval: monthly
-  labels:
-  - enhancement
-- package-ecosystem: pip
-  directory: /assets
-  schedule:
-    interval: monthly
-  labels:
-  - enhancement
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - enhancement
+
+    groups:
+      go-dev:
+        dependency-type: development
+        patterns:
+          - '*'
+        update-types: [minor, patch]
+
+      go-prod:
+        dependency-type: production
+        patterns:
+          - '*'
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - enhancement
+
+    groups:
+      actions:
+        patterns:
+          - '*'
+        update-types: [minor, patch]
+
+  - package-ecosystem: pip
+    directory: /assets
+    schedule:
+      interval: monthly
+    labels:
+      - enhancement
+    groups:
+      python:
+        patterns:
+          - '*'
+        update-types: [minor, patch]
