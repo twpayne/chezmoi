@@ -389,3 +389,8 @@ articles:
   version: 2.47.0
   title: The Ultimate Dotfiles Management Tool
   url: https://medium.com/@bartelloni.guglielmo_39715/the-ultimate-dotfiles-management-tool-456177493974
+- date: '2024-03-11'
+  version: 2.47.1
+  lang: CN
+  title: 'Chezmoi：優雅管理Linux的dotfile，使用Git儲存庫備份，類似GNU Stow'
+  url: https://ivonblog.com/posts/chezmoi-manage-dotfiles/
