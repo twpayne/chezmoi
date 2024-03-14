@@ -41,7 +41,6 @@ type annotationsSet map[string]string
 func getAnnotations(cmd *cobra.Command) annotationsSet {
 	thirdPartyCommandNames := []string{
 		"__complete",
-		"generate-fig-spec",
 	}
 	if cmd.Annotations == nil && !slices.Contains(thirdPartyCommandNames, cmd.Name()) {
 		panic(fmt.Sprintf("%q: no annotations", cmd.Name()))

@@ -1,3 +1,0 @@
-# test that chezmoi generate-fig-spec generates a Fig spec
-exec chezmoi generate-fig-spec
-stdout 'const completionSpec:'
