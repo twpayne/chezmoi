@@ -109,7 +109,7 @@ func (c *Config) upgradeUNIXPackage(
 			if useSudo {
 				args = append(args, "sudo")
 			}
-			args = append(args, "pacman", "-S", "chezmoi")
+			args = append(args, "pacman", "-S", "--needed", "chezmoi")
 			return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 		}
 
