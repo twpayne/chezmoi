@@ -117,8 +117,8 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return promptBoolInitTemplateFunc(field, args...)
 		}
 
-		promptChoiceInitTemplateFunc := func(prompt string, choices []any, args ...string) string {
-			choiceStrs, err := anySliceToStringSlice(choices)
+		promptChoiceInitTemplateFunc := func(prompt string, choices any, args ...string) string {
+			choiceStrs, err := anyToStringSlice(choices)
 			if err != nil {
 				panic(err)
 			}
