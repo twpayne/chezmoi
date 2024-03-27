@@ -132,9 +132,9 @@ func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	return false
 }
 
-func (c *Config) findExecutableTemplateFunc(file string, pathList []any) string {
+func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
 	files := []string{file}
-	paths, err := anySliceToStringSlice(pathList)
+	paths, err := anyToStringSlice(pathList)
 	if err != nil {
 		panic(fmt.Errorf("path list: %w", err))
 	}
@@ -147,13 +147,13 @@ func (c *Config) findExecutableTemplateFunc(file string, pathList []any) string 
 	}
 }
 
-func (c *Config) findOneExecutableTemplateFunc(fileList, pathList []any) string {
-	files, err := anySliceToStringSlice(fileList)
+func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
+	files, err := anyToStringSlice(fileList)
 	if err != nil {
 		panic(fmt.Errorf("file list: %w", err))
 	}
 
-	paths, err := anySliceToStringSlice(pathList)
+	paths, err := anyToStringSlice(pathList)
 	if err != nil {
 		panic(fmt.Errorf("path list: %w", err))
 	}

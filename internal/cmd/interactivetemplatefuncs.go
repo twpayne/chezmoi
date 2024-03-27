@@ -103,7 +103,7 @@ func (c *Config) promptBoolOnceInteractiveTemplateFunc(m map[string]any, path an
 	return c.promptBoolInteractiveTemplateFunc(prompt, args...)
 }
 
-func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices []any, args ...string) string {
+func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices any, args ...string) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -113,7 +113,7 @@ func (c *Config) promptChoiceInteractiveTemplateFunc(prompt string, choices []an
 		return valueStr
 	}
 
-	choiceStrs, err := anySliceToStringSlice(choices)
+	choiceStrs, err := anyToStringSlice(choices)
 	if err != nil {
 		panic(err)
 	}
@@ -129,7 +129,7 @@ func (c *Config) promptChoiceOnceInteractiveTemplateFunc(
 	m map[string]any,
 	path any,
 	prompt string,
-	choices []any,
+	choices any,
 	args ...string,
 ) string {
 	if len(args) > 1 {
@@ -228,17 +228,32 @@ func (c *Config) promptStringOnceInteractiveTemplateFunc(m map[string]any, path 
 	return c.promptStringInteractiveTemplateFunc(prompt, args...)
 }
 
-func anySliceToStringSlice(slice []any) ([]string, error) {
-	result := make([]string, 0, len(slice))
-	for _, elem := range slice {
-		switch elem := elem.(type) {
-		case []byte:
-			result = append(result, string(elem))
-		case string:
-			result = append(result, elem)
-		default:
-			return nil, fmt.Errorf("%v: not a string", elem)
-		}
+func anyToString(v any) (string, error) {
+	switch v := v.(type) {
+	case []byte:
+		return string(v), nil
+	case string:
+		return v, nil
+	default:
+		return "", fmt.Errorf("%v: not a string", v)
 	}
-	return result, nil
+}
+
+func anyToStringSlice(slice any) ([]string, error) {
+	switch slice := slice.(type) {
+	case []any:
+		result := make([]string, 0, len(slice))
+		for _, elem := range slice {
+			elemStr, err := anyToString(elem)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, elemStr)
+		}
+		return result, nil
+	case []string:
+		return slice, nil
+	default:
+		return nil, fmt.Errorf("%v: not a slice", slice)
+	}
 }
