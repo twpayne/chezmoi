@@ -43,7 +43,6 @@ linters:
   - loggercheck
   - makezero
   - misspell
-  - musttag
   - nilerr
   - noctx
   - nolintlint
@@ -97,6 +96,7 @@ linters:
   - lll
   - maintidx
   - maligned
+  - musttag
   - nakedret
   - nestif
   - nilnil
