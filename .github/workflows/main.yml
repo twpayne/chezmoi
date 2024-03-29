@@ -69,7 +69,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-    - uses: reviewdog/action-misspell@32cdac969bc45951d79b89420a60c9b0102cf6ed
+    - uses: reviewdog/action-misspell@5bd7be2fc7ae56a517184f5c4bbcf2fd7afe3927
       with:
         locale: US
   test-alpine:
@@ -302,7 +302,7 @@ jobs:
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/cache@ab5e6d0c87105b4c9c2047343972218f562e4319
+    - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
