@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -31,6 +32,7 @@ import (
 var (
 	envConditionRx   = regexp.MustCompile(`\Aenv:(\w+)\z`)
 	envVarRx         = regexp.MustCompile(`\$\w+`)
+	lookupRx         = regexp.MustCompile(`\Alookup:(.*)\z`)
 	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 )
 
@@ -78,6 +80,10 @@ func TestScript(t *testing.T) {
 			}
 			if m := envConditionRx.FindStringSubmatch(cond); m != nil {
 				return os.Getenv(m[1]) != "", nil
+			}
+			if m := lookupRx.FindStringSubmatch(cond); m != nil {
+				_, err := net.LookupIP(m[1])
+				return err == nil, nil
 			}
 			if m := umaskConditionRx.FindStringSubmatch(cond); m != nil {
 				umask, _ := strconv.ParseInt(m[1], 8, 64)
