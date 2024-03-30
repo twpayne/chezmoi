@@ -417,7 +417,7 @@ DEST_ABS_PATH:
 				switch sourceStateDir, ok := node.sourceStateEntry.(*SourceStateDir); {
 				case i != len(nodes)-1 && !ok:
 					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.sourceStateEntry))
-				case sourceStateDir.Attr.External:
+				case ok && sourceStateDir.Attr.External:
 					return fmt.Errorf("%s: cannot add entry in external_ directory", destAbsPath)
 				}
 			}
@@ -639,7 +639,7 @@ func (s *SourceState) AddDestAbsPathInfos(
 			return nil
 		}
 		parentRelPath := parentAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
-		if s.root.get(parentRelPath) != nil {
+		if _, ok := s.root.get(parentRelPath).(*SourceStateDir); ok {
 			return nil
 		}
 

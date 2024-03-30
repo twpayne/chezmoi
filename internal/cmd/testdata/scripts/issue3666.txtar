@@ -1,0 +1,7 @@
+# test that chezmoi add creates parent directories
+exec chezmoi add $HOME${/}.config/helix/themes/ayu_custom.toml
+exists $CHEZMOISOURCEDIR/dot_config/exact_helix/themes/ayu_custom.toml
+
+-- home/user/.config/helix/themes/ayu_custom.toml --
+# contents of ayu_custom.toml
+-- home/user/.local/share/chezmoi/dot_config/exact_helix/.keep --
