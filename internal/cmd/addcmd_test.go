@@ -237,6 +237,25 @@ func TestAddCmd(t *testing.T) {
 				),
 			},
 		},
+		{
+			name: "issue_3666",
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".config/helix/themes/ayu_custom.toml": "# contents of ayu_custom.toml\n",
+					".local/share/chezmoi": map[string]any{
+						"dot_config/exact_helix": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
+					},
+				},
+			},
+			args: []string{"~/.config/helix/themes/ayu_custom.toml"},
+			tests: []any{
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/exact_helix/themes/ayu_custom.toml",
+					vfst.TestModeIsRegular(),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
+					vfst.TestContentsString("# contents of ayu_custom.toml\n"),
+				),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.SkipUnlessGOOS(t, tc.name)
