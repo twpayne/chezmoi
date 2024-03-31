@@ -394,3 +394,16 @@ articles:
   lang: CN
   title: 'Chezmoi：優雅管理Linux的dotfile，使用Git儲存庫備份，類似GNU Stow'
   url: https://ivonblog.com/posts/chezmoi-manage-dotfiles/
+- date: '2024-03-23'
+  version: 2.47.2
+  lang: CN
+  title: '使用 chezmoi & vscode, 管理你的 dotfiles'
+  url: https://shansan.top/2024/03/23/using-chezmoi-to-manage-dotfiles/
+- date: '2024-03-23'
+  version: 2.47.2
+  title: A tour around chezmoi
+  url: https://www.rousette.org.uk/archives/a-tour-around-chezmoi/
+- date: '2024-03-25'
+  version: 2.47.2
+  title: Whatever happened to dotfiles?
+  url: https://ryan0x44.substack.com/p/whatever-happened-to-dotfiles
