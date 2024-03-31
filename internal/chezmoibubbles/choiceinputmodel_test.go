@@ -19,7 +19,7 @@ func TestChoiceInputModel(t *testing.T) {
 		{
 			name:          "empty_with_default",
 			choices:       choicesYesNoAll,
-			defaultValue:  newString("all"),
+			defaultValue:  newValue("all"),
 			input:         "\r",
 			expectedValue: "all",
 		},
