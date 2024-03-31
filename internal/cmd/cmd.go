@@ -19,6 +19,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 const readSourceStateHookName = "read-source-state"
@@ -116,14 +117,14 @@ func Main(versionInfo VersionInfo, args []string) int {
 // removed.
 func deDuplicateError(err error) string {
 	components := deDuplicateErrorRx.Split(err.Error(), -1)
-	seenComponents := make(map[string]struct{}, len(components))
+	seenComponents := chezmoiset.NewWithCapacity[string](len(components))
 	uniqueComponents := make([]string, 0, len(components))
 	for _, component := range components {
-		if _, ok := seenComponents[component]; ok {
+		if seenComponents.Contains(component) {
 			continue
 		}
 		uniqueComponents = append(uniqueComponents, component)
-		seenComponents[component] = struct{}{}
+		seenComponents.Add(component)
 	}
 	return strings.Join(uniqueComponents, ": ")
 }

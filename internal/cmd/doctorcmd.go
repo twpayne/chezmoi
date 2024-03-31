@@ -28,6 +28,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoigit"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 // A checkResult is the result of a check.
@@ -508,7 +509,7 @@ func (c *configFileCheck) Name() string {
 }
 
 func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	filenameAbsPaths := make(map[chezmoi.AbsPath]struct{})
+	filenameAbsPaths := chezmoiset.New[chezmoi.AbsPath]()
 	for _, dir := range append([]string{c.bds.ConfigHome}, c.bds.ConfigDirs...) {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dir, homeDirAbsPath)
 		if err != nil {
@@ -517,7 +518,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		for _, extension := range chezmoi.FormatExtensions {
 			filenameAbsPath := configDirAbsPath.Join(c.basename, chezmoi.NewRelPath(c.basename.String()+"."+extension))
 			if _, err := system.Stat(filenameAbsPath); err == nil {
-				filenameAbsPaths[filenameAbsPath] = struct{}{}
+				filenameAbsPaths.Add(filenameAbsPath)
 			}
 		}
 	}
@@ -525,7 +526,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 	case 0:
 		return checkResultOK, "no config file found"
 	case 1:
-		filenameAbsPath := anyKey(filenameAbsPaths)
+		filenameAbsPath := filenameAbsPaths.AnyElement()
 		if filenameAbsPath != c.expected {
 			return checkResultFailed, fmt.Sprintf("found %s, expected %s", filenameAbsPath, c.expected)
 		}
@@ -772,14 +773,4 @@ func (c *versionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath
 		return checkResultWarning, c.versionStr
 	}
 	return checkResultOK, c.versionStr
-}
-
-// anyKey returns any key from m. It is typically used to return a single key
-// when m is known to contain exactly one element.
-func anyKey[M ~map[K]V, K comparable, V any](m M) K { //nolint:ireturn
-	for k := range m {
-		return k
-	}
-	var k K
-	return k
 }

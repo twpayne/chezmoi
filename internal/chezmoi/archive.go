@@ -16,6 +16,8 @@ import (
 	"github.com/klauspost/compress/zip"
 	"github.com/klauspost/compress/zstd"
 	"github.com/ulikunitz/xz"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 // An ArchiveFormat is an archive format and implements the
@@ -160,17 +162,17 @@ func implicitDirHeader(dir string, modTime time.Time) *tar.Header {
 func walkArchiveTar(r io.Reader, f WalkArchiveFunc) error {
 	tarReader := tar.NewReader(r)
 	var skippedDirPrefixes []string
-	seenDirs := newSet[string]()
+	seenDirs := chezmoiset.New[string]()
 	processHeader := func(header *tar.Header, dir string) error {
 		for _, skippedDirPrefix := range skippedDirPrefixes {
 			if strings.HasPrefix(header.Name, skippedDirPrefix) {
 				return fs.SkipDir
 			}
 		}
-		if seenDirs.contains(dir) {
+		if seenDirs.Contains(dir) {
 			return nil
 		}
-		seenDirs.add(dir)
+		seenDirs.Add(dir)
 		name := strings.TrimSuffix(header.Name, "/")
 		switch err := f(name, header.FileInfo(), tarReader, header.Linkname); {
 		case errors.Is(err, fs.SkipDir):
@@ -231,17 +233,17 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 		return err
 	}
 	var skippedDirPrefixes []string
-	seenDirs := newSet[string]()
+	seenDirs := chezmoiset.New[string]()
 	processHeader := func(fileInfo fs.FileInfo, dir string) error {
 		for _, skippedDirPrefix := range skippedDirPrefixes {
 			if strings.HasPrefix(dir, skippedDirPrefix) {
 				return fs.SkipDir
 			}
 		}
-		if seenDirs.contains(dir) {
+		if seenDirs.Contains(dir) {
 			return nil
 		}
-		seenDirs.add(dir)
+		seenDirs.Add(dir)
 		name := strings.TrimSuffix(dir, "/")
 		dirFileInfo := implicitDirHeader(dir, fileInfo.ModTime()).FileInfo()
 		switch err := f(name, dirFileInfo, nil, ""); {

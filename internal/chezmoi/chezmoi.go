@@ -20,6 +20,8 @@ import (
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v5"
 	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 var (
@@ -80,7 +82,7 @@ var (
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
-var knownPrefixedFiles = newSet(
+var knownPrefixedFiles = chezmoiset.New(
 	Prefix+".json"+TemplateSuffix,
 	Prefix+".toml"+TemplateSuffix,
 	Prefix+".yaml"+TemplateSuffix,
@@ -102,7 +104,7 @@ var knownPrefixedFiles = newSet(
 )
 
 // knownPrefixedDirs is a set of known dirnames with the .chezmoi prefix.
-var knownPrefixedDirs = newSet(
+var knownPrefixedDirs = chezmoiset.New(
 	TemplatesDirName,
 	dataName,
 	externalsDirName,
@@ -111,7 +113,7 @@ var knownPrefixedDirs = newSet(
 
 // knownTargetFiles is a set of known target files that should not be managed
 // directly.
-var knownTargetFiles = newSet(
+var knownTargetFiles = chezmoiset.New(
 	"chezmoi.json",
 	"chezmoi.toml",
 	"chezmoi.yaml",
@@ -194,18 +196,18 @@ func SHA256Sum(data []byte) []byte {
 func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffixes []string) bool {
 	switch fileInfo.Mode().Type() {
 	case 0:
-		if strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base) {
+		if strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.Contains(base) {
 			return true
 		}
 		for _, encryptedSuffix := range encryptedSuffixes {
 			fileAttr := parseFileAttr(fileInfo.Name(), encryptedSuffix)
-			if knownTargetFiles.contains(fileAttr.TargetName) {
+			if knownTargetFiles.Contains(fileAttr.TargetName) {
 				return true
 			}
 		}
 		return false
 	case fs.ModeDir:
-		return strings.HasPrefix(base, Prefix) && !knownPrefixedDirs.contains(base)
+		return strings.HasPrefix(base, Prefix) && !knownPrefixedDirs.Contains(base)
 	case fs.ModeSymlink:
 		return strings.HasPrefix(base, Prefix)
 	default:

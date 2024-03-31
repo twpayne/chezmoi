@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 type unmanagedCmdConfig struct {
@@ -37,21 +37,19 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	if len(args) == 0 {
 		absPaths = append(absPaths, c.DestDirAbsPath)
 	} else {
-		argsAbsPaths := make(map[chezmoi.AbsPath]struct{})
+		argsAbsPaths := chezmoiset.New[chezmoi.AbsPath]()
 		for _, arg := range args {
 			argAbsPath, err := chezmoi.NormalizePath(arg)
 			if err != nil {
 				return err
 			}
-			argsAbsPaths[argAbsPath] = struct{}{}
+			argsAbsPaths.Add(argAbsPath)
 		}
-		for argAbsPath := range argsAbsPaths {
-			absPaths = append(absPaths, argAbsPath)
-		}
+		absPaths = chezmoi.AbsPaths(argsAbsPaths.Elements())
 		sort.Sort(absPaths)
 	}
 
-	unmanagedRelPaths := make(map[chezmoi.RelPath]struct{})
+	unmanagedRelPaths := chezmoiset.New[chezmoi.RelPath]()
 	walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			c.errorf("%s: %v\n", destAbsPath, err)
@@ -71,7 +69,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		managed := sourceStateEntry != nil
 		ignored := sourceState.Ignore(targetRelPath)
 		if !managed && !ignored {
-			unmanagedRelPaths[targetRelPath] = struct{}{}
+			unmanagedRelPaths.Add(targetRelPath)
 		}
 		if fileInfo.IsDir() {
 			switch {
@@ -96,7 +94,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	}
 
 	builder := strings.Builder{}
-	sortedRelPaths := chezmoi.RelPaths(chezmoimaps.Keys(unmanagedRelPaths))
+	sortedRelPaths := chezmoi.RelPaths(unmanagedRelPaths.Elements())
 	sort.Sort(sortedRelPaths)
 	for _, relPath := range sortedRelPaths {
 		switch c.unmanaged.pathStyle {

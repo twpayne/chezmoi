@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 type ChoiceInputModel struct {
@@ -24,17 +25,17 @@ func NewChoiceInputModel(prompt string, choices []string, defaultValue *string) 
 	if defaultValue != nil {
 		textInput.Placeholder += ", default " + *defaultValue
 	}
-	allAbbreviations := make(map[string]struct{})
+	allAbbreviations := chezmoiset.New[string]()
 	for _, choice := range choices {
 		for i := range choice {
-			allAbbreviations[choice[:i+1]] = struct{}{}
+			allAbbreviations.Add(choice[:i+1])
 		}
 	}
 	textInput.Validate = func(s string) error {
 		if s == "" && defaultValue != nil {
 			return nil
 		}
-		if _, ok := allAbbreviations[s]; ok {
+		if allAbbreviations.Contains(s) {
 			return nil
 		}
 		return errors.New("unknown or ambiguous choice")

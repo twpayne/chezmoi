@@ -5,20 +5,22 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 	tea "github.com/charmbracelet/bubbletea"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
-var keyTypes = map[tea.KeyType]struct{}{
-	tea.KeyCtrlC: {},
-	tea.KeyEnter: {},
-	tea.KeyEsc:   {},
-}
+var keyTypes = chezmoiset.New(
+	tea.KeyCtrlC,
+	tea.KeyEnter,
+	tea.KeyEsc,
+)
 
 func makeKeyMsg(r rune) tea.Msg { //nolint:ireturn,nolintlint
 	key := tea.Key{
 		Type:  tea.KeyRunes,
 		Runes: []rune{r},
 	}
-	if _, ok := keyTypes[tea.KeyType(r)]; ok {
+	if keyTypes.Contains(tea.KeyType(r)) {
 		key = tea.Key{
 			Type: tea.KeyType(r),
 		}
