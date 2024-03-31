@@ -164,8 +164,9 @@ func (c *Config) defaultReplaceFunc(
 
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, destAbsPathInfosOptions{
-		follow:    c.Mode == chezmoi.ModeSymlink || c.Add.follow,
-		recursive: c.Add.recursive,
+		follow:       c.Mode == chezmoi.ModeSymlink || c.Add.follow,
+		onIgnoreFunc: c.defaultOnIgnoreFunc,
+		recursive:    c.Add.recursive,
 	})
 	if err != nil {
 		return err

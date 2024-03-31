@@ -1,0 +1,14 @@
+# test that chezmoi add does not traverse into ignored directories
+chmod 000 $HOME/.dir/private
+exec chezmoi add $HOME${/}.dir
+stderr 'warning: ignoring .dir/private'
+cmp $CHEZMOISOURCEDIR/dot_dir/public/file golden/file
+
+-- golden/file --
+# contents of .dir/public/file
+-- home/user/.dir/private/file --
+# contents of .dir/private/file
+-- home/user/.dir/public/file --
+# contents of .dir/public/file
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.dir/private
