@@ -1071,6 +1071,7 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 type destAbsPathInfosOptions struct {
 	follow         bool
 	ignoreNotExist bool
+	onIgnoreFunc   func(chezmoi.RelPath)
 	recursive      bool
 }
 
@@ -1089,8 +1090,13 @@ func (c *Config) destAbsPathInfos(
 		if err != nil {
 			return nil, err
 		}
-		if _, err := c.targetRelPath(destAbsPath); err != nil {
+		targetRelPath, err := c.targetRelPath(destAbsPath)
+		if err != nil {
 			return nil, err
+		}
+		if sourceState.Ignore(targetRelPath) {
+			options.onIgnoreFunc(targetRelPath)
+			continue
 		}
 		if options.recursive {
 			walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
@@ -1100,12 +1106,26 @@ func (c *Config) destAbsPathInfos(
 				case err != nil:
 					return err
 				}
+
+				targetRelPath, err := c.targetRelPath(destAbsPath)
+				if err != nil {
+					return err
+				}
+				if sourceState.Ignore(targetRelPath) {
+					options.onIgnoreFunc(targetRelPath)
+					if fileInfo.IsDir() {
+						return fs.SkipDir
+					}
+					return nil
+				}
+
 				if options.follow && fileInfo.Mode().Type() == fs.ModeSymlink {
 					fileInfo, err = c.destSystem.Stat(destAbsPath)
 					if err != nil {
 						return err
 					}
 				}
+
 				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, fileInfo)
 			}
 			if err := chezmoi.Walk(c.destSystem, destAbsPath, walkFunc); err != nil {
