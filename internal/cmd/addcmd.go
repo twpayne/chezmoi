@@ -187,6 +187,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			Encrypt:           c.Add.Encrypt,
 			EncryptedSuffix:   c.encryption.EncryptedSuffix(),
 			Exact:             c.Add.exact,
+			Errorf:            c.errorf,
 			Filter:            c.Add.filter,
 			OnIgnoreFunc:      c.defaultOnIgnoreFunc,
 			PreAddFunc:        c.defaultPreAddFunc,

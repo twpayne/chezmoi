@@ -109,6 +109,7 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 		c.destSystem,
 		destAbsPathInfos,
 		&chezmoi.AddOptions{
+			Errorf:       c.errorf,
 			Filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			OnIgnoreFunc: c.defaultOnIgnoreFunc,
 			PreAddFunc:   c.defaultPreAddFunc,

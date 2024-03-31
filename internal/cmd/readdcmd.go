@@ -146,6 +146,7 @@ TARGET_REL_PATH:
 		if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
 			Encrypt:         sourceStateFile.Attr.Encrypted,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
+			Errorf:          c.errorf,
 			Filter:          c.reAdd.filter,
 		}); err != nil {
 			return err

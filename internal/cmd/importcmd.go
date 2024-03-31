@@ -88,6 +88,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 		archiveReaderSystem,
 		archiveReaderSystem.FileInfos(),
 		&chezmoi.AddOptions{
+			Errorf:    c.errorf,
 			Exact:     c._import.exact,
 			Filter:    c._import.filter,
 			RemoveDir: removeDir,

@@ -1,10 +1,10 @@
 # test that chezmoi add does not add files in external_ directories
-! exec chezmoi add $HOME${/}.external/file
-stderr 'cannot add entry in external_ directory'
+exec chezmoi add $HOME${/}.external/file
+stderr '.external: skipping entries in external_ directory'
 
 # test that chezmoi add does not add files in subdirectories of external_ directories
-! exec chezmoi add $HOME${/}.external/dir/file
-stderr 'cannot add entry in external_ directory'
+exec chezmoi add $HOME${/}.external/dir/file
+stderr '.external: skipping entries in external_ directory'
 
 -- home/user/.external/dir/file --
 # contents of .external/dir/file

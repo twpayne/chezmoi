@@ -1,0 +1,12 @@
+# test that chezmoi add skips files in external_ directories
+exec chezmoi apply
+exists $HOME/.dir/submodule/.git/.keep
+exec chezmoi add $HOME${/}.dir
+stderr '.dir/submodule: skipping entries in external_ directory'
+cmp $CHEZMOISOURCEDIR/dot_dir/file golden/file
+
+-- golden/file --
+# contents of file
+-- home/user/.dir/file --
+# contents of file
+-- home/user/.local/share/chezmoi/dot_dir/external_submodule/.git/.keep --
