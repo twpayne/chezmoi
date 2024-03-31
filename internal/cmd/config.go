@@ -51,6 +51,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoigit"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 // defaultSentinel is a string value used to indicate that the default value
@@ -853,15 +854,15 @@ CONFIG_DIR:
 			return chezmoi.EmptyAbsPath, err
 		}
 
-		dirEntryNames := make(map[string]struct{}, len(dirEntries))
+		dirEntryNames := chezmoiset.NewWithCapacity[string](len(dirEntries))
 		for _, dirEntry := range dirEntries {
-			dirEntryNames[dirEntry.Name()] = struct{}{}
+			dirEntryNames.Add(dirEntry.Name())
 		}
 
 		var names []string
 		for _, extension := range chezmoi.FormatExtensions {
 			name := "chezmoi." + extension
-			if _, ok := dirEntryNames[name]; ok {
+			if dirEntryNames.Contains(name) {
 				names = append(names, name)
 			}
 		}
@@ -1262,15 +1263,15 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 		return nil, err
 	}
 
-	dirEntryNames := make(map[chezmoi.RelPath]struct{}, len(dirEntries))
+	dirEntryNames := chezmoiset.NewWithCapacity[chezmoi.RelPath](len(dirEntries))
 	for _, dirEntry := range dirEntries {
-		dirEntryNames[chezmoi.NewRelPath(dirEntry.Name())] = struct{}{}
+		dirEntryNames.Add(chezmoi.NewRelPath(dirEntry.Name()))
 	}
 
 	var configTemplates []*configTemplate //nolint:prealloc
 	for _, extension := range chezmoi.FormatExtensions {
 		relPath := chezmoi.NewRelPath(chezmoi.Prefix + "." + extension + chezmoi.TemplateSuffix)
-		if _, ok := dirEntryNames[relPath]; !ok {
+		if !dirEntryNames.Contains(relPath) {
 			continue
 		}
 		absPath := sourceDirAbsPath.Join(relPath)

@@ -9,6 +9,8 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/twpayne/go-vfs/v5"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 type patternSetIncludeType bool
@@ -28,15 +30,15 @@ const (
 
 // An patternSet is a set of patterns.
 type patternSet struct {
-	includePatterns set[string]
-	excludePatterns set[string]
+	includePatterns chezmoiset.Set[string]
+	excludePatterns chezmoiset.Set[string]
 }
 
 // newPatternSet returns a new patternSet.
 func newPatternSet() *patternSet {
 	return &patternSet{
-		includePatterns: newSet[string](),
-		excludePatterns: newSet[string](),
+		includePatterns: chezmoiset.New[string](),
+		excludePatterns: chezmoiset.New[string](),
 	}
 }
 
@@ -46,8 +48,8 @@ func (ps *patternSet) LogValue() slog.Value {
 		return slog.Value{}
 	}
 	return slog.GroupValue(
-		slog.Any("includePatterns", ps.includePatterns.elements()),
-		slog.Any("excludePatterns", ps.excludePatterns.elements()),
+		slog.Any("includePatterns", ps.includePatterns.Elements()),
+		slog.Any("excludePatterns", ps.excludePatterns.Elements()),
 	)
 }
 
@@ -58,22 +60,22 @@ func (ps *patternSet) add(pattern string, include patternSetIncludeType) error {
 	}
 	switch include {
 	case patternSetInclude:
-		ps.includePatterns.add(pattern)
+		ps.includePatterns.Add(pattern)
 	case patternSetExclude:
-		ps.excludePatterns.add(pattern)
+		ps.excludePatterns.Add(pattern)
 	}
 	return nil
 }
 
 // glob returns all matches in fileSystem.
 func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
-	allMatches := newSet[string]()
+	allMatches := chezmoiset.New[string]()
 	for includePattern := range ps.includePatterns {
 		matches, err := Glob(fileSystem, filepath.ToSlash(prefix+includePattern))
 		if err != nil {
 			return nil, err
 		}
-		allMatches.add(matches...)
+		allMatches.Add(matches...)
 	}
 	for match := range allMatches {
 		for excludePattern := range ps.excludePatterns {
@@ -82,11 +84,11 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 				return nil, err
 			}
 			if exclude {
-				allMatches.remove(match)
+				allMatches.Remove(match)
 			}
 		}
 	}
-	matchesSlice := allMatches.elements()
+	matchesSlice := allMatches.Elements()
 	for i, match := range matchesSlice {
 		matchesSlice[i] = filepath.ToSlash(match)[len(prefix):]
 	}

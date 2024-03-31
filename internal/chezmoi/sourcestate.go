@@ -34,6 +34,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 // An ExternalType is a type of external source.
@@ -110,7 +111,7 @@ type External struct {
 type SourceState struct {
 	sync.Mutex
 	root                    sourceStateEntryTreeNode
-	removeDirs              map[RelPath]struct{}
+	removeDirs              chezmoiset.Set[RelPath]
 	baseSystem              System
 	system                  System
 	sourceDirAbsPath        AbsPath
@@ -137,7 +138,7 @@ type SourceState struct {
 	templateOptions         []string
 	templates               map[string]*Template
 	externals               map[RelPath][]*External
-	ignoredRelPaths         map[RelPath]struct{}
+	ignoredRelPaths         chezmoiset.Set[RelPath]
 }
 
 // A SourceStateOption sets an option on a source state.
@@ -283,7 +284,7 @@ type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
 	s := &SourceState{
-		removeDirs:           make(map[RelPath]struct{}),
+		removeDirs:           chezmoiset.New[RelPath](),
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
@@ -297,7 +298,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		templateOptions:      DefaultTemplateOptions,
 		templates:            make(map[string]*Template),
 		externals:            make(map[RelPath][]*External),
-		ignoredRelPaths:      make(map[RelPath]struct{}),
+		ignoredRelPaths:      chezmoiset.New[RelPath](),
 	}
 	for _, option := range options {
 		option(s)
@@ -389,8 +390,8 @@ func (s *SourceState) Add(
 	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPaths))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
-	nonEmptyDirs := make(map[SourceRelPath]struct{})
-	externalDirRelPaths := make(map[RelPath]struct{})
+	nonEmptyDirs := chezmoiset.New[SourceRelPath]()
+	externalDirRelPaths := chezmoiset.New[RelPath]()
 	dirRenames := make(map[AbsPath]AbsPath)
 DEST_ABS_PATH:
 	for _, destAbsPath := range destAbsPaths {
@@ -429,7 +430,7 @@ DEST_ABS_PATH:
 				case ok && sourceStateDir.Attr.External:
 					targetRelPathComponents := targetRelPath.SplitAll()
 					externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
-					externalDirRelPaths[externalDirRelPath] = struct{}{}
+					externalDirRelPaths.Add(externalDirRelPath)
 					if options.Errorf != nil {
 						options.Errorf("%s: skipping entries in external_ directory\n", externalDirRelPath)
 					}
@@ -440,7 +441,7 @@ DEST_ABS_PATH:
 		} else {
 			return fmt.Errorf("%s: parent directory not in source state", destAbsPath)
 		}
-		nonEmptyDirs[parentSourceRelPath] = struct{}{}
+		nonEmptyDirs.Add(parentSourceRelPath)
 
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
 		actualStateEntry, err := NewActualStateEntry(destSystem, destAbsPath, destAbsPathInfo, nil)
@@ -519,7 +520,7 @@ DEST_ABS_PATH:
 		if _, ok := sourceStateEntry.(*SourceStateDir); !ok {
 			continue
 		}
-		if _, ok := nonEmptyDirs[sourceEntryRelPath]; ok {
+		if nonEmptyDirs.Contains(sourceEntryRelPath) {
 			continue
 		}
 
@@ -819,17 +820,14 @@ func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	defer s.Unlock()
 	ignore := s.ignore.match(targetRelPath.String()) == patternSetMatchInclude
 	if ignore {
-		s.ignoredRelPaths[targetRelPath] = struct{}{}
+		s.ignoredRelPaths.Add(targetRelPath)
 	}
 	return ignore
 }
 
 // Ignored returns all ignored RelPaths.
 func (s *SourceState) Ignored() RelPaths {
-	relPaths := make(RelPaths, 0, len(s.ignoredRelPaths))
-	for relPath := range s.ignoredRelPaths {
-		relPaths = append(relPaths, relPath)
-	}
+	relPaths := RelPaths(s.ignoredRelPaths.Elements())
 	sort.Sort(relPaths)
 	return relPaths
 }
@@ -857,7 +855,7 @@ func (s *SourceState) PostApply(
 TARGET:
 	for i := len(targetRelPaths) - 1; i >= 0; i-- {
 		targetRelPath := targetRelPaths[i]
-		if _, ok := s.removeDirs[targetRelPath]; !ok {
+		if !s.removeDirs.Contains(targetRelPath) {
 			continue
 		}
 
@@ -1024,7 +1022,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			if sourceStateDir.Attr.Remove {
 				s.Lock()
-				s.removeDirs[targetRelPath] = struct{}{}
+				s.removeDirs.Add(targetRelPath)
 				s.Unlock()
 			}
 			return nil

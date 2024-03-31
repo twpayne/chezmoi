@@ -3,15 +3,17 @@ package cmd
 import (
 	"strings"
 	"unicode"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 var (
-	wellKnownAbbreviations = map[string]struct{}{
-		"ANSI": {},
-		"CPE":  {},
-		"ID":   {},
-		"URL":  {},
-	}
+	wellKnownAbbreviations = chezmoiset.New(
+		"ANSI",
+		"CPE",
+		"ID",
+		"URL",
+	)
 
 	choicesYesNoAllQuit = []string{
 		"yes",
@@ -97,12 +99,6 @@ func firstNonEmptyString(ss ...string) string {
 	return ""
 }
 
-// isWellKnownAbbreviation returns true if word is a well known abbreviation.
-func isWellKnownAbbreviation(word string) bool {
-	_, ok := wellKnownAbbreviations[word]
-	return ok
-}
-
 // pluralize returns the English plural form of singular.
 func pluralize(singular string) string {
 	if strings.HasSuffix(singular, "y") {
@@ -127,7 +123,7 @@ func upperSnakeCaseToCamelCase(s string) string {
 	for i, word := range words {
 		if i == 0 {
 			words[i] = strings.ToLower(word)
-		} else if !isWellKnownAbbreviation(word) {
+		} else if !wellKnownAbbreviations.Contains(word) {
 			words[i] = titleFirst(strings.ToLower(word))
 		}
 	}

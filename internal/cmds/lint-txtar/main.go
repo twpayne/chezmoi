@@ -11,21 +11,22 @@ import (
 	"github.com/rogpeppe/go-internal/txtar"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 var write = flag.Bool("w", false, "rewrite archives")
 
 func lintFilenames(archiveFilename string, archive *txtar.Archive) error {
 	var errs []error
-	filenames := make(map[string]struct{})
+	filenames := chezmoiset.New[string]()
 	for _, file := range archive.Files {
 		if file.Name == "" {
 			errs = append(errs, fmt.Errorf("%s: empty filename", archiveFilename))
 		} else {
-			if _, ok := filenames[file.Name]; ok {
+			if filenames.Contains(file.Name) {
 				errs = append(errs, fmt.Errorf("%s: %s: duplicate filename", archiveFilename, file.Name))
 			}
-			filenames[file.Name] = struct{}{}
+			filenames.Add(file.Name)
 		}
 	}
 	return errors.Join(errs...)

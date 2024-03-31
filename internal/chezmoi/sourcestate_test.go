@@ -1973,7 +1973,7 @@ func withIgnore(ignore *patternSet) SourceStateOption {
 func withIgnoredRelPathStrs(relPathStrs ...string) SourceStateOption {
 	return func(s *SourceState) {
 		for _, relPathStr := range relPathStrs {
-			s.ignoredRelPaths[NewRelPath(relPathStr)] = struct{}{}
+			s.ignoredRelPaths.Add(NewRelPath(relPathStr))
 		}
 	}
 }
