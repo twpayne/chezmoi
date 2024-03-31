@@ -313,20 +313,21 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate      bool             // Automatically create templates, if possible.
-	Create            bool             // Add create_ entries instead of normal entries.
-	Encrypt           bool             // Encrypt files.
-	EncryptedSuffix   string           // Suffix for encrypted files.
-	Exact             bool             // Add the exact_ attribute to added directories.
-	Filter            *EntryTypeFilter // Entry type filter.
-	OnIgnoreFunc      func(RelPath)    // Function to call when a target is ignored.
-	PreAddFunc        PreAddFunc       // Function to be called before a source entry is added.
-	ConfigFileAbsPath AbsPath          // Path to config file.
-	ProtectedAbsPaths []AbsPath        // Paths that must not be added.
-	RemoveDir         RelPath          // Directory to remove before adding.
-	ReplaceFunc       ReplaceFunc      // Function to be called before a source entry is replaced.
-	Template          bool             // Add the .tmpl attribute to added files.
-	TemplateSymlinks  bool             // Add symlinks with targets in the source or home directories as templates.
+	AutoTemplate      bool                 // Automatically create templates, if possible.
+	Create            bool                 // Add create_ entries instead of normal entries.
+	Encrypt           bool                 // Encrypt files.
+	EncryptedSuffix   string               // Suffix for encrypted files.
+	Errorf            func(string, ...any) // Function to print errors.
+	Exact             bool                 // Add the exact_ attribute to added directories.
+	Filter            *EntryTypeFilter     // Entry type filter.
+	OnIgnoreFunc      func(RelPath)        // Function to call when a target is ignored.
+	PreAddFunc        PreAddFunc           // Function to be called before a source entry is added.
+	ConfigFileAbsPath AbsPath              // Path to config file.
+	ProtectedAbsPaths []AbsPath            // Paths that must not be added.
+	RemoveDir         RelPath              // Directory to remove before adding.
+	ReplaceFunc       ReplaceFunc          // Function to be called before a source entry is replaced.
+	Template          bool                 // Add the .tmpl attribute to added files.
+	TemplateSymlinks  bool                 // Add symlinks with targets in the source or home directories as templates.
 }
 
 // Add adds destAbsPathInfos to s.
@@ -389,10 +390,18 @@ func (s *SourceState) Add(
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
 	nonEmptyDirs := make(map[SourceRelPath]struct{})
+	externalDirRelPaths := make(map[RelPath]struct{})
 	dirRenames := make(map[AbsPath]AbsPath)
 DEST_ABS_PATH:
 	for _, destAbsPath := range destAbsPaths {
 		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
+
+		// Skip any entries in known external dirs.
+		for externalDir := range externalDirRelPaths {
+			if targetRelPath.HasDirPrefix(externalDir) {
+				continue DEST_ABS_PATH
+			}
+		}
 
 		// Find the target's parent directory in the source state.
 		var parentSourceRelPath SourceRelPath
@@ -418,7 +427,13 @@ DEST_ABS_PATH:
 				case i != len(nodes)-1 && !ok:
 					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.sourceStateEntry))
 				case ok && sourceStateDir.Attr.External:
-					return fmt.Errorf("%s: cannot add entry in external_ directory", destAbsPath)
+					targetRelPathComponents := targetRelPath.SplitAll()
+					externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
+					externalDirRelPaths[externalDirRelPath] = struct{}{}
+					if options.Errorf != nil {
+						options.Errorf("%s: skipping entries in external_ directory\n", externalDirRelPath)
+					}
+					continue DEST_ABS_PATH
 				}
 			}
 			parentSourceRelPath = nodes[len(nodes)-1].sourceStateEntry.SourceRelPath()
