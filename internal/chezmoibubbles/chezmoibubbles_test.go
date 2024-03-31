@@ -51,6 +51,6 @@ func testRunModelWithInput[M tea.Model]( //nolint:ireturn,nolintlint
 	return model
 }
 
-func newBool(b bool) *bool       { return &b }
-func newInt64(i int64) *int64    { return &i }
-func newString(s string) *string { return &s }
+func newValue[T any](value T) *T {
+	return &value
+}

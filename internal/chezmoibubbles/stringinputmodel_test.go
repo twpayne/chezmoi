@@ -20,7 +20,7 @@ func TestStringInputModel(t *testing.T) {
 		},
 		{
 			name:          "empty_with_default",
-			defaultValue:  newString("default"),
+			defaultValue:  newValue("default"),
 			input:         "\r",
 			expectedValue: "default",
 		},
