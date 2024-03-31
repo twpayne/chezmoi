@@ -42,6 +42,7 @@ linters:
   - ireturn
   - loggercheck
   - makezero
+  - mirror
   - misspell
   - nilerr
   - noctx
@@ -77,6 +78,7 @@ linters:
   disable:
   - asasalint
   - contextcheck
+  - copyloopvar
   - cyclop
   - depguard
   - dupl
