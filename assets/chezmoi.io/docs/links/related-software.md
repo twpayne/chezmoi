@@ -43,3 +43,7 @@ colorscheme switching using chezmoi templates.
 An add-on to deal with config files that contain a mix of settings and
 transient state, such as with GUI program settings files also containing
 recently used files and window positions.
+
+### [`install.doctor`](https://install.doctor)
+
+Desktop provisioning system.
