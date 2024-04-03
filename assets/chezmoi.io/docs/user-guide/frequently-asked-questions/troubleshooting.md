@@ -253,7 +253,7 @@ $ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
 Secondly, you can install chezmoi with any of the [many supported install
 methods](../../install.md) instead of snap.
 
-## chezmoi reports `fork/exec ...: no such file or directory` when running scripts on Termux
+## chezmoi reports `fork/exec ...: no such file or directory` when running scripts on Nix or Termux
 
 You are likely using a hardcoded script interpreter in the shebang line of your
 scripts, e.g.
@@ -262,10 +262,24 @@ scripts, e.g.
 #!/bin/bash
 ```
 
-`/bin/bash` does not exist on Termux. You must update the shebang line to point
+`/bin/bash` does not exist on Nix or Termux. You must update the shebang line to point
 to the actual bash interpreter. The easiest way to do this is make the script a
 template and use the `lookPath` template function, for example:
 
 ```
 #!{{ lookPath "bash" }}
 ```
+
+Alternatively, you can use the actual path to `bash` on your system, for example:
+
+=== "Nix"
+
+    ```bash
+    #!/usr/bin/env bash
+    ```
+
+=== "Termux"
+
+    ```bash
+    #!/data/data/com.termux/files/usr/bin/bash
+    ```
