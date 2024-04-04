@@ -137,6 +137,7 @@ linters-settings:
   ireturn:
     allow:
     - anon
+    - comparable
     - empty
     - error
     - github\.com/charmbracelet/bubbletea\.Model
