@@ -1,8 +1,9 @@
 name: lock-threads
 
 on:
-  schedule:
-  - cron: 17 2 * * *
+  # FIXME renable when https://github.com/dessant/lock-threads/issues/47 is fixed
+  #schedule:
+  #- cron: 17 2 * * *
   workflow_dispatch: {}
 
 permissions:
