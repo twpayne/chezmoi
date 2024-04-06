@@ -1,9 +1,8 @@
 name: lock-threads
 
 on:
-  # FIXME renable when https://github.com/dessant/lock-threads/issues/47 is fixed
-  #schedule:
-  #- cron: 17 2 * * *
+  schedule:
+  - cron: 17 2 * * *
   workflow_dispatch: {}
 
 permissions:
@@ -19,6 +18,7 @@ jobs:
     steps:
     - uses: dessant/lock-threads@1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771
       with:
+        process-only: 'issues, prs'
         issue-lock-reason: resolved
         issue-inactive-days: 7
         pr-lock-reason: resolved
