@@ -141,7 +141,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	return outputStr
 }
 
-// keepassxcOutputCachePassword returns the output of command and args.
+// keepassxcOutput returns the output of command and args.
 func (c *Config) keepassxcOutput(command string, args ...string) ([]byte, error) {
 	if c.Keepassxc.Database.Empty() {
 		panic(errors.New("keepassxc.database not set"))

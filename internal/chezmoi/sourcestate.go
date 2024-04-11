@@ -1602,7 +1602,7 @@ func (s *SourceState) getExternalDataRaw(
 	return data, nil
 }
 
-// getExternalDataRaw reads the external data for externalRelPath from
+// getExternalData reads the external data for externalRelPath from
 // external.URL.
 func (s *SourceState) getExternalData(
 	ctx context.Context,

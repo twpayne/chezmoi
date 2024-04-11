@@ -260,7 +260,7 @@ func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err err
 	return
 }
 
-// parseRecipientFile parses the recipients from recipientsFile using the
+// parseRecipientsFile parses the recipients from recipientsFile using the
 // builtin age.
 func parseRecipientsFile(recipientsFile AbsPath) (recipients []age.Recipient, err error) {
 	var file *os.File
