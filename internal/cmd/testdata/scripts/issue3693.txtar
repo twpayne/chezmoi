@@ -1,0 +1,6 @@
+# test that chezmoi apply does not panic when given an external with an empty configuration
+! exec chezmoi apply
+stderr 'missing external type'
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".config"]
