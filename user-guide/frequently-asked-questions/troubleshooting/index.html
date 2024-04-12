@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.13">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.16">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.bcfcd587.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
@@ -2158,9 +2158,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chezmoi-reports-forkexec-no-such-file-or-directory-when-running-scripts-on-termux" class="md-nav__link">
+  <a href="#chezmoi-reports-forkexec-no-such-file-or-directory-when-running-scripts-on-nix-or-termux" class="md-nav__link">
     <span class="md-ellipsis">
-      chezmoi reports fork/exec ...: no such file or directory when running scripts on Termux
+      chezmoi reports fork/exec ...: no such file or directory when running scripts on Nix or Termux
     </span>
   </a>
   
@@ -8412,9 +8412,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#chezmoi-reports-forkexec-no-such-file-or-directory-when-running-scripts-on-termux" class="md-nav__link">
+  <a href="#chezmoi-reports-forkexec-no-such-file-or-directory-when-running-scripts-on-nix-or-termux" class="md-nav__link">
     <span class="md-ellipsis">
-      chezmoi reports fork/exec ...: no such file or directory when running scripts on Termux
+      chezmoi reports fork/exec ...: no such file or directory when running scripts on Nix or Termux
     </span>
   </a>
   
@@ -8623,16 +8623,29 @@ this. However, there are two workarounds:</p>
 </code></pre></div>
 <p>Secondly, you can install chezmoi with any of the <a href="../../../install/">many supported install
 methods</a> instead of snap.</p>
-<h2 id="chezmoi-reports-forkexec-no-such-file-or-directory-when-running-scripts-on-termux">chezmoi reports <code>fork/exec ...: no such file or directory</code> when running scripts on Termux</h2>
+<h2 id="chezmoi-reports-forkexec-no-such-file-or-directory-when-running-scripts-on-nix-or-termux">chezmoi reports <code>fork/exec ...: no such file or directory</code> when running scripts on Nix or Termux</h2>
 <p>You are likely using a hardcoded script interpreter in the shebang line of your
 scripts, e.g.</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 </code></pre></div>
-<p><code>/bin/bash</code> does not exist on Termux. You must update the shebang line to point
+<p><code>/bin/bash</code> does not exist on Nix or Termux. You must update the shebang line to point
 to the actual bash interpreter. The easiest way to do this is make the script a
 template and use the <code>lookPath</code> template function, for example:</p>
 <div class="highlight"><pre><span></span><code>#!{{ lookPath &quot;bash&quot; }}
 </code></pre></div>
+<p>Alternatively, you can use the actual path to <code>bash</code> on your system, for example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Nix</label><label for="__tabbed_2_2">Termux</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="ch">#!/data/data/com.termux/files/usr/bin/bash</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 
 
 
@@ -8692,7 +8705,7 @@ template and use the <code>lookPath</code> template function, for example:</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.bd41221c.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
