@@ -1319,19 +1319,20 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	externals := make(map[string]*External)
+	externals := make(map[string]External)
 	if err := format.Unmarshal(data, &externals); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
 	s.Lock()
 	defer s.Unlock()
 	for path, external := range externals {
+		external := external
 		if strings.HasPrefix(path, "/") || filepath.IsAbs(path) {
 			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
 		}
 		targetRelPath := parentTargetSourceRelPath.JoinString(path)
 		external.sourceAbsPath = sourceAbsPath
-		s.externals[targetRelPath] = append(s.externals[targetRelPath], external)
+		s.externals[targetRelPath] = append(s.externals[targetRelPath], &external)
 	}
 	return nil
 }
@@ -2222,6 +2223,8 @@ func (s *SourceState) readExternal(
 		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeGitRepo:
 		return nil, nil
+	case "":
+		return nil, fmt.Errorf("%s: missing external type", externalRelPath)
 	default:
 		return nil, fmt.Errorf("%s: unknown external type: %s", externalRelPath, external.Type)
 	}
