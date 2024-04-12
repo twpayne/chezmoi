@@ -11,7 +11,7 @@ import (
 
 const defaultEditor = "notepad.exe"
 
-var defaultInterpreters = map[string]*chezmoi.Interpreter{
+var defaultInterpreters = map[string]chezmoi.Interpreter{
 	"bat": {},
 	"cmd": {},
 	"com": {},

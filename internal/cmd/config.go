@@ -97,32 +97,32 @@ type warningsConfig struct {
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
 	// Global configuration.
-	CacheDirAbsPath        chezmoi.AbsPath                 `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
-	Color                  autoBool                        `json:"color"           mapstructure:"color"           yaml:"color"`
-	Data                   map[string]any                  `json:"data"            mapstructure:"data"            yaml:"data"`
-	Env                    map[string]string               `json:"env"             mapstructure:"env"             yaml:"env"`
-	Format                 writeDataFormat                 `json:"format"          mapstructure:"format"          yaml:"format"`
-	DestDirAbsPath         chezmoi.AbsPath                 `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
-	GitHub                 gitHubConfig                    `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
-	Hooks                  map[string]hookConfig           `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
-	Interpreters           map[string]*chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
-	Mode                   chezmoi.Mode                    `json:"mode"            mapstructure:"mode"            yaml:"mode"`
-	Pager                  string                          `json:"pager"           mapstructure:"pager"           yaml:"pager"`
-	PersistentStateAbsPath chezmoi.AbsPath                 `json:"persistentState" mapstructure:"persistentState" yaml:"persistentState"`
-	PINEntry               pinEntryConfig                  `json:"pinentry"        mapstructure:"pinentry"        yaml:"pinentry"`
-	Progress               autoBool                        `json:"progress"        mapstructure:"progress"        yaml:"progress"`
-	Safe                   bool                            `json:"safe"            mapstructure:"safe"            yaml:"safe"`
-	ScriptEnv              map[string]string               `json:"scriptEnv"       mapstructure:"scriptEnv"       yaml:"scriptEnv"`
-	ScriptTempDir          chezmoi.AbsPath                 `json:"scriptTempDir"   mapstructure:"scriptTempDir"   yaml:"scriptTempDir"`
-	SourceDirAbsPath       chezmoi.AbsPath                 `json:"sourceDir"       mapstructure:"sourceDir"       yaml:"sourceDir"`
-	Template               templateConfig                  `json:"template"        mapstructure:"template"        yaml:"template"`
-	TextConv               textConv                        `json:"textConv"        mapstructure:"textConv"        yaml:"textConv"`
-	Umask                  fs.FileMode                     `json:"umask"           mapstructure:"umask"           yaml:"umask"`
-	UseBuiltinAge          autoBool                        `json:"useBuiltinAge"   mapstructure:"useBuiltinAge"   yaml:"useBuiltinAge"`
-	UseBuiltinGit          autoBool                        `json:"useBuiltinGit"   mapstructure:"useBuiltinGit"   yaml:"useBuiltinGit"`
-	Verbose                bool                            `json:"verbose"         mapstructure:"verbose"         yaml:"verbose"`
-	Warnings               warningsConfig                  `json:"warnings"        mapstructure:"warnings"        yaml:"warnings"`
-	WorkingTreeAbsPath     chezmoi.AbsPath                 `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
+	CacheDirAbsPath        chezmoi.AbsPath                `json:"cacheDir"        mapstructure:"cacheDir"        yaml:"cacheDir"`
+	Color                  autoBool                       `json:"color"           mapstructure:"color"           yaml:"color"`
+	Data                   map[string]any                 `json:"data"            mapstructure:"data"            yaml:"data"`
+	Env                    map[string]string              `json:"env"             mapstructure:"env"             yaml:"env"`
+	Format                 writeDataFormat                `json:"format"          mapstructure:"format"          yaml:"format"`
+	DestDirAbsPath         chezmoi.AbsPath                `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
+	GitHub                 gitHubConfig                   `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
+	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
+	Interpreters           map[string]chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
+	Mode                   chezmoi.Mode                   `json:"mode"            mapstructure:"mode"            yaml:"mode"`
+	Pager                  string                         `json:"pager"           mapstructure:"pager"           yaml:"pager"`
+	PersistentStateAbsPath chezmoi.AbsPath                `json:"persistentState" mapstructure:"persistentState" yaml:"persistentState"`
+	PINEntry               pinEntryConfig                 `json:"pinentry"        mapstructure:"pinentry"        yaml:"pinentry"`
+	Progress               autoBool                       `json:"progress"        mapstructure:"progress"        yaml:"progress"`
+	Safe                   bool                           `json:"safe"            mapstructure:"safe"            yaml:"safe"`
+	ScriptEnv              map[string]string              `json:"scriptEnv"       mapstructure:"scriptEnv"       yaml:"scriptEnv"`
+	ScriptTempDir          chezmoi.AbsPath                `json:"scriptTempDir"   mapstructure:"scriptTempDir"   yaml:"scriptTempDir"`
+	SourceDirAbsPath       chezmoi.AbsPath                `json:"sourceDir"       mapstructure:"sourceDir"       yaml:"sourceDir"`
+	Template               templateConfig                 `json:"template"        mapstructure:"template"        yaml:"template"`
+	TextConv               textConv                       `json:"textConv"        mapstructure:"textConv"        yaml:"textConv"`
+	Umask                  fs.FileMode                    `json:"umask"           mapstructure:"umask"           yaml:"umask"`
+	UseBuiltinAge          autoBool                       `json:"useBuiltinAge"   mapstructure:"useBuiltinAge"   yaml:"useBuiltinAge"`
+	UseBuiltinGit          autoBool                       `json:"useBuiltinGit"   mapstructure:"useBuiltinGit"   yaml:"useBuiltinGit"`
+	Verbose                bool                           `json:"verbose"         mapstructure:"verbose"         yaml:"verbose"`
+	Warnings               warningsConfig                 `json:"warnings"        mapstructure:"warnings"        yaml:"warnings"`
+	WorkingTreeAbsPath     chezmoi.AbsPath                `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
 
 	// Password manager configurations.
 	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`

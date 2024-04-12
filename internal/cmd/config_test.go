@@ -39,7 +39,7 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 				Data:         map[string]any{},
 				Env:          map[string]string{},
 				Hooks:        map[string]hookConfig{},
-				Interpreters: map[string]*chezmoi.Interpreter{},
+				Interpreters: map[string]chezmoi.Interpreter{},
 				Mode:         chezmoi.ModeFile,
 				PINEntry: pinEntryConfig{
 					Args:    []string{},
