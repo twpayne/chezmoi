@@ -121,7 +121,7 @@ type SourceState struct {
 	encryption              Encryption
 	ignore                  *patternSet
 	remove                  *patternSet
-	interpreters            map[string]*Interpreter
+	interpreters            map[string]Interpreter
 	httpClient              *http.Client
 	logger                  *slog.Logger
 	version                 semver.Version
@@ -187,7 +187,7 @@ func WithHTTPClient(httpClient *http.Client) SourceStateOption {
 }
 
 // WithInterpreters sets the interpreters.
-func WithInterpreters(interpreters map[string]*Interpreter) SourceStateOption {
+func WithInterpreters(interpreters map[string]Interpreter) SourceStateOption {
 	return func(s *SourceState) {
 		s.interpreters = interpreters
 	}
@@ -2023,27 +2023,31 @@ func (s *SourceState) newSourceStateFile(
 		// If the target has an extension, determine if it indicates an
 		// interpreter to use.
 		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
-		interpreter := s.interpreters[extension]
-		if interpreter != nil {
+		if interpreter, ok := s.interpreters[extension]; ok {
 			// For modify scripts, the script extension is not considered part
 			// of the target name, so remove it.
 			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(extension)-1)
+			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, &interpreter)
+		} else {
+			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, nil)
 		}
-		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
 	case SourceFileTypeRemove:
 		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc(sourceRelPath, fileAttr)
 	case SourceFileTypeScript:
 		// If the script has an extension, determine if it indicates an
 		// interpreter to use.
 		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
-		interpreter := s.interpreters[extension]
-		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
-			sourceRelPath,
-			fileAttr,
-			targetRelPath,
-			sourceLazyContents,
-			interpreter,
-		)
+		if interpreter, ok := s.interpreters[extension]; ok {
+			targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
+				sourceRelPath,
+				fileAttr,
+				targetRelPath,
+				sourceLazyContents,
+				&interpreter,
+			)
+		} else {
+			targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, nil)
+		}
 	case SourceFileTypeSymlink:
 		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	default:
