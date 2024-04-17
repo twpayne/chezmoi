@@ -130,7 +130,7 @@ func upperSnakeCaseToCamelCase(s string) string {
 	return strings.Join(words, "")
 }
 
-// upperSnakeCaseToCamelCaseKeys returns m with all keys converted from
+// upperSnakeCaseToCamelCaseMap returns m with all keys converted from
 // UPPER_SNAKE_CASE to camelCase.
 func upperSnakeCaseToCamelCaseMap[V any](m map[string]V) map[string]V {
 	result := make(map[string]V)

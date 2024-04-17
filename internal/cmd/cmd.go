@@ -138,7 +138,7 @@ func example(command string) string {
 	return help.example
 }
 
-// extractHelps returns the helps parse from r.
+// extractHelp returns the helps parse from r.
 func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermRenderer *glamour.TermRenderer) (*help, error) {
 	type stateType int
 	const (
