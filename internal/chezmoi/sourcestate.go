@@ -2191,7 +2191,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	}, nil
 }
 
-// populateImplicitDirs creates implicit parent directories for externalRelPath.
+// populateImplicitParentDirs creates implicit parent directories for externalRelPath.
 func (s *SourceState) populateImplicitParentDirs(
 	externalRelPath RelPath,
 	external *External,
