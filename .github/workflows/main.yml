@@ -420,7 +420,7 @@ jobs:
     - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4
+    - uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
     - name: create-syso
       run: |
         make create-syso
