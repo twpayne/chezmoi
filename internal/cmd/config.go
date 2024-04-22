@@ -652,11 +652,14 @@ func (c *Config) applyArgs(
 		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
 		case errors.Is(err, fs.SkipDir):
 			continue
-		case err != nil && c.keepGoing:
-			c.errorf("%v\n", err)
-			keptGoingAfterErr = true
 		case err != nil:
-			return err
+			err = fmt.Errorf("%s: %w", targetRelPath, err)
+			if c.keepGoing {
+				c.errorf("%v\n", err)
+				keptGoingAfterErr = true
+			} else {
+				return err
+			}
 		}
 	}
 

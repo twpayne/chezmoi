@@ -8,6 +8,7 @@ mkhomedir
 cmp $HOME/1ok golden/1ok
 ! exists $HOME/2error
 ! exists $HOME/3ok
+stderr '2error: template: 2error\.tmpl:2: unclosed action started at 2error\.tmpl:1'
 
 # test that chezmoi apply with --keep-going writes all files that it can without errors
 ! exec chezmoi apply --force --keep-going

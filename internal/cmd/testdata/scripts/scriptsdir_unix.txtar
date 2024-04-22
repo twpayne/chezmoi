@@ -8,13 +8,13 @@ chhome home2/user
 
 # test that chezmoi apply fails if .chezmoiscripts contains a non-script
 ! exec chezmoi apply
-stderr 'not a script'
+stderr ${CHEZMOISOURCEDIR@R}/\.chezmoiscripts/dot_file:\snot\sa\sscript$
 
 chhome home3/user
 
 # test that chezmoi apply fails if .chezmoiscripts contains duplicate targets
 ! exec chezmoi apply
-stderr 'inconsistent state'
+stderr \.chezmoiscripts/script\.sh:\sinconsistent\sstate
 
 chhome home4/user
 
