@@ -6,7 +6,7 @@ stderr 'no encryption'
 
 # test that chezmoi apply without encryption fails
 ! exec chezmoi apply --force
-stderr 'no encryption'
+stderr \.encrypted:\sno\sencryption$
 
 -- home/user/.encrypted --
 # contents of .encrypted

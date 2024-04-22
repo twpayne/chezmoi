@@ -97,7 +97,7 @@ chhome home11/user
 
 # test that checksums detect corrupt files
 ! exec chezmoi apply --force
-stderr 'MD5 mismatch'
+stderr \.file:\sMD5\smismatch
 stderr 'SHA256 mismatch'
 
 chhome home12/user

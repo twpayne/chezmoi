@@ -69,3 +69,4 @@ grep -count=2 '# edited' $HOME/.file
 
 # test that chezmoi apply --source-path fails when called with a targetDirAbsPath
 ! exec chezmoi apply --force --source-path $HOME${/}.file
+[!windows] stderr ${HOME@R}/\.file:\snot\sin\s${CHEZMOISOURCEDIR@R}$
