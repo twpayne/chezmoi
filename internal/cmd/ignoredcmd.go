@@ -27,12 +27,7 @@ func (c *Config) newIgnoredCmd() *cobra.Command {
 }
 
 func (c *Config) runIgnoredCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	relPaths := sourceState.Ignored()
-	paths := make([]string, 0, len(relPaths))
-	for _, relPath := range relPaths {
-		paths = append(paths, relPath.String())
-	}
-	return c.writePaths(paths, writePathsOptions{
+	return c.writePaths(stringersToStrings(sourceState.Ignored()), writePathsOptions{
 		tree: c.ignored.tree,
 	})
 }
