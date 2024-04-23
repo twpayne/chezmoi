@@ -2667,6 +2667,23 @@ func (c *Config) writeOutput(data []byte) error {
 	return os.WriteFile(c.outputAbsPath.String(), data, 0o666) //nolint:gosec
 }
 
+type writePathsOptions struct {
+	tree bool
+}
+
+func (c *Config) writePaths(paths []string, options writePathsOptions) error {
+	builder := strings.Builder{}
+	if options.tree {
+		newPathListTreeFromPathsSlice(paths).writeChildren(&builder, "", "  ")
+	} else {
+		sort.Strings(paths)
+		for _, path := range paths {
+			fmt.Fprintln(&builder, path)
+		}
+	}
+	return c.writeOutputString(builder.String())
+}
+
 // writeOutputString writes data to the configured output.
 func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
