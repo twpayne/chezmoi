@@ -11,6 +11,10 @@ exists $HOME/.file
 exec chezmoi ignored
 cmp stdout golden/ignored
 
+# test that chezmoi ignored --tree lists the ignored entries in a tree-like format
+exec chezmoi ignored --tree
+cmp stdout golden/ignored-tree
+
 chhome home2/user
 
 # test that chezmoi manage lists all managed files
@@ -46,6 +50,9 @@ cmp stdout golden/managed-ignore-star-star-slash-star-dot-txt
 -- golden/.chezmoiignore-star-star-slash-star-dot-txt --
 **/*.txt
 -- golden/ignored --
+.dir
+README.md
+-- golden/ignored-tree --
 .dir
 README.md
 -- golden/managed-all --
