@@ -55,6 +55,10 @@ Recurse into subdirectories, `true` by default.
 Interpret *targets* passed to the command as paths in the source directory
 rather than the destination directory.
 
+## `--tree`
+
+Print paths as a tree instead of a list.
+
 ## `--use-builtin-diff`
 
 Use chezmoi's builtin diff, even if the `diff.command` configuration variable
