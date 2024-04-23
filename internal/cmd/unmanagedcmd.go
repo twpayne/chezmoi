@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io/fs"
 	"sort"
 
@@ -93,18 +94,18 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		}
 	}
 
-	paths := make([]string, 0, len(unmanagedRelPaths.Elements()))
+	paths := make([]fmt.Stringer, 0, len(unmanagedRelPaths.Elements()))
 	for relPath := range unmanagedRelPaths {
-		var path string
+		var path fmt.Stringer
 		if c.unmanaged.pathStyle == chezmoi.PathStyleAbsolute {
-			path = c.DestDirAbsPath.Join(relPath).String()
+			path = c.DestDirAbsPath.Join(relPath)
 		} else {
-			path = relPath.String()
+			path = relPath
 		}
 		paths = append(paths, path)
 	}
 
-	return c.writePaths(paths, writePathsOptions{
+	return c.writePaths(stringersToStrings(paths), writePathsOptions{
 		tree: c.unmanaged.tree,
 	})
 }

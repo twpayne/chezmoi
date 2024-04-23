@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 	"unicode"
 
@@ -105,6 +106,15 @@ func pluralize(singular string) string {
 		return strings.TrimSuffix(singular, "y") + "ies"
 	}
 	return singular + "s"
+}
+
+// stringersToStrings converts a slice of fmt.Stringers to a list of strings.
+func stringersToStrings[T fmt.Stringer](ss []T) []string {
+	result := make([]string, 0, len(ss))
+	for _, s := range ss {
+		result = append(result, s.String())
+	}
+	return result
 }
 
 // titleFirst returns s with its first rune converted to title case.

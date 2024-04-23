@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -46,7 +48,7 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 		}
 	}
 
-	var paths []string
+	var paths []fmt.Stringer
 	_ = sourceState.ForEach(
 		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 			if !c.managed.filter.IncludeSourceStateEntry(sourceStateEntry) {
@@ -75,23 +77,23 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 				}
 			}
 
-			var path string
+			var path fmt.Stringer
 			switch c.managed.pathStyle {
 			case chezmoi.PathStyleAbsolute:
-				path = c.DestDirAbsPath.Join(targetRelPath).String()
+				path = c.DestDirAbsPath.Join(targetRelPath)
 			case chezmoi.PathStyleRelative:
-				path = targetRelPath.String()
+				path = targetRelPath
 			case chezmoi.PathStyleSourceAbsolute:
-				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()).String()
+				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 			case chezmoi.PathStyleSourceRelative:
-				path = sourceStateEntry.SourceRelPath().RelPath().String()
+				path = sourceStateEntry.SourceRelPath().RelPath()
 			}
 			paths = append(paths, path)
 			return nil
 		},
 	)
 
-	return c.writePaths(paths, writePathsOptions{
+	return c.writePaths(stringersToStrings(paths), writePathsOptions{
 		tree: c.managed.tree,
 	})
 }
