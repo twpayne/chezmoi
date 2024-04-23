@@ -69,6 +69,9 @@ func HomeDir() string {
 
 // JoinLines joins lines with newlines.
 func JoinLines(lines ...string) string {
+	if len(lines) == 0 {
+		return ""
+	}
 	return strings.Join(lines, "\n") + "\n"
 }
 

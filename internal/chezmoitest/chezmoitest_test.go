@@ -14,7 +14,7 @@ func TestJoinLines(t *testing.T) {
 	}{
 		{
 			lines:    nil,
-			expected: "\n",
+			expected: "",
 		},
 		{
 			lines:    []string{""},
