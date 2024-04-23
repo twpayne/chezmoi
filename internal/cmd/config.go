@@ -2222,23 +2222,28 @@ func (c *Config) progressAutoFunc() bool {
 func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	// Determine the user's username and group, if possible.
 	//
-	// user.Current and user.LookupGroupId in Go's standard library are
+	// os/user.Current and os/user.LookupGroupId in Go's standard library are
 	// generally unreliable, so work around errors if possible, or ignore them.
+	//
+	// On Android, user.Current always fails. Instead, use $LOGNAME (as this is
+	// set by Termux), or $USER if $LOGNAME is not set.
 	//
 	// If CGO is disabled, then the Go standard library falls back to parsing
 	// /etc/passwd and /etc/group, which will return incorrect results without
 	// error if the system uses an alternative password database such as NIS or
 	// LDAP.
 	//
-	// If CGO is enabled then user.Current and user.LookupGroupId will use the
-	// underlying libc functions, namely getpwuid_r and getgrnam_r. If linked
-	// with glibc this will return the correct result. If linked with musl then
-	// they will use musl's implementation which, like Go's non-CGO
+	// If CGO is enabled then os/user.Current and os/user.LookupGroupId will use
+	// the underlying libc functions, namely getpwuid_r and getgrnam_r. If
+	// linked with glibc this will return the correct result. If linked with
+	// musl then they will use musl's implementation which, like Go's non-CGO
 	// implementation, also only parses /etc/passwd and /etc/group and so also
 	// returns incorrect results without error if NIS or LDAP are being used.
 	//
-	// On Windows, the user's group ID returned by user.Current() is an SID and
-	// no further useful lookup is possible with Go's standard library.
+	// On Windows, the user's group ID returned by os/user.Current() is an SID
+	// and no further useful lookup is possible with Go's standard library.
+	//
+	// If os/user.Current fails, then fallback to $USER.
 	//
 	// Since neither the username nor the group are likely widely used in
 	// templates, leave these variables unset if their values cannot be
@@ -2246,7 +2251,9 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	// alerting the user to the problem and allowing them to find alternative
 	// solutions.
 	var gid, group, uid, username string
-	if currentUser, err := user.Current(); err == nil {
+	if runtime.GOOS == "android" {
+		username = firstNonEmptyString(os.Getenv("LOGNAME"), os.Getenv("USER"))
+	} else if currentUser, err := user.Current(); err == nil {
 		gid = currentUser.Gid
 		uid = currentUser.Uid
 		username = currentUser.Username
