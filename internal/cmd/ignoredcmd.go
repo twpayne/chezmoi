@@ -1,12 +1,14 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
+
+type ignoredCmdConfig struct {
+	tree bool
+}
 
 func (c *Config) newIgnoredCmd() *cobra.Command {
 	ignoredCmd := &cobra.Command{
@@ -19,18 +21,18 @@ func (c *Config) newIgnoredCmd() *cobra.Command {
 		Annotations: newAnnotations(),
 	}
 
+	ignoredCmd.Flags().BoolVarP(&c.ignored.tree, "tree", "t", c.ignored.tree, "Print paths as a tree")
+
 	return ignoredCmd
 }
 
 func (c *Config) runIgnoredCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	builder := strings.Builder{}
-	for _, relPath := range sourceState.Ignored() {
-		if _, err := builder.WriteString(relPath.String()); err != nil {
-			return err
-		}
-		if err := builder.WriteByte('\n'); err != nil {
-			return err
-		}
+	relPaths := sourceState.Ignored()
+	paths := make([]string, 0, len(relPaths))
+	for _, relPath := range relPaths {
+		paths = append(paths, relPath.String())
 	}
-	return c.writeOutputString(builder.String())
+	return c.writePaths(paths, writePathsOptions{
+		tree: c.ignored.tree,
+	})
 }

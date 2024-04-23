@@ -194,6 +194,7 @@ type Config struct {
 	chattr          chattrCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
+	ignored         ignoredCmdConfig
 	_import         importCmdConfig
 	init            initCmdConfig
 	managed         managedCmdConfig
