@@ -1,0 +1,12 @@
+# test that chezmoi unmanaged --tree produces tree-like output
+exec chezmoi unmanaged --tree
+cmp stdout golden/stdout
+
+-- golden/stdout --
+.dir
+  file
+  subdir
+.local
+-- home/user/.dir/file --
+-- home/user/.dir/subdir/file --
+-- home/user/.local/share/chezmoi/dot_dir/.keep --

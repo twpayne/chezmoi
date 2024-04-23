@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"io/fs"
 	"sort"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -14,6 +12,7 @@ import (
 
 type unmanagedCmdConfig struct {
 	pathStyle chezmoi.PathStyle
+	tree      bool
 }
 
 func (c *Config) newUnmanagedCmd() *cobra.Command {
@@ -28,6 +27,7 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 	}
 
 	unmanagedCmd.Flags().VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
+	unmanagedCmd.Flags().BoolVarP(&c.unmanaged.tree, "tree", "t", c.unmanaged.tree, "Print paths as a tree")
 
 	return unmanagedCmd
 }
@@ -93,16 +93,18 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		}
 	}
 
-	builder := strings.Builder{}
-	sortedRelPaths := chezmoi.RelPaths(unmanagedRelPaths.Elements())
-	sort.Sort(sortedRelPaths)
-	for _, relPath := range sortedRelPaths {
-		switch c.unmanaged.pathStyle {
-		case chezmoi.PathStyleAbsolute:
-			fmt.Fprintln(&builder, c.DestDirAbsPath.Join(relPath))
-		case chezmoi.PathStyleRelative:
-			fmt.Fprintln(&builder, relPath)
+	paths := make([]string, 0, len(unmanagedRelPaths.Elements()))
+	for relPath := range unmanagedRelPaths {
+		var path string
+		if c.unmanaged.pathStyle == chezmoi.PathStyleAbsolute {
+			path = c.DestDirAbsPath.Join(relPath).String()
+		} else {
+			path = relPath.String()
 		}
+		paths = append(paths, path)
 	}
-	return c.writeOutputString(builder.String())
+
+	return c.writePaths(paths, writePathsOptions{
+		tree: c.unmanaged.tree,
+	})
 }
