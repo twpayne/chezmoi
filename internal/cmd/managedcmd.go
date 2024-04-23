@@ -1,10 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"sort"
-	"strings"
-
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -13,6 +9,7 @@ import (
 type managedCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
 	pathStyle chezmoi.PathStyle
+	tree      bool
 }
 
 func (c *Config) newManagedCmd() *cobra.Command {
@@ -30,6 +27,7 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd.Flags().VarP(c.managed.filter.Exclude, "exclude", "x", "Exclude entry types")
 	managedCmd.Flags().VarP(c.managed.filter.Include, "include", "i", "Include entry types")
 	managedCmd.Flags().VarP(&c.managed.pathStyle, "path-style", "p", "Path style")
+	managedCmd.Flags().BoolVarP(&c.managed.tree, "tree", "t", c.managed.tree, "Print paths as a tree")
 
 	return managedCmd
 }
@@ -93,10 +91,7 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 		},
 	)
 
-	sort.Strings(paths)
-	builder := strings.Builder{}
-	for _, path := range paths {
-		fmt.Fprintln(&builder, path)
-	}
-	return c.writeOutputString(builder.String())
+	return c.writePaths(paths, writePathsOptions{
+		tree: c.managed.tree,
+	})
 }

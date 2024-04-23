@@ -1,0 +1,20 @@
+mksourcedir
+
+# test that chezmoi managed --tree produces tree-like output
+exec chezmoi managed --tree
+cmp stdout golden/stdout
+
+-- golden/stdout --
+.create
+.dir
+  file
+  subdir
+    file
+.empty
+.executable
+.file
+.private
+.readonly
+.remove
+.symlink
+.template
