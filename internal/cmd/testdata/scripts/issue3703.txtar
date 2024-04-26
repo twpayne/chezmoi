@@ -1,0 +1,16 @@
+httpd www
+
+# test that chezmoi apply removes unmanaged files from an exact_ directory containing an external
+exists $HOME/.local/bin/unmanaged
+exec chezmoi apply --debug
+cmp $HOME/.local/bin/file www/file
+! exists $HOME/.local/bin/unmanaged
+
+-- home/user/.local/bin/unmanaged --
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".local/bin/file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/file"
+-- home/user/.local/share/chezmoi/dot_local/exact_bin/.keep --
+-- www/file --
+# contents of file

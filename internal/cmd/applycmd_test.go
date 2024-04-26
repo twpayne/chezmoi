@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"io/fs"
+	"net/http"
+	"net/http/httptest"
 	"path/filepath"
 	"testing"
 
@@ -262,5 +264,41 @@ func TestIssue3216(t *testing.T) {
 		},
 	}, func(fileSystem vfs.FS) {
 		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+	})
+}
+
+func TestIssue3703(t *testing.T) {
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write([]byte("contents of file\n"))
+		assert.NoError(t, err)
+	}))
+	defer httpServer.Close()
+
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local": map[string]any{
+				"bin": map[string]any{
+					"unmanaged": "",
+				},
+				"share/chezmoi": map[string]any{
+					".chezmoiexternal.toml.tmpl": chezmoitest.JoinLines(
+						`[".local/bin/file"]`,
+						`    type = "file"`,
+						`    url = "`+httpServer.URL+`/file"`,
+					),
+					"dot_local/exact_bin/.keep": "",
+				},
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+		vfst.RunTests(t, fileSystem, ".local/bin",
+			vfst.TestPath("/home/user/.local/bin/file",
+				vfst.TestContentsString("contents of file\n"),
+			),
+			vfst.TestPath("/home/user/.local/bin/unmanaged",
+				vfst.TestDoesNotExist(),
+			),
+		)
 	})
 }
