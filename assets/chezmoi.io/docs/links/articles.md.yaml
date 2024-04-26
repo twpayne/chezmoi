@@ -1,4 +1,4 @@
-articles:
+Garticles:
 - date: '2019-01-10'
   version: 0.0.11
   title: 'Linux Fu: The kitchen sync'
@@ -407,3 +407,7 @@ articles:
   version: 2.47.2
   title: Whatever happened to dotfiles?
   url: https://ryan0x44.substack.com/p/whatever-happened-to-dotfiles
+- date: '2024-04-24'
+  version: 2.47.4
+  title: 'Chezmoi: Manage Your Dotfiles Across Multiple Linux Systems'
+  url: https://linuxtldr.com/installing-chezmoi/
