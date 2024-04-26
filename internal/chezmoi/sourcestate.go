@@ -1108,6 +1108,14 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 	}
 
+	// Where there are multiple SourceStateEntries for a single target, replace
+	// them with a single canonical SourceStateEntry if possible.
+	for targetRelPath, sourceStateEntries := range allSourceStateEntries {
+		if sourceStateEntry, ok := canonicalSourceStateEntry(sourceStateEntries); ok {
+			allSourceStateEntries[targetRelPath] = []SourceStateEntry{sourceStateEntry}
+		}
+	}
+
 	// Generate SourceStateRemoves for exact directories.
 	for targetRelPath, sourceStateEntries := range allSourceStateEntries {
 		if len(sourceStateEntries) != 1 {
@@ -1228,11 +1236,6 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
 		if len(sourceStateEntries) == 1 {
-			continue
-		}
-
-		// Allow duplicate equivalent source entries for directories.
-		if allEquivalentDirs(sourceStateEntries) {
 			continue
 		}
 
@@ -2793,9 +2796,12 @@ func (e *External) OriginString() string {
 	return e.URL + " defined in " + e.sourceAbsPath.String()
 }
 
-// allEquivalentDirs returns if sourceStateEntries are all equivalent
-// directories.
-func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
+// canonicalSourceStateEntry returns the canonical SourceStateEntry for the
+// given sourceStateEntries.
+//
+// This only applies to directories, where SourceStateImplicitDirs are
+// considered equivalent to all SourceStateDirs.
+func canonicalSourceStateEntry(sourceStateEntries []SourceStateEntry) (SourceStateEntry, bool) {
 	// Find all directories to check for equivalence.
 	var firstSourceStateDir *SourceStateDir
 	sourceStateDirs := make([]SourceStateEntry, 0, len(sourceStateEntries))
@@ -2807,29 +2813,37 @@ func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
 		case *SourceStateImplicitDir:
 			sourceStateDirs = append(sourceStateDirs, sourceStateEntry)
 		default:
-			return false
+			return nil, false
 		}
 	}
 
-	// If there are no SourceStateDirs then there are no equivalent directories.
-	if len(sourceStateDirs) == 0 {
-		return false
-	}
-
-	// Check for equivalence.
-	for _, sourceStateDir := range sourceStateDirs {
-		switch sourceStateDir := sourceStateDir.(type) {
-		case *SourceStateDir:
-			if sourceStateDir.Attr != firstSourceStateDir.Attr {
-				return false
+	switch len(sourceStateDirs) {
+	case 0:
+		// If there are no SourceStateDirs then there are no equivalent directories.
+		return nil, false
+	case 1:
+		return sourceStateDirs[0], true
+	default:
+		// Check for equivalence.
+		for _, sourceStateDir := range sourceStateDirs {
+			switch sourceStateDir := sourceStateDir.(type) {
+			case *SourceStateDir:
+				if sourceStateDir.Attr != firstSourceStateDir.Attr {
+					return nil, false
+				}
+			case *SourceStateImplicitDir:
+				// SourceStateImplicitDirs are considered equivalent to all other
+				// directories.
 			}
-		case *SourceStateImplicitDir:
-			// SourceStateImplicitDirs are considered equivalent to all other
-			// directories.
 		}
+		// If all directories are equivalent then return the first real
+		// *SourceStateDir, if it exists.
+		if firstSourceStateDir != nil {
+			return firstSourceStateDir, true
+		}
+		// Otherwise, return the first entry which is a *SourceStateImplicitDir.
+		return sourceStateDirs[0], true
 	}
-
-	return true
 }
 
 // isAppleDoubleFile returns true if the file looks like and has the
