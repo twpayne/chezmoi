@@ -1,0 +1,20 @@
+exec tar czf www/master.tar.gz master
+
+httpd www
+
+exec chezmoi apply
+exists $HOME/.oh-my-zsh/README.md
+! exists $HOME/.oh-my-zsh/cache/.gitkeep
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".oh-my-zsh"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/master.tar.gz"
+    exact = true
+    stripComponents = 1
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.oh-my-zsh/cache
+-- master/README.md --
+# contents of README.md
+-- master/cache/.gitkeep --
+-- www/.keep --
