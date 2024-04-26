@@ -2310,6 +2310,9 @@ func (s *SourceState) readExternalArchive(
 		targetRelPath := externalRelPath.JoinString(name)
 
 		if s.Ignore(targetRelPath) {
+			if fileInfo.IsDir() {
+				return fs.SkipDir
+			}
 			return nil
 		}
 
