@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/twpayne/go-pinentry/v3"
+	"github.com/twpayne/go-pinentry/v4"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 )
@@ -16,9 +16,9 @@ var pinEntryDefaultOptions = []string{
 	pinentry.OptionAllowExternalPasswordCache,
 }
 
-func (c *Config) readPINEntry(prompt string) (pin string, err error) {
+func (c *Config) readPINEntry(prompt string) (string, error) {
 	var client *pinentry.Client
-	client, err = pinentry.NewClient(
+	client, err := pinentry.NewClient(
 		pinentry.WithArgs(c.PINEntry.Args),
 		pinentry.WithBinaryName(c.PINEntry.Command),
 		pinentry.WithGPGTTY(),
@@ -27,10 +27,14 @@ func (c *Config) readPINEntry(prompt string) (pin string, err error) {
 		pinentry.WithTitle("chezmoi"),
 	)
 	if err != nil {
-		return
+		return "", err
 	}
 	defer chezmoierrors.CombineFunc(&err, client.Close)
 
-	pin, _, err = client.GetPIN()
-	return
+	result, err := client.GetPIN()
+	if err != nil {
+		return "", err
+	}
+
+	return result.PIN, nil
 }
