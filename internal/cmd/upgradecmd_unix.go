@@ -49,12 +49,7 @@ var (
 
 	archReplacements = map[string]map[string]string{
 		packageTypeDEB: debArches,
-		packageTypeRPM: {
-			"amd64": "x86_64",
-			"386":   "i686",
-			"arm":   "armhfp",
-			"arm64": "aarch64",
-		},
+		packageTypeRPM: rpmArches,
 	}
 
 	libcTypeGlibcRx = regexp.MustCompile(`(?i)glibc|gnu libc`)

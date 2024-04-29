@@ -274,6 +274,7 @@ type templateData struct {
 	osRelease         map[string]any
 	pathListSeparator string
 	pathSeparator     string
+	rpmArch           string
 	sourceDir         chezmoi.AbsPath
 	uid               string
 	username          string
@@ -320,6 +321,14 @@ var (
 	debArches = map[string]string{
 		"386": "i386",
 		"arm": "armel",
+	}
+
+	// rpmArches maps runtime.GOARCH architectures to RPM package architectures.
+	rpmArches = map[string]string{
+		"amd64": "x86_64",
+		"386":   "i686",
+		"arm":   "armhfp",
+		"arm64": "aarch64",
 	}
 )
 
@@ -1464,6 +1473,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"osRelease":         templateData.osRelease,
 			"pathListSeparator": templateData.pathListSeparator,
 			"pathSeparator":     templateData.pathSeparator,
+			"rpmArch":           templateData.rpmArch,
 			"sourceDir":         templateData.sourceDir.String(),
 			"uid":               templateData.uid,
 			"username":          templateData.username,
@@ -2332,6 +2342,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		osRelease:         osRelease,
 		pathListSeparator: string(os.PathListSeparator),
 		pathSeparator:     string(os.PathSeparator),
+		rpmArch:           firstNonEmptyString(rpmArches[runtime.GOARCH], runtime.GOARCH),
 		sourceDir:         sourceDirAbsPath,
 		uid:               uid,
 		username:          username,
