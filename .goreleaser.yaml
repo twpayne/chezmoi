@@ -271,21 +271,6 @@ signs:
   - ${artifact}
   artifacts: checksum
 
-snapcrafts:
-- builds:
-  - chezmoi-cgo-glibc
-  - chezmoi-nocgo
-  summary: Manage your dotfiles across multiple diverse machines, securely.
-  description: Manage your dotfiles across multiple diverse machines, securely.
-  publish: true
-  grade: stable
-  confinement: classic
-  license: MIT
-  apps:
-    chezmoi:
-      command: chezmoi
-      completer: completions/chezmoi-completion.bash
-
 source:
   enabled: true
   prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
