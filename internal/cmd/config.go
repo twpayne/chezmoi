@@ -262,6 +262,7 @@ type templateData struct {
 	commandDir        chezmoi.AbsPath
 	config            map[string]any
 	configFile        chezmoi.AbsPath
+	debArch           string
 	executable        chezmoi.AbsPath
 	fqdnHostname      string
 	gid               string
@@ -312,6 +313,13 @@ var (
 		"include":    chezmoi.EntryTypeSetFlagCompletionFunc,
 		"path-style": chezmoi.PathStyleFlagCompletionFunc,
 		"secrets":    severityFlagCompletionFunc,
+	}
+
+	// debArches maps runtime.GOARCH architectures to Debian package
+	// architectures.
+	debArches = map[string]string{
+		"386": "i386",
+		"arm": "armel",
 	}
 )
 
@@ -1444,6 +1452,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"commandDir":        templateData.commandDir.String(),
 			"config":            templateData.config,
 			"configFile":        templateData.configFile.String(),
+			"debArch":           templateData.debArch,
 			"executable":        templateData.executable.String(),
 			"fqdnHostname":      templateData.fqdnHostname,
 			"gid":               templateData.gid,
@@ -2311,6 +2320,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		commandDir:        c.commandDirAbsPath,
 		config:            c.ConfigFile.toMap(),
 		configFile:        c.getConfigFileAbsPath(),
+		debArch:           firstNonEmptyString(debArches[runtime.GOARCH], runtime.GOARCH),
 		executable:        chezmoi.NewAbsPath(executable),
 		fqdnHostname:      fqdnHostname,
 		gid:               gid,

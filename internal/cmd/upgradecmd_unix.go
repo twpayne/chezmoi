@@ -48,10 +48,7 @@ var (
 	}
 
 	archReplacements = map[string]map[string]string{
-		packageTypeDEB: {
-			"386": "i386",
-			"arm": "armel",
-		},
+		packageTypeDEB: debArches,
 		packageTypeRPM: {
 			"amd64": "x86_64",
 			"386":   "i686",
