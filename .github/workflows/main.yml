@@ -373,9 +373,6 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
-    - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
-      with:
-        go-version: ${{ env.GO_VERSION }}
     - uses: golangci/golangci-lint-action@3cfe3a4abbb849e10058ce4af15d205b6da42804
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
