@@ -411,3 +411,8 @@ articles:
   version: 2.47.4
   title: 'Chezmoi: Manage Your Dotfiles Across Multiple Linux Systems'
   url: https://linuxtldr.com/installing-chezmoi/
+- date: '2024-04-27'
+  version: 2.48.0
+  lang: CN
+  title: '使用 chezmoi & vscode, 管理你的 dotfiles'
+  url: https://juejin.cn/post/7362028633425608754
