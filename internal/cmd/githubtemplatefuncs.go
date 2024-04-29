@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"path"
 	"strings"
 	"time"
 
@@ -107,14 +108,33 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	return allKeys
 }
 
-func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.RepositoryRelease {
-	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern string) string {
+	release, err := c.gitHubLatestRelease(ownerRepo)
 	if err != nil {
 		panic(err)
 	}
+	for _, asset := range release.Assets {
+		if asset.Name == nil {
+			continue
+		}
+		switch ok, err := path.Match(pattern, *asset.Name); {
+		case err != nil:
+			panic(err)
+		case ok:
+			return *asset.BrowserDownloadURL
+		}
+	}
+	return ""
+}
+
+func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryRelease, error) {
+	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+	if err != nil {
+		return nil, err
+	}
 
 	if release := c.gitHub.latestReleaseCache[owner][repo]; release != nil {
-		return release
+		return release, nil
 	}
 
 	now := time.Now()
@@ -123,9 +143,9 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 		var gitHubLatestReleaseStateValue gitHubLatestReleaseState
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseStateValue); {
 		case err != nil:
-			panic(err)
+			return nil, err
 		case ok && now.Before(gitHubLatestReleaseStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
-			return gitHubLatestReleaseStateValue.Release
+			return gitHubLatestReleaseStateValue.Release, nil
 		}
 	}
 
@@ -134,19 +154,19 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 
 	gitHubClient, err := c.getGitHubClient(ctx)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, owner, repo)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseState{
 		RequestedAt: now,
 		Release:     release,
 	}); err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if c.gitHub.latestReleaseCache == nil {
@@ -157,6 +177,14 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.Repos
 	}
 	c.gitHub.latestReleaseCache[owner][repo] = release
 
+	return release, nil
+}
+
+func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.RepositoryRelease {
+	release, err := c.gitHubLatestRelease(ownerRepo)
+	if err != nil {
+		panic(err)
+	}
 	return release
 }
 
