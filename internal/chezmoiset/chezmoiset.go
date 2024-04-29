@@ -32,7 +32,7 @@ func (s Set[T]) AddSet(other Set[T]) {
 
 // AnyElement returns an arbitrary element from s. It is typically used when s
 // is known to contain exactly one element.
-func (s Set[T]) AnyElement() T { //nolint:ireturn
+func (s Set[T]) AnyElement() T {
 	for element := range s {
 		return element
 	}

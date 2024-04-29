@@ -39,7 +39,6 @@ linters:
   - inamedparam
   - ineffassign
   - interfacebloat
-  - ireturn
   - loggercheck
   - makezero
   - mirror
@@ -95,6 +94,7 @@ linters:
   - goheader
   - gomnd
   - gomoddirectives
+  - ireturn
   - lll
   - maintidx
   - maligned
@@ -134,27 +134,6 @@ linters-settings:
     - fieldalignment
     - shadow
     enable-all: true
-  ireturn:
-    allow:
-    - anon
-    - comparable
-    - empty
-    - error
-    - github\.com/charmbracelet/bubbletea\.Model
-    - github\.com/charmbracelet/bubbletea\.Msg
-    - github\.com/go-git/go-git/v5/plumbing/format/diff\.File
-    - github\.com/go-git/go-git/v5/plumbing/format/diff\.Patch
-    - github\.com/mitchellh/mapstructure\.DecodeHookFunc
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.ActualStateEntry
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.Encryption
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.Format
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.PersistentState
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.SourceStateOrigin
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.SourceStateEntry
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.System
-    - github\.com/twpayne/chezmoi/v2/internal/chezmoi\.TargetStateEntry
-    - github\.com/twpayne/go-vfs/v5\.FS
-    - stdlib
   misspell:
     locale: US
   stylecheck:
