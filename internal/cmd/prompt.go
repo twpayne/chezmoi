@@ -241,7 +241,7 @@ type cancelableModel interface {
 	Canceled() bool
 }
 
-func runCancelableModel[M cancelableModel](initModel M) (M, error) { //nolint:ireturn,nolintlint
+func runCancelableModel[M cancelableModel](initModel M) (M, error) {
 	switch finalModel, err := runModel(initModel); {
 	case err != nil:
 		return finalModel, err
@@ -252,7 +252,7 @@ func runCancelableModel[M cancelableModel](initModel M) (M, error) { //nolint:ir
 	}
 }
 
-func runModel[M tea.Model](initModel M) (M, error) { //nolint:ireturn,nolintlint
+func runModel[M tea.Model](initModel M) (M, error) {
 	program := tea.NewProgram(initModel)
 	finalModel, err := program.Run()
 	return finalModel.(M), err //nolint:forcetypeassert

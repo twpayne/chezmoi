@@ -15,7 +15,7 @@ var keyTypes = chezmoiset.New(
 	tea.KeyEsc,
 )
 
-func makeKeyMsg(r rune) tea.Msg { //nolint:ireturn,nolintlint
+func makeKeyMsg(r rune) tea.Msg {
 	key := tea.Key{
 		Type:  tea.KeyRunes,
 		Runes: []rune{r},
@@ -28,7 +28,7 @@ func makeKeyMsg(r rune) tea.Msg { //nolint:ireturn,nolintlint
 	return tea.KeyMsg(key)
 }
 
-func makeKeyMsgs(s string) []tea.Msg { //nolint:ireturn,nolintlint
+func makeKeyMsgs(s string) []tea.Msg {
 	msgs := make([]tea.Msg, 0, len(s))
 	for _, r := range s {
 		msgs = append(msgs, makeKeyMsg(r))
@@ -36,11 +36,7 @@ func makeKeyMsgs(s string) []tea.Msg { //nolint:ireturn,nolintlint
 	return msgs
 }
 
-func testRunModelWithInput[M tea.Model]( //nolint:ireturn,nolintlint
-	t *testing.T,
-	model M,
-	input string,
-) M {
+func testRunModelWithInput[M tea.Model](t *testing.T, model M, input string) M {
 	t.Helper()
 	for _, msg := range makeKeyMsgs(input) {
 		m, _ := model.Update(msg)
