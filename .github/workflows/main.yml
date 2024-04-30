@@ -184,6 +184,8 @@ jobs:
       run: |
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
+        # https://github.com/canonical/snapcraft/issues/4769
+        sudo snap refresh snapcraft --revision 11040
         # https://github.com/goreleaser/goreleaser/issues/1715
         # https://bugs.launchpad.net/snapcraft/+bug/1889741
         mkdir -p "${HOME}/.cache/snapcraft/download"
@@ -398,6 +400,8 @@ jobs:
       run: |
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
+        # https://github.com/canonical/snapcraft/issues/4769
+        sudo snap refresh snapcraft --revision 11040
         # https://github.com/goreleaser/goreleaser/issues/1715
         # https://bugs.launchpad.net/snapcraft/+bug/1889741
         mkdir -p "${HOME}/.cache/snapcraft/download"
