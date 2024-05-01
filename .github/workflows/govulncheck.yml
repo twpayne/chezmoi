@@ -21,6 +21,6 @@ jobs:
       id: go-version
       run: |
         echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> "${GITHUB_OUTPUT}"
-    - uses: golang/govulncheck-action@7da72f730e37eeaad891fcff0a532d27ed737cd4
+    - uses: golang/govulncheck-action@3a32958c2706f7048305d5a2e53633d7e37e97d0
       with:
         go-version-input: ${{ steps.go-version.outputs.go-version }}
