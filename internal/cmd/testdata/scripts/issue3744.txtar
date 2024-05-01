@@ -1,0 +1,22 @@
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+# create a repo
+exec git init --bare $WORK/dotfiles.git
+exec chezmoi init file://$WORK/dotfiles.git
+
+# test that chezmoi add creates and pushes a commit with a custom message template
+stdin golden/stdin
+exec chezmoi add --no-tty $HOME${/}.file
+exec git --git-dir=$WORK/dotfiles.git show HEAD
+stdout 'Custom commit message'
+
+-- golden/stdin --
+Custom commit message
+-- home/user/.config/chezmoi/chezmoi.toml --
+[git]
+    autoPush = true
+    commitMessageTemplate = "{{ promptString \"message\" }}"
+-- home/user/.file --
+# contents of .file
