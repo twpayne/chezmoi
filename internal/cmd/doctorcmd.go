@@ -659,7 +659,7 @@ func (c *latestVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.A
 
 	ctx := context.Background()
 
-	gitHubClient := chezmoi.NewGitHubClient(ctx, c.httpClient)
+	gitHubClient := chezmoi.NewGitHubClient(ctx, c.httpClient, "github.com")
 	rr, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, "twpayne", "chezmoi")
 	var rateLimitErr *github.RateLimitError
 	var abuseRateLimitErr *github.AbuseRateLimitError

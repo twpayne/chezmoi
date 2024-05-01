@@ -33,10 +33,10 @@ type gitHubClient struct {
 	client *github.Client
 }
 
-func newGitHubClient(ctx context.Context) *gitHubClient {
+func newGitHubClient(ctx context.Context, host string) *gitHubClient {
 	return &gitHubClient{
 		ctx:    ctx,
-		client: chezmoi.NewGitHubClient(ctx, http.DefaultClient),
+		client: chezmoi.NewGitHubClient(ctx, http.DefaultClient, host),
 	}
 }
 
@@ -99,7 +99,7 @@ func run() error {
 	templateName := path.Base(flag.Arg(0))
 	buffer := &bytes.Buffer{}
 	funcMap := sprig.TxtFuncMap()
-	gitHubClient := newGitHubClient(context.Background())
+	gitHubClient := newGitHubClient(context.Background(), "github.com")
 	funcMap["exists"] = func(name string) bool {
 		switch _, err := os.Stat(name); {
 		case err == nil:

@@ -340,6 +340,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		homeDir:       userHomeDir,
 		templateFuncs: sprig.TxtFuncMap(),
 
+		// Password manager data.
+		gitHub: gitHubData{
+			clientsByHost: make(map[string]gitHubClientResult),
+		},
+
 		// Command configurations.
 		apply: applyCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),

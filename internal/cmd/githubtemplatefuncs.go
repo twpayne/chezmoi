@@ -1,5 +1,7 @@
 package cmd
 
+// FIXME store per-host state in persistent state
+
 import (
 	"context"
 	"fmt"
@@ -43,13 +45,23 @@ var (
 	gitHubTagsStateBucket          = []byte("gitHubTagsState")
 )
 
+type gitHubHostOwnerRepo struct {
+	Host  string
+	Owner string
+	Repo  string
+}
+
+type gitHubClientResult struct {
+	client *github.Client
+	err    error
+}
+
 type gitHubData struct {
-	client             *github.Client
-	clientErr          error
+	clientsByHost      map[string]gitHubClientResult
 	keysCache          map[string][]*github.Key
-	latestReleaseCache map[string]map[string]*github.RepositoryRelease
-	releasesCache      map[string]map[string][]*github.RepositoryRelease
-	tagsCache          map[string]map[string][]*github.RepositoryTag
+	latestReleaseCache map[gitHubHostOwnerRepo]*github.RepositoryRelease
+	releasesCache      map[gitHubHostOwnerRepo][]*github.RepositoryRelease
+	tagsCache          map[gitHubHostOwnerRepo][]*github.RepositoryTag
 }
 
 func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
@@ -72,7 +84,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient, err := c.getGitHubClient(ctx)
+	gitHubClient, err := c.getGitHubClient(ctx, "github.com")
 	if err != nil {
 		panic(err)
 	}
@@ -108,8 +120,8 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	return allKeys
 }
 
-func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern string) string {
-	release, err := c.gitHubLatestRelease(ownerRepo)
+func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(hostOwnerRepo, pattern string) string {
+	release, err := c.gitHubLatestRelease(hostOwnerRepo)
 	if err != nil {
 		panic(err)
 	}
@@ -127,18 +139,18 @@ func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern stri
 	return ""
 }
 
-func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryRelease, error) {
-	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+func (c *Config) gitHubLatestRelease(hostOwnerRepo string) (*github.RepositoryRelease, error) {
+	hor, err := gitHubSplitHostOwnerRepo(hostOwnerRepo)
 	if err != nil {
 		return nil, err
 	}
 
-	if release := c.gitHub.latestReleaseCache[owner][repo]; release != nil {
+	if release := c.gitHub.latestReleaseCache[hor]; release != nil {
 		return release, nil
 	}
 
 	now := time.Now()
-	gitHubLatestReleaseKey := []byte(owner + "/" + repo)
+	gitHubLatestReleaseKey := []byte(hor.Owner + "/" + hor.Repo)
 	if c.GitHub.RefreshPeriod != 0 {
 		var gitHubLatestReleaseStateValue gitHubLatestReleaseState
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseStateValue); {
@@ -152,12 +164,12 @@ func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryReleas
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient, err := c.getGitHubClient(ctx)
+	gitHubClient, err := c.getGitHubClient(ctx, hor.Host)
 	if err != nil {
 		return nil, err
 	}
 
-	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, owner, repo)
+	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, hor.Owner, hor.Repo)
 	if err != nil {
 		return nil, err
 	}
@@ -170,26 +182,23 @@ func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryReleas
 	}
 
 	if c.gitHub.latestReleaseCache == nil {
-		c.gitHub.latestReleaseCache = make(map[string]map[string]*github.RepositoryRelease)
+		c.gitHub.latestReleaseCache = make(map[gitHubHostOwnerRepo]*github.RepositoryRelease)
 	}
-	if c.gitHub.latestReleaseCache[owner] == nil {
-		c.gitHub.latestReleaseCache[owner] = make(map[string]*github.RepositoryRelease)
-	}
-	c.gitHub.latestReleaseCache[owner][repo] = release
+	c.gitHub.latestReleaseCache[hor] = release
 
 	return release, nil
 }
 
-func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.RepositoryRelease {
-	release, err := c.gitHubLatestRelease(ownerRepo)
+func (c *Config) gitHubLatestReleaseTemplateFunc(hostOwnerRepo string) *github.RepositoryRelease {
+	release, err := c.gitHubLatestRelease(hostOwnerRepo)
 	if err != nil {
 		panic(err)
 	}
 	return release
 }
 
-func (c *Config) gitHubLatestTagTemplateFunc(ownerRepo string) *github.RepositoryTag {
-	tags, err := c.getGitHubTags(ownerRepo)
+func (c *Config) gitHubLatestTagTemplateFunc(hostOwnerRepo string) *github.RepositoryTag {
+	tags, err := c.getGitHubTags(hostOwnerRepo)
 	if err != nil {
 		panic(err)
 	}
@@ -201,18 +210,18 @@ func (c *Config) gitHubLatestTagTemplateFunc(ownerRepo string) *github.Repositor
 	return nil
 }
 
-func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.RepositoryRelease {
-	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+func (c *Config) gitHubReleasesTemplateFunc(hostOwnerRepo string) []*github.RepositoryRelease {
+	hor, err := gitHubSplitHostOwnerRepo(hostOwnerRepo)
 	if err != nil {
 		panic(err)
 	}
 
-	if releases := c.gitHub.releasesCache[owner][repo]; releases != nil {
+	if releases := c.gitHub.releasesCache[hor]; releases != nil {
 		return releases
 	}
 
 	now := time.Now()
-	gitHubReleasesKey := []byte(owner + "/" + repo)
+	gitHubReleasesKey := []byte(hor.Owner + "/" + hor.Repo)
 	if c.GitHub.RefreshPeriod != 0 {
 		var gitHubReleasesStateValue gitHubReleasesState
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubReleasesStateBucket, gitHubReleasesKey, &gitHubReleasesStateValue); {
@@ -226,12 +235,12 @@ func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.Reposito
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient, err := c.getGitHubClient(ctx)
+	gitHubClient, err := c.getGitHubClient(ctx, hor.Host)
 	if err != nil {
 		panic(err)
 	}
 
-	releases, _, err := gitHubClient.Repositories.ListReleases(ctx, owner, repo, nil)
+	releases, _, err := gitHubClient.Repositories.ListReleases(ctx, hor.Owner, hor.Repo, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -244,18 +253,15 @@ func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.Reposito
 	}
 
 	if c.gitHub.releasesCache == nil {
-		c.gitHub.releasesCache = make(map[string]map[string][]*github.RepositoryRelease)
+		c.gitHub.releasesCache = make(map[gitHubHostOwnerRepo][]*github.RepositoryRelease)
 	}
-	if c.gitHub.releasesCache[owner] == nil {
-		c.gitHub.releasesCache[owner] = make(map[string][]*github.RepositoryRelease)
-	}
-	c.gitHub.releasesCache[owner][repo] = releases
+	c.gitHub.releasesCache[hor] = releases
 
 	return releases
 }
 
-func (c *Config) gitHubTagsTemplateFunc(ownerRepo string) []*github.RepositoryTag {
-	tags, err := c.getGitHubTags(ownerRepo)
+func (c *Config) gitHubTagsTemplateFunc(hostOwnerRepo string) []*github.RepositoryTag {
+	tags, err := c.getGitHubTags(hostOwnerRepo)
 	if err != nil {
 		panic(err)
 	}
@@ -263,18 +269,18 @@ func (c *Config) gitHubTagsTemplateFunc(ownerRepo string) []*github.RepositoryTa
 	return tags
 }
 
-func (c *Config) getGitHubTags(ownerRepo string) ([]*github.RepositoryTag, error) {
-	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+func (c *Config) getGitHubTags(hostOwnerRepo string) ([]*github.RepositoryTag, error) {
+	hor, err := gitHubSplitHostOwnerRepo(hostOwnerRepo)
 	if err != nil {
 		return nil, err
 	}
 
-	if tags := c.gitHub.tagsCache[owner][repo]; tags != nil {
+	if tags := c.gitHub.tagsCache[hor]; tags != nil {
 		return tags, nil
 	}
 
 	now := time.Now()
-	gitHubTagsKey := []byte(owner + "/" + repo)
+	gitHubTagsKey := []byte(hor.Owner + "/" + hor.Repo)
 	if c.GitHub.RefreshPeriod != 0 {
 		var gitHubTagsStateValue gitHubTagsState
 		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubTagsStateBucket, gitHubTagsKey, &gitHubTagsStateValue); {
@@ -288,12 +294,12 @@ func (c *Config) getGitHubTags(ownerRepo string) ([]*github.RepositoryTag, error
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient, err := c.getGitHubClient(ctx)
+	gitHubClient, err := c.getGitHubClient(ctx, hor.Host)
 	if err != nil {
 		return nil, err
 	}
 
-	tags, _, err := gitHubClient.Repositories.ListTags(ctx, owner, repo, nil)
+	tags, _, err := gitHubClient.Repositories.ListTags(ctx, hor.Owner, hor.Repo, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -306,35 +312,49 @@ func (c *Config) getGitHubTags(ownerRepo string) ([]*github.RepositoryTag, error
 	}
 
 	if c.gitHub.tagsCache == nil {
-		c.gitHub.tagsCache = make(map[string]map[string][]*github.RepositoryTag)
+		c.gitHub.tagsCache = make(map[gitHubHostOwnerRepo][]*github.RepositoryTag)
 	}
-	if c.gitHub.tagsCache[owner] == nil {
-		c.gitHub.tagsCache[owner] = make(map[string][]*github.RepositoryTag)
-	}
-	c.gitHub.tagsCache[owner][repo] = tags
+	c.gitHub.tagsCache[hor] = tags
 
 	return tags, nil
 }
 
-func (c *Config) getGitHubClient(ctx context.Context) (*github.Client, error) {
-	if c.gitHub.client != nil || c.gitHub.clientErr != nil {
-		return c.gitHub.client, c.gitHub.clientErr
+func (c *Config) getGitHubClient(ctx context.Context, host string) (*github.Client, error) {
+	if gitHubClientResult, ok := c.gitHub.clientsByHost[host]; ok {
+		return gitHubClientResult.client, gitHubClientResult.err
 	}
 
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
-		c.gitHub.clientErr = err
+		c.gitHub.clientsByHost[host] = gitHubClientResult{
+			err: err,
+		}
 		return nil, err
 	}
 
-	c.gitHub.client = chezmoi.NewGitHubClient(ctx, httpClient)
-	return c.gitHub.client, nil
+	client := chezmoi.NewGitHubClient(ctx, httpClient, host)
+	c.gitHub.clientsByHost[host] = gitHubClientResult{
+		client: client,
+	}
+
+	return client, nil
 }
 
-func gitHubSplitOwnerRepo(ownerRepo string) (string, string, error) {
-	owner, repo, ok := strings.Cut(ownerRepo, "/")
-	if !ok {
-		return "", "", fmt.Errorf("%s: not an owner/repo", ownerRepo)
+func gitHubSplitHostOwnerRepo(hostOwnerRepo string) (gitHubHostOwnerRepo, error) {
+	switch components := strings.Split(hostOwnerRepo, "/"); len(components) {
+	case 2:
+		return gitHubHostOwnerRepo{
+			Host:  "github.com",
+			Owner: components[0],
+			Repo:  components[1],
+		}, nil
+	case 3:
+		return gitHubHostOwnerRepo{
+			Host:  components[0],
+			Owner: components[1],
+			Repo:  components[2],
+		}, nil
+	default:
+		return gitHubHostOwnerRepo{}, fmt.Errorf("%s: not a [host/]owner/repo", hostOwnerRepo)
 	}
-	return owner, repo, nil
 }
