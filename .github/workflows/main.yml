@@ -11,10 +11,10 @@ on:
   schedule:
   - cron: 32 2 * * *
 env:
-  ACTIONLINT_VERSION: 1.6.26
+  ACTIONLINT_VERSION: 1.6.27
   AGE_VERSION: 1.1.1
   CHOCOLATEY_VERSION: 2.2.2
-  EDITORCONFIG_CHECKER_VERSION: 2.8.0
+  EDITORCONFIG_CHECKER_VERSION: 3.0.1
   FIND_TYPOS_VERSION: 0.0.3
   GO_VERSION: 1.22.2
   GOFUMPT_VERSION: 0.6.0
@@ -345,7 +345,7 @@ jobs:
       run: |
         GOOS="$(go env GOOS)"
         GOARCH="$(go env GOARCH)"
-        curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf -
+        curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/v${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf -
         "bin/ec-${GOOS}-${GOARCH}"
     - name: lint-whitespace
       run: |
