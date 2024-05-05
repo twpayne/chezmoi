@@ -6,17 +6,19 @@ linters:
   - asciicheck
   - bidichk
   - bodyclose
+  - canonicalheader
   - containedctx
   - decorder
   - dogsled
   - dupword
   - durationcheck
+  - err113
   - errcheck
   - errchkjson
   - errname
   - errorlint
-  - execinquery
   - exportloopref
+  - fatcontext
   - forbidigo
   - forcetypeassert
   - gci
@@ -24,7 +26,6 @@ linters:
   - gochecksumtype
   - gocritic
   - godot
-  - goerr113
   - gofmt
   - gofumpt
   - goimports
@@ -145,7 +146,7 @@ issues:
   - EXC0011 # include issues about comments from `stylecheck`
   exclude-rules:
   - linters:
-    - goerr113
+    - err113
     text: do not define dynamic errors, use wrapped static errors instead
   - linters:
     - revive
