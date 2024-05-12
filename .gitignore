@@ -7,6 +7,7 @@
 /bin/gofumpt
 /bin/golines
 /bin/golangci-lint
+/bin/goreleaser
 /bin/goversioninfo
 /chezmoi
 /chezmoi.exe
