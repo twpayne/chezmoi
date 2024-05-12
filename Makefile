@@ -7,6 +7,7 @@ FIND_TYPOS_VERSION=$(shell awk '/FIND_TYPOS_VERSION:/ { print $$2 }' .github/wor
 GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLINES_VERSION=$(shell awk '/GOLINES_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
@@ -137,7 +138,14 @@ create-syso: ensure-goversioninfo
 	./bin/goversioninfo -platform-specific
 
 .PHONY: ensure-tools
-ensure-tools: ensure-actionlint ensure-find-typos ensure-gofumpt ensure-golangci-lint ensure-golines ensure-goversioninfo
+ensure-tools: \
+	ensure-actionlint \
+	ensure-find-typos \
+	ensure-gofumpt \
+	ensure-golangci-lint \
+	ensure-golines \
+	ensure-goreleaser \
+	ensure-goversioninfo
 
 .PHONY: ensure-actionlint
 ensure-actionlint:
@@ -180,6 +188,12 @@ ensure-golangci-lint:
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- v${GOLANGCI_LINT_VERSION} ; \
 	fi
 
+.PHONY: ensure-goreleaser
+ensure-goreleaser:
+	if [ ! -x bin/goreleaser ] || ( ./bin/goreleaser --version | grep -Fqv "${GORELEASER_VERSION}" ) ; then \
+		GOBIN=$(shell pwd)/bin ${GO} install "github.com/goreleaser/goreleaser@v${GORELEASER_VERSION}" ; \
+	fi
+
 .PHONY: ensure-goversioninfo
 ensure-goversioninfo:
 	if [ ! -x bin/goversioninfo ] ; then \
@@ -187,8 +201,8 @@ ensure-goversioninfo:
 	fi
 
 .PHONY: release
-release:
-	goreleaser release \
+release: ensure-goreleaser
+	./bin/goreleaser release \
 		--clean \
 		${GORELEASER_FLAGS}
 
@@ -197,8 +211,8 @@ shellcheck:
 	find . -type f -name \*.sh | xargs shellcheck
 
 .PHONY: test-release
-test-release:
-	goreleaser release \
+test-release: ensure-goreleaser
+	./bin/goreleaser release \
 		--clean \
 		--skip=chocolatey,sign \
 		--snapshot \

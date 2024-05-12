@@ -20,6 +20,7 @@ env:
   GOFUMPT_VERSION: 0.6.0
   GOLANGCI_LINT_VERSION: 1.58.1
   GOLINES_VERSION: 0.12.2
+  GORELEASER_VERSION: 1.26.0
   GOVERSIONINFO_VERSION: 1.4.0
   RAGE_VERSION: 0.10.0
 jobs:
@@ -200,7 +201,7 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
       with:
-        version: latest
+        version: ${{ env.GORELEASER_VERSION }}
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -423,7 +424,7 @@ jobs:
         make create-syso
     - uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
       with:
-        version: latest
+        version: ${{ env.GORELEASER_VERSION }}
         args: release --timeout=1h
       env:
         CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
