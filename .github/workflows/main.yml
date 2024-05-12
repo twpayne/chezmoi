@@ -198,7 +198,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8
+      uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
       with:
         version: latest
         args: release --skip=sign --snapshot --timeout=1h
@@ -373,7 +373,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
-    - uses: golangci/golangci-lint-action@38e1018663fa5173f3968ea0777460d3de38f256
+    - uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
@@ -421,7 +421,7 @@ jobs:
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8
+    - uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
       with:
         version: latest
         args: release --timeout=1h
