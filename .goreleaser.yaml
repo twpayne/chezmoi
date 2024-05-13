@@ -2,7 +2,7 @@ project_name: chezmoi
 
 before:
   hooks:
-  - assets/scripts/generate-commit.sh -o COMMIT
+  - go run assets/scripts/generate-commit.go -o COMMIT
   - go mod download all
 
 builds:

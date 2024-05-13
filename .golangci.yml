@@ -137,6 +137,8 @@ linters-settings:
     enable-all: true
   misspell:
     locale: US
+    ignore-words:
+    - ackward
   stylecheck:
     checks:
     - all
@@ -159,3 +161,7 @@ issues:
     - forcetypeassert
     - gosec
     path: _test\.go$
+  - linters:
+    - forbidigo
+    - gosec
+    path: assets/scripts/generate-commit.go
