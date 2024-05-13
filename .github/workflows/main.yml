@@ -368,13 +368,24 @@ jobs:
       run: |
         go run ./internal/cmds/lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
   lint:
+    name: lint-${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+        - macos-14
+        - ubuntu-22.04
+        - windows-2022
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.runs-on }}
     permissions:
       contents: read
     steps:
     - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+      with:
+        go-version: stable
     - uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
