@@ -31,8 +31,9 @@ optional and will be stripped, so you can pass the git tag in directly.
 
 !!! hint
 
-    The `assets/scripts/generate-commit.sh` script will return a suitable value
+    The `assets/scripts/generate-commit.go` script will return a suitable value
     for `$COMMIT`.
+    You can run it with `go run assets/scripts/generate-commit.go`.
 
 !!! hint
 

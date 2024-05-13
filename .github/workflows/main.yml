@@ -44,7 +44,7 @@ jobs:
           - 'assets/**/*.tmpl'
           - 'assets/docker/**'
           - 'assets/scripts/*.py'
-          - 'assets/scripts/generate-commit.sh'
+          - 'assets/scripts/generate-commit.go'
           - 'assets/scripts/stow-to-chezmoi.sh'
           - 'assets/vagrant/**'
           - 'completions/**'
@@ -73,6 +73,7 @@ jobs:
     - uses: reviewdog/action-misspell@5bd7be2fc7ae56a517184f5c4bbcf2fd7afe3927
       with:
         locale: US
+        ignore: ackward
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
