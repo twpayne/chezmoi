@@ -13,7 +13,6 @@ import (
 type RealSystem struct {
 	fileSystem              vfs.FS
 	createScriptTempDirOnce sync.Once
-	scriptEnv               []string
 	scriptTempDir           AbsPath
 }
 
