@@ -45,7 +45,7 @@ jobs:
     if: ${{ needs.changes.outputs.sh == 'true' }}
     strategy:
       matrix:
-        os: [macos-11, ubuntu-20.04, windows-2022]
+        os: [macos-12, ubuntu-20.04, windows-2022]
     needs: changes
     runs-on: ${{ matrix.os }}
     env:
@@ -68,7 +68,7 @@ jobs:
     if: ${{ needs.changes.outputs.ps1 == 'true' }}
     strategy:
       matrix:
-        os: [macos-11, ubuntu-20.04, windows-2022]
+        os: [macos-12, ubuntu-20.04, windows-2022]
     needs: changes
     runs-on: ${{ matrix.os }}
     env:
