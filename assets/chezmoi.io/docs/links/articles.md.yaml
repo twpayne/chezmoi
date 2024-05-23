@@ -416,3 +416,8 @@ articles:
   lang: CN
   title: '使用 chezmoi & vscode, 管理你的 dotfiles'
   url: https://juejin.cn/post/7362028633425608754
+- date: '2024-05-01'
+  version: 2.48.0
+  lang: TH
+  title: 'จัดการ dotfiles ด้วย chezmoi'
+  url: https://www.anuwong.com/blog/manage-dotfiles-with-chezmoi/
