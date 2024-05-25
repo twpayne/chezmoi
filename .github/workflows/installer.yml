@@ -75,14 +75,28 @@ jobs:
       BINARY: ${{ matrix.os == 'windows-2022' && 'bin/chezmoi.exe' || 'bin/chezmoi' }}
     steps:
     - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
-    - name: test-${{ matrix.os }}-local
+    - name: test-${{ matrix.os }}-local-pwsh
       shell: pwsh
       run: |
         if (Test-Path -Path ${{ env.BINARY }}) { Remove-Item -Force ${{ env.BINARY }} }
         assets/scripts/install.ps1 -d
         ${{ env.BINARY }} --version
-    - name: test-${{ matrix.os }}-url
+    - name: test-${{ matrix.os }}-local-powershell
+      if: matrix.os == 'windows-2022'
+      shell: powershell
+      run: |
+        if (Test-Path -Path ${{ env.BINARY }}) { Remove-Item -Force ${{ env.BINARY }} }
+        assets/scripts/install.ps1 -d
+        ${{ env.BINARY }} --version
+    - name: test-${{ matrix.os }}-url-pwsh
       shell: pwsh
+      run: |
+        if (Test-Path -Path ${{ env.BINARY }}) { Remove-Item -Force ${{ env.BINARY }} }
+        iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ env.SHA }}/assets/scripts/install.ps1')} -d"
+        ${{ env.BINARY }} --version
+    - name: test-${{ matrix.os }}-url-powershell
+      if: matrix.os == 'windows-2022'
+      shell: powershell
       run: |
         if (Test-Path -Path ${{ env.BINARY }}) { Remove-Item -Force ${{ env.BINARY }} }
         iex "&{$(irm 'https://raw.githubusercontent.com/twpayne/chezmoi/${{ env.SHA }}/assets/scripts/install.ps1')} -d"
