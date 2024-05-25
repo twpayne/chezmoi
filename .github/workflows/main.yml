@@ -11,18 +11,18 @@ on:
   schedule:
   - cron: 32 2 * * *
 env:
-  ACTIONLINT_VERSION: 1.6.27
-  AGE_VERSION: 1.1.1
-  CHOCOLATEY_VERSION: 2.2.2
-  EDITORCONFIG_CHECKER_VERSION: 3.0.1
-  FIND_TYPOS_VERSION: 0.0.3
-  GO_VERSION: 1.22.3
-  GOFUMPT_VERSION: 0.6.0
-  GOLANGCI_LINT_VERSION: 1.58.2
-  GOLINES_VERSION: 0.12.2
-  GORELEASER_VERSION: 1.26.0
-  GOVERSIONINFO_VERSION: 1.4.0
-  RAGE_VERSION: 0.10.0
+  ACTIONLINT_VERSION: 1.6.27 # https://github.com/rhysd/actionlint/releases
+  AGE_VERSION: 1.1.1 # https://github.com/FiloSottile/age/releases
+  CHOCOLATEY_VERSION: 2.2.2 # https://github.com/chocolatey/choco/releases
+  EDITORCONFIG_CHECKER_VERSION: 3.0.1 # https://github.com/editorconfig-checker/editorconfig-checker/releases
+  FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
+  GO_VERSION: 1.22.3 # https://go.dev/doc/devel/release
+  GOFUMPT_VERSION: 0.6.0 # https://github.com/mvdan/gofumpt/releases
+  GOLANGCI_LINT_VERSION: 1.58.2 # https://github.com/golangci/golangci-lint/releases
+  GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
+  GORELEASER_VERSION: 1.26.0 # https://github.com/goreleaser/goreleaser/releases
+  GOVERSIONINFO_VERSION: 1.4.0 # https://github.com/josephspurrier/goversioninfo/releases
+  RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
