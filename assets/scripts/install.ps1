@@ -45,9 +45,14 @@ param (
     $ChezmoiArgs
 )
 
-function Write-DebugVariable ($variable) {
-    $debugVariable = Get-Variable -Name $variable
-    Write-Debug "$( $debugVariable.Name ): $( $debugVariable.Value )"
+function Write-DebugVariable {
+    param (
+        [string[]]$variables
+    )
+    foreach ($variable in $variables) {
+        $debugVariable = Get-Variable -Name $variable
+        Write-Debug "$( $debugVariable.Name ): $( $debugVariable.Value )"
+    }
 }
 
 function Invoke-CleanUp ($directory) {
@@ -83,29 +88,38 @@ function Get-GoOS {
     if ($isOSPlatform.Invoke($osPlatform::Windows)) { return 'windows' }
     if ($isOSPlatform.Invoke($osPlatform::Linux)) { return 'linux' }
     if ($isOSPlatform.Invoke($osPlatform::OSX)) { return 'darwin' }
+
+    Write-Error 'unable to determine GOOS'
 }
 
 function Get-GoArch {
     $goArch = @{
-        'Arm'   = 'arm'
-        'Arm64' = 'arm64'
-        'X86'   = 'i386'
-        'X64'   = 'amd64'
+        '32-bit' = 'i386'
+        '64-bit' = 'amd64'
+        'Arm'    = 'arm'
+        'Arm64'  = 'arm64'
+        'X86'    = 'i386'
+        'X64'    = 'amd64'
     }
 
-    $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+    $arch = $null
 
-    if ((-not $arch) -and [System.Environment]::Is64BitOperatingSystem) {
-        $arch = 'X64'
-    }
+    if ($PSVersionTable.PSEdition -eq 'Desktop') {
+        $arch = (Get-CimInstance -Class Win32_OperatingSystem).OSArchitecture
+    } else {
+        $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
 
-    if (-not $arch) {
-        $cimArch = (Get-CimInstance -Class Win32_OperatingSystem).OSArchitecture
-        if ($cimArch.StartsWith('32')) {
-            $arch = 'X86'
-        } else {
-            $arch = 'X64'
+        if ([string]::IsNullOrEmpty($arch)) {
+            $arch = if ([System.Environment]::Is64BitOperatingSystem) {
+                'X64'
+            } else {
+                'X86'
+            }
         }
+    }
+
+    if ([string]::IsNullOrEmpty($arch)) {
+        Write-Error 'unable to determine GOARCH'
     }
 
     return $goArch[$arch]
@@ -175,8 +189,7 @@ function Expand-ChezmoiArchive ($path) {
     }
 }
 
-# some functions require fetching of non-existent properties to not error
-Set-StrictMode -Off
+Set-StrictMode -Version 3.0
 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
@@ -202,9 +215,7 @@ do {
 } while (Test-Path -Path $tempDir)
 New-Item -ItemType Directory -Path $tempDir | Out-Null
 
-foreach ($variableName in @('BinDir', 'Tag', 'ChezmoiArgs', 'tempDir')) {
-    Write-DebugVariable $variableName
-}
+Write-DebugVariable 'BinDir', 'Tag', 'ChezmoiArgs', 'tempDir'
 
 $goOS = Get-GoOS
 $goArch = Get-GoArch
@@ -230,15 +241,11 @@ switch ($goOS) {
         break
     }
 }
-foreach ($variableName in @('binarySuffix', 'archiveFormat', 'goOSExtra')) {
-    Write-DebugVariable $variableName
-}
+Write-DebugVariable 'binarySuffix', 'archiveFormat', 'goOSExtra'
 
 $archiveFilename = "chezmoi_${version}_${goOS}${goOSExtra}_${goArch}.${archiveFormat}"
 $tempArchivePath = Join-Path -Path $tempDir -ChildPath $archiveFilename
-foreach ($variableName in @('archiveFilename', 'tempArchivePath')) {
-    Write-DebugVariable $variableName
-}
+Write-DebugVariable 'archiveFilename', 'tempArchivePath'
 Invoke-FileDownload "${BaseUrl}/download/${realTag}/${archiveFilename}" $tempArchivePath
 
 $checksums = Get-Checksums $realTag $version
@@ -248,9 +255,7 @@ Expand-ChezmoiArchive $tempArchivePath
 
 $binaryFilename = "chezmoi${binarySuffix}"
 $tempBinaryPath = Join-Path -Path $tempDir -ChildPath $binaryFilename
-foreach ($variableName in @('binaryFilename', 'tempBinaryPath')) {
-    Write-DebugVariable $variableName
-}
+Write-DebugVariable 'binaryFilename', 'tempBinaryPath'
 [System.IO.Directory]::CreateDirectory($BinDir) | Out-Null
 $binary = Join-Path -Path $BinDir -ChildPath $binaryFilename
 Write-DebugVariable 'binary'
