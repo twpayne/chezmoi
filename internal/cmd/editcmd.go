@@ -171,7 +171,7 @@ TARGET_REL_PATH:
 			if err != nil {
 				return err
 			}
-			if err := c.baseSystem.WriteFile(transparentlyDecryptedFile.sourceAbsPath, contents, 0o666); err != nil {
+			if err := c.baseSystem.WriteFile(transparentlyDecryptedFile.sourceAbsPath, contents, 0o666&^c.Umask); err != nil {
 				return err
 			}
 		}
