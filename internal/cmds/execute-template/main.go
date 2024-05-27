@@ -144,7 +144,7 @@ func run() error {
 			return err
 		}
 	} else if data, err := os.ReadFile(*outputFilename); err != nil || !bytes.Equal(data, buffer.Bytes()) {
-		if err := maybe.WriteFile(*outputFilename, buffer.Bytes(), 0o666); err != nil {
+		if err := maybe.WriteFile(*outputFilename, buffer.Bytes(), 0o644); err != nil {
 			return err
 		}
 	}
