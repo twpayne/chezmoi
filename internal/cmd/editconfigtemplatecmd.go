@@ -47,7 +47,7 @@ func (c *Config) runEditConfigTemplateCmd(cmd *cobra.Command, args []string, sou
 		case err != nil:
 			return err
 		default:
-			if err := c.sourceSystem.WriteFile(configTemplateAbsPath, data, 0o666); err != nil {
+			if err := c.sourceSystem.WriteFile(configTemplateAbsPath, data, 0o666&^c.Umask); err != nil {
 				return err
 			}
 		}
