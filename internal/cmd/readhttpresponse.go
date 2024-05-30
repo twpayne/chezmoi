@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -62,10 +61,8 @@ func (m httpProgressModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			return m, nil
 		}
-	case tea.WindowSizeMsg:
-		return m, nil
 	default:
-		panic(fmt.Sprintf("%T: unknown message type", msg))
+		return m, nil
 	}
 }
 
@@ -101,10 +98,8 @@ func (m httpSpinnerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			return m, nil
 		}
-	case tea.WindowSizeMsg:
-		return m, nil
 	default:
-		panic(fmt.Sprintf("%T: unknown message type", msg))
+		return m, nil
 	}
 }
 
