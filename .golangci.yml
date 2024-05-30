@@ -98,7 +98,6 @@ linters:
   - ireturn
   - lll
   - maintidx
-  - maligned
   - musttag
   - nakedret
   - nestif
@@ -113,8 +112,6 @@ linters:
   - wsl
 
 linters-settings:
-  errcheck:
-    ignore: '' # https://github.com/golangci/golangci-lint/issues/4733#issuecomment-2120389981
   forbidigo:
     forbid:
     - ^archive/zip\.
