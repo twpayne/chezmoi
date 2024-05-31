@@ -11,9 +11,9 @@
 | -------------------------------------- | ------------- | ----------------- | ----------------- | ------------------------ | ---------------------------- | ---------- |
 | Distribution                           | Single binary | Python package    | Multiple files    | Single script or package | Single script                | -          |
 | Install method                         | Many          | git submodule     | Many              | Many                     | Many                         | Manual     |
-| Non-root install on bare system        | ✅            | ⁉️                 | ⁉️                 | ✅                       | ✅                           | ✅         |
+| Non-root install on bare system        | ✅            | ⁉️                 | ✅                 | ✅                       | ✅                           | ✅         |
 | Windows support                        | ✅            | ✅                | ❌                | ❌                       | ✅                           | ✅         |
-| Bootstrap requirements                 | None          | Python, git       | Perl, git         | sh, git                  | git                          | git        |
+| Bootstrap requirements                 | None          | Python, git       | Perl              | sh, git                  | git                          | git        |
 | Source repos                           | Single        | Single            | Multiple          | Multiple                 | Single                       | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Files                    | Files                        | Files      |
 | Config file                            | Optional      | Required          | Optional          | None                     | Optional                     | Optional   |
