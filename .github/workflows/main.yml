@@ -20,7 +20,7 @@ env:
   GOFUMPT_VERSION: 0.6.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 1.59.0 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
-  GORELEASER_VERSION: 1.26.2 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.0.0 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.0 # https://github.com/josephspurrier/goversioninfo/releases
   RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
 jobs:
