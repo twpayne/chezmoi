@@ -2863,13 +2863,16 @@ func parseCommand(command string, args []string) (string, []string, error) {
 		}); err != nil {
 			return "", nil, err
 		}
-		fields, err := expand.Fields(&expand.Config{
+		switch fields, err := expand.Fields(&expand.Config{
 			Env: expand.FuncEnviron(os.Getenv),
-		}, words...)
-		if err != nil {
+		}, words...); {
+		case err != nil:
 			return "", nil, err
+		case len(fields) > 1:
+			return fields[0], append(fields[1:], args...), nil
+		case len(fields) == 1:
+			return fields[0], args, nil
 		}
-		return fields[0], append(fields[1:], args...), nil
 	}
 
 	// Fallback to the command only.
