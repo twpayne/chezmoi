@@ -8,8 +8,3 @@ have entries in the source state. They cannot be externals.
     ```console
     $ chezmoi forget ~/.bashrc
     ```
-
-!!! info
-
-    To remove targets from both the source state and destination directory, use
-    [`remove`](remove.md).

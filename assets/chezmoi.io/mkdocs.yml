@@ -143,6 +143,7 @@ nav:
     - completion: reference/commands/completion.md
     - data: reference/commands/data.md
     - decrypt: reference/commands/decrypt.md
+    - destroy: reference/commands/destroy.md
     - diff: reference/commands/diff.md
     - doctor: reference/commands/doctor.md
     - dump: reference/commands/dump.md
@@ -166,7 +167,6 @@ nav:
     - merge: reference/commands/merge.md
     - merge-all: reference/commands/merge-all.md
     - purge: reference/commands/purge.md
-    - remove: reference/commands/remove.md
     - re-add: reference/commands/re-add.md
     - rm: reference/commands/rm.md
     - secret: reference/commands/secret.md
