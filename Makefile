@@ -191,7 +191,7 @@ ensure-golangci-lint:
 .PHONY: ensure-goreleaser
 ensure-goreleaser:
 	if [ ! -x bin/goreleaser ] || ( ./bin/goreleaser --version | grep -Fqv "${GORELEASER_VERSION}" ) ; then \
-		GOBIN=$(shell pwd)/bin ${GO} install "github.com/goreleaser/goreleaser@v${GORELEASER_VERSION}" ; \
+		GOBIN=$(shell pwd)/bin ${GO} install "github.com/goreleaser/goreleaser/v2@v${GORELEASER_VERSION}" ; \
 	fi
 
 .PHONY: ensure-goversioninfo
