@@ -192,6 +192,7 @@ type Config struct {
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
 	chattr          chattrCmdConfig
+	destroy         destroyCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	ignored         ignoredCmdConfig
@@ -201,7 +202,6 @@ type Config struct {
 	mergeAll        mergeAllCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
-	remove          removeCmdConfig
 	secret          secretCmdConfig
 	state           stateCmdConfig
 	unmanaged       unmanagedCmdConfig
@@ -1643,6 +1643,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newCompletionCmd(),
 		c.newDataCmd(),
 		c.newDecryptCommand(),
+		c.newDestroyCmd(),
 		c.newDiffCmd(),
 		c.newDoctorCmd(),
 		c.newDumpCmd(),
@@ -1666,7 +1667,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newMergeAllCmd(),
 		c.newPurgeCmd(),
 		c.newReAddCmd(),
-		c.newRemoveCmd(),
 		c.newSecretCmd(),
 		c.newSourcePathCmd(),
 		c.newStateCmd(),

@@ -10,20 +10,19 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
-type removeCmdConfig struct {
+type destroyCmdConfig struct {
 	recursive bool
 }
 
-func (c *Config) newRemoveCmd() *cobra.Command {
-	removeCmd := &cobra.Command{
-		Use:               "remove target...",
-		Aliases:           []string{"rm"},
-		Short:             "Remove a target from the source state and the destination directory",
-		Long:              mustLongHelp("remove"),
-		Example:           example("remove"),
+func (c *Config) newDestroyCmd() *cobra.Command {
+	destroyCmd := &cobra.Command{
+		Use:               "destroy target...",
+		Short:             "Permanently delete an entry from the source state, the destination directory, and the state",
+		Long:              mustLongHelp("destroy"),
+		Example:           example("destroy"),
 		ValidArgsFunction: c.targetValidArgs,
 		Args:              cobra.MinimumNArgs(1),
-		RunE:              c.makeRunEWithSourceState(c.runRemoveCmd),
+		RunE:              c.makeRunEWithSourceState(c.runDestroyCmd),
 		Annotations: newAnnotations(
 			modifiesDestinationDirectory,
 			modifiesSourceDirectory,
@@ -31,14 +30,14 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		),
 	}
 
-	removeCmd.Flags().BoolVarP(&c.remove.recursive, "recursive", "r", c.remove.recursive, "Recurse into subdirectories")
+	destroyCmd.Flags().BoolVarP(&c.destroy.recursive, "recursive", "r", c.destroy.recursive, "Recurse into subdirectories")
 
-	return removeCmd
+	return destroyCmd
 }
 
-func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
-		recursive: c.remove.recursive,
+		recursive: c.destroy.recursive,
 	})
 	if err != nil {
 		return err
@@ -48,13 +47,13 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 		destAbsPath := c.DestDirAbsPath.Join(targetRelPath)
 		// Find the path of the entry in the source state, if any.
 		//
-		// chezmoi remove might be called on an entry in an exact_ directory
+		// chezmoi destroy might be called on an entry in an exact_ directory
 		// that is not present in the source directory. The entry is still
 		// managed by chezmoi because chezmoi apply will remove it. Therefore,
-		// chezmoi remove should remove such entries from the target state, even
-		// if they are not present in the source state. So, when calling chezmoi
-		// remove on entries like this, we should only remove the entry from the
-		// target state, not the source state.
+		// chezmoi destroy should remove such entries from the target state,
+		// even if they are not present in the source state. So, when calling
+		// chezmoi destroy on entries like this, we should only remove the entry
+		// from the target state, not the source state.
 		//
 		// For entries in exact_ directories in the target state that are not
 		// present in the source state, we generate SourceStateRemove entries.
@@ -68,9 +67,9 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 		if !c.force {
 			var prompt string
 			if sourceAbsPath.Empty() {
-				prompt = fmt.Sprintf("Remove %s", destAbsPath)
+				prompt = fmt.Sprintf("Destroy %s", destAbsPath)
 			} else {
-				prompt = fmt.Sprintf("Remove %s and %s", destAbsPath, sourceAbsPath)
+				prompt = fmt.Sprintf("Destroy %s and %s", destAbsPath, sourceAbsPath)
 			}
 			choice, err := c.promptChoice(prompt, choicesYesNoAllQuit)
 			if err != nil {

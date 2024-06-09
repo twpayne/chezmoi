@@ -1,28 +1,28 @@
 mkhomedir
 mksourcedir
 
-# test that chezmoi remove file removes a file
+# test that chezmoi destroy file destroys a file
 exec chezmoi apply --force
 exists $HOME/.file
-exec chezmoi remove --force $HOME${/}.file
+exec chezmoi destroy --force $HOME${/}.file
 ! exists $HOME/.file
 exec chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
 ! stdout .
 
-# test that chezmoi remove dir removes a directory
+# test that chezmoi destroy dir destroys a directory
 exists $HOME/.dir
-exec chezmoi remove --force $HOME${/}.dir
+exec chezmoi destroy --force $HOME${/}.dir
 ! exists $HOME/.dir
 
-# test that if any chezmoi remove stops on any error
+# test that if any chezmoi destroy stops on any error
 exists $HOME/.executable
-! exec chezmoi remove --force $HOME${/}.newfile $HOME${/}.executable
+! exec chezmoi destroy --force $HOME${/}.newfile $HOME${/}.executable
 stderr 'not managed'
 exists $HOME/.executable
 
 chhome home2/user
 
-# test that chezmoi apply removes a file and a directory
+# test that chezmoi apply destroys a file and a directory
 exists $HOME/.file
 exists $HOME/.dir
 exec chezmoi apply
