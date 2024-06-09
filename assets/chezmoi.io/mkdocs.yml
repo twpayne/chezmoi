@@ -168,6 +168,7 @@ nav:
     - merge-all: reference/commands/merge-all.md
     - purge: reference/commands/purge.md
     - re-add: reference/commands/re-add.md
+    - remove: reference/commands/remove.md
     - rm: reference/commands/rm.md
     - secret: reference/commands/secret.md
     - source-path: reference/commands/source-path.md
