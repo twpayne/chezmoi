@@ -1,3 +1,4 @@
-# `rm` *target*...
+# `rm`
 
-`rm` is an alias for [`remove`](remove.md).
+The `rm` command has been removed. Use the [`forget` command](forget.md) or the
+[`destroy` command](destroy.md) instead.
