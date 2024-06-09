@@ -21,6 +21,7 @@ var (
 		regexp.MustCompile(`\A\.venv\z`),
 		regexp.MustCompile(`\A\.vscode\z`),
 		regexp.MustCompile(`\ACOMMIT\z`),
+		regexp.MustCompile(`\Aassets/chezmoi\.io/\.venv\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/site\z`),
 		regexp.MustCompile(`\Aassets/scripts/install\.ps1\z`),
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
