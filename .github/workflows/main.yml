@@ -70,7 +70,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
-    - uses: reviewdog/action-misspell@5bd7be2fc7ae56a517184f5c4bbcf2fd7afe3927
+    - uses: reviewdog/action-misspell@8cd4a880dd86b1b175092c18c23cdec31283d654
       with:
         locale: US
         ignore: ackward
@@ -200,7 +200,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
+      uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --skip=sign --snapshot --timeout=1h
@@ -434,7 +434,7 @@ jobs:
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@5742e2a039330cbb23ebf35f046f814d4c6ff811
+    - uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --timeout=1h
