@@ -7,8 +7,8 @@ import (
 
 // An Interpreter interprets scripts.
 type Interpreter struct {
-	Command string   `mapstructure:"command"`
-	Args    []string `mapstructure:"args"`
+	Command string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
 // ExecCommand returns the *exec.Cmd to interpret name.

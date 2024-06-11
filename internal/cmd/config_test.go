@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 	"io/fs"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -15,6 +18,43 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
+
+func TestTagFieldNamesMatch(t *testing.T) {
+	fields := reflect.VisibleFields(reflect.TypeFor[ConfigFile]())
+	expectedTags := []string{"json", "yaml", "mapstructure"}
+
+	for _, f := range fields {
+		ts := f.Tag
+		tagValueGroups := make(map[string][]string)
+
+		for _, tagName := range expectedTags {
+			tagValue, tagPresent := ts.Lookup(tagName)
+
+			if !tagPresent {
+				t.Errorf("ConfigFile field %s is missing a %s tag", f.Name, tagName)
+			}
+
+			matchingTags, notFirstOccurrence := tagValueGroups[tagValue]
+			if notFirstOccurrence {
+				tagValueGroups[tagValue] = append(matchingTags, tagName)
+			} else {
+				tagValueGroups[tagValue] = []string{tagName}
+			}
+		}
+
+		if len(tagValueGroups) > 1 {
+			valueMsgs := []string{}
+			for value, tagsMatching := range tagValueGroups {
+				if len(tagsMatching) == 1 {
+					valueMsgs = append(valueMsgs, fmt.Sprintf("%s says \"%s\"", tagsMatching[0], value))
+				} else {
+					valueMsgs = append(valueMsgs, fmt.Sprintf("(%s) each say \"%s\"", strings.Join(tagsMatching, ", "), value))
+				}
+			}
+			t.Errorf("ConfigFile field %s has non-matching tag names:\n    %s", f.Name, strings.Join(valueMsgs, "\n    "))
+		}
+	}
+}
 
 func TestAddTemplateFuncPanic(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
