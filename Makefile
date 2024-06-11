@@ -9,6 +9,7 @@ GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .gith
 GOLINES_VERSION=$(shell awk '/GOLINES_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
 endif
@@ -121,7 +122,7 @@ lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-gol
 	${GO} run ./internal/cmds/lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
 	./bin/find-typos chezmoi .
-	go run ./internal/cmds/lint-commit-messages origin/master..HEAD
+	go run ./internal/cmds/lint-commit-messages ${UPSTREAM}/master..HEAD
 
 .PHONY: format
 format: ensure-gofumpt ensure-golines
