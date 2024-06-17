@@ -853,6 +853,21 @@ func TestSourceStateExecuteTemplateData(t *testing.T) {
 				"",
 			),
 		},
+		{
+			name: "line_endings_lf",
+			dataStr: "" +
+				"unix\n" +
+				"\n" +
+				"windows\r\n" +
+				"\r\n" +
+				"# chezmoi:template:line-endings=lf\n",
+			expectedStr: chezmoitest.JoinLines(
+				"unix",
+				"",
+				"windows",
+				"",
+			),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			s := NewSourceState()
@@ -1903,8 +1918,22 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 			},
 		},
 		{
+			name:    "line_endings_crlf",
+			dataStr: "chezmoi:template:line-endings=crlf",
+			expected: TemplateOptions{
+				LineEnding: "\r\n",
+			},
+		},
+		{
 			name:    "line_ending_quoted",
 			dataStr: `chezmoi:template:line-ending="\n"`,
+			expected: TemplateOptions{
+				LineEnding: "\n",
+			},
+		},
+		{
+			name:    "line_endings_quoted",
+			dataStr: `chezmoi:template:line-endings="\n"`,
 			expected: TemplateOptions{
 				LineEnding: "\n",
 			},
