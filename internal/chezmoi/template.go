@@ -85,7 +85,7 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
 			switch key {
 			case "left-delimiter":
 				o.LeftDelimiter = value
-			case "line-ending":
+			case "line-ending", "line-endings":
 				switch string(keyValuePairMatch[2]) {
 				case "crlf":
 					o.LineEnding = "\r\n"
