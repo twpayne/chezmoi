@@ -17,7 +17,7 @@ import (
 )
 
 type (
-	systeminfoCheck struct{ skippedCheck }
+	systeminfoCheck struct{ omittedCheck }
 	umaskCheck      struct{}
 	unameCheck      struct{}
 )
@@ -42,7 +42,7 @@ func (unameCheck) Name() string {
 
 func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	if runtime.GOOS == "windows" {
-		return checkResultSkipped, ""
+		return checkResultOmitted, ""
 	}
 	cmd := exec.Command("uname", "-a")
 	cmd.Stderr = os.Stderr
