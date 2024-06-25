@@ -193,6 +193,7 @@ type Config struct {
 	archive         archiveCmdConfig
 	chattr          chattrCmdConfig
 	destroy         destroyCmdConfig
+	doctor          doctorCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	ignored         ignoredCmdConfig

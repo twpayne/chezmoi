@@ -35,6 +35,7 @@ import (
 type checkResult int
 
 const (
+	checkResultOmitted checkResult = -3 // The check was omitted.
 	checkResultFailed  checkResult = -2 // The check could not be completed.
 	checkResultSkipped checkResult = -1 // The check was skipped.
 	checkResultOK      checkResult = 0  // The check completed and did not find any problems.
@@ -60,6 +61,7 @@ type check interface {
 }
 
 var checkResultStr = map[checkResult]string{
+	checkResultOmitted: "omitted",
 	checkResultFailed:  "failed",
 	checkResultSkipped: "skipped",
 	checkResultOK:      "ok",
@@ -117,6 +119,7 @@ type goVersionCheck struct{}
 
 // A latestVersionCheck checks the latest version.
 type latestVersionCheck struct {
+	network       bool
 	httpClient    *http.Client
 	httpClientErr error
 	version       semver.Version
@@ -125,8 +128,8 @@ type latestVersionCheck struct {
 // An osArchCheck checks that runtime.GOOS and runtime.GOARCH are supported.
 type osArchCheck struct{}
 
-// A skippedCheck is a check that is skipped.
-type skippedCheck struct{}
+// A omittedCheck is a check that is omitted.
+type omittedCheck struct{}
 
 // A suspiciousEntriesCheck checks that a source directory does not contain any
 // suspicious files.
@@ -143,6 +146,10 @@ type versionCheck struct {
 	versionStr  string
 }
 
+type doctorCmdConfig struct {
+	noNetwork bool
+}
+
 func (c *Config) newDoctorCmd() *cobra.Command {
 	doctorCmd := &cobra.Command{
 		Args:    cobra.NoArgs,
@@ -156,6 +163,8 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 			runsCommands,
 		),
 	}
+
+	doctorCmd.PersistentFlags().BoolVar(&c.doctor.noNetwork, "no-network", c.doctor.noNetwork, "do not use network connection")
 
 	return doctorCmd
 }
@@ -176,6 +185,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionStr:  c.versionStr,
 		},
 		&latestVersionCheck{
+			network:       !c.doctor.noNetwork,
 			httpClient:    httpClient,
 			httpClientErr: httpClientErr,
 			version:       c.version,
@@ -422,7 +432,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")
 	for _, check := range checks {
 		checkResult, message := check.Run(c.baseSystem, homeDirAbsPath)
-		if checkResult == checkResultSkipped {
+		if checkResult == checkResultOmitted {
 			continue
 		}
 		// Conceal the user's actual home directory in the message as the
@@ -653,7 +663,10 @@ func (c *latestVersionCheck) Name() string {
 }
 
 func (c *latestVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	if c.httpClientErr != nil {
+	switch {
+	case !c.network:
+		return checkResultSkipped, "no network"
+	case c.httpClientErr != nil:
 		return checkResultFailed, c.httpClientErr.Error()
 	}
 
@@ -704,12 +717,12 @@ func (osArchCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 	return checkResultOK, strings.Join(fields, " ")
 }
 
-func (skippedCheck) Name() string {
-	return "skipped"
+func (omittedCheck) Name() string {
+	return "omitted"
 }
 
-func (skippedCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	return checkResultSkipped, ""
+func (omittedCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	return checkResultOmitted, ""
 }
 
 func (c *suspiciousEntriesCheck) Name() string {
@@ -759,7 +772,7 @@ func (upgradeMethodCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		return checkResultFailed, err.Error()
 	}
 	if method == "" {
-		return checkResultSkipped, ""
+		return checkResultOmitted, ""
 	}
 	return checkResultOK, method
 }
