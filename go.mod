@@ -47,6 +47,7 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.18.4
 	go.etcd.io/bbolt v1.3.10
 	golang.org/x/crypto v0.24.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20240624163532-1c7450041f58
 	golang.org/x/oauth2 v0.21.0
 	golang.org/x/sync v0.7.0
 	golang.org/x/sys v0.21.0

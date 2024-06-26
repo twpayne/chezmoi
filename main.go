@@ -10,6 +10,8 @@ package main
 import (
 	"os"
 
+	_ "golang.org/x/crypto/x509roots/fallback" // Embed fallback X.509 trusted roots
+
 	"github.com/twpayne/chezmoi/v2/internal/cmd"
 )
 
