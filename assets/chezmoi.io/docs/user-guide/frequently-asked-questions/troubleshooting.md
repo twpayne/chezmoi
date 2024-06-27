@@ -81,6 +81,30 @@ remove the temporary directory.
     variable to `["--wait"]` or by setting the `EDITOR` environment variable to
     include the `--wait` flag, e.g. `export EDITOR="code --wait"`.
 
+=== "Any editor"
+
+    In this example 'mousepad' is the editor to be used. This program will not wait in the foreground by default. It also requires DBUS server integration to be disabled and it needs to start a new window for each execution (otherwise new PIDs will not be created for the process, if another mousepad instance is already running)
+
+    1. Add a new bash script somewhere in your $PATH (like here: `$HOME/.local/bin/chezmoi-mousepad`)
+
+    ```bash
+    #!/usr/bin/env bash
+    wait -n; mousepad --opening-mode=window --encoding=UTF-8 --disable-server "$@"
+    ```
+
+    The key here is the `wait -n` statement that will wait for the next child job to complete and can be universally applied (within the context of a bash script) to any editor you choose.
+
+    2. Run `chmod +x $HOME/.local/bin/chezmoi-mousepad` to make the script executable
+    3. Finally add to (or update) `chezmoi.toml`
+    
+    ```toml
+    [edit]
+        command = "chezmoi-mousepad"
+        args = []
+    ```
+
+    or by setting the `EDITOR` environment variable, e.g. `export EDITOR="chezmoi-mousepad"`.
+
 The "bit of magic" that `chezmoi edit` performs includes:
 
 * `chezmoi edit` makes the filename opened by your editor more closely match
