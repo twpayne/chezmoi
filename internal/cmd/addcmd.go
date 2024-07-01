@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/fs"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -177,6 +178,11 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
+	executable, err := os.Executable()
+	if err != nil {
+		return err
+	}
+
 	return sourceState.Add(
 		c.sourceSystem,
 		c.persistentState,
@@ -199,6 +205,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 				c.getConfigFileAbsPath().Dir(),
 				persistentStateFileAbsPath,
 				c.sourceDirAbsPath,
+				chezmoi.NewAbsPath(executable),
 			},
 			ReplaceFunc:      c.defaultReplaceFunc,
 			Template:         c.Add.template,
