@@ -115,6 +115,7 @@ type ConfigFile struct {
 	ScriptEnv              map[string]string              `json:"scriptEnv"       mapstructure:"scriptEnv"       yaml:"scriptEnv"`
 	ScriptTempDir          chezmoi.AbsPath                `json:"scriptTempDir"   mapstructure:"scriptTempDir"   yaml:"scriptTempDir"`
 	SourceDirAbsPath       chezmoi.AbsPath                `json:"sourceDir"       mapstructure:"sourceDir"       yaml:"sourceDir"`
+	TempDir                chezmoi.AbsPath                `json:"tempDir"         mapstructure:"tempDir"         yaml:"tempDir"`
 	Template               templateConfig                 `json:"template"        mapstructure:"template"        yaml:"template"`
 	TextConv               textConv                       `json:"textConv"        mapstructure:"textConv"        yaml:"textConv"`
 	Umask                  fs.FileMode                    `json:"umask"           mapstructure:"umask"           yaml:"umask"`
@@ -2631,7 +2632,7 @@ func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
 	if tempDirAbsPath, ok := c.tempDirs[key]; ok {
 		return tempDirAbsPath, nil
 	}
-	tempDir, err := os.MkdirTemp("", key)
+	tempDir, err := os.MkdirTemp(c.TempDir.String(), key)
 	chezmoilog.InfoOrError(c.logger, "MkdirTemp", err, slog.String("tempDir", tempDir))
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
@@ -2709,7 +2710,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		PINEntry: pinEntryConfig{
 			Options: pinEntryDefaultOptions,
 		},
-		Safe: true,
+		Safe:    true,
+		TempDir: chezmoi.NewAbsPath(os.TempDir()),
 		Template: templateConfig{
 			Options: chezmoi.DefaultTemplateOptions,
 		},
