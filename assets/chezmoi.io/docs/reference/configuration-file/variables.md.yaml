@@ -51,6 +51,9 @@ sections:
         `$HOME/.local/share/chezmoi` <br/>
         `%USERPROFILE%/.local/share/chezmoi`
       description: Source directory
+    tempDir:
+      default: '*from system*'
+      description: Temporary directory
     umask:
       type: int
       default: '*from system*'

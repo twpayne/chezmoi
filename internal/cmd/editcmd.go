@@ -144,10 +144,8 @@ TARGET_REL_PATH:
 			// Attempt to create the hard link. If this succeeds, continue to
 			// the next target. Hardlinking will fail if the temporary directory
 			// is on a different filesystem to the source directory, which is
-			// not the case for most users.
-			//
-			// FIXME create a temporary directory on the same filesystem as the
-			// source directory if needed.
+			// not the case for most users. The user can set the tempDir
+			// configuration variable if needed.
 			if err := os.MkdirAll(hardlinkAbsPath.Dir().String(), 0o700); err != nil {
 				return err
 			}
