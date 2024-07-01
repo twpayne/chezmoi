@@ -92,6 +92,8 @@ type External struct {
 	Encrypted       bool             `json:"encrypted"       toml:"encrypted"       yaml:"encrypted"`
 	Exact           bool             `json:"exact"           toml:"exact"           yaml:"exact"`
 	Executable      bool             `json:"executable"      toml:"executable"      yaml:"executable"`
+	Private         bool             `json:"private"         toml:"private"         yaml:"private"`
+	ReadOnly        bool             `json:"readonly"        toml:"readonly"        yaml:"readonly"`
 	Checksum        externalChecksum `json:"checksum"        toml:"checksum"        yaml:"checksum"`
 	Clone           externalClone    `json:"clone"           toml:"clone"           yaml:"clone"`
 	Exclude         []string         `json:"exclude"         toml:"exclude"         yaml:"exclude"`
@@ -2489,8 +2491,8 @@ func (s *SourceState) readExternalArchiveFile(
 				Type:       SourceFileTypeFile,
 				Empty:      fileInfo.Size() == 0,
 				Executable: IsExecutable(fileInfo) || external.Executable,
-				Private:    isPrivate(fileInfo),
-				ReadOnly:   isReadOnly(fileInfo),
+				Private:    isPrivate(fileInfo) || external.Private,
+				ReadOnly:   isReadOnly(fileInfo) || external.ReadOnly,
 			}
 			sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 			targetStateEntry := &TargetStateFile{
@@ -2652,6 +2654,8 @@ func (s *SourceState) readExternalFile(
 	fileAttr := FileAttr{
 		Empty:      true,
 		Executable: external.Executable,
+		Private:    external.Private,
+		ReadOnly:   external.ReadOnly,
 	}
 	targetStateEntry := &TargetStateFile{
 		lazyContents: lazyContents,

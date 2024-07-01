@@ -125,6 +125,12 @@ cmp $HOME/.file golden/dir/file
 [darwin] exec chezmoi managed --include=externals
 [darwin] cmp stdout golden/managed-appledouble
 
+chhome home16/user
+
+# test that readonly and private attributes are set
+[!windows] exec chezmoi apply
+[!windows] cmpmod 400 $HOME/.file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -193,6 +199,12 @@ cmp $HOME/.file golden/dir/file
     archive:
       extractAppleDoubleFiles: true
     stripComponents: 1
+-- home16/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/.file"
+    private = true
+    readonly = true
 -- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
     type = "file"
