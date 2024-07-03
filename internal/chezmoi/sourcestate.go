@@ -88,24 +88,25 @@ type externalPull struct {
 
 // An External is an external source.
 type External struct {
-	Type            ExternalType     `json:"type"            toml:"type"            yaml:"type"`
-	Encrypted       bool             `json:"encrypted"       toml:"encrypted"       yaml:"encrypted"`
-	Exact           bool             `json:"exact"           toml:"exact"           yaml:"exact"`
-	Executable      bool             `json:"executable"      toml:"executable"      yaml:"executable"`
-	Private         bool             `json:"private"         toml:"private"         yaml:"private"`
-	ReadOnly        bool             `json:"readonly"        toml:"readonly"        yaml:"readonly"`
-	Checksum        externalChecksum `json:"checksum"        toml:"checksum"        yaml:"checksum"`
-	Clone           externalClone    `json:"clone"           toml:"clone"           yaml:"clone"`
-	Exclude         []string         `json:"exclude"         toml:"exclude"         yaml:"exclude"`
-	Filter          externalFilter   `json:"filter"          toml:"filter"          yaml:"filter"`
-	Format          ArchiveFormat    `json:"format"          toml:"format"          yaml:"format"`
-	Archive         externalArchive  `json:"archive"         toml:"archive"         yaml:"archive"`
-	Include         []string         `json:"include"         toml:"include"         yaml:"include"`
-	ArchivePath     string           `json:"path"            toml:"path"            yaml:"path"`
-	Pull            externalPull     `json:"pull"            toml:"pull"            yaml:"pull"`
-	RefreshPeriod   Duration         `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
-	StripComponents int              `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
-	URL             string           `json:"url"             toml:"url"             yaml:"url"`
+	Type            ExternalType      `json:"type"            toml:"type"            yaml:"type"`
+	Encrypted       bool              `json:"encrypted"       toml:"encrypted"       yaml:"encrypted"`
+	Exact           bool              `json:"exact"           toml:"exact"           yaml:"exact"`
+	Executable      bool              `json:"executable"      toml:"executable"      yaml:"executable"`
+	Private         bool              `json:"private"         toml:"private"         yaml:"private"`
+	ReadOnly        bool              `json:"readonly"        toml:"readonly"        yaml:"readonly"`
+	Checksum        externalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
+	Clone           externalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
+	Decompress      compressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
+	Exclude         []string          `json:"exclude"         toml:"exclude"         yaml:"exclude"`
+	Filter          externalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
+	Format          ArchiveFormat     `json:"format"          toml:"format"          yaml:"format"`
+	Archive         externalArchive   `json:"archive"         toml:"archive"         yaml:"archive"`
+	Include         []string          `json:"include"         toml:"include"         yaml:"include"`
+	ArchivePath     string            `json:"path"            toml:"path"            yaml:"path"`
+	Pull            externalPull      `json:"pull"            toml:"pull"            yaml:"pull"`
+	RefreshPeriod   Duration          `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
+	StripComponents int               `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
+	URL             string            `json:"url"             toml:"url"             yaml:"url"`
 	sourceAbsPath   AbsPath
 }
 
@@ -1683,6 +1684,11 @@ func (s *SourceState) getExternalData(
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 		}
+	}
+
+	data, err = decompress(external.Decompress, data)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
 	}
 
 	if external.Filter.Command != "" {
