@@ -1,0 +1,55 @@
+[exec:bzip2] exec bzip2 www/file-bzip2
+[exec:gzip] exec gzip www/file-gzip
+[exec:xz] exec xz www/file-xz
+[exec:zstd] exec zstd www/file-zstd
+
+httpd www
+
+# test that chezmoi apply decompresses files in multiple formats
+exec chezmoi apply
+[exec:bzip2] cmp $HOME/file-bzip2 golden/file-bzip2
+[exec:gzip] cmp $HOME/file-gzip golden/file-gzip
+[exec:xz] cmp $HOME/file-xz golden/file-xz
+[exec:zstd] cmp $HOME/file-zstd golden/file-zstd
+
+-- golden/file-bzip2 --
+# contents of file-bzip2
+-- golden/file-gzip --
+# contents of file-gzip
+-- golden/file-xz --
+# contents of file-xz
+-- golden/file-zstd --
+# contents of file-zstd
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+{{ if lookPath "bzip2" }}
+[file-bzip2]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/file-bzip2.bz2"
+    decompress = "bzip2"
+{{ end }}
+{{ if lookPath "gzip" }}
+[file-gzip]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/file-gzip.gz"
+    decompress = "gzip"
+{{ end }}
+{{ if lookPath "xz" }}
+[file-xz]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/file-xz.xz"
+    decompress = "xz"
+{{ end }}
+{{ if lookPath "zstd" }}
+[file-zstd]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/file-zstd.zst"
+    decompress = "zstd"
+{{ end }}
+-- www/file-bzip2 --
+# contents of file-bzip2
+-- www/file-gzip --
+# contents of file-gzip
+-- www/file-xz --
+# contents of file-xz
+-- www/file-zstd --
+# contents of file-zstd

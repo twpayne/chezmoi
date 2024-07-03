@@ -22,6 +22,7 @@ Entries may have the following fields:
 | Variable                     | Type     | Default value | Description                                                      |
 | ---------------------------- | -------- | ------------- | ---------------------------------------------------------------- |
 | `type`                       | string   | *none*        | External type (`file`, `archive`, `archive-file`, or `git-repo`) |
+| `decompress`                 | string   | *none*        | Decompression for file                                           |
 | `encrypted`                  | bool     | `false`       | Whether the external is encrypted                                |
 | `exact`                      | bool     | `false`       | Add `exact_` attribute to directories in archive                 |
 | `exclude`                    | []string | *none*        | Patterns to exclude from archive                                 |
@@ -50,6 +51,11 @@ has the given checksum.
 
 The optional boolean `encrypted` field specifies whether the file or archive is
 encrypted.
+
+The optional string `decompress` specifies how the file should be decompressed.
+Supported compression formats are `bzip2`, `gzip`, `xz`, and `zstd`. Note the
+`.zip` files are archives and you must use the `archive-file` type to extract a
+single file from a `.zip` archive.
 
 If optional string `filter.command` and array of strings `filter.args` are
 specified, the file or archive is filtered by piping it into the command's
