@@ -56,17 +56,7 @@ the `age` command is not found in `$PATH`.
 
 !!! info
 
-    The builtin age encryption does not support passphrases, symmetric
-    encryption, or SSH keys.
-
-    Passphrases are not supported because chezmoi needs to decrypt files
-    regularly, e.g. when running a `chezmoi diff` or a `chezmoi status`
-    command, not just when running `chezmoi apply`. Prompting for a passphrase
-    each time would quickly become tiresome.
-
-    Symmetric encryption may be supported in the future. Please [open an
-    issue](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
-    if you want this.
+    The builtin age encryption does not support SSH keys.
 
     SSH keys are not supported as the [age documentation explicitly recommends
     not using them](https://pkg.go.dev/filippo.io/age#hdr-Key_management):
