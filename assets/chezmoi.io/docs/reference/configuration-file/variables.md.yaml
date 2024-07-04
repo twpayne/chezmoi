@@ -335,6 +335,11 @@ sections:
     mode:
       default: '`account`'
       description: See [1Password Secrets Automation](../../user-guide/password-managers/1password.md#secrets-automation)
+  onepasswordSDK:
+    token:
+      description: See [1Password SDK functions](../templates/1password-sdk-functions/index.md)
+    tokenEnvVar:
+      description: See [1Password SDK functions](../templates/1password-sdk-functions/index.md)
   pass:
     command:
       default: '`pass`'
