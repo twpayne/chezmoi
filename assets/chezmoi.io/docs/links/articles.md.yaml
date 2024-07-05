@@ -421,3 +421,7 @@ articles:
   lang: TH
   title: 'จัดการ dotfiles ด้วย chezmoi'
   url: https://www.anuwong.com/blog/manage-dotfiles-with-chezmoi/
+- date: '2024-06-26'
+  version: 2.49.1
+  title: 'Automate Your Dotfiles with Chezmoi'
+  url: https://learn.typecraft.dev/tutorial/our-place-chezmoi/
