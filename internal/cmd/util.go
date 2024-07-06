@@ -48,11 +48,11 @@ func camelCaseToUpperSnakeCase(s string) string {
 	}
 
 	wordBoundaries = append(wordBoundaries, len(runes))
-	words := make([]string, 0, len(wordBoundaries))
+	words := make([]string, len(wordBoundaries))
 	prevWordBoundary := 0
-	for _, wordBoundary := range wordBoundaries {
+	for i, wordBoundary := range wordBoundaries {
 		word := string(runes[prevWordBoundary:wordBoundary])
-		words = append(words, strings.ToUpper(word))
+		words[i] = strings.ToUpper(word)
 		prevWordBoundary = wordBoundary
 	}
 	return strings.Join(words, "_")
@@ -110,9 +110,9 @@ func pluralize(singular string) string {
 
 // stringersToStrings converts a slice of fmt.Stringers to a list of strings.
 func stringersToStrings[T fmt.Stringer](ss []T) []string {
-	result := make([]string, 0, len(ss))
-	for _, s := range ss {
-		result = append(result, s.String())
+	result := make([]string, len(ss))
+	for i, s := range ss {
+		result[i] = s.String()
 	}
 	return result
 }

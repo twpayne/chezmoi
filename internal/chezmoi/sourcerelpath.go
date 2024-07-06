@@ -46,9 +46,9 @@ func (p SourceRelPath) Join(sourceRelPaths ...SourceRelPath) SourceRelPath {
 	if len(sourceRelPaths) == 0 {
 		return p
 	}
-	relPaths := make([]RelPath, 0, len(sourceRelPaths))
-	for _, sourceRelPath := range sourceRelPaths {
-		relPaths = append(relPaths, sourceRelPath.relPath)
+	relPaths := make([]RelPath, len(sourceRelPaths))
+	for i, sourceRelPath := range sourceRelPaths {
+		relPaths[i] = sourceRelPath.relPath
 	}
 	return SourceRelPath{
 		relPath: p.relPath.Join(relPaths...),

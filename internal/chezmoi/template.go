@@ -109,12 +109,12 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
 
 // removeMatches returns data with matchesIndexes removed.
 func removeMatches(data []byte, matchesIndexes [][]int) []byte {
-	slices := make([][]byte, 0, len(matchesIndexes)+1)
-	slices = append(slices, data[:matchesIndexes[0][0]])
+	slices := make([][]byte, len(matchesIndexes)+1)
+	slices[0] = data[:matchesIndexes[0][0]]
 	for i, matchIndexes := range matchesIndexes[1:] {
-		slices = append(slices, data[matchesIndexes[i][1]:matchIndexes[0]])
+		slices[i+1] = data[matchesIndexes[i][1]:matchIndexes[0]]
 	}
-	slices = append(slices, data[matchesIndexes[len(matchesIndexes)-1][1]:])
+	slices[len(matchesIndexes)] = data[matchesIndexes[len(matchesIndexes)-1][1]:]
 	return bytes.Join(slices, nil)
 }
 

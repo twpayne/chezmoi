@@ -29,9 +29,9 @@ func makeKeyMsg(r rune) tea.Msg {
 }
 
 func makeKeyMsgs(s string) []tea.Msg {
-	msgs := make([]tea.Msg, 0, len(s))
-	for _, r := range s {
-		msgs = append(msgs, makeKeyMsg(r))
+	msgs := make([]tea.Msg, len(s))
+	for i, r := range s {
+		msgs[i] = makeKeyMsg(r)
 	}
 	return msgs
 }

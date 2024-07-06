@@ -406,8 +406,8 @@ func (c *Config) pruneEmptyDictsTemplateFunc(dict map[string]any) map[string]any
 }
 
 func (c *Config) quoteListTemplateFunc(list []any) []string {
-	result := make([]string, 0, len(list))
-	for _, elem := range list {
+	result := make([]string, len(list))
+	for i, elem := range list {
 		var elemStr string
 		switch elem := elem.(type) {
 		case []byte:
@@ -421,7 +421,7 @@ func (c *Config) quoteListTemplateFunc(list []any) []string {
 		default:
 			elemStr = fmt.Sprintf("%v", elem)
 		}
-		result = append(result, strconv.Quote(elemStr))
+		result[i] = strconv.Quote(elemStr)
 	}
 	return result
 }
@@ -611,7 +611,7 @@ func keysFromPath(path any) ([]string, string, error) {
 		if len(path) == 0 {
 			return nil, "", errEmptyPath
 		}
-		keys := make([]string, 0, len(path))
+		keys := make([]string, len(path))
 		for i, pathElement := range path {
 			switch pathElementStr, ok := pathElement.(string); {
 			case !ok:
@@ -623,7 +623,7 @@ func keysFromPath(path any) ([]string, string, error) {
 					index: i,
 				}
 			default:
-				keys = append(keys, pathElementStr)
+				keys[i] = pathElementStr
 			}
 		}
 		return keys[:len(keys)-1], keys[len(keys)-1], nil
