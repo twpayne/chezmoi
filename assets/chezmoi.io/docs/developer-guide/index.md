@@ -2,7 +2,7 @@
 
 chezmoi is written in [Go](https://golang.org) and development happens on
 [GitHub](https://github.com). chezmoi is a standard Go project, using standard
-Go tooling. chezmoi requires Go 1.21 or later.
+Go tooling. chezmoi requires Go 1.22 or later.
 
 Checkout chezmoi:
 
@@ -25,8 +25,9 @@ $ go test ./...
 
 chezmoi's tests include integration tests with other software. If the other
 software is not found in `$PATH` the tests will be skipped. Running the full set
-of tests requires `age`, `base64`, `bash`, `gpg`, `perl`, `python3`, `rage`,
-`ruby`, `sed`, `sha256sum`, `unzip`, `xz`, `zip`, and `zstd`.
+of tests requires `age`, `base64`, `bash`, `bzip2`, `git`, `gpg`, `gzip`,
+`perl`, `python3`, `rage`, `ruby`, `sed`, `sha256sum`, `tr`, `true`, `unzip`,
+`xz`, `zip`, and `zstd`.
 
 Run chezmoi:
 
