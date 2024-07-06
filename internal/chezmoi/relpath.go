@@ -73,9 +73,9 @@ func (p RelPath) Join(relPaths ...RelPath) RelPath {
 
 // JoinString returns a new RelPath with ss appended.
 func (p RelPath) JoinString(ss ...string) RelPath {
-	strs := make([]string, 0, len(ss)+1)
-	strs = append(strs, p.relPath)
-	strs = append(strs, ss...)
+	strs := make([]string, len(ss)+1)
+	strs[0] = p.relPath
+	copy(strs[1:len(ss)+1], ss)
 	return NewRelPath(path.Join(strs...))
 }
 
@@ -118,9 +118,9 @@ func (p RelPath) Split() (RelPath, RelPath) {
 // SplitAll returns p's components.
 func (p RelPath) SplitAll() []RelPath {
 	components := strings.Split(p.relPath, "/")
-	relPaths := make([]RelPath, 0, len(components))
-	for _, component := range components {
-		relPaths = append(relPaths, NewRelPath(component))
+	relPaths := make([]RelPath, len(components))
+	for i, component := range components {
+		relPaths[i] = NewRelPath(component)
 	}
 	return relPaths
 }

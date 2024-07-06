@@ -2817,14 +2817,14 @@ func (e *External) OriginString() string {
 func canonicalSourceStateEntry(sourceStateEntries []SourceStateEntry) (SourceStateEntry, bool) {
 	// Find all directories to check for equivalence.
 	var firstSourceStateDir *SourceStateDir
-	sourceStateDirs := make([]SourceStateEntry, 0, len(sourceStateEntries))
-	for _, sourceStateEntry := range sourceStateEntries {
+	sourceStateDirs := make([]SourceStateEntry, len(sourceStateEntries))
+	for i, sourceStateEntry := range sourceStateEntries {
 		switch sourceStateEntry := sourceStateEntry.(type) {
 		case *SourceStateDir:
 			firstSourceStateDir = sourceStateEntry
-			sourceStateDirs = append(sourceStateDirs, sourceStateEntry)
+			sourceStateDirs[i] = sourceStateEntry
 		case *SourceStateImplicitDir:
-			sourceStateDirs = append(sourceStateDirs, sourceStateEntry)
+			sourceStateDirs[i] = sourceStateEntry
 		default:
 			return nil, false
 		}

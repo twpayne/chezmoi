@@ -350,20 +350,20 @@ func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 		if to != reflect.TypeOf(EntryTypeSet{}) {
 			return data, nil
 		}
-		sl, ok := data.([]any)
+		elemsAny, ok := data.([]any)
 		if !ok {
 			return nil, fmt.Errorf("expected a []string, got a %T", data)
 		}
-		ss := make([]string, 0, len(sl))
-		for _, i := range sl {
-			s, ok := i.(string)
+		elemStrs := make([]string, len(elemsAny))
+		for i, elemAny := range elemsAny {
+			elemStr, ok := elemAny.(string)
 			if !ok {
-				return nil, fmt.Errorf("expected a []string, got a %T element", i)
+				return nil, fmt.Errorf("expected a []string, got a %T element", elemAny)
 			}
-			ss = append(ss, s)
+			elemStrs[i] = elemStr
 		}
 		s := NewEntryTypeSet(EntryTypesNone)
-		if err := s.SetSlice(ss); err != nil {
+		if err := s.SetSlice(elemStrs); err != nil {
 			return nil, err
 		}
 		return s, nil

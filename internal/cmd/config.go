@@ -1321,10 +1321,10 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 	case 1:
 		return configTemplates[0], nil
 	default:
-		sourceAbsPathStrs := make([]string, 0, len(configTemplates))
-		for _, configTemplate := range configTemplates {
+		sourceAbsPathStrs := make([]string, len(configTemplates))
+		for i, configTemplate := range configTemplates {
 			sourceAbsPathStr := configTemplate.sourceAbsPath.String()
-			sourceAbsPathStrs = append(sourceAbsPathStrs, sourceAbsPathStr)
+			sourceAbsPathStrs[i] = sourceAbsPathStr
 		}
 		return nil, fmt.Errorf("multiple config file templates: %s ", englishList(sourceAbsPathStrs))
 	}
@@ -2557,7 +2557,7 @@ func (c *Config) targetRelPaths(
 // targetRelPathsBySourcePath returns the target relative paths for each arg in
 // args.
 func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
-	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
+	targetRelPaths := make([]chezmoi.RelPath, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
 	_ = sourceState.ForEach(
 		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
@@ -2566,7 +2566,7 @@ func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, ar
 			return nil
 		},
 	)
-	for _, arg := range args {
+	for i, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
 			return nil, err
@@ -2579,7 +2579,7 @@ func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, ar
 		if !ok {
 			return nil, fmt.Errorf("%s: not in source state", arg)
 		}
-		targetRelPaths = append(targetRelPaths, targetRelPath)
+		targetRelPaths[i] = targetRelPath
 	}
 	return targetRelPaths, nil
 }

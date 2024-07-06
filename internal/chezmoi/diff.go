@@ -118,13 +118,13 @@ func diffChunks(from, to string) []diff.Chunk {
 	dmp.DiffTimeout = time.Second
 	fromRunes, toRunes, runesToLines := dmp.DiffLinesToRunes(from, to)
 	diffs := dmp.DiffCharsToLines(dmp.DiffMainRunes(fromRunes, toRunes, false), runesToLines)
-	chunks := make([]diff.Chunk, 0, len(diffs))
-	for _, d := range diffs {
+	chunks := make([]diff.Chunk, len(diffs))
+	for i, d := range diffs {
 		chunk := &gitDiffChunk{
 			content:   d.Text,
 			operation: gitDiffOperation[d.Type],
 		}
-		chunks = append(chunks, chunk)
+		chunks[i] = chunk
 	}
 	return chunks
 }

@@ -41,9 +41,9 @@ func (e *xorEncryption) EncryptedSuffix() string {
 }
 
 func (e *xorEncryption) xorWithKey(input []byte) []byte {
-	output := make([]byte, 0, len(input))
-	for _, b := range input {
-		output = append(output, b^e.key)
+	output := make([]byte, len(input))
+	for i, b := range input {
+		output[i] = b ^ e.key
 	}
 	return output
 }

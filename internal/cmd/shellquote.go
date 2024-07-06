@@ -58,10 +58,10 @@ func shellQuoteCommand(command string, args []string) string {
 	if len(args) == 0 {
 		return shellQuote(command)
 	}
-	elems := make([]string, 0, 1+len(args))
-	elems = append(elems, shellQuote(command))
-	for _, arg := range args {
-		elems = append(elems, shellQuote(arg))
+	elems := make([]string, 1+len(args))
+	elems[0] = shellQuote(command)
+	for i, arg := range args {
+		elems[i+1] = shellQuote(arg)
 	}
 	return strings.Join(elems, " ")
 }

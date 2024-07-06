@@ -63,19 +63,19 @@ func (p AbsPath) Ext() string {
 
 // Join returns a new AbsPath with relPaths appended.
 func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
-	relPathStrs := make([]string, 0, len(relPaths)+1)
-	relPathStrs = append(relPathStrs, string(p))
-	for _, relPath := range relPaths {
-		relPathStrs = append(relPathStrs, relPath.String())
+	relPathStrs := make([]string, len(relPaths)+1)
+	relPathStrs[0] = string(p)
+	for i, relPath := range relPaths {
+		relPathStrs[i+1] = relPath.String()
 	}
 	return NewAbsPath(path.Join(relPathStrs...))
 }
 
 // JoinString returns a new AbsPath with ss appended.
 func (p AbsPath) JoinString(ss ...string) AbsPath {
-	strs := make([]string, 0, len(ss)+1)
-	strs = append(strs, string(p))
-	strs = append(strs, ss...)
+	strs := make([]string, len(ss)+1)
+	strs[0] = string(p)
+	copy(strs[1:len(ss)+1], ss)
 	return NewAbsPath(path.Join(strs...))
 }
 
