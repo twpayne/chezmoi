@@ -89,17 +89,6 @@ func englishListWithNoun(ss []string, singular, plural string) string {
 	}
 }
 
-// firstNonEmptyString returns its first non-empty argument, or "" if all
-// arguments are empty.
-func firstNonEmptyString(ss ...string) string {
-	for _, s := range ss {
-		if s != "" {
-			return s
-		}
-	}
-	return ""
-}
-
 // pluralize returns the English plural form of singular.
 func pluralize(singular string) string {
 	if strings.HasSuffix(singular, "y") {

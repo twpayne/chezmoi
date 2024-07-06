@@ -2,7 +2,7 @@ package chezmoi
 
 import (
 	"errors"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"os/exec"
 	"testing"
@@ -118,7 +118,7 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 
 func TestXOREncryption(t *testing.T) {
 	testEncryption(t, &xorEncryption{
-		key: byte(rand.Intn(255) + 1),
+		key: byte(rand.N(255) + 1),
 	})
 }
 

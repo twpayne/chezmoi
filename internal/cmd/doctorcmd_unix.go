@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
-	"runtime"
 
 	"golang.org/x/sys/unix"
 
@@ -41,9 +40,6 @@ func (unameCheck) Name() string {
 }
 
 func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	if runtime.GOOS == "windows" {
-		return checkResultOmitted, ""
-	}
 	cmd := exec.Command("uname", "-a")
 	cmd.Stderr = os.Stderr
 	data, err := chezmoilog.LogCmdOutput(slog.Default(), cmd)
