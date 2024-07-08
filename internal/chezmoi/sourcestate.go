@@ -120,6 +120,8 @@ type SourceState struct {
 	sourceDirAbsPath        AbsPath
 	destDirAbsPath          AbsPath
 	cacheDirAbsPath         AbsPath
+	createScriptTempDirOnce sync.Once
+	scriptTempDirAbsPath    AbsPath
 	umask                   fs.FileMode
 	encryption              Encryption
 	ignore                  *patternSet
@@ -228,6 +230,13 @@ func WithReadTemplateData(readTemplateData bool) SourceStateOption {
 func WithReadTemplates(readTemplates bool) SourceStateOption {
 	return func(s *SourceState) {
 		s.readTemplates = readTemplates
+	}
+}
+
+// WithScriptTempDir sets the source directory.
+func WithScriptTempDir(scriptDirAbsPath AbsPath) SourceStateOption {
+	return func(s *SourceState) {
+		s.scriptTempDirAbsPath = scriptDirAbsPath
 	}
 }
 
@@ -1826,6 +1835,8 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() (contents []byte, err error) {
+			// FIXME this should share code with RealSystem.RunScript
+
 			// Read the current contents of the target.
 			var currentContents []byte
 			currentContents, err = destSystem.ReadFile(destAbsPath)
@@ -1886,9 +1897,19 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				return
 			}
 
+			// Create the script temporary directory, if needed.
+			s.createScriptTempDirOnce.Do(func() {
+				if !s.scriptTempDirAbsPath.Empty() {
+					err = os.MkdirAll(s.scriptTempDirAbsPath.String(), 0o700)
+				}
+			})
+			if err != nil {
+				return
+			}
+
 			// Write the modifier to a temporary file.
 			var tempFile *os.File
-			if tempFile, err = os.CreateTemp("", "*."+fileAttr.TargetName); err != nil {
+			if tempFile, err = os.CreateTemp(s.scriptTempDirAbsPath.String(), "*."+fileAttr.TargetName); err != nil {
 				return
 			}
 			defer chezmoierrors.CombineFunc(&err, func() error {
