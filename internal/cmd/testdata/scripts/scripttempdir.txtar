@@ -1,14 +1,19 @@
 [windows] skip 'UNIX only'
 
-# test that chezmoi apply with a scriptTempDir set creates a temporary directory
+# test that chezmoi apply with a scriptTempDir set creates a temporary directory and runs scripts from that directory
 expandenv $CHEZMOICONFIGDIR/chezmoi.toml
 exec chezmoi apply
-stdout ok
+stdout $WORK/script-tmp/.*script\.sh/run_$
+grep $WORK/script-tmp/.*/modify_ $HOME/.file
 exists $WORK/script-tmp
 
 -- home/user/.config/chezmoi/chezmoi.toml --
 scriptTempDir = "$WORK/script-tmp"
+-- home/user/.local/share/chezmoi/modify_dot_file --
+#!/bin/sh
+
+echo $0/modify_
 -- home/user/.local/share/chezmoi/run_script.sh --
 #!/bin/sh
 
-echo ok
+echo $0/run_
