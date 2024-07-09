@@ -266,6 +266,30 @@ func TestParseConfig(t *testing.T) {
 	}
 }
 
+func TestInitConfigWithIncludedTemplate(t *testing.T) {
+	mainFilename := ".chezmoi.yaml.tmpl"
+	secondaryFilename := "personal.config.yaml.tmpl"
+	mainContents := chezmoitest.JoinLines(
+		`color: true`,
+		fmt.Sprintf(`{{ includeTemplate %q . }}`, secondaryFilename),
+	)
+	secondaryContents := chezmoitest.JoinLines(
+		`verbose: true`,
+		`safe: {{ stdinIsATTY }}`,
+	)
+
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user/.local/share/chezmoi/" + mainFilename:      mainContents,
+		"/home/user/.local/share/chezmoi/" + secondaryFilename: secondaryContents,
+	}, func(fileSystem vfs.FS) {
+		c := newTestConfig(t, fileSystem)
+		assert.NoError(t, c.execute([]string{"init"}))
+		assert.Equal(t, true, c.Color.Value(c.colorAutoFunc))
+		assert.Equal(t, true, c.Verbose)
+		assert.Equal(t, false, c.Safe)
+	})
+}
+
 func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 	for s, expected := range map[string]string{
 		"BUG_REPORT_URL":   "bugReportURL",

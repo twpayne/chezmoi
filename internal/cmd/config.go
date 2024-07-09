@@ -811,8 +811,15 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 // createConfigFile creates a config file using a template and returns its
 // contents.
 func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *cobra.Command) ([]byte, error) {
+	// Clone funcMap and restore it after creating the config.
+	// This ensures that the init template functions
+	// are removed before "normal" template parsing.
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
+	defer func() {
+		c.templateFuncs = funcMap
+	}()
+
 	initTemplateFuncs := map[string]any{
 		"exit":             c.exitInitTemplateFunc,
 		"promptBool":       c.promptBoolInteractiveTemplateFunc,
@@ -826,9 +833,9 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *co
 		"stdinIsATTY":      c.stdinIsATTYInitTemplateFunc,
 		"writeToStdout":    c.writeToStdout,
 	}
-	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
+	chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
 
-	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, funcMap, chezmoi.TemplateOptions{
+	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, c.templateFuncs, chezmoi.TemplateOptions{
 		Options: slices.Clone(c.Template.Options),
 	})
 	if err != nil {
