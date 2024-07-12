@@ -1,5 +1,7 @@
 [windows] unix2dos golden/stdout
 
+chmod 755 $HOME/.local/bin/echo.sh
+
 # test that chezmoi add runs pre and post hooks
 exec chezmoi add $HOME${/}.file
 cmp stdout golden/stdout
@@ -16,11 +18,15 @@ pre-add-hook
 pre-read-source-state-hook
 post-read-source-state-hook
 post-add-hook
+-- home/user/.local/bin/echo.sh --
+#!/bin/sh
+
+echo $*
 -- home/user/.config/chezmoi/chezmoi.yaml --
 hooks:
     add:
         pre:
-            command: 'echo'
+            command: '.local/bin/echo.sh'
             args:
             - 'pre-add-hook'
         post:
