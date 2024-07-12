@@ -70,7 +70,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: reviewdog/action-misspell@30433ca7be17888deb78a32521706fb65defbf3f
+    - uses: reviewdog/action-misspell@278e1b3c7dd09d2827fa080919a40db73ccafe24
       with:
         locale: US
         ignore: ackward
@@ -108,7 +108,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: build
@@ -143,7 +143,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: oldstable
     - name: build
@@ -178,7 +178,7 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-release-dependencies
@@ -206,31 +206,31 @@ jobs:
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-darwin-arm64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-linux-musl-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-windows-amd64.exe
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
@@ -243,7 +243,7 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
@@ -283,7 +283,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-website-dependencies
@@ -301,7 +301,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
@@ -329,7 +329,7 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: generate
@@ -383,7 +383,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: stable
     - uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64
@@ -427,7 +427,7 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20
@@ -455,7 +455,7 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: prepare-chezmoi.io
