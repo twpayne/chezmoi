@@ -73,7 +73,7 @@ jobs:
     - uses: reviewdog/action-misspell@278e1b3c7dd09d2827fa080919a40db73ccafe24
       with:
         locale: US
-        ignore: ackward
+        ignore: ackward,importas
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
