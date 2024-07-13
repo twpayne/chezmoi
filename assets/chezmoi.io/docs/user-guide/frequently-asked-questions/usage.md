@@ -57,7 +57,7 @@ manual](../../reference/special-files-and-directories/chezmoiignore.md).
 
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 
-Yes. Run `chezmoi add` will update the source state with the target. To see
+Yes. Running `chezmoi add` will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use `chezmoi
 diff`.
 
