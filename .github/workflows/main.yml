@@ -20,7 +20,7 @@ env:
   GOFUMPT_VERSION: 0.6.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 1.59.1 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
-  GORELEASER_VERSION: 2.0.1 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.1.0 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.0 # https://github.com/josephspurrier/goversioninfo/releases
   RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
 jobs:
@@ -186,10 +186,6 @@ jobs:
       run: |
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
-        # https://github.com/goreleaser/goreleaser/issues/1715
-        # https://bugs.launchpad.net/snapcraft/+bug/1889741
-        mkdir -p "${HOME}/.cache/snapcraft/download"
-        mkdir -p "${HOME}/.cache/snapcraft/stage-packages"
         mkdir -p /opt/chocolatey
         wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
         echo '#!/bin/bash' >> /usr/local/bin/choco
@@ -411,10 +407,6 @@ jobs:
       run: |
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
-        # https://github.com/goreleaser/goreleaser/issues/1715
-        # https://bugs.launchpad.net/snapcraft/+bug/1889741
-        mkdir -p "${HOME}/.cache/snapcraft/download"
-        mkdir -p "${HOME}/.cache/snapcraft/stage-packages"
         mkdir -p /opt/chocolatey
         wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
         echo '#!/bin/bash' >> /usr/local/bin/choco
