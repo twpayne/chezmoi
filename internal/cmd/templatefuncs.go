@@ -395,8 +395,6 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}
-	// FIXME we should be able to return output directly, but
-	// github.com/Masterminds/sprig's trim function only accepts strings
 	return string(output)
 }
 

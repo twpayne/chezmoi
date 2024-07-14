@@ -46,8 +46,6 @@ chhome home8/user
 ! exec chezmoi verify
 stderr 'multiple config files'
 
-# FIXME add more tests
-
 -- home2/user/.config/chezmoi/chezmoi.json --
 {
 -- home3/user/.local/share/chezmoi --
