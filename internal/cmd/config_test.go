@@ -284,9 +284,9 @@ func TestInitConfigWithIncludedTemplate(t *testing.T) {
 	}, func(fileSystem vfs.FS) {
 		c := newTestConfig(t, fileSystem)
 		assert.NoError(t, c.execute([]string{"init"}))
-		assert.Equal(t, true, c.Color.Value(c.colorAutoFunc))
-		assert.Equal(t, true, c.Verbose)
-		assert.Equal(t, false, c.Safe)
+		assert.True(t, c.Color.Value(c.colorAutoFunc))
+		assert.True(t, c.Verbose)
+		assert.False(t, c.Safe)
 	})
 }
 
