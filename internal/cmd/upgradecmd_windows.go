@@ -85,12 +85,7 @@ func (c *Config) snapRefresh() error {
 	return errUnsupportedUpgradeMethod
 }
 
-func (c *Config) upgradeUNIXPackage(
-	ctx context.Context,
-	version *semver.Version,
-	rr *github.RepositoryRelease,
-	useSudo bool,
-) error {
+func (c *Config) upgradeUNIXPackage(_ context.Context, _ *semver.Version, _ *github.RepositoryRelease, _ bool) error {
 	return errUnsupportedUpgradeMethod
 }
 

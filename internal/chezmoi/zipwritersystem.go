@@ -48,8 +48,8 @@ func (s *ZIPWriterSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ZIPWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
-	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
+func (s *ZIPWriterSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+	return s.WriteFile(NewAbsPath(scriptName.String()), data, 0o700)
 }
 
 // WriteFile implements System.WriteFile.
@@ -70,10 +70,10 @@ func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileM
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *ZIPWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	data := []byte(oldname)
+func (s *ZIPWriterSystem) WriteSymlink(oldName string, newName AbsPath) error {
+	data := []byte(oldName)
 	fileHeader := zip.FileHeader{
-		Name:               newname.String(),
+		Name:               newName.String(),
 		Modified:           s.modified,
 		UncompressedSize64: uint64(len(data)),
 	}

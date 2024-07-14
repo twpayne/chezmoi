@@ -25,7 +25,7 @@ type System interface { //nolint:interfacebloat
 	Chmod(name AbsPath, mode fs.FileMode) error
 	Chtimes(name AbsPath, atime, mtime time.Time) error
 	Glob(pattern string) ([]string, error)
-	Link(oldname, newname AbsPath) error
+	Link(oldName, newName AbsPath) error
 	Lstat(filename AbsPath) (fs.FileInfo, error)
 	Mkdir(name AbsPath, perm fs.FileMode) error
 	RawPath(absPath AbsPath) (AbsPath, error)
@@ -34,13 +34,13 @@ type System interface { //nolint:interfacebloat
 	Readlink(name AbsPath) (string, error)
 	Remove(name AbsPath) error
 	RemoveAll(name AbsPath) error
-	Rename(oldpath, newpath AbsPath) error
+	Rename(oldPath, newPath AbsPath) error
 	RunCmd(cmd *exec.Cmd) error
-	RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error
+	RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error
 	Stat(name AbsPath) (fs.FileInfo, error)
 	UnderlyingFS() vfs.FS
 	WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error
-	WriteSymlink(oldname string, newname AbsPath) error
+	WriteSymlink(oldName string, newName AbsPath) error
 }
 
 // A emptySystemMixin simulates an empty system.
@@ -66,7 +66,7 @@ func (noUpdateSystemMixin) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Link(oldname, newname AbsPath) error {
+func (noUpdateSystemMixin) Link(oldName, newName AbsPath) error {
 	panic("update to no update system")
 }
 
@@ -82,7 +82,7 @@ func (noUpdateSystemMixin) RemoveAll(name AbsPath) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Rename(oldpath, newpath AbsPath) error {
+func (noUpdateSystemMixin) Rename(oldPath, newPath AbsPath) error {
 	panic("update to no update system")
 }
 
@@ -90,7 +90,7 @@ func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (noUpdateSystemMixin) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	panic("update to no update system")
 }
 
@@ -98,7 +98,7 @@ func (noUpdateSystemMixin) WriteFile(filename AbsPath, data []byte, perm fs.File
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) WriteSymlink(oldname string, newname AbsPath) error {
+func (noUpdateSystemMixin) WriteSymlink(oldName string, newName AbsPath) error {
 	panic("update to no update system")
 }
 

@@ -90,9 +90,9 @@ func (s *GitDiffSystem) Glob(pattern string) ([]string, error) {
 }
 
 // Link implements System.Link.
-func (s *GitDiffSystem) Link(oldname, newname AbsPath) error {
+func (s *GitDiffSystem) Link(oldName, newName AbsPath) error {
 	// LATER generate a diff
-	return s.system.Link(oldname, newname)
+	return s.system.Link(oldName, newName)
 }
 
 // Lstat implements System.Lstat.
@@ -149,8 +149,8 @@ func (s *GitDiffSystem) RemoveAll(name AbsPath) error {
 }
 
 // Rename implements System.Rename.
-func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
-	fromFileInfo, err := s.Stat(oldpath)
+func (s *GitDiffSystem) Rename(oldPath, newPath AbsPath) error {
+	fromFileInfo, err := s.Stat(oldPath)
 	if err != nil {
 		return err
 	}
@@ -161,7 +161,7 @@ func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
 		case fromFileInfo.Mode().IsDir():
 			hash = plumbing.ZeroHash // LATER be more intelligent here
 		case fromFileInfo.Mode().IsRegular():
-			data, err := s.system.ReadFile(oldpath)
+			data, err := s.system.ReadFile(oldPath)
 			if err != nil {
 				return err
 			}
@@ -169,7 +169,7 @@ func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
 		default:
 			fileMode = filemode.FileMode(fromFileInfo.Mode())
 		}
-		fromPath, toPath := s.trimPrefix(oldpath), s.trimPrefix(newpath)
+		fromPath, toPath := s.trimPrefix(oldPath), s.trimPrefix(newPath)
 		if s.reverse {
 			fromPath, toPath = toPath, fromPath
 		}
@@ -192,7 +192,7 @@ func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
 			return err
 		}
 	}
-	return s.system.Rename(oldpath, newpath)
+	return s.system.Rename(oldPath, newPath)
 }
 
 // RunCmd implements System.RunCmd.
@@ -201,7 +201,7 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *GitDiffSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	bits := EntryTypeScripts
 	if options.Condition == ScriptConditionAlways {
 		bits |= EntryTypeAlways
@@ -216,7 +216,7 @@ func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, 
 			fromData, toData = toData, fromData
 			fromMode, toMode = toMode, fromMode
 		}
-		diffPatch, err := DiffPatch(scriptname, fromData, fromMode, toData, toMode)
+		diffPatch, err := DiffPatch(scriptName, fromData, fromMode, toData, toMode)
 		if err != nil {
 			return err
 		}
@@ -224,7 +224,7 @@ func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, 
 			return err
 		}
 	}
-	return s.system.RunScript(scriptname, dir, data, options)
+	return s.system.RunScript(scriptName, dir, data, options)
 }
 
 // Stat implements System.Stat.
@@ -248,18 +248,18 @@ func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMod
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
+func (s *GitDiffSystem) WriteSymlink(oldName string, newName AbsPath) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeSymlinks) {
-		toData := append([]byte(normalizeLinkname(oldname)), '\n')
+		toData := append([]byte(normalizeLinkname(oldName)), '\n')
 		toMode := fs.ModeSymlink
 		if runtime.GOOS == "windows" {
 			toMode |= 0o666
 		}
-		if err := s.encodeDiff(newname, toData, toMode); err != nil {
+		if err := s.encodeDiff(newName, toData, toMode); err != nil {
 			return err
 		}
 	}
-	return s.system.WriteSymlink(oldname, newname)
+	return s.system.WriteSymlink(oldName, newName)
 }
 
 // encodeDiff encodes the diff between the actual state of absPath and the

@@ -10,9 +10,9 @@ import (
 var expectedTags = []string{"json", "yaml", "mapstructure"}
 
 func TestExportedFieldsHaveMatchingMarshalTags(t *testing.T) {
-	failed, errmsg := verifyTagsArePresentAndMatch(reflect.TypeFor[ConfigFile]())
+	failed, errMsg := verifyTagsArePresentAndMatch(reflect.TypeFor[ConfigFile]())
 	if failed {
-		t.Error(errmsg)
+		t.Error(errMsg)
 	}
 }
 
@@ -33,11 +33,11 @@ func fieldTypesNeedsVerification(ft reflect.Type) []reflect.Type {
 	case reflect.Map:
 		return append(fieldTypesNeedsVerification(ft.Key()), fieldTypesNeedsVerification(ft.Elem())...)
 	default:
-		return []reflect.Type{} // ... we'll assume interface types, funcs, chans are okay.
+		return []reflect.Type{} // ... we'll assume interface types, funcs, channels are okay.
 	}
 }
 
-func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errmsg string) {
+func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errMsg string) {
 	name := structType.Name()
 	fields := reflect.VisibleFields(structType)
 	failed = false
@@ -83,10 +83,10 @@ func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errmsg 
 
 		verifyTypes := fieldTypesNeedsVerification(f.Type)
 		for _, ft := range verifyTypes {
-			subFailed, suberrs := verifyTagsArePresentAndMatch(ft)
+			subFailed, subErrs := verifyTagsArePresentAndMatch(ft)
 			if subFailed {
 				errs.WriteString(fmt.Sprintf("\n In %s.%s:", name, f.Name))
-				errs.WriteString(strings.ReplaceAll(suberrs, "\n", "\n    "))
+				errs.WriteString(strings.ReplaceAll(subErrs, "\n", "\n    "))
 				failed = true
 			}
 		}

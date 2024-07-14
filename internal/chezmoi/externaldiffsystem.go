@@ -83,9 +83,9 @@ func (s *ExternalDiffSystem) Glob(pattern string) ([]string, error) {
 }
 
 // Link implements System.Link.
-func (s *ExternalDiffSystem) Link(oldname, newname AbsPath) error {
+func (s *ExternalDiffSystem) Link(oldName, newName AbsPath) error {
 	// FIXME generate suitable inputs for s.command
-	return s.system.Link(oldname, newname)
+	return s.system.Link(oldName, newName)
 }
 
 // Lstat implements System.Lstat.
@@ -170,9 +170,9 @@ func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
 }
 
 // Rename implements System.Rename.
-func (s *ExternalDiffSystem) Rename(oldpath, newpath AbsPath) error {
+func (s *ExternalDiffSystem) Rename(oldPath, newPath AbsPath) error {
 	// FIXME generate suitable inputs for s.command
-	return s.system.Rename(oldpath, newpath)
+	return s.system.Rename(oldPath, newPath)
 }
 
 // RunCmd implements System.RunCmd.
@@ -181,7 +181,7 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *ExternalDiffSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	bits := EntryTypeScripts
 	if options.Condition == ScriptConditionAlways {
 		bits |= EntryTypeAlways
@@ -191,7 +191,7 @@ func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []b
 		if err != nil {
 			return err
 		}
-		targetAbsPath := tempDirAbsPath.Join(scriptname)
+		targetAbsPath := tempDirAbsPath.Join(scriptName)
 		if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
 			return err
 		}
@@ -206,7 +206,7 @@ func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []b
 			return err
 		}
 	}
-	return s.system.RunScript(scriptname, dir, data, options)
+	return s.system.RunScript(scriptName, dir, data, options)
 }
 
 // Stat implements System.Stat.
@@ -257,9 +257,9 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *ExternalDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
+func (s *ExternalDiffSystem) WriteSymlink(oldName string, newName AbsPath) error {
 	// FIXME generate suitable inputs for s.command
-	return s.system.WriteSymlink(oldname, newname)
+	return s.system.WriteSymlink(oldName, newName)
 }
 
 // tempDir creates a temporary directory for s if it does not already exist and

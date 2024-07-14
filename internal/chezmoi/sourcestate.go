@@ -1945,7 +1945,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 // newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
 // target.
-func (s *SourceState) newRemoveTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr) targetStateEntryFunc {
+func (s *SourceState) newRemoveTargetStateEntryFunc() targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		return &TargetStateRemove{}, nil
 	}
@@ -2064,7 +2064,7 @@ func (s *SourceState) newSourceStateFile(
 			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, nil)
 		}
 	case SourceFileTypeRemove:
-		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc(sourceRelPath, fileAttr)
+		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc()
 	case SourceFileTypeScript:
 		// If the script has an extension, determine if it indicates an
 		// interpreter to use.
