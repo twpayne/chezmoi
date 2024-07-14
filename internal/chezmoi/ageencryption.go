@@ -1,8 +1,5 @@
 package chezmoi
 
-// FIXME add builtin support for --passphrase
-// FIXME add builtin support for --symmetric
-
 import (
 	"bytes"
 	"io"

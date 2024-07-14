@@ -1,7 +1,5 @@
 package cmd
 
-// FIXME add documentation if we decide to keep this command
-
 import (
 	"bufio"
 	"bytes"
@@ -54,10 +52,6 @@ func (c *Config) newMackupCmd() *cobra.Command {
 	}
 	mackupAddCmd.Flags().Var(&c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
 	mackupCmd.AddCommand(mackupAddCmd)
-
-	// FIXME add other subcommands like
-	// mackup list
-	// mackup forget
 
 	return mackupCmd
 }
