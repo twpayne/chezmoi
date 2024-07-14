@@ -215,7 +215,7 @@ chocolateys:
   project_url: https://chezmoi.io
   url_template: https://github.com/twpayne/chezmoi/releases/download/v{{ .Version }}/{{ .ArtifactName }}
   icon_url: https://github.com/twpayne/chezmoi/raw/master/assets/images/logo-144px.png
-  copyright: Copyright © Tom Payne, 2018-2023
+  copyright: Copyright (c) 2018-{{ .Now.Format "2006" }} Tom Payne
   license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
   project_source_url: https://github.com/twpayne/chezmoi
   docs_url: https://chezmoi.io
@@ -232,7 +232,7 @@ chocolateys:
     chezmoi scales from the trivial (e.g. copying a few dotfiles onto a Raspberry Pi, development container, or virtual machine) to complex long-lived multi-machine development environments (e.g. keeping any number of home and work, Linux, macOS, and Windows machines in sync). In all cases you only need to maintain a single source of truth (a single branch in git) and getting started only requires adding a single binary to your machine (which you can do with `curl`, `wget`, or `scp`).
 
     chezmoi has strong support for security, allowing you to manage secrets (e.g. passwords, access tokens, and private keys) securely and seamlessly using a password manager and/or encrypt whole files with your favorite encryption tool.
-  release_notes: https://github.com/twpayne/chezmoi/releases/tag/v{{ .Version }}
+  release_notes: '{{ .Changelog }}'
   api_key: '{{ .Env.CHOCOLATEY_API_KEY }}'
 
 release:
@@ -305,7 +305,7 @@ winget:
     email: twpayne@gmail.com
   homepage: https://chezmoi.io
   license_url: https://github.com/twpayne/chezmoi/blob/master/LICENSE
-  copyright: Copyright (c) 2018-2023 Tom Payne
+  copyright: Copyright (c) 2018-{{ .Now.Format "2006" }} Tom Payne
   release_notes: '{{ .Changelog }}'
   release_notes_url: https://github.com/twpayne/chezmoi/releases/tag/{{ .Tag }}
   tags:
