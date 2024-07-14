@@ -40,7 +40,7 @@ func (s *ErrorOnWriteSystem) Glob(pattern string) ([]string, error) {
 }
 
 // Link implements System.Link.
-func (s *ErrorOnWriteSystem) Link(oldname, newname AbsPath) error {
+func (s *ErrorOnWriteSystem) Link(oldName, newName AbsPath) error {
 	return s.err
 }
 
@@ -85,7 +85,7 @@ func (s *ErrorOnWriteSystem) RemoveAll(AbsPath) error {
 }
 
 // Rename implements System.Rename.
-func (s *ErrorOnWriteSystem) Rename(oldpath, newpath AbsPath) error {
+func (s *ErrorOnWriteSystem) Rename(oldPath, newPath AbsPath) error {
 	return s.err
 }
 
@@ -95,7 +95,7 @@ func (s *ErrorOnWriteSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *ErrorOnWriteSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *ErrorOnWriteSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	return s.err
 }
 

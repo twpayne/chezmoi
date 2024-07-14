@@ -43,8 +43,8 @@ func (s *TarWriterSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *TarWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
-	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
+func (s *TarWriterSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+	return s.WriteFile(NewAbsPath(scriptName.String()), data, 0o700)
 }
 
 // WriteFile implements System.WriteFile.
@@ -62,10 +62,10 @@ func (s *TarWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileM
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *TarWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
+func (s *TarWriterSystem) WriteSymlink(oldName string, newName AbsPath) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeSymlink
-	header.Name = newname.String()
-	header.Linkname = oldname
+	header.Name = newName.String()
+	header.Linkname = oldName
 	return s.tarWriter.WriteHeader(&header)
 }

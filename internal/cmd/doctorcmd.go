@@ -81,7 +81,7 @@ type argsCheck struct {
 // least version minVersion.
 type binaryCheck struct {
 	name        string
-	binaryname  string
+	binaryName  string
 	ifNotSet    checkResult
 	ifNotExist  checkResult
 	versionArgs []string
@@ -224,7 +224,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		umaskCheck{},
 		&binaryCheck{
 			name:       "cd-command",
-			binaryname: cdCommand,
+			binaryName: cdCommand,
 			ifNotSet:   checkResultError,
 			ifNotExist: checkResultError,
 		},
@@ -235,13 +235,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:       "diff-command",
-			binaryname: c.Diff.Command,
+			binaryName: c.Diff.Command,
 			ifNotSet:   checkResultInfo,
 			ifNotExist: checkResultWarning,
 		},
 		&binaryCheck{
 			name:       "edit-command",
-			binaryname: editCommand,
+			binaryName: editCommand,
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
 		},
@@ -252,7 +252,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "git-command",
-			binaryname:  c.Git.Command,
+			binaryName:  c.Git.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultWarning,
 			versionArgs: []string{"--version"},
@@ -260,13 +260,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:       "merge-command",
-			binaryname: c.Merge.Command,
+			binaryName: c.Merge.Command,
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
 		},
 		&binaryCheck{
 			name:       "shell-command",
-			binaryname: shellCommand,
+			binaryName: shellCommand,
 			ifNotSet:   checkResultError,
 			ifNotExist: checkResultError,
 		},
@@ -277,7 +277,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "age-command",
-			binaryname:  c.Age.Command,
+			binaryName:  c.Age.Command,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`(\d+\.\d+\.\d+\S*)`),
 			ifNotSet:    checkResultWarning,
@@ -285,7 +285,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "gpg-command",
-			binaryname:  c.GPG.Command,
+			binaryName:  c.GPG.Command,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`(?m)^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultWarning,
@@ -293,7 +293,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "pinentry-command",
-			binaryname:  c.PINEntry.Command,
+			binaryName:  c.PINEntry.Command,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^\S+\s+\(pinentry\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultInfo,
@@ -301,7 +301,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "1password-command",
-			binaryname:  c.Onepassword.Command,
+			binaryName:  c.Onepassword.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -310,7 +310,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "bitwarden-command",
-			binaryname:  c.Bitwarden.Command,
+			binaryName:  c.Bitwarden.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -318,7 +318,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "bitwarden-secrets-command",
-			binaryname:  c.BitwardenSecrets.Command,
+			binaryName:  c.BitwardenSecrets.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -326,7 +326,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "dashlane-command",
-			binaryname:  c.Dashlane.Command,
+			binaryName:  c.Dashlane.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -334,7 +334,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "doppler-command",
-			binaryname:  c.Doppler.Command,
+			binaryName:  c.Doppler.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -342,7 +342,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "gopass-command",
-			binaryname:  c.Gopass.Command,
+			binaryName:  c.Gopass.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: gopassVersionArgs,
@@ -351,7 +351,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "keepassxc-command",
-			binaryname:  c.Keepassxc.Command,
+			binaryName:  c.Keepassxc.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -366,7 +366,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "keeper-command",
-			binaryname:  c.Keeper.Command,
+			binaryName:  c.Keeper.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
@@ -374,7 +374,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "lastpass-command",
-			binaryname:  c.Lastpass.Command,
+			binaryName:  c.Lastpass.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: lastpassVersionArgs,
@@ -383,7 +383,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "pass-command",
-			binaryname:  c.Pass.Command,
+			binaryName:  c.Pass.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
@@ -391,7 +391,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "passhole-command",
-			binaryname:  c.Passhole.Command,
+			binaryName:  c.Passhole.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -400,7 +400,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "rbw-command",
-			binaryname:  c.RBW.Command,
+			binaryName:  c.RBW.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
@@ -409,7 +409,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "vault-command",
-			binaryname:  c.Vault.Command,
+			binaryName:  c.Vault.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
@@ -417,7 +417,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:        "vlt-command",
-			binaryname:  c.HCPVaultSecrets.Command,
+			binaryName:  c.HCPVaultSecrets.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
@@ -426,7 +426,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:       "secret-command",
-			binaryname: c.Secret.Command,
+			binaryName: c.Secret.Command,
 			ifNotSet:   checkResultInfo,
 			ifNotExist: checkResultInfo,
 		},
@@ -471,14 +471,14 @@ func (c *binaryCheck) Name() string {
 }
 
 func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	if c.binaryname == "" {
+	if c.binaryName == "" {
 		return c.ifNotSet, "not set"
 	}
 
 	var pathAbsPath chezmoi.AbsPath
-	switch path, err := chezmoi.LookPath(c.binaryname); {
+	switch path, err := chezmoi.LookPath(c.binaryName); {
 	case errors.Is(err, exec.ErrNotFound):
-		return c.ifNotExist, c.binaryname + " not found in $PATH"
+		return c.ifNotExist, c.binaryName + " not found in $PATH"
 	case err != nil:
 		return checkResultFailed, err.Error()
 	default:

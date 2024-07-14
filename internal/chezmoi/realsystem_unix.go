@@ -108,16 +108,16 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
+func (s *RealSystem) WriteSymlink(oldName string, newName AbsPath) error {
 	// Special case: if writing to the real filesystem in safe mode, use
 	// github.com/google/renameio.
 	if s.safe && s.fileSystem == vfs.OSFS {
-		return renameio.Symlink(oldname, newname.String())
+		return renameio.Symlink(oldName, newName.String())
 	}
-	if err := s.fileSystem.RemoveAll(newname.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
+	if err := s.fileSystem.RemoveAll(newName.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
-	return s.fileSystem.Symlink(oldname, newname.String())
+	return s.fileSystem.Symlink(oldName, newName.String())
 }
 
 // writeFile is like os.WriteFile but always sets perm before writing data.

@@ -56,12 +56,12 @@ func UserHomeDir() (string, error) {
 }
 
 // isPrivate returns false on Windows.
-func isPrivate(fileInfo fs.FileInfo) bool {
+func isPrivate(_ fs.FileInfo) bool {
 	return false
 }
 
 // isReadOnly returns false on Windows.
-func isReadOnly(fileInfo fs.FileInfo) bool {
+func isReadOnly(_ fs.FileInfo) bool {
 	return false
 }
 

@@ -30,8 +30,8 @@ func (s *RealSystem) Glob(pattern string) ([]string, error) {
 }
 
 // Link implements System.Link.
-func (s *RealSystem) Link(oldname, newname AbsPath) error {
-	return s.fileSystem.Link(oldname.String(), newname.String())
+func (s *RealSystem) Link(oldName, newName AbsPath) error {
+	return s.fileSystem.Link(oldName.String(), newName.String())
 }
 
 // Lstat implements System.Lstat.
@@ -74,8 +74,8 @@ func (s *RealSystem) RemoveAll(name AbsPath) error {
 }
 
 // Rename implements System.Rename.
-func (s *RealSystem) Rename(oldpath, newpath AbsPath) error {
-	return s.fileSystem.Rename(oldpath.String(), newpath.String())
+func (s *RealSystem) Rename(oldPath, newPath AbsPath) error {
+	return s.fileSystem.Rename(oldPath.String(), newPath.String())
 }
 
 // RunCmd implements System.RunCmd.
@@ -84,7 +84,7 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) (err error) {
+func (s *RealSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) (err error) {
 	// Create the script temporary directory, if needed.
 	s.createScriptTempDirOnce.Do(func() {
 		if !s.scriptTempDir.Empty() {
@@ -98,7 +98,7 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, opt
 	// Write the temporary script file. Put the randomness at the front of the
 	// filename to preserve any file extension for Windows scripts.
 	var f *os.File
-	f, err = os.CreateTemp(s.scriptTempDir.String(), "*."+scriptname.Base())
+	f, err = os.CreateTemp(s.scriptTempDir.String(), "*."+scriptName.Base())
 	if err != nil {
 		return
 	}

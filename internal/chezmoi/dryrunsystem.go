@@ -40,7 +40,7 @@ func (s *DryRunSystem) Glob(pattern string) ([]string, error) {
 }
 
 // Link implements System.Link.
-func (s *DryRunSystem) Link(oldname, newname AbsPath) error {
+func (s *DryRunSystem) Link(oldName, newName AbsPath) error {
 	s.setModified()
 	return nil
 }
@@ -95,7 +95,7 @@ func (s *DryRunSystem) RemoveAll(AbsPath) error {
 }
 
 // Rename implements System.Rename.
-func (s *DryRunSystem) Rename(oldpath, newpath AbsPath) error {
+func (s *DryRunSystem) Rename(oldPath, newPath AbsPath) error {
 	s.setModified()
 	return nil
 }
@@ -107,7 +107,7 @@ func (s *DryRunSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DryRunSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (s *DryRunSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	s.setModified()
 	return nil
 }

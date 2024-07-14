@@ -98,11 +98,11 @@ func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
-	scriptnameStr := scriptname.String()
+func (s *DumpSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+	scriptNameStr := scriptName.String()
 	scriptData := &scriptData{
 		Type:     dataTypeScript,
-		Name:     NewAbsPath(scriptnameStr),
+		Name:     NewAbsPath(scriptNameStr),
 		Contents: string(data),
 	}
 	if options.Condition != ScriptConditionNone {
@@ -111,7 +111,7 @@ func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, opt
 	if !options.Interpreter.None() {
 		scriptData.Interpreter = options.Interpreter
 	}
-	return s.setData(scriptnameStr, scriptData)
+	return s.setData(scriptNameStr, scriptData)
 }
 
 // UnderlyingFS implements System.UnderlyingFS.
@@ -130,11 +130,11 @@ func (s *DumpSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *DumpSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	return s.setData(newname.String(), &symlinkData{
+func (s *DumpSystem) WriteSymlink(oldName string, newName AbsPath) error {
+	return s.setData(newName.String(), &symlinkData{
 		Type:     dataTypeSymlink,
-		Name:     newname,
-		Linkname: oldname,
+		Name:     newName,
+		Linkname: oldName,
 	})
 }
 

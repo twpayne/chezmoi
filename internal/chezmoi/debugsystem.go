@@ -57,11 +57,11 @@ func (s *DebugSystem) Glob(name string) ([]string, error) {
 }
 
 // Link implements System.Link.
-func (s *DebugSystem) Link(oldpath, newpath AbsPath) error {
-	err := s.system.Link(oldpath, newpath)
+func (s *DebugSystem) Link(oldPath, newPath AbsPath) error {
+	err := s.system.Link(oldPath, newPath)
 	chezmoilog.InfoOrError(s.logger, "Link", err,
-		chezmoilog.Stringer("oldpath", oldpath),
-		chezmoilog.Stringer("newpath", newpath),
+		chezmoilog.Stringer("oldPath", oldPath),
+		chezmoilog.Stringer("newPath", newPath),
 	)
 	return err
 }
@@ -138,11 +138,11 @@ func (s *DebugSystem) RemoveAll(name AbsPath) error {
 }
 
 // Rename implements System.Rename.
-func (s *DebugSystem) Rename(oldpath, newpath AbsPath) error {
-	err := s.system.Rename(oldpath, newpath)
+func (s *DebugSystem) Rename(oldPath, newPath AbsPath) error {
+	err := s.system.Rename(oldPath, newPath)
 	chezmoilog.InfoOrError(s.logger, "RemoveAll", err,
-		chezmoilog.Stringer("oldpath", oldpath),
-		chezmoilog.Stringer("newpath", newpath),
+		chezmoilog.Stringer("oldPath", oldPath),
+		chezmoilog.Stringer("newPath", newPath),
 	)
 	return err
 }
@@ -161,10 +161,10 @@ func (s *DebugSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
-	err := s.system.RunScript(scriptname, dir, data, options)
+func (s *DebugSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+	err := s.system.RunScript(scriptName, dir, data, options)
 	attrs := []slog.Attr{
-		chezmoilog.Stringer("scriptname", scriptname),
+		chezmoilog.Stringer("scriptName", scriptName),
 		chezmoilog.Stringer("dir", dir),
 		chezmoilog.FirstFewBytes("data", data),
 		slog.Any("interpreter", options.Interpreter),
@@ -202,11 +202,11 @@ func (s *DebugSystem) WriteFile(name AbsPath, data []byte, perm fs.FileMode) err
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *DebugSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	err := s.system.WriteSymlink(oldname, newname)
+func (s *DebugSystem) WriteSymlink(oldName string, newName AbsPath) error {
+	err := s.system.WriteSymlink(oldName, newName)
 	chezmoilog.InfoOrError(s.logger, "WriteSymlink", err,
-		slog.String("oldname", oldname),
-		chezmoilog.Stringer("newname", newname),
+		slog.String("oldName", oldName),
+		chezmoilog.Stringer("newName", newName),
 	)
 	return err
 }
