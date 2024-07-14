@@ -134,7 +134,8 @@ type omittedCheck struct{}
 // A suspiciousEntriesCheck checks that a source directory does not contain any
 // suspicious files.
 type suspiciousEntriesCheck struct {
-	dirname chezmoi.AbsPath
+	dirname           chezmoi.AbsPath
+	encryptedSuffixes []string
 }
 
 // A upgradeMethodCheck checks the upgrade method.
@@ -207,6 +208,10 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&suspiciousEntriesCheck{
 			dirname: c.SourceDirAbsPath,
+			encryptedSuffixes: []string{
+				c.Age.Suffix,
+				c.GPG.Suffix,
+			},
 		},
 		&dirCheck{
 			name:    "working-tree",
@@ -730,18 +735,13 @@ func (c *suspiciousEntriesCheck) Name() string {
 }
 
 func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	// FIXME include user-defined suffixes from age and gpg configs
-	encryptedSuffixes := []string{
-		defaultAgeEncryptionConfig.Suffix,
-		defaultGPGEncryptionConfig.Suffix,
-	}
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
 	walkFunc := func(absPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo, encryptedSuffixes) {
+		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo, c.encryptedSuffixes) {
 			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil
