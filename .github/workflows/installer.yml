@@ -37,7 +37,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
-    - uses: reviewdog/action-misspell@278e1b3c7dd09d2827fa080919a40db73ccafe24
+    - uses: reviewdog/action-misspell@ef8b22c1cca06c8d306fc6be302c3dab0f6ca12f
       with:
         locale: US
         ignore: ackward
