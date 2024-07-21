@@ -491,6 +491,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"toPrettyJson":                 c.toPrettyJsonTemplateFunc,
 		"toToml":                       c.toTomlTemplateFunc,
 		"toYaml":                       c.toYamlTemplateFunc,
+		"toYamlWithIndent":             c.toYamlWithIndentTemplateFunc,
 		"vault":                        c.vaultTemplateFunc,
 	} {
 		c.addTemplateFunc(key, value)
