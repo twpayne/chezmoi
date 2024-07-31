@@ -20,20 +20,18 @@ cp www/archive.tar.gz www/archive
 exec chezmoi apply --force --refresh-externals
 cmp $HOME/.dir/dir/file golden/dir/file
 
-[!exec:zip] stop 'zip not found in $PATH'
-
 # test that chezmoi sniffs the format of zip files
-exec zip -r www/archive.zip archive
-cp www/archive.zip www/archive
-exec chezmoi apply --force --refresh-externals
-cmp $HOME/.dir/dir/file golden/dir/file
+[exec:zip] exec zip -r www/archive.zip archive
+[exec:zip] cp www/archive.zip www/archive
+[exec:zip] exec chezmoi apply --force --refresh-externals
+[exec:zip] cmp $HOME/.dir/dir/file golden/dir/file
 
 chhome home2/user
 
 # test that chezmoi allows the format to be overridden
-cp www/archive.zip www/archive2.tar.gz
-exec chezmoi apply --force
-cmp $HOME/.dir/dir/file golden/dir/file
+[exec:zip] cp www/archive.zip www/archive2.tar.gz
+[exec:zip] exec chezmoi apply --force
+[exec:zip] cmp $HOME/.dir/dir/file golden/dir/file
 
 -- archive/dir/file --
 # contents of dir/file
