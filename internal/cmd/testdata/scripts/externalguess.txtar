@@ -9,10 +9,10 @@ exec chezmoi apply --force --refresh-externals
 cmp $HOME/.dir/dir/file golden/dir/file
 
 # test that chezmoi sniffs the format of tar.bz2 files
-exec tar -cjf www/archive.tar.bz2 archive/
-cp www/archive.tar.bz2 www/archive
-exec chezmoi apply --force --refresh-externals
-cmp $HOME/.dir/dir/file golden/dir/file
+[exec:bzip2] exec tar -cjf www/archive.tar.bz2 archive/
+[exec:bzip2] cp www/archive.tar.bz2 www/archive
+[exec:bzip2] exec chezmoi apply --force --refresh-externals
+[exec:bzip2] cmp $HOME/.dir/dir/file golden/dir/file
 
 # test that chezmoi sniffs the format of tar.gz files
 exec tar -czf www/archive.tar.gz archive/
