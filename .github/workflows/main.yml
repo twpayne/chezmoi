@@ -60,10 +60,10 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 1
-    - uses: github/codeql-action/init@b611370bb5703a7efb587f9d136a52ea24c5c38c
+    - uses: github/codeql-action/init@afb54ba388a7dca6ecae48f608c4ff05ff4cc77a
       with:
         languages: go
-    - uses: github/codeql-action/analyze@b611370bb5703a7efb587f9d136a52ea24c5c38c
+    - uses: github/codeql-action/analyze@afb54ba388a7dca6ecae48f608c4ff05ff4cc77a
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -382,7 +382,7 @@ jobs:
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: stable
-    - uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64
+    - uses: golangci/golangci-lint-action@aaa42aa0628b4ae2578232a66b541047968fac86
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
