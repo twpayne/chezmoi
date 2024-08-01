@@ -8,6 +8,14 @@ stdout ^ssh-rsa
 exec chezmoi execute-template '{{ (gitHubLatestRelease "twpayne/chezmoi").TagName }}'
 stdout ^v2\.
 
+# test gitHubLatestRelease template function
+exec chezmoi execute-template '{{ (gitHubLatestRelease "2.51.0" "twpayne/chezmoi").TagName }}'
+stdout ^v2.51.0
+
+# test gitHubLatestRelease template function
+exec chezmoi execute-template '{{ (gitHubLatestRelease "2.49.0" "twpayne/chezmoi").TagName }}'
+stdout ^v2.49.0
+
 # test gitHubLatestTag template function
 exec chezmoi execute-template '{{ (gitHubLatestTag "twpayne/chezmoi").Name }}'
 stdout ^v2\.

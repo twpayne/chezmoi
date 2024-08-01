@@ -37,19 +37,21 @@ type gitHubTagsState struct {
 }
 
 var (
-	gitHubKeysStateBucket          = []byte("gitHubLatestKeysState")
-	gitHubLatestReleaseStateBucket = []byte("gitHubLatestReleaseState")
-	gitHubReleasesStateBucket      = []byte("gitHubReleasesState")
-	gitHubTagsStateBucket          = []byte("gitHubTagsState")
+	gitHubKeysStateBucket           = []byte("gitHubLatestKeysState")
+	gitHubVersionReleaseStateBucket = []byte("gitHubVersionReleaseState")
+	gitHubLatestReleaseStateBucket  = []byte("gitHubLatestReleaseState")
+	gitHubReleasesStateBucket       = []byte("gitHubReleasesState")
+	gitHubTagsStateBucket           = []byte("gitHubTagsState")
 )
 
 type gitHubData struct {
-	client             *github.Client
-	clientErr          error
-	keysCache          map[string][]*github.Key
-	latestReleaseCache map[string]map[string]*github.RepositoryRelease
-	releasesCache      map[string]map[string][]*github.RepositoryRelease
-	tagsCache          map[string]map[string][]*github.RepositoryTag
+	client              *github.Client
+	clientErr           error
+	keysCache           map[string][]*github.Key
+	versionReleaseCache map[string]map[string]map[string]*github.RepositoryRelease
+	latestReleaseCache  map[string]map[string]*github.RepositoryRelease
+	releasesCache       map[string]map[string][]*github.RepositoryRelease
+	tagsCache           map[string]map[string][]*github.RepositoryTag
 }
 
 func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
@@ -108,11 +110,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	return allKeys
 }
 
-func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern string) string {
-	release, err := c.gitHubLatestRelease(ownerRepo)
-	if err != nil {
-		panic(err)
-	}
+func (c *Config) githubMatchingReleaseAssetURL(release *github.RepositoryRelease, pattern string) string {
 	for _, asset := range release.Assets {
 		if asset.Name == nil {
 			continue
@@ -125,6 +123,79 @@ func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern stri
 		}
 	}
 	return ""
+}
+
+func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern string) string {
+	release, err := c.gitHubLatestRelease(ownerRepo)
+	if err != nil {
+		panic(err)
+	}
+	return c.githubMatchingReleaseAssetURL(release, pattern)
+}
+
+func (c *Config) gitHubReleaseAssetURLTemplateFunc(ownerRepo, version, pattern string) string {
+	release, err := c.gitHubRelease(ownerRepo, version)
+	if err != nil {
+		panic(err)
+	}
+	return c.githubMatchingReleaseAssetURL(release, pattern)
+}
+
+func (c *Config) gitHubRelease(ownerRepo, version string) (*github.RepositoryRelease, error) {
+	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
+	if err != nil {
+		return nil, err
+	}
+
+	if c.gitHub.versionReleaseCache == nil {
+		c.gitHub.versionReleaseCache = make(map[string]map[string]map[string]*github.RepositoryRelease)
+	}
+	if c.gitHub.versionReleaseCache[owner] == nil {
+		c.gitHub.versionReleaseCache[owner] = make(map[string]map[string]*github.RepositoryRelease)
+	}
+	if c.gitHub.versionReleaseCache[owner][repo] == nil {
+		c.gitHub.versionReleaseCache[owner][repo] = make(map[string]*github.RepositoryRelease)
+	}
+
+	if release := c.gitHub.versionReleaseCache[owner][repo][version]; release != nil {
+		return release, nil
+	}
+
+	now := time.Now()
+	gitHubVersionReleaseKey := []byte(owner + "/" + repo + "/" + version)
+	if c.GitHub.RefreshPeriod != 0 {
+		var gitHubVersionReleaseStateValue gitHubLatestReleaseState
+		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubVersionReleaseStateBucket, gitHubVersionReleaseKey, &gitHubVersionReleaseStateValue); {
+		case err != nil:
+			return nil, err
+		case ok && now.Before(gitHubVersionReleaseStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+			return gitHubVersionReleaseStateValue.Release, nil
+		}
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	gitHubClient, err := c.getGitHubClient(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	release, _, err := gitHubClient.Repositories.GetReleaseByTag(ctx, owner, repo, version)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubVersionReleaseStateBucket, gitHubVersionReleaseKey, &gitHubLatestReleaseState{
+		RequestedAt: now,
+		Release:     release,
+	}); err != nil {
+		return nil, err
+	}
+
+	c.gitHub.versionReleaseCache[owner][repo][version] = release
+
+	return release, nil
 }
 
 func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryRelease, error) {
@@ -182,6 +253,14 @@ func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryReleas
 
 func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.RepositoryRelease {
 	release, err := c.gitHubLatestRelease(ownerRepo)
+	if err != nil {
+		panic(err)
+	}
+	return release
+}
+
+func (c *Config) gitHubReleaseTemplateFunc(ownerRepo, version string) *github.RepositoryRelease {
+	release, err := c.gitHubRelease(ownerRepo, version)
 	if err != nil {
 		panic(err)
 	}

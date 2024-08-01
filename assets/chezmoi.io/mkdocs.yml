@@ -225,7 +225,9 @@ nav:
       - reference/templates/github-functions/index.md
       - gitHubKeys: reference/templates/github-functions/gitHubKeys.md
       - gitHubLatestRelease: reference/templates/github-functions/gitHubLatestRelease.md
+      - gitHubRelease: reference/templates/github-functions/gitHubRelease.md
       - gitHubLatestReleaseAssetURL: reference/templates/github-functions/gitHubLatestReleaseAssetURL.md
+      - gitHubReleaseAssetURL: reference/templates/github-functions/gitHubReleaseAssetURL.md
       - gitHubLatestTag: reference/templates/github-functions/gitHubLatestTag.md
       - gitHubReleases: reference/templates/github-functions/gitHubReleases.md
       - gitHubTags: reference/templates/github-functions/gitHubTags.md

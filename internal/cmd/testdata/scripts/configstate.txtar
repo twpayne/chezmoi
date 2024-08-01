@@ -71,6 +71,7 @@ gitHubKeysState: {}
 gitHubLatestReleaseState: {}
 gitHubReleasesState: {}
 gitHubTagsState: {}
+gitHubVersionReleaseState: {}
 gitRepoExternalState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
