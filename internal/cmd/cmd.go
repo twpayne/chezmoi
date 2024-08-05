@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/glamour/styles"
 	"github.com/spf13/cobra"
 	"go.etcd.io/bbolt"
 
@@ -52,7 +53,7 @@ func init() {
 		panic(err)
 	}
 
-	longHelpStyleConfig := glamour.ASCIIStyleConfig
+	longHelpStyleConfig := styles.ASCIIStyleConfig
 	longHelpStyleConfig.Code.StylePrimitive.BlockPrefix = ""
 	longHelpStyleConfig.Code.StylePrimitive.BlockSuffix = ""
 	longHelpStyleConfig.Emph.BlockPrefix = ""
@@ -66,7 +67,7 @@ func init() {
 		panic(err)
 	}
 
-	exampleStyleConfig := glamour.ASCIIStyleConfig
+	exampleStyleConfig := styles.ASCIIStyleConfig
 	exampleStyleConfig.Code.StylePrimitive.BlockPrefix = ""
 	exampleStyleConfig.Code.StylePrimitive.BlockSuffix = ""
 	exampleStyleConfig.Document.Margin = nil
