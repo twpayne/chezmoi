@@ -2,7 +2,7 @@
 
 `gitHubRelease` calls the GitHub API to retrieve the latest releases about
 the given *owner-repo*, It iterates through all the versions of the release,
-fetching the first entry equal to *version*
+fetching the first entry equal to *version*.
 
 It then returns structured data as defined by the [GitHub Go API
 bindings](https://pkg.go.dev/github.com/google/go-github/v63/github#RepositoryRelease).

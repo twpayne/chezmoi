@@ -38,10 +38,10 @@ type gitHubTagsState struct {
 
 var (
 	gitHubKeysStateBucket           = []byte("gitHubLatestKeysState")
-	gitHubVersionReleaseStateBucket = []byte("gitHubVersionReleaseState")
 	gitHubLatestReleaseStateBucket  = []byte("gitHubLatestReleaseState")
 	gitHubReleasesStateBucket       = []byte("gitHubReleasesState")
 	gitHubTagsStateBucket           = []byte("gitHubTagsState")
+	gitHubVersionReleaseStateBucket = []byte("gitHubVersionReleaseState")
 )
 
 type gitHubData struct {

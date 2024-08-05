@@ -175,9 +175,9 @@ func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
 		"entryState":                chezmoi.EntryStateBucket,
 		"gitHubKeysState":           gitHubKeysStateBucket,
 		"gitHubLatestReleaseState":  gitHubLatestReleaseStateBucket,
-		"gitHubVersionReleaseState": gitHubVersionReleaseStateBucket,
 		"gitHubReleasesState":       gitHubReleasesStateBucket,
 		"gitHubTagsState":           gitHubTagsStateBucket,
+		"gitHubVersionReleaseState": gitHubVersionReleaseStateBucket,
 		"gitRepoExternalState":      chezmoi.GitRepoExternalStateBucket,
 		"scriptState":               chezmoi.ScriptStateBucket,
 	})

@@ -8,14 +8,6 @@ stdout ^ssh-rsa
 exec chezmoi execute-template '{{ (gitHubLatestRelease "twpayne/chezmoi").TagName }}'
 stdout ^v2\.
 
-# test gitHubLatestRelease template function
-exec chezmoi execute-template '{{ (gitHubLatestRelease "2.51.0" "twpayne/chezmoi").TagName }}'
-stdout ^v2.51.0
-
-# test gitHubLatestRelease template function
-exec chezmoi execute-template '{{ (gitHubLatestRelease "2.49.0" "twpayne/chezmoi").TagName }}'
-stdout ^v2.49.0
-
 # test gitHubLatestTag template function
 exec chezmoi execute-template '{{ (gitHubLatestTag "twpayne/chezmoi").Name }}'
 stdout ^v2\.
@@ -24,9 +16,14 @@ stdout ^v2\.
 exec chezmoi execute-template '{{ (index (gitHubTags "twpayne/chezmoi") 0).Name }}'
 stdout ^v2\.
 
+# test gitHubRelease template function
+exec chezmoi execute-template '{{ (gitHubRelease "twpayne/chezmoi" "v2.49.0").TagName }}'
+stdout ^v2\.49\.0
+
+# test gitHubReleaseAssetURL template function
+[!windows] exec chezmoi execute-template '{{ gitHubReleaseAssetURL "twpayne/chezmoi" "v2.50.0" (printf "chezmoi-%s-%s" .chezmoi.os .chezmoi.arch) }}'
+[!windows] stdout https://github.com/twpayne/chezmoi/releases/download/v2\.50\.0/chezmoi-
+
 # test gitHubReleases template functions
 exec chezmoi execute-template '{{ (index (gitHubReleases "twpayne/chezmoi") 0).TagName }}'
 stdout ^v2\.
-
-# gitHubReleases
-# gitHubTags
