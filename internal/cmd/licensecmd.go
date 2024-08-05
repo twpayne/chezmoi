@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/glamour/styles"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs"
@@ -27,7 +28,7 @@ func (c *Config) newLicenseCmd() *cobra.Command {
 
 func (c *Config) runLicenseCmd(cmd *cobra.Command, args []string) error {
 	renderer, err := glamour.NewTermRenderer(
-		glamour.WithStyles(glamour.ASCIIStyleConfig),
+		glamour.WithStyles(styles.ASCIIStyleConfig),
 		glamour.WithWordWrap(80),
 	)
 	if err != nil {
