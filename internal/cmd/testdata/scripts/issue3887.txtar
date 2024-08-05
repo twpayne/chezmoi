@@ -1,0 +1,21 @@
+[!exec:age] skip 'age not found in path'
+
+mkageconfig
+mkgitconfig
+
+# add an initial encrypted file
+exec chezmoi init
+exec chezmoi add --encrypt ${HOME}${/}.encrypted
+exec chezmoi git add .
+exec chezmoi git commit -- -m 'initial commit' .
+
+# test that chezmoi edit on an encrypted file with no changes does not change the ciphertext
+prependline ${CHEZMOICONFIGDIR}/chezmoi.toml 'edit.command = "true"'
+exec chezmoi edit ${HOME}${/}.encrypted
+exec chezmoi diff
+! stdout .
+exec chezmoi git diff
+! stdout .
+
+-- home/user/.encrypted --
+plaintext

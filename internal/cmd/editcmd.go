@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"log/slog"
 	"os"
 	"runtime"
@@ -87,6 +88,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 	type transparentlyDecryptedFile struct {
 		sourceAbsPath    chezmoi.AbsPath
 		decryptedAbsPath chezmoi.AbsPath
+		preEditPlaintext []byte
 	}
 	var transparentlyDecryptedFiles []transparentlyDecryptedFile
 TARGET_REL_PATH:
@@ -119,6 +121,7 @@ TARGET_REL_PATH:
 			transparentlyDecryptedFile := transparentlyDecryptedFile{
 				sourceAbsPath:    c.SourceDirAbsPath.Join(sourceRelPath.RelPath()),
 				decryptedAbsPath: decryptedAbsPath,
+				preEditPlaintext: contents,
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
 			editorArgs = append(editorArgs, decryptedAbsPath.String())
@@ -165,6 +168,13 @@ TARGET_REL_PATH:
 
 	postEditFunc := func() error {
 		for _, transparentlyDecryptedFile := range transparentlyDecryptedFiles {
+			postEditPlaintext, err := c.baseSystem.ReadFile(transparentlyDecryptedFile.decryptedAbsPath)
+			if err != nil {
+				return err
+			}
+			if bytes.Equal(postEditPlaintext, transparentlyDecryptedFile.preEditPlaintext) {
+				return nil
+			}
 			contents, err := c.encryption.EncryptFile(transparentlyDecryptedFile.decryptedAbsPath)
 			if err != nil {
 				return err
