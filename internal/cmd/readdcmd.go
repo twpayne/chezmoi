@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
+	"runtime"
 	"sort"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -15,6 +17,23 @@ type reAddCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
 	recursive bool
 }
+
+// A fileInfo is a simple struct that implements the io/fs.FileInfo interface
+// for the purpose of overriding the mode on Windows.
+type fileInfo struct {
+	name    string
+	size    int64
+	mode    fs.FileMode
+	modTime time.Time
+	isDir   bool
+}
+
+func (fi *fileInfo) Name() string       { return fi.name }
+func (fi *fileInfo) Size() int64        { return fi.size }
+func (fi *fileInfo) Mode() fs.FileMode  { return fi.mode }
+func (fi *fileInfo) ModTime() time.Time { return fi.modTime }
+func (fi *fileInfo) IsDir() bool        { return fi.isDir }
+func (fi *fileInfo) Sys() any           { return nil } // Sys always returns nil to avoid any inconsistency.
 
 func (c *Config) newReAddCmd() *cobra.Command {
 	reAddCmd := &cobra.Command{
@@ -105,8 +124,15 @@ TARGET_REL_PATH:
 		if err != nil {
 			return err
 		}
-		if bytes.Equal(actualContents, targetContents) && actualStateFile.Perm() == targetStateFile.Perm(c.Umask) {
-			continue
+		if bytes.Equal(actualContents, targetContents) {
+			// On Windows, ignore permission changes as they are not preserved
+			// by the filesystem. On other systems, if there are no permission
+			// changes, continue.
+			//
+			// See https://github.com/twpayne/chezmoi/issues/3891.
+			if runtime.GOOS == "windows" || actualStateFile.Perm() == targetStateFile.Perm(c.Umask) {
+				continue
+			}
 		}
 
 		if c.interactive {
@@ -137,6 +163,21 @@ TARGET_REL_PATH:
 				default:
 					panic(choice + ": unexpected choice")
 				}
+			}
+		}
+
+		// On Windows, as the file mode is not preserved by the filesystem, copy
+		// the existing mode from the target file. Hack this in by replacing the
+		// io/fs.FileInfo of the destination file with a new io/fs.FileInfo with
+		// the mode of the target file.
+		//
+		// See https://github.com/twpayne/chezmoi/issues/3891.
+		if runtime.GOOS == "windows" {
+			destAbsPathInfo = &fileInfo{
+				name:    destAbsPathInfo.Name(),
+				size:    destAbsPathInfo.Size(),
+				mode:    targetStateFile.Perm(0), // Use the mode from the target.
+				modTime: destAbsPathInfo.ModTime(),
 			}
 		}
 

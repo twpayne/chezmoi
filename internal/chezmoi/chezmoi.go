@@ -321,6 +321,16 @@ func isEmpty(data []byte) bool {
 	return len(bytes.TrimSpace(data)) == 0
 }
 
+// isPrivate returns if fileInfo is private.
+func isPrivate(fileInfo fs.FileInfo) bool {
+	return fileInfo.Mode().Perm()&0o77 == 0
+}
+
+// isReadOnly returns if fileInfo is read-only.
+func isReadOnly(fileInfo fs.FileInfo) bool {
+	return fileInfo.Mode().Perm()&0o222 == 0
+}
+
 // md5Sum returns the MD5 sum of data.
 func md5Sum(data []byte) []byte {
 	md5SumArr := md5.Sum(data) //nolint:gosec
