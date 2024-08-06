@@ -1,0 +1,10 @@
+[!windows] skip 'Windows only'
+
+# test that chezmoi re-add does not remove the executable_ attribute on Windows
+exec chezmoi apply
+exec chezmoi re-add --debug
+exists $CHEZMOISOURCEDIR/executable_run.sh
+! exists $CHEZMOISOURCEDIR/run.sh
+
+-- home/user/.local/share/chezmoi/executable_run.sh --
+#!/bin/sh

@@ -31,13 +31,3 @@ func IsExecutable(fileInfo fs.FileInfo) bool {
 func UserHomeDir() (string, error) {
 	return os.UserHomeDir()
 }
-
-// isPrivate returns if fileInfo is private.
-func isPrivate(fileInfo fs.FileInfo) bool {
-	return fileInfo.Mode().Perm()&0o77 == 0
-}
-
-// isReadOnly returns if fileInfo is read-only.
-func isReadOnly(fileInfo fs.FileInfo) bool {
-	return fileInfo.Mode().Perm()&0o222 == 0
-}

@@ -32,6 +32,9 @@ func findExecutableExtensions(path string) []string {
 // in the PATHEXT environment variable as per
 // https://www.nextofwindows.com/what-is-pathext-environment-variable-in-windows.
 func IsExecutable(fileInfo fs.FileInfo) bool {
+	if fileInfo.Mode().Perm()&0o111 != 0 {
+		return true
+	}
 	if !fileInfo.Mode().IsRegular() {
 		return false
 	}
@@ -53,16 +56,6 @@ func UserHomeDir() (string, error) {
 		}
 	}
 	return os.UserHomeDir()
-}
-
-// isPrivate returns false on Windows.
-func isPrivate(_ fs.FileInfo) bool {
-	return false
-}
-
-// isReadOnly returns false on Windows.
-func isReadOnly(_ fs.FileInfo) bool {
-	return false
 }
 
 // isSlash returns if c is a slash character.
