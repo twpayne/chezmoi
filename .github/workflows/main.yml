@@ -171,7 +171,7 @@ jobs:
         go test ./...
   test-release:
     needs: changes
-    runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
+    runs-on: self-hosted
     permissions:
       contents: read
     steps:
@@ -180,17 +180,8 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
-    - name: install-release-dependencies
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        sudo apt-get --quiet update
-        sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
-        mkdir -p /opt/chocolatey
-        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${CHOCOLATEY_VERSION}/chocolatey.v${CHOCOLATEY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
-        echo '#!/bin/bash' >> /usr/local/bin/choco
-        echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
-        chmod +x /usr/local/bin/choco
     - name: create-syso
       run: |
         make create-syso
@@ -232,7 +223,7 @@ jobs:
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
     needs: changes
-    runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
+    runs-on: self-hosted
     permissions:
       contents: read
     steps:
@@ -241,20 +232,8 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
-    - name: install-age
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: install-rage
-      run: |
-        cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/str4d/rage/releases/download/v${RAGE_VERSION}/rage-v${RAGE_VERSION}-x86_64-linux.tar.gz" | tar xzf -
-        sudo install -m 755 rage/rage /usr/local/bin
-        sudo install -m 755 rage/rage-keygen /usr/local/bin
     - name: build
       run: |
         go build ./...
