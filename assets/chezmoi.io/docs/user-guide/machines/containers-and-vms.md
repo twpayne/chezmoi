@@ -40,6 +40,12 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{- end }}
 ```
 
+!!! warning
+
+    Setting the `sourceDir` configuration variable to `.chezmoi.sourceDir` is
+    required because Codespaces clones your dotfiles repo to a different one to
+    chezmoi's default.
+
 This sets the `codespaces` template variable, so you don't have to repeat `(env
 "CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
 the `--source` argument passed in `chezmoi init`.
