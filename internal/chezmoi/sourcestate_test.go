@@ -2028,7 +2028,7 @@ func withTemplates(templates map[string]*Template) SourceStateOption {
 
 func manyScripts(amount int) map[string]any {
 	scripts := map[string]any{}
-	for i := 0; i < amount; i++ {
+	for i := range amount {
 		scripts[fmt.Sprintf("run_onchange_before_%d.sh", i)] = ""
 	}
 	return scripts

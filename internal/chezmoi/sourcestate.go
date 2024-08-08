@@ -1341,7 +1341,7 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	s.Lock()
 	defer s.Unlock()
 	for path, external := range externals {
-		external := external
+		external := external //nolint:copyloopvar
 		if strings.HasPrefix(path, "/") || filepath.IsAbs(path) {
 			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
 		}

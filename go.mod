@@ -1,8 +1,6 @@
 module github.com/twpayne/chezmoi/v2
 
-go 1.21.4
-
-toolchain go1.22.0
+go 1.22.0
 
 require (
 	filippo.io/age v1.2.0

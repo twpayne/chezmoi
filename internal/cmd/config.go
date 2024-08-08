@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"cmp"
 	"context"
 	"encoding/json"
 	"errors"
@@ -1221,7 +1222,7 @@ func (c *Config) editor(args []string) (string, []string, error) {
 	}
 
 	// Prefer $VISUAL over $EDITOR and fallback to the OS's default editor.
-	editCommand = firstNonEmptyString(os.Getenv("VISUAL"), os.Getenv("EDITOR"), defaultEditor)
+	editCommand = cmp.Or(os.Getenv("VISUAL"), os.Getenv("EDITOR"), defaultEditor)
 
 	return parseCommand(editCommand, append(editArgs, args...))
 }
@@ -2270,7 +2271,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	// solutions.
 	var gid, group, uid, username string
 	if runtime.GOOS == "android" {
-		username = firstNonEmptyString(os.Getenv("LOGNAME"), os.Getenv("USER"))
+		username = cmp.Or(os.Getenv("LOGNAME"), os.Getenv("USER"))
 	} else if currentUser, err := user.Current(); err == nil {
 		gid = currentUser.Gid
 		uid = currentUser.Uid
@@ -2753,7 +2754,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			Command: "doppler",
 		},
 		Ejson: ejsonConfig{
-			KeyDir: firstNonEmptyString(os.Getenv("EJSON_KEYDIR"), "/opt/ejson/keys"),
+			KeyDir: cmp.Or(os.Getenv("EJSON_KEYDIR"), "/opt/ejson/keys"),
 		},
 		Gopass: gopassConfig{
 			Command: "gopass",
