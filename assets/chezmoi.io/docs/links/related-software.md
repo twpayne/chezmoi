@@ -33,6 +33,10 @@ Sync, search and backup shell history .
 
 Installs chezmoi on Ubuntu and Debian servers.
 
+### [`github.com/johan-weitner/chezmoi-ui`](https://github.com/johan-weitner/chezmoi-ui)
+
+A web UI for managing a list of apps to seed/feed a Chezmoi setup.
+
 ### [`github.com/joke/asdf-chezmoi`](https://github.com/joke/asdf-chezmoi)
 
 chezmoi plugin for asdf version manager.
