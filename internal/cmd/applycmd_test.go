@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -212,6 +213,30 @@ func TestApplyCmd(t *testing.T) {
 			})
 		})
 	}
+}
+
+func TestUserAgent(t *testing.T) {
+	var userAgent string
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		userAgent = r.Header.Get("User-Agent")
+	}))
+	defer httpServer.Close()
+
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local/share/chezmoi": map[string]any{
+				".chezmoiexternal.toml.tmpl": chezmoitest.JoinLines(
+					`[".local/bin/file"]`,
+					`    type = "file"`,
+					`    url = "`+httpServer.URL+`/file"`,
+				),
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+	})
+
+	assert.True(t, strings.HasPrefix(userAgent, "chezmoi.io/"))
 }
 
 func TestIssue2132(t *testing.T) {
