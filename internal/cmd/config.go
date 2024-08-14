@@ -1389,6 +1389,33 @@ func (c *Config) getGitleaksDetector() (*detect.Detector, error) {
 	return c.gitleaksDetector, c.gitleaksDetectorErr
 }
 
+// A modifyHTTPRequestFunc is a function that modifies a net/http.Request before
+// it is sent.
+type modifyHTTPRequestFunc func(*http.Request) (*http.Request, error)
+
+// A modifyHTTPRequestRoundTripper is a net/http.Transport that modifies the
+// request before it is sent.
+type modifyHTTPRequestRoundTripper struct {
+	modifyHTTPRequestFunc modifyHTTPRequestFunc
+	httpRoundTripper      http.RoundTripper
+}
+
+func newModifyHTTPRequestRoundTripper(f modifyHTTPRequestFunc, t http.RoundTripper) modifyHTTPRequestRoundTripper {
+	return modifyHTTPRequestRoundTripper{
+		modifyHTTPRequestFunc: f,
+		httpRoundTripper:      t,
+	}
+}
+
+// RoundTrip implements net/http.Transport.RoundTrip.
+func (m modifyHTTPRequestRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	modifiedRequest, err := m.modifyHTTPRequestFunc(req)
+	if err != nil {
+		return nil, err
+	}
+	return m.httpRoundTripper.RoundTrip(modifiedRequest)
+}
+
 func (c *Config) getHTTPClient() (*http.Client, error) {
 	if c.httpClient != nil {
 		return c.httpClient, nil
@@ -1401,6 +1428,15 @@ func (c *Config) getHTTPClient() (*http.Client, error) {
 	httpCache := diskcache.New(httpCacheBasePath.String())
 	httpTransport := httpcache.NewTransport(httpCache)
 	c.httpClient = httpTransport.Client()
+
+	c.httpClient.Transport = newModifyHTTPRequestRoundTripper(
+		func(req *http.Request) (*http.Request, error) {
+			req = req.Clone(req.Context())
+			req.Header.Add("User-Agent", "chezmoi.io/"+c.version.String())
+			return req, nil
+		},
+		c.httpClient.Transport,
+	)
 
 	return c.httpClient, nil
 }
