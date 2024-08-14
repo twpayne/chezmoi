@@ -425,3 +425,11 @@ articles:
   version: 2.49.1
   title: 'Automate Your Dotfiles with Chezmoi'
   url: https://learn.typecraft.dev/tutorial/our-place-chezmoi/
+- date: '2024-07-28'
+  version: 2.51.0
+  title: 'Development Environment Setup with Chezmoi'
+  url: https://danielmschmidt.de/posts/dev-env-setup-with-chezmoi/
+- date: '2024-07-31'
+  version: 2.51.0
+  title: 'Managing dotfiles with chezmoi'
+  url: https://wqplease.com/p/managing-dotfiles-with-chezmoi
