@@ -53,3 +53,7 @@ videos:
   version: 2.47.0
   title: '12 GREAT command line programs YOU recommended!'
   url: https://www.youtube.com/watch?v=nCS4BtJ34-o&t=324s
+- date: '2024-06-22'
+  version: '2.47.1'
+  title: 'Automating Development Environments with Ansible & Chezmoi'
+  url: https://www.youtube.com/watch?v=P4nI1VhoN2Y
