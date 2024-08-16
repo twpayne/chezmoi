@@ -1,0 +1,21 @@
+[windows] skip 'UNIX only'
+
+exec chezmoi apply
+cmp stdout golden/output
+
+-- golden/output --
+one
+two
+three
+-- home/user/.local/share/chezmoi/run_once_before_00-decrypt-private-key.sh.tmpl --
+#!/bin/sh
+
+echo one
+-- home/user/.local/share/chezmoi/run_once_before_01-install-pre-requisites.sh --
+#!/bin/sh
+
+echo two
+-- home/user/.local/share/chezmoi/run_once_before_02-install-packages.sh.tmpl --
+#!/bin/sh
+
+echo three
