@@ -50,10 +50,13 @@ type keepassxcConfig struct {
 var (
 	keepassxcMinVersion = semver.Version{Major: 2, Minor: 7, Patch: 0}
 
-	keepassxcEnterPasswordToUnlockDatabaseRx = regexp.MustCompile(`^Enter password to unlock .*: `)
-	keepassxcAnyResponseRx                   = regexp.MustCompile(`(?m)\A.*\r\n`)
-	keepassxcPairRx                          = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
-	keepassxcPromptRx                        = regexp.MustCompile(`^.*> `)
+	keepassxcEnterPasswordToUnlockDatabaseRx             = regexp.MustCompile(`^Enter password to unlock .*: `)
+	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRx = regexp.MustCompile(
+		"^Please present or touch your \\S+ to continue\\.\r\n",
+	)
+	keepassxcAnyResponseRx = regexp.MustCompile(`(?m)\A.*\r\n`)
+	keepassxcPairRx        = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
+	keepassxcPromptRx      = regexp.MustCompile(`^.*> `)
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
@@ -198,7 +201,9 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		}
 
 		// Start the keepassxc-cli open command.
-		cmdArgs := append(slices.Clone(c.Keepassxc.Args), "open", c.Keepassxc.Database.String())
+		cmdArgs := []string{"open"}
+		cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
+		cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
 		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
 		env := os.Environ()
 		// Ensure prompt is in English.
@@ -216,55 +221,65 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		}
 
 		if c.Keepassxc.Prompt {
-			// Expect the password prompt, e.g. "Enter password to unlock $HOME/Passwords.kdbx: ".
-			enterPasswordToUnlockPrompt, err := console.Expect(
+			// Expect the password or YubiKey response.
+			response, err := console.Expect(
 				expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRx),
+				expect.Regexp(keepassxcPleasePresentOrTouchYourYubiKeyToContinueRx),
 				expect.Regexp(keepassxcAnyResponseRx),
 			)
 			if err != nil {
 				return nil, err
 			}
-			if !keepassxcEnterPasswordToUnlockDatabaseRx.MatchString(enterPasswordToUnlockPrompt) {
-				return nil, errors.New(strings.TrimSpace(enterPasswordToUnlockPrompt))
-			}
 
-			// Read the password from the user, if necessary.
-			var password string
-			if c.Keepassxc.password != "" {
-				password = c.Keepassxc.password
-			} else {
-				password, err = c.readPassword(enterPasswordToUnlockPrompt)
-				if err != nil {
+			switch {
+			case keepassxcEnterPasswordToUnlockDatabaseRx.MatchString(response):
+				// Read the password from the user, if necessary.
+				var password string
+				if c.Keepassxc.password != "" {
+					password = c.Keepassxc.password
+				} else {
+					password, err = c.readPassword(response)
+					if err != nil {
+						return nil, err
+					}
+				}
+
+				// Send the password.
+				if _, err := console.SendLine(password); err != nil {
 					return nil, err
 				}
-			}
 
-			// Send the password.
-			if _, err := console.SendLine(password); err != nil {
-				return nil, err
-			}
-
-			// Wait for the end of the password prompt.
-			if _, err := console.ExpectString("\r\n"); err != nil {
-				return nil, err
+				// Wait for the end of the password prompt.
+				if _, err := console.ExpectString("\r\n"); err != nil {
+					return nil, err
+				}
+			case keepassxcPleasePresentOrTouchYourYubiKeyToContinueRx.MatchString(response):
+				if _, err := console.ExpectString("\r\n"); err != nil {
+					return nil, err
+				}
+				if _, err := c.stderr.Write([]byte(strings.TrimSpace(response) + "\n")); err != nil {
+					return nil, err
+				}
+			default:
+				return nil, fmt.Errorf("%q: unexpected response", response)
 			}
 		}
 
-		// Read the prompt, e.g "Passwords> ", so we can expect it later.
-		output, err := console.Expect(
+		// Read the response, e.g "Passwords> ", so we can expect it later.
+		response, err := console.Expect(
 			expect.Regexp(keepassxcPromptRx),
 			expect.Regexp(keepassxcAnyResponseRx),
 		)
 		if err != nil {
 			return nil, err
 		}
-		if !keepassxcPromptRx.MatchString(output) {
-			return nil, errors.New(strings.TrimSpace(output))
+		if !keepassxcPromptRx.MatchString(response) {
+			return nil, fmt.Errorf("%q: unexpected response", response)
 		}
 
 		c.Keepassxc.cmd = cmd
 		c.Keepassxc.console = console
-		c.Keepassxc.prompt = keepassxcPromptRx.FindString(output)
+		c.Keepassxc.prompt = keepassxcPromptRx.FindString(response)
 	}
 
 	// Build the command line. Strings with spaces and other non-word characters

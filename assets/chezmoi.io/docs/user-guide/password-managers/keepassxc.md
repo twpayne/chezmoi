@@ -33,6 +33,7 @@ If your database is not password protected, add `--no-password` to
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [keepassxc]
+    database = "/home/user/Passwords.kdbx"
     args = ["--no-password"]
     prompt = false
 ```
@@ -45,6 +46,7 @@ set your YubiKey, for example:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [keepassxc]
-    args = ["--yubikey", "1:7370001"]
+    database = "/home/user/Passwords.kdbx"
+    args = ["--no-password", "--yubikey", "2:7370001"]
     mode = "open"
 ```

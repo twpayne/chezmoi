@@ -16,4 +16,5 @@ password prompt can be disabled by setting `keepassxc.prompt` to `false`.
 By default, chezmoi will prompt for the KeePassXC password when required and
 cache it for the duration of chezmoi's execution. Setting `keepassxc.mode` to
 `open` will tell chezmoi to instead open KeePassXC's console with `keepassxc-cli
-open`. chezmoi will use this console to request values from KeePassXC.
+open` followed by `keepassxc.args`. chezmoi will use this console to request
+values from KeePassXC.
