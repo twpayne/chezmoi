@@ -732,7 +732,7 @@ func (c *Config) colorAutoFunc() bool {
 		return false
 	}
 	if stdout, ok := c.stdout.(*os.File); ok {
-		return term.IsTerminal(int(stdout.Fd()))
+		return term.IsTerminal(int(stdout.Fd())) //nolint:gosec
 	}
 	return false
 }
@@ -2269,7 +2269,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 // progressAutoFunc detects whether progress bars should be displayed.
 func (c *Config) progressAutoFunc() bool {
 	if stdout, ok := c.stdout.(*os.File); ok {
-		return term.IsTerminal(int(stdout.Fd()))
+		return term.IsTerminal(int(stdout.Fd())) //nolint:gosec
 	}
 	return false
 }

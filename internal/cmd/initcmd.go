@@ -310,7 +310,7 @@ func (o gitCloneOptionsLogValuer) LogValue() slog.Value {
 		attrs = append(attrs, slog.Int("Depth", o.Depth))
 	}
 	if o.RecurseSubmodules != 0 {
-		attrs = append(attrs, slog.Int("RecurseSubmodules", int(o.RecurseSubmodules)))
+		attrs = append(attrs, slog.Uint64("RecurseSubmodules", uint64(o.RecurseSubmodules)))
 	}
 	if o.Tags != 0 {
 		attrs = append(attrs, slog.Int("Tags", int(o.Tags)))

@@ -97,9 +97,9 @@ func WithTestFS(t *testing.T, root any, f func(vfs.FS)) {
 
 // mustParseFileMode parses s as a fs.FileMode and panics on any error.
 func mustParseFileMode(s string) fs.FileMode {
-	i, err := strconv.ParseInt(s, 0, 32)
+	u, err := strconv.ParseUint(s, 0, 32)
 	if err != nil {
 		panic(err)
 	}
-	return fs.FileMode(i)
+	return fs.FileMode(uint32(u)) //nolint:gosec
 }

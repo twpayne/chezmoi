@@ -84,7 +84,6 @@ linters:
   - dupl
   - exhaustive
   - exhaustruct
-  - exportloopref
   - funlen
   - ginkgolinter
   - gochecknoglobals
