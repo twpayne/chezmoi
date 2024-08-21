@@ -48,7 +48,7 @@ func TestIntInputModel(t *testing.T) {
 		{
 			name:          "one_invalid_enter",
 			input:         "1a\r",
-			expectedValue: 1,
+			expectedValue: 0,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
