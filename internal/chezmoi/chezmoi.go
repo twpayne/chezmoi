@@ -19,7 +19,7 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v5"
-	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
+	"golang.org/x/crypto/ripemd160" //nolint:gosec,staticcheck
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
@@ -347,7 +347,7 @@ func modeTypeName(mode fs.FileMode) string {
 
 // ripemd160Sum returns the RIPEMD-160 sum of data.
 func ripemd160Sum(data []byte) []byte {
-	return ripemd160.New().Sum(data)
+	return ripemd160.New().Sum(data) //nolint:gosec
 }
 
 // sha1Sum returns the SHA1 sum of data.

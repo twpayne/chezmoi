@@ -12,7 +12,7 @@ import (
 const nativeLineEnding = "\n"
 
 func init() {
-	Umask = fs.FileMode(unix.Umask(0))
+	Umask = fs.FileMode(unix.Umask(0)) //nolint:gosec
 	unix.Umask(int(Umask))
 }
 
