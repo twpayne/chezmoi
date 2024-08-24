@@ -20,20 +20,24 @@ func TestTargetStateEntryApply(t *testing.T) {
 			perm: fs.ModePerm &^ chezmoitest.Umask,
 		},
 		"file": &TargetStateFile{
-			perm:         0o666 &^ chezmoitest.Umask,
-			lazyContents: newLazyContents([]byte("# contents of file")),
+			contentsFunc:       eagerNoErr([]byte("# contents of file")),
+			contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of file"))),
+			perm:               0o666 &^ chezmoitest.Umask,
 		},
 		"file_empty": &TargetStateFile{
-			perm:  0o666 &^ chezmoitest.Umask,
-			empty: true,
+			contentsFunc:       eagerZeroNoErr[[]byte](),
+			contentsSHA256Func: eagerNoErr(SHA256Sum(nil)),
+			perm:               0o666 &^ chezmoitest.Umask,
+			empty:              true,
 		},
 		"file_executable": &TargetStateFile{
-			perm:         fs.ModePerm &^ chezmoitest.Umask,
-			lazyContents: newLazyContents([]byte("#!/bin/sh\n")),
+			contentsFunc:       eagerNoErr([]byte("#!/bin/sh\n")),
+			contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("#!/bin/sh\n"))),
+			perm:               fs.ModePerm &^ chezmoitest.Umask,
 		},
 		"remove": &TargetStateRemove{},
 		"symlink": &TargetStateSymlink{
-			lazyLinkname: newLazyLinkname("target"),
+			linknameFunc: eagerNoErr("target"),
 		},
 	}
 

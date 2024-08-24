@@ -549,8 +549,10 @@ DEST_ABS_PATH:
 
 		newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
 			targetStateEntry: &TargetStateFile{
-				empty: true,
-				perm:  0o666 &^ s.umask,
+				contentsFunc:       eagerNoErr[[]byte](nil),
+				contentsSHA256Func: eagerNoErr(SHA256SumZero[:]),
+				empty:              true,
+				perm:               0o666 &^ s.umask,
 			},
 		}
 	}
@@ -1192,7 +1194,12 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			case errors.Is(err, fs.ErrNotExist):
 				// FIXME add support for using builtin git
 				sourceStateCommand := &SourceStateCommand{
-					cmd: newLazyCommandFunc(func() *exec.Cmd {
+					// Use a sync.OnceValue to defer the call to
+					// os/exec.Command because os/exec.Command calls
+					// os/exec.LookupPath and therefore depends on the state of
+					// $PATH when os/exec.Command is called, not the state of
+					// $PATH when os/exec.Cmd.{Run,Start} is called.
+					cmdFunc: sync.OnceValue(func() *exec.Cmd {
 						args := []string{"clone"}
 						args = append(args, external.Clone.Args...)
 						args = append(args, external.URL, destAbsPath.String())
@@ -1215,7 +1222,12 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			default:
 				// FIXME add support for using builtin git
 				sourceStateCommand := &SourceStateCommand{
-					cmd: newLazyCommandFunc(func() *exec.Cmd {
+					// Use a sync.OnceValue to defer the call to
+					// os/exec.Command because os/exec.Command calls
+					// os/exec.LookupPath and therefore depends on the state of
+					// $PATH when os/exec.Command is called, not the state of
+					// $PATH when os/exec.Cmd.{Run,Start} is called.
+					cmdFunc: sync.OnceValue(func() *exec.Cmd {
 						args := []string{"pull"}
 						args = append(args, external.Pull.Args...)
 						cmd := exec.Command("git", args...)
@@ -1731,16 +1743,16 @@ func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRel
 func (s *SourceState) newCreateTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	sourceLazyContents *lazyContents,
+	sourceContentsFunc func() ([]byte, error),
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		var lazyContents *lazyContents
+		var contentsFunc func() ([]byte, error)
 		switch contents, err := destSystem.ReadFile(destAbsPath); {
 		case err == nil:
-			lazyContents = newLazyContents(contents)
+			contentsFunc = eagerNoErr(contents)
 		case errors.Is(err, fs.ErrNotExist):
-			lazyContents = newLazyContentsFunc(func() ([]byte, error) {
-				contents, err = sourceLazyContents.Contents()
+			contentsFunc = sync.OnceValues(func() ([]byte, error) {
+				contents, err = sourceContentsFunc()
 				if err != nil {
 					return nil, err
 				}
@@ -1760,9 +1772,10 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 			return nil, err
 		}
 		return &TargetStateFile{
-			lazyContents: lazyContents,
-			empty:        fileAttr.Empty,
-			perm:         fileAttr.perm() &^ s.umask,
+			contentsFunc:       contentsFunc,
+			contentsSHA256Func: lazySHA256(contentsFunc),
+			empty:              fileAttr.Empty,
+			perm:               fileAttr.perm() &^ s.umask,
 			sourceAttr: SourceAttr{
 				Encrypted: fileAttr.Encrypted,
 				Template:  fileAttr.Template,
@@ -1776,11 +1789,11 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 func (s *SourceState) newFileTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	sourceLazyContents *lazyContents,
+	contentsFunc func() ([]byte, error),
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
-			switch contents, err := sourceLazyContents.Contents(); {
+			switch contents, err := contentsFunc(); {
 			case err != nil:
 				return nil, err
 			case isEmpty(contents) && !fileAttr.Empty:
@@ -1788,15 +1801,15 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			default:
 				linkname := normalizeLinkname(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()).String())
 				return &TargetStateSymlink{
-					lazyLinkname: newLazyLinkname(linkname),
+					linknameFunc: eagerNoErr(linkname),
 					sourceAttr: SourceAttr{
 						Template: fileAttr.Template,
 					},
 				}, nil
 			}
 		}
-		contentsFunc := func() ([]byte, error) {
-			contents, err := sourceLazyContents.Contents()
+		executedContentsFunc := func() ([]byte, error) {
+			contents, err := contentsFunc()
 			if err != nil {
 				return nil, err
 			}
@@ -1813,9 +1826,10 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			return contents, nil
 		}
 		return &TargetStateFile{
-			lazyContents: newLazyContentsFunc(contentsFunc),
-			empty:        fileAttr.Empty,
-			perm:         fileAttr.perm() &^ s.umask,
+			contentsFunc:       executedContentsFunc,
+			contentsSHA256Func: lazySHA256(executedContentsFunc),
+			empty:              fileAttr.Empty,
+			perm:               fileAttr.perm() &^ s.umask,
 			sourceAttr: SourceAttr{
 				Encrypted: fileAttr.Encrypted,
 				Template:  fileAttr.Template,
@@ -1829,7 +1843,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 func (s *SourceState) newModifyTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	sourceLazyContents *lazyContents,
+	contentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
@@ -1845,7 +1859,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 			// Compute the contents of the modifier.
 			var modifierContents []byte
-			modifierContents, err = sourceLazyContents.Contents()
+			modifierContents, err = contentsFunc()
 			if err != nil {
 				return
 			}
@@ -1935,9 +1949,10 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			return
 		}
 		return &TargetStateFile{
-			lazyContents: newLazyContentsFunc(contentsFunc),
-			overwrite:    true,
-			perm:         fileAttr.perm() &^ s.umask,
+			contentsFunc:       contentsFunc,
+			contentsSHA256Func: lazySHA256(contentsFunc),
+			overwrite:          true,
+			perm:               fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -1956,12 +1971,12 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	targetRelPath RelPath,
-	sourceLazyContents *lazyContents,
+	contentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() ([]byte, error) {
-			contents, err := sourceLazyContents.Contents()
+			contents, err := contentsFunc()
 			if err != nil {
 				return nil, err
 			}
@@ -1978,10 +1993,11 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 			return contents, nil
 		}
 		return &TargetStateScript{
-			lazyContents: newLazyContentsFunc(contentsFunc),
-			name:         targetRelPath,
-			condition:    fileAttr.Condition,
-			interpreter:  interpreter,
+			name:               targetRelPath,
+			contentsFunc:       contentsFunc,
+			contentsSHA256Func: lazySHA256(contentsFunc),
+			condition:          fileAttr.Condition,
+			interpreter:        interpreter,
 			sourceAttr: SourceAttr{
 				Condition: fileAttr.Condition,
 			},
@@ -1995,11 +2011,11 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 func (s *SourceState) newSymlinkTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	sourceLazyContents *lazyContents,
+	contentsFunc func() ([]byte, error),
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
-			linknameBytes, err := sourceLazyContents.Contents()
+			linknameBytes, err := contentsFunc()
 			if err != nil {
 				return "", err
 			}
@@ -2017,7 +2033,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 			return linkname, nil
 		}
 		return &TargetStateSymlink{
-			lazyLinkname: newLazyLinknameFunc(linknameFunc),
+			linknameFunc: linknameFunc,
 		}, nil
 	}
 }
@@ -2030,7 +2046,7 @@ func (s *SourceState) newSourceStateFile(
 	fileAttr FileAttr,
 	targetRelPath RelPath,
 ) (RelPath, *SourceStateFile) {
-	sourceLazyContents := newLazyContentsFunc(func() ([]byte, error) {
+	contentsFunc := sync.OnceValues(func() ([]byte, error) {
 		contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
 		if err != nil {
 			return nil, err
@@ -2047,9 +2063,9 @@ func (s *SourceState) newSourceStateFile(
 	var targetStateEntryFunc targetStateEntryFunc
 	switch fileAttr.Type {
 	case SourceFileTypeCreate:
-		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
+		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
 	case SourceFileTypeFile:
-		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
+		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
 	case SourceFileTypeModify:
 		// If the target has an extension, determine if it indicates an
 		// interpreter to use.
@@ -2058,9 +2074,9 @@ func (s *SourceState) newSourceStateFile(
 			// For modify scripts, the script extension is not considered part
 			// of the target name, so remove it.
 			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(extension)-1)
-			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, &interpreter)
+			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc, &interpreter)
 		} else {
-			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, nil)
+			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc, nil)
 		}
 	case SourceFileTypeRemove:
 		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc()
@@ -2073,23 +2089,24 @@ func (s *SourceState) newSourceStateFile(
 				sourceRelPath,
 				fileAttr,
 				targetRelPath,
-				sourceLazyContents,
+				contentsFunc,
 				&interpreter,
 			)
 		} else {
-			targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, nil)
+			targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, contentsFunc, nil)
 		}
 	case SourceFileTypeSymlink:
-		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
+		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
 	default:
 		panic(fmt.Sprintf("%d: unsupported type", fileAttr.Type))
 	}
 
 	return targetRelPath, &SourceStateFile{
-		lazyContents:         sourceLazyContents,
 		origin:               SourceStateOriginAbsPath(absPath),
 		sourceRelPath:        sourceRelPath,
 		Attr:                 fileAttr,
+		contentsFunc:         contentsFunc,
+		contentsSHA256Func:   lazySHA256(contentsFunc),
 		targetStateEntryFunc: targetStateEntryFunc,
 	}
 }
@@ -2159,17 +2176,20 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 			return nil, err
 		}
 	}
-	lazyContents := newLazyContents(contents)
+	contentsFunc := eagerNoErr(contents)
+	contentsSHA256Func := lazySHA256(contentsFunc)
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
-		Attr:          fileAttr,
-		origin:        actualStateFile,
-		sourceRelPath: sourceRelPath,
-		lazyContents:  lazyContents,
+		Attr:               fileAttr,
+		origin:             actualStateFile,
+		sourceRelPath:      sourceRelPath,
+		contentsFunc:       contentsFunc,
+		contentsSHA256Func: contentsSHA256Func,
 		targetStateEntry: &TargetStateFile{
-			lazyContents: lazyContents,
-			empty:        len(contents) == 0,
-			perm:         0o666 &^ s.umask,
+			contentsFunc:       contentsFunc,
+			contentsSHA256Func: contentsSHA256Func,
+			empty:              len(contents) == 0,
+			perm:               0o666 &^ s.umask,
 		},
 	}, nil
 }
@@ -2204,7 +2224,8 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 		}
 	}
 	contents = append(contents, '\n')
-	lazyContents := newLazyContents(contents)
+	contentsFunc := eagerNoErr(contents)
+	contentsSHA256Func := lazySHA256(contentsFunc)
 	fileAttr := FileAttr{
 		TargetName: fileInfo.Name(),
 		Type:       SourceFileTypeSymlink,
@@ -2212,12 +2233,14 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
-		Attr:          fileAttr,
-		sourceRelPath: sourceRelPath,
-		lazyContents:  lazyContents,
+		Attr:               fileAttr,
+		sourceRelPath:      sourceRelPath,
+		contentsFunc:       contentsFunc,
+		contentsSHA256Func: contentsSHA256Func,
 		targetStateEntry: &TargetStateFile{
-			lazyContents: lazyContents,
-			perm:         0o666 &^ s.umask,
+			contentsFunc:       contentsFunc,
+			contentsSHA256Func: contentsSHA256Func,
+			perm:               0o666 &^ s.umask,
 		},
 	}, nil
 }
@@ -2378,7 +2401,8 @@ func (s *SourceState) readExternalArchive(
 				return nil
 			}
 
-			lazyContents := newLazyContents(contents)
+			contentsFunc := eagerNoErr(contents)
+			contentsSHA256Func := lazySHA256(contentsFunc)
 			fileAttr := FileAttr{
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
@@ -2389,19 +2413,21 @@ func (s *SourceState) readExternalArchive(
 			}
 			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
 			targetStateEntry := &TargetStateFile{
-				lazyContents: lazyContents,
-				empty:        fileAttr.Empty,
-				perm:         fileAttr.perm() &^ s.umask,
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: contentsSHA256Func,
+				empty:              fileAttr.Empty,
+				perm:               fileAttr.perm() &^ s.umask,
 				sourceAttr: SourceAttr{
 					External: true,
 				},
 			}
 			sourceStateEntry = &SourceStateFile{
-				lazyContents:     lazyContents,
-				Attr:             fileAttr,
-				origin:           external,
-				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
-				targetStateEntry: targetStateEntry,
+				Attr:               fileAttr,
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: contentsSHA256Func,
+				origin:             external,
+				sourceRelPath:      parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
+				targetStateEntry:   targetStateEntry,
 			}
 		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
 			fileAttr := FileAttr{
@@ -2410,7 +2436,9 @@ func (s *SourceState) readExternalArchive(
 			}
 			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
 			targetStateEntry := &TargetStateSymlink{
-				lazyLinkname: newLazyLinkname(linkname),
+				linknameFunc: sync.OnceValues(func() (string, error) {
+					return linkname, nil
+				}),
 				sourceAttr: SourceAttr{
 					External: true,
 				},
@@ -2511,7 +2539,8 @@ func (s *SourceState) readExternalArchiveFile(
 				return nil
 			}
 
-			lazyContents := newLazyContents(contents)
+			contentsFunc := eagerNoErr(contents)
+			contentsSHA256Func := lazySHA256(contentsFunc)
 			fileAttr := FileAttr{
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
@@ -2522,19 +2551,21 @@ func (s *SourceState) readExternalArchiveFile(
 			}
 			sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 			targetStateEntry := &TargetStateFile{
-				lazyContents: lazyContents,
-				empty:        fileAttr.Empty,
-				perm:         fileAttr.perm() &^ s.umask,
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: contentsSHA256Func,
+				empty:              fileAttr.Empty,
+				perm:               fileAttr.perm() &^ s.umask,
 				sourceAttr: SourceAttr{
 					External: true,
 				},
 			}
 			sourceStateEntry = &SourceStateFile{
-				lazyContents:     lazyContents,
-				Attr:             fileAttr,
-				origin:           external,
-				sourceRelPath:    sourceRelPath,
-				targetStateEntry: targetStateEntry,
+				Attr:               fileAttr,
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: contentsSHA256Func,
+				origin:             external,
+				sourceRelPath:      sourceRelPath,
+				targetStateEntry:   targetStateEntry,
 			}
 			return fs.SkipAll
 		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
@@ -2544,7 +2575,9 @@ func (s *SourceState) readExternalArchiveFile(
 			}
 			sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 			targetStateEntry := &TargetStateSymlink{
-				lazyLinkname: newLazyLinkname(linkname),
+				linknameFunc: sync.OnceValues(func() (string, error) {
+					return linkname, nil
+				}),
 				sourceAttr: SourceAttr{
 					External: true,
 				},
@@ -2604,18 +2637,21 @@ func (s *SourceState) readExternalDir(
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
-			lazyContents := newLazyContentsFunc(func() ([]byte, error) {
+			contentsFunc := sync.OnceValues(func() ([]byte, error) {
 				return s.system.ReadFile(absPath)
 			})
+			contentsSHA256Func := lazySHA256(contentsFunc)
 			sourceStateEntry = &SourceStateFile{
-				lazyContents:  lazyContents,
-				origin:        SourceStateOriginAbsPath(absPath),
-				Attr:          fileAttr,
-				sourceRelPath: rootSourceRelPath.Join(relPath.SourceRelPath()),
+				origin:             SourceStateOriginAbsPath(absPath),
+				Attr:               fileAttr,
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: contentsSHA256Func,
+				sourceRelPath:      rootSourceRelPath.Join(relPath.SourceRelPath()),
 				targetStateEntry: &TargetStateFile{
-					lazyContents: lazyContents,
-					empty:        true,
-					perm:         fileAttr.perm() &^ s.umask,
+					contentsFunc:       contentsFunc,
+					contentsSHA256Func: contentsSHA256Func,
+					empty:              true,
+					perm:               fileAttr.perm() &^ s.umask,
 				},
 			}
 		case fs.ModeDir:
@@ -2638,22 +2674,24 @@ func (s *SourceState) readExternalDir(
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
 			}
-			lazyLinkname := newLazyLinknameFunc(func() (string, error) {
+			linknameFunc := sync.OnceValues(func() (string, error) {
 				return s.system.Readlink(absPath)
 			})
+			contentsFunc := sync.OnceValues(func() ([]byte, error) {
+				linkname, err := linknameFunc()
+				if err != nil {
+					return nil, err
+				}
+				return []byte(linkname), nil
+			})
 			sourceStateEntry = &SourceStateFile{
-				lazyContents: newLazyContentsFunc(func() ([]byte, error) {
-					linkname, err := lazyLinkname.Linkname()
-					if err != nil {
-						return nil, err
-					}
-					return []byte(linkname), nil
-				}),
-				origin:        SourceStateOriginAbsPath(absPath),
-				Attr:          fileAttr,
-				sourceRelPath: rootSourceRelPath.Join(relPath.SourceRelPath()),
+				origin:             SourceStateOriginAbsPath(absPath),
+				Attr:               fileAttr,
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: lazySHA256(contentsFunc),
+				sourceRelPath:      rootSourceRelPath.Join(relPath.SourceRelPath()),
 				targetStateEntry: &TargetStateSymlink{
-					lazyLinkname: lazyLinkname,
+					linknameFunc: linknameFunc,
 				},
 			}
 		}
@@ -2674,7 +2712,7 @@ func (s *SourceState) readExternalFile(
 	external *External,
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
-	lazyContents := newLazyContentsFunc(func() ([]byte, error) {
+	contentsFunc := sync.OnceValues(func() ([]byte, error) {
 		return s.getExternalData(ctx, externalRelPath, external, options)
 	})
 	fileAttr := FileAttr{
@@ -2684,9 +2722,10 @@ func (s *SourceState) readExternalFile(
 		ReadOnly:   external.ReadOnly,
 	}
 	targetStateEntry := &TargetStateFile{
-		lazyContents: lazyContents,
-		empty:        fileAttr.Empty,
-		perm:         fileAttr.perm() &^ s.umask,
+		contentsFunc:       contentsFunc,
+		contentsSHA256Func: lazySHA256(contentsFunc),
+		empty:              fileAttr.Empty,
+		perm:               fileAttr.perm() &^ s.umask,
 		sourceAttr: SourceAttr{
 			External: true,
 		},

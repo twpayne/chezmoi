@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"errors"
 	"io/fs"
+	"sync"
 )
 
 // An ActualStateEntry represents the actual state of an entry in the
@@ -27,15 +28,15 @@ type ActualStateDir struct {
 
 // A ActualStateFile represents the state of a file in the filesystem.
 type ActualStateFile struct {
-	absPath AbsPath
-	perm    fs.FileMode
-	*lazyContents
+	absPath      AbsPath
+	perm         fs.FileMode
+	contentsFunc func() ([]byte, error)
 }
 
 // A ActualStateSymlink represents the state of a symlink in the filesystem.
 type ActualStateSymlink struct {
-	absPath AbsPath
-	*lazyLinkname
+	absPath      AbsPath
+	linknameFunc func() (string, error)
 }
 
 // NewActualStateEntry returns a new ActualStateEntry populated with absPath
@@ -57,7 +58,7 @@ func NewActualStateEntry(system System, absPath AbsPath, fileInfo fs.FileInfo, e
 		return &ActualStateFile{
 			absPath: absPath,
 			perm:    fileInfo.Mode().Perm(),
-			lazyContents: newLazyContentsFunc(func() ([]byte, error) {
+			contentsFunc: sync.OnceValues(func() ([]byte, error) {
 				return system.ReadFile(absPath)
 			}),
 		}, nil
@@ -69,7 +70,7 @@ func NewActualStateEntry(system System, absPath AbsPath, fileInfo fs.FileInfo, e
 	case fs.ModeSymlink:
 		return &ActualStateSymlink{
 			absPath: absPath,
-			lazyLinkname: newLazyLinknameFunc(func() (string, error) {
+			linknameFunc: sync.OnceValues(func() (string, error) {
 				linkname, err := system.Readlink(absPath)
 				if err != nil {
 					return "", err
@@ -130,20 +131,21 @@ func (s *ActualStateDir) OriginString() string {
 	return s.absPath.String()
 }
 
+// Contents returns s's contents.
+func (s *ActualStateFile) Contents() ([]byte, error) {
+	return s.contentsFunc()
+}
+
 // EntryState returns s's entry state.
 func (s *ActualStateFile) EntryState() (*EntryState, error) {
 	contents, err := s.Contents()
 	if err != nil {
 		return nil, err
 	}
-	contentsSHA256, err := s.ContentsSHA256()
-	if err != nil {
-		return nil, err
-	}
 	return &EntryState{
 		Type:           EntryStateTypeFile,
 		Mode:           s.perm,
-		ContentsSHA256: HexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(SHA256Sum(contents)),
 		contents:       contents,
 	}, nil
 }
@@ -174,15 +176,16 @@ func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 	if err != nil {
 		return nil, err
 	}
-	linknameSHA256, err := s.LinknameSHA256()
-	if err != nil {
-		return nil, err
-	}
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
-		ContentsSHA256: HexBytes(linknameSHA256),
+		ContentsSHA256: HexBytes(SHA256Sum([]byte(linkname))),
 		contents:       []byte(linkname),
 	}, nil
+}
+
+// Linkname returns s's linkname.
+func (s *ActualStateSymlink) Linkname() (string, error) {
+	return s.linknameFunc()
 }
 
 // Path returns s's path.

@@ -221,3 +221,11 @@ func TestUniqueAbbreviations(t *testing.T) {
 		})
 	}
 }
+
+// eagerZeroNoErr returns a function that returns a zero value and no error.
+func eagerZeroNoErr[T any]() func() (T, error) {
+	var zero T
+	return func() (T, error) {
+		return zero, nil
+	}
+}

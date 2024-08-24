@@ -16,6 +16,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v5"
@@ -30,6 +31,9 @@ var (
 
 	// Umask is the process's umask.
 	Umask = fs.FileMode(0)
+
+	// SHA256SumZero is the SHA256 sum of no bytes.
+	SHA256SumZero = sha256.Sum256(nil)
 )
 
 // Prefixes and suffixes.
@@ -237,6 +241,14 @@ func UniqueAbbreviations(values []string) map[string]string {
 	return uniqueAbbreviations
 }
 
+// eagerNoErr returns a function that returns an eagerly-evaluated value and no
+// error.
+func eagerNoErr[T any](value T) func() (T, error) {
+	return func() (T, error) {
+		return value, nil
+	}
+}
+
 // etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
 func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	contents, err := fileSystem.ReadFile("/etc/hostname")
@@ -335,6 +347,20 @@ func isReadOnly(fileInfo fs.FileInfo) bool {
 func md5Sum(data []byte) []byte {
 	md5SumArr := md5.Sum(data) //nolint:gosec
 	return md5SumArr[:]
+}
+
+// lazySHA256 returns a function that returns a SHA256 computed lazily.
+func lazySHA256(contentsFunc func() ([]byte, error)) func() ([]byte, error) {
+	return sync.OnceValues(func() ([]byte, error) {
+		contents, err := contentsFunc()
+		if err != nil {
+			return nil, err
+		}
+		if len(contents) == 0 {
+			return SHA256SumZero[:], nil
+		}
+		return SHA256Sum(contents), nil
+	})
 }
 
 // modeTypeName returns a string representation of mode.

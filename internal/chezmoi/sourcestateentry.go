@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"encoding/hex"
 	"log/slog"
+	"os/exec"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
@@ -36,7 +37,7 @@ type SourceStateEntry interface {
 
 // A SourceStateCommand represents a command that should be run.
 type SourceStateCommand struct {
-	cmd           *lazyCommand
+	cmdFunc       func() *exec.Cmd
 	origin        SourceStateOrigin
 	forceRefresh  bool
 	refreshPeriod Duration
@@ -53,8 +54,9 @@ type SourceStateDir struct {
 
 // A SourceStateFile represents the state of a file in the source state.
 type SourceStateFile struct {
-	*lazyContents
 	Attr                 FileAttr
+	contentsFunc         func() ([]byte, error)
+	contentsSHA256Func   func() ([]byte, error)
 	origin               SourceStateOrigin
 	sourceRelPath        SourceRelPath
 	targetStateEntryFunc targetStateEntryFunc
@@ -94,7 +96,7 @@ func (s *SourceStateCommand) Evaluate() error {
 // LogValue implements log/slog.LogValuer.LogValue.
 func (s *SourceStateCommand) LogValue() slog.Value {
 	return slog.GroupValue(
-		slog.Any("cmd", chezmoilog.OSExecCmdLogValuer{Cmd: s.cmd.Command()}),
+		slog.Any("cmd", chezmoilog.OSExecCmdLogValuer{Cmd: s.cmdFunc()}),
 		slog.String("origin", s.origin.OriginString()),
 	)
 }
@@ -117,7 +119,7 @@ func (s *SourceStateCommand) SourceRelPath() SourceRelPath {
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateCommand) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	return &TargetStateModifyDirWithCmd{
-		cmd:           s.cmd,
+		cmdFunc:       s.cmdFunc,
 		forceRefresh:  s.forceRefresh,
 		refreshPeriod: s.refreshPeriod,
 		sourceAttr:    s.sourceAttr,
@@ -157,10 +159,25 @@ func (s *SourceStateDir) TargetStateEntry(destSystem System, destDirAbsPath AbsP
 	return s.targetStateEntry, nil
 }
 
+// Contents returns s's contents.
+func (s *SourceStateFile) Contents() ([]byte, error) {
+	return s.contentsFunc()
+}
+
+// ContentsSHA256 returns the SHA256 sum of s's contents.
+func (s *SourceStateFile) ContentsSHA256() ([]byte, error) {
+	return s.contentsSHA256Func()
+}
+
 // Evaluate evaluates s and returns any error.
 func (s *SourceStateFile) Evaluate() error {
-	_, err := s.ContentsSHA256()
-	return err
+	if _, err := s.Contents(); err != nil {
+		return err
+	}
+	if _, err := s.ContentsSHA256(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // LogValue implements log/slog.LogValuer.LogValue.
