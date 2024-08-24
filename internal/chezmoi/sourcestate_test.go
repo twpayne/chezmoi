@@ -935,10 +935,12 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: ".file",
 							Type:       SourceFileTypeFile,
 						},
-						lazyContents: newLazyContents([]byte("# contents of .file\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o666 &^ chezmoitest.Umask,
-							lazyContents: newLazyContents([]byte("# contents of .file\n")),
+							contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
+							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
 				}),
@@ -996,10 +998,12 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 							Executable: true,
 						},
-						lazyContents: newLazyContents([]byte("# contents of .file\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
 						targetStateEntry: &TargetStateFile{
-							perm:         fs.ModePerm &^ chezmoitest.Umask,
-							lazyContents: newLazyContents([]byte("# contents of .file\n")),
+							contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
+							perm:               fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
 				}),
@@ -1023,11 +1027,13 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeScript,
 							Condition:  ScriptConditionAlways,
 						},
-						lazyContents: newLazyContents([]byte("# contents of .script\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of .script\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .script\n"))),
 						targetStateEntry: &TargetStateScript{
-							name:         NewRelPath("script"),
-							lazyContents: newLazyContents([]byte("# contents of .script\n")),
-							condition:    ScriptConditionAlways,
+							name:               NewRelPath("script"),
+							contentsFunc:       eagerNoErr([]byte("# contents of .script\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .script\n"))),
+							condition:          ScriptConditionAlways,
 							sourceAttr: SourceAttr{
 								Condition: ScriptConditionAlways,
 							},
@@ -1054,11 +1060,13 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeScript,
 							Condition:  ScriptConditionAlways,
 						},
-						lazyContents: newLazyContents([]byte("# contents of script\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of script\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of script\n"))),
 						targetStateEntry: &TargetStateScript{
-							name:         NewRelPath("script"),
-							lazyContents: newLazyContents([]byte("# contents of script\n")),
-							condition:    ScriptConditionAlways,
+							name:               NewRelPath("script"),
+							contentsFunc:       eagerNoErr([]byte("# contents of script\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of script\n"))),
+							condition:          ScriptConditionAlways,
 							sourceAttr: SourceAttr{
 								Condition: ScriptConditionAlways,
 							},
@@ -1084,9 +1092,10 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: ".symlink",
 							Type:       SourceFileTypeSymlink,
 						},
-						lazyContents: newLazyContents([]byte(".dir/subdir/file")),
+						contentsFunc:       eagerNoErr([]byte(".dir/subdir/file")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte(".dir/subdir/file"))),
 						targetStateEntry: &TargetStateSymlink{
-							lazyLinkname: newLazyLinkname(".dir/subdir/file"),
+							linknameFunc: eagerNoErr(".dir/subdir/file"),
 						},
 					},
 				}),
@@ -1120,10 +1129,12 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "file",
 							Type:       SourceFileTypeFile,
 						},
-						lazyContents: newLazyContents([]byte("# contents of .dir/file\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of .dir/file\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .dir/file\n"))),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o666 &^ chezmoitest.Umask,
-							lazyContents: newLazyContents([]byte("# contents of .dir/file\n")),
+							contentsFunc:       eagerNoErr([]byte("# contents of .dir/file\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .dir/file\n"))),
+							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
 				}),
@@ -1198,10 +1209,12 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "file1",
 							Type:       SourceFileTypeFile,
 						},
-						lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of dir/file1\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/file1\n"))),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o666 &^ chezmoitest.Umask,
-							lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
+							contentsFunc:       eagerNoErr([]byte("# contents of dir/file1\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/file1\n"))),
+							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
 					NewRelPath("dir/file2"): &SourceStateRemove{
@@ -1359,11 +1372,13 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 							Empty:      true,
 						},
-						lazyContents: newLazyContents([]byte("# contents of dir/dot_file\n")),
+						contentsFunc:       eagerNoErr([]byte("# contents of dir/dot_file\n")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/dot_file\n"))),
 						targetStateEntry: &TargetStateFile{
-							empty:        true,
-							perm:         0o666 &^ chezmoitest.Umask,
-							lazyContents: newLazyContents([]byte("# contents of dir/dot_file\n")),
+							contentsFunc:       eagerNoErr([]byte("# contents of dir/dot_file\n")),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/dot_file\n"))),
+							empty:              true,
+							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
 					NewRelPath("dir/subdir"): &SourceStateDir{
@@ -1385,11 +1400,13 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 							Empty:      true,
 						},
-						lazyContents: newLazyContents([]byte{}),
+						contentsFunc:       eagerNoErr([]byte{}),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte{})),
 						targetStateEntry: &TargetStateFile{
-							empty:        true,
-							perm:         0o666 &^ chezmoitest.Umask,
-							lazyContents: newLazyContents([]byte{}),
+							empty:              true,
+							perm:               0o666 &^ chezmoitest.Umask,
+							contentsFunc:       eagerZeroNoErr[[]byte](),
+							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte{})),
 						},
 					},
 					NewRelPath("dir/symlink"): &SourceStateFile{
@@ -1399,9 +1416,10 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "symlink",
 							Type:       SourceFileTypeFile,
 						},
-						lazyContents: newLazyContents([]byte("dot_file")),
+						contentsFunc:       eagerNoErr([]byte("dot_file")),
+						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("dot_file"))),
 						targetStateEntry: &TargetStateSymlink{
-							lazyLinkname: newLazyLinkname("dot_file"),
+							linknameFunc: eagerNoErr("dot_file"),
 						},
 					},
 				}),
@@ -1971,15 +1989,33 @@ func (s *SourceState) applyAll(
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
 	err := s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
-		if err := sourceStateEntry.Evaluate(); err != nil {
-			return err
+		assert.NoError(t, sourceStateEntry.Evaluate())
+		if sourceStateFile, ok := sourceStateEntry.(*SourceStateFile); ok {
+			contents, err := sourceStateFile.Contents()
+			assert.NoError(t, err)
+			contentsSHA256, err := sourceStateFile.ContentsSHA256()
+			assert.NoError(t, err)
+			assert.Equal(t, SHA256Sum(contents), contentsSHA256)
 		}
 		destAbsPath := s.destDirAbsPath.Join(targetRelPath)
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
-		if err != nil {
-			return err
+		assert.NoError(t, err)
+		assert.NoError(t, targetStateEntry.Evaluate())
+		switch targetStateEntry := targetStateEntry.(type) {
+		case *TargetStateFile:
+			contents, err := targetStateEntry.Contents()
+			assert.NoError(t, err)
+			contentsSHA256, err := targetStateEntry.ContentsSHA256()
+			assert.NoError(t, err)
+			assert.Equal(t, SHA256Sum(contents), contentsSHA256)
+		case *TargetStateScript:
+			contents, err := targetStateEntry.Contents()
+			assert.NoError(t, err)
+			contentsSHA256, err := targetStateEntry.ContentsSHA256()
+			assert.NoError(t, err)
+			assert.Equal(t, SHA256Sum(contents), contentsSHA256)
 		}
-		return targetStateEntry.Evaluate()
+		return nil
 	})
 	assert.NoError(t, err)
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/fs"
+	"os/exec"
 	"runtime"
 	"time"
 )
@@ -25,7 +26,7 @@ type TargetStateEntry interface {
 // A TargetStateModifyDirWithCmd represents running a command that modifies
 // a directory.
 type TargetStateModifyDirWithCmd struct {
-	cmd           *lazyCommand
+	cmdFunc       func() *exec.Cmd
 	forceRefresh  bool
 	refreshPeriod Duration
 	sourceAttr    SourceAttr
@@ -39,11 +40,12 @@ type TargetStateDir struct {
 
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
-	*lazyContents
-	empty      bool
-	overwrite  bool
-	perm       fs.FileMode
-	sourceAttr SourceAttr
+	contentsFunc       func() ([]byte, error)
+	contentsSHA256Func func() ([]byte, error)
+	empty              bool
+	overwrite          bool
+	perm               fs.FileMode
+	sourceAttr         SourceAttr
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -51,18 +53,19 @@ type TargetStateRemove struct{}
 
 // A TargetStateScript represents the state of a script.
 type TargetStateScript struct {
-	*lazyContents
-	name          RelPath
-	interpreter   *Interpreter
-	condition     ScriptCondition
-	sourceAttr    SourceAttr
-	sourceRelPath SourceRelPath
+	name               RelPath
+	contentsFunc       func() ([]byte, error)
+	contentsSHA256Func func() ([]byte, error)
+	interpreter        *Interpreter
+	condition          ScriptCondition
+	sourceAttr         SourceAttr
+	sourceRelPath      SourceRelPath
 }
 
 // A TargetStateSymlink represents the state of a symlink in the target state.
 type TargetStateSymlink struct {
-	*lazyLinkname
-	sourceAttr SourceAttr
+	linknameFunc func() (string, error)
+	sourceAttr   SourceAttr
 }
 
 // A modifyDirWithCmdState records the state of a directory modified by a
@@ -91,7 +94,7 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 	}
 
 	runAt := time.Now().UTC()
-	if err := system.RunCmd(t.cmd.Command()); err != nil {
+	if err := system.RunCmd(t.cmdFunc()); err != nil {
 		return false, fmt.Errorf("%s: %w", actualStateEntry.Path(), err)
 	}
 
@@ -209,10 +212,11 @@ func (t *TargetStateFile) Apply(
 		// Compare file contents using only their SHA256 sums. This is so that
 		// we can compare last-written states without storing the full contents
 		// of each file written.
-		actualContentsSHA256, err := actualStateFile.ContentsSHA256()
+		actualContents, err := actualStateFile.Contents()
 		if err != nil {
 			return false, err
 		}
+		actualContentsSHA256 := SHA256Sum(actualContents)
 		contentsSHA256, err := t.ContentsSHA256()
 		if err != nil {
 			return false, err
@@ -227,6 +231,16 @@ func (t *TargetStateFile) Apply(
 		return false, err
 	}
 	return true, system.WriteFile(actualStateEntry.Path(), contents, t.perm)
+}
+
+// Contents returns t's contents.
+func (t *TargetStateFile) Contents() ([]byte, error) {
+	return t.contentsFunc()
+}
+
+// ContentsSHA256 returns the SHA256 sum of t's contents.
+func (t *TargetStateFile) ContentsSHA256() ([]byte, error) {
+	return t.contentsSHA256Func()
 }
 
 // EntryState returns t's entry state.
@@ -255,8 +269,13 @@ func (t *TargetStateFile) EntryState(umask fs.FileMode) (*EntryState, error) {
 
 // Evaluate evaluates t.
 func (t *TargetStateFile) Evaluate() error {
-	_, err := t.ContentsSHA256()
-	return err
+	if _, err := t.Contents(); err != nil {
+		return err
+	}
+	if _, err := t.ContentsSHA256(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Perm returns t's perm.
@@ -359,6 +378,16 @@ func (t *TargetStateScript) Apply(
 	}
 
 	return true, nil
+}
+
+// Contents returns t's contents.
+func (t *TargetStateScript) Contents() ([]byte, error) {
+	return t.contentsFunc()
+}
+
+// ContentsSHA256 returns the SHA256 sum of t's contents.
+func (t *TargetStateScript) ContentsSHA256() ([]byte, error) {
+	return t.contentsSHA256Func()
 }
 
 // EntryState returns t's entry state.
@@ -475,13 +504,9 @@ func (t *TargetStateSymlink) EntryState(umask fs.FileMode) (*EntryState, error) 
 			Type: EntryStateTypeRemove,
 		}, nil
 	}
-	linknameSHA256, err := t.LinknameSHA256()
-	if err != nil {
-		return nil, err
-	}
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
-		ContentsSHA256: linknameSHA256,
+		ContentsSHA256: SHA256Sum([]byte(linkname)),
 		contents:       []byte(linkname),
 	}, nil
 }
@@ -490,6 +515,10 @@ func (t *TargetStateSymlink) EntryState(umask fs.FileMode) (*EntryState, error) 
 func (t *TargetStateSymlink) Evaluate() error {
 	_, err := t.Linkname()
 	return err
+}
+
+func (t *TargetStateSymlink) Linkname() (string, error) {
+	return t.linknameFunc()
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
