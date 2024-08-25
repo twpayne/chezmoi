@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io/fs"
@@ -41,7 +42,7 @@ type TargetStateDir struct {
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
 	contentsFunc       func() ([]byte, error)
-	contentsSHA256Func func() ([]byte, error)
+	contentsSHA256Func func() ([32]byte, error)
 	empty              bool
 	overwrite          bool
 	perm               fs.FileMode
@@ -55,7 +56,7 @@ type TargetStateRemove struct{}
 type TargetStateScript struct {
 	name               RelPath
 	contentsFunc       func() ([]byte, error)
-	contentsSHA256Func func() ([]byte, error)
+	contentsSHA256Func func() ([32]byte, error)
 	interpreter        *Interpreter
 	condition          ScriptCondition
 	sourceAttr         SourceAttr
@@ -216,12 +217,12 @@ func (t *TargetStateFile) Apply(
 		if err != nil {
 			return false, err
 		}
-		actualContentsSHA256 := SHA256Sum(actualContents)
+		actualContentsSHA256 := sha256.Sum256(actualContents)
 		contentsSHA256, err := t.ContentsSHA256()
 		if err != nil {
 			return false, err
 		}
-		if bytes.Equal(actualContentsSHA256, contentsSHA256) {
+		if actualContentsSHA256 == contentsSHA256 {
 			if runtime.GOOS == "windows" || actualStateFile.perm == t.perm {
 				return false, nil
 			}
@@ -239,7 +240,7 @@ func (t *TargetStateFile) Contents() ([]byte, error) {
 }
 
 // ContentsSHA256 returns the SHA256 sum of t's contents.
-func (t *TargetStateFile) ContentsSHA256() ([]byte, error) {
+func (t *TargetStateFile) ContentsSHA256() ([32]byte, error) {
 	return t.contentsSHA256Func()
 }
 
@@ -261,7 +262,7 @@ func (t *TargetStateFile) EntryState(umask fs.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type:           EntryStateTypeFile,
 		Mode:           t.perm &^ umask,
-		ContentsSHA256: HexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(contentsSHA256[:]),
 		contents:       contents,
 		overwrite:      t.overwrite,
 	}, nil
@@ -361,7 +362,7 @@ func (t *TargetStateScript) Apply(
 		}
 	}
 
-	scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
+	scriptStateKey := []byte(hex.EncodeToString(contentsSHA256[:]))
 	if err := PersistentStateSet(persistentState, ScriptStateBucket, scriptStateKey, &scriptState{
 		Name:  t.name,
 		RunAt: runAt,
@@ -372,7 +373,7 @@ func (t *TargetStateScript) Apply(
 	entryStateKey := actualStateEntry.Path().Bytes()
 	if err := PersistentStateSet(persistentState, EntryStateBucket, entryStateKey, &EntryState{
 		Type:           EntryStateTypeScript,
-		ContentsSHA256: HexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(contentsSHA256[:]),
 	}); err != nil {
 		return false, err
 	}
@@ -386,7 +387,7 @@ func (t *TargetStateScript) Contents() ([]byte, error) {
 }
 
 // ContentsSHA256 returns the SHA256 sum of t's contents.
-func (t *TargetStateScript) ContentsSHA256() ([]byte, error) {
+func (t *TargetStateScript) ContentsSHA256() ([32]byte, error) {
 	return t.contentsSHA256Func()
 }
 
@@ -398,7 +399,7 @@ func (t *TargetStateScript) EntryState(umask fs.FileMode) (*EntryState, error) {
 	}
 	return &EntryState{
 		Type:           EntryStateTypeScript,
-		ContentsSHA256: HexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(contentsSHA256[:]),
 	}, nil
 }
 
@@ -424,7 +425,7 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbs
 		if err != nil {
 			return false, err
 		}
-		scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
+		scriptStateKey := []byte(hex.EncodeToString(contentsSHA256[:]))
 		switch scriptState, err := persistentState.Get(ScriptStateBucket, scriptStateKey); {
 		case err != nil:
 			return false, err
@@ -445,7 +446,7 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbs
 			if err != nil {
 				return false, err
 			}
-			if bytes.Equal(entryState.ContentsSHA256.Bytes(), contentsSHA256) {
+			if bytes.Equal(entryState.ContentsSHA256.Bytes(), contentsSHA256[:]) {
 				return true, nil
 			}
 		}
@@ -504,9 +505,10 @@ func (t *TargetStateSymlink) EntryState(umask fs.FileMode) (*EntryState, error) 
 			Type: EntryStateTypeRemove,
 		}, nil
 	}
+	linknameSHA256 := sha256.Sum256([]byte(linkname))
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
-		ContentsSHA256: SHA256Sum([]byte(linkname)),
+		ContentsSHA256: linknameSHA256[:],
 		contents:       []byte(linkname),
 	}, nil
 }

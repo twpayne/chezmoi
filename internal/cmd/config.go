@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"cmp"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -591,7 +592,7 @@ func (c *Config) applyArgs(
 		return err
 	}
 	if configTemplate != nil {
-		currentConfigTemplateContentsSHA256 = chezmoi.SHA256Sum(configTemplate.contents)
+		currentConfigTemplateContentsSHA256 = sha256Sum(configTemplate.contents)
 	}
 	var previousConfigTemplateContentsSHA256 []byte
 	if configStateData, err := c.persistentState.Get(chezmoi.ConfigStateBucket, configStateKey); err != nil {
@@ -789,7 +790,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	}
 
 	configStateValue, err := chezmoi.FormatJSON.Marshal(configState{
-		ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplate.contents)),
+		ConfigTemplateContentsSHA256: chezmoi.HexBytes(sha256Sum(configTemplate.contents)),
 	})
 	if err != nil {
 		return err
@@ -2949,6 +2950,12 @@ func registerCommonFlagCompletionFuncs(cmd *cobra.Command) {
 	for _, command := range cmd.Commands() {
 		registerCommonFlagCompletionFuncs(command)
 	}
+}
+
+// sha256Sum returns the SHA256 sum of data.
+func sha256Sum(data []byte) []byte {
+	sha256SumArr := sha256.Sum256(data)
+	return sha256SumArr[:]
 }
 
 // withVersionInfo sets the version information.

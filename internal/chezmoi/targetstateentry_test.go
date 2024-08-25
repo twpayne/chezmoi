@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"io/fs"
 	"testing"
@@ -21,18 +22,18 @@ func TestTargetStateEntryApply(t *testing.T) {
 		},
 		"file": &TargetStateFile{
 			contentsFunc:       eagerNoErr([]byte("# contents of file")),
-			contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of file"))),
+			contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of file"))),
 			perm:               0o666 &^ chezmoitest.Umask,
 		},
 		"file_empty": &TargetStateFile{
 			contentsFunc:       eagerZeroNoErr[[]byte](),
-			contentsSHA256Func: eagerNoErr(SHA256Sum(nil)),
+			contentsSHA256Func: eagerNoErr(sha256.Sum256(nil)),
 			perm:               0o666 &^ chezmoitest.Umask,
 			empty:              true,
 		},
 		"file_executable": &TargetStateFile{
 			contentsFunc:       eagerNoErr([]byte("#!/bin/sh\n")),
-			contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("#!/bin/sh\n"))),
+			contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("#!/bin/sh\n"))),
 			perm:               fs.ModePerm &^ chezmoitest.Umask,
 		},
 		"remove": &TargetStateRemove{},

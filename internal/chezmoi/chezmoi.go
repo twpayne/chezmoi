@@ -31,9 +31,6 @@ var (
 
 	// Umask is the process's umask.
 	Umask = fs.FileMode(0)
-
-	// SHA256SumZero is the SHA256 sum of no bytes.
-	SHA256SumZero = sha256.Sum256(nil)
 )
 
 // Prefixes and suffixes.
@@ -190,12 +187,6 @@ func ParseBool(str string) (bool, error) {
 	}
 }
 
-// SHA256Sum returns the SHA256 sum of data.
-func SHA256Sum(data []byte) []byte {
-	sha256SumArr := sha256.Sum256(data)
-	return sha256SumArr[:]
-}
-
 // SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
 func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffixes []string) bool {
 	switch fileInfo.Mode().Type() {
@@ -350,16 +341,13 @@ func md5Sum(data []byte) []byte {
 }
 
 // lazySHA256 returns a function that returns a SHA256 computed lazily.
-func lazySHA256(contentsFunc func() ([]byte, error)) func() ([]byte, error) {
-	return sync.OnceValues(func() ([]byte, error) {
+func lazySHA256(contentsFunc func() ([]byte, error)) func() ([32]byte, error) {
+	return sync.OnceValues(func() ([32]byte, error) {
 		contents, err := contentsFunc()
 		if err != nil {
-			return nil, err
+			return [32]byte{}, err
 		}
-		if len(contents) == 0 {
-			return SHA256SumZero[:], nil
-		}
-		return SHA256Sum(contents), nil
+		return sha256.Sum256(contents), nil
 	})
 }
 
