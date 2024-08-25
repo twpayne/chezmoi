@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -936,10 +937,10 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .file\n"))),
 						targetStateEntry: &TargetStateFile{
 							contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .file\n"))),
 							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
@@ -999,10 +1000,10 @@ func TestSourceStateRead(t *testing.T) {
 							Executable: true,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .file\n"))),
 						targetStateEntry: &TargetStateFile{
 							contentsFunc:       eagerNoErr([]byte("# contents of .file\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .file\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .file\n"))),
 							perm:               fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
@@ -1028,11 +1029,11 @@ func TestSourceStateRead(t *testing.T) {
 							Condition:  ScriptConditionAlways,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of .script\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .script\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .script\n"))),
 						targetStateEntry: &TargetStateScript{
 							name:               NewRelPath("script"),
 							contentsFunc:       eagerNoErr([]byte("# contents of .script\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .script\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .script\n"))),
 							condition:          ScriptConditionAlways,
 							sourceAttr: SourceAttr{
 								Condition: ScriptConditionAlways,
@@ -1061,11 +1062,11 @@ func TestSourceStateRead(t *testing.T) {
 							Condition:  ScriptConditionAlways,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of script\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of script\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of script\n"))),
 						targetStateEntry: &TargetStateScript{
 							name:               NewRelPath("script"),
 							contentsFunc:       eagerNoErr([]byte("# contents of script\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of script\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of script\n"))),
 							condition:          ScriptConditionAlways,
 							sourceAttr: SourceAttr{
 								Condition: ScriptConditionAlways,
@@ -1093,7 +1094,7 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeSymlink,
 						},
 						contentsFunc:       eagerNoErr([]byte(".dir/subdir/file")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte(".dir/subdir/file"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte(".dir/subdir/file"))),
 						targetStateEntry: &TargetStateSymlink{
 							linknameFunc: eagerNoErr(".dir/subdir/file"),
 						},
@@ -1130,10 +1131,10 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of .dir/file\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .dir/file\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .dir/file\n"))),
 						targetStateEntry: &TargetStateFile{
 							contentsFunc:       eagerNoErr([]byte("# contents of .dir/file\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of .dir/file\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of .dir/file\n"))),
 							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
@@ -1210,10 +1211,10 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of dir/file1\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/file1\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of dir/file1\n"))),
 						targetStateEntry: &TargetStateFile{
 							contentsFunc:       eagerNoErr([]byte("# contents of dir/file1\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/file1\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of dir/file1\n"))),
 							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
@@ -1373,10 +1374,10 @@ func TestSourceStateRead(t *testing.T) {
 							Empty:      true,
 						},
 						contentsFunc:       eagerNoErr([]byte("# contents of dir/dot_file\n")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/dot_file\n"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of dir/dot_file\n"))),
 						targetStateEntry: &TargetStateFile{
 							contentsFunc:       eagerNoErr([]byte("# contents of dir/dot_file\n")),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("# contents of dir/dot_file\n"))),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("# contents of dir/dot_file\n"))),
 							empty:              true,
 							perm:               0o666 &^ chezmoitest.Umask,
 						},
@@ -1401,12 +1402,12 @@ func TestSourceStateRead(t *testing.T) {
 							Empty:      true,
 						},
 						contentsFunc:       eagerNoErr([]byte{}),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte{})),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256(nil)),
 						targetStateEntry: &TargetStateFile{
 							empty:              true,
 							perm:               0o666 &^ chezmoitest.Umask,
 							contentsFunc:       eagerZeroNoErr[[]byte](),
-							contentsSHA256Func: eagerNoErr(SHA256Sum([]byte{})),
+							contentsSHA256Func: eagerNoErr(sha256.Sum256(nil)),
 						},
 					},
 					NewRelPath("dir/symlink"): &SourceStateFile{
@@ -1417,7 +1418,7 @@ func TestSourceStateRead(t *testing.T) {
 							Type:       SourceFileTypeFile,
 						},
 						contentsFunc:       eagerNoErr([]byte("dot_file")),
-						contentsSHA256Func: eagerNoErr(SHA256Sum([]byte("dot_file"))),
+						contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("dot_file"))),
 						targetStateEntry: &TargetStateSymlink{
 							linknameFunc: eagerNoErr("dot_file"),
 						},
@@ -1995,7 +1996,7 @@ func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 			assert.NoError(t, err)
 			contentsSHA256, err := sourceStateFile.ContentsSHA256()
 			assert.NoError(t, err)
-			assert.Equal(t, SHA256Sum(contents), contentsSHA256)
+			assert.Equal(t, sha256.Sum256(contents), contentsSHA256)
 		}
 		destAbsPath := s.destDirAbsPath.Join(targetRelPath)
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
@@ -2007,13 +2008,13 @@ func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 			assert.NoError(t, err)
 			contentsSHA256, err := targetStateEntry.ContentsSHA256()
 			assert.NoError(t, err)
-			assert.Equal(t, SHA256Sum(contents), contentsSHA256)
+			assert.Equal(t, sha256.Sum256(contents), contentsSHA256)
 		case *TargetStateScript:
 			contents, err := targetStateEntry.Contents()
 			assert.NoError(t, err)
 			contentsSHA256, err := targetStateEntry.ContentsSHA256()
 			assert.NoError(t, err)
-			assert.Equal(t, SHA256Sum(contents), contentsSHA256)
+			assert.Equal(t, sha256.Sum256(contents), contentsSHA256)
 		}
 		return nil
 	})

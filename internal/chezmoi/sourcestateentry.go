@@ -56,7 +56,7 @@ type SourceStateDir struct {
 type SourceStateFile struct {
 	Attr                 FileAttr
 	contentsFunc         func() ([]byte, error)
-	contentsSHA256Func   func() ([]byte, error)
+	contentsSHA256Func   func() ([32]byte, error)
 	origin               SourceStateOrigin
 	sourceRelPath        SourceRelPath
 	targetStateEntryFunc targetStateEntryFunc
@@ -165,7 +165,7 @@ func (s *SourceStateFile) Contents() ([]byte, error) {
 }
 
 // ContentsSHA256 returns the SHA256 sum of s's contents.
-func (s *SourceStateFile) ContentsSHA256() ([]byte, error) {
+func (s *SourceStateFile) ContentsSHA256() ([32]byte, error) {
 	return s.contentsSHA256Func()
 }
 
@@ -192,7 +192,7 @@ func (s *SourceStateFile) LogValue() slog.Value {
 		attrs = append(attrs, slog.Any("contentsErr", contentsErr))
 	}
 	contentsSHA256, contentsSHA256Err := s.ContentsSHA256()
-	attrs = append(attrs, slog.String("contentsSHA256", hex.EncodeToString(contentsSHA256)))
+	attrs = append(attrs, slog.String("contentsSHA256", hex.EncodeToString(contentsSHA256[:])))
 	if contentsSHA256Err != nil {
 		attrs = append(attrs, slog.Any("contentsSHA256Err", contentsSHA256Err))
 	}

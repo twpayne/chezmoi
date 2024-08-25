@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"crypto/sha256"
 	"errors"
 	"io/fs"
 	"sync"
@@ -142,10 +143,11 @@ func (s *ActualStateFile) EntryState() (*EntryState, error) {
 	if err != nil {
 		return nil, err
 	}
+	contentsSHA256 := sha256.Sum256(contents)
 	return &EntryState{
 		Type:           EntryStateTypeFile,
 		Mode:           s.perm,
-		ContentsSHA256: HexBytes(SHA256Sum(contents)),
+		ContentsSHA256: HexBytes(contentsSHA256[:]),
 		contents:       contents,
 	}, nil
 }
@@ -176,9 +178,10 @@ func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 	if err != nil {
 		return nil, err
 	}
+	linknameSHA256 := sha256.Sum256([]byte(linkname))
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
-		ContentsSHA256: HexBytes(SHA256Sum([]byte(linkname))),
+		ContentsSHA256: HexBytes(linknameSHA256[:]),
 		contents:       []byte(linkname),
 	}, nil
 }

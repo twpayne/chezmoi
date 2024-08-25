@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -550,7 +551,7 @@ DEST_ABS_PATH:
 		newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
 			targetStateEntry: &TargetStateFile{
 				contentsFunc:       eagerNoErr[[]byte](nil),
-				contentsSHA256Func: eagerNoErr(SHA256SumZero[:]),
+				contentsSHA256Func: eagerNoErr(sha256.Sum256(nil)),
 				empty:              true,
 				perm:               0o666 &^ s.umask,
 			},
@@ -1572,7 +1573,8 @@ func (s *SourceState) getExternalDataRaw(
 	if options != nil {
 		refreshExternals = options.RefreshExternals
 	}
-	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
+	urlSHA256 := sha256.Sum256([]byte(external.URL))
+	cacheKey := hex.EncodeToString(urlSHA256[:])
 	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey)
 	switch refreshExternals {
 	case RefreshExternalsAlways:
@@ -1674,9 +1676,9 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.SHA256 != nil {
-		if gotSHA256Sum := SHA256Sum(data); !bytes.Equal(gotSHA256Sum, external.Checksum.SHA256) {
+		if gotSHA256Sum := sha256.Sum256(data); !bytes.Equal(gotSHA256Sum[:], external.Checksum.SHA256) {
 			format := "SHA256 mismatch: expected %s, got %s"
-			err := fmt.Errorf(format, external.Checksum.SHA256, hex.EncodeToString(gotSHA256Sum))
+			err := fmt.Errorf(format, external.Checksum.SHA256, hex.EncodeToString(gotSHA256Sum[:]))
 			errs = append(errs, err)
 		}
 	}
