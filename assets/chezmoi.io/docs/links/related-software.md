@@ -29,6 +29,10 @@ Custom Telescope Picker for Chez Moi Managed Dot files.
 
 Sync, search and backup shell history .
 
+### [`github.com/b3nj5m1n/xdg-ninja`](https://github.com/b3nj5m1n/xdg-ninja)
+
+A shell script which checks your $HOME for unwanted files and directories.
+
 ### [`github.com/hussainweb/ansible-role-chezmoi`](https://github.com/hussainweb/ansible-role-chezmoi)
 
 Installs chezmoi on Ubuntu and Debian servers.
