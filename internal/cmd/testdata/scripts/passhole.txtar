@@ -1,33 +1,18 @@
-[unix] chmod 755 bin/ph
-[windows] unix2dos bin/ph.cmd
+mockcommand bin/ph
 
 # test passhole template function
 stdin golden/stdin
 exec chezmoi execute-template --no-tty '{{ passhole "example.com" "password" }}'
 stdout examplepassword
 
--- bin/ph --
-#!/bin/sh
-case "$*" in
-"--version")
-    echo "1.9.9"
-    ;;
-"--password - show --field password example.com")
-    echo "examplepassword"
-    ;;
-*)
-    echo "ph: error: argument command: invalid choice:"
-    exit 1
-esac
--- bin/ph.cmd --
-@echo off
-IF "%*" == "--version" (
-    echo 1.9.9
-) ELSE IF "%*" == "--password - show --field password example.com" (
-    echo examplepassword
-) ELSE (
-    echo ph: error: argument command: invalid choice:
-    exit /b 1
-)
+-- bin/ph.yaml --
+responses:
+- args: '--version'
+  response: '1.9.9'
+- args: '--password - show --field password example.com'
+  response: 'examplepassword'
+default:
+  response: 'ph: error: argument command: invalid choice:'
+  exitCode: 1
 -- golden/stdin --
 fakepassword

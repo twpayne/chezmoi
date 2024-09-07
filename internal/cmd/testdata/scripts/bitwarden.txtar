@@ -1,7 +1,5 @@
-[unix] chmod 755 bin/bw
-[unix] chmod 755 bin/bws
-[windows] unix2dos bin/bw.cmd
-[windows] unix2dos bin/bws.cmd
+mockcommand bin/bw
+mockcommand bin/bws
 [windows] unix2dos golden/bitwarden-attachment
 
 # test bitwarden template function
@@ -24,139 +22,65 @@ cmp stdout golden/bitwarden-attachment
 exec chezmoi execute-template '{{ (bitwardenSecrets "be8e0ad8-d545-4017-a55a-b02f014d4158" "0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==").value }}'
 stdout '^0\.982492bc-7f37-4475-9e60$'
 
--- bin/bw --
-#!/bin/sh
-
-case "$*" in
-"get item example.com")
-    cat <<EOF
-{
-  "object": "item",
-  "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
-  "organizationId": null,
-  "folderId": null,
-  "type": 1,
-  "name": "example.com",
-  "notes": null,
-  "favorite": false,
-  "fields": [
+-- bin/bw.yaml --
+responses:
+- args: 'get item example.com'
+  response: |
     {
-      "name": "Text",
-      "value": "text-value",
-      "type": 0
-    },
-    {
-      "name": "Hidden",
-      "value": "hidden-value",
-      "type": 1
+      "object": "item",
+      "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
+      "organizationId": null,
+      "folderId": null,
+      "type": 1,
+      "name": "example.com",
+      "notes": null,
+      "favorite": false,
+      "fields": [
+        {
+          "name": "Text",
+          "value": "text-value",
+          "type": 0
+        },
+        {
+          "name": "Hidden",
+          "value": "hidden-value",
+          "type": 1
+        }
+      ],
+      "login": {
+        "username": "username-value",
+        "password": "password-value",
+        "totp": null,
+        "passwordRevisionDate": null
+      },
+      "collectionIds": [],
+      "revisionDate": "2020-10-28T00:21:02.690Z"
     }
-  ],
-  "login": {
-    "username": "username-value",
-    "password": "password-value",
-    "totp": null,
-    "passwordRevisionDate": null
-  },
-  "collectionIds": [],
-  "revisionDate": "2020-10-28T00:21:02.690Z"
-}
-EOF
-   ;;
-"get attachment filename --itemid item-id --raw")
-    cat <<EOF
-hidden-file-value
-EOF
-    ;;
-"get attachment filename --itemid bf22e4b4-ae4a-4d1c-8c98-ac620004b628 --raw")
-    cat <<EOF
-hidden-file-value
-EOF
-    ;;
-*)
-    echo "Invalid command: $*"
-    echo "See --help for a list of available commands."
-    exit 1
-esac
--- bin/bw.cmd --
-@echo off
-IF "%*" == "get item example.com" (
-    echo.{
-    echo.  "object": "item",
-    echo.  "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
-    echo.  "organizationId": null,
-    echo.  "folderId": null,
-    echo.  "type": 1,
-    echo.  "name": "example.com",
-    echo.  "notes": null,
-    echo.  "favorite": false,
-    echo.  "fields": [
-    echo.    {
-    echo.      "name": "Text",
-    echo.      "value": "text-value",
-    echo.      "type": 0
-    echo.    },
-    echo.    {
-    echo.      "name": "Hidden",
-    echo.      "value": "hidden-value",
-    echo.      "type": 1
-    echo.    }
-    echo.  ],
-    echo.  "login": {
-    echo.    "username": "username-value",
-    echo.    "password": "password-value",
-    echo.    "totp": null,
-    echo.    "passwordRevisionDate": null
-    echo.  },
-    echo.  "collectionIds": [],
-    echo.  "revisionDate": "2020-10-28T00:21:02.690Z"
-    echo.}
-) ELSE IF "%*" == "get attachment filename --itemid item-id --raw" (
-    echo.hidden-file-value
-) ELSE IF "%*" == "get attachment filename --itemid bf22e4b4-ae4a-4d1c-8c98-ac620004b628 --raw" (
-    echo.hidden-file-value
-) ELSE (
-    echo Invalid command: $*
-    echo "See --help for a list of available commands."
-    exit /b 1
-)
--- bin/bws --
-#!/bin/sh
-
-case "$*" in
-"secret get be8e0ad8-d545-4017-a55a-b02f014d4158 --access-token 0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==")
-    cat <<EOF
-{
-  "object": "secret",
-  "id": "be8e0ad8-d545-4017-a55a-b02f014d4158",
-  "organizationId": "10e8cbfa-7bd2-4361-bd6f-b02e013f9c41",
-  "projectId": "e325ea69-a3ab-4dff-836f-b02e013fe530",
-  "key": "SES_KEY",
-  "value": "0.982492bc-7f37-4475-9e60",
-  "note": "",
-  "creationDate": "2023-06-28T20:13:20.643567Z",
-  "revisionDate": "2023-06-28T20:13:20.643567Z"
-}
-EOF
-    ;;
-*)
-    exit 1
-esac
--- bin/bws.cmd --
-@echo off
-IF "%*" == "secret get be8e0ad8-d545-4017-a55a-b02f014d4158 --access-token 0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==" (
-    echo.{
-    echo.  "object": "secret",
-    echo.  "id": "be8e0ad8-d545-4017-a55a-b02f014d4158",
-    echo.  "organizationId": "10e8cbfa-7bd2-4361-bd6f-b02e013f9c41",
-    echo.  "projectId": "e325ea69-a3ab-4dff-836f-b02e013fe530",
-    echo.  "key": "SES_KEY",
-    echo.  "value": "0.982492bc-7f37-4475-9e60",
-    echo.  "note": "",
-    echo.  "creationDate": "2023-06-28T20:13:20.643567Z",
-    echo.  "revisionDate": "2023-06-28T20:13:20.643567Z"
-    echo.}
-) ELSE (
-    exit /b 1
-)
+- args: 'get attachment filename --itemid item-id --raw'
+  response: 'hidden-file-value'
+- args: 'get attachment filename --itemid bf22e4b4-ae4a-4d1c-8c98-ac620004b628 --raw'
+  response: 'hidden-file-value'
+default:
+  response: |
+    Invalid command: $*
+    See --help for a list of available commands.
+  exitCode: 1
+-- bin/bws.yaml --
+responses:
+- args: 'secret get be8e0ad8-d545-4017-a55a-b02f014d4158 --access-token 0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow=='
+  response: |
+    {
+      "object": "secret",
+      "id": "be8e0ad8-d545-4017-a55a-b02f014d4158",
+      "organizationId": "10e8cbfa-7bd2-4361-bd6f-b02e013f9c41",
+      "projectId": "e325ea69-a3ab-4dff-836f-b02e013fe530",
+      "key": "SES_KEY",
+      "value": "0.982492bc-7f37-4475-9e60",
+      "note": "",
+      "creationDate": "2023-06-28T20:13:20.643567Z",
+      "revisionDate": "2023-06-28T20:13:20.643567Z"
+    }
+default:
+  exitCode: 1
 -- golden/bitwarden-attachment --
 hidden-file-value

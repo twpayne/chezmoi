@@ -1,5 +1,4 @@
-[unix] chmod 755 bin/dcli
-[windows] unix2dos bin/dcli.cmd
+mockcommand bin/dcli
 [windows] unix2dos golden/dashlane-note
 
 # test dashlanePassword template function
@@ -10,75 +9,37 @@ stdout ^<password>$
 exec chezmoi execute-template '{{ dashlaneNote "filter" }}'
 cmp stdout golden/dashlane-note
 
--- bin/dcli --
-#!/bin/sh
-
-case "$*" in
-"password --output json filter")
-    cat <<EOF
-[
-    {
-        "title": "<name of the entry>",
-        "useFixedUrl": false,
-        "login": "<login>",
-        "status": "ACCOUNT_NOT_VERIFIED",
-        "note": "<any note>",
-        "autoLogin": false,
-        "modificationDatetime": "<timestamp>",
-        "checked": false,
-        "id": "<id>",
-        "anonId": "<anonymous id>",
-        "localeFormat": "UNIVERSAL",
-        "password": "<password>",
-        "creationDatetime": "<timestamp>",
-        "userModificationDatetime": "<timestamp>",
-        "lastBackupTime": "<timestamp>",
-        "autoProtected": false,
-        "strength": 0,
-        "subdomainOnly": false
-    }
-]
-EOF
-   ;;
-"note filter")
-    cat <<EOF
-<note>
-EOF
-   ;;
-*)
-    echo "error: unknown command '$*'"
-    exit 1
-esac
--- bin/dcli.cmd --
-@echo off
-IF "%*" == "password --output json filter" (
-    echo.[
-    echo.    {
-    echo.        "title": "<name of the entry>",
-    echo.        "useFixedUrl": false,
-    echo.        "login": "<login>",
-    echo.        "status": "ACCOUNT_NOT_VERIFIED",
-    echo.        "note": "<any note>",
-    echo.        "autoLogin": false,
-    echo.        "modificationDatetime": "<timestamp>",
-    echo.        "checked": false,
-    echo.        "id": "<id>",
-    echo.        "anonId": "<anonymous id>",
-    echo.        "localeFormat": "UNIVERSAL",
-    echo.        "password": "<password>",
-    echo.        "creationDatetime": "<timestamp>",
-    echo.        "userModificationDatetime": "<timestamp>",
-    echo.        "lastBackupTime": "<timestamp>",
-    echo.        "autoProtected": false,
-    echo.        "strength": 0,
-    echo.        "subdomainOnly": false
-    echo.    }
-    echo.]
-) ELSE IF "%*" == "note filter" (
-    echo.^<note^>
-) ELSE (
-    echo error: unknown command '$*'
-    exit /b 1
-)
+-- bin/dcli.yaml --
+responses:
+- args: 'password --output json filter'
+  response: |
+    [
+        {
+            "title": "<name of the entry>",
+            "useFixedUrl": false,
+            "login": "<login>",
+            "status": "ACCOUNT_NOT_VERIFIED",
+            "note": "<any note>",
+            "autoLogin": false,
+            "modificationDatetime": "<timestamp>",
+            "checked": false,
+            "id": "<id>",
+            "anonId": "<anonymous id>",
+            "localeFormat": "UNIVERSAL",
+            "password": "<password>",
+            "creationDatetime": "<timestamp>",
+            "userModificationDatetime": "<timestamp>",
+            "lastBackupTime": "<timestamp>",
+            "autoProtected": false,
+            "strength": 0,
+            "subdomainOnly": false
+        }
+    ]
+- args: 'note filter'
+  response: '<note>'
+  escapeChars: true
+default:
+  response: "error: unknown command '$*'"
+  exitCode: 1
 -- golden/dashlane-note --
 <note>
