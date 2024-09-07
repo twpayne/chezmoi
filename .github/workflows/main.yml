@@ -21,7 +21,7 @@ env:
   GOLANGCI_LINT_VERSION: 1.60.3 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.2.0 # https://github.com/goreleaser/goreleaser/releases
-  GOVERSIONINFO_VERSION: 1.4.0 # https://github.com/josephspurrier/goversioninfo/releases
+  GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
 jobs:
   changes:
