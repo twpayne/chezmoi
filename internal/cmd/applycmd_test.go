@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"io/fs"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -261,6 +262,10 @@ func TestIssue2132(t *testing.T) {
 }
 
 func TestIssue2597(t *testing.T) {
+	_, err := net.LookupIP("github.com")
+	if err != nil {
+		t.Skip("github.com not found")
+	}
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user": map[string]any{
 			".local/share/chezmoi": map[string]any{
