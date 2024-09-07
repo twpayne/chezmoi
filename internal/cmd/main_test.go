@@ -3,6 +3,7 @@ package cmd_test
 import (
 	"bufio"
 	"bytes"
+	_ "embed"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -17,6 +18,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"text/template"
 	"time"
 
 	"github.com/rogpeppe/go-internal/imports"
@@ -34,6 +36,12 @@ var (
 	envVarRx         = regexp.MustCompile(`\$\w+`)
 	lookupRx         = regexp.MustCompile(`\Alookup:(.*)\z`)
 	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
+
+	//go:embed mockcommand.tmpl
+	mockcommandTmplText string
+
+	//go:embed mockcommand.cmd.tmpl
+	mockcommandCmdTmplText string
 )
 
 func TestMain(m *testing.M) {
@@ -68,6 +76,7 @@ func TestScript(t *testing.T) {
 			"mkgpgconfig":    cmdMkGPGConfig,
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
+			"mockcommand":    cmdMockCommand,
 			"prependline":    cmdPrependLine,
 			"readlink":       cmdReadLink,
 			"removeline":     cmdRemoveLine,
@@ -488,6 +497,117 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	})
 	if err != nil {
 		ts.Fatalf("mksourcedir: %v", err)
+	}
+}
+
+// cmdMockCommand creates a mock command from a definition.
+func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! mockcommand")
+	}
+	if len(args) != 1 {
+		ts.Fatalf("usage: mockcommand command")
+	}
+
+	command := ts.MkAbs(args[0])
+	definitionYAML, err := os.ReadFile(command + ".yaml")
+	ts.Check(err)
+
+	// Parse the definition.
+	type response struct {
+		Args                string   `yaml:"args"`
+		OrArgs              []string `yaml:"orArgs"`
+		WindowsArgs         string   `yaml:"windowsArgs"`
+		Response            string   `yaml:"response"`
+		Destination         string   `yaml:"destination"`
+		EscapeChars         bool     `yaml:"escapeChars"`
+		SuppressLastNewline bool     `yaml:"suppressLastNewline"`
+		ExitCode            int      `yaml:"exitCode"`
+	}
+	var definition struct {
+		Responses []response `yaml:"responses"`
+		Default   response   `yaml:"default"`
+	}
+	ts.Check(chezmoi.FormatYAML.Unmarshal(definitionYAML, &definition))
+
+	// Parse the mock command template.
+	var templateName, templateText string
+	var renderResponseFunc func(response) string
+	switch runtime.GOOS {
+	case "windows":
+		templateName = "mockcommand.cmd.tmpl"
+		templateText = mockcommandCmdTmplText
+		escapeCharsRx := regexp.MustCompile(`[\\&|><^]`)
+		escapeChars := func(s string) string {
+			return escapeCharsRx.ReplaceAllString(s, "^$0")
+		}
+		renderResponseFunc = func(r response) string {
+			var builder strings.Builder
+			var redirect string
+			if r.Destination == "stderr" {
+				redirect = " 1>&2"
+			}
+			lines := strings.Split(strings.TrimSuffix(r.Response, "\n"), "\n")
+			for i, line := range lines {
+				if r.EscapeChars {
+					line = escapeChars(line)
+				}
+				if r.SuppressLastNewline && i == len(lines)-1 {
+					fmt.Fprintf(&builder, "    echo | set /p=%s%s\n", line, redirect)
+				} else {
+					fmt.Fprintf(&builder, "    echo.%s%s\n", line, redirect)
+				}
+			}
+			fmt.Fprintf(&builder, "    exit /b %d", r.ExitCode)
+			return builder.String()
+		}
+	default:
+		templateName = "mockcommand.tmpl"
+		templateText = mockcommandTmplText
+		renderResponseFunc = func(r response) string {
+			var builder strings.Builder
+			var redirect string
+			if r.Destination == "stderr" {
+				redirect = " 1>&2"
+			}
+			if strings.Contains(r.Response, "\n") {
+				fmt.Fprintf(&builder, "    cat%s <<EOF\n%sEOF\n", redirect, r.Response)
+			} else {
+				fmt.Fprintf(&builder, "    echo %q%s\n", r.Response, redirect)
+			}
+			fmt.Fprintf(&builder, "    exit %d", r.ExitCode)
+			return builder.String()
+		}
+	}
+	tmpl, err := template.New(templateName).Funcs(template.FuncMap{
+		"default": func(def, s string) string {
+			if s == "" {
+				return def
+			}
+			return s
+		},
+		"quote":          strconv.Quote,
+		"renderResponse": renderResponseFunc,
+		"replaceAll": func(old, new, s string) string { //nolint:predeclared
+			return strings.ReplaceAll(s, old, new)
+		},
+	}).Parse(templateText)
+	ts.Check(err)
+
+	// Create the mock command contents.
+	buffer := bytes.NewBuffer(make([]byte, 0, 1024))
+	ts.Check(tmpl.Execute(buffer, definition))
+	data := buffer.Bytes()
+	if runtime.GOOS == "windows" {
+		data = bytes.ReplaceAll(data, []byte("\n"), []byte("\r\n"))
+	}
+
+	// Write the mock command.
+	switch runtime.GOOS {
+	case "windows":
+		ts.Check(os.WriteFile(ts.MkAbs(command+".cmd"), data, 0o666))
+	default:
+		ts.Check(os.WriteFile(ts.MkAbs(command), data, 0o777))
 	}
 }
 

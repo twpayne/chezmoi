@@ -1,5 +1,4 @@
-[unix] chmod 755 bin/doppler
-[windows] unix2dos bin/doppler.cmd
+mockcommand bin/doppler
 
 # test doppler template function (global configuration)
 exec chezmoi execute-template '{{ doppler "PASSWORD_123"}}'
@@ -55,95 +54,40 @@ stdout ^default-config$
 exec chezmoi execute-template '{{ (dopplerProjectJson).DOPPLER_PROJECT }}'
 stdout ^default-project$
 
--- bin/doppler --
-#!/bin/sh
-
-case "$*" in
-"secrets download --json --no-file --project project --config config"|"secrets download --json --no-file --project project"|"secrets download --json --no-file")
-    cat <<EOF
-{
-  "DOPPLER_CONFIG": "config",
-  "DOPPLER_ENVIRONMENT": "config",
-  "DOPPLER_PROJECT": "project",
-  "PASSWORD": "correcthorsebatterystaple",
-  "PASSWORD_123": "staplebatteryhorsecorrect",
-  "JSON_SECRET": "{\n  \"created_at\": \"2023-06-09T13:14:28.140Z\",\n  \"created_by\": {\n    \"email\": \"user@example.com\",\n    \"name\": \"example\",\n    \"type\": \"TYPE_USER\"\n  },\n  \"latest_version\": \"2\",\n  \"name\": \"password\"\n}"
-}
-EOF
-    ;;
-"secrets download --json --no-file --project default-project --config default-config")
-    cat <<EOF
-{
-  "DOPPLER_CONFIG": "default-config",
-  "DOPPLER_ENVIRONMENT": "default-config",
-  "DOPPLER_PROJECT": "default-project",
-  "PASSWORD": "default-project-password"
-}
-EOF
-    ;;
-"secrets download --json --no-file --project other-project --config default-config")
-    cat <<EOF
-{
-  "DOPPLER_CONFIG": "default-config",
-  "DOPPLER_ENVIRONMENT": "default-config",
-  "DOPPLER_PROJECT": "other-project",
-  "PASSWORD": "other-project-password"
-}
-EOF
-    ;;
-*)
-    echo "$*: unknown command"
-    exit 1
-    ;;
-esac
--- bin/doppler.cmd --
-@echo off
-IF "%*" == "secrets download --json --no-file --project project --config config" (
-    goto download-project
-) ELSE IF "%*" == "secrets download --json --no-file --project project" (
-    goto download-project
-) ELSE IF "%*" == "secrets download --json --no-file" (
-    goto download-project
-) ELSE IF "%*" == "secrets download --json --no-file --project default-project --config default-config" (
-    goto download-default-project
-) ELSE IF "%*" == "secrets download --json --no-file --project other-project --config default-config" (
-    goto download-other-project
-) ELSE (
-    echo unknown command: $*
-    exit /b 1
-)
-
-exit /b 0
-
-:download-project
-echo.{
-echo.  "DOPPLER_CONFIG": "config",
-echo.  "DOPPLER_ENVIRONMENT": "config",
-echo.  "DOPPLER_PROJECT": "project",
-echo.  "PASSWORD": "correcthorsebatterystaple",
-echo.  "PASSWORD_123": "staplebatteryhorsecorrect",
-echo.  "JSON_SECRET": "{\n  \"created_at\": \"2023-06-09T13:14:28.140Z\",\n  \"created_by\": {\n    \"email\": \"user@example.com\",\n    \"name\": \"example\",\n    \"type\": \"TYPE_USER\"\n  },\n  \"latest_version\": \"2\",\n  \"name\": \"password\"\n}"
-echo.}
-exit /b 0
-
-:download-default-project
-echo.{
-echo.  "DOPPLER_CONFIG": "default-config",
-echo.  "DOPPLER_ENVIRONMENT": "default-config",
-echo.  "DOPPLER_PROJECT": "default-project",
-echo.  "PASSWORD": "default-project-password"
-echo.}
-exit /b 0
-
-:download-other-project
-echo.{
-echo.  "DOPPLER_CONFIG": "default-config",
-echo.  "DOPPLER_ENVIRONMENT": "default-config",
-echo.  "DOPPLER_PROJECT": "other-project",
-echo.  "PASSWORD": "other-project-password"
-echo.}
-exit /b 0
-
+-- bin/doppler.yaml --
+responses:
+- args: 'secrets download --json --no-file --project project --config config'
+  orArgs:
+  - 'secrets download --json --no-file --project project'
+  - 'secrets download --json --no-file'
+  response: |
+    {
+      "DOPPLER_CONFIG": "config",
+      "DOPPLER_ENVIRONMENT": "config",
+      "DOPPLER_PROJECT": "project",
+      "PASSWORD": "correcthorsebatterystaple",
+      "PASSWORD_123": "staplebatteryhorsecorrect",
+      "JSON_SECRET": "{\n  \"created_at\": \"2023-06-09T13:14:28.140Z\",\n  \"created_by\": {\n    \"email\": \"user@example.com\",\n    \"name\": \"example\",\n    \"type\": \"TYPE_USER\"\n  },\n  \"latest_version\": \"2\",\n  \"name\": \"password\"\n}"
+    }
+- args: 'secrets download --json --no-file --project default-project --config default-config'
+  response: |
+    {
+      "DOPPLER_CONFIG": "default-config",
+      "DOPPLER_ENVIRONMENT": "default-config",
+      "DOPPLER_PROJECT": "default-project",
+      "PASSWORD": "default-project-password"
+    }
+- args: 'secrets download --json --no-file --project other-project --config default-config'
+  response: |
+    {
+      "DOPPLER_CONFIG": "default-config",
+      "DOPPLER_ENVIRONMENT": "default-config",
+      "DOPPLER_PROJECT": "other-project",
+      "PASSWORD": "other-project-password"
+    }
+default:
+  response: '$*: unknown command'
+  exitCode: 1
 -- home/user/.keep --
 -- home3/user/.config/chezmoi/chezmoi.toml --
 [doppler]

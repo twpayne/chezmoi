@@ -1,5 +1,4 @@
-[unix] chmod 755 bin/gopass
-[windows] unix2dos bin/gopass.cmd
+mockcommand bin/gopass
 [windows] unix2dos golden/gopass-raw
 
 # test gopass template function
@@ -10,42 +9,22 @@ stdout ^examplepassword$
 exec chezmoi execute-template '{{ gopassRaw "misc/example.com" }}'
 cmp stdout golden/gopass-raw
 
--- bin/gopass --
-#!/bin/sh
+-- bin/gopass.yaml --
+responses:
+- args: '--version'
+  response: 'gopass 1.10.1 go1.15 linux amd64'
+- args: 'show --noparsing misc/example.com'
+  response: |
+    Secret: misc/example.com
 
-case "$*" in
-"--version")
-    echo "gopass 1.10.1 go1.15 linux amd64"
-    ;;
-"show --noparsing misc/example.com")
-    echo "Secret: misc/example.com"
-    echo
-    echo "examplepassword"
-    echo "key: value"
-    ;;
-"show --password misc/example.com")
-    echo "examplepassword"
-    ;;
-*)
-    echo "gopass: invalid command: $*"
-    exit 1
-esac
--- bin/gopass.cmd --
-@echo off
-IF "%*" == "--version" (
-    echo "gopass 1.10.1 go1.15 windows amd64"
-) ELSE IF "%*" == "show --noparsing misc/example.com" (
-    echo.Secret: misc/example.com
-    echo.
-    echo.examplepassword
-    echo.key: value
-) ELSE IF "%*" == "show --password misc/example.com" (
-    echo | set /p=examplepassword
-    exit /b 0
-) ELSE (
-    echo gopass: invalid command: %*
-    exit /b 1
-)
+    examplepassword
+    key: value
+- args: 'show --password misc/example.com'
+  response: 'examplepassword'
+  suppressLastNewline: true
+default:
+  response: 'gopass: invalid command: $*'
+  exitCode: 1
 -- golden/gopass-raw --
 Secret: misc/example.com
 

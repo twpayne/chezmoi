@@ -1,5 +1,4 @@
-[unix] chmod 755 bin/pass
-[windows] unix2dos bin/pass.cmd
+mockcommand bin/pass
 [windows] unix2dos golden/pass-raw
 
 # test pass template function
@@ -14,28 +13,15 @@ stdout ^examplelogin$
 exec chezmoi execute-template '{{ passRaw "misc/example.com" }}'
 cmp stdout golden/pass-raw
 
--- bin/pass --
-#!/bin/sh
-
-case "$*" in
-"show misc/example.com")
-    echo "examplepassword"
-    echo "login: examplelogin"
-    ;;
-*)
-    echo "pass: invalid command: $*"
-    exit 1
-esac
--- bin/pass.cmd --
-@echo off
-IF "%*" == "show misc/example.com" (
-    echo.examplepassword
-    echo.login: examplelogin
-    exit /b 0
-) ELSE (
-    echo pass: invalid command: %*
-    exit /b 1
-)
+-- bin/pass.yaml --
+responses:
+- args: 'show misc/example.com'
+  response: |
+    examplepassword
+    login: examplelogin
+default:
+  response: 'pass: invalid command: $*'
+  exitCode: 1
 -- golden/pass-raw --
 examplepassword
 login: examplelogin

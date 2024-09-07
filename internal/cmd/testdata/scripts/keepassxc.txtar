@@ -1,5 +1,4 @@
-[unix] chmod 755 bin/keepassxc-cli
-[windows] unix2dos bin/keepassxc-cli.cmd
+mockcommand bin/keepassxc-cli
 
 # test keepassxcAttachment template function
 stdin $HOME/input
@@ -16,50 +15,27 @@ stdin $HOME/input
 exec chezmoi execute-template --no-tty '{{ (keepassxc "example.com").UserName }}/{{ (keepassxc "example.com").Password }}'
 stdout examplelogin/examplepassword$
 
--- bin/keepassxc-cli --
-#!/bin/sh
-
-case "$*" in
-"--version")
-    echo "2.7.0"
-    ;;
-"attachment-export --key-file /secrets.key /secrets.kdbx --quiet --stdout example.com attachment")
-    echo "# contents of attachment"
-    ;;
-"show --key-file /secrets.key /secrets.kdbx --quiet --show-protected example.com")
-    cat <<EOF
-Title: example.com
-UserName: examplelogin
-Password: examplepassword
-URL:
-Notes:
-EOF
-    ;;
-"show --key-file /secrets.key /secrets.kdbx example.com --attributes host-name --quiet --show-protected")
-    echo "example.com"
-    ;;
-*)
-    echo "keepass-test: invalid command: $*"
-    exit 1
-esac
--- bin/keepassxc-cli.cmd --
-@echo off
-IF "%*" == "--version" (
-    echo 2.7.0
-) ELSE IF "%*" == "attachment-export --key-file /secrets.key C:/secrets.kdbx --quiet --stdout example.com attachment" (
-    echo.# contents of attachment
-) ELSE IF "%*" == "show --key-file /secrets.key C:/secrets.kdbx --quiet --show-protected example.com" (
-    echo.Title: example.com
-    echo.UserName: examplelogin
-    echo.Password: examplepassword
-    echo.URL:
-    echo.Notes:
-) ELSE IF "%*" == "show --key-file /secrets.key C:/secrets.kdbx example.com --attributes host-name --quiet --show-protected" (
-    echo.example.com
-) ELSE (
-    echo keepass-test: invalid command: %*
-    exit /b 1
-)
+-- bin/keepassxc-cli.yaml --
+responses:
+- args: '--version'
+  response: '2.7.0'
+- args: 'attachment-export --key-file /secrets.key /secrets.kdbx --quiet --stdout example.com attachment'
+  windowsArgs: 'attachment-export --key-file /secrets.key C:/secrets.kdbx --quiet --stdout example.com attachment'
+  response: '# contents of attachment'
+- args: 'show --key-file /secrets.key /secrets.kdbx --quiet --show-protected example.com'
+  windowsArgs: 'show --key-file /secrets.key C:/secrets.kdbx --quiet --show-protected example.com'
+  response: |
+    Title: example.com
+    UserName: examplelogin
+    Password: examplepassword
+    URL:
+    Notes:
+- args: 'show --key-file /secrets.key /secrets.kdbx example.com --attributes host-name --quiet --show-protected'
+  windowsArgs: 'show --key-file /secrets.key C:/secrets.kdbx example.com --attributes host-name --quiet --show-protected'
+  response: 'example.com'
+default:
+  response: 'keepassxc-cli: invalid command: $*'
+  exitCode: 1
 -- home/user/.config/chezmoi/chezmoi.toml --
 [keepassxc]
     args = ["--key-file", "/secrets.key"]

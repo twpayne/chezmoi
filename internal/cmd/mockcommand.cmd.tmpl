@@ -1,0 +1,12 @@
+@echo off
+{{ range $index, $response := .Responses }}
+{{   if $index }}) ELSE {{ end }}IF "%*" == {{ $response.WindowsArgs | default $response.Args | quote }} (
+{{   $response | renderResponse }}
+{{   range $_, $arg := $response.OrArgs }}
+) ELSE IF "%*" == {{ $arg | quote }} (
+{{     $response | renderResponse }}
+{{   end }}
+{{- end }}
+) ELSE (
+{{ .Default | renderResponse | replaceAll "$*" "%*" }}
+)

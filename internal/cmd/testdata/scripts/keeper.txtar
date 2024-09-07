@@ -1,5 +1,4 @@
-[unix] chmod 755 bin/keeper
-[windows] unix2dos bin/keeper.cmd
+mockcommand bin/keeper
 
 # test keeper template function
 exec chezmoi execute-template '{{ (keeper "QOahgRH_dSTvSvhRBqzCzQ").record_uid }}'
@@ -13,105 +12,52 @@ stdout ^mypassword$
 exec chezmoi execute-template '{{ keeperFindPassword "Example" }}'
 stdout ^mypassword$
 
--- bin/keeper --
-#!/bin/sh
-
-case "$*" in
-"get --format=json QOahgRH_dSTvSvhRBqzCzQ --config /path/to/config.json")
-    cat <<EOF
-{
-  "record_uid": "QOahgRH_dSTvSvhRBqzCzQ",
-  "data": {
-    "title": "Example",
-    "type": "login",
-    "fields": [
-      {
+-- bin/keeper.yaml --
+responses:
+- args: 'get --format=json QOahgRH_dSTvSvhRBqzCzQ --config /path/to/config.json'
+  response: |
+    {
+      "record_uid": "QOahgRH_dSTvSvhRBqzCzQ",
+      "data": {
+        "title": "Example",
         "type": "login",
-        "value": [
-          "mylogin"
-        ]
-      },
-      {
-        "type": "password",
-        "value": [
-          "mypassword"
-        ]
-      },
-      {
-        "type": "url",
-        "value": []
-      },
-      {
-        "type": "fileRef",
-        "value": []
-      },
-      {
-        "type": "oneTimeCode",
-        "value": []
+        "fields": [
+          {
+            "type": "login",
+            "value": [
+              "mylogin"
+            ]
+          },
+          {
+            "type": "password",
+            "value": [
+              "mypassword"
+            ]
+          },
+          {
+            "type": "url",
+            "value": []
+          },
+          {
+            "type": "fileRef",
+            "value": []
+          },
+          {
+            "type": "oneTimeCode",
+            "value": []
+          }
+        ],
+        "custom": []
       }
-    ],
-    "custom": []
-  }
-}
-EOF
-    ;;
-"find-password Example --config /path/to/config.json")
-    echo "mypassword"
-    ;;
-*)
-    cat <<EOF
-Commands:
-  search                           ... Search the vault. Can use a regular expression.
+    }
+- args: 'find-password Example --config /path/to/config.json'
+  response: 'mypassword'
+default:
+  response: |
+    Commands:
+      search                           ... Search the vault. Can use a regular expression.
 
-Type 'command -h' to display help on command
-EOF
-esac
--- bin/keeper.cmd --
-@echo off
-IF "%*" == "get --format=json QOahgRH_dSTvSvhRBqzCzQ --config /path/to/config.json" (
-    echo.{
-    echo.  "record_uid": "QOahgRH_dSTvSvhRBqzCzQ",
-    echo.  "data": {
-    echo.    "title": "Example",
-    echo.    "type": "login",
-    echo.    "fields": [
-    echo.      {
-    echo.        "type": "login",
-    echo.        "value": [
-    echo.          "mylogin"
-    echo.        ]
-    echo.      },
-    echo.      {
-    echo.        "type": "password",
-    echo.        "value": [
-    echo.          "mypassword"
-    echo.        ]
-    echo.      },
-    echo.      {
-    echo.        "type": "url",
-    echo.        "value": []
-    echo.      },
-    echo.      {
-    echo.        "type": "fileRef",
-    echo.        "value": []
-    echo.      },
-    echo.      {
-    echo.        "type": "oneTimeCode",
-    echo.        "value": []
-    echo.      }
-    echo.    ],
-    echo.    "custom": []
-    echo.  }
-    echo.}
-) ELSE IF "%*" == "find-password Example --config /path/to/config.json" (
-    echo.mypassword
-    ;;
-) ELSE (
-    echo.Commands:
-    echo.  search                           ... Search the vault. Can use a regular expression.
-    echo.
-    echo.Type 'command -h' to display help on command
-)
+    Type 'command -h' to display help on command
 -- home/user/.config/chezmoi/chezmoi.toml --
 [keeper]
     args = ["--config", "/path/to/config.json"]

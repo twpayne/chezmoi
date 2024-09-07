@@ -1,59 +1,29 @@
-[unix] chmod 755 bin/lpass
-[windows] unix2dos bin/lpass.cmd
+mockcommand bin/lpass
 
 # test lastpass template function
 exec chezmoi execute-template '{{ (index (lastpass "example.com") 0).password }}'
 stdout ^examplepassword$
 
--- bin/lpass --
-#!/bin/sh
-
-case "$*" in
-"--version")
-    echo "LastPass CLI v1.3.3.GIT"
-    ;;
-"show --json example.com")
-    cat <<EOF
-[
-  {
-    "id": "0",
-    "name": "example.com",
-    "fullname": "Examples/example.com",
-    "username": "examplelogin",
-    "password": "examplepassword",
-    "last_modified_gmt": "0",
-    "last_touch": "0",
-    "group": "Examples",
-    "url": "",
-    "note": ""
-  }
-]
-EOF
-    ;;
-*)
-    echo "lpass: invalid command: $*"
-    exit 1
-esac
--- bin/lpass.cmd --
-@echo off
-IF "%*" == "--version" (
-    echo LastPass CLI v1.3.3.GIT
-) ELSE IF "%*" == "show --json example.com" (
-    echo.[
-    echo. {
-    echo.  "id": "0",
-    echo.  "name": "example.com",
-    echo.  "fullname": "Examples/example.com",
-    echo.  "username": "examplelogin",
-    echo.  "password": "examplepassword",
-    echo.  "last_modified_gmt": "0",
-    echo.  "last_touch": "0",
-    echo.  "group": "Examples",
-    echo.  "url": "",
-    echo.  "note": ""
-    echo. }
-    echo.]
-) ELSE (
-    echo lpass: invalid command: %*
-    exit /b 1
-)
+-- bin/lpass.yaml --
+responses:
+- args: '--version'
+  response: 'LastPass CLI v1.3.3.GIT'
+- args: 'show --json example.com'
+  response: |
+    [
+      {
+        "id": "0",
+        "name": "example.com",
+        "fullname": "Examples/example.com",
+        "username": "examplelogin",
+        "password": "examplepassword",
+        "last_modified_gmt": "0",
+        "last_touch": "0",
+        "group": "Examples",
+        "url": "",
+        "note": ""
+      }
+    ]
+default:
+  response: 'lpass: invalid command: $*'
+  exitCode: 1

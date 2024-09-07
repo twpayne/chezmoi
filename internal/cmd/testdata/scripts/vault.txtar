@@ -1,62 +1,31 @@
-[unix] chmod 755 bin/vault
-[windows] unix2dos bin/vault.cmd
+mockcommand bin/vault
 
 # test vault template function
 exec chezmoi execute-template '{{ (vault "secret/examplesecret").data.data.password }}'
 stdout ^examplepassword$
 
--- bin/vault --
-#!/bin/sh
-
-case "$*" in
-"kv get -format=json secret/examplesecret")
-cat <<EOF
-{
-  "request_id": "d90311b6-2f3f-768e-656c-ce768e773b09",
-  "lease_id": "",
-  "lease_duration": 0,
-  "renewable": false,
-  "data": {
-    "data": {
-      "password": "examplepassword"
-    },
-    "metadata": {
-      "created_time": "2021-01-11T21:48:46.961974384Z",
-      "deletion_time": "",
-      "destroyed": false,
-      "version": 1
+-- bin/vault.yaml --
+responses:
+- args: 'kv get -format=json secret/examplesecret'
+  response: |
+    {
+      "request_id": "d90311b6-2f3f-768e-656c-ce768e773b09",
+      "lease_id": "",
+      "lease_duration": 0,
+      "renewable": false,
+      "data": {
+        "data": {
+          "password": "examplepassword"
+        },
+        "metadata": {
+          "created_time": "2021-01-11T21:48:46.961974384Z",
+          "deletion_time": "",
+          "destroyed": false,
+          "version": 1
+        }
+      },
+      "warnings": null
     }
-  },
-  "warnings": null
-}
-EOF
-    ;;
-*)
-    echo "Usage: vault <command> [args]"
-    exit 127
-esac
--- bin/vault.cmd --
-@echo off
-IF "%*" == "kv get -format=json secret/examplesecret" (
-    echo.{
-    echo.  "request_id": "d90311b6-2f3f-768e-656c-ce768e773b09",
-    echo.  "lease_id": "",
-    echo.  "lease_duration": 0,
-    echo.  "renewable": false,
-    echo.  "data": {
-    echo.    "data": {
-    echo.      "password": "examplepassword"
-    echo.    },
-    echo.    "metadata": {
-    echo.      "created_time": "2021-01-11T21:48:46.961974384Z",
-    echo.      "deletion_time": "",
-    echo.      "destroyed": false,
-    echo.      "version": 1
-    echo.    }
-    echo.  },
-    echo.  "warnings": null
-    echo.}
-) ELSE (
-    echo "Usage: vault <command> [args]"
-    exit /b 127
-)
+default:
+  response: 'Usage: vault <command> [args]'
+  exitCode: 127

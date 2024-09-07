@@ -1,0 +1,12 @@
+#!/bin/sh
+{{ range $index, $response := .Responses }}
+{{   if $index }}elif{{ else }}if{{ end }} [ "$*" = {{ $response.Args | quote }} ]; then
+{{   $response | renderResponse }}
+{{   range $_, $arg := .OrArgs }}
+elif [ "$*" = {{ $arg | quote }} ]; then
+{{     $response | renderResponse }}
+{{   end }}
+{{- end }}
+else
+{{ .Default | renderResponse }}
+fi
