@@ -421,6 +421,10 @@ articles:
   lang: TH
   title: 'จัดการ dotfiles ด้วย chezmoi'
   url: https://www.anuwong.com/blog/manage-dotfiles-with-chezmoi/
+- date: '2024-05-27'
+  version: 2.48.1
+  title: Managing Dotfiles with Chezmoi
+  url: https://1729.org.uk/posts/managing-dotfiles-with-chezmoi/
 - date: '2024-06-26'
   version: 2.49.1
   title: 'Automate Your Dotfiles with Chezmoi'
@@ -438,3 +442,7 @@ articles:
   lang: JP
   title: 'dotfiles管理をchezmoiに移行する'
   url: https://nsakki55.hatenablog.com/entry/2024/08/30/125246
+- date: '2024-09-08'
+  version: 2.52.1
+  title: Managing dotfiles with chezmoi
+  url: https://stoddart.github.io/2024/09/08/managing-dotfiles-with-chezmoi.html
