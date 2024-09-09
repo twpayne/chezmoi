@@ -150,6 +150,18 @@ results in
 {{ .Target }}
 ```
 
+## How do I run a script when a `git-repo` external changes?
+
+Use a `run_onchange_after_*.tmpl` script that includes the HEAD commit. For example,
+if `~/.emacs.d` is a `git-repo` external, then create:
+
+``` title="~/.local/share/chezmoi/run_onchange_after_emacs.d.tmpl"
+#!/bin/sh
+
+# {{ output "git" "-C" (joinPath .chezmoi.homeDir ".emacs.d") "rev-parse" "HEAD" }}
+echo "~/emacs.d updated"
+```
+
 ## How do I enable shell completions?
 
 chezmoi includes shell completions for
