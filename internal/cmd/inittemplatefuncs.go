@@ -20,7 +20,7 @@ func (c *Config) stdinIsATTYInitTemplateFunc() bool {
 	if !ok {
 		return false
 	}
-	return term.IsTerminal(int(file.Fd())) //nolint:gosec
+	return term.IsTerminal(int(file.Fd()))
 }
 
 func (c *Config) writeToStdout(args ...string) string {

@@ -19,7 +19,7 @@ func (c *Config) vaultTemplateFunc(key string) any {
 	}
 
 	args := []string{"kv", "get", "-format=json", key}
-	cmd := exec.Command(c.Vault.Command, args...) //nolint:gosec
+	cmd := exec.Command(c.Vault.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)

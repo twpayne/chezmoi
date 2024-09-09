@@ -37,7 +37,7 @@ func (t textConv) convert(path string, data []byte) ([]byte, error) {
 		return data, nil
 	}
 
-	cmd := exec.Command(longestPatternElement.Command, longestPatternElement.Args...) //nolint:gosec
+	cmd := exec.Command(longestPatternElement.Command, longestPatternElement.Args...)
 	cmd.Stdin = bytes.NewReader(data)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(slog.Default(), cmd)

@@ -1714,7 +1714,7 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Filter.Command != "" {
-		cmd := exec.Command(external.Filter.Command, external.Filter.Args...) //nolint:gosec
+		cmd := exec.Command(external.Filter.Command, external.Filter.Args...)
 		cmd.Stdin = bytes.NewReader(data)
 		cmd.Stderr = os.Stderr
 		data, err = chezmoilog.LogCmdOutput(s.logger, cmd)

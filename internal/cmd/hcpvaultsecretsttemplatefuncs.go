@@ -90,7 +90,7 @@ func (c *Config) vltOutput(args []string) ([]byte, error) {
 		return data, nil
 	}
 
-	cmd := exec.Command(c.HCPVaultSecrets.Command, args...) //nolint:gosec
+	cmd := exec.Command(c.HCPVaultSecrets.Command, args...)
 	// Always run the vlt command in the destination path because vlt uses
 	// relative paths to find its .vlt.json config file.
 	cmd.Dir = c.DestDirAbsPath.String()

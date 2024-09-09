@@ -45,7 +45,7 @@ func (c *Config) secretOutput(args []string) ([]byte, error) {
 	}
 
 	args = append(slices.Clone(c.Secret.Args), args...)
-	cmd := exec.Command(c.Secret.Command, args...) //nolint:gosec
+	cmd := exec.Command(c.Secret.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
