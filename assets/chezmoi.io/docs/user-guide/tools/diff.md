@@ -21,6 +21,29 @@ specify:
     need to escape the `{{` and `}}` as `{{ "{{" }}` and `{{ "}}" }}`. That way
     your generated config file contains the `{{` and `}}` you expect.
 
+## Use VSCode as the diff tool
+
+To use [VSCode](https://code.visualstudio.com/) as the diff tool, add the
+following to your config:
+
+=== "TOML"
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [diff]
+    command = "code"
+    args = ["--wait", "--diff"]
+    ```
+
+=== "YAML"
+
+    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
+    diff:
+      command: "code"
+      args:
+      - "--wait"
+      - "--diff"
+    ```
+
 ## Don't show scripts in the diff output
 
 By default, `chezmoi diff` will show all changes, including the contents of
