@@ -122,6 +122,34 @@ chezmoi will make sure to execute it before templating other files.
     You can [use `scriptEnv` to inject data into your scripts through environment
     variables](../../user-guide/use-scripts-to-perform-actions.md#set-environment-variables).
 
+## How do I write a literal `{{` or `}}` in a template?
+
+`{{` and `}}` are chezmoi's default template delimiters, and so need escaping, for example:
+
+```
+{{ "{{" }}
+{{ "}}" }}
+```
+
+results in
+
+```
+{{
+}}
+```
+
+For longer tokens containing a `{{` and a `}}` you can use a longer literal, for example:
+
+```
+{{ "{{ .Target }}" }}
+```
+
+results in
+
+```
+{{ .Target }}
+```
+
 ## How do I enable shell completions?
 
 chezmoi includes shell completions for
