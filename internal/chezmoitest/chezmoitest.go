@@ -25,7 +25,7 @@ var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
 // AgeGenerateKey generates an identity in identityFile and returns the
 // recipient.
 func AgeGenerateKey(command, identityFile string) (string, error) {
-	cmd := exec.Command(command+"-keygen", "--output", identityFile) //nolint:gosec
+	cmd := exec.Command(command+"-keygen", "--output", identityFile)
 	output, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
 	if err != nil {
 		return "", err
@@ -41,7 +41,7 @@ func AgeGenerateKey(command, identityFile string) (string, error) {
 // passphrase.
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {
 	key = "chezmoi-test-gpg-key"
-	passphrase = "chezmoi-test-gpg-passphrase" //nolint:gosec
+	passphrase = "chezmoi-test-gpg-passphrase"
 	cmd := exec.Command(
 		command,
 		"--batch",
@@ -101,5 +101,5 @@ func mustParseFileMode(s string) fs.FileMode {
 	if err != nil {
 		panic(err)
 	}
-	return fs.FileMode(uint32(u)) //nolint:gosec
+	return fs.FileMode(uint32(u))
 }

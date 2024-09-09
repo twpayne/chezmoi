@@ -4,8 +4,8 @@ package chezmoi
 import (
 	"bufio"
 	"bytes"
-	"crypto/md5"  //nolint:gosec
-	"crypto/sha1" //nolint:gosec
+	"crypto/md5"
+	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
 	"fmt"
@@ -20,7 +20,7 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v5"
-	"golang.org/x/crypto/ripemd160" //nolint:gosec,staticcheck
+	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
@@ -336,7 +336,7 @@ func isReadOnly(fileInfo fs.FileInfo) bool {
 
 // md5Sum returns the MD5 sum of data.
 func md5Sum(data []byte) []byte {
-	md5SumArr := md5.Sum(data) //nolint:gosec
+	md5SumArr := md5.Sum(data)
 	return md5SumArr[:]
 }
 
@@ -361,12 +361,12 @@ func modeTypeName(mode fs.FileMode) string {
 
 // ripemd160Sum returns the RIPEMD-160 sum of data.
 func ripemd160Sum(data []byte) []byte {
-	return ripemd160.New().Sum(data) //nolint:gosec
+	return ripemd160.New().Sum(data)
 }
 
 // sha1Sum returns the SHA1 sum of data.
 func sha1Sum(data []byte) []byte {
-	sha1SumArr := sha1.Sum(data) //nolint:gosec
+	sha1SumArr := sha1.Sum(data)
 	return sha1SumArr[:]
 }
 

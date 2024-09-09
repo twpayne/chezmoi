@@ -58,7 +58,7 @@ func (c *Config) rbwOutput(args []string) ([]byte, error) {
 		return data, nil
 	}
 
-	cmd := exec.Command(c.RBW.Command, args...) //nolint:gosec
+	cmd := exec.Command(c.RBW.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)

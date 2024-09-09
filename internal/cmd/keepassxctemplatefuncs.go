@@ -167,7 +167,7 @@ func (c *Config) keepassxcOutputCachePassword(command string, args ...string) ([
 	cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
 	cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
 	cmdArgs = append(cmdArgs, args...)
-	cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
+	cmd := exec.Command(c.Keepassxc.Command, cmdArgs...)
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
 		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database))
 		if err != nil {
@@ -204,7 +204,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		cmdArgs := []string{"open"}
 		cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
 		cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
-		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...) //nolint:gosec
+		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...)
 		env := os.Environ()
 		// Ensure prompt is in English.
 		env = append(env, "LANGUAGE=en")

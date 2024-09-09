@@ -492,7 +492,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 		return checkResultOK, fmt.Sprintf("found %s", pathAbsPath)
 	}
 
-	cmd := exec.Command(pathAbsPath.String(), c.versionArgs...) //nolint:gosec
+	cmd := exec.Command(pathAbsPath.String(), c.versionArgs...)
 	output, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()
@@ -583,13 +583,7 @@ func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 		if dirEntry.Name() != ".git" {
 			continue
 		}
-		cmd := exec.Command( //nolint:gosec
-			"git",
-			"-C",
-			c.dirname.String(),
-			"status",
-			"--porcelain=v2",
-		)
+		cmd := exec.Command("git", "-C", c.dirname.String(), "status", "--porcelain=v2")
 		cmd.Stderr = os.Stderr
 		output, err := cmd.Output()
 		if err != nil {

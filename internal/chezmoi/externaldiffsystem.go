@@ -199,7 +199,7 @@ func (s *ExternalDiffSystem) RunScript(scriptName RelPath, dir AbsPath, data []b
 		if !s.scriptContents {
 			toData = nil
 		}
-		if err := os.WriteFile(targetAbsPath.String(), toData, 0o700); err != nil { //nolint:gosec
+		if err := os.WriteFile(targetAbsPath.String(), toData, 0o700); err != nil {
 			return err
 		}
 		if err := s.runDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
@@ -325,7 +325,7 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 		args = append(args, templateData.Destination, templateData.Target)
 	}
 
-	cmd := exec.Command(s.command, args...) //nolint:gosec
+	cmd := exec.Command(s.command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

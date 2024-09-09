@@ -181,7 +181,7 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 		commandArgs = append(commandArgs, "--session", session)
 	}
 
-	cmd := exec.Command(c.Onepassword.Command, commandArgs...) //nolint:gosec
+	cmd := exec.Command(c.Onepassword.Command, commandArgs...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)
@@ -235,7 +235,7 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 		}
 	}
 
-	cmd := exec.Command(c.Onepassword.Command, commandArgs...) //nolint:gosec
+	cmd := exec.Command(c.Onepassword.Command, commandArgs...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(c.logger, cmd)

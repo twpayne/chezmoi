@@ -83,7 +83,7 @@ func (c *Config) dopplerOutput(args []string) ([]byte, error) {
 	if data, ok := c.Doppler.outputCache[key]; ok {
 		return data, nil
 	}
-	cmd := exec.Command(c.Doppler.Command, args...) //nolint:gosec
+	cmd := exec.Command(c.Doppler.Command, args...)
 	// Always run the doppler command in the destination path because doppler uses
 	// relative paths to find its .doppler.json config file.
 	cmd.Dir = c.DestDirAbsPath.String()

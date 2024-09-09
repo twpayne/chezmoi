@@ -31,7 +31,6 @@ linters:
   - goimports
   - gomodguard
   - goprintffuncname
-  - gosec
   - gosimple
   - gosmopolitan
   - govet
@@ -95,6 +94,7 @@ linters:
   - goheader
   - gomnd
   - gomoddirectives
+  - gosec
   - ireturn
   - lll
   - maintidx
@@ -154,13 +154,10 @@ issues:
     text: unused-parameter
   - linters:
     - forbidigo
-    - gosec
     path: ^internal/cmds/
   - linters:
     - forcetypeassert
-    - gosec
     path: _test\.go$
   - linters:
     - forbidigo
-    - gosec
     path: assets/scripts/generate-commit.go
