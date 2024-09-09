@@ -162,6 +162,36 @@ if `~/.emacs.d` is a `git-repo` external, then create:
 echo "~/emacs.d updated"
 ```
 
+## How do I run a script periodically?
+
+Use a `run_once_*.tmpl` script that includes the current time truncated to a
+suitable unit. For example, to run a script daily:
+
+``` title="~/.local/share/chezmoi/run_once_daily.tmpl"
+#!/bin/sh
+
+# {{ now | date "2006-01-02" }}
+echo "new day"
+```
+
+For weekly, use the week number from the output of `date`, for example:
+
+``` title="~/.local/share/chezmoi/run_once_weekly.tmpl"
+#!/bin/sh
+
+# {{ output "date" "+%V" | trim }}
+echo "new week"
+```
+
+Or, approximate the week number with template functions:
+
+``` title="~/.local/share/chezmoi/run_once_weekly.tmpl"
+#!/bin/sh
+
+# {{ min (ceil (divf now.YearDay 7)) 52 }}
+echo "new week"
+```
+
 ## How do I enable shell completions?
 
 chezmoi includes shell completions for
