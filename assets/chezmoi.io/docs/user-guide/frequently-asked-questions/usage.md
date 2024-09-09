@@ -115,7 +115,7 @@ if ! command -v curl >/dev/null; then
 fi
 ```
 
-Chezmoi will make sure to execute it before templating other files.
+chezmoi will make sure to execute it before templating other files.
 
 !!! tip
 
