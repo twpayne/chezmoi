@@ -85,7 +85,6 @@ to the source state.
 
 ## Can I use chezmoi to manage my shell history across multiple machines?
 
-
 No. Every change in a file managed by chezmoi requires an explicit command to
 record it (e.g. `chezmoi add`) or apply it somewhere else (e.g. `chezmoi
 update`), and is recorded as a commit in your dotfiles repository. Creating a

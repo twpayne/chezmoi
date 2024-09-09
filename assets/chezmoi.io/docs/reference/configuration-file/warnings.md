@@ -7,7 +7,6 @@ these warnings can be suppressed by setting values in configuration file.
 | ------------------------------ | ---- | ------- | ---------------------------------------------- |
 | `configFileTemplateHasChanged` | bool | `true`  | Warn when the config file template has changed |
 
-
 !!! example
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
