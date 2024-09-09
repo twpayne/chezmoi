@@ -84,6 +84,13 @@ update Oh My Zsh and its plugins, refresh the downloaded archives.
     For example, Oh My Zsh may cache completions in `.oh-my-zsh/cache/completions/`,
     which should be added to your `.chezmoiignore` file.
 
+!!! warning
+
+    Do not use externals for large files or archives. chezmoi validates the exact
+    contents of externals every time you run `chezmoi diff`, `chezmoi apply`, or
+    `chezmoi verify`. For large externals, use a `run_once_` or `run_onchange_`
+    script to unpack the archive or file once instead.
+
 ## Include a subdirectory with selected files from a URL
 
 Use `include` pattern filters to include only selected files from an archive
