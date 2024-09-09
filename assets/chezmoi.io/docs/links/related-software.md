@@ -39,7 +39,7 @@ Installs chezmoi on Ubuntu and Debian servers.
 
 ### [`github.com/johan-weitner/chezmoi-ui`](https://github.com/johan-weitner/chezmoi-ui)
 
-A web UI for managing a list of apps to seed/feed a Chezmoi setup.
+A web UI for managing a list of apps to seed/feed a chezmoi setup.
 
 ### [`github.com/joke/asdf-chezmoi`](https://github.com/joke/asdf-chezmoi)
 

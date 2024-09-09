@@ -45,7 +45,7 @@ CLI](https://developer.1password.com/docs/cli) (`op`).
 
 !!! warning
 
-    Chezmoi has experimental support for [1Password secrets
+    chezmoi has experimental support for [1Password secrets
     automation](../../../user-guide/password-managers/1password.md#secrets-automation)
     modes. These modes change how the 1Password CLI works and affect all
     functions. Most notably, `account` parameters are not allowed on all
