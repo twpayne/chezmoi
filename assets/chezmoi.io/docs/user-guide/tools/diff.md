@@ -44,6 +44,27 @@ following to your config:
       - "--diff"
     ```
 
+## Use delta as the diff tool
+
+To use [delta](https://dandavison.github.io/delta/) as the diff tool you must
+set both `diff.command` and `diff.pager` to delta, for example:
+
+=== "TOML"
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [diff]
+    command = "delta"
+    pager = "delta"
+    ```
+
+=== "YAML"
+
+    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
+    diff:
+      command: "delta"
+      pager: "delta"
+    ```
+
 ## Don't show scripts in the diff output
 
 By default, `chezmoi diff` will show all changes, including the contents of
