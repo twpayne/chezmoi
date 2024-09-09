@@ -20,3 +20,29 @@ state, source state, and target state respectively. For example, to use
     If you generate your config file from a config file template, then you'll
     need to escape the `{{` and `}}` as `{{ "{{" }}` and `{{ "}}" }}`. That way
     your generated config file contains the `{{` and `}}` you expect.
+
+## Use VSCode as the merge tool
+
+To use [VSCode](https://code.visualstudio.com/) as the merge tool, add the
+following to your config:
+
+=== "TOML"
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [merge]
+    command = "bash"
+    args = [
+        "-c",
+        "cp {{ .Target }} {{ .Target }}.base && code --new-window --wait --merge {{ .Destination }} {{ .Target }} {{ .Target }}.base {{ .Source }}",
+    ]
+    ```
+
+=== "YAML"
+
+    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
+    merge:
+      command: "bash"
+      args:
+      - "-c"
+      - "cp {{ .Target }} {{ .Target }}.base && code --new-window --wait --merge {{ .Destination }} {{ .Target }} {{ .Target }}.base {{ .Source }}"
+    ```
