@@ -294,7 +294,6 @@ time would quickly become tiresome. Therefore, chezmoi only provides these
 functions when generating a config file from a config file template (e.g. when
 you run `chezmoi init` or `chezmoi --init apply`).
 
-
 ## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
 
 Whole system management tools are more than capable of managing your dotfiles,

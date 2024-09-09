@@ -115,7 +115,6 @@ current-context: {{ output "kubectl" "config" "current-context" | trim }}
     [related software](../links/related-software.md#githubcomvorpalbladechezmoi_modify_manager)
     for more information.
 
-
 ## Manage a file's permissions, but not its contents
 
 chezmoi's `create_` attributes allows you to tell chezmoi to create a file if

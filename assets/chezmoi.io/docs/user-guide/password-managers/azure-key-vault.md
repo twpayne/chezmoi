@@ -11,7 +11,6 @@ The logged in user must have the `Key Vault Secrets User` RBAC role on the Azure
 
 Alternatively, use alternate [authentication options](https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication?tabs=bash#2-authenticate-with-azure).
 
-
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [azureKeyVault]
   defaultVault = "contoso-vault2"
