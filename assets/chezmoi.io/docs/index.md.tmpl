@@ -7,14 +7,19 @@ Manage your dotfiles across multiple diverse machines, securely.
 The latest version of chezmoi is {{ $version }} ([release notes]({{
 $latestRelease.HTMLURL }}), [release history](reference/release-history.md)).
 
+## What does chezmoi do?
+
 chezmoi helps you manage your personal configuration files (dotfiles, like
 `~/.gitconfig`) across multiple machines.
 
 chezmoi provides many features beyond symlinking or using a bare git repo
-including: templates (to handle small differences between machines), password
-manager support (to store your secrets securely), importing files from archives
-(great for shell and editor plugins), full file encryption (using gpg or age),
-and running scripts (to handle everything else).
+including:
+
+* templates (to handle small differences between machines)
+* password manager support (to store your secrets securely)
+* importing files from archives (great for shell and editor plugins)
+* full file encryption (using gpg or age)
+* running scripts (to handle everything else)
 
 With chezmoi, pronounced /ʃeɪ mwa/ (shay-moi), you can install chezmoi and your
 dotfiles from your GitHub dotfiles repo on a new, empty machine with a single
@@ -32,6 +37,9 @@ Updating your dotfiles on any machine is a single command:
 ```console
 $ chezmoi update
 ```
+
+chezmoi runs on all popular operating systems, is distributed as a single
+statically-linked binary with no dependencies, and does not require root access.
 
 ## How do I start with chezmoi?
 
