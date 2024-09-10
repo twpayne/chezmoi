@@ -145,6 +145,7 @@ type SourceState struct {
 	templates               map[string]*Template
 	externals               map[RelPath][]*External
 	ignoredRelPaths         chezmoiset.Set[RelPath]
+	rewriteTargetPaths      *BiDiPathMap
 }
 
 // A SourceStateOption sets an option on a source state.
@@ -234,6 +235,13 @@ func WithReadTemplates(readTemplates bool) SourceStateOption {
 	}
 }
 
+// WithRewriteTargetPaths sets the target path rewrites.
+func WithRewriteTargetPaths(rewriteTargetPaths *BiDiPathMap) SourceStateOption {
+	return func(s *SourceState) {
+		s.rewriteTargetPaths = rewriteTargetPaths
+	}
+}
+
 // WithScriptTempDir sets the source directory.
 func WithScriptTempDir(scriptDirAbsPath AbsPath) SourceStateOption {
 	return func(s *SourceState) {
@@ -312,6 +320,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		templates:            make(map[string]*Template),
 		externals:            make(map[RelPath][]*External),
 		ignoredRelPaths:      chezmoiset.New[RelPath](),
+		rewriteTargetPaths:   NewBiDiPathMap(),
 	}
 	for _, option := range options {
 		option(s)
@@ -697,7 +706,7 @@ func (s *SourceState) Apply(
 	targetRelPath RelPath,
 	options ApplyOptions,
 ) error {
-	sourceStateEntry := s.root.get(targetRelPath)
+	sourceStateEntry := s.root.get(s.rewriteTargetPaths.Reverse(targetRelPath))
 
 	if !options.Filter.IncludeSourceStateEntry(sourceStateEntry) {
 		return nil

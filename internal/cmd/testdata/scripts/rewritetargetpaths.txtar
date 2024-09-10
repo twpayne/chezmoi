@@ -1,0 +1,10 @@
+# test that chezmoi apply rewrites the target path
+exec chezmoi apply
+! exists $HOME/.local/share/fonts/font.ttf
+exists $HOME/Library/Fonts/font.ttf
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[rewriteTargetPaths]
+    ".local/share/fonts" = "Library/Fonts"
+-- home/user/.local/share/chezmoi/dot_local/share/fonts/font.ttf
+# contents of font.ttf
