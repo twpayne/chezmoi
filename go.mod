@@ -45,6 +45,7 @@ require (
 	github.com/zalando/go-keyring v0.2.5
 	github.com/zricethezav/gitleaks/v8 v8.18.4
 	go.etcd.io/bbolt v1.3.11
+	go.uber.org/automaxprocs v1.5.3
 	golang.org/x/crypto v0.27.0
 	golang.org/x/crypto/x509roots/fallback v0.0.0-20240904212608-c9da6b9a4008
 	golang.org/x/oauth2 v0.23.0
