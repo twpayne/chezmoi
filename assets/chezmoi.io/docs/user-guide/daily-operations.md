@@ -20,6 +20,22 @@ sequenceDiagram
     R->>H: chezmoi update
 ```
 
+## Changing something and sending it to your repo
+
+You can make edits to the source directory, but more likely you'll be tweaking things in your $HOME directly and then want to persist the results:
+
+```console
+# Assuming you have `.gitignore` already managed by chezmoi
+echo "# My Addition" >> .gitignore_global
+
+# Doing [`chezmoi update`](../reference/commands/update.md) will lose your changes (!), you need to [`re-add`](../reference/commands/re-add.md)
+chezmoi re-add .gitignore_global
+
+# Then if you don't have `autoPush` configured you'll have to do the [`git`](../reference/commands/git.md) part yourself
+chezmoi git commit -- -a -m "Did a change"
+chezmoi git push
+```
+
 ## Pull the latest changes from your repo and see what would change, without actually applying the changes
 
 Run:
