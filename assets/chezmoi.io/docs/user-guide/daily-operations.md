@@ -22,7 +22,7 @@ sequenceDiagram
 
 ## Changing something and sending it to your repo
 
-You can make edits to the source directory, but more likely you'll be tweaking things in your $HOME directly and then want to persist the results:
+You can make edits to the source directory, but more likely you'll be tweaking things in your `$HOME` directly and then want to persist the results:
 
 ```console
 # Assuming you have `.gitignore` already managed by chezmoi
