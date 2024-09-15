@@ -28,12 +28,12 @@ The preferred way to work is to make changes to the files in your source directo
 # Assuming you have `.gitignore_global` already managed by chezmoi
 echo "# My Addition" >> .gitignore_global
 
-# This will open your editor with the contents of .gitignore_global
+# This will open your `$EDITOR` with the contents of .gitignore_global
 chezmoi edit .gitignore_global
 
 # Complete your edits and save the file
 
-# Then if you don't have `autoPush` configured you'll have to do the [`git`](../reference/commands/git.md) part yourself
+# Then if you don't have `autoPush` configured (see below) you'll have to do the [`git`](../reference/commands/git.md) part yourself
 chezmoi git commit -- -a -m "Made a change"
 chezmoi git push
 ```
