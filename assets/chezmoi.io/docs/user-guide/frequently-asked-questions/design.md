@@ -362,7 +362,7 @@ grow beyond that, switch to a whole system configuration management tool.
 
 ## Where does the name "chezmoi" come from?
 
-"chezmoi" splits to "chez moi" and pronounced /ʃeɪ mwa/ (shay-moi) meaning "at
+"chezmoi" splits to "chez moi" and pronounced /ʃeɪ mwa/ (shay-mwa) meaning "at
 my house" in French. It's seven letters long, which is an appropriate length for
 a command that is only run occasionally. If you prefer a shorter command, add an
 alias to your shell configuration, for example:
