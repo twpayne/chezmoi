@@ -168,3 +168,14 @@ with a single command:
 ```console
 $ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --one-shot $GITHUB_USERNAME
 ```
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    R->>W: chezmoi init $GITHUB_USERNAME
+    R->>H: chezmoi init --apply $GITHUB_USERNAME
+    R->>H: chezmoi init --one-shot $GITHUB_USERNAME
+```
