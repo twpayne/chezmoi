@@ -1,5 +1,44 @@
 # Daily operations
 
+## Edit your dotfiles
+
+Edit a dotfile with:
+
+```console
+$ chezmoi edit $FILENAME
+```
+
+This will edit `$FILENAME`'s source file in your source directory. chezmoi will
+not make any changes to the actual dotfile until you run `chezmoi apply`.
+
+To automatically run `chezmoi apply` when you quit your editor, run:
+
+```console
+$ chezmoi edit --apply $FILENAME
+```
+
+To automatically run `chezmoi apply` whenever you save the file in your editor, run:
+
+```console
+$ chezmoi edit --watch $FILENAME
+```
+
+You don't have to use `chezmoi edit` to edit your dotfiles. For more
+information, see [Do I have to use `chezmoi edit` to edit my
+dotfiles?](frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi)
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    W->>W: chezmoi edit
+    W->>H: chezmoi apply
+    W->>H: chezmoi edit --apply
+    W->>H: chezmoi edit --watch
+```
+
 ## Pull the latest changes from your repo and apply them
 
 You can pull the changes from your repo and apply them in a single command:
