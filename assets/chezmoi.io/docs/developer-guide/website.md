@@ -2,8 +2,10 @@
 
 The [website](https://chezmoi.io) is generated with [Material for
 MkDocs](https://squidfunk.github.io/mkdocs-material/) from the contents of the
-`assets/chezmoi.io/docs/` directory. It hosted by [GitHub pages](https://pages.github.com/) from
+`assets/chezmoi.io/docs/` directory. It is hosted by [GitHub pages](https://pages.github.com/) from
 the [`gh-pages` branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
+
+You'll need python3 and Go installed to be able to generate the pages.
 
 Change into the website directory:
 
