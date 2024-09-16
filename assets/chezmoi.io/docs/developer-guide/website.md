@@ -6,6 +6,9 @@ MkDocs](https://squidfunk.github.io/mkdocs-material/) from the contents of the
 pages](https://pages.github.com/) from the [`gh-pages`
 branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
 
+To build the website locally, both Go 1.22 (or later) and Python 3.10 (or later)
+must be installed.
+
 Change into the website directory:
 
 ```console
