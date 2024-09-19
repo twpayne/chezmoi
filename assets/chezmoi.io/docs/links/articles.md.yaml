@@ -446,3 +446,7 @@ articles:
   version: 2.52.1
   title: Managing dotfiles with chezmoi
   url: https://stoddart.github.io/2024/09/08/managing-dotfiles-with-chezmoi.html
+- date: '2024-09-09'
+  version: 2.52.2
+  title: Keeping your Dotfiles in Sync and your Secrets in Gopass
+  url: https://blog.m5e.de/post/keeping-your-dotfiles-in-sync-and-your-secrets-in-gopass/
