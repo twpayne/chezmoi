@@ -16,7 +16,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/google/go-github/v64/github"
+	"github.com/google/go-github/v65/github"
 	"github.com/google/renameio/v2/maybe"
 	"gopkg.in/yaml.v3"
 
