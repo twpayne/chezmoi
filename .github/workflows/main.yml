@@ -11,7 +11,7 @@ on:
   schedule:
   - cron: 32 2 * * *
 env:
-  ACTIONLINT_VERSION: 1.7.1 # https://github.com/rhysd/actionlint/releases
+  ACTIONLINT_VERSION: 1.7.2 # https://github.com/rhysd/actionlint/releases
   AGE_VERSION: 1.2.0 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.3.0 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.0.3 # https://github.com/editorconfig-checker/editorconfig-checker/releases
