@@ -131,7 +131,7 @@ format: ensure-gofumpt ensure-golines
 
 .PHONY: format-yaml
 format-yaml:
-	find . -name \*.yaml -o -name \*.yml | xargs ./assets/scripts/format-yaml.py
+	find . -name \*.yaml -o -name \*.yml | xargs uv run task format-yaml
 
 .PHONY: create-syso
 create-syso: ensure-goversioninfo

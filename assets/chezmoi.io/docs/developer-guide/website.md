@@ -1,56 +1,43 @@
 # Website
 
-The [website](https://chezmoi.io) is generated with [Material for
-MkDocs](https://squidfunk.github.io/mkdocs-material/) from the contents of the
-`assets/chezmoi.io/docs/` directory. It is hosted by [GitHub
-pages](https://pages.github.com/) from the [`gh-pages`
-branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
+The [website](https://chezmoi.io) is generated with
+[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) from the
+contents of the `assets/chezmoi.io/docs/` directory. It is hosted by
+[GitHub pages](https://pages.github.com/) from the
+[`gh-pages` branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
 
-To build the website locally, both Go 1.22 (or later) and Python 3.10 (or later)
-must be installed.
-
-Change into the website directory:
-
-```console
-$ cd assets/chezmoi.io
-```
+To build the website locally, Go 1.22 (or later) and
+[uv](https://docs.astral.sh/uv/getting-started/installation/) 0.4.15 (or later)
+must be installed. Python 3.10 (or later) is required, but may be installed with
+`uv`:
 
 !!! note ""
 
-    === "Default"
+    If Python 3.10 (or later) is not currently installed, install it with `uv`:
 
-        Install the website dependencies:
+    ```console
+    $ uv python install 3.10
+    ```
 
-        ```console
-        $ pip3 install --user -r requirements.txt
-        ```
+Install the dependencies (the `--frozen` is optional but recommended):
 
-    === "virtualenv (Recommended)"
-
-        Create a virtualenv with:
-
-        ```console
-        $ python3 -m venv .venv
-        ```
-
-        and [activate it](https://docs.python.org/3/library/venv.html#how-venvs-work).
-
-        Install the website dependencies:
-
-        ```console
-        $ pip3 install -r requirements.txt
-        ```
+```console
+$ uv sync --frozen
+```
 
 Test the website locally by running:
 
 ```console
-$ mkdocs serve
+$ uv run task serve-docs
 ```
 
 and visiting [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 
-Deploy the website with:
+## Maintainers
+
+The website is automatically deployed when new releases are created, but manual
+deployments can be triggered by maintainers with appropriate access using:
 
 ```console
-$ mkdocs gh-deploy
+$ uv run task mkdocs gh-deploy
 ```

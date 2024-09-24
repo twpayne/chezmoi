@@ -22,7 +22,9 @@ env:
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.3.2 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
+  PYTHON_VERSION: '3.10'
   RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
+  UV_VERSION: 0.4.16 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
@@ -282,11 +284,15 @@ jobs:
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
+    - uses: astral-sh/setup-uv@abac0ce7b0768476333db78faaf98b1130f5face
+      with:
+        version: ${{ env.UV_VERSION }}
     - name: install-website-dependencies
       run: |
-        pip3 install -r assets/chezmoi.io/requirements.txt
+        uv python install ${{ env.PYTHON_VERSION }}
+        uv sync --locked
     - name: build-website
-      run: mkdocs build -f assets/chezmoi.io/mkdocs.yml
+      run: uv run -v task build-docs
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
   test-windows:
@@ -450,15 +456,19 @@ jobs:
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
+    - uses: astral-sh/setup-uv@abac0ce7b0768476333db78faaf98b1130f5face
+      with:
+        version: ${{ env.UV_VERSION }}
     - name: prepare-chezmoi.io
       run: |
-        pip3 install -r assets/chezmoi.io/requirements.txt
-        mkdocs build -f assets/chezmoi.io/mkdocs.yml
+        uv sync --locked
+        uv python install ${{ env.PYTHON_VERSION }}
+        uv run -v task build-docs
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
     - name: push-chezmoi.io
       run: |
-        ( cd assets/chezmoi.io && mkdocs gh-deploy )
+        uv run -v task deploy-docs
     - name: prepare-get.chezmoi.io
       run: |
         cp assets/scripts/install.sh assets/get.chezmoi.io/index.html
