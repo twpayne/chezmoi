@@ -392,12 +392,12 @@ articles:
 - date: '2024-03-11'
   version: 2.47.1
   lang: CN
-  title: 'Chezmoi：優雅管理Linux的dotfile，使用Git儲存庫備份，類似GNU Stow'
+  title: Chezmoi：優雅管理Linux的dotfile，使用Git儲存庫備份，類似GNU Stow
   url: https://ivonblog.com/posts/chezmoi-manage-dotfiles/
 - date: '2024-03-23'
   version: 2.47.2
   lang: CN
-  title: '使用 chezmoi & vscode, 管理你的 dotfiles'
+  title: 使用 chezmoi & vscode, 管理你的 dotfiles
   url: https://shansan.top/2024/03/23/using-chezmoi-to-manage-dotfiles/
 - date: '2024-03-23'
   version: 2.47.2
@@ -414,12 +414,12 @@ articles:
 - date: '2024-04-27'
   version: 2.48.0
   lang: CN
-  title: '使用 chezmoi & vscode, 管理你的 dotfiles'
+  title: 使用 chezmoi & vscode, 管理你的 dotfiles
   url: https://juejin.cn/post/7362028633425608754
 - date: '2024-05-01'
   version: 2.48.0
   lang: TH
-  title: 'จัดการ dotfiles ด้วย chezmoi'
+  title: จัดการ dotfiles ด้วย chezmoi
   url: https://www.anuwong.com/blog/manage-dotfiles-with-chezmoi/
 - date: '2024-05-27'
   version: 2.48.1
@@ -427,20 +427,20 @@ articles:
   url: https://1729.org.uk/posts/managing-dotfiles-with-chezmoi/
 - date: '2024-06-26'
   version: 2.49.1
-  title: 'Automate Your Dotfiles with Chezmoi'
+  title: Automate Your Dotfiles with Chezmoi
   url: https://learn.typecraft.dev/tutorial/our-place-chezmoi/
 - date: '2024-07-28'
   version: 2.51.0
-  title: 'Development Environment Setup with Chezmoi'
+  title: Development Environment Setup with Chezmoi
   url: https://danielmschmidt.de/posts/dev-env-setup-with-chezmoi/
 - date: '2024-07-31'
   version: 2.51.0
-  title: 'Managing dotfiles with chezmoi'
+  title: Managing dotfiles with chezmoi
   url: https://wqplease.com/p/managing-dotfiles-with-chezmoi
 - date: '2024-08-30'
   version: 2.52.1
   lang: JP
-  title: 'dotfiles管理をchezmoiに移行する'
+  title: dotfiles管理をchezmoiに移行する
   url: https://nsakki55.hatenablog.com/entry/2024/08/30/125246
 - date: '2024-09-08'
   version: 2.52.1
