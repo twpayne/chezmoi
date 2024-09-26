@@ -17,15 +17,14 @@ cmp $CHEZMOISOURCEDIR/dot_config/Code/User/settings.json golden/settings.json
 
 # test that chezmoi mackup add --secrets=error generates an error when adding a file with a secret and does not add the file
 ! exec chezmoi mackup add --secrets=error wget
-cmpenv stderr golden/stderr
+stderr 'Uncovered a GitHub Personal Access Token, potentially leading to unauthorized repository access and sensitive content exposure\.'
+stderr 'Detected a Generic API Key, potentially exposing access to various services and sensitive operations\.'
 ! exists $CHEZMOISOURCEDIR/dot_wgetrc
 
 -- golden/dot_curlrc --
 # contents of .curlrc
 -- golden/settings.json --
 # contents of .config/Code/User/settings.json
--- golden/stderr --
-chezmoi: $WORK/home/user/.wgetrc:1: Uncovered a GitHub Personal Access Token, potentially leading to unauthorized repository access and sensitive content exposure.
 -- home/user/.config/Code/User/settings.json --
 # contents of .config/Code/User/settings.json
 -- home/user/.curlrc --
@@ -38,7 +37,7 @@ name = Curl
 .netrc
 .curlrc
 -- home/user/.wgetrc --
-GITHUB_PERSONAL_ACCESS_TOKEN=ghp_0000000000000000000000000000000000000
+GITHUB_PERSONAL_ACCESS_TOKEN=ghp_0123456789ABCDEF0123456789ABCDEF01234
 -- opt/homebrew/Cellar/mackup/0.8.32/libexec/bin/mackup --
 # mackup binary
 -- opt/homebrew/Cellar/mackup/0.8.32/libexec/lib/python3.9/site-packages/mackup/applications/vscode.cfg --
