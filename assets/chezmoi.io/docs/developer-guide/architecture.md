@@ -101,8 +101,8 @@ target state with the entry state in the persistent state.
 
 ## `internal/cmd/` directory
 
-`internal/cmd/*cmd.go` contains the code for each individual command and
-`internal/cmd/*templatefuncs.go` contain the template functions.
+`internal/cmd/*cmd.go` files contain the code for each individual command.
+`internal/cmd/*templatefuncs.go` files contain the template functions.
 
 Commands are defined as methods on the `Config` struct. The `Config` struct is
 large, containing all configuration values read from the config file, command
@@ -117,8 +117,8 @@ system and persistent state.
 
 chezmoi uses separate types for absolute paths (`AbsPath`) and relative paths
 (`RelPath`) to avoid errors where paths are combined (e.g. joining two absolute
-paths). A further type `SourceRelPath` is a relative path within the source
-directory and handles file and directory attributes.
+paths is an error). The type `SourceRelPath` is a relative path within the
+source directory and handles file and directory attributes.
 
 Internally, chezmoi normalizes all paths to use forward slashes with an
 optional upper-cased Windows volume so they can be compared with string
