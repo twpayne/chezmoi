@@ -35,10 +35,16 @@ Run chezmoi:
 $ go run .
 ```
 
-Run a set of smoketests, including cross-compilation, tests, and linting:
+Run a set of smoke tests, including cross-compilation, tests, and linting:
 
 ```console
-$ make smoketest
+$ make smoke-test
+```
+
+Test building chezmoi for all architectures:
+
+```console
+$ make test-release
 ```
 
 !!! hint
@@ -57,6 +63,6 @@ $ make smoketest
 
     ```console
     $ SHELL=bash make test
-    $ SHELL=zsh make smoketest
+    $ SHELL=zsh make smoke-test
     $ SHELL=bash go test ./...
     ```

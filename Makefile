@@ -27,8 +27,8 @@ PREFIX?=/usr/local
 .PHONY: default
 default: build
 
-.PHONY: smoketest
-smoketest: run build-all test lint shellcheck format
+.PHONY: smoke-test
+smoke-test: run build-all test lint shellcheck format
 
 .PHONY: build
 build:
