@@ -9,8 +9,8 @@ file is re-encrypted and replaces the original file in the source state.
 
 If the operating system supports hard links, then the edit command invokes the
 editor with filenames which match the target filename, unless the
-`edit.hardlink` configuration variable is set to `false` the `--hardlink=false`
-command line flag is set.
+`edit.hardlink` configuration variable is set to `false` or the
+`--hardlink=false` command line flag is set.
 
 ## `-a`, `--apply`
 
