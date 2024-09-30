@@ -8675,8 +8675,8 @@ its persistent state. chezmoi can then detect if a third party has updated a
 target since chezmoi last wrote it by comparing the actual state entry in the
 target state with the entry state in the persistent state.</p>
 <h2 id="internalcmd-directory"><code>internal/cmd/</code> directory</h2>
-<p><code>internal/cmd/*cmd.go</code> contains the code for each individual command and
-<code>internal/cmd/*templatefuncs.go</code> contain the template functions.</p>
+<p><code>internal/cmd/*cmd.go</code> files contain the code for each individual command.
+<code>internal/cmd/*templatefuncs.go</code> files contain the template functions.</p>
 <p>Commands are defined as methods on the <code>Config</code> struct. The <code>Config</code> struct is
 large, containing all configuration values read from the config file, command
 line arguments, and computed and cached values.</p>
@@ -8687,8 +8687,8 @@ system and persistent state.</p>
 <h2 id="path-handling">Path handling</h2>
 <p>chezmoi uses separate types for absolute paths (<code>AbsPath</code>) and relative paths
 (<code>RelPath</code>) to avoid errors where paths are combined (e.g. joining two absolute
-paths). A further type <code>SourceRelPath</code> is a relative path within the source
-directory and handles file and directory attributes.</p>
+paths is an error). The type <code>SourceRelPath</code> is a relative path within the
+source directory and handles file and directory attributes.</p>
 <p>Internally, chezmoi normalizes all paths to use forward slashes with an
 optional upper-cased Windows volume so they can be compared with string
 comparisons. Paths read from the user may include tilde (<code>~</code>) to represent the

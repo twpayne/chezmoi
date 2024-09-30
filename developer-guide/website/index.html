@@ -7958,6 +7958,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Website
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -7967,6 +7978,34 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#maintainers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintainers
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -8356,6 +8395,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#maintainers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintainers
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -8373,39 +8429,31 @@
 
 
 <h1 id="website">Website</h1>
-<p>The <a href="https://chezmoi.io">website</a> is generated with <a href="https://squidfunk.github.io/mkdocs-material/">Material for
-MkDocs</a> from the contents of the
-<code>assets/chezmoi.io/docs/</code> directory. It hosted by <a href="https://pages.github.com/">GitHub pages</a> from
-the <a href="https://github.com/twpayne/chezmoi/tree/gh-pages"><code>gh-pages</code> branch</a>.</p>
-<p>Change into the website directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>assets/chezmoi.io
-</code></pre></div>
+<p>The <a href="https://chezmoi.io">website</a> is generated with
+<a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a> from the
+contents of the <code>assets/chezmoi.io/docs/</code> directory. It is hosted by
+<a href="https://pages.github.com/">GitHub pages</a> from the
+<a href="https://github.com/twpayne/chezmoi/tree/gh-pages"><code>gh-pages</code> branch</a>.</p>
+<p>To build the website locally, Go 1.22 (or later) and
+<a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a> 0.4.15 (or later)
+must be installed. Python 3.10 (or later) is required, but may be installed with
+<code>uv</code>:</p>
 <div class="admonition note">
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Default</label><label for="__tabbed_1_2">virtualenv (Recommended)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<p>Install the website dependencies:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip3<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<p>If Python 3.10 (or later) is not currently installed, install it with <code>uv</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.10
 </code></pre></div>
 </div>
-<div class="tabbed-block">
-<p>Create a virtualenv with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<p>Install the dependencies (the <code>--frozen</code> is optional but recommended):</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
 </code></pre></div>
-<p>and <a href="https://docs.python.org/3/library/venv.html#how-venvs-work">activate it</a>.</p>
-<p>Install the website dependencies:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>pip3<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
-</code></pre></div>
-</div>
-</div>
-</div>
-</div>
 <p>Test the website locally by running:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>serve
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>task<span class="w"> </span>serve-docs
 </code></pre></div>
 <p>and visiting <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>.</p>
-<p>Deploy the website with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>mkdocs<span class="w"> </span>gh-deploy
+<h2 id="maintainers">Maintainers</h2>
+<p>The website is automatically deployed when new releases are created, but manual
+deployments can be triggered by maintainers with appropriate access using:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>task<span class="w"> </span>mkdocs<span class="w"> </span>gh-deploy
 </code></pre></div>
 
 

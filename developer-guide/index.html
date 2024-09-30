@@ -8384,8 +8384,11 @@ of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <cod
 <p>Run chezmoi:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>run<span class="w"> </span>.
 </code></pre></div>
-<p>Run a set of smoketests, including cross-compilation, tests, and linting:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>smoketest
+<p>Run a set of smoke tests, including cross-compilation, tests, and linting:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>smoke-test
+</code></pre></div>
+<p>Test building chezmoi for all architectures:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>test-release
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -8398,7 +8401,7 @@ warning-path: Please set $HOME to a directory where you have write access.
 </code></pre></div>
 <p>These can be avoided with by running tests with <code>SHELL=bash</code> or <code>SHELL=zsh</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
-<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>zsh<span class="w"> </span>make<span class="w"> </span>smoketest
+<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>zsh<span class="w"> </span>make<span class="w"> </span>smoke-test
 <span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
 </code></pre></div>
 </div>
