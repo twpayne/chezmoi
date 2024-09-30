@@ -284,7 +284,7 @@ jobs:
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@4cda7d73322c50eac316ad623a716f09a2db2ac7
+    - uses: astral-sh/setup-uv@023eb7875fa1caa15814da58d1df7350f8fb1fd9
       with:
         version: ${{ env.UV_VERSION }}
     - name: install-website-dependencies
@@ -456,7 +456,7 @@ jobs:
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@4cda7d73322c50eac316ad623a716f09a2db2ac7
+    - uses: astral-sh/setup-uv@023eb7875fa1caa15814da58d1df7350f8fb1fd9
       with:
         version: ${{ env.UV_VERSION }}
     - name: prepare-chezmoi.io
