@@ -22,9 +22,9 @@ env:
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.3.2 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
-  PYTHON_VERSION: '3.10'
+  PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.4.16 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.4.17 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
