@@ -450,3 +450,7 @@ articles:
   version: 2.52.2
   title: Keeping your Dotfiles in Sync and your Secrets in Gopass
   url: https://blog.m5e.de/post/keeping-your-dotfiles-in-sync-and-your-secrets-in-gopass/
+- date: '2024-09-15'
+  version: 2.52.2
+  title: Cross-Platform Dotfiles with Chezmoi, Nix, Brew, and Devpod
+  url: https://medium.com/@alfor93/cross-platform-dotfiles-with-chezmoi-nix-brew-and-devpod-0fdb478e40ce
