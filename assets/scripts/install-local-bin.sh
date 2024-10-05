@@ -239,9 +239,9 @@ http_download_curl() {
 	source_url="${2}"
 	header="${3}"
 	if [ -z "${header}" ]; then
-		code="$(curl -w '%{http_code}' -sL -o "${local_file}" "${source_url}")"
+		code="$(curl -w '%{http_code}' -fsSL -o "${local_file}" "${source_url}")"
 	else
-		code="$(curl -w '%{http_code}' -sL -H "${header}" -o "${local_file}" "${source_url}")"
+		code="$(curl -w '%{http_code}' -fsSL -H "${header}" -o "${local_file}" "${source_url}")"
 	fi
 	if [ "${code}" != "200" ]; then
 		log_debug "http_download_curl received HTTP status ${code}"
