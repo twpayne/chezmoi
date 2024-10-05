@@ -8,11 +8,8 @@
 set -e
 
 BINDIR="${BINDIR:-.local/bin}"
-CHEZMOI_USER_REPO="${CHEZMOI_USER_REPO:-twpayne/chezmoi}"
 TAGARG=latest
 LOG_LEVEL=2
-
-GITHUB_DOWNLOAD="https://github.com/${CHEZMOI_USER_REPO}/releases/download"
 
 tmpdir="$(mktemp -d)"
 trap 'rm -rf -- "${tmpdir}"' EXIT
@@ -76,12 +73,12 @@ main() {
 	# download tarball
 	NAME="chezmoi_${VERSION}_${GOOS}${GOOS_EXTRA}_${arch}"
 	TARBALL="${NAME}.${FORMAT}"
-	TARBALL_URL="${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}"
+	TARBALL_URL="https://github.com/twpayne/chezmoi/releases/download/${TAG}/${TARBALL}"
 	http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}" || exit 1
 
 	# download checksums
 	CHECKSUMS="chezmoi_${VERSION}_checksums.txt"
-	CHECKSUMS_URL="${GITHUB_DOWNLOAD}/${TAG}/${CHECKSUMS}"
+	CHECKSUMS_URL="https://github.com/twpayne/chezmoi/releases/download/${TAG}/${CHECKSUMS}"
 	http_download "${tmpdir}/${CHECKSUMS}" "${CHECKSUMS_URL}" || exit 1
 
 	# verify checksums
@@ -211,7 +208,7 @@ get_libc() {
 real_tag() {
 	tag="${1}"
 	log_debug "checking GitHub for tag ${tag}"
-	release_url="https://github.com/${CHEZMOI_USER_REPO}/releases/${tag}"
+	release_url="https://github.com/twpayne/chezmoi/releases/${tag}"
 	json="$(http_get "${release_url}" "Accept: application/json")"
 	if [ -z "${json}" ]; then
 		log_err "real_tag error retrieving GitHub release ${tag}"
