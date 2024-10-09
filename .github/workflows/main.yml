@@ -11,7 +11,7 @@ on:
   schedule:
   - cron: 32 2 * * *
 env:
-  ACTIONLINT_VERSION: 1.7.2 # https://github.com/rhysd/actionlint/releases
+  ACTIONLINT_VERSION: 1.7.3 # https://github.com/rhysd/actionlint/releases
   AGE_VERSION: 1.2.0 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.3.0 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.0.3 # https://github.com/editorconfig-checker/editorconfig-checker/releases
@@ -24,7 +24,7 @@ env:
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.4.17 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.4.20 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
