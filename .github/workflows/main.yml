@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - id: filter
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
       with:
@@ -59,7 +59,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       with:
         fetch-depth: 1
     - uses: github/codeql-action/init@e2b3eafc8d227b0241d48be5f425d47c2d750a13
@@ -71,7 +71,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - uses: reviewdog/action-misspell@ef8b22c1cca06c8d306fc6be302c3dab0f6ca12f
       with:
         locale: US
@@ -83,7 +83,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -109,7 +109,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -144,7 +144,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: oldstable
@@ -177,7 +177,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       with:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
@@ -204,31 +204,31 @@ jobs:
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874
+      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-darwin-arm64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874
+      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874
+      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-linux-musl-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874
+      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
       with:
         name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-windows-amd64.exe
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874
+      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
@@ -238,7 +238,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       with:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
@@ -280,11 +280,11 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@023eb7875fa1caa15814da58d1df7350f8fb1fd9
+    - uses: astral-sh/setup-uv@77c28f02b3322332d4a4446b3177f426da8bf086
       with:
         version: ${{ env.UV_VERSION }}
     - name: install-website-dependencies
@@ -302,11 +302,11 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9
+    - uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -328,7 +328,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       with:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
@@ -384,11 +384,11 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: stable
-    - uses: golangci/golangci-lint-action@aaa42aa0628b4ae2578232a66b541047968fac86
+    - uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
@@ -422,13 +422,13 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       with:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@4959ce089c160fddf62f7b42464195ba1a56d382
+    - uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da
     - name: create-syso
       run: |
         make create-syso
@@ -450,13 +450,13 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
       with:
         fetch-depth: 0
     - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@023eb7875fa1caa15814da58d1df7350f8fb1fd9
+    - uses: astral-sh/setup-uv@77c28f02b3322332d4a4446b3177f426da8bf086
       with:
         version: ${{ env.UV_VERSION }}
     - name: prepare-chezmoi.io

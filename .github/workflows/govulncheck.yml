@@ -16,11 +16,11 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - name: go-version
       id: go-version
       run: |
         echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> "${GITHUB_OUTPUT}"
-    - uses: golang/govulncheck-action@dd0578b371c987f96d1185abb54344b44352bd58
+    - uses: golang/govulncheck-action@b625fbe08f3bccbe446d94fbf87fcc875a4f50ee
       with:
         go-version-input: ${{ steps.go-version.outputs.go-version }}
