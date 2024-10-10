@@ -105,7 +105,7 @@ jobs:
   test-macos:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-12
+    runs-on: macos-13
     permissions:
       contents: read
     steps:
