@@ -24,6 +24,11 @@ gpg --armor --recipient $RECIPIENT --encrypt
 and store the encrypted file in the source state. The file will automatically
 be decrypted when generating the target state.
 
+!!! note
+
+    Make sure `encryption` is added to the top level section at the beginning of
+    the config, before any other sections.
+
 ## Symmetric encryption
 
 Specify symmetric encryption in your configuration file:

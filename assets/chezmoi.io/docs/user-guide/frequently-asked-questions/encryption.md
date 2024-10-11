@@ -51,18 +51,16 @@ fi
 EOF
 ```
 
-Configure chezmoi to use the public and private key for encryption:
+Specify the public and private keys for encryption.
+`age.recipient` must be your public key from above.
+Make sure `encryption` is added at the beginning, before any other sections.
 
-```console
-$ cat >> .chezmoi.toml.tmpl <<EOF
+```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "age"
 [age]
     identity = "~/.config/chezmoi/key.txt"
     recipient = "age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl"
-EOF
 ```
-
-`age.recipient` must be your public key from above.
 
 Run `chezmoi init --apply` to generate the chezmoi's config file and decrypt the
 private key:
