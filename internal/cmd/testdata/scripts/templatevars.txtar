@@ -24,3 +24,22 @@ exec chezmoi execute-template '{{ .chezmoi.os }}'
 
 exec chezmoi execute-template '{{ .chezmoi.sourceDir }}'
 stdout ${CHEZMOISOURCEDIR@R}
+
+exec chezmoi execute-template '{{ get .chezmoi.darwinVersion "productName" }}'
+[darwin] stdout macOS
+[!darwin] stdout ^$
+
+[darwin] exec chezmoi execute-template '{{ .chezmoi.darwinVersion.productVersion }}'
+[darwin] stdout ^\d+.\d+(.\d+)?$
+
+[darwin] exec chezmoi execute-template '{{ .chezmoi.darwinVersion.productMajorVersion }}'
+[darwin] stdout ^\d+$
+
+[darwin] exec chezmoi execute-template '{{ .chezmoi.darwinVersion.productMinorVersion }}'
+[darwin] stdout ^\d+$
+
+[darwin] exec chezmoi execute-template '{{ .chezmoi.darwinVersion.productPatchVersion }}'
+[darwin] stdout ^\d+$
+
+[darwin] exec chezmoi execute-template '{{ .chezmoi.darwinVersion.buildVersion }}'
+[darwin] stdout ^[0-9A-Z]+$

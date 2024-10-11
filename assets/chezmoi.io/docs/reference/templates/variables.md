@@ -9,6 +9,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.cacheDir`           | string   | The cache directory                                                                                                                                   |
 | `.chezmoi.config`             | object   | The configuration, as read from the config file                                                                                                       |
 | `.chezmoi.configFile`         | string   | The path to the configuration file used by chezmoi                                                                                                    |
+| `.chezmoi.darwinVersion`      | object   | macOS version information, if running on macOS                                                                                                        |
 | `.chezmoi.executable`         | string   | The path to the `chezmoi` executable, if available                                                                                                    |
 | `.chezmoi.fqdnHostname`       | string   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                                         |
 | `.chezmoi.gid`                | string   | The primary group ID                                                                                                                                  |
@@ -31,6 +32,19 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.version.version`    | string   | The version of chezmoi                                                                                                                                |
 | `.chezmoi.windowsVersion`     | object   | Windows version information, if running on Windows                                                                                                    |
 | `.chezmoi.workingTree`        | string   | The working tree of the source directory                                                                                                              |
+
+`.chezmoi.darwinVersion` contains the following keys populated from the
+`sw_vers` tool.
+
+| Key                         | Type    |
+| --------------------------- | ------- |
+| `buildVersion`              | string  |
+| `productName`               | string  |
+| `productVersion`            | string  |
+| `productVersionExtra`       | string  |
+| `productMajorVersion`       | integer |
+| `productMinorVersion`       | integer |
+| `productPatchVersion`       | integer |
 
 `.chezmoi.windowsVersion` contains the following keys populated from the
 registry key `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows

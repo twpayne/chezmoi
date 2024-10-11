@@ -267,6 +267,7 @@ type templateData struct {
 	commandDir        chezmoi.AbsPath
 	config            map[string]any
 	configFile        chezmoi.AbsPath
+	darwinVersion     map[string]any
 	executable        chezmoi.AbsPath
 	fqdnHostname      string
 	gid               string
@@ -1496,6 +1497,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"commandDir":        templateData.commandDir.String(),
 			"config":            templateData.config,
 			"configFile":        templateData.configFile.String(),
+			"darwinVersion":     templateData.darwinVersion,
 			"executable":        templateData.executable.String(),
 			"fqdnHostname":      templateData.fqdnHostname,
 			"gid":               templateData.gid,
@@ -2217,6 +2219,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		os.Setenv("CHEZMOI_VERBOSE", "1")
 	}
 	for groupKey, group := range map[string]map[string]any{
+		"DARWIN_VERSION":  templateData.darwinVersion,
 		"KERNEL":          templateData.kernel,
 		"OS_RELEASE":      templateData.osRelease,
 		"VERSION":         templateData.version,
@@ -2354,6 +2357,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	}
 
 	executable, _ := os.Executable()
+	darwinVersion, _ := darwinVersion()
 	windowsVersion, _ := windowsVersion()
 	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
 
@@ -2365,6 +2369,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		commandDir:        c.commandDirAbsPath,
 		config:            c.ConfigFile.toMap(),
 		configFile:        c.getConfigFileAbsPath(),
+		darwinVersion:     darwinVersion,
 		executable:        chezmoi.NewAbsPath(executable),
 		fqdnHostname:      fqdnHostname,
 		gid:               gid,

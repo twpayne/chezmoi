@@ -34,3 +34,12 @@ machine is connected to. For a stable result, use the `scutil` command:
 ```
 {{ $computerName := output "scutil" "--get" "ComputerName" | trim }}
 ```
+
+## Run script after every macOS update
+
+You can automate a script to run after each macOS update by creating
+a `run_onchange_` script using the `.chezmoi.darwinVersion` template:
+
+```
+# MacOS build version: {{ .chezmoi.darwinVersion.buildVersion }}
+```

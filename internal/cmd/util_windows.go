@@ -34,6 +34,10 @@ var defaultInterpreters = map[string]chezmoi.Interpreter{
 	},
 }
 
+func darwinVersion() (map[string]any, error) {
+	return nil, nil
+}
+
 func windowsVersion() (map[string]any, error) {
 	registryKey, err := registry.OpenKey(
 		registry.LOCAL_MACHINE,
