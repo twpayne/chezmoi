@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/fs"
@@ -300,6 +301,178 @@ func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 		"VERSION_ID":       "versionID",
 	} {
 		assert.Equal(t, expected, upperSnakeCaseToCamelCase(s))
+	}
+}
+
+func TestIssue3980(t *testing.T) {
+	tests := []struct {
+		name                   string
+		filename               string
+		contents               string
+		expectsErr             bool
+		warns                  []string
+		expectedEncryptionType interface{}
+		usesBuiltinAge         bool
+	}{
+		{
+			name:     "empty_config",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"",
+			),
+			expectsErr:             false,
+			warns:                  nil,
+			expectedEncryptionType: chezmoi.NoEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "empty_encryption_no_configs",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"encryption = \"\"",
+			),
+			expectsErr:             false,
+			warns:                  nil,
+			expectedEncryptionType: chezmoi.NoEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "valid_age_config",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"encryption = \"age\"",
+				"[age]",
+				"command = \"fakeage\"",
+				"identity = \"key.txt\"",
+			),
+			expectsErr:             false,
+			warns:                  nil,
+			expectedEncryptionType: &chezmoi.AgeEncryption{},
+			usesBuiltinAge:         true,
+		},
+		{
+			name:     "valid_age_config_no_builtin",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"encryption = \"age\"",
+				"useBuiltinAge = \"off\"",
+				"[age]",
+				"command = \"fakeage\"",
+				"identity = \"key.txt\"",
+			),
+			expectsErr:             false,
+			warns:                  nil,
+			expectedEncryptionType: &chezmoi.AgeEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "valid_gpg_config",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"encryption = \"gpg\"",
+				"[gpg]",
+				"command = \"fakegpg\"",
+				"symmetric = true",
+			),
+			expectsErr:             false,
+			warns:                  nil,
+			expectedEncryptionType: &chezmoi.GPGEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "unset_encryption_uses_gpg",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"[gpg]",
+				"command = \"fakegpg\"",
+				"symmetric = true",
+			),
+			expectsErr:             false,
+			warns:                  []string{"warning: 'encryption' not set, using gpg configuration"},
+			expectedEncryptionType: &chezmoi.GPGEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "unset_encryption_uses_age",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"[age]",
+				"command = \"fakeage\"",
+				"identity = \"key.txt\"",
+			),
+			expectsErr:             false,
+			warns:                  []string{"warning: 'encryption' not set, using age configuration"},
+			expectedEncryptionType: &chezmoi.AgeEncryption{},
+			usesBuiltinAge:         true,
+		},
+		{
+			name:     "unset_encryption_uses_age_no_builtin",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"useBuiltinAge = \"off\"",
+				"[age]",
+				"command = \"fakeage\"",
+				"identity = \"key.txt\"",
+			),
+			expectsErr:             false,
+			warns:                  []string{"warning: 'encryption' not set, using age configuration"},
+			expectedEncryptionType: &chezmoi.AgeEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "unset_encryption_gpg_priority",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"[age]",
+				"command = \"fakeage\"",
+				"identity = \"key.txt\"",
+				"[gpg]",
+				"command = \"fakegpg\"",
+				"symmetric = true",
+			),
+			expectsErr:             false,
+			warns:                  []string{"warning: 'encryption' not set, using gpg configuration"},
+			expectedEncryptionType: &chezmoi.GPGEncryption{},
+			usesBuiltinAge:         false,
+		},
+		{
+			name:     "unknown_encryption",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				"encryption = \"unknown\"",
+			),
+			expectsErr:     true,
+			warns:          nil,
+			usesBuiltinAge: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			chezmoitest.WithTestFS(t, map[string]any{
+				"/home/user/.config/chezmoi/" + tt.filename: tt.contents,
+			}, func(fileSystem vfs.FS) {
+				c := newTestConfig(t, fileSystem)
+
+				// Create a buffer to capture stderr.
+				var stderr bytes.Buffer
+				c.stderr = &stderr
+
+				err := c.execute([]string{"init"})
+
+				if tt.expectsErr {
+					assert.Error(t, err)
+				} else {
+					assert.NoError(t, err)
+				}
+				assert.Equal(t, reflect.TypeOf(tt.expectedEncryptionType), reflect.TypeOf(c.encryption))
+				assert.Equal(t, tt.usesBuiltinAge, c.Age.UseBuiltin)
+
+				for _, warn := range tt.warns {
+					assert.Contains(t, stderr.String(), warn)
+				}
+			})
+		})
 	}
 }
 

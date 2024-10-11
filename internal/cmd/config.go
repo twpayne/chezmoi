@@ -2466,11 +2466,6 @@ func (c *Config) runHookPre(hook string) error {
 func (c *Config) setEncryption() error {
 	switch c.Encryption {
 	case "age":
-		// Only use builtin age encryption if age encryption is explicitly
-		// specified. Otherwise, chezmoi would fall back to using age encryption
-		// (rather than no encryption) if age is not in $PATH, which leads to
-		// error messages from the builtin age instead of error messages about
-		// encryption not being configured.
 		c.Age.UseBuiltin = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
 		c.encryption = &c.Age
 	case "gpg":
@@ -2480,8 +2475,17 @@ func (c *Config) setEncryption() error {
 		// gpg for backwards compatibility.
 		switch {
 		case !reflect.DeepEqual(c.GPG, defaultGPGEncryptionConfig):
+			c.errorf(
+				"warning: 'encryption' not set, using gpg configuration. " +
+					"Check if 'encryption' is correctly set as the top-level key.\n",
+			)
 			c.encryption = &c.GPG
 		case !reflect.DeepEqual(c.Age, defaultAgeEncryptionConfig):
+			c.errorf(
+				"warning: 'encryption' not set, using age configuration. " +
+					"Check if 'encryption' is correctly set as the top-level key.\n",
+			)
+			c.Age.UseBuiltin = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
 			c.encryption = &c.Age
 		default:
 			c.encryption = chezmoi.NoEncryption{}
@@ -2511,7 +2515,7 @@ func (c *Config) setEnvironmentVariables() error {
 	}
 	for key, value := range env {
 		if strings.HasPrefix(key, "CHEZMOI_") {
-			c.errorf("warning: %s: overriding reserved environment variable", key)
+			c.errorf("warning: %s: overriding reserved environment variable\n", key)
 		}
 		if err := os.Setenv(key, value); err != nil {
 			return err
