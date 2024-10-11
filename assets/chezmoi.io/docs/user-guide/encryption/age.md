@@ -22,6 +22,11 @@ encryption = "age"
 chezmoi supports multiple recipients and recipient files, and multiple
 identities.
 
+!!! note
+
+    Make sure `encryption` is added to the top level section at the beginning of
+    the config, before any other sections.
+
 ## Symmetric encryption
 
 To use age's symmetric encryption, specify a single identity and enable
