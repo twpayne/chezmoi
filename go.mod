@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	filippo.io/age v1.2.0
-	github.com/1password/onepassword-sdk-go v0.1.1
+	github.com/1password/onepassword-sdk-go v0.1.2
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.0
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.1.0
 	github.com/Masterminds/sprig/v3 v3.3.0
@@ -14,7 +14,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.32.2
 	github.com/aws/aws-sdk-go-v2/config v1.27.43
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.2
-	github.com/bmatcuk/doublestar/v4 v4.6.1
+	github.com/bmatcuk/doublestar/v4 v4.7.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.1.1
@@ -22,11 +22,11 @@ require (
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-git/go-git/v5 v5.12.0
-	github.com/google/go-github/v65 v65.0.0
+	github.com/google/go-github/v66 v66.0.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.16
-	github.com/klauspost/compress v1.17.10
+	github.com/klauspost/compress v1.17.11
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
@@ -47,7 +47,7 @@ require (
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.28.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20241004205956-6c2174895805
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20241011170909-b61b08db44b8
 	golang.org/x/oauth2 v0.23.0
 	golang.org/x/sync v0.8.0
 	golang.org/x/sys v0.26.0
@@ -91,7 +91,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.13.0 // indirect
 	github.com/charmbracelet/x/ansi v0.3.2 // indirect
 	github.com/charmbracelet/x/term v0.2.0 // indirect
-	github.com/cloudflare/circl v1.4.0 // indirect
+	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
 	github.com/cyphar/filepath-securejoin v0.3.4 // indirect
 	github.com/danieljoos/wincred v1.2.2 // indirect
@@ -102,7 +102,7 @@ require (
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/extism/go-sdk v1.5.0 // indirect
 	github.com/fatih/semgroup v1.3.0 // indirect
-	github.com/gitleaks/go-gitdiff v0.9.0 // indirect
+	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.5.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
@@ -155,7 +155,7 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.3 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6 // indirect
+	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/text v0.19.0 // indirect
 	golang.org/x/tools v0.26.0 // indirect
@@ -163,7 +163,10 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 
-exclude github.com/microcosm-cc/bluemonday v1.0.26 // https://github.com/microcosm-cc/bluemonday/pull/195
+exclude (
+	github.com/microcosm-cc/bluemonday v1.0.26 // https://github.com/microcosm-cc/bluemonday/pull/195
+	github.com/tailscale/hujson v0.0.0-20241010212012-29efb4a0184b // Requires Go 1.23.
+)
 
 // github.com/Netflix/go-expect is unmaintained. Use a temporary fork.
 replace github.com/Netflix/go-expect => github.com/twpayne/go-expect v0.0.1
