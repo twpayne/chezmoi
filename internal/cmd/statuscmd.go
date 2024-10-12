@@ -14,11 +14,12 @@ import (
 )
 
 type statusCmdConfig struct {
-	Exclude   *chezmoi.EntryTypeSet `json:"exclude"   mapstructure:"exclude"   yaml:"exclude"`
-	PathStyle *chezmoi.PathStyle    `json:"pathStyle" mapstructure:"pathStyle" yaml:"pathStyle"`
-	include   *chezmoi.EntryTypeSet
-	init      bool
-	recursive bool
+	Exclude    *chezmoi.EntryTypeSet `json:"exclude"   mapstructure:"exclude"   yaml:"exclude"`
+	PathStyle  *chezmoi.PathStyle    `json:"pathStyle" mapstructure:"pathStyle" yaml:"pathStyle"`
+	include    *chezmoi.EntryTypeSet
+	init       bool
+	parentDirs bool
+	recursive  bool
 }
 
 func (c *Config) newStatusCmd() *cobra.Command {
@@ -40,6 +41,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	statusCmd.Flags().VarP(c.Status.PathStyle, "path-style", "p", "Path style")
 	statusCmd.Flags().VarP(c.Status.include, "include", "i", "Include entry types")
 	statusCmd.Flags().BoolVar(&c.Status.init, "init", c.Status.init, "Recreate config file from template")
+	statusCmd.Flags().BoolVarP(&c.Status.parentDirs, "parent-dirs", "P", c.Status.parentDirs, "Show status of all parent directories")
 	statusCmd.Flags().BoolVarP(&c.Status.recursive, "recursive", "r", c.Status.recursive, "Recurse into subdirectories")
 
 	return statusCmd
@@ -88,6 +90,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 		cmd:          cmd,
 		filter:       chezmoi.NewEntryTypeFilter(c.Status.include.Bits(), c.Status.Exclude.Bits()),
 		init:         c.Status.init,
+		parentDirs:   c.Status.parentDirs,
 		recursive:    c.Status.recursive,
 		umask:        c.Umask,
 		preApplyFunc: preApplyFunc,

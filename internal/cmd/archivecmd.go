@@ -14,11 +14,12 @@ import (
 )
 
 type archiveCmdConfig struct {
-	filter    *chezmoi.EntryTypeFilter
-	format    chezmoi.ArchiveFormat
-	gzip      bool
-	init      bool
-	recursive bool
+	filter     *chezmoi.EntryTypeFilter
+	format     chezmoi.ArchiveFormat
+	gzip       bool
+	init       bool
+	parentDirs bool
+	recursive  bool
 }
 
 func (c *Config) newArchiveCmd() *cobra.Command {
@@ -40,6 +41,7 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	archiveCmd.Flags().BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "Compress output with gzip")
 	archiveCmd.Flags().VarP(c.archive.filter.Exclude, "include", "i", "Include entry types")
 	archiveCmd.Flags().BoolVar(&c.archive.init, "init", c.archive.init, "Recreate config file from template")
+	archiveCmd.Flags().BoolVarP(&c.archive.parentDirs, "parent-dirs", "P", c.archive.parentDirs, "Archive parent directories")
 	archiveCmd.Flags().BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "Recurse into subdirectories")
 
 	return archiveCmd
@@ -73,10 +75,11 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		return chezmoi.UnknownArchiveFormatError(format)
 	}
 	if err := c.applyArgs(cmd.Context(), archiveSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
-		cmd:       cmd,
-		filter:    c.archive.filter,
-		init:      c.archive.init,
-		recursive: c.archive.recursive,
+		cmd:        cmd,
+		filter:     c.archive.filter,
+		init:       c.archive.init,
+		parentDirs: c.archive.parentDirs,
+		recursive:  c.archive.recursive,
 	}); err != nil {
 		return err
 	}
