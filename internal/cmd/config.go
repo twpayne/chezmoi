@@ -564,6 +564,7 @@ type applyArgsOptions struct {
 	cmd          *cobra.Command
 	filter       *chezmoi.EntryTypeFilter
 	init         bool
+	parentDirs   bool
 	recursive    bool
 	umask        fs.FileMode
 	preApplyFunc chezmoi.PreApplyFunc
@@ -650,6 +651,10 @@ func (c *Config) applyArgs(
 		if err != nil {
 			return err
 		}
+	}
+
+	if options.parentDirs {
+		targetRelPaths = prependParentRelPaths(targetRelPaths)
 	}
 
 	applyOptions := chezmoi.ApplyOptions{
@@ -2939,6 +2944,28 @@ func parseCommand(command string, args []string) (string, []string, error) {
 
 	// Fallback to the command only.
 	return command, args, nil
+}
+
+// prependParentRelPaths returns a new slice of RelPaths where the parents of
+// each RelPath appear before each RelPath.
+func prependParentRelPaths(relPaths []chezmoi.RelPath) []chezmoi.RelPath {
+	// For each target relative path, enumerate its parents from the root down
+	// and insert any parents which have not yet been seen.
+	result := make([]chezmoi.RelPath, 0, len(relPaths))
+	seenRelPaths := make(map[chezmoi.RelPath]struct{}, len(relPaths))
+	for _, relPath := range relPaths {
+		components := relPath.SplitAll()
+		for i := 1; i < len(components); i++ {
+			parentRelPath := chezmoi.EmptyRelPath.Join(components[:i]...)
+			if _, ok := seenRelPaths[parentRelPath]; !ok {
+				result = append(result, parentRelPath)
+				seenRelPaths[parentRelPath] = struct{}{}
+			}
+		}
+		result = append(result, relPath)
+		seenRelPaths[relPath] = struct{}{}
+	}
+	return result
 }
 
 // registerCommonFlagCompletionFuncs registers completion functions for cmd's

@@ -46,6 +46,10 @@ Prompt before applying each target.
 
 Write the output to *filename* instead of stdout.
 
+## `-P`, `--parent-dirs`
+
+Also perform command on all parent directories of *target*.
+
 ## `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default.

@@ -1,0 +1,6 @@
+# test that chezmoi apply --parent-dirs creates parent directories
+exec chezmoi apply --parent-dirs $HOME/.config/nvim/after/queries/gotmpl/injections.scm
+exists $HOME/.config/nvim/after/queries/gotmpl/injections.scm
+
+-- home/user/.local/share/chezmoi/private_dot_config/nvim/after/queries/gotmpl/injections.scm --
+# contents of injections.scm

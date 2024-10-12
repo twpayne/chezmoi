@@ -16,6 +16,7 @@ type updateCmdConfig struct {
 	RecurseSubmodules bool     `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
 	filter            *chezmoi.EntryTypeFilter
 	init              bool
+	parentDirs        bool
 	recursive         bool
 }
 
@@ -40,6 +41,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 	updateCmd.Flags().VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
 	updateCmd.Flags().VarP(c.Update.filter.Include, "include", "i", "Include entry types")
 	updateCmd.Flags().BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
+	updateCmd.Flags().BoolVarP(&c.Update.parentDirs, "parent-dirs", "P", c.Update.parentDirs, "Update all parent directories")
 	updateCmd.Flags().
 		BoolVar(&c.Update.RecurseSubmodules, "recurse-submodules", c.Update.RecurseSubmodules, "Recursively update submodules")
 	updateCmd.Flags().BoolVarP(&c.Update.recursive, "recursive", "r", c.Update.recursive, "Recurse into subdirectories")
@@ -92,6 +94,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 			cmd:          cmd,
 			filter:       c.Update.filter,
 			init:         c.Update.init,
+			parentDirs:   c.Update.parentDirs,
 			recursive:    c.Update.recursive,
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,

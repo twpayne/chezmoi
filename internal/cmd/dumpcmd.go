@@ -7,9 +7,10 @@ import (
 )
 
 type dumpCmdConfig struct {
-	filter    *chezmoi.EntryTypeFilter
-	init      bool
-	recursive bool
+	filter     *chezmoi.EntryTypeFilter
+	init       bool
+	parentDirs bool
+	recursive  bool
 }
 
 func (c *Config) newDumpCmd() *cobra.Command {
@@ -30,6 +31,7 @@ func (c *Config) newDumpCmd() *cobra.Command {
 	dumpCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
 	dumpCmd.Flags().VarP(c.dump.filter.Include, "include", "i", "Include entry types")
 	dumpCmd.Flags().BoolVar(&c.dump.init, "init", c.dump.init, "Recreate config file from template")
+	dumpCmd.Flags().BoolVarP(&c.dump.parentDirs, "parent-dirs", "P", c.dump.parentDirs, "Dump all parent directories")
 	dumpCmd.Flags().BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "Recurse into subdirectories")
 
 	return dumpCmd
@@ -38,11 +40,12 @@ func (c *Config) newDumpCmd() *cobra.Command {
 func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	dumpSystem := chezmoi.NewDumpSystem()
 	if err := c.applyArgs(cmd.Context(), dumpSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
-		cmd:       cmd,
-		filter:    c.dump.filter,
-		init:      c.dump.init,
-		recursive: c.dump.recursive,
-		umask:     c.Umask,
+		cmd:        cmd,
+		filter:     c.dump.filter,
+		init:       c.dump.init,
+		parentDirs: c.dump.parentDirs,
+		recursive:  c.dump.recursive,
+		umask:      c.Umask,
 	}); err != nil {
 		return err
 	}

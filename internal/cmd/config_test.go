@@ -267,6 +267,55 @@ func TestParseConfig(t *testing.T) {
 	}
 }
 
+func TestPrependParentRelPaths(t *testing.T) {
+	for _, tc := range []struct {
+		name                string
+		relPathStrs         []string
+		expectedRelPathStrs []string
+	}{
+		{
+			name: "empty",
+		},
+		{
+			name:                "single",
+			relPathStrs:         []string{"a"},
+			expectedRelPathStrs: []string{"a"},
+		},
+		{
+			name:                "multiple",
+			relPathStrs:         []string{"a", "b", "c"},
+			expectedRelPathStrs: []string{"a", "b", "c"},
+		},
+		{
+			name:                "single_parent",
+			relPathStrs:         []string{"a/b"},
+			expectedRelPathStrs: []string{"a", "a/b"},
+		},
+		{
+			name:                "multiple_parents",
+			relPathStrs:         []string{"a/b/c"},
+			expectedRelPathStrs: []string{"a", "a/b", "a/b/c"},
+		},
+		{
+			name:                "duplicate_parents",
+			relPathStrs:         []string{"a/b/c", "a/b/d"},
+			expectedRelPathStrs: []string{"a", "a/b", "a/b/c", "a/b/d"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			relPaths := make([]chezmoi.RelPath, len(tc.relPathStrs))
+			for i, relPathStr := range tc.relPathStrs {
+				relPaths[i] = chezmoi.NewRelPath(relPathStr)
+			}
+			expected := make([]chezmoi.RelPath, len(tc.expectedRelPathStrs))
+			for i, relPathStr := range tc.expectedRelPathStrs {
+				expected[i] = chezmoi.NewRelPath(relPathStr)
+			}
+			assert.Equal(t, expected, prependParentRelPaths(relPaths))
+		})
+	}
+}
+
 func TestInitConfigWithIncludedTemplate(t *testing.T) {
 	mainFilename := ".chezmoi.yaml.tmpl"
 	secondaryFilename := "personal.config.yaml.tmpl"
