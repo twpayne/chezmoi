@@ -204,31 +204,31 @@ jobs:
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-darwin-arm64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-linux-musl-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
       with:
         name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-windows-amd64.exe
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@84480863f228bb9747b473957fcc9e309aa96097
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
