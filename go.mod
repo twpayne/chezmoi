@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	filippo.io/age v1.2.0
-	github.com/1password/onepassword-sdk-go v0.1.2
+	github.com/1password/onepassword-sdk-go v0.1.3
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.0
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.1.0
 	github.com/Masterminds/sprig/v3 v3.3.0
@@ -12,7 +12,7 @@ require (
 	github.com/Shopify/ejson v1.5.2
 	github.com/alecthomas/assert/v2 v2.11.0
 	github.com/aws/aws-sdk-go-v2 v1.32.2
-	github.com/aws/aws-sdk-go-v2/config v1.27.43
+	github.com/aws/aws-sdk-go-v2/config v1.28.0
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.2
 	github.com/bmatcuk/doublestar/v4 v4.7.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
@@ -43,11 +43,11 @@ require (
 	github.com/twpayne/go-xdg/v6 v6.1.3
 	github.com/ulikunitz/xz v0.5.12
 	github.com/zalando/go-keyring v0.2.5
-	github.com/zricethezav/gitleaks/v8 v8.20.1
+	github.com/zricethezav/gitleaks/v8 v8.21.1
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.28.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20241011170909-b61b08db44b8
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20241016071619-7cfb9161e8d8
 	golang.org/x/oauth2 v0.23.0
 	golang.org/x/sync v0.8.0
 	golang.org/x/sys v0.26.0
@@ -60,7 +60,7 @@ require (
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.14.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.1 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.2 // indirect
@@ -151,8 +151,8 @@ require (
 	github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834 // indirect
 	github.com/tetratelabs/wazero v1.8.1 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	github.com/yuin/goldmark v1.7.4 // indirect
-	github.com/yuin/goldmark-emoji v1.0.3 // indirect
+	github.com/yuin/goldmark v1.7.8 // indirect
+	github.com/yuin/goldmark-emoji v1.0.4 // indirect
 	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
