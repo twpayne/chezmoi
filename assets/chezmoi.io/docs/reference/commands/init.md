@@ -55,6 +55,25 @@ existing template data.
 
 Clone the repo with depth *depth*.
 
+## `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+
+## `--guess-repo-url` *bool*
+
+Guess the repo URL from the *repo* argument. This defaults to `true`.
+
+## `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+
+## `--one-shot`
+
+`--one-shot` is the equivalent of `--apply`, `--depth=1`, `--force`, `--purge`,
+and `--purge-binary`. It attempts to install your dotfiles with chezmoi and
+then remove all traces of chezmoi from the system. This is useful for setting
+up temporary environments (e.g. Docker containers).
+
 ## `--prompt`
 
 Force the `prompt*Once` template functions to prompt.
@@ -91,17 +110,6 @@ Populate the `promptString` template function with values from *pairs*. *pairs* 
 a comma-separated list of *prompt*`=`*value* pairs. If `promptString` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
-
-## `--guess-repo-url` *bool*
-
-Guess the repo URL from the *repo* argument. This defaults to `true`.
-
-## `--one-shot`
-
-`--one-shot` is the equivalent of `--apply`, `--depth=1`, `--force`, `--purge`,
-and `--purge-binary`. It attempts to install your dotfiles with chezmoi and
-then remove all traces of chezmoi from the system. This is useful for setting
-up temporary environments (e.g. Docker containers).
 
 ## `--purge`
 

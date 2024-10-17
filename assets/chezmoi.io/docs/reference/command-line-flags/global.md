@@ -40,13 +40,17 @@ changes that would be made without making them.
 
 Make changes without prompting.
 
-## `-h`, `--help`
+## `--interactive`
 
-Print help.
+Prompt before applying each target.
 
 ## `-k`, `--keep-going`
 
 Keep going as far as possible after a encountering an error.
+
+## `--mode` `file`|`symlink`
+
+Mode of operation. The default is `file`.
 
 ## `--no-pager`
 
@@ -89,6 +93,11 @@ if no cached external is available.
 > Configuration: `sourceDir`
 
 Use *directory* as the source directory.
+
+## `--source-path`
+
+Interpret *targets* passed to the command as paths in the source directory
+rather than the destination directory.
 
 ## `--use-builtin-age` *value*
 

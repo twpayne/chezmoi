@@ -1,7 +1,7 @@
 # test that chezmoi remove produces an error
 ! exec chezmoi remove
-stderr 'remove has been removed, use forget or destroy instead'
+stderr 'Command "remove" is deprecated, use forget or destroy instead'
 
 # test that chezmoi rm produces an error
 ! exec chezmoi rm
-stderr 'remove has been removed, use forget or destroy instead'
+stderr 'Command "remove" is deprecated, use forget or destroy instead'

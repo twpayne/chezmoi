@@ -16,9 +16,26 @@ running [`chezmoi apply`](apply.md) will have.
 | `M`       | Modified  | Entry was modified | Entry will be modified |
 | `R`       | Run       | Not applicable     | Script will be run     |
 
+## `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+
 ## `-i`, `--include` *types*
 
-Only include entries of type *types*.
+Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+
+## `--init`
+
+Recreate config file from template.
+
+## `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
+
+Print paths in the given style. Relative paths are relative to the destination
+directory. The default is `relative`.
+
+## `-r`, `--recursive`
+
+Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
 
 !!! example
 

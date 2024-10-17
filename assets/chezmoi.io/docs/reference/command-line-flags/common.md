@@ -6,10 +6,21 @@ The following flags apply to multiple commands where they are relevant.
 
 Set the output format.
 
+## `-h`, `--help`
+
+Print help.
+
 ## `-i`, `--include` *types*
 
-Include target state entries of type *types*. *types* is a comma-separated list
-of types:
+Include target state entries of type *types*.
+
+!!! example
+
+    `--include=files` specifies all files.
+
+### Available types
+
+*types* is a comma-separated list of types:
 
 | Type        | Description                 |
 | ----------- | --------------------------- |
@@ -29,18 +40,10 @@ Types can be preceded with `no` to remove them.
 
 Types can be explicitly excluded with the `--exclude` flag.
 
-!!! example
-
-    `--include=files` specifies all files.
-
 ## `--init`
 
 Regenerate and reread the config file from the config file template before
 computing the target state.
-
-## `--interactive`
-
-Prompt before applying each target.
 
 ## `-o`, `--output` *filename*
 
@@ -54,11 +57,6 @@ Also perform command on all parent directories of *target*.
 
 Recurse into subdirectories, `true` by default.
 
-## `--source-path`
-
-Interpret *targets* passed to the command as paths in the source directory
-rather than the destination directory.
-
 ## `--tree`
 
 Print paths as a tree instead of a list.
@@ -70,8 +68,7 @@ is set.
 
 ## `-x`, `--exclude` *types*
 
-Exclude target state entries of type *types*. *types* is defined as in the
-`--include` flag and defaults to `none`.
+Exclude target state entries of type [*types*](#available-types). Defaults to `none`.
 
 !!! example
 

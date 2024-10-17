@@ -18,6 +18,10 @@ editor with filenames which match the target filename, unless the
 
 Apply target immediately after editing. Ignored if there are no targets.
 
+## `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+
 ## `--hardlink` *bool*
 
 > Configuration: `edit.hardlink`
@@ -25,6 +29,14 @@ Apply target immediately after editing. Ignored if there are no targets.
 Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
+
+## `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+
+## `--init`
+
+Recreate config file from template.
 
 ## `--watch`
 
