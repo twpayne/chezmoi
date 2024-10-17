@@ -41,7 +41,8 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	statusCmd.Flags().VarP(c.Status.PathStyle, "path-style", "p", "Path style")
 	statusCmd.Flags().VarP(c.Status.include, "include", "i", "Include entry types")
 	statusCmd.Flags().BoolVar(&c.Status.init, "init", c.Status.init, "Recreate config file from template")
-	statusCmd.Flags().BoolVarP(&c.Status.parentDirs, "parent-dirs", "P", c.Status.parentDirs, "Show status of all parent directories")
+	statusCmd.Flags().
+		BoolVarP(&c.Status.parentDirs, "parent-dirs", "P", c.Status.parentDirs, "Show status of all parent directories")
 	statusCmd.Flags().BoolVarP(&c.Status.recursive, "recursive", "r", c.Status.recursive, "Recurse into subdirectories")
 
 	return statusCmd

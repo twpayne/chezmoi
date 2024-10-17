@@ -8,7 +8,7 @@ import (
 
 func (c *Config) newRemoveCmd() *cobra.Command {
 	removeCmd := &cobra.Command{
-		Deprecated: "remove has been removed, use forget or destroy instead",
+		Deprecated: "use forget or destroy instead",
 		Use:        "remove",
 		Aliases:    []string{"rm"},
 		RunE:       c.runRemoveCmd,

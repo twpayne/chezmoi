@@ -16,6 +16,14 @@ Set the destination (in the source state) where the archive will be imported.
 
 Set the `exact` attribute on all imported directories.
 
+## `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+
+## `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+
 ## `-r`, `--remove-destination`
 
 Remove destination (in the source state) before importing.

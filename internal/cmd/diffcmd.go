@@ -39,7 +39,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	diffCmd.Flags().VarP(c.Diff.include, "include", "i", "Include entry types")
 	diffCmd.Flags().BoolVar(&c.Diff.init, "init", c.Diff.init, "Recreate config file from template")
 	diffCmd.Flags().StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
-	diffCmd.Flags().BoolVarP(&c.Diff.parentDirs, "parent-dirs", "P", c.apply.parentDirs, "Print the diff of all parent directories")
+	diffCmd.Flags().
+		BoolVarP(&c.Diff.parentDirs, "parent-dirs", "P", c.apply.parentDirs, "Print the diff of all parent directories")
 	diffCmd.Flags().BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "Recurse into subdirectories")
 	diffCmd.Flags().BoolVar(&c.Diff.Reverse, "reverse", c.Diff.Reverse, "Reverse the direction of the diff")
 	diffCmd.Flags().BoolVar(&c.Diff.ScriptContents, "script-contents", c.Diff.ScriptContents, "Show script contents")

@@ -15,6 +15,28 @@ respectively. The default value of `diff.args` is
 template arguments then `{{ .Destination }}` and `{{ .Target }}` will be
 appended automatically.
 
+## `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+
+## `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+
+## `--init`
+
+Recreate config file from template.
+
+## `--pager` *pager*
+
+> Configuration: `diff.pager`
+
+Pager to use for output.
+
+## `-r`, `--recursive`
+
+Recurse into subdirectories.
+
 ## `--reverse`
 
 > Configuration: `diff.reverse`
@@ -22,11 +44,9 @@ appended automatically.
 Reverse the direction of the diff, i.e. show the changes to the target required
 to match the destination.
 
-## `--pager` *pager*
+## `--script-contents`
 
-> Configuration: `diff.pager`
-
-Pager to use for output.
+Show script contents, defaults to `true`.
 
 !!! example
 

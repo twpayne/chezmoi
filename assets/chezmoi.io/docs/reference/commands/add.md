@@ -17,11 +17,23 @@ This implies the `--template` option.
     templates with unwanted variable substitutions. Carefully review any
     templates it generates.
 
+## `--create`
+
+Add files that should exist, irrespective of their contents.
+
 ## `--encrypt`
 
 > Configuration: `add.encrypt`
 
 Encrypt files using the defined encryption method.
+
+## `--exact`
+
+Set the `exact` attribute on added directories.
+
+## `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
 
 ## `-f`, `--force`
 
@@ -33,13 +45,9 @@ overwritten.
 If the last part of a target is a symlink, add the target of the symlink
 instead of the symlink itself.
 
-## `--exact`
-
-Set the `exact` attribute on added directories.
-
 ## `-i`, `--include` *types*
 
-Only add entries of type *types*.
+Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
 
 ## `-p`, `--prompt`
 
@@ -51,7 +59,7 @@ Suppress warnings about adding ignored entries.
 
 ## `-r`, `--recursive`
 
-Recursively add all files, directories, and symlinks.
+Recursively add all files, directories, and symlinks, `true` by default. Can be disabled with `--recursive=false`.
 
 ## `-s`, `--secrets` `ignore`|`warning`|`error`
 

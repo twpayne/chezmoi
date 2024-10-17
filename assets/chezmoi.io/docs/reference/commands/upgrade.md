@@ -16,3 +16,19 @@ requests should be sufficient for most cases.
 
     If you installed chezmoi using a package manager, the `upgrade` command
     might have been removed by the package maintainer.
+
+## `--executable` *filename*
+
+Set name of executable to replace.
+
+## `--method` *method*
+
+Set upgrade method.
+
+| Methods                | Description                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `brew-upgrade`         | Run `brew upgrade chezmoi`.                                                        |
+| `replace-executable`   | Download the latest released executable from Github.                               |
+| `snap-refresh`         | Run `snap refresh chezmoi`.                                                        |
+| `sudo-upgrade-package` | Same as `upgrade-package` but use `sudo`.                                          |
+| `upgrade-package`      | Download and install `.apk`, `.deb` or `.rpm` package. Run `pacman` on Arch Linux. |

@@ -39,6 +39,10 @@ Multiple modifications may be specified by separating them with a comma (`,`).
 If you use the `-`*modifier* form then you must put *modifier* after a `--` to
 prevent chezmoi from interpreting `-`*modifier* as an option.
 
+## `-r`, `--recursive`
+
+Recurse into subdirectories.
+
 !!! example
 
     ```console

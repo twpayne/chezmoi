@@ -43,5 +43,5 @@ func (m Mode) String() string {
 
 // Type implements github.com/spf13/flag.Value.Type.
 func (m Mode) Type() string {
-	return "mode"
+	return "file|symlink"
 }
