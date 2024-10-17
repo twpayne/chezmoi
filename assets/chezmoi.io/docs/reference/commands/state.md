@@ -10,39 +10,41 @@ Manipulate the persistent state.
     $ chezmoi state help
     ```
 
-# Available subcommands
+## Subcommands
 
-## `data`
+### `data`
 
 Print the raw data in the persistent state.
 
-## `delete`
+### `delete`
 
 Delete a value from the persistent state.
 
-## `delete-bucket`
+### `delete-bucket`
 
 Delete a bucket from the persistent state.
 
-## `dump`
+### `dump`
 
 Generate a dump of the persistent state.
 
-## `get`
+### `get`
 
 Get a value from the persistent state.
 
-## `get-bucket`
+### `get-bucket`
 
 Get a bucket from the persistent state.
 
-## `reset`
+### `reset`
 
 Reset the persistent state.
 
-## `set`
+### `set`
 
 Set a value from the persistent state
+
+## Example
 
 !!! example
 

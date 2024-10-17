@@ -2,17 +2,25 @@
 
 Interact with age's passphrase-based encryption.
 
-# `age encrypt` [*file*...]
+## Subcommands
 
-## `-p`, `--passphrase`
+### `age encrypt` [*file*...]
 
-Encrypt with a passphrase.
+Encrypt file or standard input.
 
-# `age decrypt` [*file*...]
-
-## `-p`, `--passphrase`
+#### `-p`, `--passphrase`
 
 Decrypt with a passphrase.
+
+### `age decrypt` [*file*...]
+
+Decrypt file or standard input.
+
+#### `-p`, `--passphrase`
+
+Decrypt with a passphrase.
+
+## Example
 
 !!! example
 

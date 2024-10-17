@@ -9,39 +9,43 @@ manager. Normally you would use chezmoi's existing template functions to retriev
     If you need to pass flags to the secret manager's CLI you must separate
     them with `--` to prevent chezmoi from interpreting them.
 
-# `secret keyring delete`
+## Subcommands
 
-## `--service` *string*
+### `secret keyring delete`
 
-Name of the service.
-
-## `--user` *string*
-
-Name of the user.
-
-# `secret keyring get`
-
-## `--service` *string*
+#### `--service` *string*
 
 Name of the service.
 
-## `--user` *string*
+#### `--user` *string*
 
 Name of the user.
 
-# `secret keyring set`
+### `secret keyring get`
 
-## `--service` *string*
+#### `--service` *string*
 
 Name of the service.
 
-## `--user` *string*
+#### `--user` *string*
 
 Name of the user.
 
-## `--value` *string*
+### `secret keyring set`
+
+#### `--service` *string*
+
+Name of the service.
+
+#### `--user` *string*
+
+Name of the user.
+
+#### `--value` *string*
 
 New value.
+
+## Example
 
 !!! example
 
@@ -50,6 +54,8 @@ New value.
     $ chezmoi secret keyring get --service=service --user=user
     $ chezmoi secret keyring delete --service=service --user=user
     ```
+
+## Warning
 
 !!! warning
 
