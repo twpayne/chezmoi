@@ -44,7 +44,7 @@ Reset the persistent state.
 
 Set a value from the persistent state
 
-## Example
+## Examples
 
 !!! example
 

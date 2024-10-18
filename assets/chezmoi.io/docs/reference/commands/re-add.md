@@ -7,21 +7,23 @@ files are ignored. Directories are recursed into by default.
 If no *target*s are specified then all modified files are re-added. If one or
 more *target*s are given then only those targets are re-added.
 
-## `-x`, `--exclude` *types*
+## Common flags
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+### `-x`, `--exclude` *types*
 
-## `-i`, `--include` *types*
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
 
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+### `-i`, `--include` *types*
 
-## `-r`, `--recursive`
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
+
+### `-r`, `--recursive`
 
 Recursively add files in subdirectories, `true` by default. Can be disabled with `--recursive=false`.
 
-!!! hint
-
-    If you want to re-add a single file unconditionally, use `chezmoi add --force` instead.
+## Examples
 
 !!! example
 
@@ -30,3 +32,9 @@ Recursively add files in subdirectories, `true` by default. Can be disabled with
     $ chezmoi re-add ~/.bashrc
     $ chezmoi re-add --recursive=false ~/.config/git
     ```
+
+## Notes
+
+!!! hint
+
+    If you want to re-add a single file unconditionally, use `chezmoi add --force` instead.

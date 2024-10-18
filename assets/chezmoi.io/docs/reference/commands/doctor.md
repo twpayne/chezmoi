@@ -2,9 +2,13 @@
 
 Check for potential problems.
 
-## `--no-network`
+## Flags
+
+### `--no-network`
 
 Do not use any network connections.
+
+## Examples
 
 !!! example
 
