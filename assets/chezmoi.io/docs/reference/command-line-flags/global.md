@@ -60,6 +60,10 @@ Do not use the pager.
 
 Do not attempt to get a TTY for prompts. Instead, read them from stdin.
 
+## `-o`, `--output` *filename*
+
+Write the output to *filename* instead of stdout.
+
 ## `--persistent-state` *filename*
 
 > Configuration: `persistentState`
@@ -110,6 +114,11 @@ builtin age if `age.command` cannot be found in `$PATH`.
 
 The builtin `age` command does not support passphrases, symmetric encryption,
 or the use of SSH keys.
+
+## `--use-builtin-diff`
+
+Use chezmoi's builtin diff, even if the `diff.command` configuration variable
+is set.
 
 ## `--use-builtin-git` *value*
 

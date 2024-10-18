@@ -15,42 +15,52 @@ respectively. The default value of `diff.args` is
 template arguments then `{{ .Destination }}` and `{{ .Target }}` will be
 appended automatically.
 
-## `-x`, `--exclude` *types*
+## Flags
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
-
-## `-i`, `--include` *types*
-
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
-
-## `--init`
-
-Recreate config file from template.
-
-## `--pager` *pager*
+### `--pager` *pager*
 
 > Configuration: `diff.pager`
 
 Pager to use for output.
 
-## `-r`, `--recursive`
-
-Recurse into subdirectories.
-
-## `--reverse`
+### `--reverse`
 
 > Configuration: `diff.reverse`
 
 Reverse the direction of the diff, i.e. show the changes to the target required
 to match the destination.
 
-## `--script-contents`
+### `--script-contents`
 
 Show script contents, defaults to `true`.
 
-!!! example
+## Common flags
 
-    ```console
-    $ chezmoi diff
-    $ chezmoi diff ~/.bashrc
-    ```
+### `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
+
+### `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
+
+### `--init`
+
+Recreate config file from template.
+
+### `-P`, `--parent-dirs`
+
+Also perform command on all parent directories of *target*.
+
+### `-r`, `--recursive`
+
+Recurse into subdirectories.
+
+## Examples
+
+```console
+$ chezmoi diff
+$ chezmoi diff ~/.bashrc
+```

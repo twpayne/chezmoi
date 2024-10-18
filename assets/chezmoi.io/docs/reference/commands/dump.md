@@ -3,29 +3,37 @@
 Dump the target state of *target*s. If no targets are specified, then the
 entire target state.
 
-## `-x`, `--exclude` *types*
+## Common flags
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+### `-x`, `--exclude` *types*
 
-## `-f`, `--format` `json`|`yaml`
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
+
+### `-f`, `--format` `json`|`yaml`
 
 Set the output format, default to `json`.
 
-## `-i`, `--include` *types*
+### `-i`, `--include` *types*
 
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
 
-## `--init`
+### `--init`
 
 Recreate config file from template.
 
-## `-r`, `--recursive`
+### `-P`, `--parent-dirs`
+
+Also perform command on all parent directories of *target*.
+
+### `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi dump ~/.bashrc
-    $ chezmoi dump --format=yaml
-    ```
+```console
+$ chezmoi dump ~/.bashrc
+$ chezmoi dump --format=yaml
+```

@@ -45,17 +45,15 @@ Name of the user.
 
 New value.
 
-## Example
+## Examples
 
-!!! example
+```console
+$ chezmoi secret keyring set --service=service --user=user --value=password
+$ chezmoi secret keyring get --service=service --user=user
+$ chezmoi secret keyring delete --service=service --user=user
+```
 
-    ```console
-    $ chezmoi secret keyring set --service=service --user=user --value=password
-    $ chezmoi secret keyring get --service=service --user=user
-    $ chezmoi secret keyring delete --service=service --user=user
-    ```
-
-## Warning
+## Notes
 
 !!! warning
 

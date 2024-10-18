@@ -17,13 +17,19 @@ requests should be sufficient for most cases.
     If you installed chezmoi using a package manager, the `upgrade` command
     might have been removed by the package maintainer.
 
-## `--executable` *filename*
+## Flags
+
+### `--executable` *filename*
 
 Set name of executable to replace.
 
-## `--method` *method*
+### `--method` *method*
 
-Set upgrade method.
+Override the upgrade method that was automatically detected by chezmoi.
+
+!!! danger
+
+    This flag should only be used when recommended by chezmoi developers.
 
 | Methods                | Description                                                                        |
 | ---------------------- | ---------------------------------------------------------------------------------- |

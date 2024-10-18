@@ -2,13 +2,15 @@
 
 Write the computed template data to stdout.
 
-## `-f`, `--format` `json`|`yaml`
+## Common flags
+
+### `-f`, `--format` `json`|`yaml`
 
 Set the output format, `json` by default.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi data
-    $ chezmoi data --format=yaml
-    ```
+```console
+$ chezmoi data
+$ chezmoi data --format=yaml
+```

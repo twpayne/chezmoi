@@ -39,16 +39,18 @@ Multiple modifications may be specified by separating them with a comma (`,`).
 If you use the `-`*modifier* form then you must put *modifier* after a `--` to
 prevent chezmoi from interpreting `-`*modifier* as an option.
 
-## `-r`, `--recursive`
+## Common flags
+
+### `-r`, `--recursive`
 
 Recurse into subdirectories.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi chattr template ~/.bashrc
-    $ chezmoi chattr noempty ~/.profile
-    $ chezmoi chattr private,template ~/.netrc
-    $ chezmoi chattr -- -x ~/.zshrc
-    $ chezmoi chattr +create,+private ~/.kube/config
-    ```
+```console
+$ chezmoi chattr template ~/.bashrc
+$ chezmoi chattr noempty ~/.profile
+$ chezmoi chattr private,template ~/.netrc
+$ chezmoi chattr -- -x ~/.zshrc
+$ chezmoi chattr +create,+private ~/.kube/config
+```

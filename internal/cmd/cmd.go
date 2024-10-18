@@ -146,13 +146,36 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 		stateReadTitle stateType = iota
 		stateInLongHelp
 		stateInOptions
-		stateInExample
+		stateInExamples
+		stateInNotes
 		stateInAdmonition
+		stateInUnknownSection
 	)
 
 	state := stateReadTitle
 	var longHelpLines []string
 	var exampleLines []string
+	stateChange := func(line string, state *stateType) bool {
+		switch {
+		case strings.HasPrefix(line, "## Flags") || strings.HasPrefix(line, "## Common flags"):
+			*state = stateInOptions
+			return true
+		case strings.HasPrefix(line, "## Example"): // accept singular and plural
+			*state = stateInExamples
+			return true
+		case strings.HasPrefix(line, "## Note"): // accept singular and plural
+			*state = stateInNotes
+			return true
+		case strings.HasPrefix(line, "## "):
+			*state = stateInUnknownSection
+			return true
+		case strings.HasPrefix(line, "!!! "):
+			*state = stateInAdmonition
+			return true
+		}
+		return false
+	}
+
 	for _, line := range strings.Split(string(data), "\n") {
 		switch state {
 		case stateReadTitle:
@@ -162,28 +185,19 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 			}
 			if titleRx.MatchString(line) {
 				state = stateInLongHelp
+			} else {
+				return nil, fmt.Errorf("expected title for '%s'", command)
 			}
 		case stateInLongHelp:
-			switch {
-			case strings.HasPrefix(line, "## "):
-				state = stateInOptions
-			case line == "!!! example":
-				state = stateInExample
-			case strings.HasPrefix(line, "!!!"):
-				state = stateInAdmonition
-			default:
+			if !stateChange(line, &state) {
 				longHelpLines = append(longHelpLines, line)
 			}
-		case stateInOptions:
-			if line == "!!! example" {
-				state = stateInExample
+		case stateInExamples:
+			if !stateChange(line, &state) {
+				exampleLines = append(exampleLines, line)
 			}
-		case stateInExample:
-			exampleLines = append(exampleLines, strings.TrimPrefix(line, "    "))
-		case stateInAdmonition:
-			if line == "!!! example" {
-				state = stateInExample
-			}
+		default:
+			stateChange(line, &state)
 		}
 	}
 

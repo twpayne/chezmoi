@@ -16,29 +16,37 @@ running [`chezmoi apply`](apply.md) will have.
 | `M`       | Modified  | Entry was modified | Entry will be modified |
 | `R`       | Run       | Not applicable     | Script will be run     |
 
-## `-x`, `--exclude` *types*
+## Common flags
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+### `-x`, `--exclude` *types*
 
-## `-i`, `--include` *types*
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
 
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+### `-i`, `--include` *types*
 
-## `--init`
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
+
+### `--init`
 
 Recreate config file from template.
 
-## `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
+### `-P`, `--parent-dirs`
+
+Also perform command on all parent directories of *target*.
+
+### `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
 
 Print paths in the given style. Relative paths are relative to the destination
 directory. The default is `relative`.
 
-## `-r`, `--recursive`
+### `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi status
-    ```
+```console
+$ chezmoi status
+```

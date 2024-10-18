@@ -2,8 +2,8 @@
 
 Print chezmoi's license.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi license
-    ```
+```console
+$ chezmoi license
+```

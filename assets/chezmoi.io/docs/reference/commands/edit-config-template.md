@@ -3,8 +3,8 @@
 Edit the configuration file template. If no configuration file template exists,
 then a new one is created with the contents of the current config file.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi edit-config-template
-    ```
+```console
+$ chezmoi edit-config-template
+```

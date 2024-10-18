@@ -2,12 +2,14 @@
 
 Check for potential problems.
 
-## `--no-network`
+## Flags
+
+### `--no-network`
 
 Do not use any network connections.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi doctor
-    ```
+```console
+$ chezmoi doctor
+```

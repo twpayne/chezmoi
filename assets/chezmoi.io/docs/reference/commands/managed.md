@@ -4,31 +4,35 @@ List all managed entries in the destination directory under all *path*s in
 alphabetical order. When no *path*s are supplied, list all managed entries in
 the destination directory in alphabetical order.
 
-## `-x`, `--exclude` *types*
+## Common flags
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
+### `-x`, `--exclude` *types*
 
-## `-i`, `--include` *types*
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
 
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
+### `-i`, `--include` *types*
 
-## `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
+
+### `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
 
 Print paths in the given style. Relative paths are relative to the destination
 directory. The default is `relative`.
 
-## `-t`, `--tree`
+### `-t`, `--tree`
 
 Print paths as a tree.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi managed
-    $ chezmoi managed --include=files
-    $ chezmoi managed --include=files,symlinks
-    $ chezmoi managed -i dirs
-    $ chezmoi managed -i dirs,files
-    $ chezmoi managed -i files ~/.config
-    $ chezmoi managed --exclude=encrypted --path-style=source-relative
-    ```
+```console
+$ chezmoi managed
+$ chezmoi managed --include=files
+$ chezmoi managed --include=files,symlinks
+$ chezmoi managed -i dirs
+$ chezmoi managed -i dirs,files
+$ chezmoi managed -i files ~/.config
+$ chezmoi managed --exclude=encrypted --path-style=source-relative
+```

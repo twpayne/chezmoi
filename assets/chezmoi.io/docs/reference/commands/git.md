@@ -7,10 +7,10 @@ Run `git` *args* in the working tree (typically the source directory).
     Flags in *args* must occur after `--` to prevent chezmoi from interpreting
     them.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi git add .
-    $ chezmoi git add dot_gitconfig
-    $ chezmoi git -- commit -m "Add .gitconfig"
-    ```
+```console
+$ chezmoi git add .
+$ chezmoi git add dot_gitconfig
+$ chezmoi git -- commit -m "Add .gitconfig"
+```

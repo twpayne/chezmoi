@@ -3,9 +3,9 @@
 Print the target path of each source path. If no source paths are specified then
 print the target directory.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi target-path
-    $ chezmoi target-path ~/.local/share/chezmoi/dot_zshrc
-    ```
+```console
+$ chezmoi target-path
+$ chezmoi target-path ~/.local/share/chezmoi/dot_zshrc
+```

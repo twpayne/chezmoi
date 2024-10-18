@@ -2,6 +2,15 @@
 
 The following flags apply to multiple commands where they are relevant.
 
+## `-x`, `--exclude` *types*
+
+Exclude target state entries of type [*types*](#available-types). Defaults to `none`.
+
+!!! example
+
+    `--exclude=scripts` will cause the command to not run scripts and
+    `--exclude=encrypted` will exclude encrypted files.
+
 ## `-f`, `--format` `json`|`yaml`
 
 Set the output format.
@@ -45,13 +54,14 @@ Types can be explicitly excluded with the `--exclude` flag.
 Regenerate and reread the config file from the config file template before
 computing the target state.
 
-## `-o`, `--output` *filename*
-
-Write the output to *filename* instead of stdout.
-
 ## `-P`, `--parent-dirs`
 
 Also perform command on all parent directories of *target*.
+
+## `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
+
+Print paths in the given style. Relative paths are relative to the destination
+directory. The default is `relative`.
 
 ## `-r`, `--recursive`
 
@@ -60,17 +70,3 @@ Recurse into subdirectories, `true` by default.
 ## `--tree`
 
 Print paths as a tree instead of a list.
-
-## `--use-builtin-diff`
-
-Use chezmoi's builtin diff, even if the `diff.command` configuration variable
-is set.
-
-## `-x`, `--exclude` *types*
-
-Exclude target state entries of type [*types*](#available-types). Defaults to `none`.
-
-!!! example
-
-    `--exclude=scripts` will cause the command to not run scripts and
-    `--exclude=encrypted` will exclude encrypted files.
