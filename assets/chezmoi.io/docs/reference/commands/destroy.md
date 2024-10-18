@@ -12,10 +12,12 @@
 
 Remove *target* from the source state, the destination directory, and the state.
 
-## `-f`, `--force`
+## Common flags
+
+### `-f`, `--force`
 
 Destroy without prompting.
 
-## `-r`, `--recursive`
+### `-r`, `--recursive`
 
 Recurse into subdirectories.

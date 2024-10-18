@@ -20,11 +20,9 @@ Decrypt file or standard input.
 
 Decrypt with a passphrase.
 
-## Example
+## Examples
 
-!!! example
-
-    ```console
-    $ chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt
-    $ chezmoi age decrypt --passphrase ciphertext.txt > decrypted-ciphertext.txt
-    ```
+```console
+$ chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt
+$ chezmoi age decrypt --passphrase ciphertext.txt > decrypted-ciphertext.txt
+```

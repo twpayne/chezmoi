@@ -2,8 +2,8 @@
 
 Print the configuration file.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi cat-config
-    ```
+```console
+$ chezmoi cat-config
+```

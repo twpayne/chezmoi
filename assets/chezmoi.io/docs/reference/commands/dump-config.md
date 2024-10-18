@@ -2,12 +2,14 @@
 
 Dump the configuration.
 
-## `-f`, `--format` `json`|`yaml`
+## Common flags
+
+### `-f`, `--format` `json`|`yaml`
 
 Set the output format, `json` by default.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi dump-config
-    ```
+```console
+$ chezmoi dump-config
+```

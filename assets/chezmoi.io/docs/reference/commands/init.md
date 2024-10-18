@@ -33,107 +33,113 @@ and cache directories.
 Finally, if the `--purge-binary` is passed, chezmoi will attempt to remove its
 own binary.
 
-## `--apply`
+## Flags
+
+### `--apply`
 
 Run `chezmoi apply` after checking out the repo and creating the config file.
 
-## `--branch` *branch*
+### `--branch` *branch*
 
 Check out *branch* instead of the default branch.
 
-## `--config-path` *path*
+### `--config-path` *path*
 
 Write the generated config file to *path* instead of the default location.
 
-## `--data` *bool*
+### `--data` *bool*
 
 Include existing template data when creating the config file. This defaults to
 `true`. Set this to `false` to simulate creating the config file with no
 existing template data.
 
-## `--depth` *depth*
+### `--depth` *depth*
 
 Clone the repo with depth *depth*.
 
-## `-x`, `--exclude` *types*
-
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
-
-## `--guess-repo-url` *bool*
+### `--guess-repo-url` *bool*
 
 Guess the repo URL from the *repo* argument. This defaults to `true`.
 
-## `-i`, `--include` *types*
-
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
-
-## `--one-shot`
+### `--one-shot`
 
 `--one-shot` is the equivalent of `--apply`, `--depth=1`, `--force`, `--purge`,
 and `--purge-binary`. It attempts to install your dotfiles with chezmoi and
 then remove all traces of chezmoi from the system. This is useful for setting
 up temporary environments (e.g. Docker containers).
 
-## `--prompt`
+### `--prompt`
 
 Force the `prompt*Once` template functions to prompt.
 
-## `--promptBool` *pairs*
+### `--promptBool` *pairs*
 
 Populate the `promptBool` template function with values from *pairs*. *pairs* is
 a comma-separated list of *prompt*`=`*value* pairs. If `promptBool` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
 
-## `--promptChoice` *pairs*
+### `--promptChoice` *pairs*
 
 Populate the `promptChoice` template function with values from *pairs*. *pairs*
 is a comma-separated list of *prompt*`=`*value* pairs. If `promptChoice` is
 called with a *prompt* that does not match any of *pairs*, then it prompts the
 user for a value.
 
-## `--promptDefaults`
+### `--promptDefaults`
 
 Make all `prompt*` template function calls with a default value return that
 default value instead of prompting.
 
-## `--promptInt` *pairs*
+### `--promptInt` *pairs*
 
 Populate the `promptInt` template function with values from *pairs*. *pairs* is
 a comma-separated list of *prompt*`=`*value* pairs. If `prompInt` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
 
-## `--promptString` *pairs*
+### `--promptString` *pairs*
 
 Populate the `promptString` template function with values from *pairs*. *pairs* is
 a comma-separated list of *prompt*`=`*value* pairs. If `promptString` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
 
-## `--purge`
+### `--purge`
 
 Remove the source and config directories after applying.
 
-## `--purge-binary`
+### `--purge-binary`
 
 Attempt to remove the chezmoi binary after applying.
 
-## `--recurse-submodules` *bool*
+### `--recurse-submodules` *bool*
 
 Recursively clone submodules. This defaults to `true`.
 
-## `--ssh`
+### `--ssh`
 
 Guess an SSH repo URL instead of an HTTPS repo.
 
-!!! example
+## Common flags
 
-    ```console
-    $ chezmoi init user
-    $ chezmoi init user --apply
-    $ chezmoi init user --apply --purge
-    $ chezmoi init user/dots
-    $ chezmoi init codeberg.org/user
-    $ chezmoi init gitlab.com/user
-    ```
+### `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
+
+### `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
+
+## Examples
+
+```console
+$ chezmoi init user
+$ chezmoi init user --apply
+$ chezmoi init user --apply --purge
+$ chezmoi init user/dots
+$ chezmoi init codeberg.org/user
+$ chezmoi init gitlab.com/user
+```

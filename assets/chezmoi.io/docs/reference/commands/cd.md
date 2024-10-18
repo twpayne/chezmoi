@@ -20,10 +20,10 @@ scripts.
     $ cd $(chezmoi source-path)
     ```
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi cd
-    $ chezmoi cd ~
-    $ chezmoi cd ~/.config
-    ```
+```console
+$ chezmoi cd
+$ chezmoi cd ~
+$ chezmoi cd ~/.config
+```

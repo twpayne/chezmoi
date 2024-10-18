@@ -5,18 +5,20 @@ unmanaged files in the destination directory.
 
 It is an error to supply *path*s that are not found on the filesystem.
 
-## `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
+## Common flags
+
+### `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
 
 Print paths in the given style. Relative paths are relative to the destination
 directory. The default is `relative`.
 
-## `-t`, `--tree`
+### `-t`, `--tree`
 
 Print paths as a tree.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi unmanaged
-    $ chezmoi unmanaged ~/.config/chezmoi ~/.ssh
-    ```
+```console
+$ chezmoi unmanaged
+$ chezmoi unmanaged ~/.config/chezmoi ~/.ssh
+```

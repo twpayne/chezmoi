@@ -5,8 +5,8 @@ scripts, or symlinks. For files, the target file contents are written. For
 scripts, the script's contents are written. For symlinks, the target is
 written.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi cat ~/.bashrc
-    ```
+```console
+$ chezmoi cat ~/.bashrc
+```

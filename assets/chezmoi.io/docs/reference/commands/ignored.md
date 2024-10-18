@@ -2,12 +2,14 @@
 
 Print the list of entries ignored by chezmoi.
 
-## `-t`, `--tree`
+## Common flags
+
+### `-t`, `--tree`
 
 Print paths as a tree.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi ignored
-    ```
+```console
+$ chezmoi ignored
+```

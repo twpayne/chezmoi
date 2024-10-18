@@ -12,17 +12,15 @@ editor with filenames which match the target filename, unless the
 `edit.hardlink` configuration variable is set to `false` or the
 `--hardlink=false` command line flag is set.
 
-## `-a`, `--apply`
+## Flags
+
+### `-a`, `--apply`
 
 > Configuration: `edit.apply`
 
 Apply target immediately after editing. Ignored if there are no targets.
 
-## `-x`, `--exclude` *types*
-
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),  defaults to `none`.
-
-## `--hardlink` *bool*
+### `--hardlink` *bool*
 
 > Configuration: `edit.hardlink`
 
@@ -30,15 +28,7 @@ Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
 
-## `-i`, `--include` *types*
-
-Only add entries of type [*types*](../command-line-flags/common.md#available-types), defaults to `all`.
-
-## `--init`
-
-Recreate config file from template.
-
-## `--watch`
+### `--watch`
 
 > Configuration: `edit.watch`
 
@@ -52,10 +42,26 @@ Automatically apply changes when files are saved, with the following limitations
 * Only works on operating systems supported by
   [fsnotify](https://github.com/fsnotify/fsnotify).
 
-!!! example
+## Common flags
 
-    ```console
-    $ chezmoi edit ~/.bashrc
-    $ chezmoi edit ~/.bashrc --apply
-    $ chezmoi edit
-    ```
+### `-x`, `--exclude` *types*
+
+Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `none`.
+
+### `-i`, `--include` *types*
+
+Only add entries of type [*types*](../command-line-flags/common.md#available-types),
+defaults to `all`.
+
+### `--init`
+
+Recreate config file from template.
+
+## Examples
+
+  ```console
+  $ chezmoi edit ~/.bashrc
+  $ chezmoi edit ~/.bashrc --apply
+  $ chezmoi edit
+  ```

@@ -16,8 +16,8 @@ of `merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]`.
 If `merge.args` does not contain any template arguments then `{{ .Destination
 }}`, `{{ .Source }}`, and `{{ .Target }}` will be appended automatically.
 
-!!! example
+## Examples
 
-    ```console
-    $ chezmoi merge ~/.bashrc
-    ```
+```console
+$ chezmoi merge ~/.bashrc
+```

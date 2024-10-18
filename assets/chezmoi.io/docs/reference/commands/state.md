@@ -44,17 +44,15 @@ Reset the persistent state.
 
 Set a value from the persistent state
 
-## Example
+## Examples
 
-!!! example
-
-    ```console
-    $ chezmoi state data
-    $ chezmoi state delete --bucket=bucket --key=key
-    $ chezmoi state delete-bucket --bucket=bucket
-    $ chezmoi state dump
-    $ chezmoi state get --bucket=bucket --key=key
-    $ chezmoi state get-bucket --bucket=bucket
-    $ chezmoi state set --bucket=bucket --key=key --value=value
-    $ chezmoi state reset
-    ```
+```console
+$ chezmoi state data
+$ chezmoi state delete --bucket=bucket --key=key
+$ chezmoi state delete-bucket --bucket=bucket
+$ chezmoi state dump
+$ chezmoi state get --bucket=bucket --key=key
+$ chezmoi state get-bucket --bucket=bucket
+$ chezmoi state set --bucket=bucket --key=key --value=value
+$ chezmoi state reset
+```
