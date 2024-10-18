@@ -157,9 +157,9 @@ nav:
     - generate: reference/commands/generate.md
     - git: reference/commands/git.md
     - help: reference/commands/help.md
-    - init: reference/commands/init.md
-    - import: reference/commands/import.md
     - ignored: reference/commands/ignored.md
+    - import: reference/commands/import.md
+    - init: reference/commands/init.md
     - license: reference/commands/license.md
     - list: reference/commands/list.md
     - manage: reference/commands/manage.md

@@ -20,7 +20,7 @@ Decrypt file or standard input.
 
 Decrypt with a passphrase.
 
-## Example
+## Examples
 
 !!! example
 

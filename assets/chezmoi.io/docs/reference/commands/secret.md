@@ -45,7 +45,7 @@ Name of the user.
 
 New value.
 
-## Example
+## Examples
 
 !!! example
 
@@ -55,7 +55,7 @@ New value.
     $ chezmoi secret keyring delete --service=service --user=user
     ```
 
-## Warning
+## Notes
 
 !!! warning
 
