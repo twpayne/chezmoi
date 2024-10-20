@@ -404,6 +404,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	// Override sprig template functions. Delete them from the template function
 	// map first to avoid a duplicate function panic.
 	delete(c.templateFuncs, "fromJson")
+	delete(c.templateFuncs, "quote")
 	delete(c.templateFuncs, "splitList")
 	delete(c.templateFuncs, "toPrettyJson")
 
@@ -482,6 +483,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"passRaw":                      c.passRawTemplateFunc,
 		"passhole":                     c.passholeTemplateFunc,
 		"pruneEmptyDicts":              c.pruneEmptyDictsTemplateFunc,
+		"quote":                        c.quoteTemplateFunc,
 		"quoteList":                    c.quoteListTemplateFunc,
 		"rbw":                          c.rbwTemplateFunc,
 		"rbwFields":                    c.rbwFieldsTemplateFunc,
