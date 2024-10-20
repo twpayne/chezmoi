@@ -230,6 +230,54 @@ func TestPruneEmptyDicts(t *testing.T) {
 	}
 }
 
+func TestQuoteTemplateFunc(t *testing.T) {
+	a := "a"
+	for _, tc := range []struct {
+		name     string
+		values   []any
+		expected string
+	}{
+		{
+			name: "empty",
+		},
+		{
+			name:     "single",
+			values:   []any{"a"},
+			expected: `"a"`,
+		},
+		{
+			name:     "multiple",
+			values:   []any{"a", "b", "c"},
+			expected: `"a" "b" "c"`,
+		},
+		{
+			name:     "quotes",
+			values:   []any{`"a"`, "b", "c"},
+			expected: `"\"a\"" "b" "c"`,
+		},
+		{
+			name:     "ints",
+			values:   []any{1, 2, 3},
+			expected: `"1" "2" "3"`,
+		},
+		{
+			name:     "string_pointer",
+			values:   []any{&a},
+			expected: `"a"`,
+		},
+		{
+			name:     "byte_slice",
+			values:   []any{[]byte{'a'}},
+			expected: `"a"`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var c Config
+			assert.Equal(t, tc.expected, c.quoteTemplateFunc(tc.values...))
+		})
+	}
+}
+
 func TestSetValueAtPathTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name        string

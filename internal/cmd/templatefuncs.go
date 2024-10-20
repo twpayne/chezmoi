@@ -403,23 +403,20 @@ func (c *Config) pruneEmptyDictsTemplateFunc(dict map[string]any) map[string]any
 	return dict
 }
 
+func (c *Config) quoteTemplateFunc(list ...any) string {
+	ss := make([]string, 0, len(list))
+	for _, elem := range list {
+		if elem != nil {
+			ss = append(ss, strconv.Quote(anyToString(elem)))
+		}
+	}
+	return strings.Join(ss, " ")
+}
+
 func (c *Config) quoteListTemplateFunc(list []any) []string {
 	result := make([]string, len(list))
 	for i, elem := range list {
-		var elemStr string
-		switch elem := elem.(type) {
-		case []byte:
-			elemStr = string(elem)
-		case string:
-			elemStr = elem
-		case error:
-			elemStr = elem.Error()
-		case fmt.Stringer:
-			elemStr = elem.String()
-		default:
-			elemStr = fmt.Sprintf("%v", elem)
-		}
-		result[i] = strconv.Quote(elemStr)
+		result[i] = strconv.Quote(anyToString(elem))
 	}
 	return result
 }
@@ -551,6 +548,50 @@ func (c *Config) toYamlTemplateFunc(data any) string {
 		panic(err)
 	}
 	return string(yaml)
+}
+
+func anyToString(value any) string {
+	switch value := value.(type) {
+	case bool:
+		return strconv.FormatBool(value)
+	case *bool:
+		return strconv.FormatBool(*value)
+	case []byte:
+		return string(value)
+	case float64:
+		return strconv.FormatFloat(value, 'f', -1, 64)
+	case *float64:
+		return strconv.FormatFloat(*value, 'f', -1, 64)
+	case int:
+		return strconv.Itoa(value)
+	case *int:
+		return strconv.Itoa(*value)
+	case string:
+		return value
+	case *string:
+		return *value
+	case error:
+		return value.Error()
+	case fmt.Stringer:
+		return value.String()
+	default:
+		return fmt.Sprintf("%v", value)
+	}
+}
+
+func anyToStringSlice(slice any) ([]string, error) {
+	switch slice := slice.(type) {
+	case []any:
+		result := make([]string, len(slice))
+		for i, elem := range slice {
+			result[i] = anyToString(elem)
+		}
+		return result, nil
+	case []string:
+		return slice, nil
+	default:
+		return nil, fmt.Errorf("%v: not a slice", slice)
+	}
 }
 
 func fileInfoToMap(fileInfo fs.FileInfo) map[string]any {

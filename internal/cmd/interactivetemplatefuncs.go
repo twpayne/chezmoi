@@ -227,33 +227,3 @@ func (c *Config) promptStringOnceInteractiveTemplateFunc(m map[string]any, path 
 
 	return c.promptStringInteractiveTemplateFunc(prompt, args...)
 }
-
-func anyToString(v any) (string, error) {
-	switch v := v.(type) {
-	case []byte:
-		return string(v), nil
-	case string:
-		return v, nil
-	default:
-		return "", fmt.Errorf("%v: not a string", v)
-	}
-}
-
-func anyToStringSlice(slice any) ([]string, error) {
-	switch slice := slice.(type) {
-	case []any:
-		result := make([]string, 0, len(slice))
-		for _, elem := range slice {
-			elemStr, err := anyToString(elem)
-			if err != nil {
-				return nil, err
-			}
-			result = append(result, elemStr)
-		}
-		return result, nil
-	case []string:
-		return slice, nil
-	default:
-		return nil, fmt.Errorf("%v: not a slice", slice)
-	}
-}
