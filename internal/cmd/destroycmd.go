@@ -36,7 +36,7 @@ func (c *Config) newDestroyCmd() *cobra.Command {
 }
 
 func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	targetRelPaths, err := c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
+	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		recursive: c.destroy.recursive,
 	})
 	if err != nil {

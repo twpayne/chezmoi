@@ -649,7 +649,7 @@ func (c *Config) applyArgs(
 			return err
 		}
 	default:
-		targetRelPaths, err = c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
+		targetRelPaths, err = c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 			recursive: options.recursive,
 		})
 		if err != nil {
@@ -2536,7 +2536,7 @@ func (c *Config) setEnvironmentVariables() error {
 // sourceAbsPaths returns the source absolute paths for each target path in
 // args.
 func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
-	targetRelPaths, err := c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
+	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 	})
 	if err != nil {
@@ -2569,7 +2569,7 @@ type targetRelPathsOptions struct {
 func (c *Config) targetRelPaths(
 	sourceState *chezmoi.SourceState,
 	args []string,
-	options *targetRelPathsOptions,
+	options targetRelPathsOptions,
 ) (chezmoi.RelPaths, error) {
 	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
 	for _, arg := range args {
@@ -2585,24 +2585,22 @@ func (c *Config) targetRelPaths(
 		if sourceStateEntry == nil {
 			return nil, fmt.Errorf("%s: not managed", arg)
 		}
-		if options != nil {
-			if options.mustBeInSourceState {
-				if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); ok {
-					return nil, fmt.Errorf("%s: not in source state", arg)
-				}
+		if options.mustBeInSourceState {
+			if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); ok {
+				return nil, fmt.Errorf("%s: not in source state", arg)
 			}
-			if options.mustNotBeExternal {
-				targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
-				if err != nil {
-					return nil, err
-				}
-				if targetStateEntry.SourceAttr().External {
-					return nil, fmt.Errorf("%s: is an external", arg)
-				}
+		}
+		if options.mustNotBeExternal {
+			targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
+			if err != nil {
+				return nil, err
+			}
+			if targetStateEntry.SourceAttr().External {
+				return nil, fmt.Errorf("%s: is an external", arg)
 			}
 		}
 		targetRelPaths = append(targetRelPaths, targetRelPath)
-		if options != nil && options.recursive {
+		if options.recursive {
 			parentRelPath := targetRelPath
 			// FIXME we should not call s.TargetRelPaths() here - risk of
 			// accidentally quadratic
