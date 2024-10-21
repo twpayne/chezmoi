@@ -1,5 +1,13 @@
 # Developer guide
 
+!!! warning
+
+    If you use an LLM (Large Language Model, like ChatGPT, Claude, Gemini, GitHub Copilot,
+    or Llama) to make a contribution then you must say so in your contribution and
+    you must carefully review your contribution for correctness before sharing it.
+    If you share un-reviewed LLM-generated content then you will be immediately
+    banned. See `CODE_OF_CONDUCT.md` for more information.
+
 chezmoi is written in [Go](https://golang.org) and development happens on
 [GitHub](https://github.com). chezmoi is a standard Go project, using standard
 Go tooling. chezmoi requires Go 1.22 or later.
