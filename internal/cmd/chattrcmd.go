@@ -150,7 +150,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return err
 	}
 
-	targetRelPaths, err := c.targetRelPaths(sourceState, args[1:], &targetRelPathsOptions{
+	targetRelPaths, err := c.targetRelPaths(sourceState, args[1:], targetRelPathsOptions{
 		mustNotBeExternal: true,
 		recursive:         c.chattr.recursive,
 	})

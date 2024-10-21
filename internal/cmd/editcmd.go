@@ -77,7 +77,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	targetRelPaths, err := c.targetRelPaths(sourceState, args, &targetRelPathsOptions{
+	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 	})
 	if err != nil {
