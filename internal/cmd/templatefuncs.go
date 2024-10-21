@@ -413,6 +413,16 @@ func (c *Config) quoteTemplateFunc(list ...any) string {
 	return strings.Join(ss, " ")
 }
 
+func (c *Config) squoteTemplateFunc(list ...any) string {
+	ss := make([]string, 0, len(list))
+	for _, elem := range list {
+		if elem != nil {
+			ss = append(ss, "'"+anyToString(elem)+"'")
+		}
+	}
+	return strings.Join(ss, " ")
+}
+
 func (c *Config) quoteListTemplateFunc(list []any) []string {
 	result := make([]string, len(list))
 	for i, elem := range list {

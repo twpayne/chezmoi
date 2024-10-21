@@ -406,6 +406,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	delete(c.templateFuncs, "fromJson")
 	delete(c.templateFuncs, "quote")
 	delete(c.templateFuncs, "splitList")
+	delete(c.templateFuncs, "squote")
 	delete(c.templateFuncs, "toPrettyJson")
 
 	// The completion template function is added in persistentPreRunRootE as
@@ -492,6 +493,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"secretJSON":                   c.secretJSONTemplateFunc,
 		"setValueAtPath":               c.setValueAtPathTemplateFunc,
 		"splitList":                    c.splitListTemplateFunc,
+		"squote":                       c.squoteTemplateFunc,
 		"stat":                         c.statTemplateFunc,
 		"toIni":                        c.toIniTemplateFunc,
 		"toPrettyJson":                 c.toPrettyJsonTemplateFunc,
