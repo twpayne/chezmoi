@@ -1,0 +1,8 @@
+# test that chezmoi chattr +encrypted prints an error message when run on an external file
+! exec chezmoi chattr +encrypted $HOME${/}.file
+stderr 'is an external'
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "https://example.com/.file"
