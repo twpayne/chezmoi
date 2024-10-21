@@ -2560,6 +2560,7 @@ func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error)
 
 type targetRelPathsOptions struct {
 	mustBeInSourceState bool
+	mustNotBeExternal   bool
 	recursive           bool
 }
 
@@ -2584,9 +2585,20 @@ func (c *Config) targetRelPaths(
 		if sourceStateEntry == nil {
 			return nil, fmt.Errorf("%s: not managed", arg)
 		}
-		if options != nil && options.mustBeInSourceState {
-			if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); ok {
-				return nil, fmt.Errorf("%s: not in source state", arg)
+		if options != nil {
+			if options.mustBeInSourceState {
+				if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); ok {
+					return nil, fmt.Errorf("%s: not in source state", arg)
+				}
+			}
+			if options.mustNotBeExternal {
+				targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
+				if err != nil {
+					return nil, err
+				}
+				if targetStateEntry.SourceAttr().External {
+					return nil, fmt.Errorf("%s: is an external", arg)
+				}
 			}
 		}
 		targetRelPaths = append(targetRelPaths, targetRelPath)
