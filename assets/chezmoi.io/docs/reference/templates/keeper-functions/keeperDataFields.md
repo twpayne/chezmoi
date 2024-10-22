@@ -3,7 +3,7 @@
 `keeperDataFields` returns the `.data.fields` elements of `keeper get
 --format=json *uid*` indexed by `type`.
 
-## Example
+## Examples
 
 ```
 url = {{ (keeperDataFields "$UID").url }}

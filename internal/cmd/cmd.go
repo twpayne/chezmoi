@@ -164,13 +164,13 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 
 	stateChange := func(line string, state *stateType) bool {
 		switch {
-		case strings.HasPrefix(line, "## Flags") || strings.HasPrefix(line, "## Common flags"):
+		case line == "## Flags" || line == "## Common flags":
 			*state = stateInOptions
 			return true
-		case strings.HasPrefix(line, "## Example"): // accept singular and plural
+		case line == "## Examples":
 			*state = stateInExamples
 			return true
-		case strings.HasPrefix(line, "## Note"): // accept singular and plural
+		case line == "## Notes":
 			*state = stateInNotes
 			return true
 		case strings.HasPrefix(line, "## "):
