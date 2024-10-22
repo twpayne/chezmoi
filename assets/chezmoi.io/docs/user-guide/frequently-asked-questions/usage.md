@@ -53,7 +53,7 @@ called `.chezmoiignore` in the source state.
 
 Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the [reference
-manual](../../reference/special-files-and-directories/chezmoiignore.md).
+manual](../../reference/special-files/chezmoiignore.md).
 
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 
