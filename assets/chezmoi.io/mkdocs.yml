@@ -119,18 +119,21 @@ nav:
     - textconv: reference/configuration-file/textconv.md
     - umask: reference/configuration-file/umask.md
     - Warnings: reference/configuration-file/warnings.md
-  - Special files and directories:
-    - reference/special-files-and-directories/index.md
-    - .chezmoi.&lt;format&gt;.tmpl: reference/special-files-and-directories/chezmoi-format-tmpl.md
-    - .chezmoidata.&lt;format&gt;: reference/special-files-and-directories/chezmoidata-format.md
-    - .chezmoiexternal.&lt;format&gt;: reference/special-files-and-directories/chezmoiexternal-format.md
-    - .chezmoiexternals: reference/special-files-and-directories/chezmoiexternals.md
-    - .chezmoiignore: reference/special-files-and-directories/chezmoiignore.md
-    - .chezmoiremove: reference/special-files-and-directories/chezmoiremove.md
-    - .chezmoiroot: reference/special-files-and-directories/chezmoiroot.md
-    - .chezmoiscripts: reference/special-files-and-directories/chezmoiscripts.md
-    - .chezmoitemplates: reference/special-files-and-directories/chezmoitemplates.md
-    - .chezmoiversion: reference/special-files-and-directories/chezmoiversion.md
+  - Special files:
+    - reference/special-files/index.md
+    - .chezmoi.&lt;format&gt;.tmpl: reference/special-files/chezmoi-format-tmpl.md
+    - .chezmoidata.&lt;format&gt;: reference/special-files/chezmoidata-format.md
+    - .chezmoiexternal.&lt;format&gt;: reference/special-files/chezmoiexternal-format.md
+    - .chezmoiignore: reference/special-files/chezmoiignore.md
+    - .chezmoiremove: reference/special-files/chezmoiremove.md
+    - .chezmoiroot: reference/special-files/chezmoiroot.md
+    - .chezmoiversion: reference/special-files/chezmoiversion.md
+  - Special directories:
+    - reference/special-directories/index.md
+    - .chezmoidata: reference/special-directories/chezmoidata.md
+    - .chezmoiexternals: reference/special-directories/chezmoiexternals.md
+    - .chezmoiscripts: reference/special-directories/chezmoiscripts.md
+    - .chezmoitemplates: reference/special-directories/chezmoitemplates.md
   - Commands:
     - add: reference/commands/add.md
     - age: reference/commands/age.md
@@ -347,6 +350,11 @@ markdown_extensions:
 - admonition
 - meta
 - pymdownx.details
+- pymdownx.snippets:
+    base_path:
+      - assets/chezmoi.io/snippets
+      - snippets
+    check_paths: true
 - pymdownx.superfences:
     custom_fences:
     - name: mermaid
@@ -368,3 +376,6 @@ plugins:
 
 extra_javascript:
 - extra/refresh_on_toggle_dark_light.js
+
+watch:
+  - snippets
