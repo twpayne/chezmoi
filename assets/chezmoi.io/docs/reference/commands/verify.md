@@ -20,6 +20,10 @@ defaults to `all`.
 
 Recreate config file from template.
 
+### `-P`, `--parent-dirs`
+
+Also perform command on all parent directories of *target*.
+
 ### `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.

@@ -14,7 +14,7 @@ Remove *target* from the source state, the destination directory, and the state.
 
 ## Common flags
 
-### `-f`, `--force`
+### `--force`
 
 Destroy without prompting.
 

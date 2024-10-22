@@ -10,7 +10,7 @@ The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
 
 ## Flags
 
-### `--destination` *directory*
+### `-d`, `--destination` *directory*
 
 Set the destination (in the source state) where the archive will be imported.
 

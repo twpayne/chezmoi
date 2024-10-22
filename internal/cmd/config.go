@@ -1740,6 +1740,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newVerifyCmd(),
 	} {
 		if cmd != nil {
+			ensureAllFlagsDocumented(cmd, persistentFlags)
 			registerCommonFlagCompletionFuncs(cmd)
 			rootCmd.AddCommand(cmd)
 		}
