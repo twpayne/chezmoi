@@ -207,12 +207,11 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 			}
 		case stateInOptions:
 			if !stateChange(line, &state) {
-				matches := helpFlagsRx.FindStringSubmatch(line)
-				if matches != nil {
-					if matches[1] != "" {
-						shortFlags.Add(matches[1])
+				if m := helpFlagsRx.FindStringSubmatch(line); m != nil {
+					if m[1] != "" {
+						shortFlags.Add(m[1])
 					}
-					longFlags.Add(matches[2])
+					longFlags.Add(m[2])
 				}
 			}
 		default:
