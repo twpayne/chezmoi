@@ -41,3 +41,7 @@ podcasts:
   lang: ES
   title: 491 - Tres herramientas que han revolucionado mi terminal Linux
   url: https://atareao.es/podcast/tres-herramientas-que-han-revolucionado-mi-terminal-linux/
+- date: '2024-10-17'
+  version: 2.52.4
+  title: Releasing more BSDs
+  url: https://www.bsdnow.tv/581?t=2064
