@@ -103,7 +103,7 @@ Use *directory* as the source directory.
 Interpret *targets* passed to the command as paths in the source directory
 rather than the destination directory.
 
-## `--use-builtin-age` *value*
+## `--use-builtin-age` [*bool*]
 
 > Configuration: `useBuiltinAge`
 
@@ -115,12 +115,12 @@ builtin age if `age.command` cannot be found in `$PATH`.
 The builtin `age` command does not support passphrases, symmetric encryption,
 or the use of SSH keys.
 
-## `--use-builtin-diff`
+## `--use-builtin-diff` [*bool*]
 
 Use chezmoi's builtin diff, even if the `diff.command` configuration variable
 is set.
 
-## `--use-builtin-git` *value*
+## `--use-builtin-git` [*bool*]
 
 > Configuration: `useBuiltinGit`
 
