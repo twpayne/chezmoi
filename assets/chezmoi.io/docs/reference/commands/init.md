@@ -35,7 +35,7 @@ own binary.
 
 ## Flags
 
-### `--apply`
+### `-a`, `--apply`
 
 Run `chezmoi apply` after checking out the repo and creating the config file.
 
@@ -43,7 +43,7 @@ Run `chezmoi apply` after checking out the repo and creating the config file.
 
 Check out *branch* instead of the default branch.
 
-### `--config-path` *path*
+### `-C`, `--config-path` *path*
 
 Write the generated config file to *path* instead of the default location.
 
@@ -53,11 +53,11 @@ Include existing template data when creating the config file. This defaults to
 `true`. Set this to `false` to simulate creating the config file with no
 existing template data.
 
-### `--depth` *depth*
+### `-d`, `--depth` *depth*
 
 Clone the repo with depth *depth*.
 
-### `--guess-repo-url` *bool*
+### `-g`, `--guess-repo-url` *bool*
 
 Guess the repo URL from the *repo* argument. This defaults to `true`.
 
@@ -105,11 +105,11 @@ a comma-separated list of *prompt*`=`*value* pairs. If `promptString` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
 
-### `--purge`
+### `-p`, `--purge`
 
 Remove the source and config directories after applying.
 
-### `--purge-binary`
+### `-P`, `--purge-binary`
 
 Attempt to remove the chezmoi binary after applying.
 

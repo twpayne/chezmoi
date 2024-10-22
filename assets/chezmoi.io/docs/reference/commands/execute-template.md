@@ -8,7 +8,7 @@ specified, the template is read from stdin.
 
 ## Flags
 
-### `--init`, `-i`
+### `-i`, `--init`
 
 Include simulated functions only available during `chezmoi init`.
 
@@ -37,7 +37,7 @@ from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
 `promptInt` is called with a *prompt* that does not match any of *pairs*, then
 it returns zero.
 
-### `--promptString`, `-p` *pairs*
+### `-p`, `--promptString` *pairs*
 
 Simulate the `promptString` template function with a function that returns
 values from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value*

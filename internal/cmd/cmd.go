@@ -15,6 +15,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/glamour/styles"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"go.etcd.io/bbolt"
 
 	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
@@ -30,6 +31,7 @@ var (
 
 	deDuplicateErrorRx = regexp.MustCompile(`:\s+`)
 	trailingSpaceRx    = regexp.MustCompile(` +\n`)
+	helpFlagsRx        = regexp.MustCompile("^### (?:`-([a-zA-Z])`, )?`--([a-zA-Z-]+)`")
 
 	helps = make(map[string]*help)
 )
@@ -43,8 +45,10 @@ type VersionInfo struct {
 }
 
 type help struct {
-	longHelp string
-	example  string
+	longHelp   string
+	example    string
+	longFlags  map[string]bool
+	shortFlags map[string]bool
 }
 
 func init() {
@@ -155,6 +159,9 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 	state := stateReadTitle
 	var longHelpLines []string
 	var exampleLines []string
+	longFlags := make(map[string]bool)
+	shortFlags := make(map[string]bool)
+
 	stateChange := func(line string, state *stateType) bool {
 		switch {
 		case strings.HasPrefix(line, "## Flags") || strings.HasPrefix(line, "## Common flags"):
@@ -168,9 +175,6 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 			return true
 		case strings.HasPrefix(line, "## "):
 			*state = stateInUnknownSection
-			return true
-		case strings.HasPrefix(line, "!!! "):
-			*state = stateInAdmonition
 			return true
 		}
 		return false
@@ -189,12 +193,27 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 				return nil, fmt.Errorf("expected title for '%s'", command)
 			}
 		case stateInLongHelp:
-			if !stateChange(line, &state) {
+			switch {
+			case stateChange(line, &state):
+				break
+			case strings.HasPrefix(line, "!!! "):
+				state = stateInAdmonition
+			default:
 				longHelpLines = append(longHelpLines, line)
 			}
 		case stateInExamples:
 			if !stateChange(line, &state) {
 				exampleLines = append(exampleLines, line)
+			}
+		case stateInOptions:
+			if !stateChange(line, &state) {
+				matches := helpFlagsRx.FindStringSubmatch(line)
+				if matches != nil {
+					if matches[1] != "" {
+						shortFlags[matches[1]] = true
+					}
+					longFlags[matches[2]] = true
+				}
 			}
 		default:
 			stateChange(line, &state)
@@ -210,8 +229,10 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 		return nil, err
 	}
 	return &help{
-		longHelp: "Description:\n" + longHelp,
-		example:  example,
+		longHelp:   "Description:\n" + longHelp,
+		example:    example,
+		longFlags:  longFlags,
+		shortFlags: shortFlags,
 	}, nil
 }
 
@@ -243,6 +264,39 @@ func mustLongHelp(command string) string {
 		panic(command + ": missing long help")
 	}
 	return help.longHelp
+}
+
+func ensureAllFlagsDocumented(cmd *cobra.Command, persistentFlags *pflag.FlagSet) {
+	cmdName := cmd.Name()
+	help, ok := helps[cmdName]
+	if !ok && !cmd.Flags().HasFlags() {
+		return
+	}
+	if !ok {
+		panic(cmdName + ": missing flags")
+	}
+	// Check if all flags are documented.
+	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
+		if _, ok := help.longFlags[flag.Name]; !ok {
+			panic(fmt.Sprintf("%s: undocumented long flag --%s", cmdName, flag.Name))
+		}
+		if flag.Shorthand != "" {
+			if _, ok := help.shortFlags[flag.Shorthand]; !ok {
+				panic(fmt.Sprintf("%s: undocumented short flag -%s", cmdName, flag.Shorthand))
+			}
+		}
+	})
+	// Check if all documented flags exist.
+	for flag := range help.longFlags {
+		if cmd.Flags().Lookup(flag) == nil && persistentFlags.Lookup(flag) == nil {
+			panic(fmt.Sprintf("%s: flag --%s documented but not implemented", cmdName, flag))
+		}
+	}
+	for flag := range help.shortFlags {
+		if cmd.Flags().ShorthandLookup(flag) == nil && persistentFlags.ShorthandLookup(flag) == nil {
+			panic(fmt.Sprintf("%s: flag -%s documented but not implemented", cmdName, flag))
+		}
+	}
 }
 
 // runMain runs chezmoi's main function.

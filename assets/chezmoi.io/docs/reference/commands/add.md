@@ -6,7 +6,7 @@ destination directory.
 
 ## Flags
 
-### `--autotemplate`
+### `-a`, `--autotemplate`
 
 Automatically generate a template by replacing strings that match variable
 values from the `data` section of the config file with their respective config
@@ -46,7 +46,7 @@ Interactively prompt before adding each file.
 
 Suppress warnings about adding ignored entries.
 
-### `-s`, `--secrets` `ignore`|`warning`|`error`
+### `--secrets` `ignore`|`warning`|`error`
 
 > Configuration: `add.secrets`
 

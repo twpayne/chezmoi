@@ -9,7 +9,7 @@ If `update.command` is set then chezmoi will run `update.command` with
 
 ## Flags
 
-### `--apply`
+### `-a`, `--apply`
 
 Apply changes after pulling, `true` by default. Can be disabled with `--apply=false`.
 
@@ -32,6 +32,10 @@ defaults to `all`.
 ### `--init`
 
 Recreate config file from template.
+
+### `-P`, `--parent-dirs`
+
+Also perform command on all parent directories of *target*.
 
 ### `-r`, `--recursive`
 

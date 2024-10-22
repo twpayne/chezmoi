@@ -11,7 +11,7 @@ Purge chezmoi binary.
 
 ## Common flags
 
-### `-f`, `--force`
+### `--force`
 
 Remove without prompting.
 

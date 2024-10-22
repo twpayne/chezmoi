@@ -165,7 +165,7 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 		),
 	}
 
-	doctorCmd.PersistentFlags().BoolVar(&c.doctor.noNetwork, "no-network", c.doctor.noNetwork, "do not use network connection")
+	doctorCmd.Flags().BoolVar(&c.doctor.noNetwork, "no-network", c.doctor.noNetwork, "do not use network connection")
 
 	return doctorCmd
 }
