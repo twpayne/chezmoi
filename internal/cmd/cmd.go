@@ -47,8 +47,8 @@ type VersionInfo struct {
 type help struct {
 	longHelp   string
 	example    string
-	longFlags  map[string]bool
-	shortFlags map[string]bool
+	longFlags  chezmoiset.Set[string]
+	shortFlags chezmoiset.Set[string]
 }
 
 func init() {
@@ -159,8 +159,8 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 	state := stateReadTitle
 	var longHelpLines []string
 	var exampleLines []string
-	longFlags := make(map[string]bool)
-	shortFlags := make(map[string]bool)
+	longFlags := chezmoiset.New[string]()
+	shortFlags := chezmoiset.New[string]()
 
 	stateChange := func(line string, state *stateType) bool {
 		switch {
@@ -210,9 +210,9 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 				matches := helpFlagsRx.FindStringSubmatch(line)
 				if matches != nil {
 					if matches[1] != "" {
-						shortFlags[matches[1]] = true
+						shortFlags.Add(matches[1])
 					}
-					longFlags[matches[2]] = true
+					longFlags.Add(matches[2])
 				}
 			}
 		default:
