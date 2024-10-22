@@ -102,6 +102,6 @@ $ chezmoi add ~/.oh-my-zsh --exact --recursive
 
     `chezmoi add` will fail if the entry being added is in a directory
     implicitly created by an
-    [external](../special-files-and-directories/chezmoiexternal-format.md).
+    [external](../special-files/chezmoiexternal-format.md).
     See [this GitHub issue](https://github.com/twpayne/chezmoi/issues/1574) for
     details.
