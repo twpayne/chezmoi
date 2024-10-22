@@ -6,6 +6,13 @@ copyright: Copyright © Tom Payne 2018-2024
 repo_name: twpayne/chezmoi
 repo_url: https://github.com/twpayne/chezmoi
 edit_uri: edit/master/assets/chezmoi.io/docs/
+strict: true
+
+validation:
+  omitted_files: warn
+  absolute_links: relative_to_docs
+  unrecognized_links: warn
+  anchors: warn
 
 theme:
   name: material
