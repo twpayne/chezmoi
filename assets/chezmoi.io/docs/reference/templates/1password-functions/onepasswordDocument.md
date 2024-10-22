@@ -25,7 +25,9 @@ interactively prompted to sign in.
 
 !!! warning
 
-    When using [1Password Connect](../../../user-guide/password-managers/1password.md#1password-connect), `onepasswordDocument` is not available.
+    When using [1Password
+    Connect](../../../user-guide/password-managers/1password.md#1password-connect),
+    `onepasswordDocument` is not available.
 
 !!! warning
 

@@ -1,6 +1,6 @@
 # `destroy` *target*...
 
-!!! warning
+!!! danger
 
     The `destroy` command permanently removes files both from your home directory and chezmoi's source directory.
 
