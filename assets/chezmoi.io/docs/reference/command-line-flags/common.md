@@ -2,38 +2,60 @@
 
 The following flags apply to multiple commands where they are relevant.
 
-## `-x`, `--exclude` *types*
+## Flags
 
-Exclude target state entries of type [*types*](#available-types). Defaults to `none`.
+### `-x`, `--exclude` *types*
 
-!!! example
+--8<-- "common-flags/exclude.md"
 
-    `--exclude=scripts` will cause the command to not run scripts and
-    `--exclude=encrypted` will exclude encrypted files.
-
-## `-f`, `--format` `json`|`yaml`
+### `-f`, `--format` `json`|`yaml`
 
 Set the output format.
 
-## `-h`, `--help`
+### `-h`, `--help`
 
 Print help.
 
-## `-i`, `--include` *types*
+### `-i`, `--include` *types*
 
-Include target state entries of type *types*.
+--8<-- "common-flags/include.md"
 
-!!! example
+### `--init`
 
-    `--include=files` specifies all files.
+Regenerate and reread the config file from the config file template before
+computing the target state.
 
-### Available types
+### `-P`, `--parent-dirs`
 
-*types* is a comma-separated list of types:
+Also perform command on all parent directories of *target*.
+
+### `-p`, `--path-style` *style*
+
+Print paths in the given style. The default is `relative`.
+
+| Style             | Description                                 |
+| ----------------- | ------------------------------------------- |
+| `absolute`        | Absolute paths in the destination directory |
+| `relative`        | Relative paths to the destination directory |
+| `source-absolute` | Absolute paths in the source tree directory |
+| `source-relative` | Relative paths to the source tree directory |
+
+### `-r`, `--recursive`
+
+Recurse into subdirectories, `true` by default.
+
+### `--tree`
+
+Print paths as a tree instead of a list.
+
+## Available entry types
+
+You can provide a list of entry types, separated by commas.
+Types can be preceded with `no` to remove them, e.g. `scripts,noalways`.
 
 | Type        | Description                 |
 | ----------- | --------------------------- |
-| `all`       | All entries (default)       |
+| `all`       | All entries                 |
 | `none`      | No entries                  |
 | `dirs`      | Directories                 |
 | `files`     | Files                       |
@@ -44,29 +66,3 @@ Include target state entries of type *types*.
 | `encrypted` | Encrypted entries           |
 | `externals` | External entries            |
 | `templates` | Templates                   |
-
-Types can be preceded with `no` to remove them.
-
-Types can be explicitly excluded with the `--exclude` flag.
-
-## `--init`
-
-Regenerate and reread the config file from the config file template before
-computing the target state.
-
-## `-P`, `--parent-dirs`
-
-Also perform command on all parent directories of *target*.
-
-## `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
-
-Print paths in the given style. Relative paths are relative to the destination
-directory. The default is `relative`.
-
-## `-r`, `--recursive`
-
-Recurse into subdirectories, `true` by default.
-
-## `--tree`
-
-Print paths as a tree instead of a list.

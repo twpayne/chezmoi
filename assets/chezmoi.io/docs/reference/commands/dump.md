@@ -7,8 +7,7 @@ entire target state.
 
 ### `-x`, `--exclude` *types*
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
-defaults to `none`.
+--8<-- "common-flags/exclude.md"
 
 ### `-f`, `--format` `json`|`yaml`
 
@@ -16,8 +15,7 @@ Set the output format, default to `json`.
 
 ### `-i`, `--include` *types*
 
-Only add entries of type [*types*](../command-line-flags/common.md#available-types),
-defaults to `all`.
+--8<-- "common-flags/include.md"
 
 ### `--init`
 

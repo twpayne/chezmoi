@@ -11,13 +11,11 @@ more *target*s are given then only those targets are re-added.
 
 ### `-x`, `--exclude` *types*
 
-Exclude entries of type [*types*](../command-line-flags/common.md#available-types),
-defaults to `none`.
+--8<-- "common-flags/exclude.md"
 
 ### `-i`, `--include` *types*
 
-Only add entries of type [*types*](../command-line-flags/common.md#available-types),
-defaults to `all`.
+--8<-- "common-flags/include.md"
 
 ### `-r`, `--recursive`
 
