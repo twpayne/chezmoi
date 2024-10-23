@@ -357,6 +357,11 @@ markdown_extensions:
 - admonition
 - meta
 - pymdownx.details
+- pymdownx.snippets:
+    base_path:
+      - assets/chezmoi.io/snippets
+      - snippets
+    check_paths: true
 - pymdownx.superfences:
     custom_fences:
     - name: mermaid
@@ -378,3 +383,6 @@ plugins:
 
 extra_javascript:
 - extra/refresh_on_toggle_dark_light.js
+
+watch:
+  - snippets
