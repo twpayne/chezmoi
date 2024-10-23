@@ -188,7 +188,7 @@ Or, approximate the week number with template functions:
 ``` title="~/.local/share/chezmoi/run_once_weekly.tmpl"
 #!/bin/sh
 
-# {{ min (ceil (divf now.YearDay 7)) 52 }}
+# {{ div now.YearDay 7 }}
 echo "new week"
 ```
 
@@ -196,13 +196,15 @@ echo "new week"
 
 chezmoi includes shell completions for
 [`bash`](https://www.gnu.org/software/bash/), [`fish`](https://fishshell.com/),
-[PowerShell](https://learn.microsoft.com/en-us/powershell/), and
+[`powershell`](https://learn.microsoft.com/en-us/powershell/), and
 [`zsh`](https://zsh.sourceforge.io/). If you have installed chezmoi via your
-package manager then the shell completion should already be installed. Please
-[open an issue](https://github.com/twpayne/chezmoi/issues/new/choose) if this is
-not working correctly.
+package manager then the shell completion should already be installed.
+For PowerShell, you need to manually add the completion script to your profile.
+Please [open an issue](https://github.com/twpayne/chezmoi/issues/new/choose)
+if this is not working correctly.
 
-chezmoi provides a `completion` command and a `completion` template function
-which return the shell completions for the given shell. These can be used
-either as a one-off or as part of your dotfiles repo. The details of how to use
-these depend on your shell.
+chezmoi provides a [`completion`](/reference/commands/completion.md) command
+and a [`completion`](/reference/templates/functions/completion.md) template
+function which return the shell completions for the given shell.
+These can be used either as a one-off or as part of your dotfiles repo.
+The details of how to use these depend on your shell.
