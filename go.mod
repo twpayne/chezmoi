@@ -17,7 +17,7 @@ require (
 	github.com/bmatcuk/doublestar/v4 v4.7.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.1.1
+	github.com/charmbracelet/bubbletea v1.1.2
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.7.0
@@ -89,7 +89,7 @@ require (
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/lipgloss v0.13.1 // indirect
-	github.com/charmbracelet/x/ansi v0.3.2 // indirect
+	github.com/charmbracelet/x/ansi v0.4.0 // indirect
 	github.com/charmbracelet/x/term v0.2.0 // indirect
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
