@@ -19,18 +19,18 @@ exec chezmoi init
 cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi2.yaml
 cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi3.toml
 
-# check that the last operation broke chezmoi
+# test that the last operation broke chezmoi
 ! exec chezmoi status
 ! stdout .
 cmpenv stderr golden/error1.log
 
-# check that deleting the old config file fixes the issue
+# test that deleting the old config file fixes the issue
 rm $CHEZMOICONFIGDIR/chezmoi.yaml
 exec chezmoi status
 ! stdout .
 ! stderr .
 
-# check that the state file was written into the default config dir
+# test that the state file was written into the default config dir
 exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 chhome home2/user
@@ -53,21 +53,21 @@ cp golden/chezmoi3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
 exec chezmoi --config=$HOME/.chezmoi/athome.yaml init
 cmp $HOME/.chezmoi/athome.yaml golden/chezmoi3.toml
 
-# check that the last operation broke chezmoi
+# test that the last operation broke chezmoi
 ! exec chezmoi --config=$HOME/.chezmoi/athome.yaml status
 ! stdout .
 cmpenv stderr golden/error2.log
 
-# check that renaming the file and updating the config path fixes the issue
+# test that renaming the file and updating the config path fixes the issue
 mv $HOME/.chezmoi/athome.yaml $HOME/.chezmoi/athome.toml
 exec chezmoi --config=$HOME/.chezmoi/athome.toml status
 ! stdout .
 ! stderr .
 
-# check that the state file was written next to the config file
+# test that the state file was written next to the config file
 exists $HOME/.chezmoi/chezmoistate.boltdb
 
-# check that nothing was ever written into the default config dir
+# test that nothing was ever written into the default config dir
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
@@ -91,20 +91,20 @@ cp golden/chezmoi3.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
 exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=yaml init
 cmp $HOME/.chezmoi/athome.txt golden/chezmoi3.toml
 
-# check that the last operation broke chezmoi
+# test that the last operation broke chezmoi
 ! exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=yaml status
 ! stdout .
 cmpenv stderr golden/error3.log
 
-# check that updating the config format fixes the issue
+# test that updating the config format fixes the issue
 exec chezmoi --config=$HOME/.chezmoi/athome.txt --config-format=toml status
 ! stdout .
 ! stderr .
 
-# check that the state file was written next to the config file
+# test that the state file was written next to the config file
 exists $HOME/.chezmoi/chezmoistate.boltdb
 
-# check that nothing was ever written into the default config dir
+# test that nothing was ever written into the default config dir
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
