@@ -248,7 +248,7 @@ func (c *Config) hexEncodeTemplateFunc(s string) string {
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {
-	searchDirAbsPaths := []chezmoi.AbsPath{c.SourceDirAbsPath}
+	searchDirAbsPaths := []chezmoi.AbsPath{c.sourceDirAbsPath}
 	contents, err := c.readFile(filename, searchDirAbsPaths)
 	if err != nil {
 		panic(err)
@@ -268,8 +268,8 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 	}
 
 	searchDirAbsPaths := []chezmoi.AbsPath{
-		c.SourceDirAbsPath.JoinString(chezmoi.TemplatesDirName),
-		c.SourceDirAbsPath,
+		c.sourceDirAbsPath.JoinString(chezmoi.TemplatesDirName),
+		c.sourceDirAbsPath,
 	}
 	contents, err := c.readFile(filename, searchDirAbsPaths)
 	if err != nil {
