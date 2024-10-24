@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - id: filter
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
       with:
@@ -59,7 +59,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 1
     - uses: github/codeql-action/init@e2b3eafc8d227b0241d48be5f425d47c2d750a13
@@ -71,7 +71,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - uses: reviewdog/action-misspell@ef8b22c1cca06c8d306fc6be302c3dab0f6ca12f
       with:
         locale: US
@@ -83,7 +83,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -109,8 +109,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: build
@@ -144,8 +144,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: oldstable
     - name: build
@@ -177,10 +177,10 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-release-dependencies
@@ -238,10 +238,10 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
@@ -280,8 +280,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@f3bcaebff5eace81a1c062af9f9011aae482ca9d
@@ -302,8 +302,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
@@ -328,10 +328,10 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: generate
@@ -384,8 +384,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: stable
     - uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8
@@ -422,10 +422,10 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da
@@ -450,10 +450,10 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@f3bcaebff5eace81a1c062af9f9011aae482ca9d
