@@ -1,0 +1,27 @@
+[windows] skip 'windows line endings confuse cmp and diff'
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+# test that includeTemplate works with a file in .chezmoitemplates with a .chezmoiroot when re-initializing
+exec chezmoi init
+cmp ${CHEZMOICONFIGDIR}/chezmoi.toml golden/chezmoi.toml
+
+# create a commit
+exec chezmoi git add .
+exec chezmoi git commit -- --message 'Initial commit'
+
+chhome home2/user
+
+# test that includeTemplate works with a file in .chezmoitemplates with a .chezmoiroot with a bare init
+exec chezmoi init --apply --force file://$WORK/home/user/.local/share/chezmoi
+cmp ${CHEZMOICONFIGDIR}/chezmoi.toml golden/chezmoi.toml
+
+-- golden/chezmoi.toml --
+# contents of template
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/home/.chezmoi.toml.tmpl --
+{{- includeTemplate "template" -}}
+-- home/user/.local/share/chezmoi/home/.chezmoitemplates/template --
+# contents of template
