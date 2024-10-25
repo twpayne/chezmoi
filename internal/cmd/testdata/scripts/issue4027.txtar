@@ -1,0 +1,13 @@
+# test that chezmoi diff --keep-going does not panic when the diff pager command does not exist
+! exec chezmoi diff --keep-going
+! stderr panic
+[!windows] stderr '/not/exist: no such file or directory'
+[windows] stderr '"/not/exist": executable file not found in %PATH%'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    pager = "/not/exist"
+-- home/user/.local/share/chezmoi/dot_file1 --
+# contents of .file1
+-- home/user/.local/share/chezmoi/dot_file2 --
+# contents of .file2
