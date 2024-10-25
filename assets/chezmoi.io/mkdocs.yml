@@ -142,6 +142,7 @@ nav:
     - .chezmoiscripts: reference/special-directories/chezmoiscripts.md
     - .chezmoitemplates: reference/special-directories/chezmoitemplates.md
   - Commands:
+    - reference/commands/index.md
     - add: reference/commands/add.md
     - age: reference/commands/age.md
     - apply: reference/commands/apply.md
