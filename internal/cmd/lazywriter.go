@@ -1,11 +1,16 @@
 package cmd
 
-import "io"
+import (
+	"io"
+	"sync"
+)
 
 // A lazyWriter only opens its destination on first write.
 type lazyWriter struct {
+	mutex       sync.Mutex
 	openFunc    func() (io.WriteCloser, error)
 	writeCloser io.WriteCloser
+	err         error
 }
 
 func newLazyWriter(openFunc func() (io.WriteCloser, error)) *lazyWriter {
@@ -15,6 +20,8 @@ func newLazyWriter(openFunc func() (io.WriteCloser, error)) *lazyWriter {
 }
 
 func (w *lazyWriter) Close() error {
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
 	if w.writeCloser == nil {
 		return nil
 	}
@@ -22,13 +29,14 @@ func (w *lazyWriter) Close() error {
 }
 
 func (w *lazyWriter) Write(p []byte) (int, error) {
-	if w.writeCloser == nil {
-		writeCloser, err := w.openFunc()
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
+	if w.openFunc != nil {
+		w.writeCloser, w.err = w.openFunc()
 		w.openFunc = nil
-		if err != nil {
-			return 0, err
-		}
-		w.writeCloser = writeCloser
+	}
+	if w.err != nil {
+		return 0, w.err
 	}
 	return w.writeCloser.Write(p)
 }
