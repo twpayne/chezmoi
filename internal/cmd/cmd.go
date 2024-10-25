@@ -84,6 +84,9 @@ func init() {
 	}
 
 	for _, dirEntry := range dirEntries {
+		if dirEntry.Name() == "index.md" {
+			continue
+		}
 		command := strings.TrimSuffix(dirEntry.Name(), ".md")
 		data, err := commands.FS.ReadFile(dirEntry.Name())
 		if err != nil {
