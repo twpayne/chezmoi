@@ -19,6 +19,7 @@ func (c *Config) newCatCmd() *cobra.Command {
 		Args:              cobra.MinimumNArgs(1),
 		RunE:              c.makeRunEWithSourceState(c.runCatCmd),
 		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
 			requiresSourceDirectory,
 		),
 	}

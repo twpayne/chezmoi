@@ -10,12 +10,14 @@ import (
 
 func (c *Config) newTargetPathCmd() *cobra.Command {
 	targetPathCmd := &cobra.Command{
-		Use:         "target-path [source-path]...",
-		Short:       "Print the target path of a source path",
-		Long:        mustLongHelp("target-path"),
-		Example:     example("target-path"),
-		RunE:        c.runTargetPathCmd,
-		Annotations: newAnnotations(),
+		Use:     "target-path [source-path]...",
+		Short:   "Print the target path of a source path",
+		Long:    mustLongHelp("target-path"),
+		Example: example("target-path"),
+		RunE:    c.runTargetPathCmd,
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 
 	return targetPathCmd

@@ -16,6 +16,7 @@ func (c *Config) newHelpCmd() *cobra.Command {
 		RunE:    c.runHelpCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 

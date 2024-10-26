@@ -8,13 +8,15 @@ import (
 
 func (c *Config) newDataCmd() *cobra.Command {
 	dataCmd := &cobra.Command{
-		Use:         "data",
-		Short:       "Print the template data",
-		Long:        mustLongHelp("data"),
-		Example:     example("data"),
-		Args:        cobra.NoArgs,
-		RunE:        c.runDataCmd,
-		Annotations: newAnnotations(),
+		Use:     "data",
+		Short:   "Print the template data",
+		Long:    mustLongHelp("data"),
+		Example: example("data"),
+		Args:    cobra.NoArgs,
+		RunE:    c.runDataCmd,
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 
 	dataCmd.Flags().VarP(&c.Format, "format", "f", "Output format")

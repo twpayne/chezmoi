@@ -12,6 +12,7 @@ func (c *Config) newCatConfigCmd() *cobra.Command {
 		RunE:    c.runCatConfigCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeReadOnly,
 			requiresConfigDirectory,
 		),
 	}

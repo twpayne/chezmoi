@@ -22,6 +22,7 @@ func (c *Config) newCompletionCmd() *cobra.Command {
 		RunE:      c.runCompletionCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 

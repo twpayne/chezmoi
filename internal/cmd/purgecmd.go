@@ -28,6 +28,7 @@ func (c *Config) newPurgeCmd() *cobra.Command {
 		Annotations: newAnnotations(
 			modifiesDestinationDirectory,
 			modifiesSourceDirectory,
+			persistentStateModeNone,
 		),
 	}
 

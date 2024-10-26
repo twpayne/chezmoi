@@ -56,6 +56,7 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE:    c.runUpgradeCmd,
 		Annotations: newAnnotations(
+			persistentStateModeNone,
 			runsCommands,
 		),
 	}

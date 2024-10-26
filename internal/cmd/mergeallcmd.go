@@ -23,6 +23,7 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 		Annotations: newAnnotations(
 			dryRun,
 			modifiesSourceDirectory,
+			persistentStateModeReadWrite,
 			requiresSourceDirectory,
 		),
 	}
