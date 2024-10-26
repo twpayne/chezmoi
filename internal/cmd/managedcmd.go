@@ -33,6 +33,10 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd.Flags().VarP(&c.managed.pathStyle, "path-style", "p", "Path style")
 	managedCmd.Flags().BoolVarP(&c.managed.tree, "tree", "t", c.managed.tree, "Print paths as a tree")
 
+	if err := managedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleFlagCompletionFunc); err != nil {
+		panic(err)
+	}
+
 	return managedCmd
 }
 

@@ -30,9 +30,17 @@ cmp stdout golden/entry-type-set
 exec chezmoi __complete --mode ''
 cmp stdout golden/mode
 
-# test that path style values are completed
+# test that status path style values are completed
+exec chezmoi __complete status --path-style ''
+cmp stdout golden/path-style
+
+# test that managed path style values are completed
 exec chezmoi __complete managed --path-style ''
 cmp stdout golden/path-style
+
+# test that unmanaged path style values are completed
+exec chezmoi __complete unmanaged --path-style ''
+cmp stdout golden/unmanaged-path-style
 
 # test that write --format values are completed
 exec chezmoi __complete state dump --format ''
@@ -77,6 +85,10 @@ absolute
 relative
 source-absolute
 source-relative
+:4
+-- golden/unmanaged-path-style --
+absolute
+relative
 :4
 -- golden/use-builtin-flags --
 --use-builtin-age	Use builtin age

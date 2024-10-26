@@ -312,11 +312,10 @@ var (
 	whitespaceRx = regexp.MustCompile(`\s+`)
 
 	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
-		"exclude":    chezmoi.EntryTypeSetFlagCompletionFunc,
-		"format":     writeDataFormatFlagCompletionFunc,
-		"include":    chezmoi.EntryTypeSetFlagCompletionFunc,
-		"path-style": chezmoi.PathStyleFlagCompletionFunc,
-		"secrets":    severityFlagCompletionFunc,
+		"exclude": chezmoi.EntryTypeSetFlagCompletionFunc,
+		"format":  writeDataFormatFlagCompletionFunc,
+		"include": chezmoi.EntryTypeSetFlagCompletionFunc,
+		"secrets": severityFlagCompletionFunc,
 	}
 )
 
@@ -383,7 +382,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		unmanaged: unmanagedCmdConfig{
-			pathStyle: chezmoi.PathStyleRelative,
+			pathStyle: chezmoi.PathStyleSimple(chezmoi.PathStyleRelative),
 		},
 
 		// Configuration.
