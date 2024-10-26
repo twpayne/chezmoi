@@ -42,7 +42,7 @@ require (
 	github.com/twpayne/go-vfs/v5 v5.0.4
 	github.com/twpayne/go-xdg/v6 v6.1.3
 	github.com/ulikunitz/xz v0.5.12
-	github.com/zalando/go-keyring v0.2.5
+	github.com/zalando/go-keyring v0.2.6
 	github.com/zricethezav/gitleaks/v8 v8.21.1
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
@@ -59,6 +59,7 @@ require (
 )
 
 require (
+	al.essio.dev/pkg/shellescape v1.5.1 // indirect
 	dario.cat/mergo v1.0.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
@@ -71,7 +72,6 @@ require (
 	github.com/ProtonMail/go-crypto v1.0.0 // indirect
 	github.com/alecthomas/chroma/v2 v2.14.0 // indirect
 	github.com/alecthomas/repr v0.4.0 // indirect
-	github.com/alessio/shellescape v1.4.2 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.41 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.17 // indirect
@@ -100,7 +100,7 @@ require (
 	github.com/dylibso/observe-sdk/go v0.0.0-20240828172851-9145d8ad07e1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
-	github.com/extism/go-sdk v1.5.0 // indirect
+	github.com/extism/go-sdk v1.6.0 // indirect
 	github.com/fatih/semgroup v1.3.0 // indirect
 	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
