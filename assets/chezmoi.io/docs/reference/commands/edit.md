@@ -54,7 +54,7 @@ Automatically apply changes when files are saved, with the following limitations
 
 ### `--init`
 
-Recreate config file from template.
+--8<-- "common-flags/init.md"
 
 ## Examples
 

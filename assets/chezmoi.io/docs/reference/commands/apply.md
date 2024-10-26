@@ -17,15 +17,15 @@ they want to overwrite the file.
 
 ### `--init`
 
-Recreate config file from template.
+--8<-- "common-flags/init.md"
 
 ### `-P`, `--parent-dirs`
 
-Also perform command on all parent directories of *target*.
+--8<-- "common-flags/parent-dirs.md"
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
+--8<-- "common-flags/recursive.md:default-true"
 
 ### `--source-path`
 

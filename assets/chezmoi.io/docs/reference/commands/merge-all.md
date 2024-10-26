@@ -7,11 +7,11 @@ state. The merge is performed with `chezmoi merge`.
 
 ### `--init`
 
-Recreate config file from template.
+--8<-- "common-flags/init.md"
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
+--8<-- "common-flags/recursive.md:default-true"
 
 ## Examples
 
