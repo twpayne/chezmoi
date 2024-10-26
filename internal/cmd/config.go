@@ -312,10 +312,11 @@ var (
 	whitespaceRx = regexp.MustCompile(`\s+`)
 
 	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
-		"exclude": chezmoi.EntryTypeSetFlagCompletionFunc,
-		"format":  writeDataFormatFlagCompletionFunc,
-		"include": chezmoi.EntryTypeSetFlagCompletionFunc,
-		"secrets": severityFlagCompletionFunc,
+		"exclude":    chezmoi.EntryTypeSetFlagCompletionFunc,
+		"format":     writeDataFormatFlagCompletionFunc,
+		"include":    chezmoi.EntryTypeSetFlagCompletionFunc,
+		"path-style": chezmoi.PathStyleFlagCompletionFunc,
+		"secrets":    severityFlagCompletionFunc,
 	}
 )
 
@@ -2986,6 +2987,9 @@ func prependParentRelPaths(relPaths []chezmoi.RelPath) []chezmoi.RelPath {
 // common flags, recursively. It panics on any error.
 func registerCommonFlagCompletionFuncs(cmd *cobra.Command) {
 	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
+		if _, exist := cmd.GetFlagCompletionFunc(flag.Name); exist {
+			return
+		}
 		if flagCompletionFunc, ok := commonFlagCompletionFuncs[flag.Name]; ok {
 			if err := cmd.RegisterFlagCompletionFunc(flag.Name, flagCompletionFunc); err != nil {
 				panic(err)

@@ -44,6 +44,10 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	archiveCmd.Flags().BoolVarP(&c.archive.parentDirs, "parent-dirs", "P", c.archive.parentDirs, "Archive parent directories")
 	archiveCmd.Flags().BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "Recurse into subdirectories")
 
+	if err := archiveCmd.RegisterFlagCompletionFunc("format", chezmoi.ArchiveFormatFlagCompletionFunc); err != nil {
+		panic(err)
+	}
+
 	return archiveCmd
 }
 
