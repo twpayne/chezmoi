@@ -82,7 +82,7 @@ overwritten.
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
+--8<-- "common-flags/recursive.md:default-true"
 
 ## Examples
 

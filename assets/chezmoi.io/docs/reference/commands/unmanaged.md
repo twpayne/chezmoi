@@ -7,14 +7,13 @@ It is an error to supply *path*s that are not found on the filesystem.
 
 ## Common flags
 
-### `-p`, `--path-style` `absolute`|`relative`|`source-absolute`|`source-relative`
+### `-p`, `--path-style` *style*
 
-Print paths in the given style. Relative paths are relative to the destination
-directory. The default is `relative`.
+--8<-- "common-flags/path-style.md:no-source-tree"
 
 ### `-t`, `--tree`
 
-Print paths as a tree.
+--8<-- "common-flags/tree.md"
 
 ## Examples
 

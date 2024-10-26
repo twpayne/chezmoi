@@ -43,7 +43,7 @@ prevent chezmoi from interpreting `-`*modifier* as an option.
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories.
+--8<-- "common-flags/recursive.md:default-false"
 
 ## Examples
 

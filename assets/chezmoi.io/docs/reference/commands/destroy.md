@@ -20,4 +20,4 @@ Destroy without prompting.
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories.
+--8<-- "common-flags/recursive.md:default-false"

@@ -11,7 +11,7 @@ entire target state.
 
 ### `-f`, `--format` `json`|`yaml`
 
-Set the output format, default to `json`.
+--8<-- "common-flags/format.md"
 
 ### `-i`, `--include` *types*
 
@@ -19,15 +19,15 @@ Set the output format, default to `json`.
 
 ### `--init`
 
-Recreate config file from template.
+--8<-- "common-flags/init.md"
 
 ### `-P`, `--parent-dirs`
 
-Also perform command on all parent directories of *target*.
+--8<-- "common-flags/parent-dirs.md"
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories, `true` by default. Can be disabled with `--recursive=false`.
+--8<-- "common-flags/recursive.md:default-true"
 
 ## Examples
 

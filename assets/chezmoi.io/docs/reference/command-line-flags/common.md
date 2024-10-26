@@ -10,7 +10,7 @@ The following flags apply to multiple commands where they are relevant.
 
 ### `-f`, `--format` `json`|`yaml`
 
-Set the output format.
+--8<-- "common-flags/format.md"
 
 ### `-h`, `--help`
 
@@ -22,31 +22,23 @@ Print help.
 
 ### `--init`
 
-Regenerate and reread the config file from the config file template before
-computing the target state.
+--8<-- "common-flags/init.md"
 
 ### `-P`, `--parent-dirs`
 
-Also perform command on all parent directories of *target*.
+--8<-- "common-flags/parent-dirs.md"
 
 ### `-p`, `--path-style` *style*
 
-Print paths in the given style. The default is `relative`.
-
-| Style             | Description                                 |
-| ----------------- | ------------------------------------------- |
-| `absolute`        | Absolute paths in the destination directory |
-| `relative`        | Relative paths to the destination directory |
-| `source-absolute` | Absolute paths in the source tree directory |
-| `source-relative` | Relative paths to the source tree directory |
+--8<-- "common-flags/path-style.md:all"
 
 ### `-r`, `--recursive`
 
-Recurse into subdirectories, `true` by default.
+--8<-- "common-flags/recursive.md:default-false"
 
 ### `--tree`
 
-Print paths as a tree instead of a list.
+--8<-- "common-flags/tree.md"
 
 ## Available entry types
 
