@@ -24,7 +24,7 @@ func (c *Config) newManagedCmd() *cobra.Command {
 		Args:    cobra.ArbitraryArgs,
 		RunE:    c.makeRunEWithSourceState(c.runManagedCmd),
 		Annotations: newAnnotations(
-			persistentStateModeReadOnly,
+			persistentStateModeReadWrite,
 		),
 	}
 
