@@ -31,20 +31,24 @@ func (c *Config) newAgeCmd() *cobra.Command {
 	}
 
 	ageDecryptCmd := &cobra.Command{
-		Use:         "decrypt [file...]",
-		Short:       "Decrypt file or standard input",
-		RunE:        c.runAgeDecryptCmd,
-		Annotations: newAnnotations(),
+		Use:   "decrypt [file...]",
+		Short: "Decrypt file or standard input",
+		RunE:  c.runAgeDecryptCmd,
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 	ageDecryptCmd.Flags().
 		BoolVarP(&c.age.decrypt.passphrase, "passphrase", "p", c.age.decrypt.passphrase, "Decrypt with a passphrase")
 	ageCmd.AddCommand(ageDecryptCmd)
 
 	ageEncryptCmd := &cobra.Command{
-		Use:         "encrypt [file...]",
-		Short:       "Encrypt file or standard input",
-		RunE:        c.runAgeEncryptCmd,
-		Annotations: newAnnotations(),
+		Use:   "encrypt [file...]",
+		Short: "Encrypt file or standard input",
+		RunE:  c.runAgeEncryptCmd,
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 	ageEncryptCmd.Flags().
 		BoolVarP(&c.age.encrypt.passphrase, "passphrase", "p", c.age.encrypt.passphrase, "Encrypt with a passphrase")

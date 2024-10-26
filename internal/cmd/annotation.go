@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"slices"
 
 	"github.com/spf13/cobra"
@@ -26,6 +25,7 @@ var (
 // Persistent state modes.
 const (
 	persistentStateModeEmpty         persistentStateModeValue = "empty"
+	persistentStateModeNone          persistentStateModeValue = "none"
 	persistentStateModeReadOnly      persistentStateModeValue = "read-only"
 	persistentStateModeReadMockWrite persistentStateModeValue = "read-mock-write"
 	persistentStateModeReadWrite     persistentStateModeValue = "read-write"
@@ -42,8 +42,13 @@ func getAnnotations(cmd *cobra.Command) annotationsSet {
 	thirdPartyCommandNames := []string{
 		"__complete",
 	}
-	if cmd.Annotations == nil && !slices.Contains(thirdPartyCommandNames, cmd.Name()) {
-		panic(fmt.Sprintf("%q: no annotations", cmd.Name()))
+	if !slices.Contains(thirdPartyCommandNames, cmd.Name()) {
+		if cmd.Annotations == nil {
+			panic(cmd.Name() + ": no annotations")
+		}
+		if cmd.Annotations[string(persistentStateModeKey)] == "" {
+			panic(cmd.Name() + ": persistent state mode not set")
+		}
 	}
 	return annotationsSet(cmd.Annotations)
 }

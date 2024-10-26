@@ -161,6 +161,7 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 		RunE:    c.runDoctorCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 			runsCommands,
 		),
 	}

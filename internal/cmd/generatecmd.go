@@ -21,6 +21,7 @@ func (c *Config) newGenerateCmd() *cobra.Command {
 		RunE:      c.runGenerateCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 

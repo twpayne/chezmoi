@@ -16,14 +16,16 @@ type managedCmdConfig struct {
 
 func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd := &cobra.Command{
-		Use:         "managed [path]...",
-		Aliases:     []string{"list"},
-		Short:       "List the managed entries in the destination directory",
-		Long:        mustLongHelp("managed"),
-		Example:     example("managed"),
-		Args:        cobra.ArbitraryArgs,
-		RunE:        c.makeRunEWithSourceState(c.runManagedCmd),
-		Annotations: newAnnotations(),
+		Use:     "managed [path]...",
+		Aliases: []string{"list"},
+		Short:   "List the managed entries in the destination directory",
+		Long:    mustLongHelp("managed"),
+		Example: example("managed"),
+		Args:    cobra.ArbitraryArgs,
+		RunE:    c.makeRunEWithSourceState(c.runManagedCmd),
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 
 	managedCmd.Flags().VarP(c.managed.filter.Exclude, "exclude", "x", "Exclude entry types")

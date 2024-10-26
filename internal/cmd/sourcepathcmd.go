@@ -15,7 +15,9 @@ func (c *Config) newSourcePathCmd() *cobra.Command {
 		Example:           example("source-path"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runSourcePathCmd,
-		Annotations:       newAnnotations(),
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 
 	return sourcePathCmd

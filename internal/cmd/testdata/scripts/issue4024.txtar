@@ -1,0 +1,37 @@
+# test that chezmoi merge-all does not generate incorrect "config file template has changed" warnings
+exec chezmoi init
+cp ${CHEZMOICONFIGDIR}/chezmoi.toml golden/chezmoi.toml
+! stderr .
+exec chezmoi state get-bucket --bucket=configState
+cmp stdout golden/state
+exec chezmoi merge-all
+! stderr .
+
+-- golden/chezmoi.toml --
+[merge]
+command = "bash"
+args = [
+    '-c',
+    'cp "$1" "$2" && code --new-window --wait --merge "$0" "$1" "$2" "$3"',
+    '{{ .Destination }}',
+    '{{ .Target }}',
+    '{{ .Target }}.base',
+    '{{ .Source }}',
+]
+-- golden/state --
+{
+  "configState": {
+    "configTemplateContentsSHA256": "17237711aec7ba710379c223819293b9a9e039d9a4a3ca721259c2337f21fcfe"
+  }
+}
+-- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+[merge]
+command = "bash"
+args = [
+    '-c',
+    'cp "$1" "$2" && code --new-window --wait --merge "$0" "$1" "$2" "$3"',
+    '{{ "{{ .Destination }}" }}',
+    '{{ "{{ .Target }}" }}',
+    '{{ "{{ .Target }}" }}.base',
+    '{{ "{{ .Source }}" }}',
+]

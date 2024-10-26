@@ -132,6 +132,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		RunE:  c.runStateResetCmd,
 		Annotations: newAnnotations(
 			modifiesDestinationDirectory,
+			persistentStateModeNone,
 		),
 	}
 	stateCmd.AddCommand(stateResetCmd)

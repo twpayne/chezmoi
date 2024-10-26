@@ -20,6 +20,7 @@ func (c *Config) newLicenseCmd() *cobra.Command {
 		RunE:    c.runLicenseCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 
