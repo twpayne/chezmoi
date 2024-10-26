@@ -45,10 +45,6 @@ func (c *Config) newStatusCmd() *cobra.Command {
 		BoolVarP(&c.Status.parentDirs, "parent-dirs", "P", c.Status.parentDirs, "Show status of all parent directories")
 	statusCmd.Flags().BoolVarP(&c.Status.recursive, "recursive", "r", c.Status.recursive, "Recurse into subdirectories")
 
-	if err := statusCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleFlagCompletionFunc); err != nil {
-		panic(err)
-	}
-
 	return statusCmd
 }
 

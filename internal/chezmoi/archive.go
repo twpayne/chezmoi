@@ -38,6 +38,18 @@ const (
 	ArchiveFormatZip     ArchiveFormat = "zip"
 )
 
+var ArchiveFormatFlagCompletionFunc = FlagCompletionFunc([]string{
+	ArchiveFormatTar.String(),
+	ArchiveFormatTarBz2.String(),
+	ArchiveFormatTarGz.String(),
+	ArchiveFormatTarXz.String(),
+	ArchiveFormatTarZst.String(),
+	ArchiveFormatTbz2.String(),
+	ArchiveFormatTgz.String(),
+	ArchiveFormatTxz.String(),
+	ArchiveFormatZip.String(),
+})
+
 type UnknownArchiveFormatError string
 
 func (e UnknownArchiveFormatError) Error() string {

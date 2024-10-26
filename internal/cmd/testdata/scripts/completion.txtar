@@ -42,14 +42,41 @@ cmp stdout golden/path-style
 exec chezmoi __complete unmanaged --path-style ''
 cmp stdout golden/unmanaged-path-style
 
-# test that write --format values are completed
+# test that "state data --format" values are completed
+exec chezmoi __complete state data --format ''
+cmp stdout golden/output-format
+
+# test that "state dump --format" values are completed
 exec chezmoi __complete state dump --format ''
-cmp stdout golden/write-data
+cmp stdout golden/output-format
 
-# test that write --format values are completed
+# test that "data --format" values are completed
 exec chezmoi __complete data --format ''
-cmp stdout golden/write-data
+cmp stdout golden/output-format
 
+# test that "dump --format" values are completed
+exec chezmoi __complete dump --format ''
+cmp stdout golden/output-format
+
+# test that "dump-config --format" values are completed
+exec chezmoi __complete dump-config --format ''
+cmp stdout golden/output-format
+
+# test that "archive --format" values are completed
+exec chezmoi __complete archive --format ''
+cmp stdout golden/archive-format
+
+-- golden/archive-format --
+tar
+tar.bz2
+tar.gz
+tar.xz
+tar.zst
+tbz2
+tgz
+txz
+zip
+:4
 -- golden/auto-bool-t --
 t
 true
@@ -80,6 +107,10 @@ templates
 file
 symlink
 :4
+-- golden/output-format --
+json
+yaml
+:4
 -- golden/path-style --
 absolute
 relative
@@ -94,8 +125,4 @@ relative
 --use-builtin-age	Use builtin age
 --use-builtin-diff	Use builtin diff
 --use-builtin-git	Use builtin git
-:4
--- golden/write-data --
-json
-yaml
 :4
