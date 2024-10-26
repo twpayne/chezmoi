@@ -12,7 +12,7 @@ import (
 )
 
 type unmanagedCmdConfig struct {
-	pathStyle chezmoi.PathStyle
+	pathStyle chezmoi.PathStyleSimple
 	tree      bool
 }
 
@@ -29,6 +29,10 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 
 	unmanagedCmd.Flags().VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
 	unmanagedCmd.Flags().BoolVarP(&c.unmanaged.tree, "tree", "t", c.unmanaged.tree, "Print paths as a tree")
+
+	if err := unmanagedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleSimpleFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 
 	return unmanagedCmd
 }
@@ -97,7 +101,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	paths := make([]fmt.Stringer, 0, len(unmanagedRelPaths.Elements()))
 	for relPath := range unmanagedRelPaths {
 		var path fmt.Stringer
-		if c.unmanaged.pathStyle == chezmoi.PathStyleAbsolute {
+		if c.unmanaged.pathStyle.ToPathStyle() == chezmoi.PathStyleAbsolute {
 			path = c.DestDirAbsPath.Join(relPath)
 		} else {
 			path = relPath

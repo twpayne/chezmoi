@@ -31,6 +31,10 @@ cmp stdout golden/unmanaged-with-some-managed
 [unix] exec chezmoi unmanaged --path-style=absolute
 [unix] cmpenv stdout golden/unmanaged-absolute
 
+# test chezmoi unmanaged --path-style=source-absolute
+! exec chezmoi unmanaged --path-style=source-absolute
+stderr 'source-absolute: unknown path style'
+
 -- golden/unmanaged --
 .local
 -- golden/unmanaged-absolute --
