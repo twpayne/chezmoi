@@ -30,7 +30,7 @@ func (c *Config) newMergeCmd() *cobra.Command {
 		Annotations: newAnnotations(
 			modifiesSourceDirectory,
 			requiresSourceDirectory,
-			persistentStateModeReadOnly,
+			persistentStateModeReadWrite,
 		),
 	}
 
