@@ -11,6 +11,9 @@ archives to be included as if they were in the source state.
 `.chezmoiexternal.$FORMAT` is interpreted as a template. This allows different
 externals to be included on different machines.
 
+If a `.chezmoiexternal.$FORMAT` file is located in an ignored directory (one
+listed in [`.chezmoiignore`](chezmoiignore.md)), all entries within the file are also ignored.
+
 Entries are indexed by target name relative to the directory of the
 `.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` field.
 `type` can be either `file`, `archive`, `archive-file`, or `git-repo`. If the
