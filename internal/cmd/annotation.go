@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"slices"
-
 	"github.com/spf13/cobra"
 )
 
@@ -39,17 +37,6 @@ type annotation interface {
 type annotationsSet map[string]string
 
 func getAnnotations(cmd *cobra.Command) annotationsSet {
-	thirdPartyCommandNames := []string{
-		"__complete",
-	}
-	if !slices.Contains(thirdPartyCommandNames, cmd.Name()) {
-		if cmd.Annotations == nil {
-			panic(cmd.Name() + ": no annotations")
-		}
-		if cmd.Annotations[string(persistentStateModeKey)] == "" {
-			panic(cmd.Name() + ": persistent state mode not set")
-		}
-	}
 	return annotationsSet(cmd.Annotations)
 }
 
@@ -66,7 +53,7 @@ func (a annotationsSet) hasTag(tag annotation) bool {
 }
 
 func (a annotationsSet) persistentStateMode() persistentStateModeValue {
-	return persistentStateModeValue(a[string(persistentStateModeKey)])
+	return persistentStateModeValue(a[persistentStateModeKey.key()])
 }
 
 type persistentStateModeValue string

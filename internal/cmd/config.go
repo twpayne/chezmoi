@@ -1746,6 +1746,16 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		}
 	}
 
+	for _, cmd := range rootCmd.Commands() {
+		annotations := getAnnotations(cmd)
+		if len(annotations) == 0 {
+			panic(cmd.Name() + ": no annotations")
+		}
+		if annotations.persistentStateMode() == "" {
+			panic(cmd.Name() + ": persistent state mode not set")
+		}
+	}
+
 	return rootCmd, nil
 }
 

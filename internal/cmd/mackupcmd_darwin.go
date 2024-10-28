@@ -36,6 +36,9 @@ func (c *Config) newMackupCmd() *cobra.Command {
 		Use:    "mackup",
 		Short:  "Interact with Mackup",
 		Hidden: true,
+		Annotations: newAnnotations(
+			persistentStateModeNone,
+		),
 	}
 
 	mackupAddCmd := &cobra.Command{
