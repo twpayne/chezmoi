@@ -112,11 +112,6 @@ nav:
   - Source state attributes: reference/source-state-attributes.md
   - Target types: reference/target-types.md
   - Application order: reference/application-order.md
-  - Command line flags:
-    - reference/command-line-flags/index.md
-    - Global: reference/command-line-flags/global.md
-    - Common: reference/command-line-flags/common.md
-    - Developer: reference/command-line-flags/developer.md
   - Configuration file:
     - reference/configuration-file/index.md
     - Variables: reference/configuration-file/variables.md
@@ -141,6 +136,11 @@ nav:
     - .chezmoiexternals: reference/special-directories/chezmoiexternals.md
     - .chezmoiscripts: reference/special-directories/chezmoiscripts.md
     - .chezmoitemplates: reference/special-directories/chezmoitemplates.md
+  - Command line flags:
+    - reference/command-line-flags/index.md
+    - Global: reference/command-line-flags/global.md
+    - Common: reference/command-line-flags/common.md
+    - Developer: reference/command-line-flags/developer.md
   - Commands:
     - reference/commands/index.md
     - add: reference/commands/add.md
