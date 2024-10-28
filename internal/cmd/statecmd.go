@@ -48,6 +48,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short:   "Manipulate the persistent state",
 		Long:    mustLongHelp("state"),
 		Example: example("state"),
+		Annotations: newAnnotations(
+			persistentStateModeNone,
+		),
 	}
 
 	stateDataCmd := &cobra.Command{

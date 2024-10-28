@@ -14,6 +14,9 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		Use:    "internal-test",
 		Short:  "Expose functionality for testing",
 		Hidden: true,
+		Annotations: newAnnotations(
+			persistentStateModeNone,
+		),
 	}
 
 	internalTestPromptBoolCmd := &cobra.Command{
@@ -23,6 +26,7 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		RunE:  c.runInternalTestPromptBoolCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptBoolCmd)
@@ -34,6 +38,7 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		RunE:  c.runInternalTestPromptChoiceCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptChoiceCmd)
@@ -45,6 +50,7 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		RunE:  c.runInternalTestPromptIntCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptIntCmd)
@@ -56,6 +62,7 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		RunE:  c.runInternalTestPromptStringCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptStringCmd)
@@ -67,6 +74,7 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		RunE:  c.runInternalTestReadPasswordCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	internalTestCmd.AddCommand(internalTestReadPasswordCmd)

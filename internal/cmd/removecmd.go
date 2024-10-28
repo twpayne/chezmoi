@@ -15,6 +15,7 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		Long:       mustLongHelp("remove"),
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 

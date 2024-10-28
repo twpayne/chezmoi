@@ -13,6 +13,9 @@ func (c *Config) newSecretCmd() *cobra.Command {
 		Short:   "Interact with a secret manager",
 		Long:    mustLongHelp("secret"),
 		Example: example("secret"),
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 
 	if secretKeyringCmd := c.newSecretKeyringCmd(); secretKeyringCmd != nil {

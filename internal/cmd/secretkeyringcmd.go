@@ -34,6 +34,9 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		Use:   "keyring",
 		Args:  cobra.NoArgs,
 		Short: "Interact with keyring",
+		Annotations: newAnnotations(
+			persistentStateModeNone,
+		),
 	}
 
 	secretKeyringDeleteCmd := &cobra.Command{
@@ -43,6 +46,7 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		RunE:  c.runSecretKeyringDeleteCmdE,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	secretKeyringDeleteCmd.Flags().StringVar(&c.secret.keyring.delete.service, "service", "", "service")
@@ -57,6 +61,7 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		RunE:  c.runSecretKeyringGetCmdE,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	secretKeyringGetCmd.Flags().StringVar(&c.secret.keyring.get.service, "service", "", "service")
@@ -71,6 +76,7 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		RunE:  c.runSecretKeyringSetCmdE,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
+			persistentStateModeNone,
 		),
 	}
 	secretKeyringSetCmd.Flags().StringVar(&c.secret.keyring.set.service, "service", "", "service")

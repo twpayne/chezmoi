@@ -28,6 +28,9 @@ func (c *Config) newAgeCmd() *cobra.Command {
 		Use:   "age",
 		Args:  cobra.NoArgs,
 		Short: "Interact with age",
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 
 	ageDecryptCmd := &cobra.Command{
