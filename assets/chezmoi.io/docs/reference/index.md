@@ -10,6 +10,7 @@ This reference covers the following topics:
 - [Application order of changes](application-order.md)
 - [Configuration file](configuration-file/index.md)
 - [Special files](special-files/index.md) and [special directories](special-directories/index.md)
+- [Command line flags](command-line-flags/index.md)
 - [Commands](commands/index.md)
 - [Templates](templates/index.md)
     - [Variables](templates/variables.md)
