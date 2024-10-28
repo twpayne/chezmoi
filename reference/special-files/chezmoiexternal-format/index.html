@@ -8504,6 +8504,8 @@ archives to be included as if they were in the source state.</p>
 <code>json</code>, <code>jsonc</code>, <code>toml</code>, or <code>yaml</code>.</p>
 <p><code>.chezmoiexternal.$FORMAT</code> is interpreted as a template. This allows different
 externals to be included on different machines.</p>
+<p>If a <code>.chezmoiexternal.$FORMAT</code> file is located in an ignored directory (one
+listed in <a href="../chezmoiignore/"><code>.chezmoiignore</code></a>), all entries within the file are also ignored.</p>
 <p>Entries are indexed by target name relative to the directory of the
 <code>.chezmoiexternal.$FORMAT</code> file, and must have a <code>type</code> and a <code>url</code> field.
 <code>type</code> can be either <code>file</code>, <code>archive</code>, <code>archive-file</code>, or <code>git-repo</code>. If the
