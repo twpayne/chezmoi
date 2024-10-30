@@ -1642,6 +1642,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		SilenceUsage:       true,
 	}
 
+	cobra.OnFinalize(c.finalizeRootCmd)
+
 	persistentFlags := rootCmd.PersistentFlags()
 
 	persistentFlags.Var(&c.CacheDirAbsPath, "cache", "Set cache directory")
@@ -1846,27 +1848,7 @@ func (c *Config) newSourceState(
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
 	annotations := getAnnotations(cmd)
 
-	if err := c.persistentState.Close(); err != nil {
-		return err
-	}
-
-	// Close any connection to keepassxc-cli.
-	if err := c.keepassxcClose(); err != nil {
-		return err
-	}
-
-	// Wait for any diff pager process to terminate.
-	if c.diffPagerCmd != nil {
-		if err := c.diffPagerCmdStdin.Close(); err != nil {
-			return err
-		}
-		if c.diffPagerCmd.Process != nil {
-			if err := chezmoilog.LogCmdWait(c.logger, c.diffPagerCmd); err != nil {
-				return err
-			}
-		}
-	}
-
+	// Verify modified config
 	if annotations.hasTag(modifiesConfigFile) {
 		configFileContents, err := c.baseSystem.ReadFile(c.getConfigFileAbsPath())
 		switch {
@@ -1890,6 +1872,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
+	// Perform auto git commands
 	if annotations.hasTag(modifiesSourceDirectory) {
 		var status *chezmoigit.Status
 		if c.Git.AutoAdd || c.Git.AutoCommit || c.Git.AutoPush {
@@ -1911,17 +1894,43 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
-	if c.restoreWindowsConsole != nil {
-		if err := c.restoreWindowsConsole(); err != nil {
-			return err
-		}
-	}
-
 	if err := c.runHookPost(cmd.Name()); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+// persistentPostRunRootE is not run if command returns error, perform cleanup here.
+func (c *Config) finalizeRootCmd() {
+	if c.persistentState != nil {
+		if err := c.persistentState.Close(); err != nil {
+			c.errorf("error: failed to close persistent state: %v\n", err)
+		}
+	}
+
+	// Wait for any diff pager process to terminate.
+	if c.diffPagerCmd != nil {
+		if err := c.diffPagerCmdStdin.Close(); err != nil {
+			c.errorf("error: failed to close diff pager stdin: %v\n", err)
+		}
+		if c.diffPagerCmd.Process != nil {
+			if err := chezmoilog.LogCmdWait(c.logger, c.diffPagerCmd); err != nil {
+				c.errorf("error: failed to wait for diff pager to close: %v\n", err)
+			}
+		}
+	}
+
+	if c.restoreWindowsConsole != nil {
+		if err := c.restoreWindowsConsole(); err != nil {
+			c.errorf("error: failed to restore console: %v\n", err)
+		}
+	}
+
+	// Close any connection to keepassxc-cli.
+	if err := c.keepassxcClose(); err != nil {
+		c.errorf("error: failed to close connection to keepassxc-cli: %v\n", err)
+	}
 }
 
 // pageDiffOutput pages the diff output to stdout.
