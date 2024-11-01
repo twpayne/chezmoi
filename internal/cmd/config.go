@@ -1248,6 +1248,8 @@ func (c *Config) execute(args []string) error {
 	if err != nil {
 		return err
 	}
+	defer c.finalize()
+
 	rootCmd.SetArgs(args)
 
 	return rootCmd.Execute()
@@ -1642,8 +1644,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		SilenceUsage:       true,
 	}
 
-	cobra.OnFinalize(c.finalizeRootCmd)
-
 	persistentFlags := rootCmd.PersistentFlags()
 
 	persistentFlags.Var(&c.CacheDirAbsPath, "cache", "Set cache directory")
@@ -1901,8 +1901,8 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// finalizeRootCmd cleans up.
-func (c *Config) finalizeRootCmd() {
+// finalize cleans up.
+func (c *Config) finalize() {
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
 			c.errorf("error: failed to close persistent state: %v\n", err)
