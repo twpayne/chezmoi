@@ -25,10 +25,10 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 
 	if c.AWSSecretsManager.svc == nil {
 		var opts []func(*config.LoadOptions) error
-		if region := c.AWSSecretsManager.Region; len(region) > 0 {
+		if region := c.AWSSecretsManager.Region; region != "" {
 			opts = append(opts, config.WithRegion(region))
 		}
-		if profile := c.AWSSecretsManager.Profile; len(profile) > 0 {
+		if profile := c.AWSSecretsManager.Profile; profile != "" {
 			opts = append(opts, config.WithSharedConfigProfile(profile))
 		}
 

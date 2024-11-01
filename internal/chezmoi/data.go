@@ -91,7 +91,7 @@ func parseOSRelease(r io.Reader) (map[string]any, error) {
 		// Trim all leading whitespace, but not necessarily trailing whitespace.
 		token := strings.TrimLeftFunc(s.Text(), unicode.IsSpace)
 		// If the line is empty or starts with #, skip.
-		if len(token) == 0 || token[0] == '#' {
+		if token == "" || token[0] == '#' {
 			continue
 		}
 		key, value, ok := strings.Cut(token, "=")

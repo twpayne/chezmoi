@@ -27,7 +27,7 @@ type TemplateOptions struct {
 // templateOptions.
 func ParseTemplate(name string, data []byte, funcs template.FuncMap, options TemplateOptions) (*Template, error) {
 	contents := options.parseAndRemoveDirectives(data)
-	template, err := template.New(name).
+	tmpl, err := template.New(name).
 		Option(options.Options...).
 		Delims(options.LeftDelimiter, options.RightDelimiter).
 		Funcs(funcs).
@@ -37,7 +37,7 @@ func ParseTemplate(name string, data []byte, funcs template.FuncMap, options Tem
 	}
 	return &Template{
 		name:     name,
-		template: template,
+		template: tmpl,
 		options:  options,
 	}, nil
 }

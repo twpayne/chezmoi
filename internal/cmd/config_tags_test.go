@@ -73,9 +73,9 @@ func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errMsg 
 
 			for value, tagsMatching := range tagValueGroups {
 				if len(tagsMatching) == 1 {
-					errs.WriteString(fmt.Sprintf("\n    %s says \"%s\"", tagsMatching[0], value))
+					errs.WriteString(fmt.Sprintf("\n    %s says %q", tagsMatching[0], value))
 				} else {
-					errs.WriteString(fmt.Sprintf("\n    (%s) each say \"%s\"", strings.Join(tagsMatching, ", "), value))
+					errs.WriteString(fmt.Sprintf("\n    (%s) each say %q", strings.Join(tagsMatching, ", "), value))
 				}
 			}
 			failed = true

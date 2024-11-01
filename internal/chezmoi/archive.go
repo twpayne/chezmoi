@@ -78,20 +78,20 @@ func (f ArchiveFormat) Type() string {
 	return "format"
 }
 
-// GuessArchiveFormat guesses the archive format from the path and data.
-func GuessArchiveFormat(path string, data []byte) ArchiveFormat {
-	switch pathLower := strings.ToLower(path); {
-	case strings.HasSuffix(pathLower, ".tar"):
+// GuessArchiveFormat guesses the archive format from the name and data.
+func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
+	switch nameLower := strings.ToLower(name); {
+	case strings.HasSuffix(nameLower, ".tar"):
 		return ArchiveFormatTar
-	case strings.HasSuffix(pathLower, ".tar.bz2") || strings.HasSuffix(pathLower, ".tbz2"):
+	case strings.HasSuffix(nameLower, ".tar.bz2") || strings.HasSuffix(nameLower, ".tbz2"):
 		return ArchiveFormatTarBz2
-	case strings.HasSuffix(pathLower, ".tar.gz") || strings.HasSuffix(pathLower, ".tgz"):
+	case strings.HasSuffix(nameLower, ".tar.gz") || strings.HasSuffix(nameLower, ".tgz"):
 		return ArchiveFormatTarGz
-	case strings.HasSuffix(pathLower, ".tar.xz") || strings.HasSuffix(pathLower, ".txz"):
+	case strings.HasSuffix(nameLower, ".tar.xz") || strings.HasSuffix(nameLower, ".txz"):
 		return ArchiveFormatTarXz
-	case strings.HasSuffix(pathLower, ".tar.zst"):
+	case strings.HasSuffix(nameLower, ".tar.zst"):
 		return ArchiveFormatTarZst
-	case strings.HasSuffix(pathLower, ".zip"):
+	case strings.HasSuffix(nameLower, ".zip"):
 		return ArchiveFormatZip
 	}
 
@@ -209,8 +209,7 @@ HEADER:
 				dirs, _ := path.Split(header.Name)
 				dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
 				for i := range dirComponents {
-					dir := strings.Join(dirComponents[0:i+1], "/")
-					if len(dir) > 0 {
+					if dir := strings.Join(dirComponents[0:i+1], "/"); dir != "" {
 						switch err := processHeader(implicitDirHeader(dir+"/", header.ModTime), dir+"/"); {
 						case errors.Is(err, fs.SkipDir):
 							continue HEADER
@@ -290,8 +289,7 @@ FILE:
 			dirs, _ := path.Split(name)
 			dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
 			for i := range dirComponents {
-				dir := strings.Join(dirComponents[0:i+1], "/")
-				if len(dir) > 0 {
+				if dir := strings.Join(dirComponents[0:i+1], "/"); dir != "" {
 					switch err := processHeader(fileInfo, dir+"/"); {
 					case errors.Is(err, fs.SkipDir):
 						continue FILE

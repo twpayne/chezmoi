@@ -48,9 +48,9 @@ type gitDiffFilePatch struct {
 	chunks   []diff.Chunk
 }
 
-func (fp *gitDiffFilePatch) IsBinary() bool                { return fp.isBinary }
-func (fp *gitDiffFilePatch) Files() (diff.File, diff.File) { return fp.from, fp.to }
-func (fp *gitDiffFilePatch) Chunks() []diff.Chunk          { return fp.chunks }
+func (fp *gitDiffFilePatch) IsBinary() bool              { return fp.isBinary }
+func (fp *gitDiffFilePatch) Files() (from, to diff.File) { return fp.from, fp.to }
+func (fp *gitDiffFilePatch) Chunks() []diff.Chunk        { return fp.chunks }
 
 // A gitDiffPatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Patch interface.

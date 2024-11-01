@@ -113,7 +113,7 @@ type External struct {
 
 // A SourceState is a source state.
 type SourceState struct {
-	sync.Mutex
+	mutex                   sync.Mutex
 	root                    sourceStateEntryTreeNode
 	removeDirs              chezmoiset.Set[RelPath]
 	baseSystem              System
@@ -831,8 +831,8 @@ func (s *SourceState) Get(targetRelPath RelPath) SourceStateEntry {
 
 // Ignore returns if targetRelPath should be ignored.
 func (s *SourceState) Ignore(targetRelPath RelPath) bool {
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	ignore := s.ignore.match(targetRelPath.String()) == patternSetMatchInclude
 	if ignore {
 		s.ignoredRelPaths.Add(targetRelPath)
@@ -1036,9 +1036,9 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return fs.SkipDir
 			}
 			if sourceStateDir.Attr.Remove {
-				s.Lock()
+				s.mutex.Lock()
 				s.removeDirs.Add(targetRelPath)
-				s.Unlock()
+				s.mutex.Unlock()
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
@@ -1310,8 +1310,8 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 
 // TemplateData returns a copy of s's template data.
 func (s *SourceState) TemplateData() map[string]any {
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	if s.templateData == nil {
 		s.templateData = make(map[string]any)
@@ -1351,8 +1351,8 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	if err := format.Unmarshal(data, &externals); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	for path, external := range externals {
 		if strings.HasPrefix(path, "/") || filepath.IsAbs(path) {
 			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
@@ -1406,8 +1406,8 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 		return err
 	}
 
-	s.Lock()
-	defer s.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	dir := sourceRelPath.Dir().TargetRelPath("")
 	scanner := bufio.NewScanner(bytes.NewReader(data))
@@ -1450,12 +1450,12 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	if err := format.Unmarshal(data, &templateData); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	s.Lock()
+	s.mutex.Lock()
 	RecursiveMerge(s.userTemplateData, templateData)
 	// Clear the cached template data, as the change to the user template data
 	// means that the cached value is now invalid.
 	s.templateData = nil
-	s.Unlock()
+	s.mutex.Unlock()
 	return nil
 }
 
@@ -1525,9 +1525,9 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			if err != nil {
 				return err
 			}
-			s.Lock()
+			s.mutex.Lock()
 			s.templates[name] = tmpl
-			s.Unlock()
+			s.mutex.Unlock()
 			return nil
 		case fileInfo.IsDir():
 			return nil
@@ -1936,7 +1936,8 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				}
 			}
 			_, err = tempFile.Write(modifierContents)
-			if chezmoierrors.CombineFunc(&err, tempFile.Close); err != nil {
+			err = chezmoierrors.Combine(err, tempFile.Close())
+			if err != nil {
 				return
 			}
 
@@ -2209,20 +2210,20 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 		return nil, err
 	}
 	contents := []byte(linkname)
-	template := false
+	isTemplate := false
 	switch {
 	case options.AutoTemplate:
-		contents, template = autoTemplate(contents, s.TemplateData())
+		contents, isTemplate = autoTemplate(contents, s.TemplateData())
 	case options.Template:
-		template = true
+		isTemplate = true
 	case !options.Template && options.TemplateSymlinks:
 		switch {
 		case strings.HasPrefix(linkname, s.sourceDirAbsPath.String()+"/"):
 			contents = []byte("{{ .chezmoi.sourceDir }}/" + linkname[s.sourceDirAbsPath.Len()+1:])
-			template = true
+			isTemplate = true
 		case strings.HasPrefix(linkname, s.destDirAbsPath.String()+"/"):
 			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[s.destDirAbsPath.Len()+1:])
-			template = true
+			isTemplate = true
 		}
 	}
 	contents = append(contents, '\n')
@@ -2231,7 +2232,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	fileAttr := FileAttr{
 		TargetName: fileInfo.Name(),
 		Type:       SourceFileTypeSymlink,
-		Template:   template,
+		Template:   isTemplate,
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
@@ -2476,12 +2477,12 @@ func (s *SourceState) readExternalArchiveData(
 		return nil, ArchiveFormatUnknown, err
 	}
 
-	url, err := url.Parse(external.URL)
+	externalURL, err := url.Parse(external.URL)
 	if err != nil {
 		err := fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 		return nil, ArchiveFormatUnknown, err
 	}
-	urlPath := url.Path
+	urlPath := externalURL.Path
 	if external.Encrypted {
 		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
 	}
