@@ -98,7 +98,7 @@ determine whether an archive member is included:
    is excluded.
 4. Otherwise, if only `exclude` patterns were specified then the archive member
    is included.
-5. Otherwise, the archive member is included.o
+5. Otherwise, the archive member is included.
 
 Excluded archive members do not generate source state entries, and, if they are
 directories, all of their children are also excluded.
