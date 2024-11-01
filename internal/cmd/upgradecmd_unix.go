@@ -68,15 +68,15 @@ func (c *Config) brewUpgrade() error {
 	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", "chezmoi"})
 }
 
-func (c *Config) getPackageFilename(packageType string, version *semver.Version, os, arch string) (string, error) {
+func (c *Config) getPackageFilename(packageType string, version *semver.Version, goOS, arch string) (string, error) {
 	if archReplacement, ok := archReplacements[packageType][arch]; ok {
 		arch = archReplacement
 	}
 	switch packageType {
 	case packageTypeAPK:
-		return fmt.Sprintf("chezmoi_%s_%s_%s.apk", version, os, arch), nil
+		return fmt.Sprintf("chezmoi_%s_%s_%s.apk", version, goOS, arch), nil
 	case packageTypeDEB:
-		return fmt.Sprintf("chezmoi_%s_%s_%s.deb", version, os, arch), nil
+		return fmt.Sprintf("chezmoi_%s_%s_%s.deb", version, goOS, arch), nil
 	case packageTypeRPM:
 		return fmt.Sprintf("chezmoi-%s-%s.rpm", version, arch), nil
 	default:
@@ -114,12 +114,7 @@ func (c *Config) upgradeUNIXPackage(
 		}
 
 		// Find the release asset.
-		packageFilename, err := c.getPackageFilename(
-			packageType,
-			version,
-			runtime.GOOS,
-			runtime.GOARCH,
-		)
+		packageFilename, err := c.getPackageFilename(packageType, version, runtime.GOOS, runtime.GOARCH)
 		if err != nil {
 			return err
 		}

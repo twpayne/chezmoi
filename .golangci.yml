@@ -124,6 +124,14 @@ linters-settings:
     - standard
     - default
     - prefix(github.com/twpayne/chezmoi)
+  gocritic:
+    enable-all: true
+    disabled-checks:
+    - emptyFallthrough
+    - hugeParam
+    - rangeValCopy
+    - unnamedResult
+    - whyNoLint
   gofumpt:
     extra-rules: true
     module-path: github.com/twpayne/chezmoi

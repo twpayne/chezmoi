@@ -113,25 +113,25 @@ func (c *Config) readHTTPResponse(resp *http.Response) ([]byte, error) {
 		return io.ReadAll(resp.Body)
 
 	case resp.ContentLength >= 0:
-		progress := progress.New(
+		httpProgress := progress.New(
 			progress.WithWidth(httpProgressWidth),
 		)
-		progress.Full = '#'
-		progress.FullColor = ""
-		progress.Empty = ' '
-		progress.EmptyColor = ""
-		progress.ShowPercentage = false
+		httpProgress.Full = '#'
+		httpProgress.FullColor = ""
+		httpProgress.Empty = ' '
+		httpProgress.EmptyColor = ""
+		httpProgress.ShowPercentage = false
 
 		model := httpProgressModel{
 			url:           resp.Request.URL.String(),
 			contentLength: int(resp.ContentLength),
-			progress:      progress,
+			progress:      httpProgress,
 		}
 
 		return runReadHTTPResponse(model, resp)
 
 	default:
-		spinner := spinner.New(
+		httpSpinner := spinner.New(
 			spinner.WithSpinner(spinner.Spinner{
 				Frames: makeNightriderFrames("+", ' ', httpProgressWidth),
 				FPS:    time.Second / 60,
@@ -140,7 +140,7 @@ func (c *Config) readHTTPResponse(resp *http.Response) ([]byte, error) {
 
 		model := httpSpinnerModel{
 			url:     resp.Request.URL.String(),
-			spinner: spinner,
+			spinner: httpSpinner,
 		}
 
 		return runReadHTTPResponse(model, resp)

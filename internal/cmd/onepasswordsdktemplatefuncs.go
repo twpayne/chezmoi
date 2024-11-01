@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"os"
-	"strings"
 
 	"github.com/1password/onepassword-sdk-go"
 )
@@ -27,7 +26,7 @@ type onepasswordSDKItem struct {
 }
 
 func (c *Config) onepasswordSDKItemsGet(vaultID, itemID string) onepasswordSDKItem {
-	key := strings.Join([]string{vaultID, itemID}, "\x00")
+	key := vaultID + "\x00" + itemID
 	if result, ok := c.OnepasswordSDK.itemsGetCache[key]; ok {
 		return result
 	}

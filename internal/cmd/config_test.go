@@ -47,9 +47,9 @@ func TestTagFieldNamesMatch(t *testing.T) {
 			valueMsgs := []string{}
 			for value, tagsMatching := range tagValueGroups {
 				if len(tagsMatching) == 1 {
-					valueMsgs = append(valueMsgs, fmt.Sprintf("%s says \"%s\"", tagsMatching[0], value))
+					valueMsgs = append(valueMsgs, fmt.Sprintf("%s says %q", tagsMatching[0], value))
 				} else {
-					valueMsgs = append(valueMsgs, fmt.Sprintf("(%s) each say \"%s\"", strings.Join(tagsMatching, ", "), value))
+					valueMsgs = append(valueMsgs, fmt.Sprintf("(%s) each say %q", strings.Join(tagsMatching, ", "), value))
 				}
 			}
 			t.Errorf("ConfigFile field %s has non-matching tag names:\n    %s", f.Name, strings.Join(valueMsgs, "\n    "))
@@ -600,13 +600,13 @@ func withTestUser(t *testing.T, username string) configOption {
 		var env string
 		switch runtime.GOOS {
 		case "plan9":
-			config.homeDir = filepath.Join("/", "home", username)
+			config.homeDir = "/home/" + username
 			env = "home"
 		case "windows":
-			config.homeDir = filepath.Join("C:\\", "home", username)
+			config.homeDir = "C:\\home\\" + username
 			env = "USERPROFILE"
 		default:
-			config.homeDir = filepath.Join("/", "home", username)
+			config.homeDir = "/home/" + username
 			env = "HOME"
 		}
 		t.Setenv(env, config.homeDir)

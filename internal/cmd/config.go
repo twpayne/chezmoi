@@ -1848,7 +1848,7 @@ func (c *Config) newSourceState(
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
 	annotations := getAnnotations(cmd)
 
-	// Verify modified config
+	// Verify modified config.
 	if annotations.hasTag(modifiesConfigFile) {
 		configFileContents, err := c.baseSystem.ReadFile(c.getConfigFileAbsPath())
 		switch {
@@ -1872,7 +1872,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
-	// Perform auto git commands
+	// Perform auto git commands.
 	if annotations.hasTag(modifiesSourceDirectory) {
 		var status *chezmoigit.Status
 		if c.Git.AutoAdd || c.Git.AutoCommit || c.Git.AutoPush {
@@ -1901,7 +1901,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	return nil
 }
 
-// persistentPostRunRootE is not run if command returns error, perform cleanup here.
+// finalizeRootCmd cleans up.
 func (c *Config) finalizeRootCmd() {
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
@@ -2193,18 +2193,17 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	// Determine the working tree directory if it is not configured.
 	if c.WorkingTreeAbsPath.Empty() {
 		workingTreeAbsPath := c.SourceDirAbsPath
-	FOR:
 		for {
 			gitDirAbsPath := workingTreeAbsPath.JoinString(git.GitDirName)
 			if _, err := c.baseSystem.Stat(gitDirAbsPath); err == nil {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
-				break FOR
+				break
 			}
 			prevWorkingTreeDirAbsPath := workingTreeAbsPath
 			workingTreeAbsPath = workingTreeAbsPath.Dir()
 			if workingTreeAbsPath == c.homeDirAbsPath || workingTreeAbsPath.Len() >= prevWorkingTreeDirAbsPath.Len() {
 				c.WorkingTreeAbsPath = c.SourceDirAbsPath
-				break FOR
+				break
 			}
 		}
 	}

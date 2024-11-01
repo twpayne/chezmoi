@@ -27,7 +27,7 @@ func Combine(errs ...error) error {
 
 // CombineFunc combines the error pointed to by errp with the result of calling
 // f.
-func CombineFunc(errp *error, f func() error) {
+func CombineFunc(errp *error, f func() error) { //nolint:gocritic
 	if err := f(); err != nil {
 		*errp = Combine(*errp, err)
 	}

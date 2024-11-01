@@ -44,7 +44,7 @@ var repoGuesses = []struct {
 		sshRepoGuessRepl:  "git@github.com:$1/dotfiles.git",
 	},
 	{
-		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-\.0-9A-Z_a-z]+?)(\.git)?\z`),
+		rx:                regexp.MustCompile(`\A([-0-9A-Za-z]+)/([-.0-9A-Z_a-z]+?)(\.git)?\z`),
 		httpRepoGuessRepl: "https://github.com/$1/$2.git",
 		sshRepoGuessRepl:  "git@github.com:$1/$2.git",
 	},

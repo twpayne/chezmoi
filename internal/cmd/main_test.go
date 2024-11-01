@@ -346,12 +346,12 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if len(args) > 1 {
 		ts.Fatalf(("usage: mkgitconfig [path]"))
 	}
-	path := filepath.Join(ts.Getenv("HOME"), ".gitconfig")
+	gitconfigPath := filepath.Join(ts.Getenv("HOME"), ".gitconfig")
 	if len(args) > 0 {
-		path = ts.MkAbs(args[0])
+		gitconfigPath = ts.MkAbs(args[0])
 	}
-	ts.Check(os.MkdirAll(filepath.Dir(path), fs.ModePerm))
-	ts.Check(writeNewFile(path, []byte(chezmoitest.JoinLines(
+	ts.Check(os.MkdirAll(filepath.Dir(gitconfigPath), fs.ModePerm))
+	ts.Check(writeNewFile(gitconfigPath, []byte(chezmoitest.JoinLines(
 		`[core]`,
 		`    autocrlf = false`,
 		`[init]`,
@@ -421,12 +421,12 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 	if len(args) > 1 {
 		ts.Fatalf(("usage: mkhomedir [path]"))
 	}
-	path := ts.Getenv("HOME")
+	homeDir := ts.Getenv("HOME")
 	if len(args) > 0 {
-		path = ts.MkAbs(args[0])
+		homeDir = ts.MkAbs(args[0])
 	}
 	workDir := ts.Getenv("WORK")
-	relPath, err := filepath.Rel(workDir, path)
+	relPath, err := filepath.Rel(workDir, homeDir)
 	ts.Check(err)
 	if err := vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]any{
 		relPath: map[string]any{
@@ -761,8 +761,8 @@ func goosCondition(cond string) (result, valid bool) {
 	return
 }
 
-func prependDirToPath(dir, path string) string {
-	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
+func prependDirToPath(dir, pathStr string) string {
+	return strings.Join(append([]string{dir}, filepath.SplitList(pathStr)...), string(os.PathListSeparator))
 }
 
 func setup(env *testscript.Env) error {
