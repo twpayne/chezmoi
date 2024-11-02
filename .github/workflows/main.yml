@@ -20,11 +20,11 @@ env:
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 1.61.0 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
-  GORELEASER_VERSION: 2.3.2 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.4.1 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
-  RAGE_VERSION: 0.10.0 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.4.27 # https://github.com/astral-sh/uv/releases
+  RAGE_VERSION: 0.11.0 # https://github.com/str4d/rage/releases
+  UV_VERSION: 0.4.29 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
@@ -213,7 +213,7 @@ jobs:
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
       with:
         name: chezmoi-darwin-arm64
-        path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
+        path: dist/chezmoi-nocgo_darwin_arm64_v8.0/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
