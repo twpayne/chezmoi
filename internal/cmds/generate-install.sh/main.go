@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	binDir = flag.String("b", "./bin", "binary directory")
+	binDir = flag.String("b", "bin", "binary directory")
 	output = flag.String("o", "", "output")
 )
 

@@ -102,7 +102,13 @@ main() {
 parse_args() {
 	while getopts "b:dh?t:" arg; do
 		case "${arg}" in
-		b) BINDIR="${OPTARG}" ;;
+		b)
+
+			if [ "${OPTARG}" = "bin" ] || [ "${OPTARG}" = "./bin" ]; then
+				log_info "instead of using 'get.chezmoi.io/lb -b bin', use 'get.chezmoi.io' instead"
+			fi
+			BINDIR="${OPTARG}"
+			;;
 		d) LOG_LEVEL=3 ;;
 		h | \?) usage "${0}" ;;
 		t) TAGARG="${OPTARG}" ;;
