@@ -139,7 +139,7 @@ checksum:
   extra_files:
   - glob: ./dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     name_template: chezmoi-darwin-amd64
-  - glob: ./dist/chezmoi-nocgo_darwin_arm64/chezmoi
+  - glob: ./dist/chezmoi-nocgo_darwin_arm64_v8.0/chezmoi
     name_template: chezmoi-darwin-arm64
   - glob: ./dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     name_template: chezmoi-linux-amd64
@@ -241,7 +241,7 @@ release:
     name_template: chezmoi_cosign.pub
   - glob: ./dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     name_template: chezmoi-darwin-amd64
-  - glob: ./dist/chezmoi-nocgo_darwin_arm64/chezmoi
+  - glob: ./dist/chezmoi-nocgo_darwin_arm64_v8.0/chezmoi
     name_template: chezmoi-darwin-arm64
   - glob: ./dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     name_template: chezmoi-linux-amd64
