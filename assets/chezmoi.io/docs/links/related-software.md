@@ -2,6 +2,10 @@
 
 ## Editor integration
 
+### [`github.com/andre-kotake/nvim-chezmoi`](https://github.com/andre-kotake/nvim-chezmoi)
+
+A NeoVim plugin that integrates with chezmoi.
+
 ### [`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim)
 
 Intelligent VIM syntax highlighting when editing files in your source directory.
