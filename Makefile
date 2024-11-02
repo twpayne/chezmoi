@@ -28,7 +28,7 @@ PREFIX?=/usr/local
 default: build
 
 .PHONY: smoke-test
-smoke-test: run build-all test lint shellcheck format
+smoke-test: run build-all test lint format
 
 .PHONY: build
 build:
@@ -115,7 +115,7 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-golangci-lint
+lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-golangci-lint shellcheck
 	./bin/actionlint
 	./bin/editorconfig-checker
 	./bin/golangci-lint run
