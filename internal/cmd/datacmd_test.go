@@ -23,6 +23,7 @@ func TestDataCmd(t *testing.T) {
 					`{`,
 					`  "mode": "symlink",`,
 					`  "sourceDir": "/tmp/source",`,
+					`  "encryption": "age",`,
 					`  "age": {`,
 					`    "args": [`,
 					`      "arg"`,
@@ -42,6 +43,7 @@ func TestDataCmd(t *testing.T) {
 				"/home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
 					`mode: symlink`,
 					`sourceDir: /tmp/source`,
+					`encryption: age`,
 					`age:`,
 					`  args:`,
 					`  - arg`,

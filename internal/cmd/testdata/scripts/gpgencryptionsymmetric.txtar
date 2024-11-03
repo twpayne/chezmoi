@@ -26,6 +26,8 @@ cmp $HOME/.encrypted golden/.encrypted
 removeline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "gpg"'
 exec chezmoi cat $HOME${/}.encrypted
 cmp stdout golden/.encrypted
+stderr 'chezmoi: warning: ''encryption'' not set, using gpg configuration. Check if ''encryption'' is correctly set as the top-level key.'
+prependline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "gpg"'
 
 # test that chezmoi edit --apply transparently decrypts and re-encrypts
 exec chezmoi edit --apply --force $HOME${/}.encrypted
