@@ -210,6 +210,7 @@ echo "0.2.1, git sha (8d9af42c8b98c9527741a239b23a3e384812f514), go1.20.4 arm64"
 -- home4/user/.config/chezmoi/chezmoi.json --
 -- home4/user/.config/chezmoi/chezmoi.yaml --
 -- home5/user/.config/chezmoi/chezmoi.toml --
+encryption = "age"
 [age]
     suffix = ".age-encrypted"
 -- home5/user/.local/share/chezmoi/dot_config/chezmoi/encrypted_chezmoi.toml.age-encrypted --
