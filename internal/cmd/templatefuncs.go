@@ -264,9 +264,7 @@ func (c *Config) ioregTemplateFunc() map[string]any {
 	}
 
 	var value map[string]any
-	if _, err := plist.Unmarshal(output, &value); err != nil {
-		panic(newParseCmdOutputError(command, args, output, err))
-	}
+	_ = mustValue(plist.Unmarshal(output, &value))
 	c.ioregData.value = value
 	return value
 }

@@ -27,9 +27,7 @@ func (c *Config) bitwardenSecretsTemplateFunc(secretID string, additionalArgs ..
 	}
 	output := mustValue(c.bitwardenSecretsOutput(args))
 	var data map[string]any
-	if err := json.Unmarshal(output, &data); err != nil {
-		panic(newParseCmdOutputError(c.BitwardenSecrets.Command, args, output, err))
-	}
+	must(json.Unmarshal(output, &data))
 	return data
 }
 
