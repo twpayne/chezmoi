@@ -6,6 +6,9 @@ on:
   push:
     branches:
     - master
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 env:
   SHA: ${{ github.event_name == 'push' && github.sha || github.event.pull_request.head.sha }}
 jobs:

@@ -10,6 +10,9 @@ on:
     - v*
   schedule:
   - cron: 32 2 * * *
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 env:
   ACTIONLINT_VERSION: 1.7.3 # https://github.com/rhysd/actionlint/releases
   AGE_VERSION: 1.2.0 # https://github.com/FiloSottile/age/releases

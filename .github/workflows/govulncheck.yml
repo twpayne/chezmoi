@@ -10,6 +10,9 @@ on:
     - v*
   schedule:
   - cron: 2 2 * * *
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   govulncheck:
     runs-on: ubuntu-22.04
