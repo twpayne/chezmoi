@@ -22,7 +22,7 @@ var (
 		"never":  RefreshExternalsNever,
 	}
 
-	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(chezmoimaps.Keys(refreshExternalsWellKnownStrings))
+	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(chezmoimaps.SortedKeys(refreshExternalsWellKnownStrings))
 )
 
 func (re *RefreshExternals) Set(s string) error {
