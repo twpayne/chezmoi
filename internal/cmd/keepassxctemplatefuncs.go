@@ -67,28 +67,14 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 	switch c.Keepassxc.Mode {
 	case keepassxcModeCachePassword:
 		// In cache password mode use --stdout to read the attachment data directly.
-		output, err := c.keepassxcOutput("attachment-export", "--quiet", "--stdout", entry, name)
-		if err != nil {
-			panic(err)
-		}
-		return string(output)
+		return string(mustValue(c.keepassxcOutput("attachment-export", "--quiet", "--stdout", entry, name)))
 	case keepassxcModeOpen:
 		// In open mode write the attachment data to a temporary file.
-		tempDir, err := c.tempDir("chezmoi-keepassxc")
-		if err != nil {
-			panic(err)
-		}
+		tempDir := mustValue(c.tempDir("chezmoi-keepassxc"))
 		tempFilename := tempDir.JoinString("attachment-" + strconv.FormatInt(time.Now().UnixNano(), 10)).String()
-		if _, err := c.keepassxcOutputOpen("attachment-export", "--quiet", entry, name, tempFilename); err != nil {
-			panic(err)
-		}
-		data, err := os.ReadFile(tempFilename)
-		if err != nil {
-			panic(err)
-		}
-		if err := os.Remove(tempFilename); err != nil {
-			panic(err)
-		}
+		_ = mustValue(c.keepassxcOutputOpen("attachment-export", "--quiet", entry, name, tempFilename))
+		data := mustValue(os.ReadFile(tempFilename))
+		must(os.Remove(tempFilename))
 		return string(data)
 	default:
 		panic(fmt.Sprintf("%s: invalid mode", c.Keepassxc.Mode))
@@ -102,10 +88,7 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 
 	command := "show"
 	args := []string{"--quiet", "--show-protected", entry}
-	output, err := c.keepassxcOutput("show", args...)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.keepassxcOutput("show", args...))
 
 	data, err := keepassxcParseOutput(output)
 	if err != nil {
@@ -130,11 +113,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 		return data
 	}
 
-	output, err := c.keepassxcOutput("show", entry, "--attributes", attribute, "--quiet", "--show-protected")
-	if err != nil {
-		panic(err)
-	}
-
+	output := mustValue(c.keepassxcOutput("show", entry, "--attributes", attribute, "--quiet", "--show-protected"))
 	outputStr := string(bytes.TrimSpace(output))
 	if c.Keepassxc.attributeCache == nil {
 		c.Keepassxc.attributeCache = make(map[keepassxcAttributeCacheKey]string)

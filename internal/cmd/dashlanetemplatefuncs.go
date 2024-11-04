@@ -25,14 +25,11 @@ func (c *Config) dashlaneNoteTemplateFunc(filter string) any {
 		c.Dashlane.cacheNote = make(map[string]any)
 	}
 
-	output, err := c.dashlaneOutput("note", filter)
-	if err != nil {
-		panic(err)
-	}
-
+	output := mustValue(c.dashlaneOutput("note", filter))
 	data := string(output)
 
 	c.Dashlane.cacheNote[filter] = data
+
 	return data
 }
 
@@ -45,17 +42,13 @@ func (c *Config) dashlanePasswordTemplateFunc(filter string) any {
 		c.Dashlane.cachePassword = make(map[string]any)
 	}
 
-	output, err := c.dashlaneOutput("password", "--output", "json", filter)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.dashlaneOutput("password", "--output", "json", filter))
 
 	var data any
-	if err := json.Unmarshal(output, &data); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(output, &data))
 
 	c.Dashlane.cachePassword[filter] = data
+
 	return data
 }
 

@@ -1953,8 +1953,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	// Add the completion template function. This needs cmd, so we can't do it
 	// in newConfig.
 	c.addTemplateFunc("completion", func(shell string) string {
-		completion := mustValue(completion(cmd, shell))
-		return completion
+		return mustValue(completion(cmd, shell))
 	})
 
 	// Enable CPU profiling if configured.

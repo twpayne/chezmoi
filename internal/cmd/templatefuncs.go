@@ -76,19 +76,13 @@ func (c *Config) commentTemplateFunc(prefix, s string) string {
 	for _, r := range s {
 		switch state {
 		case startOfLine:
-			if _, err := builder.WriteString(prefix); err != nil {
-				panic(err)
-			}
-			if _, err := builder.WriteRune(r); err != nil {
-				panic(err)
-			}
+			_ = mustValue(builder.WriteString(prefix))
+			_ = mustValue(builder.WriteRune(r))
 			if r != '\n' {
 				state = inLine
 			}
 		case inLine:
-			if _, err := builder.WriteRune(r); err != nil {
-				panic(err)
-			}
+			_ = mustValue(builder.WriteRune(r))
 			if r == '\n' {
 				state = startOfLine
 			}
@@ -98,11 +92,7 @@ func (c *Config) commentTemplateFunc(prefix, s string) string {
 }
 
 func (c *Config) deleteValueAtPathTemplateFunc(path string, dict map[string]any) any {
-	keys, lastKey, err := keysFromPath(path)
-	if err != nil {
-		panic(err)
-	}
-
+	keys, lastKey := mustValues(keysFromPath(path))
 	currentMap := dict
 	for _, key := range keys {
 		value, ok := currentMap[key]
@@ -167,11 +157,7 @@ func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
 }
 
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
-	file, err := ini.Load([]byte(s))
-	if err != nil {
-		panic(err)
-	}
-	return iniFileToMap(file)
+	return iniFileToMap(mustValue(ini.Load([]byte(s))))
 }
 
 // fromJsonTemplateFunc parses s as JSON and returns the result. In contrast to
@@ -180,9 +166,7 @@ func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 //nolint:revive,stylecheck
 func (c *Config) fromJsonTemplateFunc(s string) any {
 	var value any
-	if err := chezmoi.FormatJSON.Unmarshal([]byte(s), &value); err != nil {
-		panic(err)
-	}
+	must(chezmoi.FormatJSON.Unmarshal([]byte(s), &value))
 	return value
 }
 
@@ -190,25 +174,19 @@ func (c *Config) fromJsonTemplateFunc(s string) any {
 // to encoding/json, numbers are represented as int64s or float64s if possible.
 func (c *Config) fromJsoncTemplateFunc(s string) any {
 	var value any
-	if err := chezmoi.FormatJSONC.Unmarshal([]byte(s), &value); err != nil {
-		panic(err)
-	}
+	must(chezmoi.FormatJSONC.Unmarshal([]byte(s), &value))
 	return value
 }
 
 func (c *Config) fromTomlTemplateFunc(s string) any {
 	var value map[string]any
-	if err := chezmoi.FormatTOML.Unmarshal([]byte(s), &value); err != nil {
-		panic(err)
-	}
+	must(chezmoi.FormatTOML.Unmarshal([]byte(s), &value))
 	return value
 }
 
 func (c *Config) fromYamlTemplateFunc(s string) any {
 	var value any
-	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &value); err != nil {
-		panic(err)
-	}
+	must(chezmoi.FormatYAML.Unmarshal([]byte(s), &value))
 	return value
 }
 
@@ -224,23 +202,13 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 		}
 	}()
 
-	if err := os.Chdir(c.DestDirAbsPath.String()); err != nil {
-		panic(err)
-	}
+	must(os.Chdir(c.DestDirAbsPath.String()))
 
-	matches, err := chezmoi.Glob(c.fileSystem, filepath.ToSlash(pattern))
-	if err != nil {
-		panic(err)
-	}
-	return matches
+	return mustValue(chezmoi.Glob(c.fileSystem, filepath.ToSlash(pattern)))
 }
 
 func (c *Config) hexDecodeTemplateFunc(s string) string {
-	result, err := hex.DecodeString(s)
-	if err != nil {
-		panic(err)
-	}
-	return string(result)
+	return string(mustValue(hex.DecodeString(s)))
 }
 
 func (c *Config) hexEncodeTemplateFunc(s string) string {
@@ -249,11 +217,7 @@ func (c *Config) hexEncodeTemplateFunc(s string) string {
 
 func (c *Config) includeTemplateFunc(filename string) string {
 	searchDirAbsPaths := []chezmoi.AbsPath{c.sourceDirAbsPath}
-	contents, err := c.readFile(filename, searchDirAbsPaths)
-	if err != nil {
-		panic(err)
-	}
-	return string(contents)
+	return string(mustValue(c.readFile(filename, searchDirAbsPaths)))
 }
 
 func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) string {
@@ -271,24 +235,14 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		c.sourceDirAbsPath.JoinString(chezmoi.TemplatesDirName),
 		c.sourceDirAbsPath,
 	}
-	contents, err := c.readFile(filename, searchDirAbsPaths)
-	if err != nil {
-		panic(err)
-	}
+	contents := mustValue(c.readFile(filename, searchDirAbsPaths))
 
 	templateOptions := chezmoi.TemplateOptions{
 		Options: slices.Clone(c.Template.Options),
 	}
-	tmpl, err := chezmoi.ParseTemplate(filename, contents, c.templateFuncs, templateOptions)
-	if err != nil {
-		panic(err)
-	}
+	tmpl := mustValue(chezmoi.ParseTemplate(filename, contents, c.templateFuncs, templateOptions))
 
-	result, err := tmpl.Execute(data)
-	if err != nil {
-		panic(err)
-	}
-	return string(result)
+	return string(mustValue(tmpl.Execute(data)))
 }
 
 func (c *Config) ioregTemplateFunc() map[string]any {
@@ -322,14 +276,8 @@ func (c *Config) joinPathTemplateFunc(elem ...string) string {
 }
 
 func (c *Config) jqTemplateFunc(source string, input any) any {
-	query, err := gojq.Parse(source)
-	if err != nil {
-		panic(err)
-	}
-	code, err := gojq.Compile(query)
-	if err != nil {
-		panic(err)
-	}
+	query := mustValue(gojq.Parse(source))
+	code := mustValue(gojq.Compile(query))
 	iter := code.Run(input)
 	var result []any
 	for {
@@ -381,11 +329,7 @@ func (c *Config) lstatTemplateFunc(name string) any {
 }
 
 func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
-	mozillaInstallHash, err := mozillainstallhash.MozillaInstallHash(path)
-	if err != nil {
-		panic(err)
-	}
-	return mozillaInstallHash
+	return mustValue(mozillainstallhash.MozillaInstallHash(path))
 }
 
 func (c *Config) outputTemplateFunc(name string, args ...string) string {
@@ -456,10 +400,7 @@ func (c *Config) replaceAllRegexTemplateFunc(expr, repl, s string) string {
 }
 
 func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
-	keys, lastKey, err := keysFromPath(path)
-	if err != nil {
-		panic(err)
-	}
+	keys, lastKey := mustValues(keysFromPath(path))
 
 	result, ok := dict.(map[string]any)
 	if !ok {
@@ -509,9 +450,7 @@ func (c *Config) statTemplateFunc(name string) any {
 
 func (c *Config) toIniTemplateFunc(data map[string]any) string {
 	var builder strings.Builder
-	if err := writeIniMap(&builder, data, ""); err != nil {
-		panic(err)
-	}
+	must(writeIniMap(&builder, data, ""))
 	return builder.String()
 }
 
@@ -538,26 +477,16 @@ func (c *Config) toPrettyJsonTemplateFunc(args ...any) string { //nolint:revive,
 	encoder := json.NewEncoder(&builder)
 	encoder.SetEscapeHTML(false)
 	encoder.SetIndent("", indent)
-	if err := encoder.Encode(value); err != nil {
-		panic(err)
-	}
+	must(encoder.Encode(value))
 	return builder.String()
 }
 
 func (c *Config) toTomlTemplateFunc(data any) string {
-	toml, err := chezmoi.FormatTOML.Marshal(data)
-	if err != nil {
-		panic(err)
-	}
-	return string(toml)
+	return string(mustValue(chezmoi.FormatTOML.Marshal(data)))
 }
 
 func (c *Config) toYamlTemplateFunc(data any) string {
-	yaml, err := chezmoi.FormatYAML.Marshal(data)
-	if err != nil {
-		panic(err)
-	}
-	return string(yaml)
+	return string(mustValue(chezmoi.FormatYAML.Marshal(data)))
 }
 
 func anyToString(value any) string {

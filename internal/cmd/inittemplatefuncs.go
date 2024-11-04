@@ -25,9 +25,7 @@ func (c *Config) stdinIsATTYInitTemplateFunc() bool {
 
 func (c *Config) writeToStdout(args ...string) string {
 	for _, arg := range args {
-		if _, err := c.stdout.Write([]byte(arg)); err != nil {
-			panic(err)
-		}
+		_ = mustValue(c.stdout.Write([]byte(arg)))
 	}
 	return ""
 }

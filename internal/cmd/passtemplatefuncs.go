@@ -14,19 +14,13 @@ type passConfig struct {
 }
 
 func (c *Config) passTemplateFunc(id string) string {
-	output, err := c.passOutput(id)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.passOutput(id))
 	firstLine, _, _ := bytes.Cut(output, []byte{'\n'})
 	return string(bytes.TrimSpace(firstLine))
 }
 
 func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
-	output, err := c.passOutput(id)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.passOutput(id))
 
 	result := make(map[string]string)
 	for _, line := range bytes.Split(output, []byte{'\n'}) {
@@ -38,11 +32,7 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 }
 
 func (c *Config) passRawTemplateFunc(id string) string {
-	output, err := c.passOutput(id)
-	if err != nil {
-		panic(err)
-	}
-	return string(output)
+	return string(mustValue(c.passOutput(id)))
 }
 
 func (c *Config) passOutput(id string) ([]byte, error) {

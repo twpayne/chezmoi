@@ -25,10 +25,7 @@ func (c *Config) bitwardenSecretsTemplateFunc(secretID string, additionalArgs ..
 	default:
 		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(additionalArgs)+1))
 	}
-	output, err := c.bitwardenSecretsOutput(args)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.bitwardenSecretsOutput(args))
 	var data map[string]any
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.BitwardenSecrets.Command, args, output, err))

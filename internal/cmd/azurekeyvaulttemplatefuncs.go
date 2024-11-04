@@ -25,8 +25,6 @@ type azureKeyVaultConfig struct {
 }
 
 func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {
-	var err error
-
 	if a.vaults == nil {
 		a.vaults = make(map[string]*azureKeyVault)
 	}
@@ -40,23 +38,14 @@ func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {
 	}
 
 	if a.cred == nil {
-		a.cred, err = azidentity.NewDefaultAzureCredential(nil)
-		if err != nil {
-			panic(err)
-		}
+		a.cred = mustValue(azidentity.NewDefaultAzureCredential(nil))
 	}
 
 	if a.vaults[vaultName].client == nil {
-		a.vaults[vaultName].client, err = azsecrets.NewClient(a.vaults[vaultName].URL(vaultName), a.cred, nil)
-		if err != nil {
-			panic(err)
-		}
+		a.vaults[vaultName].client = mustValue(azsecrets.NewClient(a.vaults[vaultName].URL(vaultName), a.cred, nil))
 	}
 
-	resp, err := a.vaults[vaultName].client.GetSecret(context.Background(), secretName, "", nil)
-	if err != nil {
-		panic(err)
-	}
+	resp := mustValue(a.vaults[vaultName].client.GetSecret(context.Background(), secretName, "", nil))
 
 	if a.vaults[vaultName].cache == nil {
 		a.vaults[vaultName].cache = make(map[string]string)

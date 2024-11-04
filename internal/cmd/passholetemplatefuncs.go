@@ -40,20 +40,14 @@ func (c *Config) passholeTemplateFunc(path, field string) string {
 	var stdin io.Reader
 	if c.Passhole.Prompt {
 		if c.Passhole.password == "" {
-			password, err := c.readPassword("Enter database password: ")
-			if err != nil {
-				panic(err)
-			}
+			password := mustValue(c.readPassword("Enter database password: "))
 			c.Passhole.password = password
 		}
 		args = append(args, "--password", "-")
 		stdin = bytes.NewBufferString(c.Passhole.password + "\n")
 	}
 	args = append(args, "show", "--field", field, path)
-	output, err := c.passholeOutput(c.Passhole.Command, args, stdin)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.passholeOutput(c.Passhole.Command, args, stdin))
 
 	if c.Passhole.cache == nil {
 		c.Passhole.cache = make(map[passholeCacheKey]string)

@@ -32,10 +32,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 	}
 
 	args := []string{"show", "--password", id}
-	output, err := c.gopassOutput(args...)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.gopassOutput(args...))
 
 	passwordBytes, _, _ := bytes.Cut(output, []byte{'\n'})
 	password := string(passwordBytes)
@@ -54,10 +51,7 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 	}
 
 	args := []string{"show", "--noparsing", id}
-	output, err := c.gopassOutput(args...)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.gopassOutput(args...))
 
 	if c.Gopass.rawCache == nil {
 		c.Gopass.rawCache = make(map[string][]byte)

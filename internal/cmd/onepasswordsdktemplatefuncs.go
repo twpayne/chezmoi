@@ -33,15 +33,9 @@ func (c *Config) onepasswordSDKItemsGet(vaultID, itemID string) onepasswordSDKIt
 
 	ctx := context.TODO()
 
-	client, err := c.onepasswordSDKClient(ctx)
-	if err != nil {
-		panic(err)
-	}
+	client := mustValue(c.onepasswordSDKClient(ctx))
 
-	item, err := client.Items.Get(ctx, vaultID, itemID)
-	if err != nil {
-		panic(err)
-	}
+	item := mustValue(client.Items.Get(ctx, vaultID, itemID))
 
 	if c.OnepasswordSDK.itemsGetCache == nil {
 		c.OnepasswordSDK.itemsGetCache = make(map[string]onepasswordSDKItem)
@@ -75,19 +69,9 @@ func (c *Config) onepasswordSDKSecretsResolve(secretReference string) string {
 	if result, ok := c.OnepasswordSDK.secretsResolveCache[secretReference]; ok {
 		return result
 	}
-
 	ctx := context.TODO()
-
-	client, err := c.onepasswordSDKClient(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	secret, err := client.Secrets.Resolve(ctx, secretReference)
-	if err != nil {
-		panic(err)
-	}
-
+	client := mustValue(c.onepasswordSDKClient(ctx))
+	secret := mustValue(client.Secrets.Resolve(ctx, secretReference))
 	if c.OnepasswordSDK.secretsResolveCache == nil {
 		c.OnepasswordSDK.secretsResolveCache = make(map[string]string)
 	}
