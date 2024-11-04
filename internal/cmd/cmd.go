@@ -52,10 +52,7 @@ type help struct {
 }
 
 func init() {
-	dirEntries, err := commands.FS.ReadDir(".")
-	if err != nil {
-		panic(err)
-	}
+	dirEntries := mustValue(commands.FS.ReadDir("."))
 
 	longHelpStyleConfig := styles.ASCIIStyleConfig
 	longHelpStyleConfig.Code.StylePrimitive.BlockPrefix = ""
@@ -63,39 +60,27 @@ func init() {
 	longHelpStyleConfig.Emph.BlockPrefix = ""
 	longHelpStyleConfig.Emph.BlockSuffix = ""
 	longHelpStyleConfig.H2.Prefix = ""
-	longHelpTermRenderer, err := glamour.NewTermRenderer(
+	longHelpTermRenderer := mustValue(glamour.NewTermRenderer(
 		glamour.WithStyles(longHelpStyleConfig),
 		glamour.WithWordWrap(80),
-	)
-	if err != nil {
-		panic(err)
-	}
+	))
 
 	exampleStyleConfig := styles.ASCIIStyleConfig
 	exampleStyleConfig.Code.StylePrimitive.BlockPrefix = ""
 	exampleStyleConfig.Code.StylePrimitive.BlockSuffix = ""
 	exampleStyleConfig.Document.Margin = nil
-	exampleTermRenderer, err := glamour.NewTermRenderer(
+	exampleTermRenderer := mustValue(glamour.NewTermRenderer(
 		glamour.WithStyles(exampleStyleConfig),
 		glamour.WithWordWrap(80),
-	)
-	if err != nil {
-		panic(err)
-	}
+	))
 
 	for _, dirEntry := range dirEntries {
 		if dirEntry.Name() == "index.md" {
 			continue
 		}
 		command := strings.TrimSuffix(dirEntry.Name(), ".md")
-		data, err := commands.FS.ReadFile(dirEntry.Name())
-		if err != nil {
-			panic(err)
-		}
-		help, err := extractHelp(command, data, longHelpTermRenderer, exampleTermRenderer)
-		if err != nil {
-			panic(err)
-		}
+		data := mustValue(commands.FS.ReadFile(dirEntry.Name()))
+		help := mustValue(extractHelp(command, data, longHelpTermRenderer, exampleTermRenderer))
 		helps[command] = help
 	}
 }

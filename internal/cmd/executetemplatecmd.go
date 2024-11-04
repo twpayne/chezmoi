@@ -99,16 +99,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				}
 				return args[0]
 			default:
-				err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-				panic(err)
+				panic(fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1))
 			}
 		}
 
 		promptBoolOnceInitTemplateFunc := func(m map[string]any, path any, field string, args ...bool) bool {
-			nestedMap, lastKey, err := nestedMapAtPath(m, path)
-			if err != nil {
-				panic(err)
-			}
+			nestedMap, lastKey := mustValues(nestedMapAtPath(m, path))
 			if value, ok := nestedMap[lastKey]; ok {
 				if boolValue, ok := value.(bool); ok {
 					return boolValue
@@ -118,10 +114,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		}
 
 		promptChoiceInitTemplateFunc := func(prompt string, choices any, args ...string) string {
-			choiceStrs, err := anyToStringSlice(choices)
-			if err != nil {
-				panic(err)
-			}
+			choiceStrs := mustValue(anyToStringSlice(choices))
 			switch len(args) {
 			case 0:
 				if value, ok := c.executeTemplate.promptChoice[prompt]; ok {
@@ -140,16 +133,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				}
 				return args[0]
 			default:
-				err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+1)
-				panic(err)
+				panic(fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+1))
 			}
 		}
 
 		promptChoiceOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, choices []any, args ...string) string {
-			nestedMap, lastKey, err := nestedMapAtPath(m, path)
-			if err != nil {
-				panic(err)
-			}
+			nestedMap, lastKey := mustValues(nestedMapAtPath(m, path))
 			if value, ok := nestedMap[lastKey]; ok {
 				if stringValue, ok := value.(string); ok {
 					return stringValue
@@ -168,16 +157,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				}
 				return args[0]
 			default:
-				err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-				panic(err)
+				panic(fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1))
 			}
 		}
 
 		promptIntOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, args ...int64) int64 {
-			nestedMap, lastKey, err := nestedMapAtPath(m, path)
-			if err != nil {
-				panic(err)
-			}
+			nestedMap, lastKey := mustValues(nestedMapAtPath(m, path))
 			if value, ok := nestedMap[lastKey]; ok {
 				if intValue, ok := value.(int64); ok {
 					return intValue
@@ -199,16 +184,12 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				}
 				return args[0]
 			default:
-				err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-				panic(err)
+				panic(fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1))
 			}
 		}
 
 		promptStringOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, args ...string) string {
-			nestedMap, lastKey, err := nestedMapAtPath(m, path)
-			if err != nil {
-				panic(err)
-			}
+			nestedMap, lastKey := mustValues(nestedMapAtPath(m, path))
 			if value, ok := nestedMap[lastKey]; ok {
 				if stringValue, ok := value.(string); ok {
 					return stringValue

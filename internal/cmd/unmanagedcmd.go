@@ -32,9 +32,7 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 	unmanagedCmd.Flags().VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
 	unmanagedCmd.Flags().BoolVarP(&c.unmanaged.tree, "tree", "t", c.unmanaged.tree, "Print paths as a tree")
 
-	if err := unmanagedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleSimpleFlagCompletionFunc); err != nil {
-		panic(err)
-	}
+	must(unmanagedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleSimpleFlagCompletionFunc))
 
 	return unmanagedCmd
 }

@@ -1953,10 +1953,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	// Add the completion template function. This needs cmd, so we can't do it
 	// in newConfig.
 	c.addTemplateFunc("completion", func(shell string) string {
-		completion, err := completion(cmd, shell)
-		if err != nil {
-			panic(err)
-		}
+		completion := mustValue(completion(cmd, shell))
 		return completion
 	})
 
@@ -2942,9 +2939,7 @@ func (f *ConfigFile) toMap() map[string]any {
 		return nil
 	}
 	var result map[string]any
-	if err := json.Unmarshal(data, &result); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(data, &result))
 	return result
 }
 
@@ -3009,9 +3004,7 @@ func registerCommonFlagCompletionFuncs(cmd *cobra.Command) {
 			return
 		}
 		if flagCompletionFunc, ok := commonFlagCompletionFuncs[flag.Name]; ok {
-			if err := cmd.RegisterFlagCompletionFunc(flag.Name, flagCompletionFunc); err != nil {
-				panic(err)
-			}
+			must(cmd.RegisterFlagCompletionFunc(flag.Name, flagCompletionFunc))
 		}
 	})
 	for _, command := range cmd.Commands() {
