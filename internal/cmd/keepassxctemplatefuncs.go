@@ -86,15 +86,10 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 		return data
 	}
 
-	command := "show"
 	args := []string{"--quiet", "--show-protected", entry}
 	output := mustValue(c.keepassxcOutput("show", args...))
 
-	data, err := keepassxcParseOutput(output)
-	if err != nil {
-		// FIXME the error below should vary depending on the mode
-		panic(newParseCmdOutputError(command, args, output, err))
-	}
+	data := mustValue(keepassxcParseOutput(output))
 
 	if c.Keepassxc.cache == nil {
 		c.Keepassxc.cache = make(map[string]map[string]string)

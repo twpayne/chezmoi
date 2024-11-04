@@ -28,9 +28,7 @@ func (c *Config) vaultTemplateFunc(key string) any {
 	}
 
 	var data any
-	if err := json.Unmarshal(output, &data); err != nil {
-		panic(newParseCmdOutputError(c.Vault.Command, args, output, err))
-	}
+	must(json.Unmarshal(output, &data))
 
 	if c.Vault.cache == nil {
 		c.Vault.cache = make(map[string]any)

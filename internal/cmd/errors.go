@@ -31,27 +31,3 @@ func (e *cmdOutputError) Error() string {
 func (e *cmdOutputError) Unwrap() error {
 	return e.err
 }
-
-type parseCmdOutputError struct {
-	command string
-	args    []string
-	output  []byte
-	err     error
-}
-
-func newParseCmdOutputError(command string, args []string, output []byte, err error) *parseCmdOutputError {
-	return &parseCmdOutputError{
-		command: command,
-		args:    args,
-		output:  output,
-		err:     err,
-	}
-}
-
-func (e *parseCmdOutputError) Error() string {
-	return fmt.Sprintf("%s: %v\n%s", shellQuoteCommand(e.command, e.args), e.err, e.output)
-}
-
-func (e *parseCmdOutputError) Unwrap() error {
-	return e.err
-}

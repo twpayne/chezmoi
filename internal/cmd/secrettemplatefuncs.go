@@ -23,11 +23,8 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 
 func (c *Config) secretJSONTemplateFunc(args ...string) any {
 	output := mustValue(c.secretOutput(args))
-
 	var value any
-	if err := json.Unmarshal(output, &value); err != nil {
-		panic(newParseCmdOutputError(c.Secret.Command, args, output, err))
-	}
+	must(json.Unmarshal(output, &value))
 	return value
 }
 

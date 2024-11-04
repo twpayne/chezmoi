@@ -69,9 +69,7 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
 	args := mustValue(c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs))
 	output := mustValue(c.onepasswordOutput(args, withSessionToken))
 	var data map[string]any
-	if err := json.Unmarshal(output, &data); err != nil {
-		panic(newParseCmdOutputError(c.Onepassword.Command, args.args, output, err))
-	}
+	must(json.Unmarshal(output, &data))
 	return data
 }
 
@@ -182,7 +180,7 @@ func (c *Config) onepasswordItem(userArgs []string) (*onepasswordItem, error) {
 
 	var item onepasswordItem
 	if err := json.Unmarshal(output, &item); err != nil {
-		return nil, newParseCmdOutputError(c.Onepassword.Command, args.args, output, err)
+		return nil, err
 	}
 	return &item, nil
 }
