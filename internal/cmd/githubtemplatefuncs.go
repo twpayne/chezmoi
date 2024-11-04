@@ -63,10 +63,8 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	gitHubKeysKey := []byte(user)
 	if c.GitHub.RefreshPeriod != 0 {
 		var gitHubKeysValue gitHubKeysState
-		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysValue); {
-		case err != nil:
-			panic(err)
-		case ok && now.Before(gitHubKeysValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+		ok := mustValue(chezmoi.PersistentStateGet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysValue))
+		if ok && now.Before(gitHubKeysValue.RequestedAt.Add(c.GitHub.RefreshPeriod)) {
 			return gitHubKeysValue.Keys
 		}
 	}
@@ -74,20 +72,14 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient, err := c.getGitHubClient(ctx)
-	if err != nil {
-		panic(err)
-	}
+	gitHubClient := mustValue(c.getGitHubClient(ctx))
 
 	var allKeys []*github.Key
 	opts := &github.ListOptions{
 		PerPage: 100,
 	}
 	for {
-		keys, resp, err := gitHubClient.Users.ListKeys(ctx, user, opts)
-		if err != nil {
-			panic(err)
-		}
+		keys, resp := mustValues(gitHubClient.Users.ListKeys(ctx, user, opts))
 		allKeys = append(allKeys, keys...)
 		if resp.NextPage == 0 {
 			break
@@ -95,12 +87,10 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 		opts.Page = resp.NextPage
 	}
 
-	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysState{
+	must(chezmoi.PersistentStateSet(c.persistentState, gitHubKeysStateBucket, gitHubKeysKey, &gitHubKeysState{
 		RequestedAt: now,
 		Keys:        allKeys,
-	}); err != nil {
-		panic(err)
-	}
+	}))
 
 	if c.gitHub.keysCache == nil {
 		c.gitHub.keysCache = make(map[string][]*github.Key)
@@ -115,10 +105,7 @@ func (c *Config) githubMatchingReleaseAssetURL(release *github.RepositoryRelease
 		if asset.Name == nil {
 			continue
 		}
-		switch ok, err := path.Match(pattern, *asset.Name); {
-		case err != nil:
-			panic(err)
-		case ok:
+		if mustValue(path.Match(pattern, *asset.Name)) {
 			return *asset.BrowserDownloadURL
 		}
 	}
@@ -126,18 +113,12 @@ func (c *Config) githubMatchingReleaseAssetURL(release *github.RepositoryRelease
 }
 
 func (c *Config) gitHubLatestReleaseAssetURLTemplateFunc(ownerRepo, pattern string) string {
-	release, err := c.gitHubLatestRelease(ownerRepo)
-	if err != nil {
-		panic(err)
-	}
+	release := mustValue(c.gitHubLatestRelease(ownerRepo))
 	return c.githubMatchingReleaseAssetURL(release, pattern)
 }
 
 func (c *Config) gitHubReleaseAssetURLTemplateFunc(ownerRepo, version, pattern string) string {
-	release, err := c.gitHubRelease(ownerRepo, version)
-	if err != nil {
-		panic(err)
-	}
+	release := mustValue(c.gitHubRelease(ownerRepo, version))
 	return c.githubMatchingReleaseAssetURL(release, pattern)
 }
 
@@ -252,26 +233,15 @@ func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryReleas
 }
 
 func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.RepositoryRelease {
-	release, err := c.gitHubLatestRelease(ownerRepo)
-	if err != nil {
-		panic(err)
-	}
-	return release
+	return mustValue(c.gitHubLatestRelease(ownerRepo))
 }
 
 func (c *Config) gitHubReleaseTemplateFunc(ownerRepo, version string) *github.RepositoryRelease {
-	release, err := c.gitHubRelease(ownerRepo, version)
-	if err != nil {
-		panic(err)
-	}
-	return release
+	return mustValue(c.gitHubRelease(ownerRepo, version))
 }
 
 func (c *Config) gitHubLatestTagTemplateFunc(ownerRepo string) *github.RepositoryTag {
-	tags, err := c.getGitHubTags(ownerRepo)
-	if err != nil {
-		panic(err)
-	}
+	tags := mustValue(c.getGitHubTags(ownerRepo))
 
 	if len(tags) > 0 {
 		return tags[0]
@@ -281,10 +251,7 @@ func (c *Config) gitHubLatestTagTemplateFunc(ownerRepo string) *github.Repositor
 }
 
 func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.RepositoryRelease {
-	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
-	if err != nil {
-		panic(err)
-	}
+	owner, repo := mustValues(gitHubSplitOwnerRepo(ownerRepo))
 
 	if releases := c.gitHub.releasesCache[owner][repo]; releases != nil {
 		return releases
@@ -294,10 +261,15 @@ func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.Reposito
 	gitHubReleasesKey := []byte(owner + "/" + repo)
 	if c.GitHub.RefreshPeriod != 0 {
 		var gitHubReleasesStateValue gitHubReleasesState
-		switch ok, err := chezmoi.PersistentStateGet(c.persistentState, gitHubReleasesStateBucket, gitHubReleasesKey, &gitHubReleasesStateValue); {
-		case err != nil:
-			panic(err)
-		case ok && now.Before(gitHubReleasesStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)):
+		ok := mustValue(
+			chezmoi.PersistentStateGet(
+				c.persistentState,
+				gitHubReleasesStateBucket,
+				gitHubReleasesKey,
+				&gitHubReleasesStateValue,
+			),
+		)
+		if ok && now.Before(gitHubReleasesStateValue.RequestedAt.Add(c.GitHub.RefreshPeriod)) {
 			return gitHubReleasesStateValue.Releases
 		}
 	}
@@ -305,22 +277,13 @@ func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.Reposito
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient, err := c.getGitHubClient(ctx)
-	if err != nil {
-		panic(err)
-	}
+	gitHubClient := mustValue(c.getGitHubClient(ctx))
+	releases, _ := mustValues(gitHubClient.Repositories.ListReleases(ctx, owner, repo, nil))
 
-	releases, _, err := gitHubClient.Repositories.ListReleases(ctx, owner, repo, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubReleasesStateBucket, gitHubReleasesKey, &gitHubReleasesState{
+	must(chezmoi.PersistentStateSet(c.persistentState, gitHubReleasesStateBucket, gitHubReleasesKey, &gitHubReleasesState{
 		RequestedAt: now,
 		Releases:    releases,
-	}); err != nil {
-		panic(err)
-	}
+	}))
 
 	if c.gitHub.releasesCache == nil {
 		c.gitHub.releasesCache = make(map[string]map[string][]*github.RepositoryRelease)
@@ -334,12 +297,7 @@ func (c *Config) gitHubReleasesTemplateFunc(ownerRepo string) []*github.Reposito
 }
 
 func (c *Config) gitHubTagsTemplateFunc(ownerRepo string) []*github.RepositoryTag {
-	tags, err := c.getGitHubTags(ownerRepo)
-	if err != nil {
-		panic(err)
-	}
-
-	return tags
+	return mustValue(c.getGitHubTags(ownerRepo))
 }
 
 func (c *Config) getGitHubTags(ownerRepo string) ([]*github.RepositoryTag, error) {

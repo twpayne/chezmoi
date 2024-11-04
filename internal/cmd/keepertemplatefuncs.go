@@ -17,22 +17,14 @@ type keeperConfig struct {
 }
 
 func (c *Config) keeperTemplateFunc(record string) map[string]any {
-	output, err := c.keeperOutput([]string{"get", "--format=json", record})
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.keeperOutput([]string{"get", "--format=json", record}))
 	var result map[string]any
-	if err := json.Unmarshal(output, &result); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(output, &result))
 	return result
 }
 
 func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
-	output, err := c.keeperOutput([]string{"get", "--format=json", record})
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.keeperOutput([]string{"get", "--format=json", record}))
 	var data struct {
 		Data struct {
 			Fields []struct {
@@ -41,9 +33,7 @@ func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
 			} `json:"fields"`
 		} `json:"data"`
 	}
-	if err := json.Unmarshal(output, &data); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(output, &data))
 	result := make(map[string]any)
 	for _, field := range data.Data.Fields {
 		result[field.Type] = field.Value
@@ -52,10 +42,7 @@ func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
 }
 
 func (c *Config) keeperFindPasswordTemplateFunc(record string) string {
-	output, err := c.keeperOutput([]string{"find-password", record})
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.keeperOutput([]string{"find-password", record}))
 	return string(bytes.TrimSpace(output))
 }
 

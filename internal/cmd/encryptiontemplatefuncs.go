@@ -1,17 +1,9 @@
 package cmd
 
 func (c *Config) decryptTemplateFunc(ciphertext string) string {
-	plaintextBytes, err := c.encryption.Decrypt([]byte(ciphertext))
-	if err != nil {
-		panic(err)
-	}
-	return string(plaintextBytes)
+	return string(mustValue(c.encryption.Decrypt([]byte(ciphertext))))
 }
 
 func (c *Config) encryptTemplateFunc(plaintext string) string {
-	ciphertextBytes, err := c.encryption.Encrypt([]byte(plaintext))
-	if err != nil {
-		panic(err)
-	}
-	return string(ciphertextBytes)
+	return string(mustValue(c.encryption.Encrypt([]byte(plaintext))))
 }

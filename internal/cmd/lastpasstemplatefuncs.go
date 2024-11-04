@@ -32,27 +32,17 @@ type lastpassConfig struct {
 }
 
 func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
-	data, err := c.lastpassData(id)
-	if err != nil {
-		panic(err)
-	}
+	data := mustValue(c.lastpassData(id))
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
-			d["note"], err = lastpassParseNote(note)
-			if err != nil {
-				panic(err)
-			}
+			d["note"] = mustValue(lastpassParseNote(note))
 		}
 	}
 	return data
 }
 
 func (c *Config) lastpassRawTemplateFunc(id string) []map[string]any {
-	data, err := c.lastpassData(id)
-	if err != nil {
-		panic(err)
-	}
-	return data
+	return mustValue(c.lastpassData(id))
 }
 
 func (c *Config) lastpassData(id string) ([]map[string]any, error) {

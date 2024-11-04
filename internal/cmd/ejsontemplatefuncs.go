@@ -21,17 +21,13 @@ func (c *Config) ejsonDecryptWithKeyTemplateFunc(filePath, key string) any {
 		c.Ejson.cache = make(map[string]any)
 	}
 
-	decrypted, err := ejson.DecryptFile(filePath, c.Ejson.KeyDir, key)
-	if err != nil {
-		panic(err)
-	}
+	decrypted := mustValue(ejson.DecryptFile(filePath, c.Ejson.KeyDir, key))
 
 	var data any
-	if err := json.Unmarshal(decrypted, &data); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(decrypted, &data))
 
 	c.Ejson.cache[filePath] = data
+
 	return data
 }
 

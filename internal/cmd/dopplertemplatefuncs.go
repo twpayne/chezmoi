@@ -28,14 +28,9 @@ func (c *Config) dopplerTemplateFunc(key string, additionalArgs ...string) any {
 
 	args := c.appendDopplerAdditionalArgs([]string{"secrets", "download", "--json", "--no-file"}, additionalArgs)
 
-	data, err := c.dopplerOutput(args)
-	if err != nil {
-		panic(err)
-	}
+	data := mustValue(c.dopplerOutput(args))
 	var value map[string]any
-	if err := json.Unmarshal(data, &value); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(data, &value))
 
 	secret, ok := value[key]
 	if !ok {
@@ -51,14 +46,9 @@ func (c *Config) dopplerProjectJSONTemplateFunc(additionalArgs ...string) any {
 	}
 	args := c.appendDopplerAdditionalArgs([]string{"secrets", "download", "--json", "--no-file"}, additionalArgs)
 
-	data, err := c.dopplerOutput(args)
-	if err != nil {
-		panic(err)
-	}
+	data := mustValue(c.dopplerOutput(args))
 	var value any
-	if err := json.Unmarshal(data, &value); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(data, &value))
 	return value
 }
 

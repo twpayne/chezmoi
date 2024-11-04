@@ -65,20 +65,9 @@ type onepasswordItem struct {
 }
 
 func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
-	if err := c.onepasswordCheckMode(); err != nil {
-		panic(err)
-	}
-
-	args, err := c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs)
-	if err != nil {
-		panic(err)
-	}
-
-	output, err := c.onepasswordOutput(args, withSessionToken)
-	if err != nil {
-		panic(err)
-	}
-
+	must(c.onepasswordCheckMode())
+	args := mustValue(c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs))
+	output := mustValue(c.onepasswordOutput(args, withSessionToken))
 	var data map[string]any
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.Onepassword.Command, args.args, output, err))
@@ -87,11 +76,7 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
 }
 
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[string]any {
-	item, err := c.onepasswordItem(userArgs)
-	if err != nil {
-		panic(err)
-	}
-
+	item := mustValue(c.onepasswordItem(userArgs))
 	result := make(map[string]any)
 	for _, field := range item.Fields {
 		if _, ok := field["section"]; ok {
@@ -110,32 +95,16 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[st
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
-	if err := c.onepasswordCheckMode(); err != nil {
-		panic(err)
-	}
-
+	must(c.onepasswordCheckMode())
 	if c.Onepassword.Mode == onepasswordModeConnect {
 		panic(fmt.Errorf("onepasswordDocument cannot be used in %s mode", onepasswordModeConnect))
 	}
-
-	args, err := c.newOnepasswordArgs([]string{"document", "get"}, userArgs)
-	if err != nil {
-		panic(err)
-	}
-
-	output, err := c.onepasswordOutput(args, withSessionToken)
-	if err != nil {
-		panic(err)
-	}
-	return string(output)
+	args := mustValue(c.newOnepasswordArgs([]string{"document", "get"}, userArgs))
+	return string(mustValue(c.onepasswordOutput(args, withSessionToken)))
 }
 
 func (c *Config) onepasswordItemFieldsTemplateFunc(userArgs ...string) map[string]any {
-	item, err := c.onepasswordItem(userArgs)
-	if err != nil {
-		panic(err)
-	}
-
+	item := mustValue(c.onepasswordItem(userArgs))
 	result := make(map[string]any)
 	for _, field := range item.Fields {
 		if _, ok := field["section"]; !ok {
@@ -252,9 +221,7 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 }
 
 func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string {
-	if err := c.onepasswordCheckMode(); err != nil {
-		panic(err)
-	}
+	must(c.onepasswordCheckMode())
 
 	onepasswordArgs := &onepasswordArgs{
 		args: []string{"read", "--no-newline", url},
@@ -264,34 +231,22 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 	case 0:
 		// Do nothing.
 	case 1:
-		if err := onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode); err != nil {
-			panic(err)
-		}
-
+		must(onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode))
 		onepasswordArgs.account = c.onepasswordAccount(args[0])
 		onepasswordArgs.args = append(onepasswordArgs.args, "--account", onepasswordArgs.account)
 	default:
 		panic(fmt.Errorf("expected 1..2 arguments, got %d", len(args)+1))
 	}
 
-	output, err := c.onepasswordOutput(onepasswordArgs, withSessionToken)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.onepasswordOutput(onepasswordArgs, withSessionToken))
 	return string(output)
 }
 
 func (c *Config) onepasswordAccount(key string) string {
 	// This should not happen, but better to be safe
-	if err := onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode); err != nil {
-		panic(err)
-	}
+	must(onepasswordCheckInvalidAccountParameters(c.Onepassword.Mode))
 
-	accounts, err := c.onepasswordAccounts()
-	if err != nil {
-		panic(err)
-	}
-
+	accounts := mustValue(c.onepasswordAccounts())
 	if account, exists := accounts[key]; exists {
 		return account
 	}

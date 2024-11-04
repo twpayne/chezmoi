@@ -25,36 +25,21 @@ type hcpVaultSecretConfig struct {
 var vltMinVersion = semver.Version{Major: 0, Minor: 2, Patch: 1}
 
 func (c *Config) hcpVaultSecretTemplateFunc(key string, additionalArgs ...string) string {
-	args, err := c.appendHCPVaultSecretsAdditionalArgs(
+	args := mustValue(c.appendHCPVaultSecretsAdditionalArgs(
 		[]string{"secrets", "get", "--plaintext"},
 		additionalArgs,
-	)
-	if err != nil {
-		panic(err)
-	}
-	output, err := c.vltOutput(append(args, key))
-	if err != nil {
-		panic(err)
-	}
-	return string(output)
+	))
+	return string(mustValue(c.vltOutput(append(args, key))))
 }
 
 func (c *Config) hcpVaultSecretJSONTemplateFunc(key string, additionalArgs ...string) any {
-	args, err := c.appendHCPVaultSecretsAdditionalArgs(
+	args := mustValue(c.appendHCPVaultSecretsAdditionalArgs(
 		[]string{"secrets", "get", "--format", "json"},
 		additionalArgs,
-	)
-	if err != nil {
-		panic(err)
-	}
-	data, err := c.vltOutput(append(args, key))
-	if err != nil {
-		panic(err)
-	}
+	))
+	data := mustValue(c.vltOutput(append(args, key)))
 	var value any
-	if err := json.Unmarshal(data, &value); err != nil {
-		panic(err)
-	}
+	must(json.Unmarshal(data, &value))
 	return value
 }
 

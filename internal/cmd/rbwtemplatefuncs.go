@@ -20,10 +20,7 @@ var rbwMinVersion = semver.Version{Major: 1, Minor: 7, Patch: 0}
 
 func (c *Config) rbwFieldsTemplateFunc(name string, extraArgs ...string) map[string]any {
 	args := append([]string{"get", "--raw", name}, extraArgs...)
-	output, err := c.rbwOutput(args)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.rbwOutput(args))
 	var data struct {
 		Fields []map[string]any `json:"fields"`
 	}
@@ -41,10 +38,7 @@ func (c *Config) rbwFieldsTemplateFunc(name string, extraArgs ...string) map[str
 
 func (c *Config) rbwTemplateFunc(name string, extraArgs ...string) map[string]any {
 	args := append([]string{"get", "--raw", name}, extraArgs...)
-	output, err := c.rbwOutput(args)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.rbwOutput(args))
 	var data map[string]any
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.RBW.Command, args, output, err))

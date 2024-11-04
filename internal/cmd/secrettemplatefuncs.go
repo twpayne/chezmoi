@@ -18,18 +18,11 @@ type secretConfig struct {
 }
 
 func (c *Config) secretTemplateFunc(args ...string) string {
-	output, err := c.secretOutput(args)
-	if err != nil {
-		panic(err)
-	}
-	return string(bytes.TrimSpace(output))
+	return string(bytes.TrimSpace(mustValue(c.secretOutput(args))))
 }
 
 func (c *Config) secretJSONTemplateFunc(args ...string) any {
-	output, err := c.secretOutput(args)
-	if err != nil {
-		panic(err)
-	}
+	output := mustValue(c.secretOutput(args))
 
 	var value any
 	if err := json.Unmarshal(output, &value); err != nil {
