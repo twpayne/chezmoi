@@ -14,41 +14,25 @@ stdout 'Register-ArgumentCompleter'
 exec chezmoi completion zsh
 stdout '#compdef chezmoi'
 
-# test that --use-builtin flags are completed
-exec chezmoi __complete --use-builtin
-cmp stdout golden/use-builtin-flags
-
 # test that autoBool values are completed
 exec chezmoi __complete --color t
 cmp stdout golden/auto-bool-t
-
-# test that entry type set values are completed
-exec chezmoi __complete apply --include ''
-cmp stdout golden/entry-type-set
 
 # test that mode values are completed
 exec chezmoi __complete --mode ''
 cmp stdout golden/mode
 
-# test that status path style values are completed
-exec chezmoi __complete status --path-style ''
-cmp stdout golden/path-style
+# test that --use-builtin flags are completed
+exec chezmoi __complete --use-builtin
+cmp stdout golden/use-builtin-flags
 
-# test that managed path style values are completed
-exec chezmoi __complete managed --path-style ''
-cmp stdout golden/path-style
+# test that entry type set values are completed
+exec chezmoi __complete apply --include ''
+cmp stdout golden/entry-type-set
 
-# test that unmanaged path style values are completed
-exec chezmoi __complete unmanaged --path-style ''
-cmp stdout golden/unmanaged-path-style
-
-# test that "state data --format" values are completed
-exec chezmoi __complete state data --format ''
-cmp stdout golden/output-format
-
-# test that "state dump --format" values are completed
-exec chezmoi __complete state dump --format ''
-cmp stdout golden/output-format
+# test that "archive --format" values are completed
+exec chezmoi __complete archive --format ''
+cmp stdout golden/archive-format
 
 # test that "data --format" values are completed
 exec chezmoi __complete data --format ''
@@ -62,9 +46,25 @@ cmp stdout golden/output-format
 exec chezmoi __complete dump-config --format ''
 cmp stdout golden/output-format
 
-# test that "archive --format" values are completed
-exec chezmoi __complete archive --format ''
-cmp stdout golden/archive-format
+# test that managed path style values are completed
+exec chezmoi __complete managed --path-style ''
+cmp stdout golden/path-style
+
+# test that "state data --format" values are completed
+exec chezmoi __complete state data --format ''
+cmp stdout golden/output-format
+
+# test that "state dump --format" values are completed
+exec chezmoi __complete state dump --format ''
+cmp stdout golden/output-format
+
+# test that status path style values are completed
+exec chezmoi __complete status --path-style ''
+cmp stdout golden/path-style
+
+# test that unmanaged path style values are completed
+exec chezmoi __complete unmanaged --path-style ''
+cmp stdout golden/unmanaged-path-style
 
 -- golden/archive-format --
 tar
