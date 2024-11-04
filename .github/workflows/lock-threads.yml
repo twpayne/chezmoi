@@ -10,7 +10,8 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: lock-threads
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   action:
