@@ -252,10 +252,31 @@ func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, er
 // markFlagsRequired marks all of flags as required for cmd.
 func markFlagsRequired(cmd *cobra.Command, flags ...string) {
 	for _, flag := range flags {
-		if err := cmd.MarkFlagRequired(flag); err != nil {
-			panic(err)
-		}
+		must(cmd.MarkFlagRequired(flag))
 	}
+}
+
+// must panics if err is not nil.
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+// mustValue panics if err is not nil, otherwise it returns value.
+func mustValue[T any](value T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return value
+}
+
+// mustValues panics if err is not nil, otherwise it returns value1 and value2.
+func mustValues[T1, T2 any](value1 T1, value2 T2, err error) (T1, T2) {
+	if err != nil {
+		panic(err)
+	}
+	return value1, value2
 }
 
 // mustLongHelp returns the long help for command or panics if no long help
