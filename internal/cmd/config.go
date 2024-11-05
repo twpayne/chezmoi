@@ -971,6 +971,7 @@ func (c *Config) decodeConfigMap(configMap map[string]any, configFile *ConfigFil
 			chezmoi.StringSliceToEntryTypeSetHookFunc(),
 			chezmoi.StringToAbsPathHookFunc(),
 			StringOrBoolToAutoBoolHookFunc(),
+			StringToChoiceFlagHookFunc(),
 		),
 		Result: configFile,
 	})
