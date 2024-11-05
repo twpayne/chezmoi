@@ -1,6 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"cmp"
+
+	"github.com/spf13/cobra"
+)
+
+type dumpConfigCmdConfig struct {
+	format *choiceFlag
+}
 
 func (c *Config) newDumpConfigCmd() *cobra.Command {
 	dumpConfigCmd := &cobra.Command{
@@ -15,11 +23,13 @@ func (c *Config) newDumpConfigCmd() *cobra.Command {
 		),
 	}
 
-	dumpConfigCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
+	dumpConfigCmd.Flags().VarP(c.dumpConfig.format, "format", "f", "Output format")
+
+	must(dumpConfigCmd.RegisterFlagCompletionFunc("format", c.dumpConfig.format.FlagCompletionFunc()))
 
 	return dumpConfigCmd
 }
 
 func (c *Config) runDumpConfigCmd(cmd *cobra.Command, args []string) error {
-	return c.marshal(c.Format, c)
+	return c.marshal(cmp.Or(c.dumpConfig.format.String(), c.Format), c)
 }

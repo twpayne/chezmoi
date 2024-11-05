@@ -1,10 +1,16 @@
 package cmd
 
 import (
+	"cmp"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
+
+type dataCmdConfig struct {
+	format *choiceFlag
+}
 
 func (c *Config) newDataCmd() *cobra.Command {
 	dataCmd := &cobra.Command{
@@ -19,7 +25,10 @@ func (c *Config) newDataCmd() *cobra.Command {
 		),
 	}
 
-	dataCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
+	dataCmd.Flags().VarP(c.data.format, "format", "f", "Output format")
+	if err := dataCmd.RegisterFlagCompletionFunc("format", c.data.format.FlagCompletionFunc()); err != nil {
+		panic(err)
+	}
 
 	return dataCmd
 }
@@ -31,5 +40,5 @@ func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.Format, sourceState.TemplateData())
+	return c.marshal(cmp.Or(c.data.format.String(), c.Format), sourceState.TemplateData())
 }

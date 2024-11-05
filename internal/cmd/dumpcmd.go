@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"cmp"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -8,6 +10,7 @@ import (
 
 type dumpCmdConfig struct {
 	filter     *chezmoi.EntryTypeFilter
+	format     *choiceFlag
 	init       bool
 	parentDirs bool
 	recursive  bool
@@ -28,7 +31,8 @@ func (c *Config) newDumpCmd() *cobra.Command {
 	}
 
 	dumpCmd.Flags().VarP(c.dump.filter.Exclude, "exclude", "x", "Exclude entry types")
-	dumpCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
+	dumpCmd.Flags().VarP(c.dump.format, "format", "f", "Output format")
+	must(dumpCmd.RegisterFlagCompletionFunc("format", c.dump.format.FlagCompletionFunc()))
 	dumpCmd.Flags().VarP(c.dump.filter.Include, "include", "i", "Include entry types")
 	dumpCmd.Flags().BoolVar(&c.dump.init, "init", c.dump.init, "Recreate config file from template")
 	dumpCmd.Flags().BoolVarP(&c.dump.parentDirs, "parent-dirs", "P", c.dump.parentDirs, "Dump all parent directories")
@@ -49,5 +53,5 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.marshal(c.Format, dumpSystem.Data())
+	return c.marshal(cmp.Or(c.dump.format.String(), c.Format), dumpSystem.Data())
 }
