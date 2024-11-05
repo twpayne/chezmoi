@@ -34,13 +34,13 @@ cmp stdout golden/secrets
 exec chezmoi __complete apply --exclude=
 cmp stdout golden/entry-type-set
 
-# test that apply --refresh-externals flags are completed
-exec chezmoi __complete apply --refresh-externals=
-cmp stdout golden/refresh-externals
-
-# test that entry type set values are completed
+# test that apply --include values are completed
 exec chezmoi __complete apply --include=
 cmp stdout golden/entry-type-set
+
+# test that apply --refresh-externals values are completed
+exec chezmoi __complete apply --refresh-externals=
+cmp stdout golden/refresh-externals
 
 # test that archive --format values are completed
 exec chezmoi __complete archive --format=
