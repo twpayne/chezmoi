@@ -55,6 +55,11 @@ func (s Set[T]) Elements() []T {
 	return elements
 }
 
+// Empty returns if s is empty.
+func (s Set[T]) Empty() bool {
+	return len(s) == 0
+}
+
 // Remove removes elements from s.
 func (s Set[T]) Remove(elements ...T) {
 	for _, element := range elements {
