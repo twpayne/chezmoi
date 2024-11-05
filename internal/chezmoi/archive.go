@@ -32,51 +32,11 @@ const (
 	ArchiveFormatTarGz   ArchiveFormat = "tar.gz"
 	ArchiveFormatTarXz   ArchiveFormat = "tar.xz"
 	ArchiveFormatTarZst  ArchiveFormat = "tar.zst"
-	ArchiveFormatTbz2    ArchiveFormat = "tbz2"
-	ArchiveFormatTgz     ArchiveFormat = "tgz"
-	ArchiveFormatTxz     ArchiveFormat = "txz"
 	ArchiveFormatZip     ArchiveFormat = "zip"
 )
 
-var ArchiveFormatFlagCompletionFunc = FlagCompletionFunc([]string{
-	ArchiveFormatTar.String(),
-	ArchiveFormatTarBz2.String(),
-	ArchiveFormatTarGz.String(),
-	ArchiveFormatTarXz.String(),
-	ArchiveFormatTarZst.String(),
-	ArchiveFormatTbz2.String(),
-	ArchiveFormatTgz.String(),
-	ArchiveFormatTxz.String(),
-	ArchiveFormatZip.String(),
-})
-
-type UnknownArchiveFormatError string
-
-func (e UnknownArchiveFormatError) Error() string {
-	if e == UnknownArchiveFormatError(ArchiveFormatUnknown) {
-		return "unknown archive format"
-	}
-	return string(e) + ": unknown archive format"
-}
-
 // An WalkArchiveFunc is called once for each entry in an archive.
 type WalkArchiveFunc func(name string, info fs.FileInfo, r io.Reader, linkname string) error
-
-// Set implements github.com/spf13/pflag.Value.Set.
-func (f *ArchiveFormat) Set(s string) error {
-	*f = ArchiveFormat(s)
-	return nil
-}
-
-// String implements github.com/spf13/pflag.Value.String.
-func (f ArchiveFormat) String() string {
-	return string(f)
-}
-
-// Type implements github.com/spf13/pflag.Value.Type.
-func (f ArchiveFormat) Type() string {
-	return "format"
-}
 
 // GuessArchiveFormat guesses the archive format from the name and data.
 func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
@@ -123,17 +83,17 @@ func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
 	switch format {
 	case ArchiveFormatTar:
 		// Already in tar format, do nothing.
-	case ArchiveFormatTarBz2, ArchiveFormatTbz2:
+	case ArchiveFormatTarBz2:
 		// Decompress with bzip2.
 		r = bzip2.NewReader(r)
-	case ArchiveFormatTarGz, ArchiveFormatTgz:
+	case ArchiveFormatTarGz:
 		// Decompress with gzip.
 		var err error
 		r, err = gzip.NewReader(r)
 		if err != nil {
 			return err
 		}
-	case ArchiveFormatTarXz, ArchiveFormatTxz:
+	case ArchiveFormatTarXz:
 		// Decompress with xz.
 		var err error
 		r, err = xz.NewReader(r)
@@ -148,7 +108,7 @@ func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
 			return err
 		}
 	default:
-		return UnknownArchiveFormatError(format)
+		return fmt.Errorf("%s: unknown archive format", format)
 	}
 	return walkArchiveTar(r, f)
 }

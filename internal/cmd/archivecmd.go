@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"archive/tar"
+	"fmt"
 	"os/user"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ import (
 
 type archiveCmdConfig struct {
 	filter     *chezmoi.EntryTypeFilter
-	format     chezmoi.ArchiveFormat
+	format     *choiceFlag
 	gzip       bool
 	init       bool
 	parentDirs bool
@@ -37,29 +38,37 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	}
 
 	archiveCmd.Flags().VarP(c.archive.filter.Exclude, "exclude", "x", "Exclude entry types")
-	archiveCmd.Flags().VarP(&c.archive.format, "format", "f", "Set archive format")
+	archiveCmd.Flags().VarP(c.archive.format, "format", "f", "Set archive format")
+	must(archiveCmd.RegisterFlagCompletionFunc("format", c.archive.format.FlagCompletionFunc()))
 	archiveCmd.Flags().BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "Compress output with gzip")
 	archiveCmd.Flags().VarP(c.archive.filter.Exclude, "include", "i", "Include entry types")
 	archiveCmd.Flags().BoolVar(&c.archive.init, "init", c.archive.init, "Recreate config file from template")
 	archiveCmd.Flags().BoolVarP(&c.archive.parentDirs, "parent-dirs", "P", c.archive.parentDirs, "Archive parent directories")
 	archiveCmd.Flags().BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "Recurse into subdirectories")
 
-	must(archiveCmd.RegisterFlagCompletionFunc("format", chezmoi.ArchiveFormatFlagCompletionFunc))
-
 	return archiveCmd
 }
 
 func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
-	format := c.archive.format
-	if format == chezmoi.ArchiveFormatUnknown {
+	var format chezmoi.ArchiveFormat
+	switch formatStr := c.archive.format.String(); formatStr {
+	case "":
 		format = chezmoi.GuessArchiveFormat(c.outputAbsPath.String(), nil)
 		if format == chezmoi.ArchiveFormatUnknown {
 			format = chezmoi.ArchiveFormatTar
 		}
+	case "tar":
+		format = chezmoi.ArchiveFormatTar
+	case "tar.gz", "tgz":
+		format = chezmoi.ArchiveFormatTarGz
+	case "zip":
+		format = chezmoi.ArchiveFormatZip
+	default:
+		return fmt.Errorf("%s: invalid format", formatStr)
 	}
 
 	gzipOutput := c.archive.gzip
-	if format == chezmoi.ArchiveFormatTarGz || format == chezmoi.ArchiveFormatTgz {
+	if format == chezmoi.ArchiveFormatTarGz {
 		gzipOutput = true
 	}
 
@@ -69,12 +78,10 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		Close() error
 	}
 	switch format {
-	case chezmoi.ArchiveFormatTar, chezmoi.ArchiveFormatTarGz, chezmoi.ArchiveFormatTgz:
+	case chezmoi.ArchiveFormatTar, chezmoi.ArchiveFormatTarGz:
 		archiveSystem = chezmoi.NewTarWriterSystem(&output, tarHeaderTemplate())
 	case chezmoi.ArchiveFormatZip:
 		archiveSystem = chezmoi.NewZIPWriterSystem(&output, time.Now().UTC())
-	default:
-		return chezmoi.UnknownArchiveFormatError(format)
 	}
 	if err := c.applyArgs(cmd.Context(), archiveSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
 		cmd:        cmd,

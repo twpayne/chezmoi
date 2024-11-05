@@ -354,6 +354,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		archive: archiveCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			format:    newChoiceFlag("tar.gz", []string{"", "tar", "tar.gz", "tgz", "zip"}),
 			recursive: true,
 		},
 		data: dataCmdConfig{

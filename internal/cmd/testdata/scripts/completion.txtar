@@ -83,14 +83,10 @@ exec chezmoi __complete unmanaged --path-style=
 cmp stdout golden/unmanaged-path-style
 
 -- golden/archive-format --
+
 tar
-tar.bz2
 tar.gz
-tar.xz
-tar.zst
-tbz2
 tgz
-txz
 zip
 :4
 -- golden/auto-bool-t --
