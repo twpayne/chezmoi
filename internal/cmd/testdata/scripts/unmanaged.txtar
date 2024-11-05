@@ -33,7 +33,7 @@ cmp stdout golden/unmanaged-with-some-managed
 
 # test chezmoi unmanaged --path-style=source-absolute
 ! exec chezmoi unmanaged --path-style=source-absolute
-stderr 'source-absolute: unknown path style'
+stderr 'flag: invalid value'
 
 -- golden/unmanaged --
 .local
