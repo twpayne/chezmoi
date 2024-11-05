@@ -13,13 +13,8 @@ the extension, otherwise the default is `tar`.
 | Supported formats |
 | ----------------- |
 | `tar`             |
-| `tar.bz2`         |
 | `tar.gz`          |
-| `tar.xz`          |
-| `tar.zst`         |
-| `tbz2`            |
 | `tgz`             |
-| `txz`             |
 | `zip`             |
 
 ### `-z`, `--gzip`
