@@ -12,7 +12,7 @@ import (
 )
 
 type unmanagedCmdConfig struct {
-	pathStyle chezmoi.PathStyleSimple
+	pathStyle *choiceFlag
 	tree      bool
 }
 
@@ -29,10 +29,9 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 		),
 	}
 
-	unmanagedCmd.Flags().VarP(&c.unmanaged.pathStyle, "path-style", "p", "Path style")
+	unmanagedCmd.Flags().VarP(c.unmanaged.pathStyle, "path-style", "p", "Path style")
+	must(unmanagedCmd.RegisterFlagCompletionFunc("path-style", c.unmanaged.pathStyle.FlagCompletionFunc()))
 	unmanagedCmd.Flags().BoolVarP(&c.unmanaged.tree, "tree", "t", c.unmanaged.tree, "Print paths as a tree")
-
-	must(unmanagedCmd.RegisterFlagCompletionFunc("path-style", chezmoi.PathStyleSimpleFlagCompletionFunc))
 
 	return unmanagedCmd
 }
@@ -101,10 +100,13 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	paths := make([]fmt.Stringer, 0, len(unmanagedRelPaths.Elements()))
 	for relPath := range unmanagedRelPaths {
 		var path fmt.Stringer
-		if c.unmanaged.pathStyle.ToPathStyle() == chezmoi.PathStyleAbsolute {
+		switch pathStyle := c.unmanaged.pathStyle.String(); pathStyle {
+		case "absolute":
 			path = c.DestDirAbsPath.Join(relPath)
-		} else {
+		case "relative":
 			path = relPath
+		default:
+			return fmt.Errorf("%s: invalid path style", pathStyle)
 		}
 		paths = append(paths, path)
 	}

@@ -64,7 +64,7 @@ cmp stdout golden/output-format-with-empty
 
 # test that managed path style values are completed
 exec chezmoi __complete managed --path-style=
-cmp stdout golden/path-style
+cmp stdout golden/path-style-with-source
 
 # test that state data --format values are completed
 exec chezmoi __complete state data --format=
@@ -135,6 +135,10 @@ json
 yaml
 :4
 -- golden/path-style --
+absolute
+relative
+:4
+-- golden/path-style-with-source --
 absolute
 relative
 source-absolute

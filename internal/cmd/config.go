@@ -314,10 +314,9 @@ var (
 	whitespaceRx = regexp.MustCompile(`\s+`)
 
 	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
-		"exclude":    chezmoi.EntryTypeSetFlagCompletionFunc,
-		"include":    chezmoi.EntryTypeSetFlagCompletionFunc,
-		"path-style": chezmoi.PathStyleFlagCompletionFunc,
-		"secrets":    severityFlagCompletionFunc,
+		"exclude": chezmoi.EntryTypeSetFlagCompletionFunc,
+		"include": chezmoi.EntryTypeSetFlagCompletionFunc,
+		"secrets": severityFlagCompletionFunc,
 	}
 )
 
@@ -383,7 +382,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			pathStyle: chezmoi.PathStyleRelative,
+			pathStyle: newChoiceFlag("relative", []string{"absolute", "relative", "source-absolute", "source-relative"}),
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
@@ -404,7 +403,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			},
 		},
 		unmanaged: unmanagedCmdConfig{
-			pathStyle: chezmoi.PathStyleSimple(chezmoi.PathStyleRelative),
+			pathStyle: newChoiceFlag("relative", []string{"absolute", "relative"}),
 		},
 
 		// Configuration.
@@ -2939,7 +2938,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Status: statusCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			PathStyle: chezmoi.PathStyleRelative.Copy(),
+			PathStyle: newChoiceFlag("relative", []string{"absolute", "relative"}),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},

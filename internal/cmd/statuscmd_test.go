@@ -52,6 +52,16 @@ func TestStatusCmd(t *testing.T) {
 				` M .symlink`,
 			),
 		},
+		{
+			name: "path_style",
+			root: map[string]any{
+				"/home/user/.config/chezmoi/chezmoi.toml": chezmoitest.JoinLines(
+					`[status]`,
+					`    pathStyle = "relative"`,
+				),
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o755},
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {

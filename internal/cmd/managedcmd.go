@@ -10,7 +10,7 @@ import (
 
 type managedCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
-	pathStyle chezmoi.PathStyle
+	pathStyle *choiceFlag
 	tree      bool
 }
 
@@ -30,7 +30,8 @@ func (c *Config) newManagedCmd() *cobra.Command {
 
 	managedCmd.Flags().VarP(c.managed.filter.Exclude, "exclude", "x", "Exclude entry types")
 	managedCmd.Flags().VarP(c.managed.filter.Include, "include", "i", "Include entry types")
-	managedCmd.Flags().VarP(&c.managed.pathStyle, "path-style", "p", "Path style")
+	managedCmd.Flags().VarP(c.managed.pathStyle, "path-style", "p", "Path style")
+	must(managedCmd.RegisterFlagCompletionFunc("path-style", c.managed.pathStyle.FlagCompletionFunc()))
 	managedCmd.Flags().BoolVarP(&c.managed.tree, "tree", "t", c.managed.tree, "Print paths as a tree")
 
 	return managedCmd
@@ -80,14 +81,14 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 			}
 
 			var path fmt.Stringer
-			switch c.managed.pathStyle {
-			case chezmoi.PathStyleAbsolute:
+			switch c.managed.pathStyle.String() {
+			case "absolute":
 				path = c.DestDirAbsPath.Join(targetRelPath)
-			case chezmoi.PathStyleRelative:
+			case "relative":
 				path = targetRelPath
-			case chezmoi.PathStyleSourceAbsolute:
+			case "source-absolute":
 				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
-			case chezmoi.PathStyleSourceRelative:
+			case "source-relative":
 				path = sourceStateEntry.SourceRelPath().RelPath()
 			}
 			paths = append(paths, path)
