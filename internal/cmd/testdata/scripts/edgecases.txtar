@@ -22,11 +22,11 @@ stderr 'not allowed in \.chezmoitemplates directory'
 
 # test that chezmoi data returns an error if an unknown read format is specified
 ! exec chezmoi init --config-format=yml
-stderr 'invalid or unsupported data format'
+stderr 'flag: invalid value'
 
 # test that chezmoi data returns an error if an unknown write format is specified
 ! exec chezmoi data --format=yml
-stderr 'invalid or unsupported data format'
+stderr 'flag: invalid value'
 
 skip 'FIXME make the following test pass'
 

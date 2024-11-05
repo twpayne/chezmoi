@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -11,11 +12,17 @@ import (
 )
 
 type stateCmdConfig struct {
+	data         stateDataCmdConfig
 	delete       stateDeleteCmdConfig
 	deleteBucket stateDeleteBucketCmdConfig
+	dump         stateDumpCmdConfig
 	get          stateGetCmdConfig
 	getBucket    stateGetBucketCmdConfig
 	set          stateSetCmdConfig
+}
+
+type stateDataCmdConfig struct {
+	format *choiceFlag
 }
 
 type stateDeleteCmdConfig struct {
@@ -27,6 +34,10 @@ type stateDeleteBucketCmdConfig struct {
 	bucket string
 }
 
+type stateDumpCmdConfig struct {
+	format *choiceFlag
+}
+
 type stateGetCmdConfig struct {
 	bucket string
 	key    string
@@ -34,6 +45,7 @@ type stateGetCmdConfig struct {
 
 type stateGetBucketCmdConfig struct {
 	bucket string
+	format *choiceFlag
 }
 
 type stateSetCmdConfig struct {
@@ -62,7 +74,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadOnly,
 		),
 	}
-	stateDataCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
+	stateDataCmd.Flags().VarP(c.state.data.format, "format", "f", "Output format")
+	must(stateDataCmd.RegisterFlagCompletionFunc("format", c.state.data.format.FlagCompletionFunc()))
 	stateCmd.AddCommand(stateDataCmd)
 
 	stateDeleteCmd := &cobra.Command{
@@ -99,7 +112,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateModeReadOnly,
 		),
 	}
-	stateDumpCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
+	stateDumpCmd.Flags().VarP(c.state.dump.format, "format", "f", "Output format")
+	must(stateDumpCmd.RegisterFlagCompletionFunc("format", c.state.dump.format.FlagCompletionFunc()))
 	stateCmd.AddCommand(stateDumpCmd)
 
 	stateGetCmd := &cobra.Command{
@@ -125,7 +139,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 		),
 	}
 	stateGetBucketCmd.Flags().StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
-	stateGetBucketCmd.Flags().VarP(&c.Format, "format", "f", "Output format")
+	stateGetBucketCmd.Flags().VarP(c.state.getBucket.format, "format", "f", "Output format")
+	must(stateGetBucketCmd.RegisterFlagCompletionFunc("format", c.state.getBucket.format.FlagCompletionFunc()))
 	stateCmd.AddCommand(stateGetBucketCmd)
 
 	stateResetCmd := &cobra.Command{
@@ -162,7 +177,7 @@ func (c *Config) runStateDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.Format, data)
+	return c.marshal(cmp.Or(c.state.data.format.String(), c.Format), data)
 }
 
 func (c *Config) runStateDeleteCmd(cmd *cobra.Command, args []string) error {
@@ -188,7 +203,7 @@ func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.Format, data)
+	return c.marshal(cmp.Or(c.state.dump.format.String(), c.Format), data)
 }
 
 func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
@@ -204,7 +219,7 @@ func (c *Config) runStateGetBucketCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.Format, data)
+	return c.marshal(cmp.Or(c.state.getBucket.format.String(), c.Format), data)
 }
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {

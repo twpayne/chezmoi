@@ -103,7 +103,7 @@ type ConfigFile struct {
 	Color                  autoBool                       `json:"color"           mapstructure:"color"           yaml:"color"`
 	Data                   map[string]any                 `json:"data"            mapstructure:"data"            yaml:"data"`
 	Env                    map[string]string              `json:"env"             mapstructure:"env"             yaml:"env"`
-	Format                 writeDataFormat                `json:"format"          mapstructure:"format"          yaml:"format"`
+	Format                 string                         `json:"format"          mapstructure:"format"          yaml:"format"`
 	DestDirAbsPath         chezmoi.AbsPath                `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
 	GitHub                 gitHubConfig                   `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
 	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
@@ -171,7 +171,7 @@ type Config struct {
 	ConfigFile
 
 	// Global configuration.
-	configFormat     readDataFormat
+	configFormat     *choiceFlag
 	cpuProfile       chezmoi.AbsPath
 	debug            bool
 	dryRun           bool
@@ -196,9 +196,11 @@ type Config struct {
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
 	chattr          chattrCmdConfig
+	data            dataCmdConfig
 	destroy         destroyCmdConfig
 	doctor          doctorCmdConfig
 	dump            dumpCmdConfig
+	dumpConfig      dumpConfigCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	ignored         ignoredCmdConfig
 	_import         importCmdConfig
@@ -313,7 +315,6 @@ var (
 
 	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
 		"exclude":    chezmoi.EntryTypeSetFlagCompletionFunc,
-		"format":     writeDataFormatFlagCompletionFunc,
 		"include":    chezmoi.EntryTypeSetFlagCompletionFunc,
 		"path-style": chezmoi.PathStyleFlagCompletionFunc,
 		"secrets":    severityFlagCompletionFunc,
@@ -342,6 +343,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		ConfigFile: newConfigFile(bds),
 
 		// Global configuration.
+		configFormat:  newChoiceFlag("", []string{"", "json", "toml", "yaml"}),
 		homeDir:       userHomeDir,
 		templateFuncs: sprig.TxtFuncMap(),
 
@@ -354,9 +356,16 @@ func newConfig(options ...configOption) (*Config, error) {
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
+		data: dataCmdConfig{
+			format: newChoiceFlag("", []string{"", "json", "yaml"}),
+		},
 		dump: dumpCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			format:    newChoiceFlag("", []string{"", "json", "yaml"}),
 			recursive: true,
+		},
+		dumpConfig: dumpConfigCmdConfig{
+			format: newChoiceFlag("", []string{"", "json", "yaml"}),
 		},
 		executeTemplate: executeTemplateCmdConfig{
 			stdinIsATTY: true,
@@ -381,6 +390,17 @@ func newConfig(options ...configOption) (*Config, error) {
 		reAdd: reAddCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
+		},
+		state: stateCmdConfig{
+			data: stateDataCmdConfig{
+				format: newChoiceFlag("json", []string{"", "json", "yaml"}),
+			},
+			dump: stateDumpCmdConfig{
+				format: newChoiceFlag("json", []string{"", "json", "yaml"}),
+			},
+			getBucket: stateGetBucketCmdConfig{
+				format: newChoiceFlag("json", []string{"", "json", "yaml"}),
+			},
 		},
 		unmanaged: unmanagedCmdConfig{
 			pathStyle: chezmoi.PathStyleSimple(chezmoi.PathStyleRelative),
@@ -933,14 +953,19 @@ func (c *Config) decodeConfigBytes(format chezmoi.Format, data []byte, configFil
 // configFile.
 func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile *ConfigFile) error {
 	var format chezmoi.Format
-	if c.configFormat == "" {
+	switch c.configFormat.String() {
+	case "":
 		var err error
 		format, err = chezmoi.FormatFromAbsPath(configFileAbsPath)
 		if err != nil {
 			return err
 		}
-	} else {
-		format = c.configFormat.Format()
+	case "json":
+		format = chezmoi.FormatJSON
+	case "toml":
+		format = chezmoi.FormatTOML
+	case "yaml":
+		format = chezmoi.FormatYAML
 	}
 
 	configFileContents, err := c.fileSystem.ReadFile(configFileAbsPath.String())
@@ -1625,8 +1650,17 @@ func (c *Config) makeRunEWithSourceState(
 }
 
 // marshal formats data in dataFormat and writes it to the standard output.
-func (c *Config) marshal(dataFormat writeDataFormat, data any) error {
-	marshaledData, err := dataFormat.Format().Marshal(data)
+func (c *Config) marshal(dataFormat string, data any) error {
+	var format chezmoi.Format
+	switch dataFormat {
+	case "json":
+		format = chezmoi.FormatJSON
+	case "yaml":
+		format = chezmoi.FormatYAML
+	default:
+		return fmt.Errorf("%s: invalid format", dataFormat)
+	}
+	marshaledData, err := format.Marshal(data)
 	if err != nil {
 		return err
 	}
@@ -1661,7 +1695,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.WorkingTreeAbsPath, "working-tree", "W", "Set working tree directory")
 
 	persistentFlags.VarP(&c.customConfigFileAbsPath, "config", "c", "Set config file")
-	persistentFlags.Var(&c.configFormat, "config-format", "Set config file format")
+	persistentFlags.Var(c.configFormat, "config-format", "Set config file format")
 	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
@@ -1685,7 +1719,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		persistentFlags.MarkHidden("safe"),
 		rootCmd.MarkPersistentFlagDirname("source"),
 		rootCmd.RegisterFlagCompletionFunc("color", autoBoolFlagCompletionFunc),
-		rootCmd.RegisterFlagCompletionFunc("config-format", readDataFormatFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("config-format", c.configFormat.FlagCompletionFunc()),
 		rootCmd.RegisterFlagCompletionFunc("mode", chezmoi.ModeFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("refresh-externals", chezmoi.RefreshExternalsFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-age", autoBoolFlagCompletionFunc),
@@ -2892,7 +2926,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			MinDuration: 1 * time.Second,
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
-		Format: writeDataFormatJSON,
+		Format: "json",
 		Git: gitCmdConfig{
 			Command: "git",
 		},

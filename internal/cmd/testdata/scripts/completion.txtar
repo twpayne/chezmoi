@@ -18,6 +18,10 @@ stdout '#compdef chezmoi'
 exec chezmoi __complete --color t
 cmp stdout golden/auto-bool-t
 
+# test that --config-format flags are completed
+exec chezmoi __complete --config-format ''
+cmp stdout golden/config-format
+
 # test that --mode values are completed
 exec chezmoi __complete --mode ''
 cmp stdout golden/mode
@@ -48,15 +52,15 @@ cmp stdout golden/archive-format
 
 # test that data --format values are completed
 exec chezmoi __complete data --format=
-cmp stdout golden/output-format
+cmp stdout golden/output-format-with-empty
 
 # test that dump --format values are completed
 exec chezmoi __complete dump --format=
-cmp stdout golden/output-format
+cmp stdout golden/output-format-with-empty
 
 # test that dump-config --format values are completed
 exec chezmoi __complete dump-config --format=
-cmp stdout golden/output-format
+cmp stdout golden/output-format-with-empty
 
 # test that managed path style values are completed
 exec chezmoi __complete managed --path-style=
@@ -64,11 +68,11 @@ cmp stdout golden/path-style
 
 # test that state data --format values are completed
 exec chezmoi __complete state data --format=
-cmp stdout golden/output-format
+cmp stdout golden/output-format-with-empty
 
 # test that state dump --format values are completed
 exec chezmoi __complete state dump --format=
-cmp stdout golden/output-format
+cmp stdout golden/output-format-with-empty
 
 # test that status path style values are completed
 exec chezmoi __complete status --path-style=
@@ -92,6 +96,12 @@ zip
 -- golden/auto-bool-t --
 t
 true
+:4
+-- golden/config-format --
+
+json
+toml
+yaml
 :4
 -- golden/entry-type-set --
 all
@@ -120,6 +130,11 @@ file
 symlink
 :4
 -- golden/output-format --
+json
+yaml
+:4
+-- golden/output-format-with-empty --
+
 json
 yaml
 :4
