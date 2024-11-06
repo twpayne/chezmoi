@@ -150,12 +150,9 @@ auto
 never
 :4
 -- golden/secrets --
-i
-ignore
-w
-warning
-e
 error
+ignore
+warning
 :4
 -- golden/unmanaged-path-style --
 absolute

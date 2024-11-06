@@ -53,7 +53,8 @@ func (c *Config) newMackupCmd() *cobra.Command {
 			requiresSourceDirectory,
 		),
 	}
-	mackupAddCmd.Flags().Var(&c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
+	mackupAddCmd.Flags().Var(c.Add.Secrets, "secrets", "Scan for secrets when adding unencrypted files")
+	must(mackupAddCmd.RegisterFlagCompletionFunc("secrets", c.Add.Secrets.FlagCompletionFunc()))
 	mackupCmd.AddCommand(mackupAddCmd)
 
 	return mackupCmd
