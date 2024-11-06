@@ -126,7 +126,7 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 					Recipients: []string{},
 				},
 				Add: addCmdConfig{
-					Secrets: severityError,
+					Secrets: newChoiceFlag("warning", nil),
 				},
 				CD: cdCmdConfig{
 					Args: []string{},

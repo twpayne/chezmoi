@@ -40,7 +40,6 @@ private
 .file
 :4
 -- golden/complete-secrets-e --
-e
 error
 :4
 -- golden/complete-target-home --

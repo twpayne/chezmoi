@@ -316,7 +316,6 @@ var (
 	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
 		"exclude": chezmoi.EntryTypeSetFlagCompletionFunc,
 		"include": chezmoi.EntryTypeSetFlagCompletionFunc,
-		"secrets": severityFlagCompletionFunc,
 	}
 )
 
@@ -2911,7 +2910,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 
 		// Command configurations.
 		Add: addCmdConfig{
-			Secrets:   severityWarning,
+			Secrets:   newChoiceFlag("warning", allowedSecretsValues),
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
