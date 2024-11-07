@@ -10,6 +10,10 @@ the destination directory in alphabetical order.
 
 --8<-- "common-flags/exclude.md"
 
+### `-f`, `--format` `json`|`yaml`
+
+--8<-- "common-flags/format.md"
+
 ### `-i`, `--include` *types*
 
 --8<-- "common-flags/include.md"

@@ -89,9 +89,9 @@ func (p RelPath) Less(other RelPath) bool {
 	return p.relPath < other.relPath
 }
 
-// MarshalJSON implements encoding.TextMarshaler.MarshalJSON.
-func (p RelPath) MarshalJSON() ([]byte, error) {
-	return FormatJSON.Marshal(p.relPath)
+// MarshalText implements encoding.TextMarshaler.MarshalText.
+func (p RelPath) MarshalText() ([]byte, error) {
+	return []byte(p.relPath), nil
 }
 
 // Slice returns a part of p.

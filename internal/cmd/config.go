@@ -381,6 +381,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			format:    newChoiceFlag(formatJSON, writeDataFormatValues),
 			pathStyle: newChoiceFlag(pathStyleRelative, sourceOrTargetPathStyleValues),
 		},
 		mergeAll: mergeAllCmdConfig{

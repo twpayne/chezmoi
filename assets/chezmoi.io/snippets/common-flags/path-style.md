@@ -9,4 +9,5 @@ Print paths in the given style. The default is `relative`.
 --8<-- [end:no-source-tree]
 | `source-absolute` | Absolute paths in the source tree directory |
 | `source-relative` | Relative paths to the source tree directory |
+| `all`             | All path styles, indexed by relative        |
 --8<-- [end:all]

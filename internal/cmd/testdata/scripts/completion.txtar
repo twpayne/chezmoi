@@ -140,6 +140,7 @@ relative
 :4
 -- golden/path-style-with-source --
 absolute
+all
 relative
 source-absolute
 source-relative
