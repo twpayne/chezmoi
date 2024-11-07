@@ -14,6 +14,8 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+var archiveFormatValues = []string{"", "tar", "tar.gz", "tgz", "zip"}
+
 type archiveCmdConfig struct {
 	filter     *chezmoi.EntryTypeFilter
 	format     *choiceFlag

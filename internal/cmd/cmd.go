@@ -34,6 +34,11 @@ var (
 	helpFlagsRx        = regexp.MustCompile("^### (?:`-([a-zA-Z])`, )?`--([a-zA-Z-]+)`")
 
 	helps = make(map[string]*help)
+
+	readFormatValues  = []string{"", "json", "toml", "yaml"}
+	writeFormatValues = []string{"", "json", "yaml"}
+
+	targetPathStyleValues = []string{"absolute", "relative"}
 )
 
 // A VersionInfo contains a version.
