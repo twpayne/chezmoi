@@ -177,7 +177,7 @@ func (c *Config) runStateDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(cmp.Or(c.state.data.format.String(), c.Format), data)
+	return c.marshal(cmp.Or(c.state.data.format.String(), c.Format.String()), data)
 }
 
 func (c *Config) runStateDeleteCmd(cmd *cobra.Command, args []string) error {
@@ -203,7 +203,7 @@ func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(cmp.Or(c.state.dump.format.String(), c.Format), data)
+	return c.marshal(cmp.Or(c.state.dump.format.String(), c.Format.String()), data)
 }
 
 func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
@@ -219,7 +219,7 @@ func (c *Config) runStateGetBucketCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(cmp.Or(c.state.getBucket.format.String(), c.Format), data)
+	return c.marshal(cmp.Or(c.state.getBucket.format.String(), c.Format.String()), data)
 }
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {

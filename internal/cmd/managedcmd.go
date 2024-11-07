@@ -81,7 +81,7 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 			}
 
 			var path fmt.Stringer
-			switch c.managed.pathStyle.String() {
+			switch pathStyle := c.managed.pathStyle.String(); pathStyle {
 			case pathStyleAbsolute:
 				path = c.DestDirAbsPath.Join(targetRelPath)
 			case pathStyleRelative:
@@ -90,6 +90,8 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 			case pathStyleSourceRelative:
 				path = sourceStateEntry.SourceRelPath().RelPath()
+			default:
+				return fmt.Errorf("%s: invalid path style", pathStyle)
 			}
 			paths = append(paths, path)
 			return nil

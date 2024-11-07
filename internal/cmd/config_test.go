@@ -126,7 +126,7 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 					Recipients: []string{},
 				},
 				Add: addCmdConfig{
-					Secrets: newChoiceFlag("warning", nil),
+					Secrets: newChoiceFlag(severityWarning, nil),
 				},
 				CD: cdCmdConfig{
 					Args: []string{},

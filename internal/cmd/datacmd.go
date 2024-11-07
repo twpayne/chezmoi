@@ -26,9 +26,7 @@ func (c *Config) newDataCmd() *cobra.Command {
 	}
 
 	dataCmd.Flags().VarP(c.data.format, "format", "f", "Output format")
-	if err := dataCmd.RegisterFlagCompletionFunc("format", c.data.format.FlagCompletionFunc()); err != nil {
-		panic(err)
-	}
+	must(dataCmd.RegisterFlagCompletionFunc("format", c.data.format.FlagCompletionFunc()))
 
 	return dataCmd
 }
@@ -40,5 +38,5 @@ func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(cmp.Or(c.data.format.String(), c.Format), sourceState.TemplateData())
+	return c.marshal(cmp.Or(c.data.format.String(), c.Format.String()), sourceState.TemplateData())
 }
