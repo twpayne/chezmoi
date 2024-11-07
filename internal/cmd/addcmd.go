@@ -16,7 +16,7 @@ const (
 	severityError   = "error"
 )
 
-var allowedSecretsValues = []string{
+var severityValues = []string{
 	severityIgnore,
 	severityWarning,
 	severityError,
@@ -177,6 +177,15 @@ func (c *Config) defaultReplaceFunc(
 }
 
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+	switch severity := c.Add.Secrets.String(); severity {
+	case severityIgnore:
+	case severityWarning:
+	case severityError:
+		break
+	default:
+		return fmt.Errorf("%s: invalid severity", severity)
+	}
+
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, destAbsPathInfosOptions{
 		follow:       c.Mode == chezmoi.ModeSymlink || c.Add.follow,
 		onIgnoreFunc: c.defaultOnIgnoreFunc,

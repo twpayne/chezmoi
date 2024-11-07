@@ -103,7 +103,7 @@ type ConfigFile struct {
 	Color                  autoBool                       `json:"color"           mapstructure:"color"           yaml:"color"`
 	Data                   map[string]any                 `json:"data"            mapstructure:"data"            yaml:"data"`
 	Env                    map[string]string              `json:"env"             mapstructure:"env"             yaml:"env"`
-	Format                 string                         `json:"format"          mapstructure:"format"          yaml:"format"`
+	Format                 *choiceFlag                    `json:"format"          mapstructure:"format"          yaml:"format"`
 	DestDirAbsPath         chezmoi.AbsPath                `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
 	GitHub                 gitHubConfig                   `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
 	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
@@ -952,7 +952,7 @@ func (c *Config) decodeConfigBytes(format chezmoi.Format, data []byte, configFil
 // configFile.
 func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile *ConfigFile) error {
 	var format chezmoi.Format
-	switch c.configFormat.String() {
+	switch formatStr := c.configFormat.String(); formatStr {
 	case "":
 		var err error
 		format, err = chezmoi.FormatFromAbsPath(configFileAbsPath)
@@ -965,6 +965,8 @@ func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile 
 		format = chezmoi.FormatTOML
 	case formatYAML:
 		format = chezmoi.FormatYAML
+	default:
+		return fmt.Errorf("%s: invalid format", formatStr)
 	}
 
 	configFileContents, err := c.fileSystem.ReadFile(configFileAbsPath.String())
@@ -2910,7 +2912,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 
 		// Command configurations.
 		Add: addCmdConfig{
-			Secrets:   newChoiceFlag("warning", allowedSecretsValues),
+			Secrets:   newChoiceFlag("warning", severityValues),
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
@@ -2925,7 +2927,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			MinDuration: 1 * time.Second,
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
-		Format: formatJSON,
+		Format: newChoiceFlag(formatJSON, readDataFormatValues),
 		Git: gitCmdConfig{
 			Command: "git",
 		},

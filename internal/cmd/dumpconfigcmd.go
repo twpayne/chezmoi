@@ -31,5 +31,5 @@ func (c *Config) newDumpConfigCmd() *cobra.Command {
 }
 
 func (c *Config) runDumpConfigCmd(cmd *cobra.Command, args []string) error {
-	return c.marshal(cmp.Or(c.dumpConfig.format.String(), c.Format), c)
+	return c.marshal(cmp.Or(c.dumpConfig.format.String(), c.Format.String()), c)
 }
