@@ -61,6 +61,11 @@ func (p SourceRelPath) Less(other SourceRelPath) bool {
 	return p.relPath.Less(other.relPath)
 }
 
+// MarshalText implements encoding.TextMarshaler.MarshalText.
+func (p SourceRelPath) MarshalText() ([]byte, error) {
+	return []byte(p.relPath.String()), nil
+}
+
 // RelPath returns p as a relative path.
 func (p SourceRelPath) RelPath() RelPath {
 	return p.relPath

@@ -5,6 +5,7 @@ const (
 	pathStyleRelative       = "relative"
 	pathStyleSourceAbsolute = "source-absolute"
 	pathStyleSourceRelative = "source-relative"
+	pathStyleAll            = "all"
 )
 
 var (
@@ -13,6 +14,7 @@ var (
 		pathStyleRelative,
 		pathStyleSourceAbsolute,
 		pathStyleSourceRelative,
+		pathStyleAll,
 	}
 	targetPathStyleValues = []string{
 		pathStyleAbsolute,

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cmp"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -10,6 +11,7 @@ import (
 
 type managedCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
+	format    *choiceFlag
 	pathStyle *choiceFlag
 	tree      bool
 }
@@ -29,6 +31,7 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	}
 
 	managedCmd.Flags().VarP(c.managed.filter.Exclude, "exclude", "x", "Exclude entry types")
+	managedCmd.Flags().VarP(c.managed.format, "format", "f", "Format")
 	managedCmd.Flags().VarP(c.managed.filter.Include, "include", "i", "Include entry types")
 	managedCmd.Flags().VarP(c.managed.pathStyle, "path-style", "p", "Path style")
 	must(managedCmd.RegisterFlagCompletionFunc("path-style", c.managed.pathStyle.FlagCompletionFunc()))
@@ -51,7 +54,13 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 		}
 	}
 
-	var paths []fmt.Stringer
+	type entryPaths struct {
+		targetRelPath  chezmoi.RelPath
+		Absolute       chezmoi.AbsPath       `json:"absolute"       yaml:"absolute"`
+		SourceAbsolute chezmoi.AbsPath       `json:"sourceAbsolute" yaml:"sourceAbsolute"`
+		SourceRelative chezmoi.SourceRelPath `json:"sourceRelative" yaml:"sourceRelative"`
+	}
+	var allEntryPaths []*entryPaths
 	_ = sourceState.ForEach(
 		func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 			if !c.managed.filter.IncludeSourceStateEntry(sourceStateEntry) {
@@ -80,25 +89,42 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 				}
 			}
 
-			var path fmt.Stringer
-			switch pathStyle := c.managed.pathStyle.String(); pathStyle {
-			case pathStyleAbsolute:
-				path = c.DestDirAbsPath.Join(targetRelPath)
-			case pathStyleRelative:
-				path = targetRelPath
-			case pathStyleSourceAbsolute:
-				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
-			case pathStyleSourceRelative:
-				path = sourceStateEntry.SourceRelPath().RelPath()
-			default:
-				return fmt.Errorf("%s: invalid path style", pathStyle)
+			entryPaths := &entryPaths{
+				targetRelPath:  targetRelPath,
+				Absolute:       c.DestDirAbsPath.Join(targetRelPath),
+				SourceAbsolute: c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()),
+				SourceRelative: sourceStateEntry.SourceRelPath(),
 			}
-			paths = append(paths, path)
+			allEntryPaths = append(allEntryPaths, entryPaths)
 			return nil
 		},
 	)
 
-	return c.writePaths(stringersToStrings(paths), writePathsOptions{
-		tree: c.managed.tree,
-	})
+	switch pathStyle := c.managed.pathStyle.String(); pathStyle {
+	case pathStyleAbsolute, pathStyleRelative, pathStyleSourceAbsolute, pathStyleSourceRelative:
+		paths := make([]string, len(allEntryPaths))
+		for i, structuredPath := range allEntryPaths {
+			switch c.managed.pathStyle.String() {
+			case pathStyleAbsolute:
+				paths[i] = structuredPath.Absolute.String()
+			case pathStyleRelative:
+				paths[i] = structuredPath.targetRelPath.String()
+			case pathStyleSourceAbsolute:
+				paths[i] = structuredPath.SourceAbsolute.String()
+			case pathStyleSourceRelative:
+				paths[i] = structuredPath.SourceRelative.String()
+			}
+		}
+		return c.writePaths(paths, writePathsOptions{
+			tree: c.managed.tree,
+		})
+	case pathStyleAll:
+		allEntryPathsMap := make(map[string]*entryPaths, len(allEntryPaths))
+		for _, entryPaths := range allEntryPaths {
+			allEntryPathsMap[entryPaths.targetRelPath.String()] = entryPaths
+		}
+		return c.marshal(cmp.Or(c.managed.format.String(), c.Format.String()), allEntryPathsMap)
+	default:
+		return fmt.Errorf("%s: invalid path style", pathStyle)
+	}
 }
