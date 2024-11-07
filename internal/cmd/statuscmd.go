@@ -73,9 +73,9 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 		if x != ' ' || y != ' ' {
 			var path string
 			switch pathStyle := c.Status.PathStyle.String(); pathStyle {
-			case "absolute":
+			case pathStyleAbsolute:
 				path = c.DestDirAbsPath.Join(targetRelPath).String()
-			case "relative":
+			case pathStyleRelative:
 				path = targetRelPath.String()
 			default:
 				return fmt.Errorf("%s: invalid path style", pathStyle)

@@ -10,7 +10,17 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
-var allowedSecretsValues = []string{"ignore", "warning", "error"}
+const (
+	severityIgnore  = "ignore"
+	severityWarning = "warning"
+	severityError   = "error"
+)
+
+var allowedSecretsValues = []string{
+	severityIgnore,
+	severityWarning,
+	severityError,
+}
 
 type addCmdConfig struct {
 	Encrypt          bool        `json:"encrypt"          mapstructure:"encrypt"          yaml:"encrypt"`
@@ -72,7 +82,7 @@ func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
 
 func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, fileInfo fs.FileInfo) error {
 	// Scan unencrypted files for secrets, if configured.
-	if c.Add.Secrets.String() != "ignore" && fileInfo.Mode().Type() == 0 && !c.Add.Encrypt {
+	if c.Add.Secrets.String() != severityIgnore && fileInfo.Mode().Type() == 0 && !c.Add.Encrypt {
 		absPath := c.DestDirAbsPath.Join(targetRelPath)
 		content, err := c.destSystem.ReadFile(absPath)
 		if err != nil {
@@ -86,7 +96,7 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, fileInfo fs.Fi
 		for _, finding := range findings {
 			c.errorf("%s:%d: %s\n", absPath, finding.StartLine+1, finding.Description)
 		}
-		if !c.force && c.Add.Secrets.String() == "error" && len(findings) > 0 {
+		if !c.force && c.Add.Secrets.String() == severityError && len(findings) > 0 {
 			return chezmoi.ExitCodeError(1)
 		}
 	}
