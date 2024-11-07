@@ -225,7 +225,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200
+      uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --skip=sign --snapshot --timeout=1h
@@ -311,7 +311,7 @@ jobs:
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@3b9817b1bf26186f03ab8277bab9b827ea5cc254
+    - uses: astral-sh/setup-uv@2e657c127d5b1635d5a8e3fa40e0ac50a5bf6992
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -463,7 +463,7 @@ jobs:
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200
+    - uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --timeout=1h
@@ -487,7 +487,7 @@ jobs:
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@3b9817b1bf26186f03ab8277bab9b827ea5cc254
+    - uses: astral-sh/setup-uv@2e657c127d5b1635d5a8e3fa40e0ac50a5bf6992
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
