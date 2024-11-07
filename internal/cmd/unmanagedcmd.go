@@ -101,9 +101,9 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	for relPath := range unmanagedRelPaths {
 		var path fmt.Stringer
 		switch pathStyle := c.unmanaged.pathStyle.String(); pathStyle {
-		case "absolute":
+		case pathStyleAbsolute:
 			path = c.DestDirAbsPath.Join(relPath)
-		case "relative":
+		case pathStyleRelative:
 			path = relPath
 		default:
 			return fmt.Errorf("%s: invalid path style", pathStyle)

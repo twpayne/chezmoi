@@ -341,7 +341,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		ConfigFile: newConfigFile(bds),
 
 		// Global configuration.
-		configFormat:  newChoiceFlag("", readFormatValues),
+		configFormat:  newChoiceFlag("", readDataFormatValues),
 		homeDir:       userHomeDir,
 		templateFuncs: sprig.TxtFuncMap(),
 
@@ -356,15 +356,15 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		data: dataCmdConfig{
-			format: newChoiceFlag("", writeFormatValues),
+			format: newChoiceFlag("", writeDataFormatValues),
 		},
 		dump: dumpCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			format:    newChoiceFlag("", writeFormatValues),
+			format:    newChoiceFlag("", writeDataFormatValues),
 			recursive: true,
 		},
 		dumpConfig: dumpConfigCmdConfig{
-			format: newChoiceFlag("", writeFormatValues),
+			format: newChoiceFlag("", writeDataFormatValues),
 		},
 		executeTemplate: executeTemplateCmdConfig{
 			stdinIsATTY: true,
@@ -381,7 +381,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			pathStyle: newChoiceFlag("relative", managedPathStyles),
+			pathStyle: newChoiceFlag(pathStyleRelative, sourceOrTargetPathStyleValues),
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
@@ -392,17 +392,17 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
-				format: newChoiceFlag("json", writeFormatValues),
+				format: newChoiceFlag(formatJSON, writeDataFormatValues),
 			},
 			dump: stateDumpCmdConfig{
-				format: newChoiceFlag("json", writeFormatValues),
+				format: newChoiceFlag(formatJSON, writeDataFormatValues),
 			},
 			getBucket: stateGetBucketCmdConfig{
-				format: newChoiceFlag("json", writeFormatValues),
+				format: newChoiceFlag(formatJSON, writeDataFormatValues),
 			},
 		},
 		unmanaged: unmanagedCmdConfig{
-			pathStyle: newChoiceFlag("relative", targetPathStyleValues),
+			pathStyle: newChoiceFlag(pathStyleRelative, targetPathStyleValues),
 		},
 
 		// Configuration.
@@ -959,11 +959,11 @@ func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile 
 		if err != nil {
 			return err
 		}
-	case "json":
+	case formatJSON:
 		format = chezmoi.FormatJSON
-	case "toml":
+	case formatTOML:
 		format = chezmoi.FormatTOML
-	case "yaml":
+	case formatYAML:
 		format = chezmoi.FormatYAML
 	}
 
@@ -1652,9 +1652,9 @@ func (c *Config) makeRunEWithSourceState(
 func (c *Config) marshal(dataFormat string, data any) error {
 	var format chezmoi.Format
 	switch dataFormat {
-	case "json":
+	case formatJSON:
 		format = chezmoi.FormatJSON
-	case "yaml":
+	case formatYAML:
 		format = chezmoi.FormatYAML
 	default:
 		return fmt.Errorf("%s: invalid format", dataFormat)
@@ -2925,7 +2925,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			MinDuration: 1 * time.Second,
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
-		Format: "json",
+		Format: formatJSON,
 		Git: gitCmdConfig{
 			Command: "git",
 		},
@@ -2937,7 +2937,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Status: statusCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			PathStyle: newChoiceFlag("relative", targetPathStyleValues),
+			PathStyle: newChoiceFlag(pathStyleRelative, targetPathStyleValues),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},

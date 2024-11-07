@@ -8,8 +8,6 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
-var managedPathStyles = []string{"absolute", "relative", "source-absolute", "source-relative"}
-
 type managedCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
 	pathStyle *choiceFlag
@@ -84,13 +82,13 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 
 			var path fmt.Stringer
 			switch c.managed.pathStyle.String() {
-			case "absolute":
+			case pathStyleAbsolute:
 				path = c.DestDirAbsPath.Join(targetRelPath)
-			case "relative":
+			case pathStyleRelative:
 				path = targetRelPath
-			case "source-absolute":
+			case pathStyleSourceAbsolute:
 				path = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
-			case "source-relative":
+			case pathStyleSourceRelative:
 				path = sourceStateEntry.SourceRelPath().RelPath()
 			}
 			paths = append(paths, path)
