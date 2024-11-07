@@ -341,7 +341,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		ConfigFile: newConfigFile(bds),
 
 		// Global configuration.
-		configFormat:  newChoiceFlag("", []string{"", "json", "toml", "yaml"}),
+		configFormat:  newChoiceFlag("", readFormatValues),
 		homeDir:       userHomeDir,
 		templateFuncs: sprig.TxtFuncMap(),
 
@@ -352,19 +352,19 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		archive: archiveCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			format:    newChoiceFlag("tar.gz", []string{"", "tar", "tar.gz", "tgz", "zip"}),
+			format:    newChoiceFlag("tar.gz", archiveFormatValues),
 			recursive: true,
 		},
 		data: dataCmdConfig{
-			format: newChoiceFlag("", []string{"", "json", "yaml"}),
+			format: newChoiceFlag("", writeFormatValues),
 		},
 		dump: dumpCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			format:    newChoiceFlag("", []string{"", "json", "yaml"}),
+			format:    newChoiceFlag("", writeFormatValues),
 			recursive: true,
 		},
 		dumpConfig: dumpConfigCmdConfig{
-			format: newChoiceFlag("", []string{"", "json", "yaml"}),
+			format: newChoiceFlag("", writeFormatValues),
 		},
 		executeTemplate: executeTemplateCmdConfig{
 			stdinIsATTY: true,
@@ -381,7 +381,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			pathStyle: newChoiceFlag("relative", []string{"absolute", "relative", "source-absolute", "source-relative"}),
+			pathStyle: newChoiceFlag("relative", managedPathStyles),
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
@@ -392,17 +392,17 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
-				format: newChoiceFlag("json", []string{"", "json", "yaml"}),
+				format: newChoiceFlag("json", writeFormatValues),
 			},
 			dump: stateDumpCmdConfig{
-				format: newChoiceFlag("json", []string{"", "json", "yaml"}),
+				format: newChoiceFlag("json", writeFormatValues),
 			},
 			getBucket: stateGetBucketCmdConfig{
-				format: newChoiceFlag("json", []string{"", "json", "yaml"}),
+				format: newChoiceFlag("json", writeFormatValues),
 			},
 		},
 		unmanaged: unmanagedCmdConfig{
-			pathStyle: newChoiceFlag("relative", []string{"absolute", "relative"}),
+			pathStyle: newChoiceFlag("relative", targetPathStyleValues),
 		},
 
 		// Configuration.
@@ -2937,7 +2937,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Status: statusCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			PathStyle: newChoiceFlag("relative", []string{"absolute", "relative"}),
+			PathStyle: newChoiceFlag("relative", targetPathStyleValues),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},

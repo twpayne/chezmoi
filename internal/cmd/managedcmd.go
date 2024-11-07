@@ -8,6 +8,8 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+var managedPathStyles = []string{"absolute", "relative", "source-absolute", "source-relative"}
+
 type managedCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
 	pathStyle *choiceFlag
