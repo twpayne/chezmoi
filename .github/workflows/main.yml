@@ -68,8 +68,8 @@ jobs:
     - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
       with:
         path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
         key: setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-
@@ -207,8 +207,17 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
+    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      with:
+        path: |
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
+        key: release-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          release-go-${{ runner.os }}-${{ env.GO_VERSION }}-
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
     - name: install-release-dependencies
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -268,8 +277,17 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
+    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      with:
+        path: |
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
+        key: setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -308,8 +326,17 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      with:
+        path: |
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
+        key: website-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          website-go-${{ runner.os }}-${{ env.GO_VERSION }}-
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@2e657c127d5b1635d5a8e3fa40e0ac50a5bf6992
       with:
@@ -456,8 +483,17 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
+    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      with:
+        path: |
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
+        key: release-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          release-go-${{ runner.os }}-${{ env.GO_VERSION }}-
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da
     - name: create-syso
@@ -484,8 +520,17 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
+    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      with:
+        path: |
+          /home/runner/go/pkg/mod
+          /home/runner/.cache/go-build
+        key: website-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          website-go-${{ runner.os }}-${{ env.GO_VERSION }}-
     - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
       with:
+        cache: false
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@2e657c127d5b1635d5a8e3fa40e0ac50a5bf6992
       with:
