@@ -269,6 +269,12 @@ jobs:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
+    strategy:
+      fail-fast: false
+      matrix:
+        umask:
+        - "022"
+        - "002"
     needs: changes
     runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
     permissions:
@@ -308,18 +314,12 @@ jobs:
     - name: run
       run: |
         go run . --version
-    - name: test-umask-022
+    - name: test-umask-${{ matrix.umask }}
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o022" -race -timeout=1h ./...
-    - name: test-umask-002
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o002" -race -timeout=1h ./...
+        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h ./...
   test-website:
     runs-on: ubuntu-22.04
     permissions:
