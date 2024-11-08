@@ -1,3 +1,5 @@
+name: clear-pr-caches
+
 on:
   pull_request:
     types: [ closed ]
