@@ -126,6 +126,11 @@ jobs:
         export DOCKER_GOCACHE="$HOME/.go-archlinux"
         ./assets/docker/test.sh archlinux
   test-macos:
+    name: test-macos-${{ matrix.test-index }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test-index: [0, 1, 2]
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-15
@@ -159,7 +164,14 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -race ./...
+        if [ "${{ matrix.test-index }}" = "0" ]; then
+          go test ./... -short -race
+          go test ./internal/cmd -run=TestScript -filter='^[0-9a-dA-D]' -race
+        elif [ "${{ matrix.test-index }}" = "1" ]; then
+          go test ./internal/cmd -run=TestScript -filter='^[e-iE-I]' -race
+        else
+          go test ./internal/cmd -run=TestScript -filter='^[j-zJ-Z]' -race
+        fi
   test-oldstable-go:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -257,13 +269,14 @@ jobs:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
-    name: test-ubuntu-umask${{ matrix.umask }}
+    name: test-ubuntu-umask${{ matrix.umask }}-${{ matrix.test-index }}
     strategy:
       fail-fast: false
       matrix:
         umask:
         - "022"
         - "002"
+        test-index: [0, 1]
     needs: changes
     runs-on: ubuntu-22.04
     permissions:
@@ -298,8 +311,14 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        TEST_FLAGS: '-ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h'
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h ./...
+        if [ "${{ matrix.test-index }}" = "0" ]; then
+          go test ./... -short ${{ env.TEST_FLAGS }}
+          go test ./internal/cmd -run=TestScript -filter='^[0-9a-hA-h]' ${{ env.TEST_FLAGS }}
+        else
+          go test ./internal/cmd -run=TestScript -filter='^[i-zI-Z]' ${{ env.TEST_FLAGS }}
+        fi
   test-website:
     runs-on: ubuntu-22.04
     permissions:
@@ -323,6 +342,11 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
   test-windows:
+    name: test-windows-${{ matrix.test-index }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test-index: [0, 1]
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2022
@@ -343,7 +367,12 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test -race ./...
+        if (${{ matrix.test-index }} -eq 0) {
+          go test ./... -short -race
+          go test ./internal/cmd -run=TestScript -filter='^[0-9a-hA-h]' -race
+        } else {
+          go test ./internal/cmd -run=TestScript -filter='^[i-zI-Z]' -race
+        }
   check:
     runs-on: ubuntu-22.04
     permissions:
