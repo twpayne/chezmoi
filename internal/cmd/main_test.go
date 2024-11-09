@@ -5,6 +5,7 @@ import (
 	"bytes"
 	_ "embed"
 	"errors"
+	"flag"
 	"fmt"
 	"io/fs"
 	"net"
@@ -37,6 +38,8 @@ var (
 	lookupRx         = regexp.MustCompile(`\Alookup:(.*)\z`)
 	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 
+	filterRegex string
+
 	//go:embed mockcommand.tmpl
 	mockcommandTmplText string
 
@@ -45,6 +48,10 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	if strings.Contains(os.Args[0], "cmd.test") {
+		flag.StringVar(&filterRegex, "filter", "", "regex to filter test scripts")
+		flag.Parse()
+	}
 	os.Exit(testscript.RunMain(m, map[string]func() int{
 		"chezmoi": func() int {
 			return cmd.Main(cmd.VersionInfo{
@@ -58,8 +65,32 @@ func TestMain(m *testing.M) {
 }
 
 func TestScript(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping testscript tests in short mode")
+	}
+	files, err := filepath.Glob("testdata/scripts/*.txtar")
+	if err != nil {
+		t.Fatalf("failed to glob files: %v", err)
+	}
+	if filterRegex != "" {
+		re, err := regexp.Compile(filterRegex)
+		if err != nil {
+			t.Fatalf("invalid regex %q: %v", filterRegex, err)
+		}
+		var filteredFiles []string
+		for _, f := range files {
+			baseName := strings.Split(filepath.Base(f), ".")[0]
+			if re.MatchString(baseName) {
+				filteredFiles = append(filteredFiles, f)
+			}
+		}
+		files = filteredFiles
+		if len(files) == 0 {
+			t.Fatalf("no test scripts match regex %q", filterRegex)
+		}
+	}
 	testscript.Run(t, testscript.Params{
-		Dir: filepath.Join("testdata", "scripts"),
+		Files: files,
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
 			"appendline":     cmdAppendLine,
 			"chhome":         cmdChHome,
