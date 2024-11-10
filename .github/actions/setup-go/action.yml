@@ -1,0 +1,54 @@
+name: setup-go
+description: Set up Go environment and enable caching
+inputs:
+  cache-prefix:
+    description: Cache prefix
+    default: cache-go
+    required: false
+  go-version:
+    description: Go version to set up
+    required: true
+  upload-cache:
+    description: Upload cache or only restore
+    default: 'true'
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: setup-go-env
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          echo "GOCACHE=D:\\golang\\cache" >> $GITHUB_ENV
+          echo "GOMODCACHE=D:\\golang\\modcache" >> $GITHUB_ENV
+          echo "GOPATH=D:\\golang\\go" >> $GITHUB_ENV
+          echo "USERPROFILE=D:\\homedir" >> $GITHUB_ENV
+        elif [ "$RUNNER_OS" = "macOS" ]; then
+          echo "GOCACHE=/Users/runner/go/pkg/mod" >> $GITHUB_ENV
+          echo "GOMODCACHE=/Users/runner/Library/Caches/go-build" >> $GITHUB_ENV
+        else
+          echo "GOCACHE=/home/runner/go/pkg/mod" >> $GITHUB_ENV
+          echo "GOMODCACHE=/home/runner/.cache/go-build" >> $GITHUB_ENV
+        fi
+    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      if: ${{ inputs.upload-cache == 'true' }}
+      with:
+        path: |
+          ${{ env.GOCACHE }}
+          ${{ env.GOMODCACHE }}
+        key: ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-
+    - uses: actions/cache/restore@6849a6489940f00c2f30c0fb92c6274307ccb58a
+      if: ${{ inputs.upload-cache != 'true' }}
+      with:
+        path: |
+          ${{ env.GOCACHE }}
+          ${{ env.GOMODCACHE }}
+        key: ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-
+    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+      with:
+        cache: false
+        go-version: ${{ inputs.go-version }}
