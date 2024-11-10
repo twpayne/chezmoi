@@ -65,14 +65,10 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 1
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-
+        go-version: ${{ env.GO_VERSION }}
+        upload-cache: false
     - uses: github/codeql-action/init@662472033e021d55d94146f66f6058822b0b39fd
       with:
         languages: go
@@ -132,12 +128,12 @@ jobs:
   test-macos:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-13
+    runs-on: macos-15
     permissions:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+    - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: build
@@ -207,17 +203,9 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: release-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          release-go-${{ runner.os }}-${{ env.GO_VERSION }}-
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
-      with:
-        cache: false
+        cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
     - name: install-release-dependencies
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -269,6 +257,7 @@ jobs:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
+    name: test-ubuntu-umask${{ matrix.umask }}
     strategy:
       fail-fast: false
       matrix:
@@ -276,24 +265,15 @@ jobs:
         - "022"
         - "002"
     needs: changes
-    runs-on: ubuntu-20.04 # use older Ubuntu for older glibc
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          setup-go-${{ runner.os }}-x64-ubuntu22-go-${{ env.GO_VERSION }}-
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
-      with:
-        cache: false
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -326,17 +306,9 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: website-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          website-go-${{ runner.os }}-${{ env.GO_VERSION }}-
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
-      with:
-        cache: false
+        cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@2e657c127d5b1635d5a8e3fa40e0ac50a5bf6992
       with:
@@ -356,13 +328,9 @@ jobs:
     runs-on: windows-2022
     permissions:
       contents: read
-    env:
-      GOPATH: 'D:\golang\go'
-      GOCACHE: 'D:\golang\cache'
-      GOMODCACHE: 'D:\golang\modcache'
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+    - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: build
@@ -384,9 +352,10 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+    - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
+        upload-cache: false
     - name: generate
       run: |
         go generate
@@ -428,7 +397,7 @@ jobs:
       fail-fast: false
       matrix:
         runs-on:
-        - macos-14
+        - macos-15
         - ubuntu-22.04
         - windows-2022
     needs: changes
@@ -436,16 +405,12 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     permissions:
       contents: read
-    env:
-      GOPATH: ${{ startsWith(matrix.runs-on, 'windows') && 'D:\golang\go' || '' }}
-      GOCACHE: ${{ startsWith(matrix.runs-on, 'windows') && 'D:\golang\cache' || '' }}
-      GOMODCACHE: ${{ startsWith(matrix.runs-on, 'windows') && 'D:\golang\modcache' || '' }}
-      USERPROFILE: ${{ startsWith(matrix.runs-on, 'windows') && 'D:\homedir' || '' }}
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
+    - uses: ./.github/actions/setup-go
       with:
-        go-version: stable
+        go-version: ${{ env.GO_VERSION }}
+        upload-cache: false
     - uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
@@ -483,17 +448,9 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: release-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          release-go-${{ runner.os }}-${{ env.GO_VERSION }}-
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
-      with:
-        cache: false
+        cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da
     - name: create-syso
@@ -520,17 +477,9 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: website-go-${{ runner.os }}-${{ env.GO_VERSION }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          website-go-${{ runner.os }}-${{ env.GO_VERSION }}-
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed
-      with:
-        cache: false
+        cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@2e657c127d5b1635d5a8e3fa40e0ac50a5bf6992
       with:
