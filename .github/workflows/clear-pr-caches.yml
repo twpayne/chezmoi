@@ -7,6 +7,8 @@ on:
 jobs:
   clear-caches:
     runs-on: ubuntu-22.04
+    permissions:
+      actions: write
     steps:
       - name: clear-caches
         uses: theAngularGuy/clear-cache-of-pull-request@60c83956d63c7b3745d6cde10d711aa0e50c2501
