@@ -21,9 +21,9 @@ type OSExecCmdLogValuer struct {
 	*exec.Cmd
 }
 
-// An OSExecExitErrorLogValuer wraps an *os/exec.ExitError and adds
+// An OSExecExitLogValuerError wraps an *os/exec.ExitError and adds
 // log/slog.LogValuer.
-type OSExecExitErrorLogValuer struct {
+type OSExecExitLogValuerError struct {
 	*exec.ExitError
 }
 
@@ -52,7 +52,7 @@ func (cmd OSExecCmdLogValuer) LogValuer() slog.Value {
 }
 
 // LogValuer implements log/slog.LogValuer.LogValue.
-func (err OSExecExitErrorLogValuer) LogValuer() slog.Value {
+func (err OSExecExitLogValuerError) LogValuer() slog.Value {
 	attrs := []slog.Attr{
 		slog.Any("processState", OSProcessStateLogValuer{err.ExitError.ProcessState}),
 	}

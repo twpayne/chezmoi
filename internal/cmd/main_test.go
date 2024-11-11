@@ -588,7 +588,7 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 		},
 		"quote":          strconv.Quote,
 		"renderResponse": renderResponseFunc,
-		"replaceAll": func(old, new, s string) string { //nolint:predeclared
+		"replaceAll": func(old, new, s string) string { //nolint:predeclared,revive
 			return strings.ReplaceAll(s, old, new)
 		},
 	}).Parse(templateText)
