@@ -21,7 +21,7 @@ env:
   FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
   GO_VERSION: 1.23.3 # https://go.dev/doc/devel/release
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
-  GOLANGCI_LINT_VERSION: 1.61.0 # https://github.com/golangci/golangci-lint/releases
+  GOLANGCI_LINT_VERSION: 1.62.0 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.4.4 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
