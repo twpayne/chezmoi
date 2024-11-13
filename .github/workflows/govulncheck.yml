@@ -24,14 +24,10 @@ jobs:
       id: go-version
       run: |
         echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> "${GITHUB_OUTPUT}"
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: ./.github/actions/setup-go
       with:
-        path: |
-          /home/runner/go/pkg/mod
-          /home/runner/.cache/go-build
-        key: govulncheck-${{ runner.os }}-${{ steps.go-version.outputs.go-version }}-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          govulncheck-${{ runner.os }}-${{ steps.go-version.outputs.go-version }}-
+        go-version: ${{ steps.go-version.outputs.go-version }}
+        upload-cache: false
     - uses: golang/govulncheck-action@b625fbe08f3bccbe446d94fbf87fcc875a4f50ee
       with:
         cache: false
