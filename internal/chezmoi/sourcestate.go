@@ -1561,6 +1561,18 @@ func (s *SourceState) getExternalDataRaw(
 	external *External,
 	options *ReadOptions,
 ) ([]byte, error) {
+	// Handle file:// URLs by always reading from disk.
+	switch urlStruct, err := url.Parse(external.URL); {
+	case err != nil:
+		return nil, err
+	case urlStruct.Scheme == "file":
+		data, err := s.system.ReadFile(NewAbsPath(urlStruct.Path))
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
+	}
+
 	var now time.Time
 	if options != nil && options.TimeNow != nil {
 		now = options.TimeNow()

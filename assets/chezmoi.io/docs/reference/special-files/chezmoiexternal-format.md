@@ -12,7 +12,8 @@ archives to be included as if they were in the source state.
 externals to be included on different machines.
 
 If a `.chezmoiexternal.$FORMAT` file is located in an ignored directory (one
-listed in [`.chezmoiignore`](chezmoiignore.md)), all entries within the file are also ignored.
+listed in [`.chezmoiignore`](chezmoiignore.md)), all entries within the file are
+also ignored.
 
 Entries are indexed by target name relative to the directory of the
 `.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` field.
@@ -47,6 +48,8 @@ Entries may have the following fields:
 | `filter.args`                | []string | *none*        | Extra args to command to filter contents                         |
 | `pull.args`                  | []string | *none*        | Extra args to `git pull`                                         |
 | `archive.extractAppleDouble` | bool     | `false`       | If `true`, AppleDouble files are extracted                       |
+
+`url` must be an `https://`, `http://`, or `file://` URL.
 
 If any of the optional `checksum.sha256`, `checksum.sha384`, or
 `checksum.sha512` fields are set, chezmoi will verify that the downloaded data
