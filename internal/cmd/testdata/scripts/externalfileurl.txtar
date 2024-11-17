@@ -1,0 +1,11 @@
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "file://{{ .chezmoi.homeDir }}/.local/share/file.txt"
+-- home/user/.local/share/file.txt --
+# contents of .file
