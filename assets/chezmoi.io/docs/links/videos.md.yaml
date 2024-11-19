@@ -57,3 +57,8 @@ videos:
   version: 2.47.1
   title: Automating Development Environments with Ansible & Chezmoi
   url: https://www.youtube.com/watch?v=P4nI1VhoN2Y
+- date: '2024-11-18'
+  version: 2.54.0
+  lang: AR
+  title: 'Chezmoi, Dotfiles, Workflow, Templates and Encryption | Arabic شرح'
+  url: https://www.youtube.com/watch?v=Jrrd2dHYBmY
