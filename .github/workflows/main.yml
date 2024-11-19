@@ -43,6 +43,7 @@ jobs:
         filters: |
           code:
           - '**/*.go'
+          - '.github/actions/setup-go/action.yml'
           - '.github/workflows/main.yml'
           - '.goreleaser.yaml'
           - 'Makefile'
