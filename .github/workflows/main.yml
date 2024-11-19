@@ -346,7 +346,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-index: [0, 1]
+        test-index: [0, 1, 2]
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2022
@@ -369,9 +369,11 @@ jobs:
       run: |
         if (${{ matrix.test-index }} -eq 0) {
           go test ./... -short -race
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-hA-h]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[0-9a-cA-C]' -race
+        } elseif (${{ matrix.test-index }} -eq 1) {
+          go test ./internal/cmd -run=TestScript -filter='^[d-lD-L]' -race
         } else {
-          go test ./internal/cmd -run=TestScript -filter='^[i-zI-Z]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
         }
   check:
     runs-on: ubuntu-22.04
