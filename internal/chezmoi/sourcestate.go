@@ -1459,7 +1459,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	return nil
 }
 
-// addTemplateData adds all template data in the directory sourceAbsPath to s.
+// addTemplateDataDir adds all template data in the directory sourceAbsPath to s.
 func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.FileInfo) error {
 	walkFunc := func(dataAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if dataAbsPath == sourceAbsPath {
@@ -2619,7 +2619,7 @@ func (s *SourceState) readExternalArchiveFile(
 	}), nil
 }
 
-// ReadExternalDir returns all source state entries in an external_ dir.
+// readExternalDir returns all source state entries in an external_ dir.
 func (s *SourceState) readExternalDir(
 	rootSourceAbsPath AbsPath,
 	rootSourceRelPath SourceRelPath,
