@@ -1,0 +1,18 @@
+[windows] skip
+
+chmod 777 bin/hx
+
+# test that chezmoi edit prints a warning if the editor is hx (helix) with hardlinks enabled
+exec chezmoi edit $HOME${/}.file
+stderr 'warning: helix editor cannot edit hardlinks'
+
+-- bin/hx --
+#!/bin/sh
+
+echo "helix 24.7 (079f5442)"
+-- home/user/.config/chezmoi/chezmoi.toml --
+[edit]
+    command = "hx"
+    hardlink = true
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
