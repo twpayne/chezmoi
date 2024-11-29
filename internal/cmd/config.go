@@ -2496,7 +2496,9 @@ func (c *Config) runEditor(args []string) error {
 		return err
 	}
 	if c.Edit.Hardlink && filepath.Base(editor) == "hx" {
-		c.errorf("warning: helix editor cannot edit hardlinks, see https://github.com/helix-editor/helix/issues/11279 and https://github.com/twpayne/chezmoi/issues/3971")
+		c.errorf(
+			"warning: helix editor cannot edit hardlinks, see https://github.com/helix-editor/helix/issues/11279 and https://github.com/twpayne/chezmoi/issues/3971",
+		)
 	}
 	start := time.Now()
 	err = c.run(chezmoi.EmptyAbsPath, editor, editorArgs)
