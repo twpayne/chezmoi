@@ -47,7 +47,7 @@ require (
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.29.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20241107225453-6018723c7405
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20241127184453-8c4e668694cc
 	golang.org/x/oauth2 v0.24.0
 	golang.org/x/sync v0.9.0
 	golang.org/x/sys v0.27.0
@@ -108,8 +108,9 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/btree v1.1.3 // indirect
+	github.com/google/go-github/v67 v67.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
