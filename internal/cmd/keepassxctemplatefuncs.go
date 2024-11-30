@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Netflix/go-expect"
 	"github.com/coreos/go-semver/semver"
+	"github.com/twpayne/go-expect"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"

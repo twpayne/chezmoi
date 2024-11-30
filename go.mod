@@ -8,7 +8,6 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.0
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.3.0
 	github.com/Masterminds/sprig/v3 v3.3.0
-	github.com/Netflix/go-expect v0.0.0-20220104043353-73e0943537d2
 	github.com/Shopify/ejson v1.5.3
 	github.com/alecthomas/assert/v2 v2.11.0
 	github.com/aws/aws-sdk-go-v2 v1.32.5
@@ -37,6 +36,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
 	github.com/tailscale/hujson v0.0.0-20221223112325-20486734a56a
+	github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd
 	github.com/twpayne/go-pinentry/v4 v4.0.0
 	github.com/twpayne/go-shell v0.4.0
 	github.com/twpayne/go-vfs/v5 v5.0.4
@@ -168,6 +168,3 @@ exclude (
 	github.com/microcosm-cc/bluemonday v1.0.26 // https://github.com/microcosm-cc/bluemonday/pull/195
 	github.com/tailscale/hujson v0.0.0-20241010212012-29efb4a0184b // Requires Go 1.23.
 )
-
-// github.com/Netflix/go-expect is unmaintained. Use a temporary fork.
-replace github.com/Netflix/go-expect => github.com/twpayne/go-expect v0.0.1
