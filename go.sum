@@ -446,8 +446,8 @@ github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834 h1:ZF+QBjOI+tILZ
 github.com/tetratelabs/wabin v0.0.0-20230304001439-f6f874872834/go.mod h1:m9ymHTgNSEjuxvw8E7WWe4Pl4hZQHXONY8wE6dMLaRk=
 github.com/tetratelabs/wazero v1.8.2 h1:yIgLR/b2bN31bjxwXHD8a3d+BogigR952csSDdLYEv4=
 github.com/tetratelabs/wazero v1.8.2/go.mod h1:yAI0XTsMBhREkM/YDAK/zNou3GoiAce1P6+rp/wQhjs=
-github.com/twpayne/go-expect v0.0.1 h1:cRJ552FIdQzs4z98Q2OLQsGLSbkB7Xpm/IU6cyQ6mUM=
-github.com/twpayne/go-expect v0.0.1/go.mod h1:+ffr+YtUt8ifebyvRQ3NhVTiLch/HnfxsAQqO5LeXss=
+github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd h1:/ekqcdG89euFEeFfuFYGF2An2AwsaJHnYxVwW8hqvcw=
+github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd/go.mod h1:Z1PlEHxKw23bid0pq2RhO4NMScxckEhBXZLebwJpjrk=
 github.com/twpayne/go-pinentry/v4 v4.0.0 h1:8WcNa+UDVRzz7y9OEEU/nRMX+UGFPCAvl5XsqWRxTY4=
 github.com/twpayne/go-pinentry/v4 v4.0.0/go.mod h1:aXvy+awVXqdH+GS0ddQ7AKHZ3tXM6fJ2NK+e16p47PI=
 github.com/twpayne/go-shell v0.4.0 h1:RAAMbjEj7mcwDdwC7SiFHGUKR+WDAURU6mnyd3r2p2E=
