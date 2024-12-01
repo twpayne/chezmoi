@@ -1,11 +1,38 @@
+# test that chezmoi apply reads from file:// URLs
 exec chezmoi apply
 cmp $HOME/.file golden/.file
 
+chhome home2/user
+
+# test that chezmoi apply reads from the first found URL
+exec chezmoi apply
+cmp $HOME/.file golden/.file2
+
+chhome home3/user
+
+# test that chezmoi apply returns an error from the first URL if all URLs return errors
+! exec chezmoi apply
+[!windows] stderr 'home3/user/\.local/share/file.txt: no such file or directory'
+[windows] stderr 'home3/user/\.local/share/file.txt: The system cannot find the file specified\.'
+
 -- golden/.file --
 # contents of .file
+-- golden/.file2 --
+# contents of .file2
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
     type = "file"
     url = "file://{{ .chezmoi.homeDir }}/.local/share/file.txt"
 -- home/user/.local/share/file.txt --
 # contents of .file
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    urls = ["file://{{ .chezmoi.homeDir }}/.local/share/file1.txt", "file://{{ .chezmoi.homeDir }}/.local/share/file2.txt"]
+-- home2/user/.local/share/file2.txt --
+# contents of .file2
+-- home3/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "file://{{ .chezmoi.homeDir }}/.local/share/file.txt"
+    urls = ["file://{{ .chezmoi.homeDir }}/.local/share/file1.txt", "file://{{ .chezmoi.homeDir }}/.local/share/file2.txt"]

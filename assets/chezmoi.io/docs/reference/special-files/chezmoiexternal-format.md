@@ -16,10 +16,10 @@ listed in [`.chezmoiignore`](chezmoiignore.md)), all entries within the file are
 also ignored.
 
 Entries are indexed by target name relative to the directory of the
-`.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` field.
-`type` can be either `file`, `archive`, `archive-file`, or `git-repo`. If the
-entry's parent directories do not already exist in the source state then chezmoi
-will create them as regular directories.
+`.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` and/or a
+`urls` field. `type` can be either `file`, `archive`, `archive-file`, or
+`git-repo`. If the entry's parent directories do not already exist in the source
+state then chezmoi will create them as regular directories.
 
 Entries may have the following fields:
 
@@ -39,6 +39,7 @@ Entries may have the following fields:
 | `refreshPeriod`              | duration | `0`           | Refresh period                                                   |
 | `stripComponents`            | int      | `0`           | Number of leading directory components to strip from archives    |
 | `url`                        | string   | *none*        | URL                                                              |
+| `urls`                       | []string | *none*        | Extra URLs to try, in order                                      |
 | `checksum.sha256`            | string   | *none*        | Expected SHA256 checksum of data                                 |
 | `checksum.sha384`            | string   | *none*        | Expected SHA384 checksum of data                                 |
 | `checksum.sha512`            | string   | *none*        | Expected SHA512 checksum of data                                 |
@@ -49,7 +50,8 @@ Entries may have the following fields:
 | `pull.args`                  | []string | *none*        | Extra args to `git pull`                                         |
 | `archive.extractAppleDouble` | bool     | `false`       | If `true`, AppleDouble files are extracted                       |
 
-`url` must be an `https://`, `http://`, or `file://` URL.
+`url` must be an `https://`, `http://`, or `file://` URL. If `urls` is specified
+then they are tried in order and the first URL that succeeds is used.
 
 If any of the optional `checksum.sha256`, `checksum.sha384`, or
 `checksum.sha512` fields are set, chezmoi will verify that the downloaded data
