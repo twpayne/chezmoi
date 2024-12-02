@@ -60,6 +60,16 @@ func (f *choiceFlag) MarshalText() ([]byte, error) {
 
 // Set implements github.com/spf13/pflag.Value.Set.
 func (f *choiceFlag) Set(s string) error {
+	// If uniqueAbbreviations is nil then all values are allowed. This
+	// functionality, although counter-intuitive, is required because the unique
+	// abbreviations are carried in the value, not in the type, so a
+	// serialization/deserialization round trip discards the unique
+	// abbreviations. To allow deserialization to succeed, we must allow all
+	// values.
+	if f.uniqueAbbreviations == nil {
+		f.value = s
+		return nil
+	}
 	value, ok := f.uniqueAbbreviations[s]
 	if !ok {
 		return errors.New("invalid value")
