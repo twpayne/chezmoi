@@ -8505,12 +8505,13 @@ archives to be included as if they were in the source state.</p>
 <p><code>.chezmoiexternal.$FORMAT</code> is interpreted as a template. This allows different
 externals to be included on different machines.</p>
 <p>If a <code>.chezmoiexternal.$FORMAT</code> file is located in an ignored directory (one
-listed in <a href="../chezmoiignore/"><code>.chezmoiignore</code></a>), all entries within the file are also ignored.</p>
+listed in <a href="../chezmoiignore/"><code>.chezmoiignore</code></a>), all entries within the file are
+also ignored.</p>
 <p>Entries are indexed by target name relative to the directory of the
-<code>.chezmoiexternal.$FORMAT</code> file, and must have a <code>type</code> and a <code>url</code> field.
-<code>type</code> can be either <code>file</code>, <code>archive</code>, <code>archive-file</code>, or <code>git-repo</code>. If the
-entry's parent directories do not already exist in the source state then chezmoi
-will create them as regular directories.</p>
+<code>.chezmoiexternal.$FORMAT</code> file, and must have a <code>type</code> and a <code>url</code> and/or a
+<code>urls</code> field. <code>type</code> can be either <code>file</code>, <code>archive</code>, <code>archive-file</code>, or
+<code>git-repo</code>. If the entry's parent directories do not already exist in the source
+state then chezmoi will create them as regular directories.</p>
 <p>Entries may have the following fields:</p>
 <table>
 <thead>
@@ -8607,6 +8608,12 @@ will create them as regular directories.</p>
 <td>URL</td>
 </tr>
 <tr>
+<td><code>urls</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra URLs to try, in order</td>
+</tr>
+<tr>
 <td><code>checksum.sha256</code></td>
 <td>string</td>
 <td><em>none</em></td>
@@ -8662,6 +8669,8 @@ will create them as regular directories.</p>
 </tr>
 </tbody>
 </table>
+<p><code>url</code> must be an <code>https://</code>, <code>http://</code>, or <code>file://</code> URL. If <code>urls</code> is specified
+then they are tried in order and the first URL that succeeds is used.</p>
 <p>If any of the optional <code>checksum.sha256</code>, <code>checksum.sha384</code>, or
 <code>checksum.sha512</code> fields are set, chezmoi will verify that the downloaded data
 has the given checksum.</p>
