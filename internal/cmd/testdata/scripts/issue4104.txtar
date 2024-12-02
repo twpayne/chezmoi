@@ -1,0 +1,9 @@
+# test that chezmoi add --secrets=ignore succeeds when the add.secrets config variable is set to error
+exec chezmoi add --secrets=ignore $HOME${/}.secret
+! stderr .
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[add]
+    secrets = "error"
+-- home/user/.secret --
+AWS_ACCESS_KEY_ID=AKIA0123456789ABCDEF
