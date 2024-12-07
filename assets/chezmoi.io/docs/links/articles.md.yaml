@@ -467,3 +467,8 @@ articles:
   lang: AR
   title: شيموا (chezmoi) ببساطة
   url: https://github.com/mohamedhany01/chezmoi-tutorial-arabic
+- date: '2024-12-02'
+  version: 2.55.0
+  lang: JP
+  title: 'chezmoiを使ったローカル環境爆速構築'
+  url: https://qiita.com/cb400sp2/items/c04ec9472455d9022532
