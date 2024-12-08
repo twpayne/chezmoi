@@ -208,3 +208,46 @@ and a [`completion`](/reference/templates/functions/completion.md) template
 function which return the shell completions for the given shell.
 These can be used either as a one-off or as part of your dotfiles repo.
 The details of how to use these depend on your shell.
+
+## How do I use tools that I installed with Flatpak?
+
+Command line programs installed with [Flatpak](https://flatpak.org/) cannot be
+run directly. Instead, they must be run with `flatpak run`. This can either be
+added by using a wrapper script or by configuring chezmoi to invoke `flatpak
+run` with the correct arguments directly. Wrapper scripts are recommended, as
+they work with the [`doctor` command](../../reference/commands/doctor.md).
+
+### Use a wrapper script
+
+Create a wrapper script with the exact same name as the command that invokes
+`flatpak run` and passes all arguments to the wrapped command.
+
+For example, to wrap KeePassXC installed with Flatpak, create the script:
+
+```bash title="keepassxc-cli"
+#!/bin/bash
+
+flatpak run --command=keepassxc-cli org.keepassxc.KeePassXC -- "$@"
+```
+
+Note that the script is called `keepassxc-cli` without any `.sh` extension, so
+it has the exact same name as the `keepassxc-cli` command that chezmoi invokes
+by default. Ensure that this script is in your path and is executable.
+
+### Configure chezmoi to invoke `flatpak run`
+
+For tools that chezmoi invokes with `.command` and `.args` configuration
+variables, you can configure chezmoi to invoke `flatpak` directly with the
+correct arguments.
+
+For example, to use VSCodium installed with Flatpak as your diff command, add
+the following to your config file:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[diff]
+    command = "flatpak"
+    args = ["run", "com.vscodium.codium", "--wait", "--diff"]
+```
+
+Note that the command is `flatpak`, the first two arguments are `run` and the
+name of app, and any further arguments are passed to the app.
