@@ -269,6 +269,7 @@ type templateData struct {
 	commandDir        chezmoi.AbsPath
 	config            map[string]any
 	configFile        chezmoi.AbsPath
+	destDir           chezmoi.AbsPath
 	executable        chezmoi.AbsPath
 	fqdnHostname      string
 	gid               string
@@ -1535,6 +1536,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"commandDir":        templateData.commandDir.String(),
 			"config":            templateData.config,
 			"configFile":        templateData.configFile.String(),
+			"destDir":           templateData.destDir,
 			"executable":        templateData.executable.String(),
 			"fqdnHostname":      templateData.fqdnHostname,
 			"gid":               templateData.gid,
@@ -2260,6 +2262,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"COMMAND":       templateData.command,
 		"COMMAND_DIR":   templateData.commandDir.String(),
 		"CONFIG_FILE":   templateData.configFile.String(),
+		"DEST_DIR":      templateData.destDir.String(),
 		"EXECUTABLE":    templateData.executable.String(),
 		"FQDN_HOSTNAME": templateData.fqdnHostname,
 		"GID":           templateData.gid,
@@ -2426,6 +2429,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		commandDir:        c.commandDirAbsPath,
 		config:            c.ConfigFile.toMap(),
 		configFile:        c.getConfigFileAbsPath(),
+		destDir:           c.DestDirAbsPath,
 		executable:        chezmoi.NewAbsPath(executable),
 		fqdnHostname:      fqdnHostname,
 		gid:               gid,

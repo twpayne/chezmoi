@@ -9,6 +9,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.cacheDir`           | string   | The cache directory                                                                                                                                   |
 | `.chezmoi.config`             | object   | The configuration, as read from the config file                                                                                                       |
 | `.chezmoi.configFile`         | string   | The path to the configuration file used by chezmoi                                                                                                    |
+| `.chezmoi.destDir`            | string   | The destination directory                                                                                                                             |
 | `.chezmoi.executable`         | string   | The path to the `chezmoi` executable, if available                                                                                                    |
 | `.chezmoi.fqdnHostname`       | string   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                                         |
 | `.chezmoi.gid`                | string   | The primary group ID                                                                                                                                  |
