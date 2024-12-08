@@ -80,7 +80,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: reviewdog/action-misspell@6dbb2a0a90daef8df58aa6301645b59cc3253733
+    - uses: reviewdog/action-misspell@18ffb61effb93b47e332f185216be7e49592e7e1
       with:
         locale: US
         ignore: ackward,importas
@@ -92,7 +92,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
       with:
         path: |
           ~/.go-alpine
@@ -113,7 +113,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a
+    - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
       with:
         path: |
           ~/.go-archlinux
