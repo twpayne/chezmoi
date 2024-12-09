@@ -1356,8 +1356,19 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 	for path, external := range externals {
-		if strings.HasPrefix(path, "/") || filepath.IsAbs(path) {
+		switch {
+		case path == "":
+			return fmt.Errorf("%s: empty path", sourceAbsPath)
+		case strings.HasPrefix(path, "/") || filepath.IsAbs(path):
 			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
+		}
+		switch relPath, err := filepath.Rel(".", path); {
+		case err != nil:
+			return fmt.Errorf("%s: %s: %w", sourceAbsPath, path, err)
+		case relPath == ".":
+			return fmt.Errorf("%s: %s: empty relative path", sourceAbsPath, path)
+		case relPath == "..", strings.HasPrefix(relPath, "../"):
+			return fmt.Errorf("%s: %s: relative path in parent", sourceAbsPath, path)
 		}
 		targetRelPath := parentTargetSourceRelPath.JoinString(path)
 		external.sourceAbsPath = sourceAbsPath

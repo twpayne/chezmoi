@@ -1967,6 +1967,110 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 	}
 }
 
+func TestSourceStateExternalErrors(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		shareDir    map[string]any
+		expectedErr string
+	}{
+		{
+			name: "missing_type",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`["dir"]`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "dir: missing external type",
+		},
+		{
+			name: "empty_rel_path",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`[""]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: empty path",
+		},
+		{
+			name: "relative_empty_rel_path",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`["."]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: .: empty relative path",
+		},
+		{
+			name: "parent_root_rel_path",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`[".."]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ..: relative path in parent",
+		},
+		{
+			name: "relative_parent_root_rel_path",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`["./.."]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ./..: relative path in parent",
+		},
+		{
+			name: "relative_empty",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`["a/../b/.."]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: a/../b/..: empty relative path",
+		},
+		{
+			name: "relative_parent",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`["a/../b/../.."]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: a/../b/../..: relative path in parent",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			chezmoitest.WithTestFS(t, map[string]any{
+				"/home/user/.local/share/chezmoi": tc.shareDir,
+			}, func(fileSystem vfs.FS) {
+				ctx := context.Background()
+				system := NewRealSystem(fileSystem)
+				s := NewSourceState(
+					WithBaseSystem(system),
+					WithCacheDir(NewAbsPath("/home/user/.cache/chezmoi")),
+					WithDestDir(NewAbsPath("/home/user")),
+					WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
+					WithSystem(system),
+				)
+				err := s.Read(ctx, nil)
+				assert.Error(t, err)
+				assert.Equal(t, err.Error(), tc.expectedErr)
+			})
+		})
+	}
+}
+
 // applyAll updates targetDirAbsPath in targetSystem to match s.
 func (s *SourceState) applyAll(
 	targetSystem, destSystem System,
