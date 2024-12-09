@@ -191,7 +191,8 @@ function Expand-ChezmoiArchive ($path) {
         & tar --extract --gzip --file $path --directory $parent
     }
     if ($path.EndsWith('.zip')) {
-        Expand-Archive -Path $path -DestinationPath $parent
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($path, $parent)
     }
 }
 
