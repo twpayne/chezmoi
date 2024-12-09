@@ -91,6 +91,9 @@ chhome home10/user
 
 # test that checksums are verified
 exec chezmoi apply --force
+stderr '.file: warning: insecure MD5 checksum will be removed, use a secure hash like SHA256 instead'
+stderr '.file: warning: insecure RIPEMD-160 checksum will be removed, use a secure hash like SHA256 instead'
+stderr '.file: warning: insecure SHA1 checksum will be removed, use a secure hash like SHA256 instead'
 cp $HOME/.file golden/.file
 
 chhome home11/user

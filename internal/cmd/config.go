@@ -1867,6 +1867,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithTemplateOptions(c.Template.Options),
 		chezmoi.WithUmask(c.Umask),
 		chezmoi.WithVersion(c.version),
+		chezmoi.WithWarnFunc(c.errorf),
 	}, options...)...)
 
 	if err := sourceState.Read(ctx, &chezmoi.ReadOptions{
