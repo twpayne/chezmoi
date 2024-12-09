@@ -88,6 +88,9 @@ type externalPull struct {
 	Args []string `json:"args" toml:"args" yaml:"args"`
 }
 
+// A WarnFunc is a function that warns the user.
+type WarnFunc func(string, ...any)
+
 // An External is an external source.
 type External struct {
 	Type            ExternalType      `json:"type"            toml:"type"            yaml:"type"`
@@ -147,6 +150,7 @@ type SourceState struct {
 	templates               map[string]*Template
 	externals               map[RelPath][]*External
 	ignoredRelPaths         chezmoiset.Set[RelPath]
+	warnFunc                WarnFunc
 }
 
 // A SourceStateOption sets an option on a source state.
@@ -289,6 +293,13 @@ func WithUmask(umask fs.FileMode) SourceStateOption {
 func WithVersion(version semver.Version) SourceStateOption {
 	return func(s *SourceState) {
 		s.version = version
+	}
+}
+
+// WithWarnFunc sets the warning function.
+func WithWarnFunc(warnFunc WarnFunc) SourceStateOption {
+	return func(s *SourceState) {
+		s.warnFunc = warnFunc
 	}
 }
 
@@ -1702,7 +1713,8 @@ func (s *SourceState) getExternalData(
 
 	var errs []error
 
-	if external.Checksum.Size != 0 {
+	if external.Checksum.Size != 0 && external.Checksum.SHA256 == nil && external.Checksum.SHA384 == nil && external.Checksum.SHA512 == nil {
+		s.warnFunc("%s: warning: insecure size check without secure hash will be removed\n", externalRelPath)
 		if len(data) != external.Checksum.Size {
 			err := fmt.Errorf("size mismatch: expected %d, got %d", external.Checksum.Size, len(data))
 			errs = append(errs, err)
@@ -1710,6 +1722,7 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.MD5 != nil {
+		s.warnFunc("%s: warning: insecure MD5 checksum will be removed, use a secure hash like SHA256 instead\n", externalRelPath)
 		if gotMD5Sum := md5Sum(data); !bytes.Equal(gotMD5Sum, external.Checksum.MD5) {
 			err := fmt.Errorf("MD5 mismatch: expected %s, got %s", external.Checksum.MD5, hex.EncodeToString(gotMD5Sum))
 			errs = append(errs, err)
@@ -1717,6 +1730,7 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.RIPEMD160 != nil {
+		s.warnFunc("%s: warning: insecure RIPEMD-160 checksum will be removed, use a secure hash like SHA256 instead\n", externalRelPath)
 		if gotRIPEMD160Sum := ripemd160Sum(data); !bytes.Equal(gotRIPEMD160Sum, external.Checksum.RIPEMD160) {
 			format := "RIPEMD-160 mismatch: expected %s, got %s"
 			err := fmt.Errorf(format, external.Checksum.RIPEMD160, hex.EncodeToString(gotRIPEMD160Sum))
@@ -1725,6 +1739,7 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.SHA1 != nil {
+		s.warnFunc("%s: warning: insecure SHA1 checksum will be removed, use a secure hash like SHA256 instead\n", externalRelPath)
 		if gotSHA1Sum := sha1Sum(data); !bytes.Equal(gotSHA1Sum, external.Checksum.SHA1) {
 			err := fmt.Errorf("SHA1 mismatch: expected %s, got %s", external.Checksum.SHA1, hex.EncodeToString(gotSHA1Sum))
 			errs = append(errs, err)
