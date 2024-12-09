@@ -93,36 +93,42 @@ function Get-GoOS {
 }
 
 function Get-GoArch {
-    $goArch = @{
-        '32-bit' = 'i386'
-        '64-bit' = 'amd64'
-        'Arm'    = 'arm'
-        'Arm64'  = 'arm64'
-        'X86'    = 'i386'
-        'X64'    = 'amd64'
+    if ($PSVersionTable.PSEdition -eq 'Core') {
+        $goArch = @{
+            'Arm'   = 'arm'
+            'Arm64' = 'arm64'
+            'X86'   = 'i386'
+            'X64'   = 'amd64'
+        }
+        $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+        $result = $goArch[$arch]
+        if (-not $result) {
+            throw "Unsupported OS architecture: $arch"
+        }
+        return $result
     }
 
-    $arch = $null
+    $cpuArch = (Get-CimInstance -ClassName Win32_Processor).Architecture
 
-    if ($PSVersionTable.PSEdition -eq 'Desktop') {
-        $arch = (Get-CimInstance -Class Win32_OperatingSystem).OSArchitecture
+    if ([System.Environment]::Is64BitOperatingSystem) {
+        switch ($cpuArch) {
+            9  { return 'amd64' }
+            12 { return 'arm64' }
+            default {
+                throw "Unsupported CPU architecture ($cpuArch) on a 64-bit OS."
+            }
+        }
     } else {
-        $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
-
-        if ([string]::IsNullOrEmpty($arch)) {
-            $arch = if ([System.Environment]::Is64BitOperatingSystem) {
-                'X64'
-            } else {
-                'X86'
+        switch ($cpuArch) {
+            0 { return 'i386' }
+            9 { return 'i386' } # AMD64 CPU running 32-bit OS
+            5 { return 'arm' }
+            12 { return 'arm' } # ARM64 CPU running 32-bit OS
+            default {
+                throw "Unsupported CPU architecture ($cpuArch) on a 32-bit OS."
             }
         }
     }
-
-    if ([string]::IsNullOrEmpty($arch)) {
-        Write-Error 'unable to determine GOARCH'
-    }
-
-    return $goArch[$arch]
 }
 
 function Get-RealTag ($tag) {
