@@ -1228,14 +1228,14 @@ func (c *Config) diffFile(
 	}
 	if fromMode.IsRegular() {
 		var err error
-		fromData, err = c.TextConv.convert(path.String(), fromData)
+		fromData, _, err = c.TextConv.convert(path.String(), fromData)
 		if err != nil {
 			return err
 		}
 	}
 	if toMode.IsRegular() {
 		var err error
-		toData, err = c.TextConv.convert(path.String(), toData)
+		toData, _, err = c.TextConv.convert(path.String(), toData)
 		if err != nil {
 			return err
 		}
@@ -1817,6 +1817,7 @@ func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi
 		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 		Reverse:        c.Diff.Reverse,
 		ScriptContents: c.Diff.ScriptContents,
+		TextConvFunc:   c.TextConv.convert,
 	}
 	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, options)
 }

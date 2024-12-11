@@ -27,6 +27,7 @@ type ExternalDiffSystem struct {
 	filter         *EntryTypeFilter
 	reverse        bool
 	scriptContents bool
+	textConvFunc   TextConvFunc
 }
 
 // ExternalDiffSystemOptions are options for NewExternalDiffSystem.
@@ -34,6 +35,7 @@ type ExternalDiffSystemOptions struct {
 	Filter         *EntryTypeFilter
 	Reverse        bool
 	ScriptContents bool
+	TextConvFunc   TextConvFunc
 }
 
 // NewExternalDiffSystem creates a new ExternalDiffSystem.
@@ -52,6 +54,7 @@ func NewExternalDiffSystem(
 		filter:         options.Filter,
 		reverse:        options.Reverse,
 		scriptContents: options.ScriptContents,
+		textConvFunc:   options.TextConvFunc,
 	}
 }
 
@@ -222,17 +225,6 @@ func (s *ExternalDiffSystem) UnderlyingFS() vfs.FS {
 // WriteFile implements System.WriteFile.
 func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeFiles) {
-		// If filename does not exist, replace it with /dev/null to avoid
-		// passing the name of a non-existent file to the external diff command.
-		destAbsPath := filename
-		switch _, err := os.Stat(destAbsPath.String()); {
-		case errors.Is(err, fs.ErrNotExist):
-			destAbsPath = devNullAbsPath
-		case err != nil:
-			return err
-		}
-
-		// Write the target contents to a file in a temporary directory.
 		targetRelPath, err := filename.TrimDirPrefix(s.destDirAbsPath)
 		if err != nil {
 			return err
@@ -241,15 +233,60 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 		if err != nil {
 			return err
 		}
-		targetAbsPath := tempDirAbsPath.Join(targetRelPath)
-		if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
+
+		// If filename does not exist, replace it with /dev/null to avoid
+		// passing the name of a non-existent file to the external diff command.
+		// Otherwise, if the file exists and a textconv filter is configured,
+		// run the filter and update fromAbsPath to point to the converted data.
+		fromAbsPath := filename
+		switch fileInfo, err := os.Lstat(fromAbsPath.String()); {
+		case errors.Is(err, fs.ErrNotExist):
+			fromAbsPath = devNullAbsPath
+		case err != nil:
+			return err
+		case s.textConvFunc != nil:
+			// Maybe convert the from data with textconv.
+			fromData, err := os.ReadFile(fromAbsPath.String())
+			if err != nil {
+				return err
+			}
+			switch convertedFromData, converted, err := s.textConvFunc(fromAbsPath.String(), fromData); {
+			case err != nil:
+				return err
+			case converted:
+				tempFromAbsPath := tempDirAbsPath.Join(NewRelPath("a"), targetRelPath)
+				if err := os.MkdirAll(tempFromAbsPath.Dir().String(), 0o700); err != nil {
+					return err
+				}
+				if err := os.WriteFile(tempFromAbsPath.String(), convertedFromData, fileInfo.Mode().Perm()); err != nil {
+					return err
+				}
+				fromAbsPath = tempFromAbsPath
+			}
+		}
+
+		// Write the target contents to a file in a temporary directory.
+		toAbsPath := tempDirAbsPath.Join(targetRelPath)
+		toData := data
+		if s.textConvFunc != nil {
+			// Maybe convert the to data with textconv.
+			switch convertedToData, converted, err := s.textConvFunc(filename.String(), toData); {
+			case err != nil:
+				return err
+			case converted:
+				toAbsPath = tempDirAbsPath.Join(NewRelPath("b"), targetRelPath)
+				toData = convertedToData
+			}
+		}
+		if err := os.MkdirAll(toAbsPath.Dir().String(), 0o700); err != nil {
 			return err
 		}
-		if err := os.WriteFile(targetAbsPath.String(), data, perm); err != nil {
+		if err := os.WriteFile(toAbsPath.String(), toData, perm); err != nil {
 			return err
 		}
 
-		if err := s.runDiffCommand(destAbsPath, targetAbsPath); err != nil {
+		// Run the external diff command.
+		if err := s.runDiffCommand(fromAbsPath, toAbsPath); err != nil {
 			return err
 		}
 	}
