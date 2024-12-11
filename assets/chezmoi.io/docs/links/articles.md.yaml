@@ -462,6 +462,10 @@ articles:
   version: 2.53.1
   title: 'dotfiles management: chezmoi'
   url: https://blg.gkr.one/20241107-chezmoi/
+- date: '2024-11-16'
+  version: 2.54.0
+  title: 'Swapping to Chezmoi'
+  url: https://jsnfwlr.com/blog/2024/11/16/swapping-to-chezmoi/
 - date: '2024-11-19'
   version: 2.54.0
   lang: AR
