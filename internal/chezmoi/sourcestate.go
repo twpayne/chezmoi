@@ -1713,7 +1713,8 @@ func (s *SourceState) getExternalData(
 
 	var errs []error
 
-	if external.Checksum.Size != 0 && external.Checksum.SHA256 == nil && external.Checksum.SHA384 == nil && external.Checksum.SHA512 == nil {
+	if external.Checksum.Size != 0 && external.Checksum.SHA256 == nil && external.Checksum.SHA384 == nil &&
+		external.Checksum.SHA512 == nil {
 		s.warnFunc("%s: warning: insecure size check without secure hash will be removed\n", externalRelPath)
 		if len(data) != external.Checksum.Size {
 			err := fmt.Errorf("size mismatch: expected %d, got %d", external.Checksum.Size, len(data))
@@ -1722,7 +1723,10 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.MD5 != nil {
-		s.warnFunc("%s: warning: insecure MD5 checksum will be removed, use a secure hash like SHA256 instead\n", externalRelPath)
+		s.warnFunc(
+			"%s: warning: insecure MD5 checksum will be removed, use a secure hash like SHA256 instead\n",
+			externalRelPath,
+		)
 		if gotMD5Sum := md5Sum(data); !bytes.Equal(gotMD5Sum, external.Checksum.MD5) {
 			err := fmt.Errorf("MD5 mismatch: expected %s, got %s", external.Checksum.MD5, hex.EncodeToString(gotMD5Sum))
 			errs = append(errs, err)
@@ -1730,7 +1734,10 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.RIPEMD160 != nil {
-		s.warnFunc("%s: warning: insecure RIPEMD-160 checksum will be removed, use a secure hash like SHA256 instead\n", externalRelPath)
+		s.warnFunc(
+			"%s: warning: insecure RIPEMD-160 checksum will be removed, use a secure hash like SHA256 instead\n",
+			externalRelPath,
+		)
 		if gotRIPEMD160Sum := ripemd160Sum(data); !bytes.Equal(gotRIPEMD160Sum, external.Checksum.RIPEMD160) {
 			format := "RIPEMD-160 mismatch: expected %s, got %s"
 			err := fmt.Errorf(format, external.Checksum.RIPEMD160, hex.EncodeToString(gotRIPEMD160Sum))
@@ -1739,7 +1746,10 @@ func (s *SourceState) getExternalData(
 	}
 
 	if external.Checksum.SHA1 != nil {
-		s.warnFunc("%s: warning: insecure SHA1 checksum will be removed, use a secure hash like SHA256 instead\n", externalRelPath)
+		s.warnFunc(
+			"%s: warning: insecure SHA1 checksum will be removed, use a secure hash like SHA256 instead\n",
+			externalRelPath,
+		)
 		if gotSHA1Sum := sha1Sum(data); !bytes.Equal(gotSHA1Sum, external.Checksum.SHA1) {
 			err := fmt.Errorf("SHA1 mismatch: expected %s, got %s", external.Checksum.SHA1, hex.EncodeToString(gotSHA1Sum))
 			errs = append(errs, err)
