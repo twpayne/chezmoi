@@ -48,8 +48,8 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.21.2
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
-	golang.org/x/crypto v0.30.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20241204193617-7042ebcbe097
+	golang.org/x/crypto v0.31.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20241211175049-b4f1988a35de
 	golang.org/x/oauth2 v0.24.0
 	golang.org/x/sync v0.10.0
 	golang.org/x/sys v0.28.0
@@ -91,7 +91,7 @@ require (
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/lipgloss v1.0.0 // indirect
-	github.com/charmbracelet/x/ansi v0.5.2 // indirect
+	github.com/charmbracelet/x/ansi v0.6.0 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
@@ -157,7 +157,7 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.4 // indirect
 	go.opentelemetry.io/proto/otlp v1.4.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d // indirect
+	golang.org/x/exp v0.0.0-20241210194714-1829a127f884 // indirect
 	golang.org/x/net v0.32.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.28.0 // indirect
