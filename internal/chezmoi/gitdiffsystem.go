@@ -14,9 +14,6 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 )
 
-// A TextConvFunc converts the contents of a file into a more human-readable form.
-type TextConvFunc func(string, []byte) ([]byte, error)
-
 // A GitDiffSystem wraps a System and logs all of the actions executed as a git
 // diff.
 type GitDiffSystem struct {
@@ -278,7 +275,7 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 			return err
 		}
 		if s.textConvFunc != nil {
-			fromData, err = s.textConvFunc(absPath.String(), fromData)
+			fromData, _, err = s.textConvFunc(absPath.String(), fromData)
 			if err != nil {
 				return err
 			}
@@ -297,7 +294,7 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 
 	if s.textConvFunc != nil {
 		var err error
-		toData, err = s.textConvFunc(absPath.String(), toData)
+		toData, _, err = s.textConvFunc(absPath.String(), toData)
 		if err != nil {
 			return err
 		}

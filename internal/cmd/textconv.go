@@ -19,12 +19,12 @@ type textConvElement struct {
 
 type textConv []*textConvElement
 
-func (t textConv) convert(path string, data []byte) ([]byte, error) {
+func (t textConv) convert(path string, data []byte) ([]byte, bool, error) {
 	var longestPatternElement *textConvElement
 	for _, command := range t {
 		ok, err := doublestar.Match(command.Pattern, path)
 		if err != nil {
-			return nil, err
+			return nil, false, err
 		}
 		if !ok {
 			continue
@@ -34,11 +34,15 @@ func (t textConv) convert(path string, data []byte) ([]byte, error) {
 		}
 	}
 	if longestPatternElement == nil {
-		return data, nil
+		return data, false, nil
 	}
 
 	cmd := exec.Command(longestPatternElement.Command, longestPatternElement.Args...)
 	cmd.Stdin = bytes.NewReader(data)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdOutput(slog.Default(), cmd)
+	convertedData, err := chezmoilog.LogCmdOutput(slog.Default(), cmd)
+	if err != nil {
+		return nil, false, err
+	}
+	return convertedData, true, nil
 }
