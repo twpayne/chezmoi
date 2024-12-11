@@ -1,5 +1,7 @@
 [windows] skip 'UNIX only'
 
+chmod 755 bin/external-diff
+
 # test that chezmoi diff invokes the external diff command for scripts
 exec chezmoi diff
 stdout '# contents of script'
@@ -20,6 +22,26 @@ chhome home3/user
 exec chezmoi diff
 stdout ^/dev/null\s${WORK@R}/.*/\.dir$
 
+chhome home4/user
+
+# test that chezmoi diff uses textconv when an external diff tool is used
+exec chezmoi diff
+cmp stdout golden/external-diff
+
+-- bin/external-diff --
+#!/bin/sh
+
+echo old/$(basename $1):
+cat $1
+echo
+echo new/$(basename $2):
+cat $2
+-- golden/external-diff --
+old/file.txt:
+# OLD CONTENTS OF .DIR/FILE.TXT
+
+new/file.txt:
+# NEW CONTENTS OF .DIR/FILE.TXT
 -- home/user/.config/chezmoi/chezmoi.toml --
 [diff]
     command = "cat"
@@ -34,3 +56,16 @@ diff:
 [diff]
     command = "echo"
 -- home3/user/.local/share/chezmoi/dot_dir/.keep --
+-- home4/user/.config/chezmoi/chezmoi.yaml --
+diff:
+  command: external-diff
+textconv:
+- pattern: '**/*.txt'
+  command: tr
+  args:
+  - a-z
+  - A-Z
+-- home4/user/.dir/file.txt --
+# old contents of .dir/file.txt
+-- home4/user/.local/share/chezmoi/dot_dir/file.txt --
+# new contents of .dir/file.txt

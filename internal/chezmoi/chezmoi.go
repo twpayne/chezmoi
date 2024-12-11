@@ -131,6 +131,11 @@ var FileModeTypeNames = map[fs.FileMode]string{
 	fs.ModeCharDevice: "char device",
 }
 
+// A TextConvFunc converts the contents of a file into a more human-readable
+// form. It returns the converted data, whether any conversion occurred, and any
+// error.
+type TextConvFunc func(string, []byte) ([]byte, bool, error)
+
 // FQDNHostname returns the FQDN hostname.
 func FQDNHostname(fileSystem vfs.FS) (string, error) {
 	// First, try os.Hostname. If it returns something that looks like a FQDN
