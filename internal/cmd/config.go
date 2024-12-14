@@ -107,6 +107,7 @@ type ConfigFile struct {
 	DestDirAbsPath         chezmoi.AbsPath                `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
 	GitHub                 gitHubConfig                   `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
 	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
+	Interactive            bool                           `json:"interactive"     mapstructure:"interactive"     yaml:"interactive"`
 	Interpreters           map[string]chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
 	Mode                   chezmoi.Mode                   `json:"mode"            mapstructure:"mode"            yaml:"mode"`
 	Pager                  string                         `json:"pager"           mapstructure:"pager"           yaml:"pager"`
@@ -177,7 +178,6 @@ type Config struct {
 	dryRun           bool
 	force            bool
 	homeDir          string
-	interactive      bool
 	keepGoing        bool
 	noPager          bool
 	noTTY            bool
@@ -1030,7 +1030,7 @@ func (c *Config) defaultPreApplyFunc(
 		return nil
 	}
 
-	if c.interactive {
+	if c.Interactive {
 		prompt := fmt.Sprintf("Apply %s", targetRelPath)
 		var choices []string
 		actualContents := actualEntryState.Contents()
@@ -1053,7 +1053,7 @@ func (c *Config) defaultPreApplyFunc(
 			case choice == "no":
 				return fs.SkipDir
 			case choice == "all":
-				c.interactive = false
+				c.Interactive = false
 				return nil
 			case choice == "quit":
 				return chezmoi.ExitCodeError(0)
@@ -1688,6 +1688,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.CacheDirAbsPath, "cache", "Set cache directory")
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
+	persistentFlags.BoolVar(&c.Interactive, "interactive", c.Interactive, "Prompt for all changes")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.PersistentStateAbsPath, "persistent-state", "Set persistent state file")
 	persistentFlags.Var(&c.Progress, "progress", "Display progress bars")
@@ -1704,7 +1705,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
-	persistentFlags.BoolVar(&c.interactive, "interactive", c.interactive, "Prompt for all changes")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
@@ -2050,7 +2050,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
-	if c.force && c.interactive {
+	if c.force && c.Interactive {
 		return errors.New("the --force and --interactive flags are mutually exclusive")
 	}
 

@@ -25,6 +25,9 @@ sections:
     format:
       default: '`json`'
       description: Format for data output, either `json` or `yaml`
+    interactive:
+      default: '`false`'
+      description: Prompt for all changes
     mode:
       default: '`file`'
       description: Mode in target dir, either `file` or `symlink`
