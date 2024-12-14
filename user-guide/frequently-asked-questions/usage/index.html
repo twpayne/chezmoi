@@ -2142,6 +2142,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#how-do-i-use-tools-that-i-installed-with-flatpak" class="md-nav__link">
+    <span class="md-ellipsis">
+      How do I use tools that I installed with Flatpak?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How do I use tools that I installed with Flatpak?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-a-wrapper-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use a wrapper script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-chezmoi-to-invoke-flatpak-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure chezmoi to invoke flatpak run
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8767,6 +8800,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#how-do-i-use-tools-that-i-installed-with-flatpak" class="md-nav__link">
+    <span class="md-ellipsis">
+      How do I use tools that I installed with Flatpak?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How do I use tools that I installed with Flatpak?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-a-wrapper-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use a wrapper script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-chezmoi-to-invoke-flatpak-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure chezmoi to invoke flatpak run
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -8951,6 +9017,35 @@ and a <a href="../../../reference/templates/functions/completion/"><code>complet
 function which return the shell completions for the given shell.
 These can be used either as a one-off or as part of your dotfiles repo.
 The details of how to use these depend on your shell.</p>
+<h2 id="how-do-i-use-tools-that-i-installed-with-flatpak">How do I use tools that I installed with Flatpak?</h2>
+<p>Command line programs installed with <a href="https://flatpak.org/">Flatpak</a> cannot be
+run directly. Instead, they must be run with <code>flatpak run</code>. This can either be
+added by using a wrapper script or by configuring chezmoi to invoke <code>flatpak
+run</code> with the correct arguments directly. Wrapper scripts are recommended, as
+they work with the <a href="../../../reference/commands/doctor/"><code>doctor</code> command</a>.</p>
+<h3 id="use-a-wrapper-script">Use a wrapper script</h3>
+<p>Create a wrapper script with the exact same name as the command that invokes
+<code>flatpak run</code> and passes all arguments to the wrapped command.</p>
+<p>For example, to wrap KeePassXC installed with Flatpak, create the script:</p>
+<div class="highlight"><span class="filename">keepassxc-cli</span><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+flatpak<span class="w"> </span>run<span class="w"> </span>--command<span class="o">=</span>keepassxc-cli<span class="w"> </span>org.keepassxc.KeePassXC<span class="w"> </span>--<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>Note that the script is called <code>keepassxc-cli</code> without any <code>.sh</code> extension, so
+it has the exact same name as the <code>keepassxc-cli</code> command that chezmoi invokes
+by default. Ensure that this script is in your path and is executable.</p>
+<h3 id="configure-chezmoi-to-invoke-flatpak-run">Configure chezmoi to invoke <code>flatpak run</code></h3>
+<p>For tools that chezmoi invokes with <code>.command</code> and <code>.args</code> configuration
+variables, you can configure chezmoi to invoke <code>flatpak</code> directly with the
+correct arguments.</p>
+<p>For example, to use VSCodium installed with Flatpak as your diff command, add
+the following to your config file:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;flatpak&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;com.vscodium.codium&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--wait&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--diff&quot;</span><span class="p">]</span>
+</code></pre></div>
+<p>Note that the command is <code>flatpak</code>, the first two arguments are <code>run</code> and the
+name of app, and any further arguments are passed to the app.</p>
 
 
 
