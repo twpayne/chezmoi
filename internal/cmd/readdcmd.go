@@ -135,7 +135,7 @@ TARGET_REL_PATH:
 			}
 		}
 
-		if c.interactive {
+		if c.Interactive {
 			prompt := fmt.Sprintf("Re-add %s", targetRelPath)
 			var choices []string
 			if actualContents != nil || targetContents != nil {
@@ -156,7 +156,7 @@ TARGET_REL_PATH:
 				case choice == "no":
 					continue TARGET_REL_PATH
 				case choice == "all":
-					c.interactive = false
+					c.Interactive = false
 					break FOR
 				case choice == "quit":
 					return chezmoi.ExitCodeError(0)
