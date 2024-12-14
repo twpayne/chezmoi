@@ -1081,7 +1081,7 @@ func (c *Config) defaultPreApplyFunc(
 	if actualContents != nil || targetContents != nil {
 		choices = append(choices, "diff")
 	}
-	choices = append(choices, "overwrite", "all-overwrite", "skip", "quit")
+	choices = append(choices, "overwrite", "all-overwrite", "no", "skip", "quit")
 	for {
 		switch choice, err := c.promptChoice(prompt, choices); {
 		case err != nil:
@@ -1095,7 +1095,7 @@ func (c *Config) defaultPreApplyFunc(
 		case choice == "all-overwrite":
 			c.force = true
 			return nil
-		case choice == "skip":
+		case choice == "skip" || choice == "no":
 			return fs.SkipDir
 		case choice == "quit":
 			return chezmoi.ExitCodeError(0)
