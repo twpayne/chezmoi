@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 env:
   ACTIONLINT_VERSION: 1.7.4 # https://github.com/rhysd/actionlint/releases
-  AGE_VERSION: 1.2.0 # https://github.com/FiloSottile/age/releases
+  AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.4.1 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.0.3 # https://github.com/editorconfig-checker/editorconfig-checker/releases
   FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
@@ -23,11 +23,11 @@ env:
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 1.62.2 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
-  GORELEASER_VERSION: 2.4.8 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.5.0 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
-  RAGE_VERSION: 0.11.0 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.5.7 # https://github.com/astral-sh/uv/releases
+  RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
+  UV_VERSION: 0.5.10 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
