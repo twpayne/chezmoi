@@ -5,7 +5,7 @@ go 1.22.7
 toolchain go1.23.3
 
 require (
-	filippo.io/age v1.2.0
+	filippo.io/age v1.2.1
 	github.com/1password/onepassword-sdk-go v0.1.5
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.0
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.3.0
