@@ -165,7 +165,4 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 
-exclude (
-	github.com/microcosm-cc/bluemonday v1.0.26 // https://github.com/microcosm-cc/bluemonday/pull/195
-	github.com/tailscale/hujson v0.0.0-20241010212012-29efb4a0184b // Requires Go 1.23.
-)
+exclude github.com/tailscale/hujson v0.0.0-20241010212012-29efb4a0184b // Requires Go 1.23.
