@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -159,12 +159,10 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return err
 	}
 
-	// Sort targets in reverse so we update children before their parent
+	// Visit targets in reverse so we update children before their parent
 	// directories.
-	sort.Sort(sort.Reverse(targetRelPaths))
-
 	encryptedSuffix := sourceState.Encryption().EncryptedSuffix()
-	for _, targetRelPath := range targetRelPaths {
+	for _, targetRelPath := range slices.Backward(targetRelPaths) {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
 		parentSourceRelPath, fileSourceRelPath := sourceRelPath.Split()

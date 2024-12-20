@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"runtime"
-	"sort"
+	"slices"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -59,7 +59,7 @@ func (c *Config) newReAddCmd() *cobra.Command {
 }
 
 func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	var targetRelPaths chezmoi.RelPaths
+	var targetRelPaths []chezmoi.RelPath
 	sourceStateEntries := make(map[chezmoi.RelPath]chezmoi.SourceStateEntry)
 	if len(args) == 0 {
 		_ = sourceState.ForEach(
@@ -81,7 +81,7 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 			sourceStateEntries[targetRelPath] = sourceState.Get(targetRelPath)
 		}
 	}
-	sort.Sort(targetRelPaths)
+	slices.SortFunc(targetRelPaths, chezmoi.CompareRelPaths)
 
 TARGET_REL_PATH:
 	for _, targetRelPath := range targetRelPaths {

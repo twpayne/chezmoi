@@ -6,7 +6,6 @@ import (
 	"io/fs"
 	"maps"
 	"slices"
-	"sort"
 )
 
 // A sourceStateEntryTreeNode is a node in a tree of SourceStateEntries.
@@ -67,8 +66,8 @@ func (n *sourceStateEntryTreeNode) forEachNode(targetRelPath RelPath, f func(Rel
 		return err
 	}
 
-	childrenByRelPath := RelPaths(slices.Collect(maps.Keys(n.children)))
-	sort.Sort(childrenByRelPath)
+	childrenByRelPath := slices.Collect(maps.Keys(n.children))
+	slices.SortFunc(childrenByRelPath, CompareRelPaths)
 	for _, childRelPath := range childrenByRelPath {
 		child := n.children[childRelPath]
 		if err := child.forEachNode(targetRelPath.Join(childRelPath), f); err != nil {
