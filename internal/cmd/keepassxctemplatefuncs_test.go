@@ -117,6 +117,7 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	for _, mode := range []keepassxcMode{
 		keepassxcModeCachePassword,
 		keepassxcModeOpen,
+		keepassxcModeBuiltin,
 	} {
 		t.Run(string(mode), func(t *testing.T) {
 			t.Run("correct_password", func(t *testing.T) {
