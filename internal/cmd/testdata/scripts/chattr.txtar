@@ -155,6 +155,10 @@ exec chezmoi chattr --recursive noexact $HOME${/}.dir
 exists $CHEZMOISOURCEDIR/readonly_dot_dir
 exists $CHEZMOISOURCEDIR/readonly_dot_dir/subdir
 
+# test that chezmoi chattr exact adds the exact_ attribute on a subdirectory
+exec chezmoi chattr +exact $HOME${/}.dir/subdir
+exists $CHEZMOISOURCEDIR/readonly_dot_dir/exact_subdir
+
 -- golden/chattr-diff --
 diff --git a/dot_file b/executable_dot_file
 rename from dot_file

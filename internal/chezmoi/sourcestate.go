@@ -635,14 +635,8 @@ DEST_ABS_PATH:
 	// Rename directories last because updates assume that directory names have
 	// not changed. Rename directories in reverse order so children are renamed
 	// before their parents.
-	oldDirAbsPaths := make([]AbsPath, 0, len(dirRenames))
-	for oldDirAbsPath := range dirRenames {
-		oldDirAbsPaths = append(oldDirAbsPaths, oldDirAbsPath)
-	}
-	sort.Slice(oldDirAbsPaths, func(i, j int) bool {
-		return oldDirAbsPaths[j].Less(oldDirAbsPaths[i])
-	})
-	for _, oldDirAbsPath := range oldDirAbsPaths {
+	oldDirAbsPaths := slices.Sorted(maps.Keys(dirRenames))
+	for _, oldDirAbsPath := range slices.Backward(oldDirAbsPaths) {
 		newDirAbsPath := dirRenames[oldDirAbsPath]
 		if err := sourceSystem.Rename(oldDirAbsPath, newDirAbsPath); err != nil {
 			return err
@@ -1277,11 +1271,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			continue
 		}
 
-		origins := make([]string, 0, len(sourceStateEntries))
-		for _, sourceStateEntry := range sourceStateEntries {
-			origins = append(origins, sourceStateEntry.Origin().OriginString())
+		origins := make([]string, len(sourceStateEntries))
+		for i, sourceStateEntry := range sourceStateEntries {
+			origins[i] = sourceStateEntry.Origin().OriginString()
 		}
-		sort.Strings(origins)
+		slices.Sort(origins)
 		errs = append(errs, &inconsistentStateError{
 			targetRelPath: targetRelPath,
 			origins:       origins,

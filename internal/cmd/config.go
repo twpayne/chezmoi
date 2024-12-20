@@ -2818,7 +2818,7 @@ func (c *Config) writePaths(paths []string, options writePathsOptions) error {
 	if options.tree {
 		newPathListTreeFromPathsSlice(paths).writeChildren(&builder, "", "  ")
 	} else {
-		sort.Strings(paths)
+		slices.Sort(paths)
 		for _, path := range paths {
 			fmt.Fprintln(&builder, path)
 		}

@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"path"
 	"path/filepath"
-	"sort"
+	"slices"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/twpayne/go-vfs/v5"
@@ -92,7 +92,7 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	for i, match := range matchesSlice {
 		matchesSlice[i] = filepath.ToSlash(match)[len(prefix):]
 	}
-	sort.Strings(matchesSlice)
+	slices.Sort(matchesSlice)
 	return matchesSlice, nil
 }
 

@@ -14,7 +14,7 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
-	"sort"
+	"slices"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -564,7 +564,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		for filenameAbsPath := range filenameAbsPaths {
 			filenameStrs = append(filenameStrs, filenameAbsPath.String())
 		}
-		sort.Strings(filenameStrs)
+		slices.Sort(filenameStrs)
 		return checkResultWarning, englishList(filenameStrs) + ": multiple config files"
 	}
 }
