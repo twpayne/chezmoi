@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"context"
 	"io/fs"
-	"sort"
+	"slices"
 	"sync"
 	"testing"
 
@@ -22,13 +22,13 @@ func TestConcurrentWalkSourceDir(t *testing.T) {
 			"dot_dir/file":    "# contents of .dir/file\n",
 		},
 	}
-	expectedSourceAbsPaths := AbsPaths{
+	expectedSourceAbsPaths := []AbsPath{
 		sourceDirAbsPath.JoinString(".chezmoiversion"),
 		sourceDirAbsPath.JoinString("dot_dir"),
 		sourceDirAbsPath.JoinString("dot_dir/file"),
 	}
 
-	var actualSourceAbsPaths AbsPaths
+	var actualSourceAbsPaths []AbsPath
 	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
 		ctx := context.Background()
 		system := NewRealSystem(fileSystem)
@@ -41,7 +41,7 @@ func TestConcurrentWalkSourceDir(t *testing.T) {
 		}
 		assert.NoError(t, concurrentWalkSourceDir(ctx, system, sourceDirAbsPath, walkFunc))
 	})
-	sort.Sort(actualSourceAbsPaths)
+	slices.Sort(actualSourceAbsPaths)
 	assert.Equal(t, expectedSourceAbsPaths, actualSourceAbsPaths)
 }
 

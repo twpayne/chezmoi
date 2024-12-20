@@ -19,13 +19,6 @@ var (
 // An AbsPath is an absolute path.
 type AbsPath string
 
-// AbsPaths is a slice of RelPaths that implements sort.Interface.
-type AbsPaths []AbsPath
-
-func (ps AbsPaths) Len() int           { return len(ps) }
-func (ps AbsPaths) Less(i, j int) bool { return ps[i].Less(ps[j]) }
-func (ps AbsPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
-
 // NewAbsPath returns a new AbsPath.
 func NewAbsPath(absPath string) AbsPath {
 	return AbsPath(filepath.ToSlash(absPath))
@@ -82,11 +75,6 @@ func (p AbsPath) JoinString(ss ...string) AbsPath {
 // Len returns the length of p.
 func (p AbsPath) Len() int {
 	return len(p)
-}
-
-// Less returns if p is less than other.
-func (p AbsPath) Less(other AbsPath) bool {
-	return p < other
 }
 
 // MustTrimDirPrefix is like TrimPrefix but panics on any error.

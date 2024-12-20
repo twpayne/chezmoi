@@ -366,8 +366,7 @@ func (s *SourceState) Add(
 	options *AddOptions,
 ) error {
 	// Filter out excluded and ignored paths.
-	destAbsPaths := AbsPaths(slices.Sorted(maps.Keys(destAbsPathInfos)))
-	sort.Sort(destAbsPaths)
+	destAbsPaths := slices.Sorted(maps.Keys(destAbsPathInfos))
 	n := 0
 	for _, destAbsPath := range destAbsPaths {
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
