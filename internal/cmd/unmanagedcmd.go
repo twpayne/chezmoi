@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/fs"
-	"sort"
+	"slices"
 
 	"github.com/spf13/cobra"
 
@@ -37,7 +37,7 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 }
 
 func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	var absPaths chezmoi.AbsPaths
+	var absPaths []chezmoi.AbsPath
 	if len(args) == 0 {
 		absPaths = append(absPaths, c.DestDirAbsPath)
 	} else {
@@ -49,8 +49,8 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 			}
 			argsAbsPaths.Add(argAbsPath)
 		}
-		absPaths = chezmoi.AbsPaths(argsAbsPaths.Elements())
-		sort.Sort(absPaths)
+		absPaths = argsAbsPaths.Elements()
+		slices.Sort(absPaths)
 	}
 
 	unmanagedRelPaths := chezmoiset.New[chezmoi.RelPath]()
