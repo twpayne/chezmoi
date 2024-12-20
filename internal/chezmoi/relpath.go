@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"cmp"
 	"path"
 	"strings"
 )
@@ -14,13 +15,6 @@ var (
 type RelPath struct {
 	relPath string
 }
-
-// RelPaths is a slice of RelPaths that implements sort.Interface.
-type RelPaths []RelPath
-
-func (ps RelPaths) Len() int           { return len(ps) }
-func (ps RelPaths) Less(i, j int) bool { return ps[i].Less(ps[j]) }
-func (ps RelPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
 
 // NewRelPath returns a new RelPath.
 func NewRelPath(relPath string) RelPath {
@@ -84,11 +78,6 @@ func (p RelPath) Len() int {
 	return len(p.relPath)
 }
 
-// Less returns true if p is less than other.
-func (p RelPath) Less(other RelPath) bool {
-	return p.relPath < other.relPath
-}
-
 // MarshalText implements encoding.TextMarshaler.MarshalText.
 func (p RelPath) MarshalText() ([]byte, error) {
 	return []byte(p.relPath), nil
@@ -138,4 +127,9 @@ func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 		}
 	}
 	return p.Slice(dirPrefix.Len()+1, p.Len()), nil
+}
+
+// CompareRelPaths compares a and b.
+func CompareRelPaths(a, b RelPath) int {
+	return cmp.Compare(a.relPath, b.relPath)
 }

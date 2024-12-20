@@ -56,11 +56,6 @@ func (p SourceRelPath) Join(sourceRelPaths ...SourceRelPath) SourceRelPath {
 	}
 }
 
-// Less returns true if p is less than other.
-func (p SourceRelPath) Less(other SourceRelPath) bool {
-	return p.relPath.Less(other.relPath)
-}
-
 // MarshalText implements encoding.TextMarshaler.MarshalText.
 func (p SourceRelPath) MarshalText() ([]byte, error) {
 	return []byte(p.relPath.String()), nil

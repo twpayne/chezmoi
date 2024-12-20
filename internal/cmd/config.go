@@ -23,7 +23,6 @@ import (
 	"runtime"
 	"runtime/pprof"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -660,7 +659,7 @@ func (c *Config) applyArgs(
 		return err
 	}
 
-	var targetRelPaths chezmoi.RelPaths
+	var targetRelPaths []chezmoi.RelPath
 	switch {
 	case len(args) == 0:
 		targetRelPaths = sourceState.TargetRelPaths()
@@ -2633,8 +2632,8 @@ func (c *Config) targetRelPaths(
 	sourceState *chezmoi.SourceState,
 	args []string,
 	options targetRelPathsOptions,
-) (chezmoi.RelPaths, error) {
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+) ([]chezmoi.RelPath, error) {
+	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
@@ -2680,7 +2679,7 @@ func (c *Config) targetRelPaths(
 	}
 
 	// Sort and de-duplicate targetRelPaths in place.
-	sort.Sort(targetRelPaths)
+	slices.SortFunc(targetRelPaths, chezmoi.CompareRelPaths)
 	n := 1
 	for i := 1; i < len(targetRelPaths); i++ {
 		if targetRelPaths[i] != targetRelPaths[i-1] {

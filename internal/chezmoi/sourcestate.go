@@ -24,7 +24,6 @@ import (
 	"regexp"
 	"runtime"
 	"slices"
-	"sort"
 	"strings"
 	"sync"
 	"syscall"
@@ -847,9 +846,9 @@ func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 }
 
 // Ignored returns all ignored RelPaths.
-func (s *SourceState) Ignored() RelPaths {
-	relPaths := RelPaths(s.ignoredRelPaths.Elements())
-	sort.Sort(relPaths)
+func (s *SourceState) Ignored() []RelPath {
+	relPaths := s.ignoredRelPaths.Elements()
+	slices.SortFunc(relPaths, CompareRelPaths)
 	return relPaths
 }
 
@@ -868,7 +867,7 @@ func (s *SourceState) PostApply(
 	targetSystem System,
 	persistentState PersistentState,
 	targetDirAbsPath AbsPath,
-	targetRelPaths RelPaths,
+	targetRelPaths []RelPath,
 ) error {
 	// Remove empty directories with the remove_ attribute. This assumes that
 	// targetRelPaths is already sorted and iterates in reverse order so that
@@ -1073,11 +1072,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Read externals.
-	externalRelPaths := make(RelPaths, 0, len(s.externals))
+	externalRelPaths := make([]RelPath, 0, len(s.externals))
 	for externalRelPath := range s.externals {
 		externalRelPaths = append(externalRelPaths, externalRelPath)
 	}
-	sort.Sort(externalRelPaths)
+	slices.SortFunc(externalRelPaths, CompareRelPaths)
 	for _, externalRelPath := range externalRelPaths {
 		if s.Ignore(externalRelPath) {
 			continue
@@ -1182,7 +1181,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Generate SourceStateCommands for git-repo externals.
-	var gitRepoExternalRelPaths RelPaths
+	var gitRepoExternalRelPaths []RelPath
 	for externalRelPath, externals := range s.externals {
 		if s.Ignore(externalRelPath) {
 			continue
@@ -1193,7 +1192,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 		}
 	}
-	sort.Sort(gitRepoExternalRelPaths)
+	slices.SortFunc(gitRepoExternalRelPaths, CompareRelPaths)
 	for _, externalRelPath := range gitRepoExternalRelPaths {
 		for _, external := range s.externals[externalRelPath] {
 			destAbsPath := s.destDirAbsPath.Join(externalRelPath)
@@ -1258,11 +1257,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Check for inconsistent source entries. Iterate over the target names in
 	// order so that any error is deterministic.
-	targetRelPaths := make(RelPaths, 0, len(allSourceStateEntries))
+	targetRelPaths := make([]RelPath, 0, len(allSourceStateEntries))
 	for targetRelPath := range allSourceStateEntries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
-	sort.Sort(targetRelPaths)
+	slices.SortFunc(targetRelPaths, CompareRelPaths)
 	errs := make([]error, 0, len(targetRelPaths))
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
@@ -1299,17 +1298,11 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 	for targetRelPath := range entries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
-	sort.Slice(targetRelPaths, func(i, j int) bool {
-		orderI := entries[targetRelPaths[i]].Order()
-		orderJ := entries[targetRelPaths[j]].Order()
-		switch {
-		case orderI < orderJ:
-			return true
-		case orderI == orderJ:
-			return targetRelPaths[i].Less(targetRelPaths[j])
-		default:
-			return false
+	slices.SortFunc(targetRelPaths, func(a, b RelPath) int {
+		if compare := cmp.Compare(entries[a].Order(), entries[b].Order()); compare != 0 {
+			return compare
 		}
+		return CompareRelPaths(a, b)
 	})
 	return targetRelPaths
 }
