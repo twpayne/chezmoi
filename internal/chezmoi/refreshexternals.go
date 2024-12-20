@@ -2,9 +2,9 @@ package chezmoi
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 type RefreshExternals int
@@ -22,7 +22,7 @@ var (
 		"never":  RefreshExternalsNever,
 	}
 
-	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(chezmoimaps.SortedKeys(refreshExternalsWellKnownStrings))
+	RefreshExternalsFlagCompletionFunc = FlagCompletionFunc(slices.Sorted(maps.Keys(refreshExternalsWellKnownStrings)))
 )
 
 func (re *RefreshExternals) Set(s string) error {

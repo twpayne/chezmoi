@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"maps"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -23,7 +24,6 @@ import (
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 type ioregData struct {
@@ -646,7 +646,7 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 		value map[string]any
 	}
 	var subsections []subsection
-	for _, key := range chezmoimaps.SortedKeys(data) {
+	for _, key := range slices.Sorted(maps.Keys(data)) {
 		switch value := data[key].(type) {
 		case bool:
 			fmt.Fprintf(w, "%s = %t\n", key, value)

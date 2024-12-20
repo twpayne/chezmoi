@@ -14,6 +14,7 @@ import (
 	"io"
 	"io/fs"
 	"log/slog"
+	"maps"
 	"net/http"
 	"net/url"
 	"os"
@@ -35,7 +36,6 @@ import (
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
@@ -366,7 +366,7 @@ func (s *SourceState) Add(
 	options *AddOptions,
 ) error {
 	// Filter out excluded and ignored paths.
-	destAbsPaths := AbsPaths(chezmoimaps.Keys(destAbsPathInfos))
+	destAbsPaths := AbsPaths(slices.Sorted(maps.Keys(destAbsPathInfos)))
 	sort.Sort(destAbsPaths)
 	n := 0
 	for _, destAbsPath := range destAbsPaths {
