@@ -1,9 +1,9 @@
 package chezmoi
 
 import (
+	"cmp"
 	"regexp"
 	"slices"
-	"sort"
 	"strings"
 )
 
@@ -38,29 +38,17 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	// matches at the same depth, chose the variable that comes first
 	// alphabetically.
 	variables := extractVariables(data)
-	sort.Slice(variables, func(i, j int) bool {
+	slices.SortFunc(variables, func(a, b templateVariable) int {
 		// First sort by value length, longest first.
-		valueI := variables[i].value
-		valueJ := variables[j].value
-		switch {
-		case len(valueI) > len(valueJ):
-			return true
-		case len(valueI) == len(valueJ):
-			// Second sort by value name depth, shallowest first.
-			componentsI := variables[i].components
-			componentsJ := variables[j].components
-			switch {
-			case len(componentsI) < len(componentsJ):
-				return true
-			case len(componentsI) == len(componentsJ):
-				// Thirdly, sort by component names in alphabetical order.
-				return slices.Compare(componentsI, componentsJ) < 0
-			default:
-				return false
-			}
-		default:
-			return false
+		if compare := -cmp.Compare(len(a.value), len(b.value)); compare != 0 {
+			return compare
 		}
+		// Second sort by value name depth, shallowest first.
+		if compare := cmp.Compare(len(a.components), len(b.components)); compare != 0 {
+			return compare
+		}
+		// Thirdly, sort by component names in alphabetical order.
+		return slices.Compare(a.components, b.components)
 	})
 
 	// Replace variables in order.

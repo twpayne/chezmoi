@@ -2,7 +2,7 @@ package chezmoi
 
 import (
 	"path/filepath"
-	"sort"
+	"slices"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -55,7 +55,7 @@ func TestRealSystemGlob(t *testing.T) {
 			t.Run(tc.pattern, func(t *testing.T) {
 				actualMatches, err := system.Glob(tc.pattern)
 				assert.NoError(t, err)
-				sort.Strings(actualMatches)
+				slices.Sort(actualMatches)
 				assert.Equal(t, tc.expectedMatches, pathsToSlashes(actualMatches))
 			})
 		}

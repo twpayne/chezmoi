@@ -1,11 +1,12 @@
 package chezmoi
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"io/fs"
 	"os/exec"
-	"sort"
+	"slices"
 	"strings"
 	"time"
 
@@ -215,8 +216,7 @@ func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc W
 			return err
 		}
 	}
-
-	sortSourceDirEntries(dirEntries)
+	slices.SortFunc(dirEntries, compareDirEntries)
 
 	for _, dirEntry := range dirEntries {
 		fileInfo, err := dirEntry.Info()
@@ -246,7 +246,7 @@ func concurrentWalkSourceDir(
 	if err != nil {
 		return walkFunc(ctx, dirAbsPath, nil, err)
 	}
-	sortSourceDirEntries(dirEntries)
+	slices.SortFunc(dirEntries, compareDirEntries)
 
 	// Walk all control plane entries in order.
 	visitDirEntry := func(dirEntry fs.DirEntry) error {
@@ -290,19 +290,10 @@ func concurrentWalkSourceDir(
 	return group.Wait()
 }
 
-func sortSourceDirEntries(dirEntries []fs.DirEntry) {
-	sort.Slice(dirEntries, func(i, j int) bool {
-		nameI := dirEntries[i].Name()
-		nameJ := dirEntries[j].Name()
-		orderI := sourceDirEntryOrder[nameI]
-		orderJ := sourceDirEntryOrder[nameJ]
-		switch {
-		case orderI < orderJ:
-			return true
-		case orderI == orderJ:
-			return nameI < nameJ
-		default:
-			return false
-		}
-	})
+func compareDirEntries(a, b fs.DirEntry) int {
+	aName, bName := a.Name(), b.Name()
+	if compare := cmp.Compare(sourceDirEntryOrder[aName], sourceDirEntryOrder[bName]); compare != 0 {
+		return compare
+	}
+	return cmp.Compare(aName, bName)
 }

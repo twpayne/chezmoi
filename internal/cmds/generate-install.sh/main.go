@@ -1,12 +1,13 @@
 package main
 
 import (
+	"cmp"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
-	"sort"
+	"slices"
 	"text/template"
 
 	"gopkg.in/yaml.v3"
@@ -108,8 +109,8 @@ func run() error {
 
 	// Sort platforms.
 	sortedPlatforms := allPlatforms.Elements()
-	sort.Slice(sortedPlatforms, func(i, j int) bool {
-		return sortedPlatforms[i].String() < sortedPlatforms[j].String()
+	slices.SortFunc(sortedPlatforms, func(a, b platform) int {
+		return cmp.Compare(a.String(), b.String())
 	})
 
 	// Generate install.sh.
