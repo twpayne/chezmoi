@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -12,7 +14,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
@@ -45,7 +46,7 @@ func newChoiceFlag(value string, allowedValues []string) *choiceFlag {
 
 // FlagCompletionFunc returns f's flag completion function.
 func (f *choiceFlag) FlagCompletionFunc() func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
-	return chezmoi.FlagCompletionFunc(chezmoimaps.SortedKeys(f.allowedValues))
+	return chezmoi.FlagCompletionFunc(slices.Sorted(maps.Keys(f.allowedValues)))
 }
 
 // MarshalJSON implements encoding/json.Marshaler.MarshalJSON.
@@ -84,7 +85,7 @@ func (f *choiceFlag) String() string {
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (f *choiceFlag) Type() string {
-	sortedKeys := chezmoimaps.SortedKeys(f.allowedValues)
+	sortedKeys := slices.Sorted(maps.Keys(f.allowedValues))
 	if len(sortedKeys) > 0 && sortedKeys[0] == "" {
 		sortedKeys[0] = "<none>"
 	}

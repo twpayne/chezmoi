@@ -4,6 +4,8 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io/fs"
+	"maps"
+	"slices"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -11,7 +13,6 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
@@ -76,8 +77,8 @@ func TestTargetStateEntryApply(t *testing.T) {
 		TargetStateKey        []string
 		ActualDestDirStateKey []string
 	}{
-		TargetStateKey:        chezmoimaps.SortedKeys(targetStates),
-		ActualDestDirStateKey: chezmoimaps.SortedKeys(actualStates),
+		TargetStateKey:        slices.Sorted(maps.Keys(targetStates)),
+		ActualDestDirStateKey: slices.Sorted(maps.Keys(actualStates)),
 	}
 	var testCases []struct {
 		TargetStateKey        string

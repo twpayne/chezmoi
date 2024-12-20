@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"maps"
+	"slices"
 	"strings"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 type pathListTreeNode struct {
@@ -42,7 +42,7 @@ func (n *pathListTreeNode) write(sb *strings.Builder, prefix, indent string) {
 }
 
 func (n *pathListTreeNode) writeChildren(sb *strings.Builder, prefix, indent string) {
-	for _, key := range chezmoimaps.SortedKeys(n.children) {
+	for _, key := range slices.Sorted(maps.Keys(n.children)) {
 		child := n.children[key]
 		child.write(sb, prefix, indent)
 	}

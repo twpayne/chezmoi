@@ -4,16 +4,16 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
+	"maps"
+	"slices"
 
 	"github.com/klauspost/compress/zip"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoimaps"
 )
 
 func NewZip(root map[string]any) ([]byte, error) {
 	buffer := &bytes.Buffer{}
 	zipWriter := zip.NewWriter(buffer)
-	for _, key := range chezmoimaps.SortedKeys(root) {
+	for _, key := range slices.Sorted(maps.Keys(root)) {
 		if err := zipAddEntry(zipWriter, key, root[key]); err != nil {
 			return nil, err
 		}
@@ -51,7 +51,7 @@ func zipAddEntryDir(w *zip.Writer, name string, perm fs.FileMode, entries map[st
 	if _, err := w.CreateHeader(&fileHeader); err != nil {
 		return err
 	}
-	for _, key := range chezmoimaps.SortedKeys(entries) {
+	for _, key := range slices.Sorted(maps.Keys(entries)) {
 		if err := zipAddEntry(w, name+"/"+key, entries[key]); err != nil {
 			return err
 		}
