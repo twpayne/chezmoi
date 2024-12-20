@@ -6,7 +6,7 @@ contents of the `assets/chezmoi.io/docs/` directory. It is hosted by
 [GitHub pages](https://pages.github.com/) from the
 [`gh-pages` branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
 
-To build the website locally, Go 1.22 (or later) and
+To build the website locally, Go 1.23 (or later) and
 [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.4.15 (or later)
 must be installed. Python 3.10 (or later) is required, but may be installed with
 `uv`:
