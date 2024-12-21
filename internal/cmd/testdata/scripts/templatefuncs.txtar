@@ -191,6 +191,12 @@ stdout '^value2$'
 exec chezmoi execute-template '{{ dict "key" "value" | toYaml }}'
 stdout '^key: value$'
 
+# test toYamlWithIndent template function
+exec chezmoi execute-template '{{ dict "key" (dict "nestedKey" "value") | toYamlWithIndent 2 }}'
+cmp stdout golden/toYamlWithIndent2.yaml
+exec chezmoi execute-template '{{ dict "key" (dict "nestedKey" "value") | toYamlWithIndent 4 }}'
+cmp stdout golden/toYamlWithIndent4.yaml
+
 # test that the overridden splitList function's output is compatible with quoteList
 exec chezmoi execute-template '{{ "a b" | splitList " " | quoteList }}'
 stdout '["a" "b"]'
@@ -285,6 +291,12 @@ subkey = subvalue
         "b": "&"
     }
 }
+-- golden/toYamlWithIndent2.yaml --
+key:
+  nestedKey: value
+-- golden/toYamlWithIndent4.yaml --
+key:
+    nestedKey: value
 -- home/user/.include --
 # contents of .include
 -- home/user/.local/share/chezmoi/.chezmoitemplates/template --
