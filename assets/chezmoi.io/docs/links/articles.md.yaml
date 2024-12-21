@@ -476,3 +476,12 @@ articles:
   lang: JP
   title: 'chezmoiを使ったローカル環境爆速構築'
   url: https://qiita.com/cb400sp2/items/c04ec9472455d9022532
+- date: '2024-12-18'
+  version: 2.56.0
+  title: Exploring Tools For Managing Your Dotfiles
+  url: https://gberga.medium.com/exploring-tools-for-managing-your-dotfiles-7f0a46305bde
+- date: '2024-12-19'
+  version: 2.56.0
+  lang: JP
+  title: 'chezmoiでdotfilesを管理する'
+  url: https://devops-blog.virtualtech.jp/entry/20241219/1734585262
