@@ -20,6 +20,7 @@ import (
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
 	"gopkg.in/ini.v1"
+	"gopkg.in/yaml.v3"
 	"howett.net/plist"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -529,6 +530,16 @@ func anyToStringSlice(slice any) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("%v: not a slice", slice)
 	}
+}
+
+func (c *Config) toYamlWithIndentTemplateFunc(spaces int, data any) string {
+	var builder strings.Builder
+	encoder := yaml.NewEncoder(&builder)
+	encoder.SetIndent(spaces)
+	if err := encoder.Encode(data); err != nil {
+		panic(err)
+	}
+	return builder.String()
 }
 
 func fileInfoToMap(fileInfo fs.FileInfo) map[string]any {
