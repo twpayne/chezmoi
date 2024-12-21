@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/tobischo/gokeepasslib/v3"
 	"github.com/twpayne/go-expect"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -23,6 +24,7 @@ import (
 type keepassxcMode string
 
 const (
+	keepassxcModeBuiltin       keepassxcMode = "builtin"
 	keepassxcModeCachePassword keepassxcMode = "cache-password"
 	keepassxcModeOpen          keepassxcMode = "open"
 )
@@ -76,6 +78,12 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 		data := mustValue(os.ReadFile(tempFilename))
 		must(os.Remove(tempFilename))
 		return string(data)
+	case keepassxcModeBuiltin:
+		c.Keepassxc.cache = c.keepassxcBuiltinExtractValues(keepassxcBuiltinMapAttachmentCache)
+		if data, ok := c.Keepassxc.cache[entry]; ok {
+			return data[name]
+		}
+		panic(fmt.Sprintf("attachment %s of entry %s not found", entry, name))
 	default:
 		panic(fmt.Sprintf("%s: invalid mode", c.Keepassxc.Mode))
 	}
@@ -84,6 +92,11 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	if data, ok := c.Keepassxc.cache[entry]; ok {
 		return data
+	}
+
+	if c.Keepassxc.Mode == keepassxcModeBuiltin {
+		c.Keepassxc.cache = c.keepassxcBuiltinExtractValues(keepassxcBuiltinMapValueCache)
+		return c.Keepassxc.cache[entry]
 	}
 
 	args := []string{"--quiet", "--show-protected", entry}
@@ -100,6 +113,18 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 }
 
 func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string {
+	if c.Keepassxc.Mode == keepassxcModeBuiltin {
+		// builtin stores attributes in cache
+		if data, ok := c.Keepassxc.cache[entry]; ok {
+			return data[attribute]
+		}
+		c.Keepassxc.cache = c.keepassxcBuiltinExtractValues(keepassxcBuiltinMapValueCache)
+		if data, ok := c.Keepassxc.cache[entry]; ok {
+			return data[attribute]
+		}
+		panic(fmt.Sprintf("attribute %s of entry %s not found", entry, attribute))
+	}
+
 	key := keepassxcAttributeCacheKey{
 		entry:     entry,
 		attribute: attribute,
@@ -328,4 +353,94 @@ func (c *Config) keepassxcClose() error {
 		return err
 	}
 	return nil
+}
+
+// keepassxcBuiltinExtractValues extract builtin values.
+func (c *Config) keepassxcBuiltinExtractValues(
+	mapper func(db *gokeepasslib.Database, entry gokeepasslib.Entry) map[string]string,
+) map[string]map[string]string {
+	file, err := os.Open(c.Keepassxc.Database.String())
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
+		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database))
+		if err != nil {
+			panic(err)
+		}
+		c.Keepassxc.password = password
+	}
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials(c.Keepassxc.password)
+	err = gokeepasslib.NewDecoder(file).Decode(db)
+	if err != nil {
+		panic(err)
+	}
+	err = db.UnlockProtectedEntries()
+	if err != nil {
+		panic(err)
+	}
+	return keepassxcBuiltinBuildCache(db, "", db.Content.Root.Groups[0].Groups, nil, mapper)
+}
+
+// keepassxcBuiltinBuildCache build the builtin cache using a given mapper function.
+func keepassxcBuiltinBuildCache(db *gokeepasslib.Database,
+	path string,
+	groups []gokeepasslib.Group,
+	mapData map[string]map[string]string,
+	mapper func(db *gokeepasslib.Database, entry gokeepasslib.Entry) map[string]string,
+) map[string]map[string]string {
+	if mapData == nil {
+		mapData = map[string]map[string]string{}
+	}
+	for _, group := range groups {
+		if len(group.Entries) > 0 {
+			for _, entry := range group.Entries {
+				var elements []string
+				if path != "" {
+					elements = append(elements, path)
+				}
+				elements = append(elements, group.Name, entry.GetTitle())
+				mapData[strings.Join(elements, "/")] = mapper(db, entry)
+			}
+		}
+		if len(group.Groups) > 0 {
+			mapData = keepassxcBuiltinBuildCache(
+				db,
+				strings.TrimPrefix(fmt.Sprintf("%s/%s", path, group.Name), "/"),
+				group.Groups,
+				mapData,
+				mapper,
+			)
+		}
+	}
+	return mapData
+}
+
+// keepassxcBuiltinMapValueCache map builtin entries for values and attributes.
+func keepassxcBuiltinMapValueCache(_ *gokeepasslib.Database, entry gokeepasslib.Entry) map[string]string {
+	m := make(map[string]string)
+	for _, value := range entry.Values {
+		m[value.Key] = value.Value.Content
+	}
+	return m
+}
+
+// keepassxcBuiltinMapAttachmentCache map builtin entries for attachments.
+func keepassxcBuiltinMapAttachmentCache(db *gokeepasslib.Database, entry gokeepasslib.Entry) map[string]string {
+	m := make(map[string]string)
+	for _, bin := range entry.Binaries {
+		b := db.FindBinary(bin.Value.ID)
+		if b != nil {
+			str, err := b.GetContentString()
+			if err != nil {
+				panic(err)
+			}
+			m[bin.Name] = str
+		}
+	}
+	return m
 }
