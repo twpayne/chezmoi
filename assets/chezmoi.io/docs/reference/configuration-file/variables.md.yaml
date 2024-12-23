@@ -285,10 +285,10 @@ sections:
   interpreters:
     '*extension*.`args`':
       type: '[]string'
-      description: See [Scripts on Windows](../target-types.md#scripts-on-windows)
+      description: See [Interpreters](interpreters.md)
     '*extension*.`command`':
       default: '*special*'
-      description: See [Scripts on Windows](../target-types.md#scripts-on-windows)
+      description: See [Interpreters](interpreters.md)
   keepassxc:
     args:
       type: '[]string'

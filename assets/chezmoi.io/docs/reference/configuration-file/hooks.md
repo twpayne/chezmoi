@@ -15,7 +15,10 @@ Each event can have a `.pre` and/or a `.post` command. The *event*.`pre` command
 is executed before *event* occurs and the *event*`.post` command is executed
 after *event* has occurred.
 
- A command contains a `command` and an optional array of strings `args`.
+ A command contains a `command` or `script` and an optional array of strings
+ `args`. `command`s are executed directly. `script`s are executed with
+configured interpreter for the script's extension, see the [section on
+interpreters](interpreters.md).
 
 !!! example
 
@@ -27,6 +30,9 @@ after *event* has occurred.
     [hooks.apply.post]
     command = "echo"
     args = ["post-apply-hook"]
+
+    [hooks.add.post]
+    script = "post-add-hook.ps1'
     ```
 
 When running hooks, the `CHEZMOI=1` and `CHEZMOI_*` environment variables will

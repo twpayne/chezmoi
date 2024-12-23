@@ -117,6 +117,7 @@ nav:
     - Variables: reference/configuration-file/variables.md
     - Editor: reference/configuration-file/editor.md
     - Hooks: reference/configuration-file/hooks.md
+    - Interpreters: reference/configuration-file/interpreters.md
     - pinentry: reference/configuration-file/pinentry.md
     - textconv: reference/configuration-file/textconv.md
     - umask: reference/configuration-file/umask.md
