@@ -85,8 +85,6 @@ func (c *Config) commentTemplateFunc(prefix, s string) string {
 			_ = mustValue(builder.WriteRune(r))
 			if r == '\n' {
 				state = startOfLine
-			}
-		}
 	}
 	return builder.String()
 }
@@ -117,14 +115,20 @@ func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	for _, s := range more {
 		if strings.EqualFold(first, s) {
 			return true
-		}
 	}
 	return false
 }
 
-func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
+func (c *Config) findExecutableTemplateFunc(file string, pathList ...any) string {
 	files := []string{file}
-	paths, err := anyToStringSlice(pathList)
+	var paths []string
+	if len(pathList) > 0 {
+		var err error
+		paths, err = anyToStringSlice(pathList[0])
+		if err != nil {
+			panic(fmt.Errorf("path list: %w", err))
+		}
+	}
 	if err != nil {
 		panic(fmt.Errorf("path list: %w", err))
 	}
@@ -134,7 +138,6 @@ func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
 		return path
 	default:
 		panic(err)
-	}
 }
 
 func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
@@ -153,7 +156,6 @@ func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
 		return path
 	default:
 		panic(err)
-	}
 }
 
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
@@ -301,7 +303,6 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 		return ""
 	default:
 		panic(err)
-	}
 }
 
 func (c *Config) isExecutableTemplateFunc(file string) bool {
@@ -312,7 +313,6 @@ func (c *Config) isExecutableTemplateFunc(file string) bool {
 		return false
 	default:
 		panic(err)
-	}
 }
 
 func (c *Config) lstatTemplateFunc(name string) any {
@@ -323,7 +323,6 @@ func (c *Config) lstatTemplateFunc(name string) any {
 		return nil
 	default:
 		panic(err)
-	}
 }
 
 func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
@@ -350,7 +349,6 @@ func (c *Config) quoteTemplateFunc(list ...any) string {
 	for _, elem := range list {
 		if elem != nil {
 			ss = append(ss, strconv.Quote(anyToString(elem)))
-		}
 	}
 	return strings.Join(ss, " ")
 }
@@ -360,7 +358,6 @@ func (c *Config) squoteTemplateFunc(list ...any) string {
 	for _, elem := range list {
 		if elem != nil {
 			ss = append(ss, "'"+anyToString(elem)+"'")
-		}
 	}
 	return strings.Join(ss, " ")
 }
@@ -388,7 +385,6 @@ func (c *Config) readFile(filename string, searchDirAbsPaths []chezmoi.AbsPath) 
 		data, err = c.fileSystem.ReadFile(searchDir.JoinString(filename).String())
 		if !errors.Is(err, fs.ErrNotExist) {
 			return data, err
-		}
 	}
 	return data, err
 }
@@ -419,7 +415,6 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 			nestedMap := make(map[string]any)
 			currentMap[key] = nestedMap
 			currentMap = nestedMap
-		}
 	}
 	currentMap[lastKey] = value
 
@@ -443,7 +438,6 @@ func (c *Config) statTemplateFunc(name string) any {
 		return nil
 	default:
 		panic(err)
-	}
 }
 
 func (c *Config) toIniTemplateFunc(data map[string]any) string {
@@ -513,7 +507,6 @@ func anyToString(value any) string {
 		return value.String()
 	default:
 		return fmt.Sprintf("%v", value)
-	}
 }
 
 func anyToStringSlice(slice any) ([]string, error) {
@@ -528,7 +521,6 @@ func anyToStringSlice(slice any) ([]string, error) {
 		return slice, nil
 	default:
 		return nil, fmt.Errorf("%v: not a slice", slice)
-	}
 }
 
 func fileInfoToMap(fileInfo fs.FileInfo) map[string]any {
@@ -540,7 +532,6 @@ func fileInfoToMap(fileInfo fs.FileInfo) map[string]any {
 		"modTime": fileInfo.ModTime().Unix(),
 		"isDir":   fileInfo.IsDir(),
 		"type":    chezmoi.FileModeTypeNames[fileInfo.Mode()&fs.ModeType],
-	}
 }
 
 func iniFileToMap(file *ini.File) map[string]any {
@@ -552,7 +543,6 @@ func iniFileToMap(file *ini.File) map[string]any {
 			}
 		} else {
 			m[section.Name()] = iniSectionToMap(section)
-		}
 	}
 	return m
 }
@@ -579,8 +569,6 @@ func keysFromPath(path any) ([]string, string, error) {
 			if key == "" {
 				return nil, "", emptyPathElementError{
 					index: i,
-				}
-			}
 		}
 		return keys[:len(keys)-1], keys[len(keys)-1], nil
 	case []any:
@@ -600,7 +588,6 @@ func keysFromPath(path any) ([]string, string, error) {
 				}
 			default:
 				keys[i] = pathElementStr
-			}
 		}
 		return keys[:len(keys)-1], keys[len(keys)-1], nil
 	case []string:
@@ -611,8 +598,6 @@ func keysFromPath(path any) ([]string, string, error) {
 			if key == "" {
 				return nil, "", emptyPathElementError{
 					index: i,
-				}
-			}
 		}
 		return path[:len(path)-1], path[len(path)-1], nil
 	case nil:
@@ -620,8 +605,6 @@ func keysFromPath(path any) ([]string, string, error) {
 	default:
 		return nil, "", invalidPathTypeError{
 			path: path,
-		}
-	}
 }
 
 func nestedMapAtPath(m map[string]any, path any) (map[string]any, string, error) {
@@ -664,7 +647,6 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 			fmt.Fprintf(w, "%s = %s\n", key, maybeQuote(value))
 		default:
 			return fmt.Errorf("%s%s: %T: unsupported type", sectionPrefix, key, value)
-		}
 	}
 
 	// Write subsections in order.
@@ -674,7 +656,6 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 		}
 		if err := writeIniMap(w, subsection.value, sectionPrefix+subsection.key+"."); err != nil {
 			return err
-		}
 	}
 
 	return nil
@@ -713,7 +694,6 @@ func pruneEmptyMaps(m map[string]any) bool {
 		}
 		if pruneEmptyMaps(nestedMap) {
 			delete(m, key)
-		}
 	}
 	return len(m) == 0
 }

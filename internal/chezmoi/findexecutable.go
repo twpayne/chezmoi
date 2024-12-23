@@ -20,11 +20,14 @@ var (
 //
 // This makes it useful for the resulting path of shell configurations
 // managed by chezmoi.
-func FindExecutable(files, paths []string) (string, error) {
+func FindExecutable(files []string, paths ...[]string) (string, error) {
 	foundExecutableCacheMutex.Lock()
 	defer foundExecutableCacheMutex.Unlock()
+	if len(paths) == 0 || len(paths[0]) == 0 {
+		paths = [][]string{filepath.SplitList(os.Getenv("PATH"))}
+	}
 
-	key := strings.Join(files, "\x00") + "\x01" + strings.Join(paths, "\x00")
+	key := strings.Join(files, "\x00") + "\x01" + strings.Join(paths[0], "\x00")
 
 	if path, ok := foundExecutableCache[key]; ok {
 		return path, nil
@@ -37,7 +40,7 @@ func FindExecutable(files, paths []string) (string, error) {
 	}
 
 	// based on /usr/lib/go-1.20/src/os/exec/lp_unix.go:52
-	for _, candidatePath := range paths {
+	for _, candidatePath := range paths[0] {
 		if candidatePath == "" {
 			continue
 		}
@@ -58,8 +61,6 @@ func FindExecutable(files, paths []string) (string, error) {
 			if IsExecutable(info) {
 				foundExecutableCache[key] = path
 				return path, nil
-			}
-		}
 	}
 
 	return "", nil
