@@ -223,8 +223,8 @@ github.com/google/btree v1.1.3/go.mod h1:qOPhT0dTNdNzV6Z/lhRX0YXUafgPLFUh+gZMl76
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/google/go-github/v67 v67.0.0 h1:g11NDAmfaBaCO8qYdI9fsmbaRipHNWRIU/2YGvlh4rg=
-github.com/google/go-github/v67 v67.0.0/go.mod h1:zH3K7BxjFndr9QSeFibx4lTKkYS3K9nDanoI1NjaOtY=
+github.com/google/go-github/v68 v68.0.0 h1:ZW57zeNZiXTdQ16qrDiZ0k6XucrxZ2CGmoTvcCyQG6s=
+github.com/google/go-github/v68 v68.0.0/go.mod h1:K9HAUBovM2sLwM408A18h+wd9vqdLOEqTUCbnRIcx68=
 github.com/google/go-querystring v1.1.0 h1:AnCroh3fv4ZBgVIf1Iwtovgjaw/GiKJo8M8yD/fhyJ8=
 github.com/google/go-querystring v1.1.0/go.mod h1:Kcdr2DB4koayq7X8pmAG4sNG59So17icRSOU623lUBU=
 github.com/google/renameio/v2 v2.0.0 h1:UifI23ZTGY8Tt29JbYFiuyIU3eX+RNFtUwefq9qAhxg=
@@ -454,8 +454,8 @@ github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd h1:/ekqcdG89eu
 github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd/go.mod h1:Z1PlEHxKw23bid0pq2RhO4NMScxckEhBXZLebwJpjrk=
 github.com/twpayne/go-pinentry/v4 v4.0.0 h1:8WcNa+UDVRzz7y9OEEU/nRMX+UGFPCAvl5XsqWRxTY4=
 github.com/twpayne/go-pinentry/v4 v4.0.0/go.mod h1:aXvy+awVXqdH+GS0ddQ7AKHZ3tXM6fJ2NK+e16p47PI=
-github.com/twpayne/go-shell v0.4.0 h1:RAAMbjEj7mcwDdwC7SiFHGUKR+WDAURU6mnyd3r2p2E=
-github.com/twpayne/go-shell v0.4.0/go.mod h1:MP3aUA0TQ3IGoJc15ahjb+7A7wZH4NeGrvLZ/aFQsHc=
+github.com/twpayne/go-shell v0.5.0 h1:Mgd2GReIHdsCRT9OqYCh/ywf7x9r9cJhsZMIqKSVjIU=
+github.com/twpayne/go-shell v0.5.0/go.mod h1:MP3aUA0TQ3IGoJc15ahjb+7A7wZH4NeGrvLZ/aFQsHc=
 github.com/twpayne/go-vfs/v5 v5.0.4 h1:/ne3h+rW7f5YOyOFguz+3ztfUwzOLR0Vts3y0mMAitg=
 github.com/twpayne/go-vfs/v5 v5.0.4/go.mod h1:zTPFJUbgsEMFNSWnWQlLq9wh4AN83edZzx3VXbxrS1w=
 github.com/twpayne/go-xdg/v6 v6.1.3 h1:viM0S9v4KAc0IRW2xI3Zp8ZkqOCoCxmCmVZ7GTnG0y0=
@@ -607,8 +607,8 @@ google.golang.org/genproto/googleapis/rpc v0.0.0-20241118233622-e639e219e697 h1:
 google.golang.org/genproto/googleapis/rpc v0.0.0-20241118233622-e639e219e697/go.mod h1:5uTbfoYQed2U9p3KIj2/Zzm02PYhndfdmML0qC3q3FU=
 google.golang.org/grpc v1.68.0 h1:aHQeeJbo8zAkAa3pRzrVjZlbz6uSfeOXlJNQM0RAbz0=
 google.golang.org/grpc v1.68.0/go.mod h1:fmSPC5AsjSBCK54MyHRx48kpOti1/jRfOlwEWywNjWA=
-google.golang.org/protobuf v1.36.0 h1:mjIs9gYtt56AzC4ZaffQuh88TZurBGhIJMBZGSxNerQ=
-google.golang.org/protobuf v1.36.0/go.mod h1:9fA7Ob0pmnwhb644+1+CVWFRbNajQ6iRojtC/QF5bRE=
+google.golang.org/protobuf v1.36.1 h1:yBPeRvTftaleIgM3PZ/WBIZ7XM/eEYAaEyCwvyjq/gk=
+google.golang.org/protobuf v1.36.1/go.mod h1:9fA7Ob0pmnwhb644+1+CVWFRbNajQ6iRojtC/QF5bRE=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c h1:Hei/4ADfdWqJk1ZMxUNpqntNwaWcugrBjAiHlqqRiVk=
