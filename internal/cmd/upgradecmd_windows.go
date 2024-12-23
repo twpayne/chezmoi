@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v67/github"
+	"github.com/google/go-github/v68/github"
 	vfs "github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"

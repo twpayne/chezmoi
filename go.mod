@@ -21,7 +21,7 @@ require (
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/go-git/go-git/v5 v5.12.0
-	github.com/google/go-github/v67 v67.0.0
+	github.com/google/go-github/v68 v68.0.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.17
@@ -38,7 +38,7 @@ require (
 	github.com/tailscale/hujson v0.0.0-20241010212012-29efb4a0184b
 	github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd
 	github.com/twpayne/go-pinentry/v4 v4.0.0
-	github.com/twpayne/go-shell v0.4.0
+	github.com/twpayne/go-shell v0.5.0
 	github.com/twpayne/go-vfs/v5 v5.0.4
 	github.com/twpayne/go-xdg/v6 v6.1.3
 	github.com/ulikunitz/xz v0.5.12
@@ -164,6 +164,6 @@ require (
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.28.0 // indirect
-	google.golang.org/protobuf v1.36.0 // indirect
+	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
