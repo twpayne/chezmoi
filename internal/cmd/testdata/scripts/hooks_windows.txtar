@@ -1,0 +1,14 @@
+[!windows] skip 'Windows only'
+
+# test that chezmoi status runs hooks with an interpreter
+exec chezmoi status
+stdout pre-status-hook
+
+-- bin/pre-status-hook.ps1 --
+"pre-status-hook"
+-- home/user/.config/chezmoi/chezmoi.yaml --
+hooks:
+    status:
+        pre:
+            script: 'pre-status-hook.ps1'
+-- home/user/.local/share/chezmoi/.keep --

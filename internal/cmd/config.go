@@ -17,6 +17,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -79,6 +80,7 @@ type doPurgeOptions struct {
 
 type commandConfig struct {
 	Command string   `json:"command" mapstructure:"command" yaml:"command"`
+	Script  string   `json:"script"  mapstructure:"script"  yaml:"script"`
 	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
@@ -1213,7 +1215,7 @@ func (c *Config) destAbsPathInfos(
 // diffFile outputs the diff between fromData and fromMode and toData and toMode
 // at path.
 func (c *Config) diffFile(
-	path chezmoi.RelPath,
+	relPath chezmoi.RelPath,
 	fromData []byte,
 	fromMode fs.FileMode,
 	toData []byte,
@@ -1227,19 +1229,19 @@ func (c *Config) diffFile(
 	}
 	if fromMode.IsRegular() {
 		var err error
-		fromData, _, err = c.TextConv.convert(path.String(), fromData)
+		fromData, _, err = c.TextConv.convert(relPath.String(), fromData)
 		if err != nil {
 			return err
 		}
 	}
 	if toMode.IsRegular() {
 		var err error
-		toData, _, err = c.TextConv.convert(path.String(), toData)
+		toData, _, err = c.TextConv.convert(relPath.String(), toData)
 		if err != nil {
 			return err
 		}
 	}
-	diffPatch, err := chezmoi.DiffPatch(path, fromData, fromMode, toData, toMode)
+	diffPatch, err := chezmoi.DiffPatch(relPath, fromData, fromMode, toData, toMode)
 	if err != nil {
 		return err
 	}
@@ -2515,22 +2517,45 @@ func (c *Config) runEditor(args []string) error {
 	return err
 }
 
-// runHookPost runs the hook's post command, if it is set.
-func (c *Config) runHookPost(hook string) error {
-	command := c.Hooks[hook].Post
-	if command.Command == "" {
+// runHook runs a command or script hook.
+func (c *Config) runHook(command commandConfig) error {
+	var name string
+	var args []string
+	switch {
+	case command.Command != "" && command.Script != "":
+		return errors.New("cannot specify both command and script")
+	case command.Command != "":
+		name = command.Command
+		args = command.Args
+	case command.Script != "":
+		extension := strings.TrimPrefix(strings.ToLower(path.Ext(command.Script)), ".")
+		if interpreter, ok := c.Interpreters[extension]; ok {
+			name = interpreter.Command
+			args = slices.Concat(interpreter.Args, []string{command.Script}, command.Args)
+		} else {
+			name = command.Script
+			args = command.Args
+		}
+	default:
 		return nil
 	}
-	return c.run(c.homeDirAbsPath, command.Command, command.Args)
+	return c.run(c.homeDirAbsPath, name, args)
+}
+
+// runHookPost runs the hook's post command, if it is set.
+func (c *Config) runHookPost(hook string) error {
+	if err := c.runHook(c.Hooks[hook].Post); err != nil {
+		return fmt.Errorf("%s: post: %w", hook, err)
+	}
+	return nil
 }
 
 // runHookPre runs the hook's pre command, if it is set.
 func (c *Config) runHookPre(hook string) error {
-	command := c.Hooks[hook].Pre
-	if command.Command == "" {
-		return nil
+	if err := c.runHook(c.Hooks[hook].Pre); err != nil {
+		return fmt.Errorf("%s: pre: %w", hook, err)
 	}
-	return c.run(c.homeDirAbsPath, command.Command, command.Args)
+	return nil
 }
 
 // setEncryption configures c's encryption.
@@ -2991,8 +3016,8 @@ func (f *ConfigFile) toMap() map[string]any {
 
 func parseCommand(command string, args []string) (string, []string, error) {
 	// If command is found, then return it.
-	if path, err := chezmoi.LookPath(command); err == nil {
-		return path, args, nil
+	if commandPath, err := chezmoi.LookPath(command); err == nil {
+		return commandPath, args, nil
 	}
 
 	// Otherwise, if the command contains spaces, parse it as a shell command.
