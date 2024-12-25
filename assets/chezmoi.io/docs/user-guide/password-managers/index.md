@@ -1,9 +1,9 @@
 # Password Manager Integration in Chezmoi
 
-Integrating a password manager with Chezmoi enables you to maintain a public
-dotfiles repository while keeping your secrets secure. This integration allows
-you to synchronize sensitive information across multiple machines through your
-password manager while managing your dotfiles with Chezmoi.
+Using a password manager with Chezmoi enables you to maintain a public dotfiles
+repository while keeping your secrets secure. Chezmoi provides template functions
+for many popular password managers so that your templates can render sensitive
+information across multiple machines.
 
 ## Understanding Templates
 
