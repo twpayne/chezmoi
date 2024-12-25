@@ -22,5 +22,9 @@ export OPENAI_API_KEY='{{ onepasswordRead "op://Personal/openai-api-key/password
 
 In this example, the `OPENAI_API_KEY` is retrieved from a 1Password vault
 named `Personal`, specifically from an item called `openai-api-key` in the
-`password` field. When Chezmoi applies this template, it will automatically
-fetch the current value from 1Password and insert it into the generated file.
+`password` field.
+
+!!! info
+
+    When Chezmoi applies this template, it will automatically fetch the
+    current value from 1Password and insert it into the generated file.
