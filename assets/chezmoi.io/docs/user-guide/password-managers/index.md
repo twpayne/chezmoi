@@ -9,32 +9,14 @@ information across multiple machines.
 Here's a practical example of a `.zshrc.tmpl` file that retrieves an OpenAI API
 key from 1Password while maintaining other standard shell configurations:
 
-```
+```zsh
+# set up $PATH
+# …
+
 # OpenAI API Key retrieved from 1Password
 export OPENAI_API_KEY='{{ onepasswordRead "op://Personal/openai-api-key/password" }}'
 
-# Common aliases
-alias ll='ls -la'
-alias c='clear'
-alias ..='cd ..'
-
-# Git aliases
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-
-# Path exports
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Auto-completion settings
-autoload -Uz compinit
-compinit
-
-# Custom functions
-function mkcd() {
-    mkdir -p "$1" && cd "$1"
-}
+# set up aliases and useful functions
 ```
 
 In this example, the `OPENAI_API_KEY` is retrieved from a 1Password vault
