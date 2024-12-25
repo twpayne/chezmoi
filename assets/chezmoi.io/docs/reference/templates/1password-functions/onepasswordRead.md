@@ -22,6 +22,12 @@ interactively prompted to sign in.
     $ op read --no-newline op://vault/item/field
     ```
 
+    Specify an account by passing in a string argument after the `url`
+
+    ```console
+    {{ onepasswordRead "op://vault/item/field" "account_name" }}
+    ```
+
 !!! warning
 
     When using [1Password secrets
