@@ -4,6 +4,7 @@ Using a password manager with Chezmoi enables you to maintain a public dotfiles
 repository while keeping your secrets secure. Chezmoi provides template functions
 for many popular password managers so that your templates can render sensitive
 information across multiple machines.
+
 ## Example: Template with Password Manager Integration
 
 Here's a practical example of a `.zshrc.tmpl` file that retrieves an OpenAI API
