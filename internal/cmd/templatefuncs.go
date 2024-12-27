@@ -237,10 +237,10 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 	}
 	contents := mustValue(c.readFile(filename, searchDirAbsPaths))
 
-	templateOptions := chezmoi.TemplateOptions{
+	tmpl := mustValue(chezmoi.ParseTemplate(filename, contents, chezmoi.TemplateOptions{
+		Funcs:   c.templateFuncs,
 		Options: slices.Clone(c.Template.Options),
-	}
-	tmpl := mustValue(chezmoi.ParseTemplate(filename, contents, c.templateFuncs, templateOptions))
+	}))
 
 	return string(mustValue(tmpl.Execute(data)))
 }

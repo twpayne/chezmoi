@@ -873,7 +873,8 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *co
 	}
 	chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
 
-	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, c.templateFuncs, chezmoi.TemplateOptions{
+	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, chezmoi.TemplateOptions{
+		Funcs:   c.templateFuncs,
 		Options: slices.Clone(c.Template.Options),
 	})
 	if err != nil {
@@ -1594,8 +1595,8 @@ func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 
 // gitCommitMessage returns the git commit message for the given status.
 func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status) ([]byte, error) {
-	funcMap := maps.Clone(c.templateFuncs)
-	maps.Copy(funcMap, map[string]any{
+	templateFuncs := maps.Clone(c.templateFuncs)
+	maps.Copy(templateFuncs, map[string]any{
 		"promptBool":   c.promptBoolInteractiveTemplateFunc,
 		"promptChoice": c.promptChoiceInteractiveTemplateFunc,
 		"promptInt":    c.promptIntInteractiveTemplateFunc,
@@ -1625,7 +1626,8 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status)
 		name = "COMMIT_MESSAGE"
 		commitMessageTemplateData = []byte(templates.CommitMessageTmpl)
 	}
-	commitMessageTmpl, err := chezmoi.ParseTemplate(name, commitMessageTemplateData, funcMap, chezmoi.TemplateOptions{
+	commitMessageTmpl, err := chezmoi.ParseTemplate(name, commitMessageTemplateData, chezmoi.TemplateOptions{
+		Funcs:   templateFuncs,
 		Options: slices.Clone(c.Template.Options),
 	})
 	if err != nil {
