@@ -11,19 +11,19 @@ generated destination file.
 
 ## Example: Template with Password Manager Integration
 
-Here's a practical example of a `.zshrc.tmpl` file that retrieves an OpenAI API
-key from 1Password while maintaining other standard shell configurations:
+Here's a practical example of a `.zshrc.tmpl` file that retrieves an CloudFlare
+API token from 1Password while maintaining other standard shell configurations:
 
 ```zsh
 # set up $PATH
 # …
 
-# OpenAI API Key retrieved from 1Password
-export OPENAI_API_KEY='{{ onepasswordRead "op://Personal/openai-api-key/password" }}'
+# Cloudflare API Token retrieved from 1Password for use with flarectl
+export CF_API_TOKEN='{{ onepasswordRead "op://Personal/cloudlfare-api-token/password" }}'
 
 # set up aliases and useful functions
 ```
 
-In this example, the `OPENAI_API_KEY` is retrieved from a 1Password vault
-named `Personal`, specifically from an item called `openai-api-key` in the
+In this example, the `CF_API_TOKEN` is retrieved from a 1Password vault
+named `Personal`, specifically from an item called `cloudflare-api-token` in the
 `password` field.
