@@ -36,6 +36,43 @@ func TestCatCmd(t *testing.T) {
 				"ok",
 			),
 		},
+		{
+			name: "json_indent",
+			root: map[string]any{
+				"/home/user/.local/share/chezmoi/dot_template.tmpl": chezmoitest.JoinLines(
+					`# chezmoi:template:format-indent-width=3`,
+					`{{ dict "a" (dict "b" "c") | toJson }}`,
+				),
+			},
+			args: []string{
+				"/home/user/.template",
+			},
+			expectedStr: chezmoitest.JoinLines(
+				`{`,
+				`   "a": {`,
+				`      "b": "c"`,
+				`   }`,
+				`}`,
+				``,
+			),
+		},
+		{
+			name: "yaml_indent",
+			root: map[string]any{
+				"/home/user/.local/share/chezmoi/dot_template.tmpl": chezmoitest.JoinLines(
+					`# chezmoi:template:format-indent-width=3`,
+					`{{ dict "a" (dict "b" "c") | toYaml }}`,
+				),
+			},
+			args: []string{
+				"/home/user/.template",
+			},
+			expectedStr: chezmoitest.JoinLines(
+				`a:`,
+				`   b: c`,
+				``,
+			),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {

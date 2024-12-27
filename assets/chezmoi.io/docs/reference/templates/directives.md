@@ -37,6 +37,33 @@ inherited by templates called from the file.
     # [[ "true" ]]
     ```
 
+## Format indent
+
+By default, chezmoi's `toJson`, `toToml`, and `toYaml` template functions use
+the default indent of two spaces. The indent can be overidden with:
+
+    chezmoi:template:format-indent=$STRING
+
+to set the indent to be the literal `$STRING`, or
+
+    chezmoi:template:format-indent-width=$WIDTH
+
+to set the indent to be `$WIDTH` spaces.
+
+!!! example
+
+    ```
+    {{/* chezmoi:template:format-indent="\t" */}}
+    {{ dict "key" "value" | toJson }}
+    ```
+
+!!! example
+
+    ```
+    {{/* chezmoi:template:format-indent-width=4 */}}
+    {{ dict "key" "value" | toYaml }}
+    ```
+
 ## Line endings
 
 Many of the template functions available in chezmoi primarily use UNIX-style
