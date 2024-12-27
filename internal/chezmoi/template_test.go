@@ -65,7 +65,7 @@ func TestTemplateParseAndExecute(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			tmpl, err := ParseTemplate(tc.name, []byte(tc.dataStr), nil, TemplateOptions{})
+			tmpl, err := ParseTemplate(tc.name, []byte(tc.dataStr), TemplateOptions{})
 			assert.NoError(t, err)
 			actual, err := tmpl.Execute(nil)
 			assert.NoError(t, err)

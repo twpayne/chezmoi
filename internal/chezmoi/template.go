@@ -17,6 +17,7 @@ type Template struct {
 
 // TemplateOptions are template options that can be set with directives.
 type TemplateOptions struct {
+	Funcs          template.FuncMap
 	LeftDelimiter  string
 	LineEnding     string
 	RightDelimiter string
@@ -25,12 +26,12 @@ type TemplateOptions struct {
 
 // ParseTemplate parses a template named name from data with the given funcs and
 // templateOptions.
-func ParseTemplate(name string, data []byte, funcs template.FuncMap, options TemplateOptions) (*Template, error) {
+func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template, error) {
 	contents := options.parseAndRemoveDirectives(data)
 	tmpl, err := template.New(name).
 		Option(options.Options...).
 		Delims(options.LeftDelimiter, options.RightDelimiter).
-		Funcs(funcs).
+		Funcs(options.Funcs).
 		Parse(string(contents))
 	if err != nil {
 		return nil, err

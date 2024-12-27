@@ -798,9 +798,10 @@ type ExecuteTemplateDataOptions struct {
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([]byte, error) {
 	templateOptions := options.TemplateOptions
+	templateOptions.Funcs = s.templateFuncs
 	templateOptions.Options = slices.Clone(s.templateOptions)
 
-	tmpl, err := ParseTemplate(options.Name, options.Data, s.templateFuncs, templateOptions)
+	tmpl, err := ParseTemplate(options.Name, options.Data, templateOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -1529,7 +1530,8 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
 			name := templateRelPath.String()
 
-			tmpl, err := ParseTemplate(name, contents, s.templateFuncs, TemplateOptions{
+			tmpl, err := ParseTemplate(name, contents, TemplateOptions{
+				Funcs:   s.templateFuncs,
 				Options: slices.Clone(s.templateOptions),
 			})
 			if err != nil {
@@ -1955,14 +1957,10 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				sourceFile := sourceRelPath.String()
 				templateContents := removeMatches(modifierContents, matches)
 				var tmpl *Template
-				tmpl, err = ParseTemplate(
-					sourceFile,
-					templateContents,
-					s.templateFuncs,
-					TemplateOptions{
-						Options: slices.Clone(s.templateOptions),
-					},
-				)
+				tmpl, err = ParseTemplate(sourceFile, templateContents, TemplateOptions{
+					Funcs:   s.templateFuncs,
+					Options: slices.Clone(s.templateOptions),
+				})
 				if err != nil {
 					return
 				}
