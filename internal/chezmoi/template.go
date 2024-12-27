@@ -2,10 +2,16 @@ package chezmoi
 
 import (
 	"bytes"
+	"encoding/json"
+	"maps"
+	"strconv"
 	"strings"
 	"text/template"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/mitchellh/copystructure"
+	"github.com/pelletier/go-toml/v2"
+	"gopkg.in/yaml.v3"
 )
 
 // A Template extends text/template.Template with support for directives.
@@ -18,6 +24,7 @@ type Template struct {
 // TemplateOptions are template options that can be set with directives.
 type TemplateOptions struct {
 	Funcs          template.FuncMap
+	FormatIndent   string
 	LeftDelimiter  string
 	LineEnding     string
 	RightDelimiter string
@@ -27,11 +34,45 @@ type TemplateOptions struct {
 // ParseTemplate parses a template named name from data with the given funcs and
 // templateOptions.
 func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template, error) {
-	contents := options.parseAndRemoveDirectives(data)
+	contents, err := options.parseAndRemoveDirectives(data)
+	if err != nil {
+		return nil, err
+	}
+	funcs := options.Funcs
+	if options.FormatIndent != "" {
+		funcs = maps.Clone(funcs)
+		funcs["toJson"] = func(data any) string {
+			var builder strings.Builder
+			encoder := json.NewEncoder(&builder)
+			encoder.SetIndent("", options.FormatIndent)
+			if err := encoder.Encode(data); err != nil {
+				panic(err)
+			}
+			return builder.String()
+		}
+		funcs["toToml"] = func(data any) string {
+			var builder strings.Builder
+			encoder := toml.NewEncoder(&builder)
+			encoder.SetIndentSymbol(options.FormatIndent)
+			if err := encoder.Encode(data); err != nil {
+				panic(err)
+			}
+			return builder.String()
+		}
+		funcs["toYaml"] = func(data any) string {
+			var builder strings.Builder
+			encoder := yaml.NewEncoder(&builder)
+			encoder.SetIndent(runewidth.StringWidth(options.FormatIndent))
+			if err := encoder.Encode(data); err != nil {
+				panic(err)
+			}
+			return builder.String()
+		}
+	}
 	tmpl, err := template.New(name).
 		Option(options.Options...).
 		Delims(options.LeftDelimiter, options.RightDelimiter).
-		Funcs(options.Funcs).
+		Funcs(funcs).
 		Parse(string(contents))
 	if err != nil {
 		return nil, err
@@ -71,10 +112,10 @@ func (t *Template) Execute(data any) ([]byte, error) {
 // parseAndRemoveDirectives updates o by parsing all template directives in data
 // and returns data with the lines containing directives removed. The lines are
 // removed so that any delimiters do not break template parsing.
-func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
+func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) ([]byte, error) {
 	directiveMatches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
 	if directiveMatches == nil {
-		return data
+		return data, nil
 	}
 
 	// Parse options from directives.
@@ -84,6 +125,14 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
 			key := string(keyValuePairMatch[1])
 			value := maybeUnquote(string(keyValuePairMatch[2]))
 			switch key {
+			case "format-indent":
+				o.FormatIndent = value
+			case "format-indent-width":
+				width, err := strconv.Atoi(value)
+				if err != nil {
+					return nil, err
+				}
+				o.FormatIndent = strings.Repeat(" ", width)
 			case "left-delimiter":
 				o.LeftDelimiter = value
 			case "line-ending", "line-endings":
@@ -105,7 +154,7 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
 		}
 	}
 
-	return removeMatches(data, directiveMatches)
+	return removeMatches(data, directiveMatches), nil
 }
 
 // removeMatches returns data with matchesIndexes removed.

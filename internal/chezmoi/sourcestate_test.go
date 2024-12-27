@@ -1798,6 +1798,7 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 		name            string
 		dataStr         string
 		expected        TemplateOptions
+		expectedErr     string
 		expectedDataStr string
 	}{
 		{
@@ -1957,12 +1958,36 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 				LineEnding: "\n",
 			},
 		},
+		{
+			name:    "format_indent_string",
+			dataStr: `chezmoi:template:format-indent="\t"`,
+			expected: TemplateOptions{
+				FormatIndent: "\t",
+			},
+		},
+		{
+			name:    "format_indent_width_number",
+			dataStr: `chezmoi:template:format-indent-width=2`,
+			expected: TemplateOptions{
+				FormatIndent: "  ",
+			},
+		},
+		{
+			name:        "format_indent_width_number_error",
+			dataStr:     `chezmoi:template:format-indent-width=x`,
+			expectedErr: `strconv.Atoi: parsing "x": invalid syntax`,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var actual TemplateOptions
-			actualData := actual.parseAndRemoveDirectives([]byte(tc.dataStr))
-			assert.Equal(t, tc.expected, actual)
-			assert.Equal(t, tc.expectedDataStr, string(actualData))
+			actualData, err := actual.parseAndRemoveDirectives([]byte(tc.dataStr))
+			if tc.expectedErr != "" {
+				assert.EqualError(t, err, tc.expectedErr)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expected, actual)
+				assert.Equal(t, tc.expectedDataStr, string(actualData))
+			}
 		})
 	}
 }
