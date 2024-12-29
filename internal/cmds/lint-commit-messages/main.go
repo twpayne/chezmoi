@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-var commitRx = regexp.MustCompile(`\A([0-9a-f]{40}) (chore(?:\([\w\-]+\))?|docs|feat|fix): `)
+var commitRx = regexp.MustCompile(`\A([0-9a-f]{40}) (chore(?:\([\w\-]+\))?|docs|feat|fix): [A-Z]`)
 
 func run() error {
 	args := append([]string{"log", "--format=oneline"}, os.Args[1:]...)

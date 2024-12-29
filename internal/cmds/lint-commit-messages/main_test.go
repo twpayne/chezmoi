@@ -10,12 +10,12 @@ import (
 func TestCommitRx(t *testing.T) {
 	prefix := strings.Repeat("0", 40) + " "
 	for s, match := range map[string]bool{
-		"chore(deps): text":     true,
-		"chore(deps-dev): text": true,
-		"chore: text":           true,
-		"docs: text":            true,
-		"feat: text":            true,
-		"fix: text":             true,
+		"chore(deps): Text":     true,
+		"chore(deps-dev): Text": true,
+		"chore: Text":           true,
+		"docs: Text":            true,
+		"feat: Text":            true,
+		"fix: Text":             true,
 		"fixup!":                false,
 		"snapshot":              false,
 	} {
