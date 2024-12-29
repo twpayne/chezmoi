@@ -83,8 +83,6 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 		if data, ok := c.Keepassxc.cache[entry]; ok {
 			if att, ok := data[name]; ok {
 				return att
-			} else {
-				panic(fmt.Sprintf("attachment %s of entry %s not found", name, entry))
 			}
 		}
 		panic(fmt.Sprintf("attachment %s of entry %s not found", name, entry))
