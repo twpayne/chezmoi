@@ -2309,21 +2309,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Scripts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#scripts-on-windows" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scripts on Windows
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2376,6 +2361,8 @@
       
         
           
+        
+      
         
       
         
@@ -2494,6 +2481,27 @@
   
   <span class="md-ellipsis">
     Hooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration-file/interpreters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interpreters
   </span>
   
 
@@ -8675,21 +8683,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Scripts">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#scripts-on-windows" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scripts on Windows
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -8795,96 +8788,7 @@ directory of <code>~/dir</code>.</p>
 <p>chezmoi sets a number of <code>CHEZMOI*</code> environment variables when running scripts,
 corresponding to commonly-used template data variables. Extra environment
 variables can be set in the <code>env</code> or <code>scriptEnv</code> configuration variables.</p>
-<h3 id="scripts-on-windows">Scripts on Windows</h3>
-<!-- FIXME: some of the following needs to be moved to the how-to -->
-
-<p>The execution of scripts on Windows depends on the script's file extension.
-Windows will natively execute scripts with a <code>.bat</code>, <code>.cmd</code>, <code>.com</code>, and <code>.exe</code>
-extensions. Other extensions require an interpreter, which must be in your
-<code>%PATH%</code>.</p>
-<p>The default script interpreters are:</p>
-<table>
-<thead>
-<tr>
-<th>Extension</th>
-<th>Command</th>
-<th>Arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>.nu</code></td>
-<td><code>nu</code></td>
-<td><em>none</em></td>
-</tr>
-<tr>
-<td><code>.pl</code></td>
-<td><code>perl</code></td>
-<td><em>none</em></td>
-</tr>
-<tr>
-<td><code>.py</code></td>
-<td><code>python3</code></td>
-<td><em>none</em></td>
-</tr>
-<tr>
-<td><code>.ps1</code></td>
-<td><code>powershell</code></td>
-<td><code>-NoLogo</code></td>
-</tr>
-<tr>
-<td><code>.rb</code></td>
-<td><code>ruby</code></td>
-<td><em>none</em></td>
-</tr>
-</tbody>
-</table>
-<p>Script interpreters can be added or overridden by adding the corresponding
-extension (without the leading dot) as a key under the <code>interpreters</code>
-section of the configuration file.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The leading <code>.</code> is dropped from <em>extension</em>, for example to specify the
-interpreter for <code>.pl</code> files you configure <code>interpreters.pl</code> (where <code>.</code>
-in this case just means "a child of" in the configuration file, however
-that is specified in your preferred format).</p>
-</div>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p>To change the Python interpreter to <code>C:\Python39\python3.exe</code> and add a
-Tcl/Tk interpreter, include the following in your config file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.py]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;C:\Python39\python3.exe&#39;</span>
-<span class="k">[interpreters.tcl]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;tclsh&quot;</span>
-</code></pre></div>
-<p>Or if using YAML:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">interpreters</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">py</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C:\Python39</span><span class="err">\</span><span class="s">python3.exe&quot;</span>
-<span class="w">  </span><span class="nt">tcl</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;tclsh&quot;</span>
-</code></pre></div>
-<p>Note that the TOML version can also be written like this, which
-resembles the YAML version more and makes it clear that the key
-for each file extension should not have a leading <code>.</code>:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters]</span>
-<span class="n">py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s1">&#39;C:\Python39\python3.exe&#39;</span><span class="w"> </span><span class="p">}</span>
-<span class="n">tcl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;tclsh&quot;</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you intend to use PowerShell Core (<code>pwsh.exe</code>) as the <code>.ps1</code>
-interpreter, include the following in your config file:</p>
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.ps1]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;pwsh&quot;</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-NoLogo&quot;</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<p>If the script in the source state is a template (with a <code>.tmpl</code> extension), then
-chezmoi will strip the <code>.tmpl</code> extension and use the next remaining extension to
-determine the interpreter to use.</p>
+<p>Scripts are executed using an interpreter, if configured. See the <a href="../configuration-file/interpreters/">section on interpreters</a>.</p>
 <h2 id="symlink-mode"><code>symlink</code> mode</h2>
 <p>By default, chezmoi will create regular files and directories. Setting <code>mode =
 "symlink"</code> will make chezmoi behave more like a dotfile manager that uses

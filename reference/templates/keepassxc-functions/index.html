@@ -2259,6 +2259,8 @@
       
         
       
+        
+      
     
     
       
@@ -2361,6 +2363,27 @@
   
   <span class="md-ellipsis">
     Hooks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration-file/interpreters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interpreters
   </span>
   
 
@@ -8493,7 +8516,7 @@
 file. You will be prompted for the database password the first time
 <code>keepassxc-cli</code> is run, and the password is cached, in plain text, in memory
 until chezmoi terminates.</p>
-<p>The command used can by changed by setting the <code>keepassxc.command</code> configuration
+<p>The command used can be changed by setting the <code>keepassxc.command</code> configuration
 variable, and extra arguments can be added by setting <code>keepassxc.args</code>. The
 password prompt can be disabled by setting <code>keepassxc.prompt</code> to <code>false</code>.</p>
 <p>By default, chezmoi will prompt for the KeePassXC password when required and
@@ -8501,6 +8524,10 @@ cache it for the duration of chezmoi's execution. Setting <code>keepassxc.mode</
 <code>open</code> will tell chezmoi to instead open KeePassXC's console with <code>keepassxc-cli
 open</code> followed by <code>keepassxc.args</code>. chezmoi will use this console to request
 values from KeePassXC.</p>
+<p>When setting <code>keepassxc.mode</code> to <code>builtin</code>, chezmoi uses a builtin library to
+access a keepassxc database, which can be handy if <code>keepassxc-cli</code> is not
+available. Some KeePassXC features (such as Yubikey-enhanced
+encryption) may not be available with builtin support.</p>
 
 
 

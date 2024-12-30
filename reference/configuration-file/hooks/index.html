@@ -18,7 +18,7 @@
         <link rel="prev" href="../editor/">
       
       
-        <link rel="next" href="../pinentry/">
+        <link rel="next" href="../interpreters/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -2261,6 +2261,8 @@
       
         
       
+        
+      
     
     
       
@@ -2375,6 +2377,27 @@
 
       </a>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interpreters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interpreters
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -8521,7 +8544,10 @@ idempotent.</p>
 <p>Each event can have a <code>.pre</code> and/or a <code>.post</code> command. The <em>event</em>.<code>pre</code> command
 is executed before <em>event</em> occurs and the <em>event</em><code>.post</code> command is executed
 after <em>event</em> has occurred.</p>
-<p>A command contains a <code>command</code> and an optional array of strings <code>args</code>.</p>
+<p>A command contains a <code>command</code> or <code>script</code> and an optional array of strings
+ <code>args</code>. <code>command</code>s are executed directly. <code>script</code>s are executed with
+configured interpreter for the script's extension, see the <a href="../interpreters/">section on
+interpreters</a>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[hooks.read-source-state.pre]</span>
@@ -8531,6 +8557,9 @@ after <em>event</em> has occurred.</p>
 <span class="k">[hooks.apply.post]</span>
 <span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;echo&quot;</span>
 <span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;post-apply-hook&quot;</span><span class="p">]</span>
+
+<span class="k">[hooks.add.post]</span>
+<span class="n">script</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;post-add-hook.ps1&#39;</span>
 </code></pre></div>
 </div>
 <p>When running hooks, the <code>CHEZMOI=1</code> and <code>CHEZMOI_*</code> environment variables will
