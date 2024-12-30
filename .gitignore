@@ -1,3 +1,4 @@
+/.flatpak-builder
 /.vagrant
 /COMMIT
 /bin/actionlint
@@ -9,9 +10,11 @@
 /bin/golangci-lint
 /bin/goreleaser
 /bin/goversioninfo
+/builddir
 /chezmoi
 /chezmoi.exe
 /coverage.out
 /dist
+/repo
 /resource_windows_*.syso
 /versioninfo.json

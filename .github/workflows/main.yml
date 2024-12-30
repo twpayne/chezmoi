@@ -269,6 +269,15 @@ jobs:
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
+    - name: create-flatpak
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      run: |
+        sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install flatpak flatpak-builder
+        flatpak --version
+        flatpak-builder --version
+        flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+        flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo --install builddir io.chezmoi.chezmoi.yml
+        flatpak run io.chezmoi.chezmoi --version
   test-ubuntu:
     name: test-ubuntu-umask${{ matrix.umask }}-${{ matrix.test-index }}
     strategy:

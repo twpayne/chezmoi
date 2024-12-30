@@ -1,0 +1,18 @@
+id: io.chezmoi.chezmoi
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: chezmoi
+modules:
+- name: chezmoi
+  buildsystem: simple
+  build-commands:
+  - install -Dm755 chezmoi /app/bin/chezmoi
+  sources:
+  - type: file
+    path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
+finish-args:
+- --share=network
+- --filesystem=host
+- --filesystem=host-etc
+- --filesystem=host-os
