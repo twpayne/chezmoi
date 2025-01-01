@@ -12,6 +12,7 @@ func TestCommitRx(t *testing.T) {
 	for s, match := range map[string]bool{
 		"chore(deps): Text":     true,
 		"chore(deps-dev): Text": true,
+		"chore(deps): bump":     true,
 		"chore: Text":           true,
 		"docs: Text":            true,
 		"feat: Text":            true,
