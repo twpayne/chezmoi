@@ -20,7 +20,7 @@ require (
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.8.0
-	github.com/go-git/go-git/v5 v5.13.0
+	github.com/go-git/go-git/v5 v5.13.1
 	github.com/google/go-github/v68 v68.0.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
@@ -50,7 +50,7 @@ require (
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.31.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20241211175049-b4f1988a35de
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250102161546-4a75ba54c28f
 	golang.org/x/oauth2 v0.24.0
 	golang.org/x/sync v0.10.0
 	golang.org/x/sys v0.28.0
