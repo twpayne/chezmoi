@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -22,7 +21,7 @@ func (systeminfoCheck) Name() string {
 	return "systeminfo"
 }
 
-func (systeminfoCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (systeminfoCheck) Run(config *Config) (checkResult, string) {
 	cmd := exec.Command("systeminfo")
 	data, err := chezmoilog.LogCmdOutput(slog.Default(), cmd)
 	if err != nil {

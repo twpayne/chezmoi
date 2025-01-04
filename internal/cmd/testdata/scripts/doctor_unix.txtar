@@ -68,7 +68,7 @@ chhome home2/user
 
 # test that chezmoi doctor warns about missing directories on an empty system
 ! exec chezmoi doctor
-stdout '^ok\s+config-file\s+'
+stdout '^info\s+config-file\s+'
 stdout '^error\s+source-dir\s+'
 stdout '^ok\s+suspicious-entries\s+'
 
@@ -80,9 +80,9 @@ stdout '^warning\s+suspicious-entries\s+'
 
 chhome home4/user
 
-# test that chezmoi doctor does not print a warning about multiple config files
+# test that chezmoi doctor prints an error about multiple config files
 ! exec chezmoi doctor
-stdout '^warning\s+config-file\s+.*multiple config files'
+stdout '^error\s+config-file\s+multiple config files'
 ! stderr .
 
 chhome home5/user

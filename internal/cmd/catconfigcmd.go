@@ -21,7 +21,11 @@ func (c *Config) newCatConfigCmd() *cobra.Command {
 }
 
 func (c *Config) runCatConfigCmd(cmd *cobra.Command, args []string) error {
-	data, err := c.baseSystem.ReadFile(c.getConfigFileAbsPath())
+	configFileAbsPath, err := c.getConfigFileAbsPath()
+	if err != nil {
+		return err
+	}
+	data, err := c.baseSystem.ReadFile(configFileAbsPath)
 	if err != nil {
 		return err
 	}

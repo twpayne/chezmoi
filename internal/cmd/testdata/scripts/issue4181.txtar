@@ -1,0 +1,7 @@
+# test that chezmoi doctor finds the specified config file
+exec chezmoi --config $HOME${/}.second/che.yaml doctor
+stdout 'ok\s+config-file\s+found ~/\.second/che\.yaml'
+
+-- home/user/.config/chezmoi/chezmoi.yaml --
+-- home/user/.local/share/chezmoi/.keep --
+-- home/user/.second/che.yaml --

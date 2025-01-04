@@ -205,6 +205,11 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
+	configFileAbsPath, err := c.getConfigFileAbsPath()
+	if err != nil {
+		return err
+	}
+
 	return sourceState.Add(
 		c.sourceSystem,
 		c.persistentState,
@@ -220,11 +225,11 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			Filter:            c.Add.filter,
 			OnIgnoreFunc:      c.defaultOnIgnoreFunc,
 			PreAddFunc:        c.defaultPreAddFunc,
-			ConfigFileAbsPath: c.getConfigFileAbsPath(),
+			ConfigFileAbsPath: configFileAbsPath,
 			ProtectedAbsPaths: []chezmoi.AbsPath{
 				c.CacheDirAbsPath,
 				c.WorkingTreeAbsPath,
-				c.getConfigFileAbsPath().Dir(),
+				configFileAbsPath.Dir(),
 				persistentStateFileAbsPath,
 				c.sourceDirAbsPath,
 				chezmoi.NewAbsPath(executable),

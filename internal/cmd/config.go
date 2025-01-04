@@ -555,11 +555,11 @@ func newConfig(options ...configOption) (*Config, error) {
 	return c, nil
 }
 
-func (c *Config) getConfigFileAbsPath() chezmoi.AbsPath {
+func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
 	if c.customConfigFileAbsPath.Empty() {
-		return c.defaultConfigFileAbsPath
+		return c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr
 	}
-	return c.customConfigFileAbsPath
+	return c.customConfigFileAbsPath, nil
 }
 
 // Close closes resources associated with c.
@@ -1894,7 +1894,11 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 
 	// Verify modified config.
 	if annotations.hasTag(modifiesConfigFile) {
-		configFileContents, err := c.baseSystem.ReadFile(c.getConfigFileAbsPath())
+		configFileAbsPath, err := c.getConfigFileAbsPath()
+		if err != nil {
+			return err
+		}
+		configFileContents, err := c.baseSystem.ReadFile(configFileAbsPath)
 		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			err = nil
@@ -1902,7 +1906,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			// err is already set, do nothing.
 		default:
 			var format chezmoi.Format
-			if format, err = chezmoi.FormatFromAbsPath(c.getConfigFileAbsPath()); err == nil {
+			if format, err = chezmoi.FormatFromAbsPath(configFileAbsPath); err == nil {
 				var config map[string]any
 				if err = format.Unmarshal(configFileContents, &config); err != nil { //nolint:revive
 					// err is already set, do nothing.
@@ -1912,7 +1916,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			}
 		}
 		if err != nil {
-			c.errorf("warning: %s: %v\n", c.getConfigFileAbsPath(), err)
+			c.errorf("warning: %s: %v\n", configFileAbsPath, err)
 		}
 	}
 
@@ -2035,15 +2039,16 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	// Read the config file.
 	if annotations.hasTag(doesNotRequireValidConfig) {
-		if c.defaultConfigFileAbsPathErr == nil {
-			_ = c.readConfig()
+		if configFileAbsPath, err := c.getConfigFileAbsPath(); err == nil {
+			_ = c.readConfig(configFileAbsPath)
 		}
 	} else {
-		if c.defaultConfigFileAbsPathErr != nil {
-			return c.defaultConfigFileAbsPathErr
+		configFileAbsPath, err := c.getConfigFileAbsPath()
+		if err != nil {
+			return err
 		}
-		if err := c.readConfig(); err != nil {
-			return fmt.Errorf("invalid config: %s: %w", c.getConfigFileAbsPath(), err)
+		if err := c.readConfig(configFileAbsPath); err != nil {
+			return fmt.Errorf("invalid config: %s: %w", configFileAbsPath, err)
 		}
 	}
 
@@ -2191,7 +2196,11 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	// Create the config directory if needed.
 	if annotations.hasTag(requiresConfigDirectory) {
-		if err := chezmoi.MkdirAll(c.baseSystem, c.getConfigFileAbsPath().Dir(), fs.ModePerm); err != nil {
+		configFileAbsPath, err := c.getConfigFileAbsPath()
+		if err != nil {
+			return err
+		}
+		if err := chezmoi.MkdirAll(c.baseSystem, configFileAbsPath.Dir(), fs.ModePerm); err != nil {
 			return err
 		}
 	}
@@ -2316,24 +2325,11 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	if !c.PersistentStateAbsPath.Empty() {
 		return c.PersistentStateAbsPath, nil
 	}
-	if !c.getConfigFileAbsPath().Empty() {
-		return c.getConfigFileAbsPath().Dir().Join(persistentStateFileRelPath), nil
-	}
-	for _, configDir := range c.bds.ConfigDirs {
-		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
-		if err != nil {
-			return chezmoi.EmptyAbsPath, err
-		}
-		persistentStateFile := configDirAbsPath.Join(chezmoiRelPath, persistentStateFileRelPath)
-		if _, err := os.Stat(persistentStateFile.String()); err == nil {
-			return persistentStateFile, nil
-		}
-	}
-	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fileSystem, c.bds)
+	configFileAbsPath, err := c.getConfigFileAbsPath()
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	return defaultConfigFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
+	return configFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
 }
 
 // progressAutoFunc detects whether progress bars should be displayed.
@@ -2422,6 +2418,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		}
 	}
 
+	configFileAbsPath, _ := c.getConfigFileAbsPath()
 	executable, _ := os.Executable()
 	windowsVersion, _ := windowsVersion()
 	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
@@ -2433,7 +2430,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		command:           cmd.Name(),
 		commandDir:        c.commandDirAbsPath,
 		config:            c.ConfigFile.toMap(),
-		configFile:        c.getConfigFileAbsPath(),
+		configFile:        configFileAbsPath,
 		destDir:           c.DestDirAbsPath,
 		executable:        chezmoi.NewAbsPath(executable),
 		fqdnHostname:      fqdnHostname,
@@ -2461,8 +2458,8 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 }
 
 // readConfig reads the config file, if it exists.
-func (c *Config) readConfig() error {
-	switch err := c.decodeConfigFile(c.getConfigFileAbsPath(), &c.ConfigFile); {
+func (c *Config) readConfig(configFileAbsPath chezmoi.AbsPath) error {
+	switch err := c.decodeConfigFile(configFileAbsPath, &c.ConfigFile); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	default:

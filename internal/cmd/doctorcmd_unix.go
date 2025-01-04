@@ -11,7 +11,6 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -25,7 +24,7 @@ func (umaskCheck) Name() string {
 	return "umask"
 }
 
-func (umaskCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (umaskCheck) Run(config *Config) (checkResult, string) {
 	umask := unix.Umask(0)
 	unix.Umask(umask)
 	result := checkResultOK
@@ -39,7 +38,7 @@ func (unameCheck) Name() string {
 	return "uname"
 }
 
-func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (unameCheck) Run(config *Config) (checkResult, string) {
 	cmd := exec.Command("uname", "-a")
 	cmd.Stderr = os.Stderr
 	data, err := chezmoilog.LogCmdOutput(slog.Default(), cmd)
