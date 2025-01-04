@@ -40,9 +40,13 @@ func (c *Config) runEditConfigTemplateCmd(cmd *cobra.Command, args []string, sou
 			!errors.Is(err, fs.ErrExist) {
 			return err
 		}
-		configFileBase := "." + c.getConfigFileAbsPath().Base() + ".tmpl"
+		configFileAbsPath, err := c.getConfigFileAbsPath()
+		if err != nil {
+			return err
+		}
+		configFileBase := "." + configFileAbsPath.Base() + ".tmpl"
 		configTemplateAbsPath = c.sourceDirAbsPath.JoinString(configFileBase)
-		switch data, err := c.baseSystem.ReadFile(c.getConfigFileAbsPath()); {
+		switch data, err := c.baseSystem.ReadFile(configFileAbsPath); {
 		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
 		case err != nil:
