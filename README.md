@@ -11,7 +11,7 @@ If you're contributing to chezmoi, then please read the [developer guide](https:
 ## Contributors
 
 <a href="https://github.com/twpayne/chezmoi/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=twpayne/chezmoi" />
+  <img src="https://contrib.rocks/image?repo=twpayne/chezmoi&max=1024" />
 </a>
 
 ## License
