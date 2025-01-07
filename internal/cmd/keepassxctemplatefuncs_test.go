@@ -74,6 +74,13 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	attachmentName := "test / attachment name"
 	attachmentData := "test / attachment data"
 
+	nestedGroupName := "some/nested/group"
+	nestedEntryName := nestedGroupName + "/nested entry"
+	nestedEntryUsername := "nested / username"
+	nestedEntryPassword := "nested / password"
+	nestedAttachmentName := "nested / attachment name"
+	nestedAttachmentData := "nested / attachment data"
+
 	// Create a KeePassXC database.
 	dbCreateCmd := exec.Command(command, "db-create", "--set-password", database)
 	dbCreateCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
@@ -84,35 +91,36 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	dbCreateCmd.Stderr = os.Stderr
 	assert.NoError(t, dbCreateCmd.Run())
 
-	// Create a group in the database.
-	mkdirCmd := exec.Command(command, "mkdir", database, groupName)
-	mkdirCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
-		databasePassword,
-	))
-	mkdirCmd.Stdout = os.Stdout
-	mkdirCmd.Stderr = os.Stderr
-	assert.NoError(t, mkdirCmd.Run())
-
-	// Create an entry in the database.
-	addCmd := exec.Command(command, "add", database, entryName, "--username", entryUsername, "--password-prompt")
-	addCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
-		databasePassword,
-		entryPassword,
-	))
-	addCmd.Stdout = os.Stdout
-	addCmd.Stderr = os.Stderr
-	assert.NoError(t, addCmd.Run())
-
-	// Import an attachment to the entry in the database.
-	importFile := filepath.Join(tempDir, "import file")
-	assert.NoError(t, os.WriteFile(importFile, []byte(attachmentData), 0o666))
-	attachmentImportCmd := exec.Command(command, "attachment-import", database, entryName, attachmentName, importFile)
-	attachmentImportCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
-		databasePassword,
-	))
-	attachmentImportCmd.Stdout = os.Stdout
-	attachmentImportCmd.Stderr = os.Stderr
-	assert.NoError(t, attachmentImportCmd.Run())
+	setupKeepassEntry(
+		t,
+		command,
+		tempDir,
+		keepassEntry{
+			database,
+			databasePassword,
+			groupName,
+			entryName,
+			entryUsername,
+			entryPassword,
+			attachmentName,
+			attachmentData,
+		},
+	)
+	setupKeepassEntry(
+		t,
+		command,
+		tempDir,
+		keepassEntry{
+			database,
+			databasePassword,
+			nestedGroupName,
+			nestedEntryName,
+			nestedEntryUsername,
+			nestedEntryPassword,
+			nestedAttachmentName,
+			nestedAttachmentData,
+		},
+	)
 
 	for _, mode := range []keepassxcMode{
 		keepassxcModeCachePassword,
@@ -130,6 +138,14 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 				assert.Equal(t, entryPassword, config.keepassxcTemplateFunc(entryName)["Password"])
 				assert.Equal(t, entryUsername, config.keepassxcAttributeTemplateFunc(entryName, "UserName"))
 				assert.Equal(t, attachmentData, config.keepassxcAttachmentTemplateFunc(entryName, attachmentName))
+
+				assert.Equal(t, nestedEntryPassword, config.keepassxcTemplateFunc(nestedEntryName)["Password"])
+				assert.Equal(t, nestedEntryUsername, config.keepassxcAttributeTemplateFunc(nestedEntryName, "UserName"))
+				assert.Equal(
+					t,
+					nestedAttachmentData,
+					config.keepassxcAttachmentTemplateFunc(nestedEntryName, nestedAttachmentName),
+				)
 			})
 
 			t.Run("incorrect_password", func(t *testing.T) {
@@ -169,4 +185,63 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 			})
 		})
 	}
+}
+
+func setupKeepassEntry(t *testing.T, command, tempDir string, kpe keepassEntry) {
+	t.Helper()
+	// Create nested groups in the database.
+	groupPath := strings.Split(kpe.groupName, "/")
+	for i := range groupPath {
+		var name string
+		if i == 0 {
+			name = groupPath[i]
+		} else {
+			name = strings.Join(groupPath[0:i+1], "/")
+		}
+		mkdirCmd := exec.Command(command, "mkdir", kpe.database, name)
+		mkdirCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
+			kpe.databasePassword,
+		))
+		mkdirCmd.Stdout = os.Stdout
+		mkdirCmd.Stderr = os.Stderr
+		assert.NoError(t, mkdirCmd.Run())
+	}
+	// Create an entry in the database.
+	addCmd := exec.Command(command, "add", kpe.database, kpe.entryName, "--username", kpe.entryUsername, "--password-prompt")
+	addCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
+		kpe.databasePassword,
+		kpe.entryPassword,
+	))
+	addCmd.Stdout = os.Stdout
+	addCmd.Stderr = os.Stderr
+	assert.NoError(t, addCmd.Run())
+
+	// Import an attachment to the entry in the database.
+	importFile := filepath.Join(tempDir, "import file")
+	assert.NoError(t, os.WriteFile(importFile, []byte(kpe.attachmentData), 0o666))
+	attachmentImportCmd := exec.Command(
+		command,
+		"attachment-import",
+		kpe.database,
+		kpe.entryName,
+		kpe.attachmentName,
+		importFile,
+	)
+	attachmentImportCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
+		kpe.databasePassword,
+	))
+	attachmentImportCmd.Stdout = os.Stdout
+	attachmentImportCmd.Stderr = os.Stderr
+	assert.NoError(t, attachmentImportCmd.Run())
+}
+
+type keepassEntry struct {
+	database         string
+	databasePassword string
+	groupName        string
+	entryName        string
+	entryUsername    string
+	entryPassword    string
+	attachmentName   string
+	attachmentData   string
 }
