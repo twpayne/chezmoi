@@ -10,10 +10,10 @@ type PasswordInputModel struct {
 	canceled  bool
 }
 
-func NewPasswordInputModel(prompt string) PasswordInputModel {
+func NewPasswordInputModel(prompt, placeholder string) PasswordInputModel {
 	textInput := textinput.New()
 	textInput.Prompt = prompt
-	textInput.Placeholder = "password"
+	textInput.Placeholder = placeholder
 	textInput.EchoMode = textinput.EchoNone
 	textInput.Focus()
 	return PasswordInputModel{

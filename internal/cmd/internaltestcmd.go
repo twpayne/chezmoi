@@ -131,7 +131,7 @@ func (c *Config) runInternalTestPromptStringCmd(cmd *cobra.Command, args []strin
 }
 
 func (c *Config) runInternalTestReadPasswordCmd(cmd *cobra.Command, args []string) error {
-	password, err := c.readPassword("Password? ")
+	password, err := c.readPassword("Password? ", "password")
 	if err != nil {
 		return err
 	}

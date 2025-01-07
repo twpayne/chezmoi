@@ -267,7 +267,7 @@ func (c *Config) builtinGitClone(repoURLStr string, workingTreeRawPath chezmoi.A
 		if basicAuth.Username, err = c.readString("Username? ", nil); err != nil {
 			return err
 		}
-		if basicAuth.Password, err = c.readPassword("Password? "); err != nil {
+		if basicAuth.Password, err = c.readPassword("Password? ", "password"); err != nil {
 			return err
 		}
 		cloneOptions.Auth = &basicAuth
