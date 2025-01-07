@@ -124,14 +124,14 @@ func (c *Config) readLineRaw(prompt string) (string, error) {
 }
 
 // readPassword reads a password.
-func (c *Config) readPassword(prompt string) (string, error) {
+func (c *Config) readPassword(prompt, placeholder string) (string, error) {
 	switch {
 	case c.noTTY:
 		return c.readLineRaw(prompt)
 	case c.PINEntry.Command != "":
 		return c.readPINEntry(prompt)
 	default:
-		initModel := chezmoibubbles.NewPasswordInputModel(prompt)
+		initModel := chezmoibubbles.NewPasswordInputModel(prompt, placeholder)
 		finalModel, err := runCancelableModel(initModel)
 		if err != nil {
 			return "", err

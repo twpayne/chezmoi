@@ -174,7 +174,7 @@ func (c *Config) keepassxcOutputCachePassword(command string, args ...string) ([
 	cmdArgs = append(cmdArgs, args...)
 	cmd := exec.Command(c.Keepassxc.Command, cmdArgs...)
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
-		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database))
+		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database), "password")
 		if err != nil {
 			return nil, err
 		}
@@ -243,7 +243,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 				if c.Keepassxc.password != "" {
 					password = c.Keepassxc.password
 				} else {
-					password, err = c.readPassword(response)
+					password, err = c.readPassword(response, "password")
 					if err != nil {
 						return nil, err
 					}
@@ -373,7 +373,7 @@ func (c *Config) keepassxcBuiltinExtractValues(
 	defer file.Close()
 
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
-		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database))
+		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database), "password")
 		if err != nil {
 			panic(err)
 		}

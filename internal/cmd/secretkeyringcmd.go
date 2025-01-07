@@ -104,7 +104,7 @@ func (c *Config) runSecretKeyringSetCmdE(cmd *cobra.Command, args []string) erro
 	value := c.secret.keyring.set.value
 	if value == "" {
 		var err error
-		value, err = c.readPassword("Value: ")
+		value, err = c.readPassword("Value: ", "value")
 		if err != nil {
 			return err
 		}

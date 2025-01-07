@@ -40,7 +40,7 @@ func (c *Config) passholeTemplateFunc(path, field string) string {
 	var stdin io.Reader
 	if c.Passhole.Prompt {
 		if c.Passhole.password == "" {
-			password := mustValue(c.readPassword("Enter database password: "))
+			password := mustValue(c.readPassword("Enter database password: ", "password"))
 			c.Passhole.password = password
 		}
 		args = append(args, "--password", "-")
