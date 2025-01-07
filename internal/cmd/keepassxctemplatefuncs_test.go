@@ -54,6 +54,17 @@ func TestKeepassxcParseOutput(t *testing.T) {
 	}
 }
 
+type keepassEntry struct {
+	database         string
+	databasePassword string
+	groupName        string
+	entryName        string
+	entryUsername    string
+	entryPassword    string
+	attachmentName   string
+	attachmentData   string
+}
+
 func TestKeepassxcTemplateFuncs(t *testing.T) {
 	// Find the path to keepassxc-cli command.
 	command, err := exec.LookPath("keepassxc-cli")
@@ -91,41 +102,31 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	dbCreateCmd.Stderr = os.Stderr
 	assert.NoError(t, dbCreateCmd.Run())
 
-	setupKeepassEntry(
-		t,
-		command,
-		tempDir,
-		keepassEntry{
-			database,
-			databasePassword,
-			groupName,
-			entryName,
-			entryUsername,
-			entryPassword,
-			attachmentName,
-			attachmentData,
-		},
-	)
-	setupKeepassEntry(
-		t,
-		command,
-		tempDir,
-		keepassEntry{
-			database,
-			databasePassword,
-			nestedGroupName,
-			nestedEntryName,
-			nestedEntryUsername,
-			nestedEntryPassword,
-			nestedAttachmentName,
-			nestedAttachmentData,
-		},
-	)
+	createKeepassEntry(t, command, tempDir, keepassEntry{
+		database:         database,
+		databasePassword: databasePassword,
+		groupName:        groupName,
+		entryName:        entryName,
+		entryUsername:    entryUsername,
+		entryPassword:    entryPassword,
+		attachmentName:   attachmentName,
+		attachmentData:   attachmentData,
+	})
+	createKeepassEntry(t, command, tempDir, keepassEntry{
+		database:         database,
+		databasePassword: databasePassword,
+		groupName:        nestedGroupName,
+		entryName:        nestedEntryName,
+		entryUsername:    nestedEntryUsername,
+		entryPassword:    nestedEntryPassword,
+		attachmentName:   nestedAttachmentName,
+		attachmentData:   nestedAttachmentData,
+	})
 
 	for _, mode := range []keepassxcMode{
+		keepassxcModeBuiltin,
 		keepassxcModeCachePassword,
 		keepassxcModeOpen,
-		keepassxcModeBuiltin,
 	} {
 		t.Run(string(mode), func(t *testing.T) {
 			t.Run("correct_password", func(t *testing.T) {
@@ -187,21 +188,14 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	}
 }
 
-func setupKeepassEntry(t *testing.T, command, tempDir string, kpe keepassEntry) {
+func createKeepassEntry(t *testing.T, command, tempDir string, kpe keepassEntry) {
 	t.Helper()
 	// Create nested groups in the database.
 	groupPath := strings.Split(kpe.groupName, "/")
 	for i := range groupPath {
-		var name string
-		if i == 0 {
-			name = groupPath[i]
-		} else {
-			name = strings.Join(groupPath[0:i+1], "/")
-		}
+		name := strings.Join(groupPath[0:i+1], "/")
 		mkdirCmd := exec.Command(command, "mkdir", kpe.database, name)
-		mkdirCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
-			kpe.databasePassword,
-		))
+		mkdirCmd.Stdin = strings.NewReader(kpe.databasePassword + "\n")
 		mkdirCmd.Stdout = os.Stdout
 		mkdirCmd.Stderr = os.Stderr
 		assert.NoError(t, mkdirCmd.Run())
@@ -227,21 +221,8 @@ func setupKeepassEntry(t *testing.T, command, tempDir string, kpe keepassEntry) 
 		kpe.attachmentName,
 		importFile,
 	)
-	attachmentImportCmd.Stdin = strings.NewReader(chezmoitest.JoinLines(
-		kpe.databasePassword,
-	))
+	attachmentImportCmd.Stdin = strings.NewReader(kpe.databasePassword + "\n")
 	attachmentImportCmd.Stdout = os.Stdout
 	attachmentImportCmd.Stderr = os.Stderr
 	assert.NoError(t, attachmentImportCmd.Run())
-}
-
-type keepassEntry struct {
-	database         string
-	databasePassword string
-	groupName        string
-	entryName        string
-	entryUsername    string
-	entryPassword    string
-	attachmentName   string
-	attachmentData   string
 }
