@@ -425,6 +425,9 @@ func keepassxcBuiltinBuildCache(
 				entry,
 				mapper,
 			)
+			if len(mapData) > 0 {
+				return mapData
+			}
 		}
 	}
 	return map[string]string{}
