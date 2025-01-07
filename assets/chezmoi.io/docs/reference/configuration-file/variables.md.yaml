@@ -235,6 +235,8 @@ sections:
     command:
       default: '`gopass`'
       description: gopass CLI command
+    mode:
+      description: See [gopass functions](../templates/gopass-functions/index.md)
   gpg:
     args:
       type: '[]string'
