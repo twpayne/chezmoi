@@ -23,7 +23,7 @@ ${this}: download chezmoi and optionally run chezmoi
 Usage: ${this} [-b bindir] [-d] [-t tag] [chezmoi-args]
 	-b	sets the installation directory, default is ${BINDIR}.
 	-d	enables debug logging.
-	-t	sets the tag, default is ${TAG}.
+	-t	sets the tag, default is ${TAGARG}.
 If chezmoi-args are given, after install chezmoi is executed with chezmoi-args.
 EOF
 	exit 2
