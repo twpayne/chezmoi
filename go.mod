@@ -50,8 +50,8 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.22.1
 	go.etcd.io/bbolt v1.3.11
 	go.uber.org/automaxprocs v1.6.0
-	golang.org/x/crypto v0.31.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20250102161546-4a75ba54c28f
+	golang.org/x/crypto v0.32.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250106144430-8929309228b4
 	golang.org/x/oauth2 v0.25.0
 	golang.org/x/sync v0.10.0
 	golang.org/x/sys v0.29.0
@@ -66,7 +66,7 @@ require (
 	al.essio.dev/pkg/shellescape v1.5.1 // indirect
 	dario.cat/mergo v1.0.1 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.1.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.3.2 // indirect
@@ -74,8 +74,8 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.3.1 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
-	github.com/ProtonMail/go-crypto v1.1.3 // indirect
-	github.com/alecthomas/chroma/v2 v2.14.0 // indirect
+	github.com/ProtonMail/go-crypto v1.1.4 // indirect
+	github.com/alecthomas/chroma/v2 v2.15.0 // indirect
 	github.com/alecthomas/repr v0.4.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.48 // indirect
@@ -99,7 +99,7 @@ require (
 	github.com/charmbracelet/x/ansi v0.6.0 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.5.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
 	github.com/cyphar/filepath-securejoin v0.3.6 // indirect
 	github.com/danieljoos/wincred v1.2.2 // indirect
@@ -173,13 +173,13 @@ require (
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/yuin/goldmark v1.7.8 // indirect
 	github.com/yuin/goldmark-emoji v1.0.4 // indirect
-	go.opentelemetry.io/proto/otlp v1.4.0 // indirect
+	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20250103183323-7d7fa50e5329 // indirect
+	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/net v0.33.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
-	golang.org/x/tools v0.28.0 // indirect
-	google.golang.org/protobuf v1.36.1 // indirect
+	golang.org/x/tools v0.29.0 // indirect
+	google.golang.org/protobuf v1.36.2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
