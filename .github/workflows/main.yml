@@ -17,7 +17,7 @@ env:
   ACTIONLINT_VERSION: 1.7.6 # https://github.com/rhysd/actionlint/releases
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.4.1 # https://github.com/chocolatey/choco/releases
-  EDITORCONFIG_CHECKER_VERSION: 3.0.3 # https://github.com/editorconfig-checker/editorconfig-checker/releases
+  EDITORCONFIG_CHECKER_VERSION: 3.1.1 # https://github.com/editorconfig-checker/editorconfig-checker/releases
   FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
   GO_VERSION: 1.23.4 # https://go.dev/doc/devel/release
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
@@ -27,7 +27,7 @@ env:
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.5.14 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.5.16 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04

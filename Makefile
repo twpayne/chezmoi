@@ -158,7 +158,7 @@ ensure-actionlint:
 .PHONY: ensure-editorconfig-checker
 ensure-editorconfig-checker:
 	if [ ! -x bin/editorconfig-checker ] || ( ./bin/editorconfig-checker --version | grep -Fqv "v${EDITORCONFIG_CHECKER_VERSION}" ) ; then \
-		curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/v${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf - ; \
+		curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/v${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf - "bin/ec-${GOOS}-${GOARCH}" ; \
 		mv "bin/ec-${GOOS}-${GOARCH}" bin/editorconfig-checker ; \
 	fi
 
