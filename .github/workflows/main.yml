@@ -131,7 +131,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-index: [0, 1, 2]
+        test-index: [0, 1, 2, 3]
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-15
@@ -169,9 +169,11 @@ jobs:
           go test ./... -short -race
           go test ./internal/cmd -run=TestScript -filter='^[0-9a-dA-D]' -race
         elif [ "${{ matrix.test-index }}" = "1" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[e-iE-I]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[e-hE-H]' -race
+        elif [ "${{ matrix.test-index }}" = "2" ]; then
+          go test ./internal/cmd -run=TestScript -filter='^[i-qI-Q]' -race
         else
-          go test ./internal/cmd -run=TestScript -filter='^[j-zJ-Z]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[r-zR-Z]' -race
         fi
   test-oldstable-go:
     needs: changes
@@ -353,7 +355,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test-index: [0, 1, 2]
+        test-index: [0, 1, 2, 3]
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2022
@@ -378,9 +380,11 @@ jobs:
           go test ./... -short -race
           go test ./internal/cmd -run=TestScript -filter='^[0-9a-cA-C]' -race
         } elseif (${{ matrix.test-index }} -eq 1) {
-          go test ./internal/cmd -run=TestScript -filter='^[d-lD-L]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[d-fD-F]' -race
+        } elseif (${{ matrix.test-index }} -eq 2) {
+          go test ./internal/cmd -run=TestScript -filter='^[g-mG-M]' -race
         } else {
-          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[n-zN-Z]' -race
         }
   check:
     runs-on: ubuntu-22.04
