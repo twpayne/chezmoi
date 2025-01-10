@@ -1,0 +1,11 @@
+name: free-disk-space
+description: Frees disk space by deleting unused files
+runs:
+  using: composite
+  steps:
+  - name: remove-android
+    shell: bash
+    run: sudo rm -rf /usr/local/lib/android
+  - name: remove-dotnet
+    shell: bash
+    run: sudo rm -rf /usr/share/dotnet

@@ -216,6 +216,7 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
+    - uses: ./.github/actions/free-disk-space
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: release-go
@@ -485,6 +486,7 @@ jobs:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         fetch-depth: 0
+    - uses: ./.github/actions/free-disk-space
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: release-go
