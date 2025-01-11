@@ -8,6 +8,6 @@ path if the first non-empty element is a UNC path.
 
 !!! example
 
-    ```
+    ```text
     {{ joinPath .chezmoi.homeDir ".zshrc" }}
     ```

@@ -23,7 +23,7 @@ Value: xxxxxxxx
 
 and then include it in your `~/.gitconfig` file with:
 
-```
+```text
 [github]
     user = {{ .github.user | quote }}
     token = {{ keyring "github" .github.user | quote }}
@@ -31,6 +31,6 @@ and then include it in your `~/.gitconfig` file with:
 
 You can query the keyring from the command line:
 
-```console
-$ chezmoi secret keyring get --service=github --user=$GITHUB_USERNAME
+```sh
+chezmoi secret keyring get --service=github --user=$GITHUB_USERNAME
 ```

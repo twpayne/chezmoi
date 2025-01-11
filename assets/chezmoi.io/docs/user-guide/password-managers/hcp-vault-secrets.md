@@ -7,14 +7,14 @@ template functions.
 
 Log in using:
 
-```console
-$ vlt login
+```sh
+vlt login
 ```
 
 The output of the `vlt secrets get --plaintext $SECRET_NAME` is available as the
 `hcpVaultSecret` function, for example:
 
-```
+```text
 {{ hcpVaultSecret "secret_name" "application_name" "project_id" "organization_id" }}
 ```
 
@@ -30,7 +30,7 @@ organization ID in your config file, for example:
 
 With these default values, you can omit them in the call to `hcpVaultSecret`, for example:
 
-```
+```text
 {{ hcpVaultSecret "secret_name" }}
 {{ hcpVaultSecret "other_secret_name" "other_application_name" }}
 ```
@@ -38,6 +38,6 @@ With these default values, you can omit them in the call to `hcpVaultSecret`, fo
 Structured data from `vlt secrets get --format=json $SECRET_NAME` is available
 as the `hcpVaultSecretJson` template function, for example:
 
-```
+```text
 {{ (hcpVaultSecretJson "secret_name").created_by.email }}
 ```

@@ -47,10 +47,10 @@ New value.
 
 ## Examples
 
-```console
-$ chezmoi secret keyring set --service=service --user=user --value=password
-$ chezmoi secret keyring get --service=service --user=user
-$ chezmoi secret keyring delete --service=service --user=user
+```sh
+chezmoi secret keyring set --service=service --user=user --value=password
+chezmoi secret keyring get --service=service --user=user
+chezmoi secret keyring delete --service=service --user=user
 ```
 
 ## Notes

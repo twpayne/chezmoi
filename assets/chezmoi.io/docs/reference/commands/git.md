@@ -9,8 +9,8 @@ Run `git` *args* in the working tree (typically the source directory).
 
 ## Examples
 
-```console
-$ chezmoi git add .
-$ chezmoi git add dot_gitconfig
-$ chezmoi git -- commit -m "Add .gitconfig"
+```sh
+chezmoi git add .
+chezmoi git add dot_gitconfig
+chezmoi git -- commit -m "Add .gitconfig"
 ```

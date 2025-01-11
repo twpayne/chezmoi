@@ -11,7 +11,7 @@ Please set the version number, git commit, and build time in the binary. This
 greatly assists debugging when end users report problems or ask for help. You
 can do this by passing the following flags to `go build`:
 
-```
+```text
 -ldflags "-X main.version=$VERSION
           -X main.commit=$COMMIT
           -X main.date=$DATE

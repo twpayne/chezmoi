@@ -15,20 +15,20 @@ must be installed. Python 3.10 (or later) is required, but may be installed with
 
     If Python 3.10 (or later) is not currently installed, install it with `uv`:
 
-    ```console
-    $ uv python install 3.10
+    ```sh
+    uv python install 3.10
     ```
 
 Install the dependencies (the `--frozen` is optional but recommended):
 
-```console
-$ uv sync --frozen
+```sh
+uv sync --frozen
 ```
 
 Test the website locally by running:
 
-```console
-$ uv run task serve-docs
+```sh
+uv run task serve-docs
 ```
 
 and visiting [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
@@ -38,6 +38,6 @@ and visiting [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 The website is automatically deployed when new releases are created, but manual
 deployments can be triggered by maintainers with appropriate access using:
 
-```console
-$ uv run task mkdocs gh-deploy
+```sh
+uv run task mkdocs gh-deploy
 ```

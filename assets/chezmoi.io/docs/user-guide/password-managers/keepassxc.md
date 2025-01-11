@@ -13,7 +13,7 @@ Provide the path to your KeePassXC database in your configuration file:
 The structured data from `keepassxc-cli show $database` is available as the
 `keepassxc` template function in your config files, for example:
 
-```
+```text
 username = {{ (keepassxc "example.com").UserName }}
 password = {{ (keepassxc "example.com").Password }}
 ```
@@ -22,7 +22,7 @@ Additional attributes are available through the `keepassxcAttribute` function.
 For example, if you have an entry called `SSH Key` with an additional attribute
 called `private-key`, its value is available as:
 
-```
+```text
 {{ keepassxcAttribute "SSH Key" "private-key" }}
 ```
 

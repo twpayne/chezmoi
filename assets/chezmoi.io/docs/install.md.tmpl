@@ -71,19 +71,19 @@ Install chezmoi with your package manager with a single command:
 
     === "Chocolatey"
 
-        ```
+        ```batch
         choco install chezmoi
         ```
 
     === "Scoop"
 
-        ```
+        ```batch
         scoop install chezmoi
         ```
 
     === "Winget"
 
-        ```
+        ```batch
         winget install twpayne.chezmoi
         ```
 
@@ -193,25 +193,21 @@ with a single command:
 Download a package for your distribution and architecture.
 
 === "deb"
-
 {{ range $arch := list "amd64" "arm64" "armel" "i386" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.deb)
 {{- end }}
 
 === "rpm"
-
 {{ range $arch := list "aarch64" "armhfp" "i686" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "s390x" "riscv64" "x86_64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi-{{ $version }}-{{ $arch }}.rpm)
 {{- end }}
 
 === "apk"
-
 {{ range $arch := list "386" "amd64" "arm" "arm64" "loong64" "mips64_hardfloat" "mips64le_hardfloat" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.apk)
 {{- end }}
 
 === "Arch Linux"
-
 {{ range $arch := list "386" "amd64" "arm" "arm64" "loong64" "mips64_hardfloat" "mips64le_hardfloat" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.pkg.tar.zst)
 {{- end }}
@@ -222,7 +218,6 @@ Download an archive for your operating system and architecture containing a
 pre-built binary and shell completions.
 
 === "Linux"
-
 {{ range $arch := list "amd64" "arm" "arm64" "i386" "loong64" "mips64" "mips64le" "ppc64" "ppc64le" "riscv64" "s390x" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.tar.gz)
 {{- end }}
@@ -231,25 +226,21 @@ pre-built binary and shell completions.
     [`arm64` (Termux)](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_android_arm64.tar.gz)
 
 === "macOS"
-
 {{ range $arch := list "amd64" "arm64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_darwin_{{ $arch }}.tar.gz)
 {{- end }}
 
 === "Windows"
-
 {{ range $arch := list "amd64" "arm" "arm64" "i386" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_windows_{{ $arch }}.zip)
 {{- end }}
 
 === "FreeBSD"
-
 {{ range $arch := list "amd64" "arm" "arm64" "i386" "riscv64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_freebsd_{{ $arch }}.tar.gz)
 {{- end }}
 
 === "OpenBSD"
-
 {{ range $arch := list "amd64" "arm" "arm64" "i386" "ppc64" "riscv64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_openbsd_{{ $arch }}.tar.gz)
 {{- end }}
@@ -258,10 +249,10 @@ pre-built binary and shell completions.
 
 Download, build, and install chezmoi for your system with Go 1.23 or later:
 
-```console
-$ git clone https://github.com/twpayne/chezmoi.git
-$ cd chezmoi
-$ make install-from-git-working-copy
+```sh
+git clone https://github.com/twpayne/chezmoi.git
+cd chezmoi
+make install-from-git-working-copy
 ```
 
 ## Verify your download
@@ -280,8 +271,8 @@ signature](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
 key](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
 }}/chezmoi_cosign.pub).
 
-   ```console
-   $ curl --location --remote-name-all \
+   ```sh
+   curl --location --remote-name-all \
           https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt \
           https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt.sig \
           https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_cosign.pub
@@ -289,8 +280,8 @@ key](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
 
 Verify the signature of the checksum file with cosign.
 
-   ```console
-   $ cosign verify-blob --key=chezmoi_cosign.pub \
+   ```sh
+   cosign verify-blob --key=chezmoi_cosign.pub \
                         --signature=chezmoi_{{ $version }}_checksums.txt.sig \
                         chezmoi_{{ $version }}_checksums.txt
    ```
@@ -305,14 +296,14 @@ directory.
 
 === "Linux"
 
-    ```console
-    $ sha256sum --check chezmoi_{{ $version }}_checksums.txt --ignore-missing
+    ```sh
+    sha256sum --check chezmoi_{{ $version }}_checksums.txt --ignore-missing
     ```
 
 === "macOS"
 
-    ```console
-    $ shasum --algorithm 256 --check chezmoi_{{ $version }}_checksums.txt --ignore-missing
+    ```sh
+    shasum --algorithm 256 --check chezmoi_{{ $version }}_checksums.txt --ignore-missing
     ```
 
 For more information on chezmoi's release signing process, see the [developer

@@ -31,7 +31,7 @@ entire target state.
 
 ## Examples
 
-```console
-$ chezmoi dump ~/.bashrc
-$ chezmoi dump --format=yaml
+```sh
+chezmoi dump ~/.bashrc
+chezmoi dump --format=yaml
 ```

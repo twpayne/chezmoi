@@ -28,12 +28,12 @@ the destination directory in alphabetical order.
 
 ## Examples
 
-```console
-$ chezmoi managed
-$ chezmoi managed --include=files
-$ chezmoi managed --include=files,symlinks
-$ chezmoi managed -i dirs
-$ chezmoi managed -i dirs,files
-$ chezmoi managed -i files ~/.config
-$ chezmoi managed --exclude=encrypted --path-style=source-relative
+```sh
+chezmoi managed
+chezmoi managed --include=files
+chezmoi managed --include=files,symlinks
+chezmoi managed -i dirs
+chezmoi managed -i dirs,files
+chezmoi managed -i files ~/.config
+chezmoi managed --exclude=encrypted --path-style=source-relative
 ```

@@ -34,8 +34,8 @@ applying changes after editing.
 
 ## Examples
 
-```console
-$ chezmoi apply
-$ chezmoi apply --dry-run --verbose
-$ chezmoi apply ~/.bashrc
+```sh
+chezmoi apply
+chezmoi apply --dry-run --verbose
+chezmoi apply ~/.bashrc
 ```

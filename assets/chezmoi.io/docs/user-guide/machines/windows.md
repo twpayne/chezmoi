@@ -6,7 +6,7 @@ WSL can be detected by looking for the string `Microsoft` or `microsoft` in
 `/proc/sys/kernel/osrelease`, which is available in the template variable
 `.chezmoi.kernel.osrelease`, for example:
 
-```
+```text
 {{ if eq .chezmoi.os "linux" }}
 {{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
 # WSL-specific code

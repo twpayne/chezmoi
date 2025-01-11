@@ -5,7 +5,7 @@
 The following template sets the `$chassisType` variable to `"desktop"` or
 `"laptop"` on macOS, Linux, and Windows.
 
-```
+```text
 {{- $chassisType := "desktop" }}
 {{- if eq .chezmoi.os "darwin" }}
 {{-   if contains "MacBook" (output "sysctl" "-n" "hw.model") }}
@@ -26,7 +26,7 @@ The following template sets the `$cpuCores` and `$cpuThreads` variables to the
 number of CPU cores and threads on the current machine respectively on
 macOS, Linux and Windows.
 
-```
+```text
 {{- $cpuCores := 1 }}
 {{- $cpuThreads := 1 }}
 {{- if eq .chezmoi.os "darwin" }}
@@ -43,13 +43,13 @@ macOS, Linux and Windows.
 
 !!! example
 
-    ``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
+    ```text title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
     [data.cpu]
     cores = {{ $cpuCores }}
     threads = {{ $cpuThreads }}
     ```
 
-    ``` title="~/.local/share/chezmoi/is_hyperthreaded.txt.tmpl"
+    ```text title="~/.local/share/chezmoi/is_hyperthreaded.txt.tmpl"
     {{- if gt .cpu.threads .cpu.cores -}}
     Hyperthreaded!
     {{- else -}}

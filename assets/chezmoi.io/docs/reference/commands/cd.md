@@ -22,8 +22,8 @@ scripts.
 
 ## Examples
 
-```console
-$ chezmoi cd
-$ chezmoi cd ~
-$ chezmoi cd ~/.config
+```sh
+chezmoi cd
+chezmoi cd ~
+chezmoi cd ~/.config
 ```

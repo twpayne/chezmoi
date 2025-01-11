@@ -44,6 +44,6 @@ running [`chezmoi apply`](apply.md) will have.
 
 ## Examples
 
-```console
-$ chezmoi status
+```sh
+chezmoi status
 ```

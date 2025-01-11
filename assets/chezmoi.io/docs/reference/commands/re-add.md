@@ -23,10 +23,10 @@ more *target*s are given then only those targets are re-added.
 
 ## Examples
 
-```console
-$ chezmoi re-add
-$ chezmoi re-add ~/.bashrc
-$ chezmoi re-add --recursive=false ~/.config/git
+```sh
+chezmoi re-add
+chezmoi re-add ~/.bashrc
+chezmoi re-add --recursive=false ~/.config/git
 ```
 
 ## Notes

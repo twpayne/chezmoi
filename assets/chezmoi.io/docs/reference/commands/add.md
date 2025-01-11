@@ -86,12 +86,12 @@ overwritten.
 
 ## Examples
 
-```console
-$ chezmoi add ~/.bashrc
-$ chezmoi add ~/.gitconfig --template
-$ chezmoi add ~/.ssh/id_rsa --encrypt
-$ chezmoi add ~/.vim --recursive
-$ chezmoi add ~/.oh-my-zsh --exact --recursive
+```sh
+chezmoi add ~/.bashrc
+chezmoi add ~/.gitconfig --template
+chezmoi add ~/.ssh/id_rsa --encrypt
+chezmoi add ~/.vim --recursive
+chezmoi add ~/.oh-my-zsh --exact --recursive
 ```
 
 ## Notes

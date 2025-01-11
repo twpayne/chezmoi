@@ -58,8 +58,8 @@ Automatically apply changes when files are saved, with the following limitations
 
 ## Examples
 
-  ```console
-  $ chezmoi edit ~/.bashrc
-  $ chezmoi edit ~/.bashrc --apply
-  $ chezmoi edit
+  ```sh
+  chezmoi edit ~/.bashrc
+  chezmoi edit ~/.bashrc --apply
+  chezmoi edit
   ```

@@ -17,7 +17,7 @@ It is an error to supply *path*s that are not found on the filesystem.
 
 ## Examples
 
-```console
-$ chezmoi unmanaged
-$ chezmoi unmanaged ~/.config/chezmoi ~/.ssh
+```sh
+chezmoi unmanaged
+chezmoi unmanaged ~/.config/chezmoi ~/.ssh
 ```

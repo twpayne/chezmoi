@@ -28,7 +28,7 @@ no targets are specified then all targets are checked.
 
 ## Examples
 
-```console
-$ chezmoi verify
-$ chezmoi verify ~/.bashrc
+```sh
+chezmoi verify
+chezmoi verify ~/.bashrc
 ```

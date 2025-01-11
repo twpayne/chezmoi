@@ -6,9 +6,9 @@ expose data as a template function.
 
 Log in and get a session using:
 
-```console
-$ op account add --address $SUBDOMAIN.1password.com --email $EMAIL
-$ eval $(op signin --account $SUBDOMAIN)
+```sh
+op account add --address $SUBDOMAIN.1password.com --email $EMAIL
+eval $(op signin --account $SUBDOMAIN)
 ```
 
 This is not necessary if you are using biometric authentication.
@@ -16,19 +16,19 @@ This is not necessary if you are using biometric authentication.
 The output of `op read $URL` is available as the `onepasswordRead` template
 function, for example:
 
-```
+```text
 {{ onepasswordRead "op://app-prod/db/password" }}
 ```
 
 returns the output of
 
-```console
-$ op read op://app-prod/db/password
+```sh
+op read op://app-prod/db/password
 ```
 
 Documents can be retrieved with:
 
-```
+```text
 {{- onepasswordDocument "$UUID" -}}
 ```
 
@@ -79,13 +79,13 @@ as structured data. For example, if the output is:
 
 Then you can access the password field with the syntax
 
-```
+```text
 {{ (index (onepassword "$UUID").fields 1).value }}
 ```
 
 or:
 
-```
+```text
 {{ range (onepassword "$UUID").fields -}}
 {{   if and (eq .label "password") (eq .purpose "PASSWORD") -}}
 {{     .value -}}
@@ -119,16 +119,15 @@ allows the fields to be queried by key:
 }
 ```
 
-```
+```text
 {{- (onepasswordDetailsFields "$UUID").password.value }}
 ```
 
 Additional fields may be obtained with `onepasswordItemFields`; not all objects
 in 1Password have item fields. This can be tested with:
 
-```console
-$ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | \
-    jq .
+```sh
+chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .
 ```
 
 ## Sign-in prompt

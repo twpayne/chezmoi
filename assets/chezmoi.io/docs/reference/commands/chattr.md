@@ -47,10 +47,10 @@ prevent chezmoi from interpreting `-`*modifier* as an option.
 
 ## Examples
 
-```console
-$ chezmoi chattr template ~/.bashrc
-$ chezmoi chattr noempty ~/.profile
-$ chezmoi chattr private,template ~/.netrc
-$ chezmoi chattr -- -x ~/.zshrc
-$ chezmoi chattr +create,+private ~/.kube/config
+```sh
+chezmoi chattr template ~/.bashrc
+chezmoi chattr noempty ~/.profile
+chezmoi chattr private,template ~/.netrc
+chezmoi chattr -- -x ~/.zshrc
+chezmoi chattr +create,+private ~/.kube/config
 ```

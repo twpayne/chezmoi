@@ -4,6 +4,6 @@ Print the configuration file.
 
 ## Examples
 
-```console
-$ chezmoi cat-config
+```sh
+chezmoi cat-config
 ```

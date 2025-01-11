@@ -10,7 +10,7 @@ documentation](https://docs.keeper.io/secrets-manager/commander-cli/using-comman
 Passwords can be retrieved with the `keeperFindPassword` template function, for
 example:
 
-```
+```text
 examplePasswordFromPath = {{ keeperFindPassword "$PATH" }}
 examplePasswordFromUid = {{ keeperFindPassword "$UID" }}
 ```
@@ -21,7 +21,7 @@ get`](https://docs.keeper.io/secrets-manager/commander-cli/using-commander/comma
 or the `keeperDataFields` template function which restructures the output of
 `keeper get` in to a more convenient form, for example:
 
-```
+```text
 keeperDataTitle = {{ (keeper "$UID").data.title }}
 examplePassword = {{ index (keeperDataFields "$UID").password 0 }}
 ```

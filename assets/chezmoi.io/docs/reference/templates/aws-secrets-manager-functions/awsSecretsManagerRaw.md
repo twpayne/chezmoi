@@ -6,4 +6,3 @@
 either be the full ARN or the
 [simpler name](https://docs.aws.amazon.com/secretsmanager/latest/userguide/troubleshoot.html#ARN_secretnamehyphen)
 if applicable.
-

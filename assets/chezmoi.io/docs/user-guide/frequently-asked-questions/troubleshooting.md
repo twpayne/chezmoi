@@ -4,8 +4,8 @@
 
 Run:
 
-```console
-$ chezmoi doctor
+```sh
+chezmoi doctor
 ```
 
 Anything `ok` is fine, anything `warning` is only a problem if you want to use
@@ -29,8 +29,8 @@ escape sequences.
 
 This can typically by fixed by setting the environment variable
 
-```console
-$ export LESS=-R
+```sh
+export LESS=-R
 ```
 
 which instructs `less` to display "raw" control characters via the `-R` /
@@ -53,7 +53,7 @@ pager.
 
 In this case, `chezmoi edit` typically prints a warning like:
 
-```
+```text
 chezmoi: warning: $EDITOR $TMPDIR/$FILENAME: returned in less than 1s
 ```
 
@@ -159,14 +159,14 @@ line.
 
 For example, if your template script begins with
 
-```
+```text
 {{ if eq .chezmoi.os "linux" }}
 #!/bin/sh
 ```
 
 change this to
 
-```
+```text
 {{ if eq .chezmoi.os "linux" -}}
 #!/bin/sh
 ```
@@ -210,16 +210,16 @@ For example, if `.chezmoiexternal.toml` has the configuration:
 
 Now `chezmoi add ~/.config/direnv/direnvrc` will raise the error:
 
-```
+```text
 chezmoi: mkdir /home/<user>/.local/share/chezmoi/dot_config/direnv: no such file or directory
 ```
 
 But the workaround can be applied:
 
-```console
-$ chezmoi cd
-$ mkdir -p dot_config/
-$ touch dot_config/.keep
+```sh
+chezmoi cd
+mkdir -p dot_config/
+touch dot_config/.keep
 ```
 
 Now once that done `chezmoi add ~/.config/direnv/direnvrc` should work. For
@@ -236,18 +236,18 @@ this. However, there are two workarounds:
 
 Firstly, you can use alternatives to shell redirection. For standard input:
 
-```console
-$ chezmoi $COMMAND <$FILENAME       # fails
-$ cat $FILENAME | chezmoi $COMMAND  # succeeds
+```sh
+chezmoi $COMMAND <$FILENAME       # fails
+cat $FILENAME | chezmoi $COMMAND  # succeeds
 ```
 
 For standard output:
 
-```console
-$ chezmoi $COMMAND >$FILENAME                  # fails
-$ chezmoi $COMMAND -o $FILENAME                # succeeds
-$ chezmoi $COMMAND --output=$FILENAME          # succeeds
-$ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
+```sh
+chezmoi $COMMAND >$FILENAME                  # fails
+chezmoi $COMMAND -o $FILENAME                # succeeds
+chezmoi $COMMAND --output=$FILENAME          # succeeds
+chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
 ```
 
 Secondly, you can install chezmoi with any of the [many supported install
@@ -266,7 +266,7 @@ scripts, e.g.
 to the actual bash interpreter. The easiest way to do this is make the script a
 template and use the `lookPath` template function, for example:
 
-```
+```bash
 #!{{ lookPath "bash" }}
 ```
 

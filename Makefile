@@ -124,6 +124,10 @@ lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-gol
 	./bin/find-typos chezmoi .
 	go run ./internal/cmds/lint-commit-messages ${UPSTREAM}/master..HEAD
 
+.PHONY: lint-markdown
+lint-markdown:
+	markdownlint-cli2 --config .markdownlint-cli2.yaml
+
 .PHONY: format
 format: ensure-gofumpt ensure-golines
 	find . -name \*.go | xargs ./bin/golines --base-formatter="./bin/gofumpt -extra" --max-len=128 --write-output

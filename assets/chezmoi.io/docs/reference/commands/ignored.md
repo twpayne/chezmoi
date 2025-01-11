@@ -10,6 +10,6 @@ Print the list of entries ignored by chezmoi.
 
 ## Examples
 
-```console
-$ chezmoi ignored
+```sh
+chezmoi ignored
 ```

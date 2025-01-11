@@ -17,7 +17,7 @@ Remove without prompting.
 
 ## Examples
 
-```console
-$ chezmoi purge
-$ chezmoi purge --force
+```sh
+chezmoi purge
+chezmoi purge --force
 ```

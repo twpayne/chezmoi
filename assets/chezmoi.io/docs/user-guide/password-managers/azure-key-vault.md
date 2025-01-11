@@ -20,13 +20,13 @@ A secret value can be retrieved with the `azureKeyVault` template function.
 
 Retrieve the secret `my-secret-name` from the default configured vault.
 
-```
+```text
 exampleSecret = {{ azureKeyVault "my-secret-name" }}
 ```
 
 Retrieve the secret `my-secret-name` from the vault named `contoso-vault2`.
 
-```
+```text
 exampleSecret = {{ azureKeyVault "my-secret-name" "contoso-vault2" }}
 ```
 
@@ -44,6 +44,6 @@ additional vault.
 Retrieve the secret `my-secret-name` from the vault named `contoso-vault42`
 through the alias.
 
-```
+```text
 exampleSecret = {{ azureKeyVault "my-secret-name" .vault42 }}
 ```

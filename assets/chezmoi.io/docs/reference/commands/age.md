@@ -22,7 +22,7 @@ Decrypt with a passphrase.
 
 ## Examples
 
-```console
-$ chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt
-$ chezmoi age decrypt --passphrase ciphertext.txt > decrypted-ciphertext.txt
+```sh
+chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt
+chezmoi age decrypt --passphrase ciphertext.txt > decrypted-ciphertext.txt
 ```

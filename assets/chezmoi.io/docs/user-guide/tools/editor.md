@@ -18,8 +18,8 @@ In the specific case of using [VSCode](https://code.visualstudio.com/) or
 [Codium](https://vscodium.com/) as your editor, you must pass the `--wait`
 flag, for example, in your shell config:
 
-```console
-$ export EDITOR="code --wait"
+```bash
+export EDITOR="code --wait"
 ```
 
 Or in chezmoi's configuration file:

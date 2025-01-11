@@ -4,6 +4,6 @@
 
 !!! example
 
-    ```
+    ```text
     {{- writeToStdout "Hello, world\n" -}}
     ```

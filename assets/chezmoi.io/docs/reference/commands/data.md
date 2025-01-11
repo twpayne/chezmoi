@@ -10,7 +10,7 @@ Write the computed template data to stdout.
 
 ## Examples
 
-```console
-$ chezmoi data
-$ chezmoi data --format=yaml
+```sh
+chezmoi data
+chezmoi data --format=yaml
 ```

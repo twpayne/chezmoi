@@ -18,6 +18,6 @@ If `merge.args` does not contain any template arguments then `{{ .Destination
 
 ## Examples
 
-```console
-$ chezmoi merge ~/.bashrc
+```sh
+chezmoi merge ~/.bashrc
 ```

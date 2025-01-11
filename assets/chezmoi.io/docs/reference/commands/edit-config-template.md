@@ -5,6 +5,6 @@ then a new one is created with the contents of the current config file.
 
 ## Examples
 
-```console
-$ chezmoi edit-config-template
+```sh
+chezmoi edit-config-template
 ```

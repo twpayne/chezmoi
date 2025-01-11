@@ -9,7 +9,7 @@ chezmoi by creating a `run_once_` script. For example, create a file in your
 source directory called `run_once_before_install-packages-darwin.sh.tmpl`
 containing:
 
-```
+```text
 {{- if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
@@ -31,7 +31,7 @@ EOF
 The result of the `hostname` command on macOS depends on the network that the
 machine is connected to. For a stable result, use the `scutil` command:
 
-```
+```text
 {{ $computerName := output "scutil" "--get" "ComputerName" | trim }}
 ```
 
@@ -40,6 +40,6 @@ machine is connected to. For a stable result, use the `scutil` command:
 You can automate a script to run after each macOS update by creating
 a `run_onchange_` script and using the `output` template function to run `sw_vers`:
 
-```
+```text
 # MacOS build version: {{ output "sw_vers" "--buildVersion" }}
 ```

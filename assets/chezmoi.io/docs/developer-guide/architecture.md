@@ -6,8 +6,8 @@ interested in contributing to chezmoi.
 You can generate Go documentation for chezmoi's source code with `go doc`, for
 example:
 
-```console
-$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+```sh
+go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
 ```
 
 You can also [browse chezmoi's generated documentation
@@ -22,7 +22,7 @@ The important directories in chezmoi are:
 | `assets/chezmoi.io/docs/`        | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory |
 | `internal/chezmoi/`              | chezmoi's core functionality                                                                                                                                   |
 | `internal/cmd/`                  | Code for the `chezmoi` command                                                                                                                                 |
-| `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
+| `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)                                     |
 
 ## Key concepts
 
@@ -169,8 +169,8 @@ with the test scripts themselves in
 
 You can run individual end-to-end tests with
 
-```console
-$ go test ./internal/cmd -run=TestScript/$TEST_NAME
+```sh
+go test ./internal/cmd -run=TestScript/$TEST_NAME
 ```
 
 Tests should, if at all possible, run unmodified on all operating systems

@@ -133,11 +133,11 @@ Guess an SSH repo URL instead of an HTTPS repo.
 
 ## Examples
 
-```console
-$ chezmoi init user
-$ chezmoi init user --apply
-$ chezmoi init user --apply --purge
-$ chezmoi init user/dots
-$ chezmoi init codeberg.org/user
-$ chezmoi init gitlab.com/user
+```sh
+chezmoi init user
+chezmoi init user --apply
+chezmoi init user --apply --purge
+chezmoi init user/dots
+chezmoi init codeberg.org/user
+chezmoi init gitlab.com/user
 ```

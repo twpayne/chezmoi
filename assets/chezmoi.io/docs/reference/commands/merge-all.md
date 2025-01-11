@@ -15,6 +15,6 @@ state. The merge is performed with `chezmoi merge`.
 
 ## Examples
 
-```console
-$ chezmoi merge-all
+```sh
+chezmoi merge-all
 ```
