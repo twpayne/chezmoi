@@ -5,6 +5,6 @@ have entries in the source state. They cannot be externals.
 
 ## Examples
 
-```console
-$ chezmoi forget ~/.bashrc
+```sh
+chezmoi forget ~/.bashrc
 ```

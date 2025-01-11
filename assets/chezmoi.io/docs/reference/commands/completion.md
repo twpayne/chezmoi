@@ -5,7 +5,7 @@ Generate shell completion code for the specified shell (`bash`, `fish`,
 
 ## Examples
 
-```console
-$ chezmoi completion bash
-$ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
+```sh
+chezmoi completion bash
+chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
 ```

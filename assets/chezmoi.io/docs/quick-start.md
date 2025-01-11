@@ -14,8 +14,8 @@ manual](reference/concepts.md).
 Assuming that you have already [installed chezmoi](install.md), initialize
 chezmoi with:
 
-```console
-$ chezmoi init
+```sh
+chezmoi init
 ```
 
 This will create a new git local repository in `~/.local/share/chezmoi` where
@@ -24,16 +24,16 @@ the working copy.
 
 Manage your first file with chezmoi:
 
-```console
-$ chezmoi add ~/.bashrc
+```sh
+chezmoi add ~/.bashrc
 ```
 
 This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
 
 Edit the source state:
 
-```console
-$ chezmoi edit ~/.bashrc
+```sh
+chezmoi edit ~/.bashrc
 ```
 
 This will open `~/.local/share/chezmoi/dot_bashrc` in your `$EDITOR`. Make some
@@ -47,14 +47,14 @@ changes and save the file.
 
 See what changes chezmoi would make:
 
-```console
-$ chezmoi diff
+```sh
+chezmoi diff
 ```
 
 Apply the changes:
 
-```console
-$ chezmoi -v apply
+```sh
+chezmoi -v apply
 ```
 
 All chezmoi commands accept the `-v` (verbose) flag to print out exactly what
@@ -64,19 +64,19 @@ see exactly what changes would be made.
 
 Next, open a shell in the source directory, to commit your changes:
 
-```console
-$ chezmoi cd
-$ git add .
-$ git commit -m "Initial commit"
+```sh
+chezmoi cd
+git add .
+git commit -m "Initial commit"
 ```
 
 [Create a new repository on GitHub](https://github.com/new) called `dotfiles`
 and then push your repo:
 
-```console
-$ git remote add origin git@github.com:$GITHUB_USERNAME/dotfiles.git
-$ git branch -M main
-$ git push -u origin main
+```sh
+git remote add origin git@github.com:$GITHUB_USERNAME/dotfiles.git
+git branch -M main
+git push -u origin main
 ```
 
 !!! hint
@@ -90,8 +90,8 @@ git hosting service.
 
 Finally, exit the shell in the source directory to return to where you were:
 
-```console
-$ exit
+```sh
+exit
 ```
 
 These commands are summarized in this sequence diagram:
@@ -118,8 +118,8 @@ sequenceDiagram
 
 On a second machine, initialize chezmoi with your dotfiles repo:
 
-```console
-$ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
+```sh
+chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 !!! hint
@@ -127,8 +127,8 @@ $ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
     Private GitHub repos require other
     [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
 
-    ```console
-    $ chezmoi init git@github.com:$GITHUB_USERNAME/dotfiles.git
+    ```sh
+    chezmoi init git@github.com:$GITHUB_USERNAME/dotfiles.git
     ```
 
 This will check out the repo and any submodules and optionally create a chezmoi
@@ -136,34 +136,34 @@ config file for you.
 
 Check what changes that chezmoi will make to your home directory by running:
 
-```console
-$ chezmoi diff
+```sh
+chezmoi diff
 ```
 
 If you are happy with the changes that chezmoi will make then run:
 
-```console
-$ chezmoi apply -v
+```sh
+chezmoi apply -v
 ```
 
 If you are not happy with the changes to a file then either edit it with:
 
-```console
-$ chezmoi edit $FILE
+```sh
+chezmoi edit $FILE
 ```
 
 Or, invoke a merge tool (by default `vimdiff`) to merge changes between the
 current contents of the file, the file in your working copy, and the computed
 contents of the file:
 
-```console
-$ chezmoi merge $FILE
+```sh
+chezmoi merge $FILE
 ```
 
 On any machine, you can pull and apply the latest changes from your repo with:
 
-```console
-$ chezmoi update -v
+```sh
+chezmoi update -v
 ```
 
 These commands are summarized in this sequence diagram:
@@ -186,15 +186,15 @@ sequenceDiagram
 
 You can install your dotfiles on new machine with a single command:
 
-```console
-$ chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
+```sh
+chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 If you use GitHub and your dotfiles repo is called `dotfiles` then this can be
 shortened to:
 
-```console
-$ chezmoi init --apply $GITHUB_USERNAME
+```sh
+chezmoi init --apply $GITHUB_USERNAME
 ```
 
 !!! hint
@@ -202,7 +202,7 @@ $ chezmoi init --apply $GITHUB_USERNAME
     Private GitHub repos require other
     [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
 
-    ```console
+    ```sh
     chezmoi init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git
     ```
 
@@ -221,8 +221,8 @@ sequenceDiagram
 
 For a full list of commands run:
 
-```console
-$ chezmoi help
+```sh
+chezmoi help
 ```
 
 chezmoi has much more functionality. Good starting points are reading [what

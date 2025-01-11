@@ -7,8 +7,8 @@ directory. If you `chezmoi add` such a symlink, chezmoi will add the symlink,
 not the file. To assist with migrating from symlink-based systems, use the
 `--follow` option to `chezmoi add`, for example:
 
-```console
-$ chezmoi add --follow ~/.bashrc
+```sh
+chezmoi add --follow ~/.bashrc
 ```
 
 This will tell `chezmoi add` that the target state of `~/.bashrc` is the target

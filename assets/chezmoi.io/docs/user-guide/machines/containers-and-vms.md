@@ -26,7 +26,7 @@ First, if you are using a chezmoi configuration file template, ensure that it
 is non-interactive when running in Codespaces, for example,
 `.chezmoi.toml.tmpl` might contain:
 
-```
+```text
 {{- $codespaces:= env "CODESPACES" | not | not -}}
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 
@@ -53,12 +53,12 @@ the `--source` argument passed in `chezmoi init`.
 Second, create an `install.sh` script that installs chezmoi and your dotfiles
 and add it to `.chezmoiignore` and your dotfiles repo:
 
-```console
-$ chezmoi generate install.sh > install.sh
-$ chmod a+x install.sh
-$ echo install.sh >> .chezmoiignore
-$ git add install.sh .chezmoiignore
-$ git commit -m "Add install.sh"
+```sh
+chezmoi generate install.sh > install.sh
+chmod a+x install.sh
+echo install.sh >> .chezmoiignore
+git add install.sh .chezmoiignore
+git commit -m "Add install.sh"
 ```
 
 The generated script installs the latest version of chezmoi in `~/.local/bin` if
@@ -72,7 +72,7 @@ Finally, modify any of your templates to use the `codespaces` variable if
 needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
 `run_once_install-packages.sh.tmpl` might contain:
 
-```
+```text
 {{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
 #!/bin/sh
 sudo apt install -y vim-gtk

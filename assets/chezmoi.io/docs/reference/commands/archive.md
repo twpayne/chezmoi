@@ -46,8 +46,8 @@ Compress the archive with gzip. This is automatically set if the format is
 
 ## Examples
 
-```console
-$ chezmoi archive | tar tvf -
-$ chezmoi archive --output=dotfiles.tar.gz
-$ chezmoi archive --output=dotfiles.zip
+```sh
+chezmoi archive | tar tvf -
+chezmoi archive --output=dotfiles.tar.gz
+chezmoi archive --output=dotfiles.zip
 ```

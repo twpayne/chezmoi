@@ -11,7 +11,7 @@ get` with the `--access-token` flag.
 
 The output from `bws secret get` is cached so calling `bitwardenSecrets`
 multiple times with the same *secret-id* and *access-token* will only invoke
-`bws secret get ` once.
+`bws secret get` once.
 
 !!!
 

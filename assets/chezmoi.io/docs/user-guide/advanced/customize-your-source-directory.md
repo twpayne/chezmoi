@@ -53,12 +53,12 @@ to `false`.
 Otherwise, you can use your VCS to create the source directory before running
 `chezmoi init`, for example:
 
-```console
-$ fossil clone https://dotfiles.example.com/ dotfiles.fossil
-$ mkdir -p .local/share/chezmoi/.git
-$ cd .local/share/chezmoi
-$ fossil open ~/dotfiles.fossil
-$ chezmoi init --apply
+```sh
+fossil clone https://dotfiles.example.com/ dotfiles.fossil
+mkdir -p .local/share/chezmoi/.git
+cd .local/share/chezmoi
+fossil open ~/dotfiles.fossil
+chezmoi init --apply
 ```
 
 !!! note
@@ -79,8 +79,8 @@ Currently, it is not possible to override the auto add, commit, and push
 behavior for non-git VCSs, so you will have to commit changes manually, for
 example:
 
-```console
-$ chezmoi cd
-$ fossil add .
-$ fossil commit
+```sh
+chezmoi cd
+fossil add .
+fossil commit
 ```

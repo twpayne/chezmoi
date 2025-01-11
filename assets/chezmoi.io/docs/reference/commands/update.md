@@ -41,6 +41,6 @@ Update submodules recursively. This defaults to `true`. Can be disabled with `--
 
 ## Examples
 
-```console
-$ chezmoi update
+```sh
+chezmoi update
 ```

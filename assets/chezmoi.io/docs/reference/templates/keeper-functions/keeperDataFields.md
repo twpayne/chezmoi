@@ -5,7 +5,7 @@
 
 ## Examples
 
-```
+```text
 url = {{ (keeperDataFields "$UID").url }}
 login = {{ index (keeperDataFields "$UID").login 0 }}
 password = {{ index (keeperDataFields "$UID").password 0 }}

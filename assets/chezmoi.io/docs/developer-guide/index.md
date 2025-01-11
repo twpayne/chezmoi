@@ -14,21 +14,21 @@ Go tooling. chezmoi requires Go 1.23 or later.
 
 Checkout chezmoi:
 
-```console
-$ git clone https://github.com/twpayne/chezmoi.git
-$ cd chezmoi
+```sh
+git clone https://github.com/twpayne/chezmoi.git
+cd chezmoi
 ```
 
 Build chezmoi:
 
-```console
-$ go build
+```sh
+go build
 ```
 
 Run all tests:
 
-```console
-$ go test ./...
+```sh
+go test ./...
 ```
 
 chezmoi's tests include integration tests with other software. If the other
@@ -39,20 +39,20 @@ of tests requires `age`, `base64`, `bash`, `bzip2`, `git`, `gpg`, `gzip`,
 
 Run chezmoi:
 
-```console
-$ go run .
+```sh
+go run .
 ```
 
 Run a set of smoke tests, including cross-compilation, tests, and linting:
 
-```console
-$ make smoke-test
+```sh
+make smoke-test
 ```
 
 Test building chezmoi for all architectures:
 
-```console
-$ make test-release
+```sh
+make test-release
 ```
 
 !!! hint
@@ -60,7 +60,7 @@ $ make test-release
     If you use `fish` as your primary shell, you may get warnings from Fish
     during tests:
 
-    ```
+    ```text
     error: can not save history
     warning-path: Unable to locate data directory derived from $HOME: '/home/user/.local/share/fish'.
     warning-path: The error was 'Operation not supported'.
@@ -69,8 +69,8 @@ $ make test-release
 
     These can be avoided with by running tests with `SHELL=bash` or `SHELL=zsh`:
 
-    ```console
-    $ SHELL=bash make test
-    $ SHELL=zsh make smoke-test
-    $ SHELL=bash go test ./...
+    ```sh
+    SHELL=bash make test
+    SHELL=zsh make smoke-test
+    SHELL=bash go test ./...
     ```

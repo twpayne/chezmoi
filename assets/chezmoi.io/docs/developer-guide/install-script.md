@@ -4,8 +4,8 @@ chezmoi generates the [install
 script](https://github.com/twpayne/chezmoi/blob/master/assets/scripts/install.sh)
 from a single source of truth. You must run
 
-```console
-$ go generate
+```sh
+go generate
 ```
 
 if your change includes any of the following:

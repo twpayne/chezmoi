@@ -6,7 +6,7 @@ There can be as much variation between Linux distributions as there is between
 operating systems. Due to `text/template`'s eager evaluation of conditionals,
 this means you often have to write templates with nested conditionals:
 
-```
+```text
 {{ if eq .chezmoi.os "darwin" }}
 # macOS-specific code
 {{ else if eq .chezmoi.os "linux" }}
@@ -22,7 +22,7 @@ This can be simplified by combining the operating system and distribution into a
 single custom template variable. Put the following in your configuration file
 template:
 
-```
+```text
 {{- $osid := .chezmoi.os -}}
 {{- if hasKey .chezmoi.osRelease "id" -}}
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
@@ -40,7 +40,7 @@ be `{{ .chezmoi.os }}-{{ .chezmoi.osRelease.id }}` on machines with an
 
 You can then simplify your conditionals to be:
 
-```
+```text
 {{ if eq .osid "darwin" }}
 # macOS-specific code
 {{ else if eq .osid "linux-debian" }}

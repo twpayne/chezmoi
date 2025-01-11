@@ -81,14 +81,8 @@ chezmoi sets a number of environment variables when running scripts, including
 ## Install packages with scripts
 
 Change to the source directory and create a file called
-`run_onchange_install-packages.sh`:
-
-```console
-$ chezmoi cd
-$ $EDITOR run_onchange_install-packages.sh
-```
-
-In this file create your package installation script, e.g.
+`run_onchange_install-packages.sh`. In this file create your package
+installation script, e.g.
 
 ```sh
 #!/bin/sh
@@ -152,12 +146,12 @@ been run in its persistent state.
 
 To clear the state of `run_onchange_` scripts, run:
 
-```console
-$ chezmoi state delete-bucket --bucket=entryState
+```sh
+chezmoi state delete-bucket --bucket=entryState
 ```
 
 To clear the state of `run_once_` scripts, run:
 
-```console
-$ chezmoi state delete-bucket --bucket=scriptState
+```sh
+chezmoi state delete-bucket --bucket=scriptState
 ```

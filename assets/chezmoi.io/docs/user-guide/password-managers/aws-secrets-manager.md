@@ -5,7 +5,7 @@ chezmoi includes support for [AWS Secrets Manager](https://aws.amazon.com/secret
 Structured data can be retrieved with the `awsSecretsManager` template function, for
 example:
 
-```
+```text
 exampleUsername = {{ (awsSecretsManager "my-secret-name").username }}
 examplePassword = {{ (awsSecretsManager "my-secret-name").password }}
 ```
@@ -13,7 +13,7 @@ examplePassword = {{ (awsSecretsManager "my-secret-name").password }}
 For retrieving unstructured data, the `awsSecretsManagerRaw` template function can be used.
 For example:
 
-```
+```text
 exampleSecretString = {{ awsSecretsManagerRaw "my-secret-string" }}
 ```
 

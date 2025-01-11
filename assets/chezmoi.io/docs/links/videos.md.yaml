@@ -60,5 +60,5 @@ videos:
 - date: '2024-11-18'
   version: 2.54.0
   lang: AR
-  title: 'Chezmoi, Dotfiles, Workflow, Templates and Encryption \| Arabic شرح'
+  title: 'Chezmoi, Dotfiles, Workflow, Templates and Encryption Arabic شرح' # removed | from title as it breaks Markdown tables
   url: https://www.youtube.com/watch?v=Jrrd2dHYBmY

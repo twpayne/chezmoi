@@ -7,23 +7,23 @@ Releases are managed with [`goreleaser`](https://goreleaser.com/).
 To build a test release, without publishing, (Ubuntu Linux only) first ensure
 that the `musl-tools` and `snapcraft` packages are installed:
 
-```console
-$ sudo apt-get install musl-tools snapcraft
+```sh
+sudo apt-get install musl-tools snapcraft
 ```
 
 Then run:
 
-```console
-$ make test-release
+```sh
+make test-release
 ```
 
 ## Publishing
 
 Publish a new release by creating and pushing a tag, for example:
 
-```console
-$ git tag v1.2.3
-$ git push --tags
+```sh
+git tag v1.2.3
+git push --tags
 ```
 
 This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions)
@@ -40,8 +40,8 @@ Release](https://github.com/twpayne/chezmoi/releases), and deploys the
     Snapcraft store credentials periodically expire. Create new snapcraft store
     credentials by running:
 
-    ```console
-    $ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
+    ```sh
+    snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
     ```
 
 !!! note
@@ -53,8 +53,8 @@ Release](https://github.com/twpayne/chezmoi/releases), and deploys the
 
     If needed, the pull request can be created with:
 
-    ```console
-    $ brew bump-formula-pr --tag=v1.2.3 chezmoi
+    ```sh
+    brew bump-formula-pr --tag=v1.2.3 chezmoi
     ```
 
 !!! note

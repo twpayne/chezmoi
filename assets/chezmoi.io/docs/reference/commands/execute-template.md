@@ -59,9 +59,9 @@ input.
 
 ## Examples
 
-```console
-$ chezmoi execute-template '{{ .chezmoi.sourceDir }}'
-$ chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
-$ echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
-$ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+```sh
+chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
+echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
+chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 ```

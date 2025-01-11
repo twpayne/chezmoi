@@ -39,8 +39,8 @@ plugin](https://github.com/zsh-users/zsh-syntax-highlighting), and
 
 To apply the changes, run:
 
-```console
-$ chezmoi apply
+```sh
+chezmoi apply
 ```
 
 chezmoi will download the archives and unpack them as if they were part of the
@@ -58,14 +58,14 @@ time. To bump the version of powerlevel10k, change the version in the URL.
 To force a refresh the downloaded archives, use the `--refresh-externals` flag
 to `chezmoi apply`:
 
-```console
-$ chezmoi --refresh-externals apply
+```sh
+chezmoi --refresh-externals apply
 ```
 
 `--refresh-externals` can be shortened to `-R`:
 
-```console
-$ chezmoi -R apply
+```sh
+chezmoi -R apply
 ```
 
 When using Oh My Zsh, make sure you disable auto-updates by setting
@@ -153,18 +153,18 @@ source state. The `import` command does this. For example, to import the latest
 version [`github.com/ohmyzsh/ohmyzsh`](https://github.com/ohmyzsh/ohmyzsh) to
 `~/.oh-my-zsh` run:
 
-```console
-$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
-$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
+```sh
+curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
+chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```
 
 !!! note
 
     This only updates the source state. You will need to run:
 
-    ```console
-    $ chezmoi apply
+    ```sh
+    chezmoi apply
     ```
 
     to update your destination directory.

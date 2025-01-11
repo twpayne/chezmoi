@@ -155,4 +155,3 @@ timestamp.
 Use *directory* as the git working tree directory. By default, chezmoi searches
 the source directory and then its ancestors for the first directory that
 contains a `.git` directory.
-

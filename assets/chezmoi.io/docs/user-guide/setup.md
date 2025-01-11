@@ -26,35 +26,35 @@ of your choice (e.g. [Bitbucket](https://bitbucket.org),
 their repo `dotfiles`) and push the repo in the source directory here. For
 example:
 
-```console
-$ chezmoi cd
-$ git remote add origin https://github.com/$GITHUB_USERNAME/dotfiles.git
-$ git push -u origin main
-$ exit
+```sh
+chezmoi cd
+git remote add origin https://github.com/$GITHUB_USERNAME/dotfiles.git
+git push -u origin main
+exit
 ```
 
 On another machine you can checkout this repo:
 
-```console
-$ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
+```sh
+chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 You can then see what would be changed:
 
-```console
-$ chezmoi diff
+```sh
+chezmoi diff
 ```
 
 If you're happy with the changes then apply them:
 
-```console
-$ chezmoi apply
+```sh
+chezmoi apply
 ```
 
 The above commands can be combined into a single init, checkout, and apply:
 
-```console
-$ chezmoi init --apply --verbose https://github.com/$GITHUB_USERNAME/dotfiles.git
+```sh
+chezmoi init --apply --verbose https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 These commands are summarized this sequence diagram:
@@ -117,8 +117,8 @@ if it is not already set in your `data`.
 To test this template, use `chezmoi execute-template` with the `--init` and
 `--promptString` flags, for example:
 
-```console
-$ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+```sh
+chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 ```
 
 ## Re-create your config file
@@ -127,15 +127,15 @@ If you change your config file template, chezmoi will warn you if your current
 config file was not generated from that template. You can re-generate your
 config file by running:
 
-```console
-$ chezmoi init
+```sh
+chezmoi init
 ```
 
 If you are using any `prompt*` template functions in your config file template
 you will be prompted again. However, you can avoid this with the following
 example template logic:
 
-```
+```text
 {{- $email := promptStringOnce . "email" "Email address" -}}
 
 [data]

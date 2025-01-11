@@ -370,4 +370,3 @@ alias to your shell configuration, for example:
 ```sh
 alias cz=chezmoi
 ```
-

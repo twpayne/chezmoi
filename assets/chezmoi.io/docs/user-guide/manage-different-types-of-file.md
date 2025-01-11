@@ -5,8 +5,8 @@
 If you want chezmoi to create a directory, but ignore its contents, say
 `~/src`, first run:
 
-```console
-$ mkdir -p $(chezmoi source-path)/src
+```sh
+mkdir -p $(chezmoi source-path)/src
 ```
 
 This creates the directory in the source state, which means that chezmoi will
@@ -17,8 +17,8 @@ file in the directory in the source state that will be seen by git (so git does
 not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
 in the target state):
 
-```console
-$ touch $(chezmoi source-path)/src/.keep
+```sh
+touch $(chezmoi source-path)/src/.keep
 ```
 
 chezmoi automatically creates `.keep` files when you add an empty directory
@@ -32,8 +32,8 @@ directory that matches the pattern. As this command is potentially dangerous,
 you should run chezmoi in verbose, dry-run mode beforehand to see what would be
 removed:
 
-```console
-$ chezmoi apply --dry-run --verbose
+```sh
+chezmoi apply --dry-run --verbose
 ```
 
 `.chezmoiremove` is interpreted as a template, so you can remove different
@@ -81,7 +81,7 @@ contents of the file.
     To replace the string `old` with `new` in a file while leaving the rest of
     the file unchanged, use the modify script:
 
-    ```
+    ```text
     {{- /* chezmoi:modify-template */ -}}
     {{- .chezmoi.stdin | replaceAllRegex "old" "new" }}
     ```
@@ -89,7 +89,7 @@ contents of the file.
     To set individual values in JSON, JSONC, TOML, and YAML files you can use
     the `setValueAtPath` template function, for example:
 
-    ```
+    ```text
     {{- /* chezmoi:modify-template */ -}}
     {{ fromJson .chezmoi.stdin | setValueAtPath "key.nestedKey" "value" | toPrettyJson }}
     ```
@@ -155,22 +155,22 @@ example for VSCode's `settings.json` on Linux:
 
 Copy the configuration file to your source directory:
 
-```console
-$ cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+```sh
+cp ~/.config/Code/User/settings.json $(chezmoi source-path)
 ```
 
 Tell chezmoi to ignore this file:
 
-```console
-$ echo settings.json >> $(chezmoi source-path)/.chezmoiignore
+```sh
+echo settings.json >> $(chezmoi source-path)/.chezmoiignore
 ```
 
 Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to
 the file in your source directory:
 
-```console
-$ mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
-$ echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+```sh
+mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
+echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
 ```
 
 The prefix `private_` is used because the `~/.config` and `~/.config/Code`
@@ -178,8 +178,8 @@ directories are private by default.
 
 Apply the changes:
 
-```console
-$ chezmoi apply -v
+```sh
+chezmoi apply -v
 ```
 
 Now, when the program modifies its configuration file it will modify the file
@@ -191,7 +191,7 @@ chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
 populating your `~/.ssh/authorized_keys`. Put the following in your
 `~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`:
 
-```
+```text
 {{ range gitHubKeys "$GITHUB_USERNAME" -}}
 {{   .Key }}
 {{ end -}}

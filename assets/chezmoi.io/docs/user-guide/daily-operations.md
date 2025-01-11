@@ -4,8 +4,8 @@
 
 Edit a dotfile with:
 
-```console
-$ chezmoi edit $FILENAME
+```sh
+chezmoi edit $FILENAME
 ```
 
 This will edit `$FILENAME`'s source file in your source directory. chezmoi will
@@ -13,14 +13,14 @@ not make any changes to the actual dotfile until you run `chezmoi apply`.
 
 To automatically run `chezmoi apply` when you quit your editor, run:
 
-```console
-$ chezmoi edit --apply $FILENAME
+```sh
+chezmoi edit --apply $FILENAME
 ```
 
 To automatically run `chezmoi apply` whenever you save the file in your editor, run:
 
-```console
-$ chezmoi edit --watch $FILENAME
+```sh
+chezmoi edit --watch $FILENAME
 ```
 
 You don't have to use `chezmoi edit` to edit your dotfiles. For more
@@ -43,8 +43,8 @@ sequenceDiagram
 
 You can pull the changes from your repo and apply them in a single command:
 
-```console
-$ chezmoi update
+```sh
+chezmoi update
 ```
 
 This runs `git pull --autostash --rebase` in your source directory and then
@@ -63,8 +63,8 @@ sequenceDiagram
 
 Run:
 
-```console
-$ chezmoi git pull -- --autostash --rebase && chezmoi diff
+```sh
+chezmoi git pull -- --autostash --rebase && chezmoi diff
 ```
 
 This runs `git pull --autostash --rebase` in your source directory and `chezmoi
@@ -73,8 +73,8 @@ source directory and the actual state.
 
 If you're happy with the changes, then you can run
 
-```console
-$ chezmoi apply
+```sh
+chezmoi apply
 ```
 
 to apply them.
@@ -152,8 +152,8 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 `chezmoi init`, and running `chezmoi apply` can be done in a single line of
 shell:
 
-```console
-$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 ```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
@@ -165,8 +165,8 @@ can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
-```console
-$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --one-shot $GITHUB_USERNAME
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --one-shot $GITHUB_USERNAME
 ```
 
 ```mermaid

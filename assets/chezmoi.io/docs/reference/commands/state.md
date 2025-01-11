@@ -46,13 +46,13 @@ Set a value from the persistent state
 
 ## Examples
 
-```console
-$ chezmoi state data
-$ chezmoi state delete --bucket=bucket --key=key
-$ chezmoi state delete-bucket --bucket=bucket
-$ chezmoi state dump
-$ chezmoi state get --bucket=bucket --key=key
-$ chezmoi state get-bucket --bucket=bucket
-$ chezmoi state set --bucket=bucket --key=key --value=value
-$ chezmoi state reset
+```sh
+chezmoi state data
+chezmoi state delete --bucket=$BUCKET --key=$KEY
+chezmoi state delete-bucket --bucket=$BUCKET
+chezmoi state dump
+chezmoi state get --bucket=$BUCKET --key=$KEY
+chezmoi state get-bucket --bucket=$BUCKET
+chezmoi state set --bucket=$BUCKET --key=$KEY --value=$VALUE
+chezmoi state reset
 ```

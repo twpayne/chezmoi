@@ -5,7 +5,7 @@ print the target directory.
 
 ## Examples
 
-```console
-$ chezmoi target-path
-$ chezmoi target-path ~/.local/share/chezmoi/dot_zshrc
+```sh
+chezmoi target-path
+chezmoi target-path ~/.local/share/chezmoi/dot_zshrc
 ```

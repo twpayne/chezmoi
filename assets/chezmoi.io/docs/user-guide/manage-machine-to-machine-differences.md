@@ -43,15 +43,15 @@ or digits.
 Then, add `~/.gitconfig` to chezmoi using the `--template` flag to turn it
 into a template:
 
-```console
-$ chezmoi add --template ~/.gitconfig
+```sh
+chezmoi add --template ~/.gitconfig
 ```
 
 You can then open the template (which will be saved in the file
 `~/.local/share/chezmoi/dot_gitconfig.tmpl`):
 
-```console
-$ chezmoi edit ~/.gitconfig
+```sh
+chezmoi edit ~/.gitconfig
 ```
 
 Edit the file so it looks something like:
@@ -64,7 +64,7 @@ Edit the file so it looks something like:
 Templates are often used to capture machine-specific differences. For example,
 in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
-``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
+```text title="~/.local/share/chezmoi/dot_bashrc.tmpl"
 # common config
 export EDITOR=vi
 
@@ -76,8 +76,8 @@ export EDITOR=vi
 
 For a full list of variables, run:
 
-```console
-$ chezmoi data
+```sh
+chezmoi data
 ```
 
 For more advanced usage, you can use the full power of the
@@ -89,8 +89,8 @@ managers](../reference/templates/functions/index.md).
 Templates can be executed directly from the command line, without the need to
 create a file on disk, with the `execute-template` command, for example:
 
-```console
-$ chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
+```sh
+chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
 ```
 
 This is useful when developing or [debugging
@@ -101,7 +101,7 @@ retrieved with chezmoi's template functions. For example, if you have a file
 stored in 1Password with the UUID `uuid` then you can retrieve it with the
 template:
 
-```
+```text
 {{- onepasswordDocument "uuid" -}}
 ```
 
@@ -121,7 +121,7 @@ different machines, or to exclude certain files completely, you can create
 patterns that chezmoi should ignore, and are interpreted as templates. An
 example `.chezmoiignore` file might look like:
 
-``` title="~/.local/share/chezmoi/.chezmoiignore"
+```text title="~/.local/share/chezmoi/.chezmoiignore"
 README.md
 {{- if ne .chezmoi.hostname "work-laptop" }}
 .work # only manage .work on work-laptop
@@ -135,7 +135,7 @@ by default, so we have to turn the logic around and instead write "ignore
 
 Patterns can be excluded by starting the line with a `!`, for example:
 
-``` title="~/.local/share/chezmoi/.chezmoiignore"
+```text title="~/.local/share/chezmoi/.chezmoiignore"
 dir/f*
 !dir/foo
 ```
@@ -144,8 +144,8 @@ will ignore all files beginning with an `f` in `dir` except for `dir/foo`.
 
 You can see what files chezmoi ignores with the command
 
-```console
-$ chezmoi ignored
+```sh
+chezmoi ignored
 ```
 
 ## Handle different file locations on different systems with the same contents
@@ -168,7 +168,7 @@ Linux. Both template files should contain `{{- template "file.conf" . -}}`.
 Finally, tell chezmoi to ignore files where they are not needed by adding lines
 to your `.chezmoiignore` file, for example:
 
-``` title="~/.local/share/chezmoi/.chezmoiignore"
+```text title="~/.local/share/chezmoi/.chezmoiignore"
 {{ if ne .chezmoi.os "darwin" }}
 Library/Application Support/App/file.conf
 {{ end }}
@@ -184,7 +184,7 @@ on any variable. For example, if you want `~/.bashrc` to be different on Linux
 and macOS you would create a file in the source state called `dot_bashrc.tmpl`
 containing:
 
-``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
+```text title="~/.local/share/chezmoi/dot_bashrc.tmpl"
 {{ if eq .chezmoi.os "darwin" -}}
 # macOS .bashrc contents
 {{ else if eq .chezmoi.os "linux" -}}
@@ -206,7 +206,7 @@ Create the following files:
 # Linux .bashrc contents
 ```
 
-``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
+```text title="~/.local/share/chezmoi/dot_bashrc.tmpl"
 {{- if eq .chezmoi.os "darwin" -}}
 {{-   include ".bashrc_darwin" -}}
 {{- else if eq .chezmoi.os "linux" -}}
@@ -219,15 +219,15 @@ on macOS and `~/.local/share/chezmoi/.bashrc_linux` on Linux.
 
 If you want to use templates within your templates, then, instead, create:
 
-```bash title="~/.local/share/chezmoi/.chezmoitemplates/bashrc_darwin.tmpl"
+```text title="~/.local/share/chezmoi/.chezmoitemplates/bashrc_darwin.tmpl"
 # macOS .bashrc template contents
 ```
 
-```bash title="~/.local/share/chezmoi/.chezmoitemplates/bashrc_linux.tmpl"
+```text title="~/.local/share/chezmoi/.chezmoitemplates/bashrc_linux.tmpl"
 # Linux .bashrc template contents
 ```
 
-``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
+```text title="~/.local/share/chezmoi/dot_bashrc.tmpl"
 {{- if eq .chezmoi.os "darwin" -}}
 {{-   template "bashrc_darwin.tmpl" . -}}
 {{- else if eq .chezmoi.os "linux" -}}

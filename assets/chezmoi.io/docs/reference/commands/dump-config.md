@@ -10,6 +10,6 @@ Dump the configuration.
 
 ## Examples
 
-```console
-$ chezmoi dump-config
+```sh
+chezmoi dump-config
 ```

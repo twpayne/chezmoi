@@ -21,16 +21,16 @@ with Watchman.
 
 1. Tell watchman to watch your source directory:
 
-    ```console
-    $ CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
-    $ watchman watch "${CHEZMOI_SOURCE_PATH}"
+    ```sh
+    CHEZMOI_SOURCE_PATH="$(chezmoi source-path)"
+    watchman watch "${CHEZMOI_SOURCE_PATH}"
     ```
 
 2. Tell watchman to run `chezmoi apply --force` whenever your source directory
 changes:
 
-    ```console
-    $ watchman -j <<EOT
+    ```sh
+    watchman -j <<EOT
     ["trigger", "${CHEZMOI_SOURCE_PATH}", {
       "name": "chezmoi-apply",
       "command": ["chezmoi", "apply", "--force"]
@@ -43,6 +43,6 @@ apply --force` on each change.
 
 To shutdown the Watchman server, run:
 
-    ```console
-    $ watchman shutdown-server
+    ```sh
+    watchman shutdown-server
     ```

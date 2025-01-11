@@ -1,3 +1,3 @@
 # Security
 
-See https://chezmoi.io/developer-guide/security/.
+See the [security guide](https://chezmoi.io/developer-guide/security/).

@@ -5,7 +5,7 @@ print the source directory.
 
 ## Examples
 
-```console
-$ chezmoi source-path
-$ chezmoi source-path ~/.bashrc
+```sh
+chezmoi source-path
+chezmoi source-path ~/.bashrc
 ```

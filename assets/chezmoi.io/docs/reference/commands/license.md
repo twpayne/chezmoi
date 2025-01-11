@@ -4,6 +4,6 @@ Print chezmoi's license.
 
 ## Examples
 
-```console
-$ chezmoi license
+```sh
+chezmoi license
 ```

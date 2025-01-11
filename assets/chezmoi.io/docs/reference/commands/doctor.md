@@ -10,6 +10,6 @@ Do not use any network connections.
 
 ## Examples
 
-```console
-$ chezmoi doctor
+```sh
+chezmoi doctor
 ```

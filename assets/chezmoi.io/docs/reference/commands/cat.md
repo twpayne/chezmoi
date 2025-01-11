@@ -7,6 +7,6 @@ written.
 
 ## Examples
 
-```console
-$ chezmoi cat ~/.bashrc
+```sh
+chezmoi cat ~/.bashrc
 ```

@@ -9,7 +9,7 @@ Generates *output* for use with chezmoi. The currently supported *output*s are:
 
 ## Examples
 
-```console
-$ chezmoi generate install.sh > install.sh
-$ chezmoi git commit -m "$(chezmoi generate git-commit-message)"
+```sh
+chezmoi generate install.sh > install.sh
+chezmoi git commit -m "$(chezmoi generate git-commit-message)"
 ```

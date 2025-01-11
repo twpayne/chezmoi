@@ -25,8 +25,8 @@ With chezmoi, pronounced /ʃeɪ mwa/ (shay-mwa), you can install chezmoi and you
 dotfiles from your GitHub dotfiles repo on a new, empty machine with a single
 command:
 
-```console
-$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
+```sh
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 ```
 
 As well as the `curl | sh` installation, you can [install chezmoi with your
@@ -34,8 +34,8 @@ favorite package manager](install.md).
 
 Updating your dotfiles on any machine is a single command:
 
-```console
-$ chezmoi update
+```sh
+chezmoi update
 ```
 
 chezmoi runs on all popular operating systems, is distributed as a single

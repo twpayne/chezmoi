@@ -58,7 +58,7 @@ Show script contents, defaults to `true`.
 
 ## Examples
 
-```console
-$ chezmoi diff
-$ chezmoi diff ~/.bashrc
+```sh
+chezmoi diff
+chezmoi diff ~/.bashrc
 ```

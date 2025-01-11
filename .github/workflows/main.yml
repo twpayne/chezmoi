@@ -433,6 +433,9 @@ jobs:
       if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
       run: |
         go run ./internal/cmds/lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
+    - name: lint-markdown
+      if: false # FIXME
+      uses: DavidAnson/markdownlint-cli2-action@a23dae216ce3fee4db69da41fed90d2a4af801cf
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:

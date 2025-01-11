@@ -14,8 +14,8 @@ This can be achieved with the following process:
 
 First, change to chezmoi's root directory:
 
-```console
-$ chezmoi cd ~
+```sh
+chezmoi cd ~
 ```
 
 Generate an age private key encrypted with a passphrase in the file
@@ -33,8 +33,8 @@ Use a strong passphrase and make a note of the public key
 
 Add `key.txt.age` to `.chezmoiignore` so that chezmoi does not try to create it:
 
-```console
-$ echo key.txt.age >> .chezmoiignore
+```sh
+echo key.txt.age >> .chezmoiignore
 ```
 
 Configure chezmoi to decrypt the passphrase-encrypted private key if needed:
@@ -76,11 +76,11 @@ At this stage everything is configured and `git status` should report:
 $ git status
 On branch main
 Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	.chezmoi.toml.tmpl
-	.chezmoiignore
-	key.txt.age
-	run_once_before_decrypt-private-key.sh.tmpl
+        (use "git add <file>..." to include in what will be committed)
+        .chezmoi.toml.tmpl
+        .chezmoiignore
+        key.txt.age
+        run_once_before_decrypt-private-key.sh.tmpl
 
 nothing added to commit but untracked files present (use "git add" to track)
 ```
@@ -91,8 +91,8 @@ committed.
 Add files that you want to encrypt using the `--encrypt` argument to `chezmoi
 add`, for example:
 
-```console
-$ chezmoi add --encrypt ~/.ssh/id_rsa
+```sh
+chezmoi add --encrypt ~/.ssh/id_rsa
 ```
 
 When you run `chezmoi init` on a new machine you will be prompted to enter your

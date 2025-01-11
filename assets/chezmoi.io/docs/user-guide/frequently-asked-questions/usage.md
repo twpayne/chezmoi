@@ -126,27 +126,27 @@ chezmoi will make sure to execute it before templating other files.
 
 `{{` and `}}` are chezmoi's default template delimiters, and so need escaping, for example:
 
-```
+```text
 {{ "{{" }}
 {{ "}}" }}
 ```
 
 results in
 
-```
+```text
 {{
 }}
 ```
 
 For longer tokens containing a `{{` and a `}}` you can use a longer literal, for example:
 
-```
+```text
 {{ "{{ .Target }}" }}
 ```
 
 results in
 
-```
+```text
 {{ .Target }}
 ```
 
@@ -155,7 +155,7 @@ results in
 Use a `run_onchange_after_*.tmpl` script that includes the HEAD commit. For example,
 if `~/.emacs.d` is a `git-repo` external, then create:
 
-``` title="~/.local/share/chezmoi/run_onchange_after_emacs.d.tmpl"
+```text title="~/.local/share/chezmoi/run_onchange_after_emacs.d.tmpl"
 #!/bin/sh
 
 # {{ output "git" "-C" (joinPath .chezmoi.homeDir ".emacs.d") "rev-parse" "HEAD" }}
@@ -167,7 +167,7 @@ echo "~/emacs.d updated"
 Use a `run_once_*.tmpl` script that includes the current time truncated to a
 suitable unit. For example, to run a script daily:
 
-``` title="~/.local/share/chezmoi/run_once_daily.tmpl"
+```text title="~/.local/share/chezmoi/run_once_daily.tmpl"
 #!/bin/sh
 
 # {{ now | date "2006-01-02" }}
@@ -176,7 +176,7 @@ echo "new day"
 
 For weekly, use the week number from the output of `date`, for example:
 
-``` title="~/.local/share/chezmoi/run_once_weekly.tmpl"
+```text title="~/.local/share/chezmoi/run_once_weekly.tmpl"
 #!/bin/sh
 
 # {{ output "date" "+%V" | trim }}
@@ -185,7 +185,7 @@ echo "new week"
 
 Or, approximate the week number with template functions:
 
-``` title="~/.local/share/chezmoi/run_once_weekly.tmpl"
+```text title="~/.local/share/chezmoi/run_once_weekly.tmpl"
 #!/bin/sh
 
 # {{ div now.YearDay 7 }}

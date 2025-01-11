@@ -4,6 +4,6 @@ Edit the configuration file.
 
 ## Examples
 
-```console
-$ chezmoi edit-config
+```sh
+chezmoi edit-config
 ```
