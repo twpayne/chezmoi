@@ -226,6 +226,9 @@ sections:
     commitMessageTemplateFile:
       type: string
       description: Commit message template file (relative to source directory)
+    lfs:
+      type: bool
+      description: Run `git lfs pull` after cloning
   gitHub:
     refreshPeriod:
       type: duration
