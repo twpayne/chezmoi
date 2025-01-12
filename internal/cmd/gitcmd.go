@@ -11,6 +11,7 @@ type gitCmdConfig struct {
 	AutoPush                  bool   `json:"autopush"                  mapstructure:"autopush"                  yaml:"autopush"`
 	CommitMessageTemplate     string `json:"commitMessageTemplate"     mapstructure:"commitMessageTemplate"     yaml:"commitMessageTemplate"`
 	CommitMessageTemplateFile string `json:"commitMessageTemplateFile" mapstructure:"commitMessageTemplateFile" yaml:"commitMessageTemplateFile"`
+	LFS                       bool   `json:"lfs"                       mapstructure:"lfs"                       yaml:"lfs"`
 }
 
 func (c *Config) newGitCmd() *cobra.Command {

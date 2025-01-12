@@ -1,0 +1,15 @@
+[windows] skip 'UNIX only'
+
+chmod 755 bin/git
+
+# test that chezmoi init --git-lfs runs git lfs pull after cloning
+exec chezmoi init --git-lfs user
+cmpenv stdout golden/init
+
+-- bin/git --
+#!/bin/sh
+
+echo git $*
+-- golden/init --
+git clone --recurse-submodules https://github.com/user/dotfiles.git $HOME/.local/share/chezmoi
+git lfs pull

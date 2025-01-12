@@ -110,6 +110,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 	initCmd.Flags().VarP(c.init.filter.Exclude, "exclude", "x", "Exclude entry types")
 	initCmd.Flags().BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
 	initCmd.Flags().VarP(c.init.filter.Include, "include", "i", "Include entry types")
+	initCmd.Flags().BoolVar(&c.Git.LFS, "git-lfs", c.Git.LFS, "Run git pull lfs after cloning")
 	initCmd.Flags().BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
 	initCmd.Flags().BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	initCmd.Flags().BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
@@ -129,6 +130,8 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		c.init.purgeBinary = true
 	}
 
+	useBuiltinGit := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc)
+
 	// If we're not in a working tree then init it or clone it.
 	gitDirAbsPath := c.WorkingTreeAbsPath.JoinString(git.GitDirName)
 	switch _, err := c.baseSystem.Stat(gitDirAbsPath); {
@@ -137,8 +140,6 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-
-		useBuiltinGit := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc)
 
 		if len(args) == 0 {
 			if useBuiltinGit {
@@ -194,6 +195,13 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	if err := c.createAndReloadConfigFile(cmd); err != nil {
 		return err
+	}
+
+	if c.Git.LFS && !useBuiltinGit {
+		args := []string{"lfs", "pull"}
+		if err := c.run(chezmoi.EmptyAbsPath, c.Git.Command, args); err != nil {
+			return err
+		}
 	}
 
 	// Apply.

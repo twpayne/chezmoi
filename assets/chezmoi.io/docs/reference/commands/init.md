@@ -57,6 +57,10 @@ existing template data.
 
 Clone the repo with depth *depth*.
 
+### `--git-lfs` *bool*
+
+Run `git lfs pull` after cloning the repo.
+
 ### `-g`, `--guess-repo-url` *bool*
 
 Guess the repo URL from the *repo* argument. This defaults to `true`.
