@@ -8510,7 +8510,17 @@
 
 <h1 id="gopass-functions">gopass functions</h1>
 <p>The <code>gopass*</code> template functions return data stored in
-<a href="https://www.gopass.pw/">gopass</a> using the gopass CLI (<code>gopass</code>).</p>
+<a href="https://www.gopass.pw/">gopass</a> using the gopass CLI (<code>gopass</code>) or builtin
+code.</p>
+<p>By default, chezmoi will use the gopass CLI (<code>gopass</code>). Depending on your gopass
+configuration, you may have to enter your passphrase once for each secret.</p>
+<p>When setting <code>gopass.mode</code> to <code>builtin</code>, chezmoi use builtin code to access the
+goapass database and caches your passphrase in plaintext in memory until chezmoi
+terminates.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using the builtin code is experimental and may be removed.</p>
+</div>
 
 
 
@@ -8546,7 +8556,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

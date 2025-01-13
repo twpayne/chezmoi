@@ -8710,11 +8710,8 @@ will execute with the status <code>R</code>. This can similarly disabled by sett
 </div>
 <h2 id="install-packages-with-scripts">Install packages with scripts</h2>
 <p>Change to the source directory and create a file called
-<code>run_onchange_install-packages.sh</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span><span class="nv">$EDITOR</span><span class="w"> </span>run_onchange_install-packages.sh
-</code></pre></div>
-<p>In this file create your package installation script, e.g.</p>
+<code>run_onchange_install-packages.sh</code>. In this file create your package
+installation script, e.g.</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ripgrep
 </code></pre></div>
@@ -8760,10 +8757,10 @@ does not create <code>dconf.ini</code> in your home directory.</p>
 <p>chezmoi stores whether and when <code>run_onchange_</code> and <code>run_once_</code> scripts have
 been run in its persistent state.</p>
 <p>To clear the state of <code>run_onchange_</code> scripts, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>entryState
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>entryState
 </code></pre></div>
 <p>To clear the state of <code>run_once_</code> scripts, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>scriptState
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>scriptState
 </code></pre></div>
 
 
@@ -8800,7 +8797,7 @@ been run in its persistent state.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

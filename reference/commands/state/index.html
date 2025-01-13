@@ -8774,14 +8774,14 @@
 <h3 id="set"><code>set</code></h3>
 <p>Set a value from the persistent state</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>data
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>delete<span class="w"> </span>--bucket<span class="o">=</span>bucket<span class="w"> </span>--key<span class="o">=</span>key
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>bucket
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>dump
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>get<span class="w"> </span>--bucket<span class="o">=</span>bucket<span class="w"> </span>--key<span class="o">=</span>key
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>get-bucket<span class="w"> </span>--bucket<span class="o">=</span>bucket
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--bucket<span class="o">=</span>bucket<span class="w"> </span>--key<span class="o">=</span>key<span class="w"> </span>--value<span class="o">=</span>value
-<span class="gp">$ </span>chezmoi<span class="w"> </span>state<span class="w"> </span>reset
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>state<span class="w"> </span>data
+chezmoi<span class="w"> </span>state<span class="w"> </span>delete<span class="w"> </span>--bucket<span class="o">=</span><span class="nv">$BUCKET</span><span class="w"> </span>--key<span class="o">=</span><span class="nv">$KEY</span>
+chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span><span class="nv">$BUCKET</span>
+chezmoi<span class="w"> </span>state<span class="w"> </span>dump
+chezmoi<span class="w"> </span>state<span class="w"> </span>get<span class="w"> </span>--bucket<span class="o">=</span><span class="nv">$BUCKET</span><span class="w"> </span>--key<span class="o">=</span><span class="nv">$KEY</span>
+chezmoi<span class="w"> </span>state<span class="w"> </span>get-bucket<span class="w"> </span>--bucket<span class="o">=</span><span class="nv">$BUCKET</span>
+chezmoi<span class="w"> </span>state<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--bucket<span class="o">=</span><span class="nv">$BUCKET</span><span class="w"> </span>--key<span class="o">=</span><span class="nv">$KEY</span><span class="w"> </span>--value<span class="o">=</span><span class="nv">$VALUE</span>
+chezmoi<span class="w"> </span>state<span class="w"> </span>reset
 </code></pre></div>
 
 
@@ -8818,7 +8818,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

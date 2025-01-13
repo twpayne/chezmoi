@@ -8633,11 +8633,11 @@ ways.</p>
 to <code>false</code>.</p>
 <p>Otherwise, you can use your VCS to create the source directory before running
 <code>chezmoi init</code>, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>fossil<span class="w"> </span>clone<span class="w"> </span>https://dotfiles.example.com/<span class="w"> </span>dotfiles.fossil
-<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>.local/share/chezmoi/.git
-<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>.local/share/chezmoi
-<span class="gp">$ </span>fossil<span class="w"> </span>open<span class="w"> </span>~/dotfiles.fossil
-<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply
+<div class="highlight"><pre><span></span><code>fossil<span class="w"> </span>clone<span class="w"> </span>https://dotfiles.example.com/<span class="w"> </span>dotfiles.fossil
+mkdir<span class="w"> </span>-p<span class="w"> </span>.local/share/chezmoi/.git
+<span class="nb">cd</span><span class="w"> </span>.local/share/chezmoi
+fossil<span class="w"> </span>open<span class="w"> </span>~/dotfiles.fossil
+chezmoi<span class="w"> </span>init<span class="w"> </span>--apply
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -8653,9 +8653,9 @@ variables and <code>chezmoi update</code> will use these instead of <code>git pu
 <p>Currently, it is not possible to override the auto add, commit, and push
 behavior for non-git VCSs, so you will have to commit changes manually, for
 example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span>fossil<span class="w"> </span>add<span class="w"> </span>.
-<span class="gp">$ </span>fossil<span class="w"> </span>commit
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span>
+fossil<span class="w"> </span>add<span class="w"> </span>.
+fossil<span class="w"> </span>commit
 </code></pre></div>
 
 
@@ -8692,7 +8692,7 @@ example:</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

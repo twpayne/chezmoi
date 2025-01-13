@@ -8805,10 +8805,10 @@ pairs. If <code>promptString</code> is called with a <em>prompt</em> that does n
 <p>If run with arguments, then set <code>.chezmoi.stdin</code> to the contents of the standard
 input.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.sourceDir }}&#39;</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.os }}&#39;</span><span class="w"> </span>/<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.arch }}&#39;</span>
-<span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{{ .chezmoi | toJson }}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
-<span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="nv">email</span><span class="o">=</span>me@home.org<span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.sourceDir }}&#39;</span>
+chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.os }}&#39;</span><span class="w"> </span>/<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.arch }}&#39;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;{{ .chezmoi | toJson }}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
+chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="nv">email</span><span class="o">=</span>me@home.org<span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre></div>
 
 
@@ -8845,7 +8845,7 @@ input.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

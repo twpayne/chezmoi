@@ -8645,8 +8645,8 @@
 <a href="https://support.1password.com/command-line-getting-started/">1Password CLI</a> to
 expose data as a template function.</p>
 <p>Log in and get a session using:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>op<span class="w"> </span>account<span class="w"> </span>add<span class="w"> </span>--address<span class="w"> </span><span class="nv">$SUBDOMAIN</span>.1password.com<span class="w"> </span>--email<span class="w"> </span><span class="nv">$EMAIL</span>
-<span class="gp">$ </span><span class="nb">eval</span><span class="w"> </span><span class="k">$(</span>op<span class="w"> </span>signin<span class="w"> </span>--account<span class="w"> </span><span class="nv">$SUBDOMAIN</span><span class="k">)</span>
+<div class="highlight"><pre><span></span><code>op<span class="w"> </span>account<span class="w"> </span>add<span class="w"> </span>--address<span class="w"> </span><span class="nv">$SUBDOMAIN</span>.1password.com<span class="w"> </span>--email<span class="w"> </span><span class="nv">$EMAIL</span>
+<span class="nb">eval</span><span class="w"> </span><span class="k">$(</span>op<span class="w"> </span>signin<span class="w"> </span>--account<span class="w"> </span><span class="nv">$SUBDOMAIN</span><span class="k">)</span>
 </code></pre></div>
 <p>This is not necessary if you are using biometric authentication.</p>
 <p>The output of <code>op read $URL</code> is available as the <code>onepasswordRead</code> template
@@ -8654,7 +8654,7 @@ function, for example:</p>
 <div class="highlight"><pre><span></span><code>{{ onepasswordRead &quot;op://app-prod/db/password&quot; }}
 </code></pre></div>
 <p>returns the output of</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span>op://app-prod/db/password
+<div class="highlight"><pre><span></span><code>op<span class="w"> </span><span class="nb">read</span><span class="w"> </span>op://app-prod/db/password
 </code></pre></div>
 <p>Documents can be retrieved with:</p>
 <div class="highlight"><pre><span></span><code>{{- onepasswordDocument &quot;$UUID&quot; -}}
@@ -8738,8 +8738,7 @@ allows the fields to be queried by key:</p>
 </code></pre></div>
 <p>Additional fields may be obtained with <code>onepasswordItemFields</code>; not all objects
 in 1Password have item fields. This can be tested with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordItemFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>jq<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ onepasswordItemFields \&quot;</span><span class="nv">$UUID</span><span class="s2">\&quot; | toJson }}&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </code></pre></div>
 <h2 id="sign-in-prompt">Sign-in prompt</h2>
 <p>chezmoi will verify the availability and validity of a session token in the
@@ -8843,7 +8842,7 @@ and <code>OP_SERVICE_ACCOUNT_TOKEN</code> is properly set, set <code>onepassword
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

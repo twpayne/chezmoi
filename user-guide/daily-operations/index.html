@@ -2784,15 +2784,15 @@
 <h1 id="daily-operations">Daily operations</h1>
 <h2 id="edit-your-dotfiles">Edit your dotfiles</h2>
 <p>Edit a dotfile with:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span><span class="nv">$FILENAME</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span><span class="nv">$FILENAME</span>
 </code></pre></div>
 <p>This will edit <code>$FILENAME</code>'s source file in your source directory. chezmoi will
 not make any changes to the actual dotfile until you run <code>chezmoi apply</code>.</p>
 <p>To automatically run <code>chezmoi apply</code> when you quit your editor, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$FILENAME</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$FILENAME</span>
 </code></pre></div>
 <p>To automatically run <code>chezmoi apply</code> whenever you save the file in your editor, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>--watch<span class="w"> </span><span class="nv">$FILENAME</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>--watch<span class="w"> </span><span class="nv">$FILENAME</span>
 </code></pre></div>
 <p>You don't have to use <code>chezmoi edit</code> to edit your dotfiles. For more
 information, see <a href="../frequently-asked-questions/usage/#how-do-i-edit-my-dotfiles-with-chezmoi">Do I have to use <code>chezmoi edit</code> to edit my
@@ -2809,7 +2809,7 @@ dotfiles?</a></p>
 </div>
 <h2 id="pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</h2>
 <p>You can pull the changes from your repo and apply them in a single command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>update
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>update
 </code></pre></div>
 <p>This runs <code>git pull --autostash --rebase</code> in your source directory and then
 <code>chezmoi apply</code>.</p>
@@ -2822,13 +2822,13 @@ dotfiles?</a></p>
 </div>
 <h2 id="pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</h2>
 <p>Run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>git<span class="w"> </span>pull<span class="w"> </span>--<span class="w"> </span>--autostash<span class="w"> </span>--rebase<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chezmoi<span class="w"> </span>diff
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>git<span class="w"> </span>pull<span class="w"> </span>--<span class="w"> </span>--autostash<span class="w"> </span>--rebase<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chezmoi<span class="w"> </span>diff
 </code></pre></div>
 <p>This runs <code>git pull --autostash --rebase</code> in your source directory and <code>chezmoi
 diff</code> then shows the difference between the target state computed from your
 source directory and the actual state.</p>
 <p>If you're happy with the changes, then you can run</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>apply
 </code></pre></div>
 <p>to apply them.</p>
 <div class="mermaid">sequenceDiagram
@@ -2886,7 +2886,7 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 <code>github.com/$GITHUB_USERNAME/dotfiles</code> then installing chezmoi, running
 <code>chezmoi init</code>, and running <code>chezmoi apply</code> can be done in a single line of
 shell:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 <p>If your dotfiles repo has a different name to <code>dotfiles</code>, or if you host your
 dotfiles on a different service, then see the <a href="../../reference/commands/init/">reference manual for <code>chezmoi
@@ -2895,7 +2895,7 @@ init</code></a>.</p>
 can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">"</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 <div class="mermaid">sequenceDiagram
     participant H as home directory
@@ -2920,7 +2920,7 @@ with a single command:</p>
 <div class="md-footer-meta__inner md-grid">
 <div class="md-copyright">
 <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

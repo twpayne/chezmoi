@@ -8538,27 +8538,27 @@ with Watchman.</p>
 <ol>
 <li>
 <p>Tell watchman to watch your source directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span><span class="s2">&quot;</span>
-<span class="gp">$ </span>watchman<span class="w"> </span>watch<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span><span class="s2">&quot;</span>
+watchman<span class="w"> </span>watch<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">CHEZMOI_SOURCE_PATH</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
 </li>
 <li>
 <p>Tell watchman to run <code>chezmoi apply --force</code> whenever your source directory
 changes:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>watchman<span class="w"> </span>-j<span class="w"> </span>&lt;&lt;EOT
-<span class="go">[&quot;trigger&quot;, &quot;${CHEZMOI_SOURCE_PATH}&quot;, {</span>
-<span class="go">  &quot;name&quot;: &quot;chezmoi-apply&quot;,</span>
-<span class="go">  &quot;command&quot;: [&quot;chezmoi&quot;, &quot;apply&quot;, &quot;--force&quot;]</span>
-<span class="go">}]</span>
-<span class="go">EOT</span>
+<div class="highlight"><pre><span></span><code>watchman<span class="w"> </span>-j<span class="w"> </span><span class="s">&lt;&lt;EOT</span>
+<span class="s">[&quot;trigger&quot;, &quot;${CHEZMOI_SOURCE_PATH}&quot;, {</span>
+<span class="s">  &quot;name&quot;: &quot;chezmoi-apply&quot;,</span>
+<span class="s">  &quot;command&quot;: [&quot;chezmoi&quot;, &quot;apply&quot;, &quot;--force&quot;]</span>
+<span class="s">}]</span>
+<span class="s">EOT</span>
 </code></pre></div>
 </li>
 </ol>
 <p>You can now make changes to your source directory and Watchman will run <code>chezmoi
 apply --force</code> on each change.</p>
 <p>To shutdown the Watchman server, run:</p>
-<pre><code>```console
-$ watchman shutdown-server
+<pre><code>```sh
+watchman shutdown-server
 ```
 </code></pre>
 
@@ -8596,7 +8596,7 @@ $ watchman shutdown-server
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

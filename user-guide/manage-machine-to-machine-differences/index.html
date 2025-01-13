@@ -8658,11 +8658,11 @@ Variable names must start with a letter and be followed by zero or more letters
 or digits.</p>
 <p>Then, add <code>~/.gitconfig</code> to chezmoi using the <code>--template</code> flag to turn it
 into a template:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--template<span class="w"> </span>~/.gitconfig
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>add<span class="w"> </span>--template<span class="w"> </span>~/.gitconfig
 </code></pre></div>
 <p>You can then open the template (which will be saved in the file
 <code>~/.local/share/chezmoi/dot_gitconfig.tmpl</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.gitconfig
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.gitconfig
 </code></pre></div>
 <p>Edit the file so it looks something like:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_gitconfig.tmpl</span><pre><span></span><code><span class="k">[user]</span>
@@ -8679,7 +8679,7 @@ export EDITOR=vi
 {{- end }}
 </code></pre></div>
 <p>For a full list of variables, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>data
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>data
 </code></pre></div>
 <p>For more advanced usage, you can use the full power of the
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> language. chezmoi includes
@@ -8688,7 +8688,7 @@ its own <a href="../../reference/templates/functions/">functions for interacting
 managers</a>.</p>
 <p>Templates can be executed directly from the command line, without the need to
 create a file on disk, with the <code>execute-template</code> command, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;</span>
 </code></pre></div>
 <p>This is useful when developing or <a href="../templating/#testing-templates">debugging
 templates</a>.</p>
@@ -8725,7 +8725,7 @@ by default, so we have to turn the logic around and instead write "ignore
 </code></pre></div>
 <p>will ignore all files beginning with an <code>f</code> in <code>dir</code> except for <code>dir/foo</code>.</p>
 <p>You can see what files chezmoi ignores with the command</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>ignored
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>ignored
 </code></pre></div>
 <h2 id="handle-different-file-locations-on-different-systems-with-the-same-contents">Handle different file locations on different systems with the same contents</h2>
 <p>If you want to have the same file contents in different locations on different
@@ -8777,9 +8777,9 @@ this with the <code>include</code> template function.</p>
 <p>This will cause <code>~/.bashrc</code> to contain <code>~/.local/share/chezmoi/.bashrc_darwin</code>
 on macOS and <code>~/.local/share/chezmoi/.bashrc_linux</code> on Linux.</p>
 <p>If you want to use templates within your templates, then, instead, create:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoitemplates/bashrc_darwin.tmpl</span><pre><span></span><code><span class="c1"># macOS .bashrc template contents</span>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoitemplates/bashrc_darwin.tmpl</span><pre><span></span><code># macOS .bashrc template contents
 </code></pre></div>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoitemplates/bashrc_linux.tmpl</span><pre><span></span><code><span class="c1"># Linux .bashrc template contents</span>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoitemplates/bashrc_linux.tmpl</span><pre><span></span><code># Linux .bashrc template contents
 </code></pre></div>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/dot_bashrc.tmpl</span><pre><span></span><code>{{- if eq .chezmoi.os &quot;darwin&quot; -}}
 {{-   template &quot;bashrc_darwin.tmpl&quot; . -}}
@@ -8822,7 +8822,7 @@ on macOS and <code>~/.local/share/chezmoi/.bashrc_linux</code> on Linux.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

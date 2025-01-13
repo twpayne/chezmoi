@@ -3846,6 +3846,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-git-lfs-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      --git-lfs bool
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-g-guess-repo-url-bool" class="md-nav__link">
     <span class="md-ellipsis">
       -g, --guess-repo-url bool
@@ -8804,6 +8813,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-git-lfs-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      --git-lfs bool
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-g-guess-repo-url-bool" class="md-nav__link">
     <span class="md-ellipsis">
       -g, --guess-repo-url bool
@@ -9043,6 +9061,8 @@ own binary.</p>
 existing template data.</p>
 <h3 id="-d-depth-depth"><code>-d</code>, <code>--depth</code> <em>depth</em></h3>
 <p>Clone the repo with depth <em>depth</em>.</p>
+<h3 id="-git-lfs-bool"><code>--git-lfs</code> <em>bool</em></h3>
+<p>Run <code>git lfs pull</code> after cloning the repo.</p>
 <h3 id="-g-guess-repo-url-bool"><code>-g</code>, <code>--guess-repo-url</code> <em>bool</em></h3>
 <p>Guess the repo URL from the <em>repo</em> argument. This defaults to <code>true</code>.</p>
 <h3 id="-one-shot"><code>--one-shot</code></h3>
@@ -9102,12 +9122,12 @@ The default is <code>all</code>.</p>
 <p><code>--include=files</code> specifies all files.</p>
 </div>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>user
-<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>user<span class="w"> </span>--apply
-<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>user<span class="w"> </span>--apply<span class="w"> </span>--purge
-<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>user/dots
-<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>codeberg.org/user
-<span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>gitlab.com/user
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>user
+chezmoi<span class="w"> </span>init<span class="w"> </span>user<span class="w"> </span>--apply
+chezmoi<span class="w"> </span>init<span class="w"> </span>user<span class="w"> </span>--apply<span class="w"> </span>--purge
+chezmoi<span class="w"> </span>init<span class="w"> </span>user/dots
+chezmoi<span class="w"> </span>init<span class="w"> </span>codeberg.org/user
+chezmoi<span class="w"> </span>init<span class="w"> </span>gitlab.com/user
 </code></pre></div>
 
 
@@ -9144,7 +9164,7 @@ The default is <code>all</code>.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

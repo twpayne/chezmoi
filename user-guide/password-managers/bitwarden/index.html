@@ -8600,13 +8600,13 @@ Secrets CLI</a> (<code>bws</code>), and
 function.</p>
 <h2 id="bitwarden-cli">Bitwarden CLI</h2>
 <p>Log in to Bitwarden using a normal method</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>bw<span class="w"> </span>login<span class="w"> </span><span class="nv">$BITWARDEN_EMAIL</span><span class="w"> </span><span class="c1"># or</span>
-<span class="gp">$ </span>bw<span class="w"> </span>login<span class="w"> </span>--apikey<span class="w"> </span><span class="c1"># or</span>
-<span class="gp">$ </span>bw<span class="w"> </span>login<span class="w"> </span>--sso
+<div class="highlight"><pre><span></span><code>bw<span class="w"> </span>login<span class="w"> </span><span class="nv">$BITWARDEN_EMAIL</span><span class="w"> </span><span class="c1"># or</span>
+bw<span class="w"> </span>login<span class="w"> </span>--apikey<span class="w"> </span><span class="c1"># or</span>
+bw<span class="w"> </span>login<span class="w"> </span>--sso
 </code></pre></div>
 <p>If required, unlock your Bitwarden vault (API key and SSO logins always require
 an explicit unlock step):</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>bw<span class="w"> </span>unlock
+<div class="highlight"><pre><span></span><code>bw<span class="w"> </span>unlock
 </code></pre></div>
 <p>Set the <code>BW_SESSION</code> environment variable, as instructed.</p>
 <div class="admonition tip">
@@ -8614,12 +8614,9 @@ an explicit unlock step):</p>
 <p>The <code>BW_SESSION</code> value can be set directly. The exact combination differs
 based on whether you are currently logged into Bitwarden and how you log
 into Bitwarden.</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="c1"># You are already logged in with any method</span>
-<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span>unlock<span class="w"> </span>--raw<span class="k">)</span>
-<span class="gp">$ </span><span class="c1"># You are not logged in and log in with an email</span>
-<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span>login<span class="w"> </span><span class="nv">$BITWARDEN_EMAIL</span><span class="w"> </span>--raw<span class="k">)</span>
-<span class="gp">$ </span><span class="c1"># You are not logged in and login with SSO or API key</span>
-<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span>login<span class="w"> </span>--sso<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bw<span class="w"> </span>unlock<span class="w"> </span>--raw<span class="k">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span>unlock<span class="w"> </span>--raw<span class="k">)</span><span class="w">                    </span><span class="c1"># You are already logged in with any method</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span>login<span class="w"> </span><span class="nv">$BITWARDEN_EMAIL</span><span class="w"> </span>--raw<span class="k">)</span><span class="w">    </span><span class="c1"># You are not logged in and log in with an email</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">BW_SESSION</span><span class="o">=</span><span class="k">$(</span>bw<span class="w"> </span>login<span class="w"> </span>--sso<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bw<span class="w"> </span>unlock<span class="w"> </span>--raw<span class="k">)</span><span class="w">  </span><span class="c1"># You are not logged in and login with SSO or API key</span>
 </code></pre></div>
 </div>
 <p>The structured data from <code>bw get</code> is available as the <code>bitwarden</code> template
@@ -8687,7 +8684,7 @@ example:</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

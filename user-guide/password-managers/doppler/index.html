@@ -8519,42 +8519,44 @@
 
 
 <h1 id="doppler">Doppler</h1>
-<p>chezmoi includes support for <a href="https://www.doppler.com">Doppler</a> using the <code>doppler</code>
-CLI to expose data through the <code>doppler</code> and <code>dopplerProjectJson</code>
+<p>chezmoi includes support for <a href="https://www.doppler.com">Doppler</a> using the
+<code>doppler</code> CLI to expose data through the <code>doppler</code> and <code>dopplerProjectJson</code>
 template functions.</p>
 <p>Log in using:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>doppler<span class="w"> </span>login
+<div class="highlight"><pre><span></span><code>doppler<span class="w"> </span>login
 </code></pre></div>
-<p>It is now possible to interact with the <code>doppler</code> CLI in two different, but similar, ways.
-Both make use of the command <code>doppler secrets download --json --no-file</code> behind the scenes
-but present a different experience.</p>
-<p>The <code>doppler</code> function is used in the following way:
+<p>It is now possible to interact with the <code>doppler</code> CLI in two different, but
+similar, ways. Both make use of the command <code>doppler secrets download --json
+--no-file</code> behind the scenes but present a different experience.</p>
+<p>The <code>doppler</code> function is used in the following way:</p>
 <div class="highlight"><pre><span></span><code>{{ doppler &quot;SECRET_NAME&quot; &quot;project name&quot; &quot;config&quot; }}
-</code></pre></div></p>
-<p>All secrets from the specified project/config combination are cached for subsequent access and
-will not requery the <code>doppler</code> CLI for another secret in the same project/config.
-This caching mechanism enhances performance and reduces unnecessary CLI calls.</p>
-<p>The <code>dopplerProjectJson</code> presents the secrets as <code>json</code> structured data and is used in the following
-way:
+</code></pre></div>
+<p>All secrets from the specified project/config combination are cached for
+subsequent access and will not requery the <code>doppler</code> CLI for another secret in
+the same project/config. This caching mechanism enhances performance and reduces
+unnecessary CLI calls.</p>
+<p>The <code>dopplerProjectJson</code> presents the secrets as <code>json</code> structured data and is
+used in the following way:</p>
 <div class="highlight"><pre><span></span><code>{{ (dopplerProjectJson &quot;project&quot; &quot;config&quot;).PASSWORD }}
-</code></pre></div></p>
-<p>Additionally one can set the default values for the project and
-config (aka environment) in your config file, for example:</p>
-<p><div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[doppler]</span>
+</code></pre></div>
+<p>Additionally one can set the default values for the project and config (aka
+environment) in your config file, for example:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[doppler]</span>
 <span class="w">    </span><span class="n">project</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my-project&quot;</span>
 <span class="w">    </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dev&quot;</span>
 </code></pre></div>
-With these default values, you can omit them in the call to both <code>doppler</code> and <code>dopplerProjectJson</code>,
-for example:
+<p>With these default values, you can omit them in the call to both <code>doppler</code> and
+<code>dopplerProjectJson</code>, for example:</p>
 <div class="highlight"><pre><span></span><code>{{ doppler &quot;SECRET_NAME&quot; }}
 {{ dopplerProjectJson.SECRET_NAME }}
-</code></pre></div></p>
-<p>It is important to note that neither of the above parse any individual secret as <code>json</code>.
-This can be achieved by using the <code>fromJson</code> function, for example:
+</code></pre></div>
+<p>It is important to note that neither of the above parse any individual secret as
+<code>json</code>. This can be achieved by using the <code>fromJson</code> function, for example:</p>
 <div class="highlight"><pre><span></span><code>{{ (doppler &quot;SECRET_NAME&quot; | fromJson).created_by.email_address }}
 {{ (dopplerProjectJson.SECRET_NAME | fromJson).created_by.email_address }}
 </code></pre></div>
-Obviously the secret would have to be saved in <code>json</code> format for this to work as expected.</p>
+<p>Obviously the secret would have to be saved in <code>json</code> format for this to work as
+expected.</p>
 
 
 
@@ -8590,7 +8592,7 @@ Obviously the secret would have to be saved in <code>json</code> format for this
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

@@ -8634,7 +8634,7 @@
 <li>Add encrypted files.</li>
 </ol>
 <p>First, change to chezmoi's root directory:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~
 </code></pre></div>
 <p>Generate an age private key encrypted with a passphrase in the file
 <code>key.txt.age</code> with the command:</p>
@@ -8646,7 +8646,7 @@
 <p>Use a strong passphrase and make a note of the public key
 (<code>age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl</code> in this case).</p>
 <p>Add <code>key.txt.age</code> to <code>.chezmoiignore</code> so that chezmoi does not try to create it:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span>key.txt.age<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoiignore
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>key.txt.age<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoiignore
 </code></pre></div>
 <p>Configure chezmoi to decrypt the passphrase-encrypted private key if needed:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;<span class="w"> </span>run_once_before_decrypt-private-key.sh.tmpl<span class="w"> </span>&lt;&lt;EOF
@@ -8676,11 +8676,11 @@ private key:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>status
 <span class="go">On branch main</span>
 <span class="go">Untracked files:</span>
-<span class="go">  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span>
-<span class="go">    .chezmoi.toml.tmpl</span>
-<span class="go">    .chezmoiignore</span>
-<span class="go">    key.txt.age</span>
-<span class="go">    run_once_before_decrypt-private-key.sh.tmpl</span>
+<span class="go">        (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</span>
+<span class="go">        .chezmoi.toml.tmpl</span>
+<span class="go">        .chezmoiignore</span>
+<span class="go">        key.txt.age</span>
+<span class="go">        run_once_before_decrypt-private-key.sh.tmpl</span>
 
 <span class="go">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span>
 </code></pre></div>
@@ -8688,7 +8688,7 @@ private key:</p>
 committed.</p>
 <p>Add files that you want to encrypt using the <code>--encrypt</code> argument to <code>chezmoi
 add</code>, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--encrypt<span class="w"> </span>~/.ssh/id_rsa
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>add<span class="w"> </span>--encrypt<span class="w"> </span>~/.ssh/id_rsa
 </code></pre></div>
 <p>When you run <code>chezmoi init</code> on a new machine you will be prompted to enter your
 passphrase once to decrypt <code>key.txt.age</code>. Your decrypted private key will be
@@ -8763,7 +8763,7 @@ or manually editing the corresponding template):</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

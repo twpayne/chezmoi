@@ -8775,7 +8775,7 @@
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</h2>
 <p>Run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>doctor
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>doctor
 </code></pre></div>
 <p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
 the related feature, and anything <code>error</code> indicates a definite problem.</p>
@@ -8791,7 +8791,7 @@ many systems, but not all. If your pager does not pass through ANSI color escape
 sequences then you will see monochrome diff output with uninterpreted ANSI color
 escape sequences.</p>
 <p>This can typically by fixed by setting the environment variable</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">LESS</span><span class="o">=</span>-R
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">LESS</span><span class="o">=</span>-R
 </code></pre></div>
 <p>which instructs <code>less</code> to display "raw" control characters via the <code>-R</code> /
 <code>--RAW-CONTROL-CHARS</code> option.</p>
@@ -8933,9 +8933,9 @@ create <code>.keep</code> file.</p>
 <div class="highlight"><pre><span></span><code>chezmoi: mkdir /home/&lt;user&gt;/.local/share/chezmoi/dot_config/direnv: no such file or directory
 </code></pre></div>
 <p>But the workaround can be applied:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>dot_config/
-<span class="gp">$ </span>touch<span class="w"> </span>dot_config/.keep
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>dot_config/
+touch<span class="w"> </span>dot_config/.keep
 </code></pre></div>
 <p>Now once that done <code>chezmoi add ~/.config/direnv/direnvrc</code> should work. For
 reference see <a href="https://github.com/twpayne/chezmoi/issues/2006">this issue</a></p>
@@ -8946,14 +8946,14 @@ snap</a>.</p>
 <p>This is not a bug in chezmoi and there is nothing that chezmoi can do about
 this. However, there are two workarounds:</p>
 <p>Firstly, you can use alternatives to shell redirection. For standard input:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>&lt;<span class="nv">$FILENAME</span><span class="w">       </span><span class="c1"># fails</span>
-<span class="gp">$ </span>cat<span class="w"> </span><span class="nv">$FILENAME</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w">  </span><span class="c1"># succeeds</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>&lt;<span class="nv">$FILENAME</span><span class="w">       </span><span class="c1"># fails</span>
+cat<span class="w"> </span><span class="nv">$FILENAME</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w">  </span><span class="c1"># succeeds</span>
 </code></pre></div>
 <p>For standard output:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>&gt;<span class="nv">$FILENAME</span><span class="w">                  </span><span class="c1"># fails</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$FILENAME</span><span class="w">                </span><span class="c1"># succeeds</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>--output<span class="o">=</span><span class="nv">$FILENAME</span><span class="w">          </span><span class="c1"># succeeds</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span><span class="nv">$FILENAME</span><span class="w"> </span>&gt;/dev/null<span class="w">  </span><span class="c1"># succeeds</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>&gt;<span class="nv">$FILENAME</span><span class="w">                  </span><span class="c1"># fails</span>
+chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>-o<span class="w"> </span><span class="nv">$FILENAME</span><span class="w">                </span><span class="c1"># succeeds</span>
+chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span>--output<span class="o">=</span><span class="nv">$FILENAME</span><span class="w">          </span><span class="c1"># succeeds</span>
+chezmoi<span class="w"> </span><span class="nv">$COMMAND</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span><span class="nv">$FILENAME</span><span class="w"> </span>&gt;/dev/null<span class="w">  </span><span class="c1"># succeeds</span>
 </code></pre></div>
 <p>Secondly, you can install chezmoi with any of the <a href="../../../install/">many supported install
 methods</a> instead of snap.</p>
@@ -8965,7 +8965,7 @@ scripts, e.g.</p>
 <p><code>/bin/bash</code> does not exist on Nix or Termux. You must update the shebang line to point
 to the actual bash interpreter. The easiest way to do this is make the script a
 template and use the <code>lookPath</code> template function, for example:</p>
-<div class="highlight"><pre><span></span><code>#!{{ lookPath &quot;bash&quot; }}
+<div class="highlight"><pre><span></span><code><span class="ch">#!{{ lookPath &quot;bash&quot; }}</span>
 </code></pre></div>
 <p>Alternatively, you can use the actual path to <code>bash</code> on your system, for example:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Nix</label><label for="__tabbed_2_2">Termux</label></div>
@@ -9015,7 +9015,7 @@ template and use the <code>lookPath</code> template function, for example:</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

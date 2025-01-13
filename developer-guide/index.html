@@ -8503,14 +8503,14 @@ banned. See <code>CODE_OF_CONDUCT.md</code> for more information.</p>
 <a href="https://github.com">GitHub</a>. chezmoi is a standard Go project, using standard
 Go tooling. chezmoi requires Go 1.23 or later.</p>
 <p>Checkout chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/twpayne/chezmoi.git
-<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>chezmoi
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/twpayne/chezmoi.git
+<span class="nb">cd</span><span class="w"> </span>chezmoi
 </code></pre></div>
 <p>Build chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>build
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>build
 </code></pre></div>
 <p>Run all tests:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
 </code></pre></div>
 <p>chezmoi's tests include integration tests with other software. If the other
 software is not found in <code>$PATH</code> the tests will be skipped. Running the full set
@@ -8518,13 +8518,13 @@ of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <cod
 <code>perl</code>, <code>python3</code>, <code>rage</code>, <code>ruby</code>, <code>sed</code>, <code>sha256sum</code>, <code>tr</code>, <code>true</code>, <code>unzip</code>,
 <code>xz</code>, <code>zip</code>, and <code>zstd</code>.</p>
 <p>Run chezmoi:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>go<span class="w"> </span>run<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code>go<span class="w"> </span>run<span class="w"> </span>.
 </code></pre></div>
 <p>Run a set of smoke tests, including cross-compilation, tests, and linting:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>smoke-test
+<div class="highlight"><pre><span></span><code>make<span class="w"> </span>smoke-test
 </code></pre></div>
 <p>Test building chezmoi for all architectures:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>make<span class="w"> </span>test-release
+<div class="highlight"><pre><span></span><code>make<span class="w"> </span>test-release
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
@@ -8536,9 +8536,9 @@ warning-path: The error was &#39;Operation not supported&#39;.
 warning-path: Please set $HOME to a directory where you have write access.
 </code></pre></div>
 <p>These can be avoided with by running tests with <code>SHELL=bash</code> or <code>SHELL=zsh</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
-<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>zsh<span class="w"> </span>make<span class="w"> </span>smoke-test
-<span class="gp">$ </span><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
+<div class="highlight"><pre><span></span><code><span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>make<span class="w"> </span><span class="nb">test</span>
+<span class="nv">SHELL</span><span class="o">=</span>zsh<span class="w"> </span>make<span class="w"> </span>smoke-test
+<span class="nv">SHELL</span><span class="o">=</span>bash<span class="w"> </span>go<span class="w"> </span><span class="nb">test</span><span class="w"> </span>./...
 </code></pre></div>
 </div>
 
@@ -8576,7 +8576,7 @@ warning-path: Please set $HOME to a directory where you have write access.
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

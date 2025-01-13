@@ -8733,7 +8733,7 @@ plugin</a>, and
 <span class="w">    </span><span class="n">stripComponents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div>
 <p>To apply the changes, run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>apply
 </code></pre></div>
 <p>chezmoi will download the archives and unpack them as if they were part of the
 source state. chezmoi caches downloaded archives locally to avoid
@@ -8747,10 +8747,10 @@ URL points to the a tarball of a tagged version, which does not change over
 time. To bump the version of powerlevel10k, change the version in the URL.</p>
 <p>To force a refresh the downloaded archives, use the <code>--refresh-externals</code> flag
 to <code>chezmoi apply</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>--refresh-externals<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>--refresh-externals<span class="w"> </span>apply
 </code></pre></div>
 <p><code>--refresh-externals</code> can be shortened to <code>-R</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>-R<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>-R<span class="w"> </span>apply
 </code></pre></div>
 <p>When using Oh My Zsh, make sure you disable auto-updates by setting
 <code>DISABLE_AUTO_UPDATE="true"</code> in <code>~/.zshrc</code>. Auto updates will cause the
@@ -8819,14 +8819,14 @@ is computed for the current OS and architecture) to the target
 source state. The <code>import</code> command does this. For example, to import the latest
 version <a href="https://github.com/ohmyzsh/ohmyzsh"><code>github.com/ohmyzsh/ohmyzsh</code></a> to
 <code>~/.oh-my-zsh</code> run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz<span class="w"> </span>https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
-<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/dot_oh-my-zsh
-<span class="gp">$ </span>chezmoi<span class="w"> </span>import<span class="w"> </span>--strip-components<span class="w"> </span><span class="m">1</span><span class="w"> </span>--destination<span class="w"> </span>~/.oh-my-zsh<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz<span class="w"> </span>https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/dot_oh-my-zsh
+chezmoi<span class="w"> </span>import<span class="w"> </span>--strip-components<span class="w"> </span><span class="m">1</span><span class="w"> </span>--destination<span class="w"> </span>~/.oh-my-zsh<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This only updates the source state. You will need to run:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>apply
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>apply
 </code></pre></div>
 <p>to update your destination directory.</p>
 </div>
@@ -8941,7 +8941,7 @@ configuration variable to <code>false</code>.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

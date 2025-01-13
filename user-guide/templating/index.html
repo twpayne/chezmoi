@@ -8979,7 +8979,7 @@ if either of the following is true:</p>
 </ul>
 <h2 id="template-data">Template data</h2>
 <p>chezmoi provides a variety of template variables. For a full list, run</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>data
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>data
 </code></pre></div>
 <p>These come from a variety of sources (later data overwrite earlier ones):</p>
 <ul>
@@ -9002,56 +9002,56 @@ from password managers, environment variables, and the filesystem.</p>
 <ul>
 <li>
 <p>When adding a file for the first time, pass the <code>--template</code> argument, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>add<span class="w"> </span>--template<span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>add<span class="w"> </span>--template<span class="w"> </span>~/.zshrc
 </code></pre></div>
 </li>
 <li>
 <p>If a file is already managed by chezmoi, but is not a template, you can make
   it a template by running, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>chattr<span class="w"> </span>+template<span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>chattr<span class="w"> </span>+template<span class="w"> </span>~/.zshrc
 </code></pre></div>
 </li>
 <li>
 <p>You can create a template manually in the source directory by giving it a
   <code>.tmpl</code> extension, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span><span class="nv">$EDITOR</span><span class="w"> </span>dot_zshrc.tmpl
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span>
+<span class="nv">$EDITOR</span><span class="w"> </span>dot_zshrc.tmpl
 </code></pre></div>
 </li>
 <li>
 <p>Templates in <code>.chezmoitemplates</code> must be created manually, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span>.chezmoitemplates
-<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>.chezmoitemplates
-<span class="gp">$ </span><span class="nv">$EDITOR</span><span class="w"> </span>mytemplate
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>.chezmoitemplates
+<span class="nb">cd</span><span class="w"> </span>.chezmoitemplates
+<span class="nv">$EDITOR</span><span class="w"> </span>mytemplate
 </code></pre></div>
 </li>
 </ul>
 <h2 id="editing-a-template-file">Editing a template file</h2>
 <p>The easiest way to edit a template is to use <code>chezmoi edit</code>, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>~/.zshrc
 </code></pre></div>
 <p>This will open the source file for <code>~/.zshrc</code> in <code>$EDITOR</code>. When you quit the
 editor, chezmoi will check the template syntax.</p>
 <p>If you want the changes you make to be immediately applied after you quit the
 editor, use the <code>--apply</code> option, for example:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span>~/.zshrc
 </code></pre></div>
 <h2 id="testing-templates">Testing templates</h2>
 <p>Templates can be tested and debugged with <code>chezmoi execute-template</code>,
 which treats each of its arguments as a template and executes it.
 The templates are interpreted and the results are output to standard
 output, making it useful for testing small template fragments:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.hostname }}&#39;</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.hostname }}&#39;</span>
 </code></pre></div>
 <p>Without arguments, <code>chezmoi execute-template</code> will read the template from
 standard input, which is useful for testing whole files:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span><span class="nb">cd</span>
-<span class="gp">$ </span>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>&lt;<span class="w"> </span>dot_zshrc.tmpl
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span>
+chezmoi<span class="w"> </span>execute-template<span class="w"> </span>&lt;<span class="w"> </span>dot_zshrc.tmpl
 </code></pre></div>
 <p>If file redirection does not work (as when using PowerShell), the contents
 of a file can be piped into <code>chezmoi execute-template</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>foo.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>foo.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>chezmoi<span class="w"> </span>execute-template
 </code></pre></div>
 <h2 id="template-syntax">Template syntax</h2>
 <p>Template actions are written inside double curly brackets, <code>{{</code> and <code>}}</code>.
@@ -9203,7 +9203,7 @@ are currently on. A list of the variables defined by chezmoi can be found
 <a href="../../reference/templates/variables/">here</a>.</p>
 <p>There are, however more variables than that. To view the variables available on
 your system, execute:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>data
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>data
 </code></pre></div>
 <p>This outputs the variables in JSON format by default. To access the variable
 <code>chezmoi.kernel.osrelease</code> in a template, use</p>
@@ -9323,7 +9323,7 @@ it with a dictionary, for example <code>~/.local/share/chezmoi/small-font.yml.tm
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

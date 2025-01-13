@@ -8777,9 +8777,9 @@ The default is <code>all</code>.</p>
 <p><code>--include=files</code> specifies all files.</p>
 </div>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz<span class="w"> </span>https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
-<span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/dot_oh-my-zsh
-<span class="gp">$ </span>chezmoi<span class="w"> </span>import<span class="w"> </span>--strip-components<span class="w"> </span><span class="m">1</span><span class="w"> </span>--destination<span class="w"> </span>~/.oh-my-zsh<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz<span class="w"> </span>https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/dot_oh-my-zsh
+chezmoi<span class="w"> </span>import<span class="w"> </span>--strip-components<span class="w"> </span><span class="m">1</span><span class="w"> </span>--destination<span class="w"> </span>~/.oh-my-zsh<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
 </code></pre></div>
 
 
@@ -8816,7 +8816,7 @@ The default is <code>all</code>.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   

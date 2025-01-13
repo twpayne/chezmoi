@@ -8520,13 +8520,13 @@
 
 <h1 id="ejson">ejson</h1>
 <p>chezmoi includes support for <a href="https://github.com/Shopify/ejson">ejson</a>.</p>
-<p>Structured data can be retrieved with the <code>ejsonDecrypt</code> template function,
-for example:</p>
+<p>Structured data can be retrieved with the <code>ejsonDecrypt</code> template function, for
+example:</p>
 <div class="highlight"><pre><span></span><code>examplePassword = {{ (ejsonDecrypt &quot;my-secrets.ejson&quot;).password }}
 </code></pre></div>
-<p>If you want to specify the private key to use for the decryption,
-structured data can be retrieved with the <code>ejsonDecryptWithKey</code> template
-function, for example:</p>
+<p>If you want to specify the private key to use for the decryption, structured
+data can be retrieved with the <code>ejsonDecryptWithKey</code> template function, for
+example:</p>
 <div class="highlight"><pre><span></span><code>examplePassword = {{ (ejsonDecryptWithKey &quot;my-secrets.ejson&quot; &quot;top-secret-key&quot;).password }}
 </code></pre></div>
 
@@ -8564,7 +8564,7 @@ function, for example:</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright © Tom Payne 2018-2024
+      Copyright © Tom Payne 2018-2025
     </div>
   
   
