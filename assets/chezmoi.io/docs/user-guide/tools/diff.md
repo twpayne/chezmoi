@@ -44,14 +44,13 @@ To use [VSCode][vscode] as the diff tool, add the following to your config:
 
 ## Use delta as the diff tool
 
-To use [delta][delta] as the diff tool you must set both `diff.command` and
-`diff.pager` to delta, for example:
+To use [delta][delta] as the diff tool you must set `diff.pager` to delta, for
+example:
 
 === "TOML"
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [diff]
-    command = "delta"
     pager = "delta"
     ```
 
@@ -59,7 +58,6 @@ To use [delta][delta] as the diff tool you must set both `diff.command` and
 
     ```yaml title="~/.config/chezmoi/chezmoi.yaml"
     diff:
-      command: "delta"
       pager: "delta"
     ```
 
