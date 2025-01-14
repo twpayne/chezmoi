@@ -1176,6 +1176,25 @@ func TestSourceStateRead(t *testing.T) {
 			),
 		},
 		{
+			name: "chezmoiignore_ignore_file_with_hash",
+			root: map[string]any{
+				"/home/user/.local/share/chezmoi": map[string]any{
+					".chezmoiignore": "README.md#\n",
+					"README.md#":     "",
+				},
+			},
+			expectedSourceState: NewSourceState(
+				withIgnore(
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"README.md#": patternSetInclude,
+					}),
+				),
+				withIgnoredRelPathStrs(
+					"README.md#",
+				),
+			),
+		},
+		{
 			name: "chezmoiignore_exact_dir",
 			root: map[string]any{
 				"/home/user/dir": map[string]any{
