@@ -50,6 +50,7 @@ const (
 )
 
 var (
+	commentRx                       = regexp.MustCompile(`(?:\A|\s+)#.*$`)
 	lineEndingRx                    = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
 	modifyTemplateRx                = regexp.MustCompile(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
 	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
@@ -1426,7 +1427,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	for scanner.Scan() {
 		lineNumber++
 		text := scanner.Text()
-		text, _, _ = strings.Cut(text, "#")
+		text = commentRx.ReplaceAllString(text, "")
 		text = strings.TrimSpace(text)
 		if text == "" {
 			continue
