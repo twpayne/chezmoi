@@ -485,3 +485,7 @@ articles:
   lang: JP
   title: 'chezmoiでdotfilesを管理する'
   url: https://devops-blog.virtualtech.jp/entry/20241219/1734585262
+- date: '2025-01-03'
+  version: 2.57.0
+  title: 'Frictionless Dotfile Management With Chezmoi'
+  url: https://marcusb.org/posts/2025/01/frictionless-dotfile-management-with-chezmoi/
