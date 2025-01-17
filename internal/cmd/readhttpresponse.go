@@ -107,7 +107,7 @@ func (m httpSpinnerModel) View() string {
 	return "[" + m.spinner.View() + "] " + m.url
 }
 
-func (c *Config) readHTTPResponse(resp *http.Response) ([]byte, error) {
+func (c *Config) readHTTPResponse(url string, resp *http.Response) ([]byte, error) {
 	switch {
 	case c.noTTY || !c.Progress.Value(c.progressAutoFunc):
 		return io.ReadAll(resp.Body)
@@ -123,7 +123,7 @@ func (c *Config) readHTTPResponse(resp *http.Response) ([]byte, error) {
 		httpProgress.ShowPercentage = false
 
 		model := httpProgressModel{
-			url:           resp.Request.URL.String(),
+			url:           url,
 			contentLength: int(resp.ContentLength),
 			progress:      httpProgress,
 		}

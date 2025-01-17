@@ -917,7 +917,7 @@ TARGET:
 
 // ReadOptions are options to SourceState.Read.
 type ReadOptions struct {
-	ReadHTTPResponse func(*http.Response) ([]byte, error)
+	ReadHTTPResponse func(string, *http.Response) ([]byte, error)
 	RefreshExternals RefreshExternals
 	TimeNow          func() time.Time
 }
@@ -1634,7 +1634,7 @@ func (s *SourceState) getExternalDataRaw(
 	if options == nil || options.ReadHTTPResponse == nil {
 		data, err = io.ReadAll(resp.Body)
 	} else {
-		data, err = options.ReadHTTPResponse(resp)
+		data, err = options.ReadHTTPResponse(urlStr, resp)
 	}
 	resp.Body.Close()
 	if err != nil {
