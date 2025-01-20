@@ -489,3 +489,7 @@ articles:
   version: 2.57.0
   title: 'Frictionless Dotfile Management With Chezmoi'
   url: https://marcusb.org/posts/2025/01/frictionless-dotfile-management-with-chezmoi/
+- date: '2025-01-19'
+  version: 2.58.0
+  title: Managing dotfiles with chezmoi
+  url: https://natelandau.com/managing-dotfiles-with-chezmoi/
