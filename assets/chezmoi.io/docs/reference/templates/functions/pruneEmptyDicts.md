@@ -7,5 +7,5 @@ empty dicts are pruned.
 !!! example
 
     ```
-    {{ dict "key" "value" inner (dict) | pruneEmptyDicts | toJson }}
+    {{ dict "key" "value" "inner" (dict) | pruneEmptyDicts | toJson }}
     ```
