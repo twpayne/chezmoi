@@ -201,6 +201,25 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 			},
 		},
 		{
+			name:      "ordinary",
+			outputStr: "1 .M N... 100644 100644 100644 54276930d8aaf52fffff3c90e4aaae21beb3c7d5 54276930d8aaf52fffff3c90e4aaae21beb3c7d5 .chezmoi.toml.work.tmpl",
+			expectedStatus: &Status{
+				Ordinary: []OrdinaryStatus{
+					{
+						X:    '.',
+						Y:    'M',
+						Sub:  "N...",
+						MH:   0o100644,
+						MI:   0o100644,
+						MW:   0o100644,
+						HH:   "54276930d8aaf52fffff3c90e4aaae21beb3c7d5",
+						HI:   "54276930d8aaf52fffff3c90e4aaae21beb3c7d5",
+						Path: ".chezmoi.toml.work.tmpl",
+					},
+				},
+			},
+		},
+		{
 			name:      "untracked",
 			outputStr: "? chezmoi.go\n",
 			expectedStatus: &Status{
