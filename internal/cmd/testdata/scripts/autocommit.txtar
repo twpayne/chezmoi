@@ -6,22 +6,22 @@ mkhomedir
 
 exec chezmoi init
 
-# test that chezmoi add creates and pushes a commit
+# test that chezmoi add creates a commit
 exec chezmoi add $HOME${/}.file
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Add \.file'
 
-# test that chezmoi edit creates and pushes a commit
+# test that chezmoi edit createspushes a commit
 exec chezmoi edit $HOME${/}.file
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Update \.file'
 
-# test that chezmoi chattr creates and pushes a commit
+# test that chezmoi chattr creates a commit
 exec chezmoi chattr +executable $HOME${/}.file
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Change attributes of \.file'
 
-# test that chezmoi add on a directory creates and pushes a commit
+# test that chezmoi add on a directory creates a commit
 exec chezmoi add $HOME${/}.dir
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Add \.dir/file'
@@ -35,12 +35,12 @@ exec chezmoi edit $HOME${/}.dir${/}file
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Copy \.file to \.file2'
 
-# test that chezmoi chattr on a file in a directory creates and pushes a commit
+# test that chezmoi chattr on a file in a directory creates a commit
 exec chezmoi chattr --debug +private $HOME${/}.dir/file
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Change attributes of \.dir'
 
-# test that chezmoi forget creates and pushes a commit
+# test that chezmoi forget creates and commit
 exec chezmoi forget --force $HOME${/}.file2
 exec git -C $CHEZMOISOURCEDIR show HEAD
 stdout 'Remove \.file2'
