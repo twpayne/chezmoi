@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@3407610120cd5656b6fc71991415cb50748b9489
+    - uses: github/codeql-action/init@7e3036b9cd87fc26dd06747b7aa4b96c27aaef3a
       with:
         languages: go
-    - uses: github/codeql-action/analyze@3407610120cd5656b6fc71991415cb50748b9489
+    - uses: github/codeql-action/analyze@7e3036b9cd87fc26dd06747b7aa4b96c27aaef3a
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -183,7 +183,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
+    - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
       with:
         go-version: oldstable
     - name: build
@@ -435,7 +435,7 @@ jobs:
         go run ./internal/cmds/lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
       if: false # FIXME
-      uses: DavidAnson/markdownlint-cli2-action@a23dae216ce3fee4db69da41fed90d2a4af801cf
+      uses: DavidAnson/markdownlint-cli2-action@05f32210e84442804257b2a6f20b273450ec8265
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
@@ -456,7 +456,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8
+    - uses: golangci/golangci-lint-action@ec5d18412c0aeab7936cb16880d708ba2a64e1ae
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
