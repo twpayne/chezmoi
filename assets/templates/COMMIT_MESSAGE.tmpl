@@ -4,23 +4,23 @@
 {{ if and (eq .X 'A') (eq .Y '.') -}}Add {{ .Path | targetRelPath }}
 {{ else if and (eq .X 'D') (eq .Y '.') -}}Remove {{ .Path | targetRelPath }}
 {{ else if and (eq .X 'M') (eq .Y '.') -}}Update {{ .Path | targetRelPath }}
-{{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
+{{ else }}{{ warnf "unsupported XY: %c%c" .X .Y }}
 {{ end }}
 {{- end -}}
 
 {{- range .RenamedOrCopied -}}
 {{ if and (eq .X 'R') (eq .Y '.') }}Change attributes of {{ .Path | targetRelPath }}
 {{ else if and (eq .X 'C') (eq .Y '.') -}}Copy {{ .OrigPath | targetRelPath }} to {{ .Path | targetRelPath }}
-{{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
+{{ else }}{{ warnf "unsupported XY: %c%c" .X .Y }}
 {{ end }}
 {{- end -}}
 
 {{- range .Unmerged -}}
-{{ fail "unmerged files" }}
+{{ warnf "unmerged files" }}
 {{- end -}}
 
 {{- range .Untracked -}}
-{{ fail "untracked files" }}
+{{ warnf "untracked files" }}
 {{- end -}}
 
 {{- end -}}

@@ -1,0 +1,13 @@
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+exec chezmoi init
+
+# test that chezmoi generate git-commit-message warns about untracked files
+cp golden/.file $CHEZMOISOURCEDIR
+exec chezmoi generate git-commit-message
+stderr 'chezmoi: warning: untracked files'
+
+-- golden/.file --
+# contents of .file
