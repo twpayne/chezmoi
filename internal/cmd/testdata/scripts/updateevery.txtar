@@ -1,0 +1,33 @@
+[windows] skip 'UNIX only'
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+# create a git repo in home/user/repo
+exec git -C $HOME/repo init
+exec git -C $HOME/repo add .
+exec git -C $HOME/repo commit -m 'Initial commit'
+
+exec chezmoi init file://$HOME/repo
+
+# test that chezmoi update runs every time
+exec chezmoi update
+stdout 'ran update'
+exec chezmoi update
+stdout 'ran update'
+
+# test that chezmoi update --every rate limits updates
+exec chezmoi update --every=24h
+! stdout 'ran update'
+exec chezmoi update --every=1ns
+stdout 'ran update'
+exec chezmoi update --every=24h
+! stdout 'ran update'
+exec chezmoi update
+stdout 'ran update'
+
+-- home/user/repo/run_after_update.sh --
+#!/bin/sh
+
+echo "ran update"
+

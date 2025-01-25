@@ -13,6 +13,10 @@ If `update.command` is set then chezmoi will run `update.command` with
 
 Apply changes after pulling, `true` by default. Can be disabled with `--apply=false`.
 
+### `--every` *duration*
+
+Only update if the last update was more than *duration* ago.
+
 ### `--recurse-submodules`
 
 Update submodules recursively. This defaults to `true`. Can be disabled with `--recurse-submodules=false`.

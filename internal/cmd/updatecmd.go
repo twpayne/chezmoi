@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"time"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
@@ -14,11 +15,17 @@ type updateCmdConfig struct {
 	Args              []string `json:"args"              mapstructure:"args"              yaml:"args"`
 	Apply             bool     `json:"apply"             mapstructure:"apply"             yaml:"apply"`
 	RecurseSubmodules bool     `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
+	every             time.Duration
 	filter            *chezmoi.EntryTypeFilter
 	init              bool
 	parentDirs        bool
 	recursive         bool
 }
+
+var (
+	updateStateBucket = []byte("updateState")
+	lastUpdateKey     = []byte("lastUpdate")
+)
 
 func (c *Config) newUpdateCmd() *cobra.Command {
 	updateCmd := &cobra.Command{
@@ -38,6 +45,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 	}
 
 	updateCmd.Flags().BoolVarP(&c.Update.Apply, "apply", "a", c.Update.Apply, "Apply after pulling")
+	updateCmd.Flags().DurationVar(&c.Update.every, "every", c.Update.every, "Rate limit updates")
 	updateCmd.Flags().VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
 	updateCmd.Flags().VarP(c.Update.filter.Include, "include", "i", "Include entry types")
 	updateCmd.Flags().BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
@@ -50,6 +58,12 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 }
 
 func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
+	// Determine whether to update.
+	shouldUpdate, markUpdateDone := c.shouldUpdate()
+	if !shouldUpdate {
+		return nil
+	}
+
 	switch {
 	case c.Update.Command != "":
 		if err := c.run(c.WorkingTreeAbsPath, c.Update.Command, c.Update.Args); err != nil {
@@ -103,5 +117,42 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	if markUpdateDone != nil {
+		markUpdateDone()
+	}
+
 	return nil
+}
+
+// shouldUpdate returns whether to update and a function to be run
+// after the update is successful.
+func (c *Config) shouldUpdate() (bool, func()) {
+	now := time.Now()
+	markUpdateDone := func() {
+		_ = c.persistentState.Set(updateStateBucket, lastUpdateKey, []byte(now.Format(time.RFC3339)))
+	}
+
+	// If the user has not rate-limited updates, then always run the update.
+	if c.Update.every == 0 {
+		return true, markUpdateDone
+	}
+
+	// Otherwise, determine when the last update was run. In case of any error,
+	// ignore the error and run the update.
+	lastUpdateValue, err := c.persistentState.Get(updateStateBucket, lastUpdateKey)
+	if err != nil {
+		return true, markUpdateDone
+	}
+	lastUpdate, err := time.Parse(time.RFC3339, string(lastUpdateValue))
+	if err != nil {
+		return true, markUpdateDone
+	}
+
+	// If the last update was run sufficiently recently then don't update.
+	if lastUpdate.Add(c.Update.every).After(now) {
+		return false, nil
+	}
+
+	// Otherwise, update.
+	return true, markUpdateDone
 }
