@@ -48,7 +48,7 @@ runs:
         key: ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-
-    - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a
+    - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
       with:
         cache: false
         go-version: ${{ inputs.go-version }}
