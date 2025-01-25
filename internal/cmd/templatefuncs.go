@@ -487,6 +487,11 @@ func (c *Config) toYamlTemplateFunc(data any) string {
 	return string(mustValue(chezmoi.FormatYAML.Marshal(data)))
 }
 
+func (c *Config) warnfTemplateFunc(format string, args ...any) string {
+	c.errorf("warning: "+format+"\n", args...)
+	return ""
+}
+
 func anyToString(value any) string {
 	switch value := value.(type) {
 	case bool:
