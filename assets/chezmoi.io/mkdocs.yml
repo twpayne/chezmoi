@@ -233,6 +233,7 @@ nav:
       - toPrettyJson: reference/templates/functions/toPrettyJson.md
       - toToml: reference/templates/functions/toToml.md
       - toYaml: reference/templates/functions/toYaml.md
+      - warnf: reference/templates/functions/warnf.md
     - GitHub functions:
       - reference/templates/github-functions/index.md
       - gitHubKeys: reference/templates/github-functions/gitHubKeys.md

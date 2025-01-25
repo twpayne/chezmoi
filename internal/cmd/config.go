@@ -522,6 +522,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"toToml":                       c.toTomlTemplateFunc,
 		"toYaml":                       c.toYamlTemplateFunc,
 		"vault":                        c.vaultTemplateFunc,
+		"warnf":                        c.warnfTemplateFunc,
 	} {
 		c.addTemplateFunc(key, value)
 	}
