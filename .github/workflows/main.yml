@@ -14,7 +14,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 env:
-  ACTIONLINT_VERSION: 1.7.6 # https://github.com/rhysd/actionlint/releases
+  ACTIONLINT_VERSION: 1.7.7 # https://github.com/rhysd/actionlint/releases
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.4.1 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.1.2 # https://github.com/editorconfig-checker/editorconfig-checker/releases
@@ -23,11 +23,11 @@ env:
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 1.63.4 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
-  GORELEASER_VERSION: 2.5.1 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.6.1 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.5.20 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.5.24 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
