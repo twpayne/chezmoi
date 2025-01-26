@@ -22,7 +22,7 @@ var (
 type PersistentState interface {
 	Close() error
 	CopyTo(s PersistentState) error
-	Data() (any, error)
+	Data() (map[string]map[string]string, error)
 	Delete(bucket, key []byte) error
 	DeleteBucket(bucket []byte) error
 	ForEach(bucket []byte, fn func(k, v []byte) error) error

@@ -129,7 +129,7 @@ func (b *BoltPersistentState) DeleteBucket(bucket []byte) error {
 }
 
 // Data returns all the data in b.
-func (b *BoltPersistentState) Data() (any, error) {
+func (b *BoltPersistentState) Data() (map[string]map[string]string, error) {
 	if b.empty {
 		return nil, nil
 	}

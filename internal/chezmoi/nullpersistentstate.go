@@ -11,7 +11,7 @@ func (NullPersistentState) Close() error { return nil }
 func (NullPersistentState) CopyTo(s PersistentState) error { return nil }
 
 // Data does nothing.
-func (NullPersistentState) Data() (any, error) { return nil, nil }
+func (NullPersistentState) Data() (map[string]map[string]string, error) { return nil, nil }
 
 // Delete does nothing.
 func (NullPersistentState) Delete(bucket, key []byte) error { return nil }

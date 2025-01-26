@@ -7,7 +7,7 @@ exec chezmoi state get --bucket=bucket --key=key
 # test that chezmoi state set sets a value that can be retrieved with chezmoi state get
 exec chezmoi state set --bucket=bucket --key=key --value=value
 exec chezmoi state get --bucket=bucket --key=key
-stdout value
+stdout ^value$
 exec chezmoi state data --format=yaml
 cmp stdout golden/data.yaml
 

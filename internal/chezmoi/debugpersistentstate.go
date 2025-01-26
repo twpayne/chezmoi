@@ -36,7 +36,7 @@ func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 }
 
 // Data implements PersistentState.Data.
-func (s *DebugPersistentState) Data() (any, error) {
+func (s *DebugPersistentState) Data() (map[string]map[string]string, error) {
 	data, err := s.persistentState.Data()
 	chezmoilog.InfoOrError(s.logger, "Data", err,
 		slog.Any("data", data),
