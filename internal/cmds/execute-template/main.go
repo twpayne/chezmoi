@@ -16,9 +16,9 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/goccy/go-yaml"
 	"github.com/google/go-github/v68/github"
 	"github.com/google/renameio/v2/maybe"
-	"gopkg.in/yaml.v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )

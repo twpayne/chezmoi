@@ -1,14 +1,13 @@
 package cmd
 
 import (
-	"errors"
+	"bytes"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
-	"gopkg.in/yaml.v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -38,7 +37,7 @@ func (b autoBool) MarshalJSON() ([]byte, error) {
 	}
 }
 
-// MarshalYAML implements gopkg.in/yaml.v3.Marshaler.
+// MarshalYAML implements github.com/goccy/go-yaml.Marshaler.
 func (b autoBool) MarshalYAML() (any, error) {
 	if b.auto {
 		return "auto", nil
@@ -89,15 +88,12 @@ func (b *autoBool) UnmarshalJSON(data []byte) error {
 }
 
 // UnmarshalYAML implements gopkg.in/yaml.Unmarshaler.UnmarshalYAML.
-func (b *autoBool) UnmarshalYAML(value *yaml.Node) error {
-	if value.Kind != yaml.ScalarNode {
-		return errors.New("expected scalar node")
-	}
-	if value.Value == "auto" {
+func (b *autoBool) UnmarshalYAML(data []byte) error {
+	if bytes.Equal(data, []byte("auto")) {
 		b.auto = true
 		return nil
 	}
-	boolValue, err := chezmoi.ParseBool(value.Value)
+	boolValue, err := chezmoi.ParseBool(string(data))
 	if err != nil {
 		return err
 	}

@@ -110,16 +110,24 @@ exists $HOME/.chezmoi/chezmoistate.boltdb
 
 -- golden/chezmoi1.yaml --
 data:
-    email: "mail1@example.com"
+  email: "mail1@example.com"
 -- golden/chezmoi2.yaml --
 data:
-    email: "mail2@example.com"
+  email: "mail2@example.com"
 -- golden/chezmoi3.toml --
 [data]
-    email = "mail3@example.com"
+  email = "mail3@example.com"
 -- golden/error1.log --
 chezmoi: multiple config files: $CHEZMOICONFIGDIR/chezmoi.toml and $CHEZMOICONFIGDIR/chezmoi.yaml
 -- golden/error2.log --
-chezmoi: invalid config: $HOME/.chezmoi/athome.yaml: yaml: unmarshal errors: line 1: cannot unmarshal !!seq into map[string]interface {}
+chezmoi: invalid config: $WORK/home2/user/.chezmoi/athome.yaml: [2:3] value is not allowed in this context
+   1 | [data]
+>  2 |   email = "mail3@example.com"
+         ^
+
 -- golden/error3.log --
-chezmoi: invalid config: $HOME/.chezmoi/athome.txt: yaml: unmarshal errors: line 1: cannot unmarshal !!seq into map[string]interface {}
+chezmoi: invalid config: $WORK/home3/user/.chezmoi/athome.txt: [2:3] value is not allowed in this context
+   1 | [data]
+>  2 |   email = "mail3@example.com"
+         ^
+
