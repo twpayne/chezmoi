@@ -19,7 +19,7 @@ func (c *Config) newIgnoredCmd() *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE:    c.makeRunEWithSourceState(c.runIgnoredCmd),
 		Annotations: newAnnotations(
-			persistentStateModeReadOnly,
+			persistentStateModeReadMockWrite,
 		),
 	}
 
