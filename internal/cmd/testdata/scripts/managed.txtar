@@ -146,25 +146,25 @@ $WORK/home/user/.template
 }
 -- golden/managed-all.yaml --
 .create:
-    absolute: $WORK/home2/user/.create
-    sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/create_dot_create.tmpl
-    sourceRelative: create_dot_create.tmpl
+  absolute: $WORK/home2/user/.create
+  sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/create_dot_create.tmpl
+  sourceRelative: create_dot_create.tmpl
 .file:
-    absolute: $WORK/home2/user/.file
-    sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/modify_dot_file.tmpl
-    sourceRelative: modify_dot_file.tmpl
+  absolute: $WORK/home2/user/.file
+  sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/modify_dot_file.tmpl
+  sourceRelative: modify_dot_file.tmpl
 .symlink:
-    absolute: $WORK/home2/user/.symlink
-    sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl
-    sourceRelative: symlink_dot_symlink.tmpl
+  absolute: $WORK/home2/user/.symlink
+  sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl
+  sourceRelative: symlink_dot_symlink.tmpl
 .template:
-    absolute: $WORK/home2/user/.template
-    sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/dot_template.tmpl
-    sourceRelative: dot_template.tmpl
+  absolute: $WORK/home2/user/.template
+  sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/dot_template.tmpl
+  sourceRelative: dot_template.tmpl
 script:
-    absolute: $WORK/home2/user/script
-    sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/run_script.tmpl
-    sourceRelative: run_script.tmpl
+  absolute: $WORK/home2/user/script
+  sourceAbsolute: $WORK/home2/user/.local/share/chezmoi/run_script.tmpl
+  sourceRelative: run_script.tmpl
 -- golden/managed-exclude-encrypted --
 .create
 .dir

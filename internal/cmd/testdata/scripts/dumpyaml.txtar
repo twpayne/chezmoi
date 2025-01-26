@@ -10,125 +10,111 @@ cmp stdout golden/dump-except-dirs.yaml
 
 -- golden/dump-except-dirs.yaml --
 .create:
-    type: file
-    name: .create
-    contents: |
-        # contents of .create
-    perm: 420
+  type: file
+  name: .create
+  contents: "# contents of .create\n"
+  perm: 420
 .dir/file:
-    type: file
-    name: .dir/file
-    contents: |
-        # contents of .dir/file
-    perm: 420
+  type: file
+  name: .dir/file
+  contents: "# contents of .dir/file\n"
+  perm: 420
 .dir/subdir/file:
-    type: file
-    name: .dir/subdir/file
-    contents: |
-        # contents of .dir/subdir/file
-    perm: 420
+  type: file
+  name: .dir/subdir/file
+  contents: "# contents of .dir/subdir/file\n"
+  perm: 420
 .empty:
-    type: file
-    name: .empty
-    contents: ""
-    perm: 420
+  type: file
+  name: .empty
+  contents: ""
+  perm: 420
 .executable:
-    type: file
-    name: .executable
-    contents: |
-        # contents of .executable
-    perm: 493
+  type: file
+  name: .executable
+  contents: "# contents of .executable\n"
+  perm: 493
 .file:
-    type: file
-    name: .file
-    contents: |
-        # contents of .file
-    perm: 420
+  type: file
+  name: .file
+  contents: "# contents of .file\n"
+  perm: 420
 .private:
-    type: file
-    name: .private
-    contents: |
-        # contents of .private
-    perm: 384
+  type: file
+  name: .private
+  contents: "# contents of .private\n"
+  perm: 384
 .readonly:
-    type: file
-    name: .readonly
-    contents: |
-        # contents of .readonly
-    perm: 292
+  type: file
+  name: .readonly
+  contents: "# contents of .readonly\n"
+  perm: 292
 .symlink:
-    type: symlink
-    name: .symlink
-    linkname: .dir/subdir/file
+  type: symlink
+  name: .symlink
+  linkname: .dir/subdir/file
 .template:
-    type: file
-    name: .template
-    contents: |
-        key = value
-    perm: 420
+  type: file
+  name: .template
+  contents: |
+    key = value
+  perm: 420
 -- golden/dump.yaml --
 .create:
-    type: file
-    name: .create
-    contents: |
-        # contents of .create
-    perm: 420
+  type: file
+  name: .create
+  contents: "# contents of .create\n"
+  perm: 420
 .dir:
-    type: dir
-    name: .dir
-    perm: 493
+  type: dir
+  name: .dir
+  perm: 493
 .dir/file:
-    type: file
-    name: .dir/file
-    contents: |
-        # contents of .dir/file
-    perm: 420
+  type: file
+  name: .dir/file
+  contents: "# contents of .dir/file\n"
+  perm: 420
 .dir/subdir:
-    type: dir
-    name: .dir/subdir
-    perm: 493
+  type: dir
+  name: .dir/subdir
+  perm: 493
 .dir/subdir/file:
-    type: file
-    name: .dir/subdir/file
-    contents: |
-        # contents of .dir/subdir/file
-    perm: 420
+  type: file
+  name: .dir/subdir/file
+  contents: "# contents of .dir/subdir/file\n"
+  perm: 420
 .empty:
-    type: file
-    name: .empty
-    contents: ""
-    perm: 420
+  type: file
+  name: .empty
+  contents: ""
+  perm: 420
 .executable:
-    type: file
-    name: .executable
-    contents: |
-        # contents of .executable
-    perm: 493
+  type: file
+  name: .executable
+  contents: "# contents of .executable\n"
+  perm: 493
 .file:
-    type: file
-    name: .file
-    contents: |
-        # contents of .file
-    perm: 420
+  type: file
+  name: .file
+  contents: "# contents of .file\n"
+  perm: 420
 .private:
-    type: file
-    name: .private
-    contents: |
-        # contents of .private
-    perm: 384
+  type: file
+  name: .private
+  contents: "# contents of .private\n"
+  perm: 384
 .readonly:
-    type: file
-    name: .readonly
-    contents: |
-        # contents of .readonly
-    perm: 292
+  type: file
+  name: .readonly
+  contents: "# contents of .readonly\n"
+  perm: 292
 .symlink:
-    type: symlink
-    name: .symlink
-    linkname: .dir/subdir/file
+  type: symlink
+  name: .symlink
+  linkname: .dir/subdir/file
 .template:
-    type: file
-    name: .template
-    contents: |
-        key = value
-    perm: 420
+  type: file
+  name: .template
+  contents: |
+    key = value
+  perm: 420

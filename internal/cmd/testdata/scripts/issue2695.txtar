@@ -27,7 +27,7 @@ stderr 'invalid config'
 
 # test that chezmoi doctor warns about invalid YAML config files
 ! exec chezmoi doctor
-stdout 'error\s+config-file\s+.*unmarshal errors'
+stdout 'error\s+config-file\s+.*string was used where mapping is expected'
 
 -- home/user/.config/chezmoi/chezmoi.json --
 {

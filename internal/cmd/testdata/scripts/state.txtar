@@ -21,4 +21,4 @@ cmp stdout golden/data-after-delete.yaml
 bucket: {}
 -- golden/data.yaml --
 bucket:
-    key: value
+  key: value

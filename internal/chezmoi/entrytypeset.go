@@ -268,7 +268,7 @@ func (s *EntryTypeSet) MarshalJSON() ([]byte, error) {
 	}
 }
 
-// MarshalYAML implements gopkg.in/yaml.v3.Marshaler.
+// MarshalYAML implements github.com/goccy/go-yaml.Marshaler.
 func (s *EntryTypeSet) MarshalYAML() (any, error) {
 	if s.bits == EntryTypesAll {
 		return []string{"all"}, nil

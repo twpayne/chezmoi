@@ -10,7 +10,7 @@ import (
 	"slices"
 	"text/template"
 
-	"gopkg.in/yaml.v3"
+	"github.com/goccy/go-yaml"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )

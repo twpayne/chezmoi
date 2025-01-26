@@ -8,10 +8,10 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/goccy/go-yaml"
 	"github.com/mattn/go-runewidth"
 	"github.com/mitchellh/copystructure"
 	"github.com/pelletier/go-toml/v2"
-	"gopkg.in/yaml.v3"
 )
 
 // A Template extends text/template.Template with support for directives.
@@ -61,8 +61,9 @@ func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template
 		}
 		funcs["toYaml"] = func(data any) string {
 			var builder strings.Builder
-			encoder := yaml.NewEncoder(&builder)
-			encoder.SetIndent(runewidth.StringWidth(options.FormatIndent))
+			encoder := yaml.NewEncoder(&builder,
+				yaml.Indent(runewidth.StringWidth(options.FormatIndent)),
+			)
 			if err := encoder.Encode(data); err != nil {
 				panic(err)
 			}
