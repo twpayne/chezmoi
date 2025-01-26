@@ -30,8 +30,16 @@ func (s *MockPersistentState) CopyTo(p PersistentState) error {
 }
 
 // Data implements PersistentState.Data.
-func (s *MockPersistentState) Data() (any, error) {
-	return s.buckets, nil
+func (s *MockPersistentState) Data() (map[string]map[string]string, error) {
+	data := make(map[string]map[string]string)
+	for bucket, bucketMap := range s.buckets {
+		dataBucketMap := make(map[string]string, len(bucketMap))
+		for key, value := range bucketMap {
+			dataBucketMap[key] = string(value)
+		}
+		data[bucket] = dataBucketMap
+	}
+	return data, nil
 }
 
 // Delete implements PersistentState.Delete.

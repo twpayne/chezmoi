@@ -72,7 +72,7 @@ func TestBoltPersistentState(t *testing.T) {
 			string(bucket): {
 				string(key): string(value),
 			},
-		}, data.(map[string]map[string]string))
+		}, data)
 
 		assert.NoError(t, b1.Close())
 
