@@ -1583,7 +1583,16 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) er
 	if err != nil {
 		return err
 	}
-	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)})
+	if err := c.runHookPre("git-auto-commit"); err != nil {
+		return err
+	}
+	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)}); err != nil {
+		return err
+	}
+	if err := c.runHookPost("git-auto-commit"); err != nil {
+		return err
+	}
+	return nil
 }
 
 // gitAutoPush pushes all changes to the remote if status is not empty.
@@ -1591,7 +1600,16 @@ func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 	if status.Empty() {
 		return nil
 	}
-	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"})
+	if err := c.runHookPre("git-auto-push"); err != nil {
+		return err
+	}
+	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"}); err != nil {
+		return err
+	}
+	if err := c.runHookPost("git-auto-push"); err != nil {
+		return err
+	}
+	return nil
 }
 
 // gitCommitMessage returns the git commit message for the given status.
