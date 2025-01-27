@@ -493,3 +493,8 @@ articles:
   version: 2.58.0
   title: Managing dotfiles with chezmoi
   url: https://natelandau.com/managing-dotfiles-with-chezmoi/
+- date: '2025-01-26'
+  version: 2.58.0
+  lang: JP
+  title: 'chezmoi で macOS の user defaults も管理する'
+  url: https://pihero.hatenadiary.jp/entry/2025/01/26/130123
