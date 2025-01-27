@@ -10,6 +10,10 @@ exec chezmoi init file://$WORK/dotfiles.git
 
 # test that chezmoi add creates and pushes a commit
 exec chezmoi add $HOME${/}.file
+stdout ^git-auto-commit-pre$
+stdout ^git-auto-commit-post$
+stdout ^git-auto-push-pre$
+stdout ^git-auto-push-post$
 exec git --git-dir=$WORK/dotfiles.git show HEAD
 stdout 'Add \.file'
 
@@ -41,3 +45,16 @@ stdout 'Remove \.file'
 -- home/user/.config/chezmoi/chezmoi.toml --
 [git]
     autoPush = true
+[hooks.git-auto-commit.pre]
+    command = "echo"
+    args = ["git-auto-commit-pre"]
+[hooks.git-auto-commit.post]
+    command = "echo"
+    args = ["git-auto-commit-post"]
+[hooks.git-auto-push.pre]
+    command = "echo"
+    args = ["git-auto-push-pre"]
+[hooks.git-auto-push.post]
+    command = "echo"
+    args = ["git-auto-push-post"]
+

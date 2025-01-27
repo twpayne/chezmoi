@@ -9,15 +9,17 @@ The following events are defined:
 | Event                 | Trigger                                       |
 | --------------------- | --------------------------------------------- |
 | *command*, e.g. `add` | Running `chezmoi command`, e.g. `chezmoi add` |
+| `git-auto-commit`     | Generating an automatic git commit            |
+| `git-auto-push`       | Running an automatic git push                 |
 | `read-source-state`   | Reading the source state                      |
 
 Each event can have a `.pre` and/or a `.post` command. The *event*.`pre` command
 is executed before *event* occurs and the *event*`.post` command is executed
 after *event* has occurred.
 
- A command contains a `command` or `script` and an optional array of strings
- `args`. `command`s are executed directly. `script`s are executed with
-configured interpreter for the script's extension, see the [section on
+A command contains a `command` or `script` and an optional array of strings
+`args`. `command`s are executed directly. `script`s are executed with configured
+interpreter for the script's extension, see the [section on
 interpreters](interpreters.md).
 
 !!! example
