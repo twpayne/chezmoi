@@ -4429,6 +4429,8 @@
       
         
       
+        
+      
     
     
       
@@ -5200,6 +5202,27 @@
   
   <span class="md-ellipsis">
     toYaml
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/warnf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    warnf
   </span>
   
 
@@ -8536,6 +8559,14 @@ idempotent.</p>
 <td>Running <code>chezmoi command</code>, e.g. <code>chezmoi add</code></td>
 </tr>
 <tr>
+<td><code>git-auto-commit</code></td>
+<td>Generating an automatic git commit</td>
+</tr>
+<tr>
+<td><code>git-auto-push</code></td>
+<td>Running an automatic git push</td>
+</tr>
+<tr>
 <td><code>read-source-state</code></td>
 <td>Reading the source state</td>
 </tr>
@@ -8545,8 +8576,8 @@ idempotent.</p>
 is executed before <em>event</em> occurs and the <em>event</em><code>.post</code> command is executed
 after <em>event</em> has occurred.</p>
 <p>A command contains a <code>command</code> or <code>script</code> and an optional array of strings
- <code>args</code>. <code>command</code>s are executed directly. <code>script</code>s are executed with
-configured interpreter for the script's extension, see the <a href="../interpreters/">section on
+<code>args</code>. <code>command</code>s are executed directly. <code>script</code>s are executed with configured
+interpreter for the script's extension, see the <a href="../interpreters/">section on
 interpreters</a>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

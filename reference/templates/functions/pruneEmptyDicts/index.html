@@ -4421,6 +4421,8 @@
       
         
       
+        
+      
     
     
       
@@ -5200,6 +5202,27 @@
   
   <span class="md-ellipsis">
     toYaml
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../warnf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    warnf
   </span>
   
 
@@ -8524,7 +8547,7 @@ pruned from the bottom up, so any nested dicts that themselves only contain
 empty dicts are pruned.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code>{{ dict &quot;key&quot; &quot;value&quot; inner (dict) | pruneEmptyDicts | toJson }}
+<div class="highlight"><pre><span></span><code>{{ dict &quot;key&quot; &quot;value&quot; &quot;inner&quot; (dict) | pruneEmptyDicts | toJson }}
 </code></pre></div>
 </div>
 
