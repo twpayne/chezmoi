@@ -83,7 +83,7 @@ func (c *Config) newChattrCmd() *cobra.Command {
 		ValidArgsFunction: c.chattrCmdValidArgs,
 		RunE:              c.makeRunEWithSourceState(c.runChattrCmd),
 		Annotations: newAnnotations(
-			persistentStateModeReadOnly,
+			persistentStateModeReadWrite,
 			modifiesSourceDirectory,
 			requiresSourceDirectory,
 		),
