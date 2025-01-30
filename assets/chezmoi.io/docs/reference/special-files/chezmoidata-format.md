@@ -1,7 +1,8 @@
 # `.chezmoidata.$FORMAT`
 
 If a file called `.chezmoidata.$FORMAT` exists in the source state, it is
-interpreted as template data in the given format.
+interpreted as structured static data in the given format. This data can
+then be used in templates.
 
 !!! example
 
