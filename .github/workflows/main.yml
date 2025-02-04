@@ -456,7 +456,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@ec5d18412c0aeab7936cb16880d708ba2a64e1ae
+    - uses: golangci/golangci-lint-action@e60da84bfae8c7920a47be973d75e15710aa8bd7
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
@@ -498,7 +498,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da
+    - uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e
     - name: create-syso
       run: |
         make create-syso
