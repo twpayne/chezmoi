@@ -501,6 +501,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"onepasswordSDKItemsGet":       c.onepasswordSDKItemsGet,
 		"onepasswordSDKSecretsResolve": c.onepasswordSDKSecretsResolve,
 		"output":                       c.outputTemplateFunc,
+		"outputList":                   c.outputListTemplateFunc,
 		"pass":                         c.passTemplateFunc,
 		"passFields":                   c.passFieldsTemplateFunc,
 		"passRaw":                      c.passRawTemplateFunc,

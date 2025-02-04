@@ -138,6 +138,10 @@ stdout 2656FF1E876E9973
 [unix] exec chezmoi execute-template '{{ $red := output "generate-color-formats" "#ff0000" | fromJson }}{{ $red.rgb.r }}'
 [unix] stdout '^255$'
 
+# test the outputList and fromJson template functions
+[unix] exec chezmoi execute-template '{{ $red := outputList "generate-color-formats" (list "#ff0000" ) | fromJson }}{{ $red.rgb.r }}'
+[unix] stdout '^255$'
+
 # test that the output function returns an error if the command fails
 [unix] ! exec chezmoi execute-template '{{ output "false" }}'
 [unix] stderr 'error calling output: .*/false: exit status 1'
