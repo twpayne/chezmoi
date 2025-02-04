@@ -224,6 +224,7 @@ nav:
       - lstat: reference/templates/functions/lstat.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
       - output: reference/templates/functions/output.md
+      - outputList: reference/templates/functions/outputList.md
       - pruneEmptyDicts: reference/templates/functions/pruneEmptyDicts.md
       - quoteList: reference/templates/functions/quoteList.md
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md

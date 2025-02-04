@@ -340,6 +340,15 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	return string(output)
 }
 
+func (c *Config) outputListTemplateFunc(name string, args []any) string {
+	slice, err := anyToStringSlice(args)
+	if err != nil {
+		panic(fmt.Errorf("args list: %w", err))
+	}
+
+	return c.outputTemplateFunc(name, slice...)
+}
+
 func (c *Config) pruneEmptyDictsTemplateFunc(dict map[string]any) map[string]any {
 	pruneEmptyMaps(dict)
 	return dict
