@@ -1579,11 +1579,11 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) er
 	if status.Empty() {
 		return nil
 	}
-	commitMessage, err := c.gitCommitMessage(cmd, status)
-	if err != nil {
+	if err := c.runHookPre("git-auto-commit"); err != nil {
 		return err
 	}
-	if err := c.runHookPre("git-auto-commit"); err != nil {
+	commitMessage, err := c.gitCommitMessage(cmd, status)
+	if err != nil {
 		return err
 	}
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)}); err != nil {
