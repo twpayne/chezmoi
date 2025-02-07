@@ -33,7 +33,7 @@ you can afterwards remove their entries from `home/.chezmoiignore`.
 
 Although chezmoi is primarily designed to use a git repo for the source state,
 it does not require git and can be used with other version control systems, such
-as [fossil](https://www.fossil-scm.org/) or [pijul](https://pijul.org/).
+as [fossil][fossil] or [pijul][pijul].
 
 The version control system is used in only three places:
 
@@ -84,3 +84,6 @@ chezmoi cd
 fossil add .
 fossil commit
 ```
+
+[fossil]: https://www.fossil-scm.org/
+[pijul]: https://pijul.org/

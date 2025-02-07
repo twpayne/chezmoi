@@ -29,8 +29,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 ```
 
-If you use [gsudo](https://gerardog.github.io/gsudo/docs/intro), it has tips on writing
-[self-elevating scripts](https://gerardog.github.io/gsudo/docs/tips/script-self-elevation#self-elevate-script).
+If you use [gsudo][gsudo], it has tips on writing [self-elevating scripts][ses].
 
 ## Notes on running elevated scripts
 
@@ -44,3 +43,6 @@ This means you'll need to close the new window by hand for chezmoi to continue i
 be convenient to print a message as the script's last command to indicate completion for you to safely close the elevated window.
 If you want no manual intervention, you can remove `-NoExit` from `$CommandLine`, but then you likely won’t see the output of the elevated
 script, which will make it more difficult to determine if something went wrong during its execution.
+
+[gsudo]: https://gerardog.github.io/gsudo/docs/intro
+[ses]: https://gerardog.github.io/gsudo/docs/tips/script-self-elevation#self-elevate-script

@@ -20,7 +20,7 @@ after *event* has occurred.
 A command contains a `command` or `script` and an optional array of strings
 `args`. `command`s are executed directly. `script`s are executed with configured
 interpreter for the script's extension, see the [section on
-interpreters](interpreters.md).
+interpreters][interpreters].
 
 !!! example
 
@@ -42,3 +42,5 @@ be set. `CHEZMOI_COMMAND` is set to the chezmoi command being run,
 `CHEZMOI_COMMAND_DIR` is set to the directory where chezmoi was run from, and
 `CHEZMOI_ARGS` contains the full arguments to chezmoi, starting with the path to
 chezmoi's executable.
+
+[interpreters]: /reference/configuration-file/interpreters.md

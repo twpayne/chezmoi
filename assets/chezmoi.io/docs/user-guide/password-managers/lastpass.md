@@ -1,8 +1,7 @@
 # LastPass
 
-chezmoi includes support for [LastPass](https://lastpass.com/) using the
-[LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
-data as a template function.
+chezmoi includes support for [LastPass][lastpass] using the [LastPass CLI][cli]
+to expose data as a template function.
 
 Log in to LastPass using:
 
@@ -16,8 +15,7 @@ Check that `lpass` is working correctly by showing password data:
 lpass show --json $LASTPASS_ENTRY_ID
 ```
 
-where `$LASTPASS_ENTRY_ID` is a [LastPass Entry
-Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
+where `$LASTPASS_ENTRY_ID` is a [LastPass Entry Specification][spec].
 
 The structured data from `lpass show --json id` is available as the `lastpass`
 template function. The value will be an array of objects. You can use the
@@ -46,3 +44,7 @@ can use `lastpassRaw` to get its raw value, for example:
 ```text
 {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 ```
+
+[lastpass]: https://lastpass.com/
+[cli]: https://lastpass.github.io/lastpass-cli/lpass.1.html
+[spec]: https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification

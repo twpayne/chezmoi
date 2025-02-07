@@ -25,7 +25,7 @@ chezmoi edit --watch $FILENAME
 
 You don't have to use `chezmoi edit` to edit your dotfiles. For more
 information, see [Do I have to use `chezmoi edit` to edit my
-dotfiles?](frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi)
+dotfiles?][faq-edit].
 
 ```mermaid
 sequenceDiagram
@@ -158,7 +158,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
 dotfiles on a different service, then see the [reference manual for `chezmoi
-init`](../reference/commands/init.md).
+init`][init].
 
 For setting up transitory environments (e.g. short-lived Linux containers) you
 can install chezmoi, install your dotfiles, and then remove all traces of
@@ -179,3 +179,6 @@ sequenceDiagram
     R->>H: chezmoi init --apply $GITHUB_USERNAME
     R->>H: chezmoi init --one-shot $GITHUB_USERNAME
 ```
+
+[faq-edit]: /user-guide/frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi
+[init]: /reference/commands/init.md

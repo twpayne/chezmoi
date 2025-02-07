@@ -1,10 +1,9 @@
 # `bitwardenFields` [*arg*...]
 
-`bitwardenFields` returns structured data retrieved from
-[Bitwarden](https://bitwarden.com) using the [Bitwarden
-CLI](https://bitwarden.com/help/cli) (`bw`). *arg*s are passed to `bw get`
-unchanged, the output from `bw get` is parsed as JSON, and the elements of
-`fields` are returned as a dict indexed by each field's `name`.
+`bitwardenFields` returns structured data retrieved from [Bitwarden][bitwarden]
+using the [Bitwarden CLI][cli] (`bw`). *arg*s are passed to `bw get` unchanged,
+the output from `bw get` is parsed as JSON, and the elements of `fields` are
+returned as a dict indexed by each field's `name`.
 
 The output from `bw get` is cached so calling `bitwardenFields` multiple times
 with the same arguments will only invoke `bw get` once.
@@ -68,3 +67,6 @@ with the same arguments will only invoke `bw get` once.
         }
     }
     ```
+
+[bitwarden]: https://bitwarden.com
+[cli]: https://bitwarden.com/help/cli

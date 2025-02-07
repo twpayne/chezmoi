@@ -39,8 +39,7 @@ Automatically apply changes when files are saved, with the following limitations
 * All edited files are applied when any file is saved.
 * Only the edited files are watched, not any dependent files (e.g.
   `.chezmoitemplates` and `include`d files in templates are not watched).
-* Only works on operating systems supported by
-  [fsnotify](https://github.com/fsnotify/fsnotify).
+* Only works on operating systems supported by [fsnotify][fsnotify].
 
 ## Common flags
 
@@ -63,3 +62,5 @@ Automatically apply changes when files are saved, with the following limitations
   chezmoi edit ~/.bashrc --apply
   chezmoi edit
   ```
+
+[fsnotify]: https://github.com/fsnotify/fsnotify

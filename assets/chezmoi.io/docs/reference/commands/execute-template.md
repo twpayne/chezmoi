@@ -1,10 +1,9 @@
 # `execute-template` [*template*...]
 
-Execute *template*s. This is useful for [testing
-templates](../../user-guide/templating.md#testing-templates) or for calling
-chezmoi from other scripts. *templates* are interpreted as literal templates,
-with no whitespace added to the output between arguments. If no templates are
-specified, the template is read from stdin.
+Execute *template*s. This is useful for [testing templates][testing] or for
+calling chezmoi from other scripts. *templates* are interpreted as literal
+templates, with no whitespace added to the output between arguments. If no
+templates are specified, the template is read from stdin.
 
 ## Flags
 
@@ -65,3 +64,5 @@ chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
 echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
 chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 ```
+
+[testing]: /user-guide/templating.md#testing-templates

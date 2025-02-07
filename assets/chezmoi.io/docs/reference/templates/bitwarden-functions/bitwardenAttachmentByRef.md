@@ -1,9 +1,8 @@
 # `bitwardenAttachmentByRef` *filename* *args*
 
-`bitwardenAttachmentByRef` returns a document from
-[Bitwarden](https://bitwarden.com/) using the [Bitwarden
-CLI](https://bitwarden.com/help/article/cli/) (`bw`). This method requires two
-calls to `bw` to complete:
+`bitwardenAttachmentByRef` returns a document from [Bitwarden][bitwarden] using
+the [Bitwarden CLI][cli] (`bw`). This method requires two calls to `bw` to
+complete:
 
 1. First, *args* are passed to `bw get` in order to retrieve the item's
    *itemid*.
@@ -24,3 +23,6 @@ times with the same *filename* and *itemid* will only invoke `bw` once.
     ```
     {{- bitwardenAttachmentByRef "id_rsa" "item" "example.com" -}}
     ```
+
+[bitwarden]: https://bitwarden.com/
+[cli]: https://bitwarden.com/help/article/cli/

@@ -1,11 +1,10 @@
 # `onepasswordDetailsFields` *uuid* [*vault* [*account*]]
 
-`onepasswordDetailsFields` returns structured data from
-[1Password](https://1password.com/) using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
-is passed to `op get item $UUID`, the output from `op` is parsed as JSON, and
-elements of `details.fields` are returned as a map indexed by each field's `id`
-(if set) or `label` (if set and `id` is not present).
+`onepasswordDetailsFields` returns structured data from [1Password][1p] using
+the [1Password CLI][op] (`op`). *uuid* is passed to `op get item $UUID`, the
+output from `op` is parsed as JSON, and elements of `details.fields` are
+returned as a map indexed by each field's `id` (if set) or `label` (if set and
+`id` is not present).
 
 If there is no valid session in the environment, by default you will be
 interactively prompted to sign in.
@@ -74,6 +73,9 @@ accounts).
 
 !!! warning
 
-    When using [1Password secrets
-    automation](../../../user-guide/password-managers/1password.md#secrets-automation),
-    the *account* parameter is not allowed.
+    When using [1Password secrets automation][automation], the *account*
+    parameter is not allowed.
+
+[1p]: https://1password.com/
+[op]: https://support.1password.com/command-line-getting-started/
+[automation]: /user-guide/password-managers/1password.md#secrets-automation

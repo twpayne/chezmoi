@@ -9,8 +9,7 @@ If the any of the `$CHEZMOI_GITHUB_ACCESS_TOKEN`, `$CHEZMOI_GITHUB_TOKEN`,
 `$GITHUB_ACCESS_TOKEN`, or `$GITHUB_TOKEN` environment variables are set, then
 the first value found will be used to authenticate requests to the GitHub API,
 otherwise unauthenticated requests are used which are subject to stricter [rate
-limiting](https://developer.github.com/v3/#rate-limiting). Unauthenticated
-requests should be sufficient for most cases.
+limiting][rate]. Unauthenticated requests should be sufficient for most cases.
 
 !!! warning
 
@@ -38,3 +37,5 @@ Override the upgrade method that was automatically detected by chezmoi.
 | `snap-refresh`         | Run `snap refresh chezmoi`.                                                        |
 | `sudo-upgrade-package` | Same as `upgrade-package` but use `sudo`.                                          |
 | `upgrade-package`      | Download and install `.apk`, `.deb` or `.rpm` package. Run `pacman` on Arch Linux. |
+
+[rate]: https://developer.github.com/v3/#rate-limiting

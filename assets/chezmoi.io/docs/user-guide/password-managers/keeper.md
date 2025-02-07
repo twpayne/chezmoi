@@ -1,11 +1,10 @@
 # Keeper
 
-chezmoi includes support for [Keeper](https://www.keepersecurity.com/) using the
-[Commander CLI](https://docs.keeper.io/secrets-manager/commander-cli) to expose
-data as a template function.
+chezmoi includes support for [Keeper][keeper] using the
+[Commander CLI][commander] to expose data as a template function.
 
-Create a persistent login session as [described in the Command CLI
-documentation](https://docs.keeper.io/secrets-manager/commander-cli/using-commander/logging-in#persistent-login-sessions).
+Create a persistent login session as
+[described in the Command CLI documentation][clidocs].
 
 Passwords can be retrieved with the `keeperFindPassword` template function, for
 example:
@@ -16,10 +15,9 @@ examplePasswordFromUid = {{ keeperFindPassword "$UID" }}
 ```
 
 For retrieving more complex data, use the `keeper` template function with a UID
-to retrieve structured data from [`keeper
-get`](https://docs.keeper.io/secrets-manager/commander-cli/using-commander/command-reference/record-commands#get-command)
-or the `keeperDataFields` template function which restructures the output of
-`keeper get` in to a more convenient form, for example:
+to retrieve structured data from [`keeper get`][get] or the `keeperDataFields`
+template function which restructures the output of `keeper get` in to a more
+convenient form, for example:
 
 ```text
 keeperDataTitle = {{ (keeper "$UID").data.title }}
@@ -33,3 +31,8 @@ Extra arguments can be passed to the Keeper CLI command by setting the
 [keeper]
     args = ["--config", "/path/to/config.json"]
 ```
+
+[keeper]: https://www.keepersecurity.com/
+[commander]: https://docs.keeper.io/secrets-manager/commander-cli
+[clidocs]: https://docs.keeper.io/secrets-manager/commander-cli/using-commander/logging-in#persistent-login-sessions
+[get]: https://docs.keeper.io/secrets-manager/commander-cli/using-commander/command-reference/record-commands#get-command

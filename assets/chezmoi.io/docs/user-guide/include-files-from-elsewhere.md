@@ -2,19 +2,18 @@
 
 The sections below contain examples of how to use `.chezmoiexternal.toml` to
 include files from external sources. For more details, check the [reference
-manual](../reference/special-files/chezmoiexternal-format.md) .
+manual][external].
 
 ## Include a subdirectory from a URL
 
-To include a subdirectory from another repository, e.g. [Oh My
-Zsh](https://github.com/ohmyzsh/ohmyzsh), you cannot use git submodules because
-chezmoi uses its own format for the source state and Oh My Zsh is not
-distributed in this format. Instead, you can use the `.chezmoiexternal.$FORMAT`
-to tell chezmoi to import dotfiles from an external source.
+To include a subdirectory from another repository, e.g. [Oh My Zsh][ohmyzsh],
+you cannot use git submodules because chezmoi uses its own format for the source
+state and Oh My Zsh is not distributed in this format. Instead, you can use the
+`.chezmoiexternal.$FORMAT` file to tell chezmoi to import dotfiles from an
+external source.
 
-For example, to import Oh My Zsh, the [zsh-syntax-highlighting
-plugin](https://github.com/zsh-users/zsh-syntax-highlighting), and
-[powerlevel10k](https://github.com/romkatv/powerlevel10k), put the following in
+For example, to import Oh My Zsh, the [zsh-syntax-highlighting plugin][hlplug],
+and [powerlevel10k][p10k], put the following in
 `~/.local/share/chezmoi/.chezmoiexternal.toml`:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
@@ -52,7 +51,7 @@ In the above example `refreshPeriod` is set to `168h` (one week) for
 `.oh-my-zsh` and `.oh-my-zsh/custom/plugins/zsh-syntax-highlighting` because
 the URL point to tarballs of the `master` branch, which changes over time. No
 refresh period is set for `.oh-my-zsh/custom/themes/powerlevel10k` because the
-URL points to the a tarball of a tagged version, which does not change over
+URL points to a tarball of a tagged version, which does not change over
 time. To bump the version of powerlevel10k, change the version in the URL.
 
 To force a refresh the downloaded archives, use the `--refresh-externals` flag
@@ -68,18 +67,17 @@ chezmoi --refresh-externals apply
 chezmoi -R apply
 ```
 
-When using Oh My Zsh, make sure you disable auto-updates by setting
+When using Oh My Zsh, make sure you disable built-in auto-updates by setting
 `DISABLE_AUTO_UPDATE="true"` in `~/.zshrc`. Auto updates will cause the
 `~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.
 
 !!! note
 
-    If your external dependency target directory can contain cache files that are
-    added during normal use, chezmoi will report that files have changed on `chezmoi
-    apply`. To avoid this, add the cache directory to your
-    [`.chezmoiignore`](../reference/special-files/chezmoiignore.md)
-    file.
+    If your external dependency target directory can contain cache files that
+    are added during normal use, chezmoi will report that files have changed on
+    `chezmoi apply`. To avoid this, add the cache directory to your
+    [`.chezmoiignore`][ignore] file.
 
     For example, Oh My Zsh may cache completions in `.oh-my-zsh/cache/completions/`,
     which should be added to your `.chezmoiignore` file.
@@ -97,10 +95,8 @@ Use `include` pattern filters to include only selected files from an archive
 URL.
 
 For example, to import just the required source files of the
-[zsh-syntax-highlighting
-plugin](https://github.com/zsh-users/zsh-syntax-highlighting) in the example
-above, add in `include` filter to the `zsh-syntax-highlighting` section as shown
-below:
+[zsh-syntax-highlighting plugin][hlplug] in the example above, add in
+`include` filter to the `zsh-syntax-highlighting` section as shown below:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
@@ -116,11 +112,9 @@ below:
 
 Including single files uses the same mechanism as including a subdirectory
 above, except with the external type `file` instead of `archive`. For example,
-to include
-[`plug.vim`](https://github.com/junegunn/vim-plug/blob/master/plug.vim) from
-[`github.com/junegunn/vim-plug`](https://github.com/junegunn/vim-plug) in
-`~/.vim/autoload/plug.vim` put the following in
-`~/.local/share/chezmoi/.chezmoiexternal.toml`:
+to include [`plug.vim`][plug.vim] from
+[`github.com/junegunn/vim-plug`][vim-plug] in `~/.vim/autoload/plug.vim` put the
+following in `~/.local/share/chezmoi/.chezmoiexternal.toml`:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".vim/autoload/plug.vim"]
@@ -150,8 +144,7 @@ is computed for the current OS and architecture) to the target
 
 It is occasionally useful to import entire archives of configuration into your
 source state. The `import` command does this. For example, to import the latest
-version [`github.com/ohmyzsh/ohmyzsh`](https://github.com/ohmyzsh/ohmyzsh) to
-`~/.oh-my-zsh` run:
+version [`github.com/ohmyzsh/ohmyzsh`][ohmyzsh] to `~/.oh-my-zsh` run:
 
 ```sh
 curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
@@ -206,29 +199,28 @@ by using the external type `git-repo`, for example:
 
 If the directory does not exist then chezmoi will run `git clone` to clone it.
 If the directory does exist then chezmoi will run `git pull` to pull the latest
-changes, but not more often than every `refreshPeriod`. In the above example
-the `refreshPeriod` is `168h` which is one week. The default `refreshPeriod` is
+changes, but not more often than every `refreshPeriod`. In the above example the
+`refreshPeriod` is `168h` which is one week. The default `refreshPeriod` is
 zero, which disables refreshes. You can force a refresh (i.e. force a `git
 pull`) by passing the `--refresh-externals`/`-R` flag to `chezmoi apply`.
 
 !!! warning
 
-    chezmoi's support for `git-repo` externals is limited to running `git
-    clone` and/or `git pull` in a directory. You must have a `git` binary
-    in your `$PATH`.
+    chezmoi's support for `git-repo` externals is limited to running `git clone`
+    and/or `git pull` in a directory. You must have a `git` binary in your
+    `$PATH`.
 
-    Using a `git-repo` external delegates management of the
-    directory to git. chezmoi cannot manage any other files in that directory.
+    Using a `git-repo` external delegates management of the directory to git.
+    chezmoi cannot manage any other files in that directory.
 
-    The contents of `git-repo` externals will not be manifested in commands
-    like `chezmoi diff` or `chezmoi dump`, and will be listed by `chezmoi
-    unmanaged`.
+    The contents of `git-repo` externals will not be manifested in commands like
+    `chezmoi diff` or `chezmoi dump`, and will be listed by `chezmoi unmanaged`.
 
 !!! hint
 
-    If you need to manage extra files in a `git-repo` external, use an
-    `archive` external instead with the URL pointing to an archive of the git
-    repo's `master` or `main` branch.
+    If you need to manage extra files in a `git-repo` external, use an `archive`
+    external instead with the URL pointing to an archive of the git repo's
+    `master` or `main` branch.
 
 You can customize the arguments to `git clone` and `git pull` by setting the
 `$DIR.clone.args` and `$DIR.pull.args` variables in `.chezmoiexternal.$FORMAT`,
@@ -257,10 +249,18 @@ will run git with the `--recurse-submodules` flag by default.
 chezmoi assumes that all files and directories in its source state are in
 chezmoi's format, i.e. their filenames include attributes like `private_` and
 `run_`.  Most git submodules are not in chezmoi's format and so files like
-`run_test.sh` will be interpreted by chezmoi as a `run_` script. To avoid
-this problem, set the `external_` attribute on all subdirectories that contain
+`run_test.sh` will be interpreted by chezmoi as a `run_` script. To avoid this
+problem, set the `external_` attribute on all subdirectories that contain
 submodules.
 
 You can stop chezmoi from handling git submodules by passing the
 `--recurse-submodules=false` flag or setting the `update.recurseSubmodules`
 configuration variable to `false`.
+
+[external]: /reference/special-files/chezmoiexternal-format.md
+[ohmyzsh]: https://github.com/ohmyzsh/ohmyzsh
+[hlplug]: https://github.com/zsh-users/zsh-syntax-highlighting
+[p10k]: https://github.com/romkatv/powerlevel10k
+[ignore]: /reference/special-files/chezmoiignore.md
+[plug.vim]: https://github.com/junegunn/vim-plug/blob/master/plug.vim
+[vim-plug]: https://github.com/junegunn/vim-plug

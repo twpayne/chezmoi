@@ -1,7 +1,7 @@
 # `ejsonDecryptWithKey` *filePath* *key*
 
 `ejsonDecryptWithKey` returns the decrypted content of an
-[ejson](https://github.com/Shopify/ejson)-encrypted file.
+[ejson][ejson]-encrypted file.
 
 *filePath* indicates where the encrypted file is located,
 and *key* is used to decrypt the file.
@@ -15,3 +15,5 @@ process once. The cache is shared with `ejsonDecrypt`.
     ```
     {{ (ejsonDecryptWithKey "my-secrets.ejson" "top-secret-key").password }}
     ```
+
+[ejson]: https://github.com/Shopify/ejson

@@ -12,7 +12,7 @@ archives to be included as if they were in the source state.
 externals to be included on different machines.
 
 If a `.chezmoiexternal.$FORMAT` file is located in an ignored directory (one
-listed in [`.chezmoiignore`](chezmoiignore.md)), all entries within the file are
+listed in [`.chezmoiignore`][ignore]), all entries within the file are
 also ignored.
 
 Entries are indexed by target name relative to the directory of the
@@ -84,10 +84,9 @@ The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
 guess the format using firstly the path of the URL and secondly its contents.
 
 When `type` is `archive` or `archive-file`, the optional setting
-`archive.extractAppleDouble` controls whether
-[AppleDouble](https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats)
-files are extracted. It is `false` by default, so AppleDouble files will not
-be extracted.
+`archive.extractAppleDouble` controls whether [AppleDouble][appledouble] files
+are extracted. It is `false` by default, so AppleDouble files will not be
+extracted.
 
 The optional `include` and `exclude` fields are lists of patterns specify which
 archive members to include or exclude respectively. Patterns match paths in the
@@ -163,5 +162,9 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         include = ["*/plugins/**"]
     ```
 
-    Some more examples can be found in the [user
-    guide](../../user-guide/include-files-from-elsewhere.md).
+    Some more examples can be found in the [user guide][elsewhere].
+
+
+[ignore]: /reference/special-files/chezmoiignore.md
+[elsewhere]: /user-guide/include-files-from-elsewhere.md
+[appledouble]: https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats

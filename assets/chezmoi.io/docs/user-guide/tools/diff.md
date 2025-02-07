@@ -6,8 +6,7 @@ By default, chezmoi uses a built-in diff. You can use a custom tool by setting
 the `diff.command` and `diff.args` configuration variables. The elements of
 `diff.args` are interpreted as templates with the variables `.Destination` and
 `.Target` containing filenames of the file in the destination state and the
-target state respectively. For example, to use [meld](https://meldmerge.org/),
-specify:
+target state respectively. For example, to use [meld][meld], specify:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
@@ -23,8 +22,7 @@ specify:
 
 ## Use VSCode as the diff tool
 
-To use [VSCode](https://code.visualstudio.com/) as the diff tool, add the
-following to your config:
+To use [VSCode][vscode] as the diff tool, add the following to your config:
 
 === "TOML"
 
@@ -46,8 +44,8 @@ following to your config:
 
 ## Use delta as the diff tool
 
-To use [delta](https://dandavison.github.io/delta/) as the diff tool you must
-set both `diff.command` and `diff.pager` to delta, for example:
+To use [delta][delta] as the diff tool you must set both `diff.command` and
+`diff.pager` to delta, for example:
 
 === "TOML"
 
@@ -86,7 +84,7 @@ set `diff.exclude` to `["externals"]` in your config file.
 
 You can change the diff format, and/or pipe the output into a pager of your
 choice by setting `diff.pager` configuration variable. For example, to use
-[`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy) specify:
+[`diff-so-fancy`][fancy] specify:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
@@ -148,3 +146,8 @@ configuration file:
 
 This will pipe all `.plist` files through `plutil -convert xml1 -o - -` before
 showing differences.
+
+[meld]: https://meldmerge.org/
+[vscode]: https://code.visualstudio.com/
+[delta]: https://dandavison.github.io/delta/
+[fancy]: https://github.com/so-fancy/diff-so-fancy

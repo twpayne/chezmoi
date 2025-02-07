@@ -1,8 +1,7 @@
 # Doppler
 
-chezmoi includes support for [Doppler](https://www.doppler.com) using the
-`doppler` CLI to expose data through the `doppler` and `dopplerProjectJson`
-template functions.
+chezmoi includes support for [Doppler][doppler] using the `doppler` CLI to
+expose data through the `doppler` and `dopplerProjectJson` template functions.
 
 Log in using:
 
@@ -59,3 +58,5 @@ It is important to note that neither of the above parse any individual secret as
 
 Obviously the secret would have to be saved in `json` format for this to work as
 expected.
+
+[doppler]: https://www.doppler.com

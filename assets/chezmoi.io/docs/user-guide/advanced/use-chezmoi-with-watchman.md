@@ -1,11 +1,10 @@
 # Use chezmoi with Watchman
 
-chezmoi can be used with [Watchman](https://facebook.github.io/watchman) to
-automatically run `chezmoi apply` whenever your source state changes, but there
-are some limitations because Watchman runs actions in the background without a
-terminal.
+chezmoi can be used with [Watchman][watchman] to automatically run `chezmoi
+apply` whenever your source state changes, but there are some limitations
+because Watchman runs actions in the background without a terminal.
 
-Firstly, Watchman spawns a server which runs actions when filesystems change.
+Firstly, Watchman spawns a server which runs actions when file systems change.
 This server reads its environment variables when it is started, typically on the
 first invocation of the `watchman` command. If you use a password manager that
 uses environment variables to persist login sessions, then you must login to
@@ -27,7 +26,7 @@ with Watchman.
     ```
 
 2. Tell watchman to run `chezmoi apply --force` whenever your source directory
-changes:
+   changes:
 
     ```sh
     watchman -j <<EOT
@@ -46,3 +45,5 @@ To shutdown the Watchman server, run:
     ```sh
     watchman shutdown-server
     ```
+
+[watchman]: https://facebook.github.io/watchman

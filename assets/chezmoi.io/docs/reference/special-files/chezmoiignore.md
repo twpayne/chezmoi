@@ -2,9 +2,8 @@
 
 If a file called `.chezmoiignore` (with an optional `.tmpl` extension) exists in
 the source state then it is interpreted as a set of patterns to ignore. Patterns
-are matched using
-[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4#Match)
-and match against the target path, not the source path.
+are matched using [`doublestar.Match`][match] and match against the target path,
+not the source path.
 
 Patterns can be excluded by prefixing them with a `!` character. All excludes
 take priority over all includes.
@@ -39,3 +38,5 @@ extension. This allows different files to be ignored on different machines.
     .personal-file
     {{- end }}
     ```
+
+[match]: https://pkg.go.dev/github.com/bmatcuk/doublestar/v4#Match

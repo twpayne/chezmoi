@@ -4,10 +4,9 @@ If a directory called `.chezmoitemplates` exists, then all files in this
 directory are available as templates with a name equal to the relative path
 to the `.chezmoitemplates` directory.
 
-The [`template` action](https://pkg.go.dev/text/template#hdr-Actions) can be
-used to include these templates in another template. The value of `.` must be
-set explicitly if needed, otherwise the template will be executed with `nil`
-data.
+The [`template` action][action] can be used to include these templates in
+another template. The value of `.` must be set explicitly if needed, otherwise
+the template will be executed with `nil` data.
 
 !!! example
 
@@ -22,3 +21,5 @@ data.
     ```
 
     The target state of `.file` will be `bar`.
+
+[action]: https://pkg.go.dev/text/template#hdr-Actions

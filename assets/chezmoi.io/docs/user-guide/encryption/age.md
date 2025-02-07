@@ -1,6 +1,6 @@
 # age
 
-chezmoi supports encrypting files with [age](https://age-encryption.org/).
+chezmoi supports encrypting files with [age][age].
 
 Generate a key using `age-keygen`:
 
@@ -70,12 +70,15 @@ the `age` command is not found in `$PATH`.
     each time would quickly become tiresome.
 
     Symmetric encryption may be supported in the future. Please [open an
-    issue](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
-    if you want this.
+    issue][issue] if you want this.
 
     SSH keys are not supported as the [age documentation explicitly recommends
-    not using them](https://pkg.go.dev/filippo.io/age#hdr-Key_management):
+    not using them][nossh]:
 
     > When integrating age into a new system, it's recommended that you only
     > support X25519 keys, and not SSH keys. The latter are supported for
     > manual encryption operations.
+
+[age]: https://age-encryption.org/
+[issue]: https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=
+[nossh]: https://pkg.go.dev/filippo.io/age#hdr-Key_management

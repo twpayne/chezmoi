@@ -1,8 +1,8 @@
 # gpg
 
-chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
-files are stored in the source state and automatically be decrypted when
-generating the target state or editing a file contents with `chezmoi edit`.
+chezmoi supports encrypting files with [gpg][gpg]. Encrypted files are stored in
+the source state and automatically be decrypted when generating the target state
+or editing a file contents with `chezmoi edit`.
 
 ## Asymmetric (private/public-key) encryption
 
@@ -77,3 +77,5 @@ configuration:
 [gpg]
     args = ["--quiet"]
 ```
+
+[gpg]: https://www.gnupg.org/

@@ -1,4 +1,5 @@
 # ejson functions
 
-The `ejson*` functions return data from
-[ejson](https://github.com/Shopify/ejson)-encrypted files.
+The `ejson*` functions return data from [ejson][ejson]-encrypted files.
+
+[ejson]: https://github.com/Shopify/ejson

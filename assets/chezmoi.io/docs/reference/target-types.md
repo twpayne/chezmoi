@@ -96,7 +96,8 @@ chezmoi sets a number of `CHEZMOI*` environment variables when running scripts,
 corresponding to commonly-used template data variables. Extra environment
 variables can be set in the `env` or `scriptEnv` configuration variables.
 
-Scripts are executed using an interpreter, if configured. See the [section on interpreters](configuration-file/interpreters.md).
+Scripts are executed using an interpreter, if configured. See the [section on
+interpreters][interpreters].
 
 ## `symlink` mode
 
@@ -105,3 +106,5 @@ By default, chezmoi will create regular files and directories. Setting `mode =
 symlinks by default, i.e. `chezmoi apply` will make dotfiles symlinks to files
 in the source directory if the target is a regular file and is not
 encrypted, executable, private, or a template.
+
+[interpreters]: /reference/configuration-file/interpreters.md

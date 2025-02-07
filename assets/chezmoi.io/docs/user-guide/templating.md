@@ -6,9 +6,8 @@ Templates are used to change the contents of a file depending on the
 environment. For example, you can use the hostname of the machine to create
 different configurations on different machines.
 
-chezmoi uses the [`text/template`](https://pkg.go.dev/text/template) syntax from
-Go extended with [text template functions from
-`sprig`](http://masterminds.github.io/sprig/).
+chezmoi uses the [`text/template`][go-template] syntax from Go extended with
+[text template functions from `sprig`][sprig].
 
 When reading files from the source state, chezmoi interprets them as a template
 if either of the following is true:
@@ -37,7 +36,7 @@ These come from a variety of sources (later data overwrite earlier ones):
 * Variables created by you in the `data` section of the configuration file.
 
 Furthermore, chezmoi provides a variety of functions to retrieve data at runtime
-from password managers, environment variables, and the filesystem.
+from password managers, environment variables, and the file system.
 
 ## Creating a template file
 
@@ -143,7 +142,7 @@ for example:
 ```
 
 For a full description of the template syntax, see the [`text/template`
-documentation](https://pkg.go.dev/text/template).
+documentation][go-template].
 
 ### Removing whitespace
 
@@ -247,20 +246,20 @@ This way you can chain as many operators together as you like.
 ## Helper functions
 
 chezmoi has added multiple helper functions to the
-[`text/template`](https://pkg.go.dev/text/template) syntax.
+[`text/template`][go-template] syntax.
 
-chezmoi includes [`sprig`](http://masterminds.github.io/sprig/), an extension to
-the `text/template` format that contains many helper functions. Take a look at
-their documentation for a list.
+chezmoi includes [`sprig`][sprig], an extension to the `text/template` format
+that contains many helper functions. Take a look at their documentation for
+a list.
 
 chezmoi adds a few functions of its own as well. Take a look at the
-[reference](../reference/templates/functions/index.md) for complete list.
+[reference][reference] for a complete list.
 
 ## Template variables
 
-chezmoi defines a few useful templates variables that depend on the system you
-are currently on. A list of the variables defined by chezmoi can be found
-[here](../reference/templates/variables.md).
+chezmoi defines a few useful template variables that depend on the system you
+are currently on. The variables defined by chezmoi are described in
+[Variables][variables].
 
 There are, however more variables than that. To view the variables available on
 your system, execute:
@@ -282,8 +281,8 @@ This way you can also access the variables you defined yourself.
 
 Files in the `.chezmoitemplates` subdirectory are parsed as templates and are
 available to be included in other templates using the [`template`
-action](https://pkg.go.dev/text/template#hdr-Actions) with a name equal to their
-relative path to the `.chezmoitemplates` directory.
+action][action] with a name equal to their relative path to the
+`.chezmoitemplates` directory.
 
 By default, such templates will be executed with `nil` data. If you want to
 access template variables (e.g. `.chezmoi.os`) in the template you must pass the
@@ -393,3 +392,10 @@ it with a dictionary, for example `~/.local/share/chezmoi/small-font.yml.tmpl`:
 ```text title="~/.local/share/chezmoi/small-font.yml.tmpl"
 {{- template "alacritty" dict "fontsize" 12 "font" "DejaVu Sans Mono" -}}
 ```
+
+
+[go-template]: https://pkg.go.dev/text/template
+[sprig]: http://masterminds.github.io/sprig/
+[reference]: /reference/templates/functions/index.md
+[variables]: /reference/templates/variables.md
+[action]: https://pkg.go.dev/text/template#hdr-Actions

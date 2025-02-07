@@ -150,7 +150,7 @@ sections:
   diff:
     args:
       type: '[]string'
-      default: '*see [`diff`](../../user-guide/tools/diff.md)*'
+      default: '*see [`diff`](/user-guide/tools/diff.md)*'
       description: Extra args to external diff command
     command:
       description: External diff command
@@ -239,7 +239,7 @@ sections:
       default: '`gopass`'
       description: gopass CLI command
     mode:
-      description: See [gopass functions](../templates/gopass-functions/index.md)
+      description: see [gopass functions](/reference/templates/gopass-functions/index.md)
   gpg:
     args:
       type: '[]string'
@@ -290,10 +290,10 @@ sections:
   interpreters:
     '*extension*.`args`':
       type: '[]string'
-      description: See [Interpreters](interpreters.md)
+      description: see [Interpreters](/reference/configuration-file/interpreters.md)
     '*extension*.`command`':
       default: '*special*'
-      description: See [Interpreters](interpreters.md)
+      description: see [Interpreters](/reference/configuration-file/interpreters.md)
   keepassxc:
     args:
       type: '[]string'
@@ -305,7 +305,7 @@ sections:
       description: KeePassXC database
     mode:
       default: '`cache-password`'
-      description: See [KeePassXC functions](../templates/keepassxc-functions/index.md)
+      description: see [KeePassXC functions](/reference/templates/keepassxc-functions/index.md)
     prompt:
       type: bool
       default: '`true`'
@@ -324,7 +324,7 @@ sections:
   merge:
     args:
       type: '[]string'
-      default: See [`merge`](../../user-guide/tools/merge.md)
+      default: see [`merge`](/user-guide/tools/merge.md)
       description: Extra args to three-way merge CLI command
     command:
       description: Three-way merge CLI command
@@ -342,12 +342,12 @@ sections:
       description: Prompt for sign-in when no valid session is available
     mode:
       default: '`account`'
-      description: See [1Password Secrets Automation](../../user-guide/password-managers/1password.md#secrets-automation)
+      description: see [1Password Secrets Automation](/user-guide/password-managers/1password.md#secrets-automation)
   onepasswordSDK:
     token:
-      description: See [1Password SDK functions](../templates/1password-sdk-functions/index.md)
+      description: see [1Password SDK functions](/reference/templates/1password-sdk-functions/index.md)
     tokenEnvVar:
-      description: See [1Password SDK functions](../templates/1password-sdk-functions/index.md)
+      description: see [1Password SDK functions](/reference/templates/1password-sdk-functions/index.md)
   pass:
     command:
       default: '`pass`'
@@ -371,7 +371,7 @@ sections:
       description: pinentry CLI command
     options:
       type: '[]string'
-      default: See [`pinentry`](./pinentry.md)
+      default: see [`pinentry`](/reference/configuration-file/pinentry.md)
       description: Extra options for pinentry
   rbw:
     command:
@@ -399,7 +399,7 @@ sections:
   textconv:
     '':
       type: '[]object'
-      description: See [textconv](./textconv.md)
+      description: see [textconv](/reference/configuration-file/textconv.md)
   vault:
     command:
       default: '`vault`'
@@ -425,5 +425,4 @@ sections:
   warnings:
     '':
       type: object
-      description: See [Warnings](./warnings.md)
-
+      description: see [Warnings](/reference/configuration-file/warnings.md)

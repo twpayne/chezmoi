@@ -40,7 +40,7 @@ inherited by templates called from the file.
 ## Format indent
 
 By default, chezmoi's `toJson`, `toToml`, and `toYaml` template functions use
-the default indent of two spaces. The indent can be overidden with:
+the default indent of two spaces. The indent can be overridden with:
 
     chezmoi:template:format-indent=$STRING
 

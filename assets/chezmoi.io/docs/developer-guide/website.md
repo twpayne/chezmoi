@@ -1,13 +1,10 @@
 # Website
 
-The [website](https://chezmoi.io) is generated with
-[Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) from the
-contents of the `assets/chezmoi.io/docs/` directory. It is hosted by
-[GitHub pages](https://pages.github.com/) from the
-[`gh-pages` branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
+The [website][website] is generated with [Material for MkDocs][material] from
+the contents of the `assets/chezmoi.io/docs/` directory. It is hosted by
+[GitHub pages][pages] from the [`gh-pages` branch][branch].
 
-To build the website locally, Go 1.24 (or later) and
-[uv](https://docs.astral.sh/uv/getting-started/installation/) 0.4.15 (or later)
+To build the website locally, Go 1.24 (or later) and [uv][uv] 0.5.0 (or later)
 must be installed. Python 3.10 (or later) is required, but may be installed with
 `uv`:
 
@@ -31,7 +28,7 @@ Test the website locally by running:
 uv run task serve-docs
 ```
 
-and visiting [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+and visiting [http://127.0.0.1:8000/][serve].
 
 ## Maintainers
 
@@ -41,3 +38,10 @@ deployments can be triggered by maintainers with appropriate access using:
 ```sh
 uv run task mkdocs gh-deploy
 ```
+
+[website]: https://chezmoi.io
+[material]: https://squidfunk.github.io/mkdocs-material/
+[pages]: https://pages.github.com/
+[branch]: https://github.com/twpayne/chezmoi/tree/gh-pages
+[uv]: https://docs.astral.sh/uv/getting-started/installation/
+[serve]: http://127.0.0.1:8000/

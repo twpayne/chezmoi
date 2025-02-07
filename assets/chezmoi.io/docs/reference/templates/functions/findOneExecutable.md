@@ -7,10 +7,10 @@ turn). The result will be the executable file concatenated with the matching
 path. If an executable from *file-list* cannot be found in *path-list*,
 `findOneExecutable` returns an empty string.
 
-`findOneExecutable` is provided as an alternative to [`lookPath`](lookPath.md)
+`findOneExecutable` is provided as an alternative to [`lookPath`][lookpath]
 so that you can interrogate the system PATH as it would be configured after
 `chezmoi apply`. Like `lookPath`, `findOneExecutable` is not hermetic: its
-return value depends on the state of the filesystem at the moment the template
+return value depends on the state of the file system at the moment the template
 is executed. Exercise caution when using it in your templates.
 
 The return value of the first successful call to `findOneExecutable` is cached,
@@ -29,3 +29,5 @@ this path.
     # $HOME/.cargo/bin/exa exists and will probably be in $PATH after apply
     {{ end }}
     ```
+
+[lookpath]: /reference/templates/functions/lookPath.md

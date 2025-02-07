@@ -14,9 +14,8 @@ configuration file.
 The editor command must only return when you have finished editing the files.
 chezmoi will emit a warning if your editor command returns too quickly.
 
-In the specific case of using [VSCode](https://code.visualstudio.com/) or
-[Codium](https://vscodium.com/) as your editor, you must pass the `--wait`
-flag, for example, in your shell config:
+In the specific case of using [VSCode][vscode] or [Codium][codium] as your
+editor, you must pass the `--wait` flag, for example, in your shell config:
 
 ```bash
 export EDITOR="code --wait"
@@ -32,20 +31,18 @@ Or in chezmoi's configuration file:
 
 !!! warning
 
-    If you use [Helix](https://helix-editor.com/), you must use Helix 25.01 or
-    later.
+    If you use [Helix][helix], you must use Helix 25.01 or later.
 
 ## Use chezmoi with VIM
 
-[`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim)
-provides syntax highlighting for files managed by chezmoi, including for
-templates.
+[`github.com/alker0/chezmoi.vim`][alker0] provides syntax highlighting for files
+managed by chezmoi, including for templates.
 
-[`github.com/Lilja/vim-chezmoi`](https://github.com/Lilja/vim-chezmoi) works
-with `chezmoi edit` to apply the edited dotfile on save.
+[`github.com/Lilja/vim-chezmoi`][lilja] works with `chezmoi edit` to apply the
+edited dotfile on save.
 
-[`github.com/xvzc/chezmoi.nvim`](https://github.com/xvzc/chezmoi.nvim) allows
-you to edit your chezmoi-managed files and automatically apply.
+[`github.com/xvzc/chezmoi.nvim`][xvzc] allows you to edit your chezmoi-managed
+files and automatically apply.
 
 Alternatively, you can use an `autocmd` to run `chezmoi apply` whenever you save
 a dotfile, but you must disable `chezmoi edit`'s hardlinking:
@@ -61,6 +58,14 @@ autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 
 ## Use chezmoi with emacs
 
-[`github.com/tuh8888/chezmoi.el`](https://github.com/tuh8888/chezmoi.el)
-provides convenience functions for interacting with chezmoi from emacs, and is
-available in [MELPA](https://melpa.org/#/chezmoi).
+[`github.com/tuh8888/chezmoi.el`][tuh8888] provides convenience functions for
+interacting with chezmoi from Emacs, and is available in [MELPA][melpa].
+
+[vscode]: https://code.visualstudio.com/
+[codium]: https://vscodium.com/
+[alker0]: https://github.com/alker0/chezmoi.vim
+[lilja]: https://github.com/Lilja/vim-chezmoi
+[xvzc]: https://github.com/xvzc/chezmoi.nvim
+[tuh8888]: https://github.com/tuh8888/chezmoi.el
+[melpa]: https://melpa.org/#/chezmoi
+[helix]: https://helix-editor.com/

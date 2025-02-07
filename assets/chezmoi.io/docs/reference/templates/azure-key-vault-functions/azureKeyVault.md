@@ -1,7 +1,7 @@
 # `azureKeyVault` *secret name* [*vault-name*]
 
-`azureKeyVault` returns a secret value retrieved from an
-[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/).
+`azureKeyVault` returns a secret value retrieved from an [Azure Key
+Vault][azkv].
 
 The mandatory `secret name` argument specifies the *name of the secret* to
 retrieve.
@@ -13,3 +13,5 @@ the default vault name will be used.
 
     The current implementation will always return the latest version of the secret.
     Retrieving a specific version of a secret is not supported.
+
+[azkv]: https://learn.microsoft.com/en-us/azure/key-vault/general/
