@@ -10,28 +10,27 @@ example:
 go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
 ```
 
-You can also [browse chezmoi's generated documentation
-online](https://pkg.go.dev/github.com/twpayne/chezmoi/v2).
+You can also [browse chezmoi's generated documentation online][go-docs].
 
 ## Directory structure
 
 The important directories in chezmoi are:
 
-| Directory                        | Contents                                                                                                                                                       |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `assets/chezmoi.io/docs/`        | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory |
-| `internal/chezmoi/`              | chezmoi's core functionality                                                                                                                                   |
-| `internal/cmd/`                  | Code for the `chezmoi` command                                                                                                                                 |
-| `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)                                     |
+| Directory                        | Contents                                                                                                                                            |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `assets/chezmoi.io/docs/`        | The documentation single source of truth. Help text, examples, and the [chezmoi.io][website] website are generated from the files in this directory |
+| `internal/chezmoi/`              | chezmoi's core functionality                                                                                                                        |
+| `internal/cmd/`                  | Code for the `chezmoi` command                                                                                                                      |
+| `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`][testscript]                                                                             |
 
 ## Key concepts
 
-As described in the [reference manual](../reference/concepts.md), chezmoi
-evaluates the source state to compute a target state for the destination
-directory (typically your home directory). It then compares the target state to
-the actual state of the destination directory and performs any changes necessary
-to update the destination directory to match the target state. These concepts
-are represented directly in chezmoi's code.
+As described in the [reference manual][ref], chezmoi evaluates the source state
+to compute a target state for the destination directory (typically your home
+directory). It then compares the target state to the actual state of the
+destination directory and performs any changes necessary to update the
+destination directory to match the target state. These concepts are represented
+directly in chezmoi's code.
 
 chezmoi uses the generic term *entry* to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.
@@ -160,10 +159,8 @@ its contents SHA256 sum is then updated in the persistent state.
 ## Testing
 
 chezmoi has a mix of, unit, integration, and end-to-end tests. Unit and
-integration tests use the
-[`github.com/alecthomas/assert/v2`](https://pkg.go.dev/github.com/alecthomas/assert)
-framework. End-to-end tests use
-[`github.com/rogpeppe/go-internal/testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
+integration tests use the [`github.com/alecthomas/assert/v2`][assert] framework.
+End-to-end tests use [`github.com/rogpeppe/go-internal/testscript`][testscript]
 with the test scripts themselves in
 `internal/cmd/testdata/scripts/$TEST_NAME.txtar`.
 
@@ -177,3 +174,9 @@ Tests should, if at all possible, run unmodified on all operating systems
 tested in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need
 special handling due to its path separator and lack of POSIX-style file
 permissions.
+
+[go-docs]: https://pkg.go.dev/github.com/twpayne/chezmoi/v2
+[website]: https://chezmoi.io
+[testscript]: https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript                                     |
+[ref]: site:reference/concepts
+[assert]: https://pkg.go.dev/github.com/alecthomas/assert

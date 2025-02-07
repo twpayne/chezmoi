@@ -1,6 +1,6 @@
 # Releases
 
-Releases are managed with [`goreleaser`](https://goreleaser.com/).
+Releases are managed with [`goreleaser`][goreleaser].
 
 ## Testing
 
@@ -26,16 +26,14 @@ git tag v1.2.3
 git push --tags
 ```
 
-This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions)
-that builds and publishes archives, packages, and snaps, creates a new [GitHub
-Release](https://github.com/twpayne/chezmoi/releases), and deploys the
-[website](https://chezmoi.io).
+This triggers a [GitHub Action][gha] that builds and publishes archives,
+packages, and snaps, creates a new [GitHub Release][release], and deploys the
+[website][website].
 
 !!! note
 
-    Publishing [Snaps](https://snapcraft.io/) requires a
-    `SNAPCRAFT_STORE_CREDENTIALS` [repository
-    secret](https://github.com/twpayne/chezmoi/settings/secrets/actions).
+    Publishing [Snaps][snaps] requires a `SNAPCRAFT_STORE_CREDENTIALS`
+    [repository secret][secret].
 
     Snapcraft store credentials periodically expire. Create new snapcraft store
     credentials by running:
@@ -46,10 +44,9 @@ Release](https://github.com/twpayne/chezmoi/releases), and deploys the
 
 !!! note
 
-    [brew](https://brew.sh/) automation will automatically detect new releases
-    of chezmoi within a few hours and open a pull request in
-    [github.com/Homebrew/homebrew-core](https://github.com/Homebrew/homebrew-core)
-    to bump the version.
+    [brew][brew] automation will automatically detect new releases of chezmoi
+    within a few hours and open a pull request in
+    [github.com/Homebrew/homebrew-core][homebrew-core] to bump the version.
 
     If needed, the pull request can be created with:
 
@@ -59,14 +56,13 @@ Release](https://github.com/twpayne/chezmoi/releases), and deploys the
 
 !!! note
 
-    chezmoi is in [Scoop](https://scoop.sh/)'s Main bucket. Scoop's automation
-    will automatically detect new releases within a few hours.
+    chezmoi is in [Scoop][scoop]'s Main bucket. Scoop's automation will
+    automatically detect new releases within a few hours.
 
 ## Signing
 
-chezmoi uses [GoReleaser's support for
-signing](https://goreleaser.com/customization/sign/) to sign the checksums of
-its release assets with [cosign](https://github.com/sigstore/cosign).
+chezmoi uses [GoReleaser's support for signing][signing] to sign the checksums
+of its release assets with [cosign][cosign].
 
 Details:
 
@@ -79,15 +75,28 @@ Details:
 
 * The password-protected private key is stored in chezmoi's public GitHub repo.
 
-* The private key's password is stored as a [GitHub Actions
-  secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+* The private key's password is stored as a [GitHub Actions secret][gha-secret]
   and only available to the `release` step of `release` job of the `main`
   workflow.
 
 * The cosign public key is included in the release assets and also uploaded to
-  [`https://chezmoi.io/cosign.pub`](https://chezmoi.io/cosign.pub). Since
-  [`https://chezmoi.io`](https://chezmoi.io) is served by [GitHub
-  pages](https://pages.github.com/), it probably has equivalent security to
-  [chezmoi's GitHub Releases
-  page](https://github.com/twpayne/chezmoi/releases), which is also managed by
-  GitHub.
+  [`https://chezmoi.io/cosign.pub`][pubkey]. Since
+  [`https://chezmoi.io`][website] is served by [GitHub pages][pages], it
+  probably has equivalent security to [chezmoi's GitHub Releases page][release],
+  which is also managed by GitHub.
+
+
+[goreleaser]: https://goreleaser.com/
+[gha]: https://github.com/twpayne/chezmoi/actions
+[release]: https://github.com/twpayne/chezmoi/releases
+[website]: https://chezmoi.io
+[snaps]: https://snapcraft.io/
+[secret]: https://github.com/twpayne/chezmoi/settings/secrets/actions
+[brew]: https://brew.sh/
+[homebrew-core]: https://github.com/Homebrew/homebrew-core
+[scoop]: https://scoop.sh/
+[signing]: https://goreleaser.com/customization/sign/
+[cosign]: https://github.com/sigstore/cosign
+[gha-secret]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
+[pubkey]: https://chezmoi.io/cosign.pub
+[pages]: https://pages.github.com/
