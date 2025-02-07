@@ -7,11 +7,11 @@ directory `~/.local/share/chezmoi`. When you run `chezmoi apply`, chezmoi
 calculates the desired contents for each of your dotfiles and then makes the
 minimum changes required to make your dotfiles match your desired state.
 chezmoi's concepts are [described more accurately in the reference
-manual](reference/concepts.md).
+manual](site:reference/concepts).
 
 ## Start using chezmoi on your current machine
 
-Assuming that you have already [installed chezmoi](install.md), initialize
+Assuming that you have already [installed chezmoi](site:install), initialize
 chezmoi with:
 
 ```sh
@@ -226,8 +226,8 @@ chezmoi help
 ```
 
 chezmoi has much more functionality. Good starting points are reading [what
-other people say about chezmoi](links/articles.md), adding more dotfiles, and
+other people say about chezmoi](site:links/articles), adding more dotfiles, and
 using templates to manage files that vary from machine to machine and retrieve
-secrets from your password manager. Read the [user guide](user-guide/setup.md)
-to explore and see [how people use chezmoi](links/dotfile-repos.md) for
+secrets from your password manager. Read the [user guide](site:user-guide/setup)
+to explore and see [how people use chezmoi](site:links/dotfile-repos) for
 inspiration.
