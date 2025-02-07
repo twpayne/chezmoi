@@ -13,3 +13,5 @@ Print the list of entries ignored by chezmoi.
 ```sh
 chezmoi ignored
 ```
+
++++ 2.15.0

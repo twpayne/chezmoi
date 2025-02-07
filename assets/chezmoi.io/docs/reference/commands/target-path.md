@@ -9,3 +9,5 @@ print the target directory.
 chezmoi target-path
 chezmoi target-path ~/.local/share/chezmoi/dot_zshrc
 ```
+
++++ 2.12.0

@@ -13,3 +13,5 @@ any number of *extraString*s under Unicode case-folding.
     # $commandOutput is "bar"/"Bar"/"BAR"...
     {{ end }}
     ```
+
++++ 2.25.0

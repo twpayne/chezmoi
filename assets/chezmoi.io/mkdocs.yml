@@ -358,6 +358,11 @@ nav:
 - License: license.md
 
 markdown_extensions:
+- markdown_version_annotations:
+    version_added_admonition: "version-added"
+    version_added_title: "Added in [\\1](site:reference/release-history/#v\\1)"
+    version_changed_admonition: "version-changed"
+    version_changed_title: "Updated in [\\1](site:reference/release-history/#\\1)"
 - admonition
 - attr_list
 - meta

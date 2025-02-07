@@ -33,3 +33,5 @@ Extra arguments can be passed to the Keeper CLI command by setting the
 [keeper]
     args = ["--config", "/path/to/config.json"]
 ```
+
++++ 2.16.0

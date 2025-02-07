@@ -26,3 +26,8 @@ Decrypt with a passphrase.
 chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt
 chezmoi age decrypt --passphrase ciphertext.txt > decrypted-ciphertext.txt
 ```
+
++++ 2.39.0
++/- 2.46.0
+
+    Added `rage` as an alternative backend to `age`.

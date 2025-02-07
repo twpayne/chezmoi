@@ -13,3 +13,5 @@ Dump the configuration.
 ```sh
 chezmoi dump-config
 ```
+
++++ 2.27.0

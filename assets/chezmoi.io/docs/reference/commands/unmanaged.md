@@ -21,3 +21,5 @@ It is an error to supply *path*s that are not found on the filesystem.
 chezmoi unmanaged
 chezmoi unmanaged ~/.config/chezmoi ~/.ssh
 ```
+
++/- 2.20.0

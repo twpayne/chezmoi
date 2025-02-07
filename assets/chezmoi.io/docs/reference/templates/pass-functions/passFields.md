@@ -29,3 +29,5 @@ key-value pairs, one per line. The return value is a map of keys to values.
     ```
     {{ (passFields "GitHub").password }}
     ```
+
++++ 2.9.5

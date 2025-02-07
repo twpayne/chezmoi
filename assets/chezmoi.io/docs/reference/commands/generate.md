@@ -13,3 +13,5 @@ Generates *output* for use with chezmoi. The currently supported *output*s are:
 chezmoi generate install.sh > install.sh
 chezmoi git commit -m "$(chezmoi generate git-commit-message)"
 ```
+
++++ 2.20.0

@@ -145,3 +145,7 @@ chezmoi init user/dots
 chezmoi init codeberg.org/user
 chezmoi init gitlab.com/user
 ```
+
++/- 2.15.3
+
+    Add `--guess-repo-url`

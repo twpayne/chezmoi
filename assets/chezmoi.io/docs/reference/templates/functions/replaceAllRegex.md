@@ -10,3 +10,5 @@ with a different argument order that supports pipelining.
     ```
     {{ "foo subject string" | replaceAllRegex "foo" "bar" }}
     ```
+
++++ 2.20.0

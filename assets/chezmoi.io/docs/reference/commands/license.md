@@ -7,3 +7,5 @@ Print chezmoi's license.
 ```sh
 chezmoi license
 ```
+
++++ 2.14.0

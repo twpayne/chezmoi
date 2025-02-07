@@ -14,3 +14,5 @@
     [section]
         array = [{{- $list | quoteList | join ", " -}}]
     ```
+
++++ 2.18.0

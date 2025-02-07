@@ -6,3 +6,5 @@ API.
 
 The profile and region are pulled from the standard environment variables and shared config files but can be
 overridden by setting `awsSecretsManager.profile` and `awsSecretsManager.region` configuration variables respectively.
+
++++ 2.19.0

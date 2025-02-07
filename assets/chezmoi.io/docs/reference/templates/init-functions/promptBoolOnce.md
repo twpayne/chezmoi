@@ -9,3 +9,5 @@ and an optional *default* using `promptBool`.
     ```
     {{ $hasGUI := promptBoolOnce . "hasGUI" "Does this machine have a GUI" }}
     ```
+
++++ 2.20.0

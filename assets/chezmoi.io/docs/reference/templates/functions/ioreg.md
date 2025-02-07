@@ -20,3 +20,7 @@ will only execute the `ioreg -a -l` command once.
 
     The `ioreg` function can be very slow and should not be used. It will be
     removed in a later version of chezmoi.
+
++/- 2.15.0
+
+    Deprecated.

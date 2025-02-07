@@ -27,3 +27,5 @@ interactively prompted to sign in.
     When using [1Password secrets
     automation](../../../user-guide/password-managers/1password.md#secrets-automation),
     the *account* parameter is not allowed.
+
++++ 2.20.0

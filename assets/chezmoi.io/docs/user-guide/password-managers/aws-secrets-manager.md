@@ -27,3 +27,5 @@ by the standard AWS tooling.
     profile = myWorkProfile
     region = us-east-2
 ```
+
++++ 2.19.0

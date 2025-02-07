@@ -7,3 +7,5 @@
     ```
     {{ (fromIni "[section]\nkey = value").section.key }}
     ```
+
++++ 2.21.0

@@ -12,3 +12,5 @@
 
     The ini format is not well defined, and the particular variant generated
     by `toIni` might not be suitable for you.
+
++++ 2.21.0

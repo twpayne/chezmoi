@@ -9,3 +9,5 @@ an optional *default* using `promptString`.
     ```
     {{ $email := promptStringOnce . "email" "What is your email address" }}
     ```
+
++++ 2.20.0

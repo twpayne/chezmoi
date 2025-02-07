@@ -12,3 +12,5 @@
     ```
     {{- keepassxcAttachment "SSH Config" "config" -}}
     ```
+
++++ 2.15.0

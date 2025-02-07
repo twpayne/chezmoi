@@ -37,3 +37,5 @@ chezmoi managed -i dirs,files
 chezmoi managed -i files ~/.config
 chezmoi managed --exclude=encrypted --path-style=source-relative
 ```
+
++/- 2.20.0

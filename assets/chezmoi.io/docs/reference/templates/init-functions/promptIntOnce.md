@@ -9,3 +9,5 @@ and an optional *default* using `promptInt`.
     ```
     {{ $monitors := promptIntOnce . "monitors" "How many monitors does this machine have" }}
     ```
+
++++ 2.20.0

@@ -7,3 +7,5 @@
     ```
     {{ dict "key" "value" | toToml }}
     ```
+
++++ 2.19.0

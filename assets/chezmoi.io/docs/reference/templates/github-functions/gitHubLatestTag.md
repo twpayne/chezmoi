@@ -21,3 +21,5 @@ call to the GitHub API.
     endpoint](https://docs.github.com/en/rest/repos/repos#list-repository-tags).
     Although this seems to be the most recent tag, the GitHub API documentation
     does not specify the order of the returned tags.
+
++++ 2.21.0

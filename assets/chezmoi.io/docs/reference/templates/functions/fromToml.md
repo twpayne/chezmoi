@@ -7,3 +7,5 @@
     ```
     {{ (fromToml "[section]\nkey = \"value\"").section.key }}
     ```
+
++++ 2.19.0

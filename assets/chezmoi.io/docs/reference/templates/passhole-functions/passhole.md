@@ -8,3 +8,5 @@ database using [passhole](https://github.com/Evidlo/passhole)'s `ph` command.
     ```
     {{ passhole "example.com" "password" }}
     ```
+
++++ 2.23.0
