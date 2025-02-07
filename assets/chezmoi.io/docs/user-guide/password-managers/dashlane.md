@@ -1,6 +1,6 @@
 # Dashlane
 
-chezmoi includes support for [Dashlane](https://dashlane.com).
+chezmoi includes support for [Dashlane][dashlane].
 
 Structured data can be retrieved with the `dashlanePassword` template function,
 for example:
@@ -15,3 +15,5 @@ for example:
 ```text
 exampleNote = {{ dashlaneNote "filter" }}
 ```
+
+[dashlane]: https://dashlane.com

@@ -1,10 +1,8 @@
 # Bitwarden
 
-chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
-[Bitwarden CLI](https://bitwarden.com/help/cli) (`bw`), [Bitwarden
-Secrets CLI](https://bitwarden.com/help/secrets-manager-cli/) (`bws`), and
-[`rbw`](https://github.com/doy/rbw) commands to expose data as a template
-function.
+chezmoi includes support for [Bitwarden][bitwarden] using the [Bitwarden
+CLI][cli] (`bw`), [Bitwarden Secrets CLI][secrets] (`bws`), and [`rbw`][rbw]
+commands to expose data as a template function.
 
 ## Bitwarden CLI
 
@@ -69,8 +67,7 @@ or
 
 ## Bitwarden Secrets CLI
 
-Generate an [access token](https://bitwarden.com/help/access-tokens/) for a
-specific [service account](https://bitwarden.com/help/service-accounts/).
+Generate an [access token][token] for a specific [service account][account].
 
 Either set the `BWS_ACCESS_TOKEN` environment variable or store the access token
 in a template variable, e.g.
@@ -86,3 +83,10 @@ example:
 ```text
 {{ (bitwardenSecrets "be8e0ad8-d545-4017-a55a-b02f014d4158" .accessToken).value }}
 ```
+
+[bitwarden]: https://bitwarden.com/
+[cli]: https://bitwarden.com/help/cli
+[secrets]: https://bitwarden.com/help/secrets-manager-cli/
+[rbw]: https://github.com/doy/rbw
+[token]: https://bitwarden.com/help/access-tokens/
+[account]: https://bitwarden.com/help/service-accounts/

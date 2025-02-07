@@ -14,12 +14,10 @@ The returned value is a slice of structs with `.ID` and `.Key` fields.
     `chezmoi update`.
 
     Additionally, GitHub automatically [removes keys which haven't been used in
-    the last
-    year](https://docs.github.com/en/authentication/troubleshooting-ssh/deleted-or-missing-ssh-keys).
-    This may cause your keys to be removed from `~/.ssh/authorized_keys`
-    suddenly, and without any warning or indication of the removal. You should
-    provide one or more keys in plain text alongside this function to avoid
-    unknowingly losing remote access to your machine.
+    the last year][timeout]. This may cause your keys to be removed from
+    `~/.ssh/authorized_keys` suddenly, and without any warning or indication of
+    the removal. You should provide one or more keys in plain text alongside
+    this function to avoid unknowingly losing remote access to your machine.
 
 !!! example
 
@@ -28,3 +26,5 @@ The returned value is a slice of structs with `.ID` and `.Key` fields.
     {{- .Key }}
     {{ end }}
     ```
+
+[timeout]: https://docs.github.com/en/authentication/troubleshooting-ssh/deleted-or-missing-ssh-keys

@@ -1,8 +1,7 @@
 # gopass functions
 
-The `gopass*` template functions return data stored in
-[gopass](https://www.gopass.pw/) using the gopass CLI (`gopass`) or builtin
-code.
+The `gopass*` template functions return data stored in [gopass][gopass] using
+the gopass CLI (`gopass`) or builtin code.
 
 By default, chezmoi will use the gopass CLI (`gopass`). Depending on your gopass
 configuration, you may have to enter your passphrase once for each secret.
@@ -14,3 +13,5 @@ terminates.
 !!! warning
 
     Using the builtin code is experimental and may be removed.
+
+[gopass]: https://www.gopass.pw/

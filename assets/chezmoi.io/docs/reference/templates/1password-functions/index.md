@@ -1,8 +1,7 @@
 # 1Password functions
 
 The `onepassword*` template functions return structured data from
-[1Password](https://1password.com/) using the [1Password
-CLI](https://developer.1password.com/docs/cli) (`op`).
+[1Password][1p] using the [1Password CLI][op] (`op`).
 
 !!! info
 
@@ -46,7 +45,10 @@ CLI](https://developer.1password.com/docs/cli) (`op`).
 !!! warning
 
     chezmoi has experimental support for [1Password secrets
-    automation](../../../user-guide/password-managers/1password.md#secrets-automation)
-    modes. These modes change how the 1Password CLI works and affect all
-    functions. Most notably, `account` parameters are not allowed on all
-    1Password template functions.
+    automation][automation] modes. These modes change how the 1Password CLI
+    works and affect all functions. Most notably, `account` parameters are not
+    allowed on all 1Password template functions.
+
+[1p]: https://1password.com/
+[op]: https://developer.1password.com/docs/cli
+[automation]: /user-guide/password-managers/1password.md#secrets-automation

@@ -5,7 +5,7 @@ installation requires running imperative commands. However, you can simulate
 declarative package installation with a combination of a `.chezmoidata` file and
 a `run_onchange_` script.
 
-The following example uses [homebrew](https://brew.sh) on macOS, but should be
+The following example uses [homebrew][homebrew] on macOS, but should be
 adaptable to other operating systems and package managers.
 
 First, create `.chezmoidata/packages.yaml` declaring the packages that you want
@@ -41,3 +41,5 @@ EOF
 Now, when you run `chezmoi apply`, chezmoi will execute the
 `install-packages.sh` script with when the list of packages defined in
 `.chezmoidata/packages.yaml` changes.
+
+[homebrew]: https://brew.sh

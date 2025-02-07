@@ -7,7 +7,7 @@ relative to the current directory. If *file* is not found, `lookPath` returns
 an empty string.
 
 `lookPath` is not hermetic: its return value depends on the state of the
-environment and the filesystem at the moment the template is executed. Exercise
+environment and the file system at the moment the template is executed. Exercise
 caution when using it in your templates.
 
 The return value of the first successful call to `lookPath` is cached, and

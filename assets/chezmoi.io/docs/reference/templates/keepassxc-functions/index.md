@@ -1,8 +1,7 @@
 # KeePassXC functions
 
-The `keepassxc*` template functions return structured data retrieved from a
-[KeePassXC](https://keepassxc.org/) database using the KeePassXC CLI
-(`keepassxc-cli`)
+The `keepassxc*` template functions return structured data retrieved from
+a [KeePassXC][keepassxc] database using the KeePassXC CLI (`keepassxc-cli`)
 
 The database is configured by setting `keepassxc.database` in the configuration
 file. You will be prompted for the database password the first time
@@ -21,5 +20,7 @@ values from KeePassXC.
 
 When setting `keepassxc.mode` to `builtin`, chezmoi uses a builtin library to
 access a keepassxc database, which can be handy if `keepassxc-cli` is not
-available. Some KeePassXC features (such as Yubikey-enhanced
-encryption) may not be available with builtin support.
+available. Some KeePassXC features (such as Yubikey-enhanced encryption) may not
+be available with builtin support.
+
+[keepassxc]: https://keepassxc.org/

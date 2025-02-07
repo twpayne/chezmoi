@@ -1,7 +1,6 @@
 # 1Password
 
-chezmoi includes support for [1Password](https://1password.com/) using the
-[1Password CLI](https://support.1password.com/command-line-getting-started/) to
+chezmoi includes support for [1Password][1p] using the [1Password CLI][op] to
 expose data as a template function.
 
 Log in and get a session using:
@@ -154,9 +153,8 @@ configuration variable to `false`, for example:
 ## Secrets Automation
 
 chezmoi has experimental support for secrets automation with [1Password
-Connect](https://developer.1password.com/docs/connect/) and [1Password Service
-Accounts](https://developer.1password.com/docs/service-accounts). These might be
-used on restricted machines where you cannot or do not wish to install a full
+Connect][connect] and [1Password Service Accounts][service]. These might be used
+on restricted machines where you cannot or do not wish to install a full
 1Password desktop application.
 
 When these features are used, the behavior of the 1Password CLI changes, so
@@ -181,10 +179,8 @@ In `account` mode, chezmoi will stop with an error if the environment variable
 
 ### 1Password Connect
 
-Once 1Password Connect is
-[configured](https://developer.1password.com/docs/connect/connect-cli#requirements),
-and `OP_CONNECT_HOST` and `OP_CONNECT_TOKEN` are properly set, set
-`onepassword.mode` to `connect`.
+Once 1Password Connect is [configured][configured], and `OP_CONNECT_HOST` and
+`OP_CONNECT_TOKEN` are properly set, set `onepassword.mode` to `connect`.
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
@@ -200,10 +196,8 @@ In `connect` mode:
 
 ### 1Password Service Accounts
 
-Once a 1Password service account has been
-[created](https://developer.1password.com/docs/service-accounts/use-with-1password-cli/#requirements)
-and `OP_SERVICE_ACCOUNT_TOKEN` is properly set, set `onepassword.mode` to
-`service`.
+Once a 1Password service account has been [created][created] and
+`OP_SERVICE_ACCOUNT_TOKEN` is properly set, set `onepassword.mode` to `service`.
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
@@ -215,3 +209,10 @@ In `service` mode:
 - `account` parameters are not allowed in 1Password template functions,
 - chezmoi will stop with an error if `OP_SERVICE_ACCOUNT_TOKEN` is unset, or if
   both of `OP_CONNECT_HOST` and `OP_CONNECT_TOKEN` are set.
+
+[1p]: https://1password.com/
+[op]: https://support.1password.com/command-line-getting-started/
+[connect]: https://developer.1password.com/docs/connect/
+[service]: https://developer.1password.com/docs/service-accounts
+[configured]: https://developer.1password.com/docs/connect/connect-cli#requirements
+[created]: https://developer.1password.com/docs/service-accounts/use-with-1password-cli/#requirements

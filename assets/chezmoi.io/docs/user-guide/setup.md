@@ -21,10 +21,9 @@ the final contents specific to the local machine.
 
 chezmoi relies on your version control system and hosted repo to share changes
 across multiple machines. You should create a repo on the source code repository
-of your choice (e.g. [Bitbucket](https://bitbucket.org),
-[GitHub](https://github.com/), or [GitLab](https://gitlab.com), many people call
-their repo `dotfiles`) and push the repo in the source directory here. For
-example:
+of your choice (e.g. [Bitbucket][bitbucket], [GitHub][github], or
+[GitLab][gitlab]; many people call their repo `dotfiles`) and push the repo in
+the source directory here. For example:
 
 ```sh
 chezmoi cd
@@ -51,7 +50,8 @@ If you're happy with the changes then apply them:
 chezmoi apply
 ```
 
-The above commands can be combined into a single init, checkout, and apply:
+The above commands can be combined into a single command to initialize,
+checkout, and apply:
 
 ```sh
 chezmoi init --apply --verbose https://github.com/$GITHUB_USERNAME/dotfiles.git
@@ -87,11 +87,9 @@ not store any credentials, but instead relies on your local git configuration
 for these operations.
 
 When using a private repo on GitHub without `--ssh`, when prompted for a
-password you will need to enter a [GitHub personal access
-token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token).
-For more information on these changes, read the [GitHub blog post on Token
-authentication requirements for Git
-operations](https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/)
+password you will need to enter a [GitHub personal access token][gh-pat]. For
+more information on these changes, read the [GitHub blog post on Token
+authentication requirements for Git operations][gh-token-auth].
 
 ## Create a config file on a new machine automatically
 
@@ -144,3 +142,9 @@ example template logic:
 
 This will cause chezmoi use the `email` variable from your `data` and fallback
 to `promptString` only if it is not set.
+
+[bitbucket]: https://bitbucket.org
+[github]: https://github.com/
+[gitlab]: https://gitlab.com
+[gh-pat]: https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+[gh-token-auth]: https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/

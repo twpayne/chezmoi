@@ -1,6 +1,6 @@
 # ejson
 
-chezmoi includes support for [ejson](https://github.com/Shopify/ejson).
+chezmoi includes support for [ejson][ejson].
 
 Structured data can be retrieved with the `ejsonDecrypt` template function, for
 example:
@@ -16,3 +16,5 @@ example:
 ```text
 examplePassword = {{ (ejsonDecryptWithKey "my-secrets.ejson" "top-secret-key").password }}
 ```
+
+[ejson]: https://github.com/Shopify/ejson

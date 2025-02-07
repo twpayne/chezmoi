@@ -2,8 +2,8 @@
 {{- $version := $latestRelease.Name | trimPrefix "v" -}}
 # Install
 
-The latest version of chezmoi is {{ $version }} ([release notes]({{
-$latestRelease.HTMLURL }}), [release history](reference/release-history.md)).
+The latest version of chezmoi is {{ $version }} ([release notes][notes],
+[release history][history]).
 
 ## One-line package install
 
@@ -107,6 +107,12 @@ chezmoi is available in many cross-platform package managers:
     asdf plugin add chezmoi && asdf install chezmoi {{ $version }}
     ```
 
+=== "mise"
+
+    ```sh
+    mise use --global chezmoi@{{ $version }}
+    ```
+
 === "Homebrew"
 
     ```sh
@@ -125,8 +131,7 @@ chezmoi is available in many cross-platform package managers:
     snap install chezmoi --classic
     ```
 
-For more packages, see [chezmoi on
-repology.org](https://repology.org/project/chezmoi/versions).
+For more packages, see [chezmoi on repology.org][repology].
 
 ## One-line binary install
 
@@ -167,8 +172,7 @@ with a single command:
     sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
     ```
 
-    Private GitHub repos require other
-    [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
+    Private GitHub repos require other [authentication methods][https-clone]:
 
     ```sh
     sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git
@@ -258,8 +262,7 @@ make install-from-git-working-copy
 ## Verify your download
 
 chezmoi's release process signs the SHA256 checksums of [all released
-assets](https://github.com/twpayne/chezmoi/releases/tag/v{{ $version }}) with
-[cosign](https://github.com/SigStore/cosign).
+assets][release-assets] with [cosign][cosign].
 
 To verify an asset that you have downloaded:
 
@@ -307,4 +310,12 @@ directory.
     ```
 
 For more information on chezmoi's release signing process, see the [developer
-documentation on chezmoi's releases](developer-guide/releases.md).
+documentation on chezmoi's releases][developer-release].
+
+[history]: /reference/release-history.md
+[notes]: {{ $latestRelease.HTMLURL }}
+[repology]: https://repology.org/project/chezmoi/versions
+[https-clone]: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls
+[release-assets]: https://github.com/twpayne/chezmoi/releases/tag/v{{ $version }}
+[cosign]: https://github.com/SigStore/cosign
+[developer-release]: /developer-guide/releases.md

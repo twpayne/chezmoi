@@ -1,4 +1,7 @@
 # Dashlane functions
 
-The `dashlane*` functions return data from [Dashlane](https://dashlane.com)
-using the [Dashlane CLI](https://github.com/Dashlane/dashlane-cli).
+The `dashlane*` functions return data from [Dashlane][dashlane]
+using the [Dashlane CLI][cli].
+
+[dashlane]: https://dashlane.com
+[cli]: https://github.com/Dashlane/dashlane-cli

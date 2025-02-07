@@ -1,12 +1,12 @@
 # `stat` *name*
 
-`stat` runs [`os.Stat`](https://pkg.go.dev/os#File.Stat) on *name*. If *name*
-exists it returns structured data. If *name* does not exist then it returns a
-false value. If `os.Stat` returns any other error then it raises an error. The
-structured value returned if *name* exists contains the fields `name`, `size`,
-`mode`, `perm`, `modTime`, `isDir`, and `type`.
+`stat` runs [`os.Stat`][stat] on *name*. If *name* exists it returns structured
+data. If *name* does not exist then it returns a false value. If `os.Stat`
+returns any other error then it raises an error. The structured value returned
+if *name* exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`,
+    `isDir`, and `type`.
 
-`stat` is not hermetic: its return value depends on the state of the filesystem
+`stat` is not hermetic: its return value depends on the state of the file system
 at the moment the template is executed. Exercise caution when using it in your
 templates.
 
@@ -17,3 +17,5 @@ templates.
     # ~/.pyenv exists
     {{ end }}
     ```
+
+[stat]: https://pkg.go.dev/os#File.Stat

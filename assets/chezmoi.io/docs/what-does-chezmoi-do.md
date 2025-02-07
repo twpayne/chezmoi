@@ -31,33 +31,24 @@ secrets then you don't need chezmoi. Otherwise, read on...
 
 You can share as much configuration across machines as you want, while still
 being able to control machine-specific details.Your dotfiles can be templates
-(using [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
-variables allow you to change behavior depending on operating system,
-architecture, and hostname. chezmoi runs on all commonly-used platforms, like
-Linux, macOS, and Windows. It also runs on less commonly-used platforms, like
-FreeBSD, OpenBSD, and Termux.
+(using Go [`text/template`][template] syntax). Predefined variables allow you to
+change behavior depending on operating system, architecture, and hostname.
+chezmoi runs on all commonly-used platforms, like Linux, macOS, and Windows. It
+also runs on less commonly-used platforms, like FreeBSD, OpenBSD, and Termux.
 
 ### Personal and secure
 
 Nothing leaves your machine, unless you want it to. Your configuration remains
 in a git repo under your control. You can write the configuration file in the
-format of your choice. chezmoi can retrieve secrets from
-[1Password](https://1password.com/), [AWS Secrets
-Manager](https://aws.amazon.com/secrets-manager/), [Azure Key
-Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/),
-[Bitwarden](https://bitwarden.com/), [Dashlane](https://www.dashlane.com/),
-[Doppler](https://www.doppler.com), [gopass](https://www.gopass.pw/), [HCP Vault
-Secrets](https://developer.hashicorp.com/hcp/docs/vault-secrets),
-[KeePassXC](https://keepassxc.org/), [Keeper](https://www.keepersecurity.com/),
-[LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
-[passage](https://github.com/FiloSottile/passage),
-[passhole](https://github.com/Evidlo/passhole),
-[Vault](https://www.vaultproject.io/), Keychain,
-[Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any command-line
-utility of your choice. You can encrypt individual files with
-[GnuPG](https://www.gnupg.org) or [age](https://age-encryption.org). You can
-checkout your dotfiles repo on as many machines as you want without revealing
-any secrets to anyone.
+format of your choice. chezmoi can retrieve secrets from [1Password][1p],
+[AWS Secrets Manager][aws-secrets-manager], [Azure Key Vault][azure-key-vault],
+[Bitwarden][bitwarden], [Dashlane][dashlane], [Doppler][doppler],
+[gopass][gopass], [HCP Vault Secrets][hcp-vault-secrets], [KeePassXC][keepass],
+[Keeper][keeper], [LastPass][lastpass], [pass][pass], [passage][passage],
+[passhole][passhole], [Vault][vault], macOS Keychain, GNOME [Keyring][keyring],
+or any command-line utility of your choice. You can encrypt individual files
+with [GnuPG][gnupg] or [age][age]. You can checkout your dotfiles repo on as
+many machines as you want without revealing any secrets to anyone.
 
 ### Transparent
 
@@ -83,3 +74,23 @@ in fractions of a second. chezmoi makes most day-to-day operations one line
 commands, including installation, initialization, and keeping your machines
 up-to-date. chezmoi can pull and apply changes from your dotfiles repo in a
 single command, and automatically commit and push changes.
+
+[1p]: https://1password.com/
+[age]: https://age-encryption.org
+[aws-secrets-manager]: https://aws.amazon.com/secrets-manager/
+[azure-key-vault]: https://learn.microsoft.com/en-us/azure/key-vault/general/
+[bitwarden]: https://bitwarden.com/
+[dashlane]: https://www.dashlane.com/
+[doppler]: https://www.doppler.com
+[gnupg]: https://www.gnupg.org
+[gopass]: https://www.gopass.pw/
+[hcp-vault-secrets]: https://developer.hashicorp.com/hcp/docs/vault-secrets
+[keepass]: https://keepassxc.org/
+[keeper]: https://www.keepersecurity.com/
+[keyring]: https://wiki.gnome.org/Projects/GnomeKeyring
+[lastpass]: https://lastpass.com/
+[pass]: https://www.passwordstore.org/
+[passage]: https://github.com/FiloSottile/passage
+[passhole]: https://github.com/Evidlo/passhole
+[template]: https://pkg.go.dev/text/template
+[vault]: https://www.vaultproject.io/

@@ -118,22 +118,18 @@ umask = 0o022
     This will apply to all files and directories that chezmoi manages and will
     ensure that none of them are group writeable. It is not currently possible
     to control group write permissions for individual files or directories.
-    Please [open an issue on
-    GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
-    if you need this.
+    Please [open an issue on GitHub][enhancement] if you need this.
 
 ## chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`
 
 This is likely because the chezmoi binary you are using was statically compiled
-with [musl](https://musl.libc.org/) and the machine you are running on uses
-LDAP or NIS.
+with [musl][musl] and the machine you are running on uses LDAP or NIS.
 
 The immediate fix is to use a package built for your distribution (e.g a `.deb`
 or `.rpm`) which is linked against glibc and includes LDAP/NIS support instead
 of the statically-compiled binary.
 
-If the problem still persists, then please [open an issue on
-GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+If the problem still persists, then please [open an issue on GitHub][choose].
 
 ## chezmoi reports `chezmoi: timeout` or `chezmoi: timeout obtaining persistent state lock`
 
@@ -144,8 +140,8 @@ chezmoi is currently running and holding the lock.
 This can happen, for example, if you have a `run_` script that invokes
 `chezmoi`, or are running chezmoi in another window.
 
-Under the hood, chezmoi uses [bbolt](https://github.com/etcd-io/bbolt) which
-permits multiple simultaneous readers, but only one writer (with no readers).
+Under the hood, chezmoi uses [bbolt][bbolt] which permits multiple simultaneous
+readers, but only one writer (with no readers).
 
 Commands that take a write lock include `add`, `apply`, `edit`, `forget`,
 `import`, `init`, `state`, `unmanage`, and `update`. Commands that take a read
@@ -223,13 +219,12 @@ touch dot_config/.keep
 ```
 
 Now once that done `chezmoi add ~/.config/direnv/direnvrc` should work. For
-reference see [this issue](https://github.com/twpayne/chezmoi/issues/2006)
+reference see [issue #2006][#2006].
 
 ## chezmoi reports `read /dev/stdin: permission denied` or `write /dev/stdout: permission denied` when I redirect standard input or standard output
 
-This error occurs when you [installed chezmoi with
-snap](https://snapcraft.io/chezmoi) and is caused by a long-standing [bug in
-snap](https://bugs.launchpad.net/ubuntu/+source/snapd/+bug/1849753).
+This error occurs when you [installed chezmoi with snap][snap] and is caused by
+a long-standing [bug in snap][snap-bug].
 
 This is not a bug in chezmoi and there is nothing that chezmoi can do about
 this. However, there are two workarounds:
@@ -251,7 +246,7 @@ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
 ```
 
 Secondly, you can install chezmoi with any of the [many supported install
-methods](../../install.md) instead of snap.
+methods][install] instead of snap.
 
 ## chezmoi reports `fork/exec ...: no such file or directory` when running scripts on Nix or Termux
 
@@ -283,3 +278,12 @@ Alternatively, you can use the actual path to `bash` on your system, for example
     ```bash
     #!/data/data/com.termux/files/usr/bin/bash
     ```
+
+[choose]: https://github.com/twpayne/chezmoi/issues/new/choose
+[enhancement]: https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=
+[musl]: https://musl.libc.org/
+[bbolt]: https://github.com/etcd-io/bbolt
+[#2006]: https://github.com/twpayne/chezmoi/issues/2006
+[snap]: https://snapcraft.io/chezmoi
+[snap-bug]: https://bugs.launchpad.net/ubuntu/+source/snapd/+bug/1849753
+[install]: /install.md

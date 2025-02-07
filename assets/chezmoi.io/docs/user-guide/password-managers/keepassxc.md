@@ -1,7 +1,7 @@
 # KeePassXC
 
-chezmoi includes support for [KeePassXC](https://keepassxc.org) using the
-KeePassXC CLI (`keepassxc-cli`) to expose data as a template function.
+chezmoi includes support for [KeePassXC][keepasxc] using the KeePassXC CLI
+(`keepassxc-cli`) to expose data as a template function.
 
 Provide the path to your KeePassXC database in your configuration file:
 
@@ -50,3 +50,5 @@ set your YubiKey, for example:
     args = ["--no-password", "--yubikey", "2:7370001"]
     mode = "open"
 ```
+
+[keepassxc]: https://keepassxc.org

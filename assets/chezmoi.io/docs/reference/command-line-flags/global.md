@@ -1,7 +1,7 @@
 # Global command line flags
 
-The following flags are available for all chezmoi commands.
-Note that some flags may not have any effect on certain commands.
+The following flags are available for all chezmoi commands. Note that some flags
+may not have any effect on certain commands.
 
 ## Flags
 
@@ -21,13 +21,13 @@ if the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 
 ### `-c`, `--config` *filename*
 
-Read the [configuration](../configuration-file/index.md) from *filename*.
+Read the [configuration][configuration] from *filename*.
 
 ### `--config-format` *format*
 
-Assume the configuration file is in the given format. This is only needed if
-the config filename does not have an extension, for example when it is
-`/dev/stdin`. Supported formats: `json`, `jsonc`, `toml`, `yaml`.
+Assume the configuration file is in the given format. This is only needed if the
+config filename does not have an extension, for example when it is `/dev/stdin`.
+Supported formats: `json`, `jsonc`, `toml`, `yaml`.
 
 ### `-D`, `--destination` *directory*
 
@@ -38,8 +38,8 @@ Use *directory* as the destination directory.
 ### `-n`, `--dry-run`
 
 Set dry run mode. In dry run mode, the destination directory is never modified.
-This is most useful in combination with the `-v` (verbose) flag to print
-changes that would be made without making them.
+This is most useful in combination with the `-v` (verbose) flag to print changes
+that would be made without making them.
 
 ### `--force`
 
@@ -94,7 +94,7 @@ re-download externals.
 `auto` means only re-download externals that have not been downloaded within
 their refresh periods.
 
-`never` (or any other falsey value accepted by `parseBool`) means only download
+`never` (or any other falsy value accepted by `parseBool`) means only download
 if no cached external is available.
 
 ### `-S`, `--source` *directory*
@@ -112,9 +112,9 @@ rather than the destination directory.
 
 > Configuration: `useBuiltinAge`
 
-Use chezmoi's builtin [age encryption](https://age-encryption.org) instead of an
-external `age` command. *value* can be `on`, `off`, `auto`, or any boolean-like
-value recognized by `promptBool`. The default is `auto` which will only use the
+Use chezmoi's builtin [age encryption][age] instead of an external `age`
+command. *value* can be `on`, `off`, `auto`, or any boolean-like value
+recognized by `promptBool`. The default is `auto` which will only use the
 builtin age if `age.command` cannot be found in `$PATH`.
 
 The builtin `age` command does not support passphrases, symmetric encryption,
@@ -155,3 +155,6 @@ timestamp.
 Use *directory* as the git working tree directory. By default, chezmoi searches
 the source directory and then its ancestors for the first directory that
 contains a `.git` directory.
+
+[configuration]: /reference/configuration-file/index.md
+[age]: https://age-encryption.org

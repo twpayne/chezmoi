@@ -7,12 +7,12 @@ directory `~/.local/share/chezmoi`. When you run `chezmoi apply`, chezmoi
 calculates the desired contents for each of your dotfiles and then makes the
 minimum changes required to make your dotfiles match your desired state.
 chezmoi's concepts are [described more accurately in the reference
-manual](reference/concepts.md).
+manual][concepts].
 
 ## Start using chezmoi on your current machine
 
-Assuming that you have already [installed chezmoi](install.md), initialize
-chezmoi with:
+Assuming that you have already [installed chezmoi][install], initialize chezmoi
+with:
 
 ```sh
 chezmoi init
@@ -42,8 +42,7 @@ changes and save the file.
 !!! hint
 
     You don't have to use `chezmoi edit` to edit your dotfiles. See [this FAQ
-    entry](user-guide/frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi)
-    for more details.
+    entry][faq-edit] for more details.
 
 See what changes chezmoi would make:
 
@@ -70,8 +69,8 @@ git add .
 git commit -m "Initial commit"
 ```
 
-[Create a new repository on GitHub](https://github.com/new) called `dotfiles`
-and then push your repo:
+[Create a new repository on GitHub][new-repo] called `dotfiles` and then push
+your repo:
 
 ```sh
 git remote add origin git@github.com:$GITHUB_USERNAME/dotfiles.git
@@ -84,9 +83,8 @@ git push -u origin main
     chezmoi can be configured to automatically add, commit, and push changes to
     your repo.
 
-chezmoi can also be used with [GitLab](https://gitlab.com), or
-[BitBucket](https://bitbucket.org), [Source Hut](https://sr.ht/), or any other
-git hosting service.
+chezmoi can also be used with [GitLab][gitlab], or [BitBucket][bitbucket],
+[Source Hut][srht], or any other git hosting service.
 
 Finally, exit the shell in the source directory to return to where you were:
 
@@ -124,8 +122,7 @@ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 
 !!! hint
 
-    Private GitHub repos require other
-    [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
+    Private GitHub repos require other [authentication methods][private-auth]:
 
     ```sh
     chezmoi init git@github.com:$GITHUB_USERNAME/dotfiles.git
@@ -199,8 +196,7 @@ chezmoi init --apply $GITHUB_USERNAME
 
 !!! hint
 
-    Private GitHub repos require other
-    [authentication methods](https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls):
+    Private GitHub repos require other [authentication methods][private-auth]:
 
     ```sh
     chezmoi init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git
@@ -226,8 +222,19 @@ chezmoi help
 ```
 
 chezmoi has much more functionality. Good starting points are reading [what
-other people say about chezmoi](links/articles.md), adding more dotfiles, and
-using templates to manage files that vary from machine to machine and retrieve
-secrets from your password manager. Read the [user guide](user-guide/setup.md)
-to explore and see [how people use chezmoi](links/dotfile-repos.md) for
-inspiration.
+other people say about chezmoi][articles], adding more dotfiles, and using
+templates to manage files that vary from machine to machine and retrieve secrets
+from your password manager. Read the [user guide][user-guide] to explore and see
+[how people use chezmoi][repos] for inspiration.
+
+[articles]: /links/articles.md
+[bitbucket]: https://bitbucket.org
+[concepts]: /reference/concepts.md
+[faq-edit]: /user-guide/frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi
+[gitlab]: https://gitlab.com
+[install]: /install.md
+[new-repo]: https://github.com/new
+[private-auth]: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls
+[repos]: /links/dotfile-repos.md
+[srht]: https://sr.ht/
+[user-guide]: /user-guide/setup.md

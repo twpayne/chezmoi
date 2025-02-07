@@ -2,12 +2,10 @@
 
 ## Use `brew bundle` to manage your brews and casks
 
-Homebrew's [`brew bundle`
-subcommand](https://docs.brew.sh/Manpage#bundle-subcommand) allows you to
-specify a list of brews and casks to be installed. You can integrate this with
-chezmoi by creating a `run_once_` script. For example, create a file in your
-source directory called `run_once_before_install-packages-darwin.sh.tmpl`
-containing:
+Homebrew's [`brew bundle` subcommand][bundle] allows you to specify a list of
+brews and casks to be installed. You can integrate this with chezmoi by creating
+a `run_once_` script. For example, create a file in your source directory called
+`run_once_before_install-packages-darwin.sh.tmpl` containing:
 
 ```text
 {{- if eq .chezmoi.os "darwin" -}}
@@ -43,3 +41,5 @@ a `run_onchange_` script and using the `output` template function to run `sw_ver
 ```text
 # MacOS build version: {{ output "sw_vers" "--buildVersion" }}
 ```
+
+[bundle]: https://docs.brew.sh/Manpage#bundle-subcommand

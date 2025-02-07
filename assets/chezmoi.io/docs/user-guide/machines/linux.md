@@ -32,11 +32,9 @@ template:
     osid = {{ $osid | quote }}
 ```
 
-This defines the `.osid` template variable to be `{{ .chezmoi.os }}` on
-machines without an [`os-release`
-file](https://www.freedesktop.org/software/systemd/man/os-release.html), or to
-be `{{ .chezmoi.os }}-{{ .chezmoi.osRelease.id }}` on machines with an
-`os-release` file.
+This defines the `.osid` template variable to be `{{ .chezmoi.os }}` on machines
+without an [`os-release` file][os-release], or to be `{{ .chezmoi.os }}-{{
+.chezmoi.osRelease.id }}` on machines with an `os-release` file.
 
 You can then simplify your conditionals to be:
 
@@ -49,3 +47,5 @@ You can then simplify your conditionals to be:
 # Fedora-specific code
 {{ end }}
 ```
+
+[os-release]: https://www.freedesktop.org/software/systemd/man/os-release.html

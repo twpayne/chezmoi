@@ -33,6 +33,7 @@ optional and will be stripped, so you can pass the git tag in directly.
 
     The `assets/scripts/generate-commit.go` script will return a suitable value
     for `$COMMIT`.
+
     You can run it with `go run assets/scripts/generate-commit.go`.
 
 !!! hint
@@ -67,6 +68,7 @@ chezmoi includes shell completions in the `completions` directory. Please
 include these in the package and install them in the shell-appropriate
 directory, if possible.
 
-If the instructions for installing chezmoi in chezmoi's [install
-guide](../install.md) are absent or incorrect, please open an issue or submit a
-PR to correct them.
+If the instructions for installing chezmoi in chezmoi's [install guide][guide]
+are absent or incorrect, please open an issue or submit a PR to correct them.
+
+[guide]: /install.md

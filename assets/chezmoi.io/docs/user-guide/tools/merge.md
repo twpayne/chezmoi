@@ -7,7 +7,7 @@ By default, chezmoi uses `vimdiff`. You can use a custom command by setting the
 `merge.args` are interpreted as templates with the variables `.Destination`,
 `.Source`, and `.Target` containing filenames of the file in the destination
 state, source state, and target state respectively. For example, to use
-[neovim's diff mode](https://neovim.io/doc/user/diff.html), specify:
+[neovim's diff mode][nvim], specify:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [merge]
@@ -18,13 +18,23 @@ state, source state, and target state respectively. For example, to use
 !!! hint
 
     If you generate your config file from a config file template, then you'll
-    need to escape the `{{` and `}}` as `{{ "{{" }}` and `{{ "}}" }}`. That way
-    your generated config file contains the `{{` and `}}` you expect.
+    need to escape the `{{` and `}}`. That way your generated config file
+    contains the `{{` and `}}` you expect.
+
+    ```toml title="~/.local/share/chezmoi/chezmoi.toml.tmpl"
+    [merge]
+        command = "nvim"
+        args = [
+            "-d",
+            {{ printf "%q" "{{ .Destination }}" }},
+            {{ printf "%q" "{{ .Source }}" }},
+            {{ printf "%q" "{{ .Target }}" }},
+        ]
+    ```
 
 ## Use VSCode as the merge tool
 
-To use [VSCode](https://code.visualstudio.com/) as the merge tool, add the
-following to your config:
+To use [VSCode][vscode] as the merge tool, add the following to your config:
 
 === "TOML"
 
@@ -46,3 +56,6 @@ following to your config:
       - "-c"
       - "cp {{ .Target }} {{ .Target }}.base && code --new-window --wait --merge {{ .Destination }} {{ .Target }} {{ .Target }}.base {{ .Source }}"
     ```
+
+[nvim]: https://neovim.io/doc/user/diff.html
+[vscode]: https://code.visualstudio.com/

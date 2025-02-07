@@ -29,11 +29,10 @@ merge-all` will help you resolve any differences.
   will create commits and push them for you.
 
 If you chose to edit files in the source state and you're using VIM then
-[`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim) gives
-you syntax highlighting, however you edit your files. Besides using the
-plugin, you can use modeline to tell VIM the correct filetype. For example,
-put `# vim: filetype=zsh` at the top of `dot_zshrc`, and VIM will treat
-`dot_zshrc` as zsh file.
+[`github.com/alker0/chezmoi.vim`][chezmoi.vim] gives you syntax highlighting,
+however you edit your files. Besides using the plugin, you can use modeline to
+tell VIM the correct filetype. For example, put `# vim: filetype=zsh` at the top
+of `dot_zshrc`, and VIM will treat `dot_zshrc` as zsh file.
 
 ## Why doesn't chezmoi use symlinks like GNU Stow?
 
@@ -66,15 +65,13 @@ the `--watch` flag to `chezmoi edit` or set `edit.watch` to `true` in your
 configuration file.
 
 If you really want to use symlinks, then chezmoi provides a [symlink
-mode](../../reference/target-types.md#symlink-mode) which uses symlinks where
-possible. This configures chezmoi to work like GNU Stow and have it create a set
-of symlinks back to a central directory, but this currently requires a bit of
-manual work (as described in
-[#167](https://github.com/twpayne/chezmoi/issues/167)). chezmoi might get some
-automation to help (see [#886](https://github.com/twpayne/chezmoi/issues/886)
-for example) but it does need some convincing use cases that demonstrate that a
-symlink from a dotfile's location to its contents in a central directory is
-better than just having the correct dotfile contents.
+mode][symlink] which uses symlinks where possible. This configures chezmoi to
+work like GNU Stow and have it create a set of symlinks back to a central
+directory, but this currently requires a bit of manual work (as described in
+[issue #167][#167]). chezmoi might get some automation to help (see [issue
+#886][#886] for example) but it does need some convincing use cases that
+demonstrate that a symlink from a dotfile's location to its contents in
+a central directory is better than just having the correct dotfile contents.
 
 ## What are the limitations of chezmoi's symlink mode?
 
@@ -144,16 +141,16 @@ file permissions `0o644`, `0o755`, `0o600`, `0o700`, `0o444`, `0o555`, `0o400`,
 and `0o500` to be represented. Directories can only have permissions `0o755`,
 `0o700`, or `0o500`. In practice, these cover all permissions typically used
 for dotfiles. If this does cause a genuine problem for you, please [open an
-issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+    issue on GitHub][choose].
 
 File permissions and modes like `executable_`, `private_`, `readonly_`, and
-`symlink_` could also be stored in the filesystem, rather than in the filename.
+`symlink_` could also be stored in the file system, rather than in the filename.
 However, this requires the permissions to be preserved and handled by the
-underlying version control system and filesystem. chezmoi provides first-class
+underlying version control system and file system. chezmoi provides first-class
 support for Windows, where the `executable_` and `private_` attributes have no
 direct equivalents and symbolic links are not always permitted. By using
 regular files and directories, chezmoi avoids variations in the operating
-system, version control system, and filesystem making it both more robust and
+system, version control system, and file system making it both more robust and
 more portable.
 
 chezmoi uses a 1:1 mapping between entries in the source state and entries in
@@ -187,7 +184,7 @@ but must meet the following criteria, in order of importance:
 1. Be fully backwards-compatible for existing users.
 2. Fix a genuine problem encountered in practice.
 3. Be independent of the underlying operating system, version control system,
-   and filesystem.
+   and file system.
 4. Not add significant extra complexity to the user interface or underlying
    implementation.
 
@@ -268,8 +265,7 @@ chezmoi apply --source "${combined_source}"
 ```
 
 Thirdly, you can use a `run_` script to invoke a second instance of chezmoi,
-[as used by
-@felipecrs](https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl).
+[as used by @felipecrs][rootmoi].
 
 ## Why does `chezmoi cd` spawn a shell instead of just changing directory?
 
@@ -341,24 +337,22 @@ runas -wait` to your script.
 chezmoi, by default, operates on your home directory but this can be overridden
 with the `--destination` command line flag or by specifying `destDir` in your
 config file, and could even be the root directory (`/` or `C:\`). This allows
-you, in theory, to use chezmoi to manage any file in your filesystem, but this
+you, in theory, to use chezmoi to manage any file in your file system, but this
 usage is extremely strongly discouraged.
 
 If your needs extend beyond modifying a handful of files outside your target
-system, then existing configuration management tools like
-[Puppet](https://puppet.com/), [Chef](https://chef.io/),
-[Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are
-much better suited - and of course can be called from a chezmoi `run_` script.
-Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
-directory ignored by `.chezmoiignore` so they do not pollute your home
-directory.
+system, then existing configuration management tools like [Puppet][puppet],
+[Chef][chef], [Ansible][ansible], and [Salt][salt] are much better suited - and
+of course can be called from a chezmoi `run_` script. Put your Puppet Manifests,
+Chef Recipes, Ansible Modules, and Salt Modules in a directory ignored by
+`.chezmoiignore` so they do not pollute your home directory.
 
 ## What inspired chezmoi?
 
-chezmoi was inspired by [Puppet](https://puppet.com/), but was created because
-Puppet is an overkill for managing your personal configuration files. The focus
-of chezmoi will always be personal home directory management. If your needs
-grow beyond that, switch to a whole system configuration management tool.
+chezmoi was inspired by [Puppet][puppet], but was created because Puppet is an
+overkill for managing your personal configuration files. The focus of chezmoi
+will always be personal home directory management. If your needs grow beyond
+that, switch to a whole system configuration management tool.
 
 ## Where does the name "chezmoi" come from?
 
@@ -370,3 +364,14 @@ alias to your shell configuration, for example:
 ```sh
 alias cz=chezmoi
 ```
+
+[#167]: https://github.com/twpayne/chezmoi/issues/167
+[#886]: https://github.com/twpayne/chezmoi/issues/886
+[ansible]: https://www.ansible.com/
+[chef]: https://chef.io/
+[chezmoi.vim]: https://github.com/alker0/chezmoi.vim
+[choose]: https://github.com/twpayne/chezmoi/issues/new/choose
+[puppet]: https://puppet.com/
+[rootmoi]: https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl
+[salt]: https://www.saltstack.com/
+[symlink]: /reference/target-types.md#symlink-mode

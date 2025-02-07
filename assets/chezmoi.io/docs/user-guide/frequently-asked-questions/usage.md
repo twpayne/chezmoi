@@ -52,8 +52,8 @@ destination directory when you run `chezmoi apply` add their names to a file
 called `.chezmoiignore` in the source state.
 
 Patterns are supported, and you can change what's ignored from machine to
-machine. The full usage and syntax is described in the [reference
-manual](../../reference/special-files/chezmoiignore.md).
+machine. The full usage and syntax is described in the
+[reference manual][ignore].
 
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 
@@ -74,8 +74,7 @@ You have several options:
   example `chezmoi git -- commit -m "Update dotfiles"`.
 
 * You can configure chezmoi to automatically commit and push changes to your
-  source state, as [described in the how-to
-  guide](../daily-operations.md#automatically-commit-and-push-changes-to-your-repo).
+  source state, as [described in the how-to guide][auto-commit].
 
 ## I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?
 
@@ -93,8 +92,8 @@ makes chezmoi unsuitable for sharing changes to rapidly-changing files like
 shell histories.
 
 Instead, consider using a dedicated tool for sharing shell history across
-multiple machines, like [`atuin`](https://atuin.sh/). You can use chezmoi to
-install and configure atuin.
+multiple machines, like [`atuin`][atuin]. You can use chezmoi to install and
+configure atuin.
 
 ## How do I install pre-requisites for templates?
 
@@ -120,7 +119,7 @@ chezmoi will make sure to execute it before templating other files.
 !!! tip
 
     You can [use `scriptEnv` to inject data into your scripts through environment
-    variables](../../user-guide/use-scripts-to-perform-actions.md#set-environment-variables).
+    variables][scriptenv].
 
 ## How do I write a literal `{{` or `}}` in a template?
 
@@ -194,28 +193,25 @@ echo "new week"
 
 ## How do I enable shell completions?
 
-chezmoi includes shell completions for
-[`bash`](https://www.gnu.org/software/bash/), [`fish`](https://fishshell.com/),
-[`powershell`](https://learn.microsoft.com/en-us/powershell/), and
-[`zsh`](https://zsh.sourceforge.io/). If you have installed chezmoi via your
-package manager then the shell completion should already be installed.
-For PowerShell, you need to manually add the completion script to your profile.
-Please [open an issue](https://github.com/twpayne/chezmoi/issues/new/choose)
-if this is not working correctly.
+chezmoi includes shell completions for [`bash`][bash], [`fish`][fish],
+[`powershell`][powershell], and [`zsh`][zsh]. If you have installed chezmoi via
+your package manager then the shell completion should already be installed. For
+PowerShell, you need to manually add the completion script to your profile.
+Please [open an issue][choose] if this is not working correctly.
 
-chezmoi provides a [`completion`](/reference/commands/completion.md) command
-and a [`completion`](/reference/templates/functions/completion.md) template
-function which return the shell completions for the given shell.
-These can be used either as a one-off or as part of your dotfiles repo.
-The details of how to use these depend on your shell.
+chezmoi provides a [`completion`][completion-cmd] command and
+a [`completion`][completion-fun] template function which return the shell
+completions for the given shell. These can be used either as a one-off or as
+part of your dotfiles repo. The details of how to use these depend on your
+shell.
 
 ## How do I use tools that I installed with Flatpak?
 
-Command line programs installed with [Flatpak](https://flatpak.org/) cannot be
-run directly. Instead, they must be run with `flatpak run`. This can either be
-added by using a wrapper script or by configuring chezmoi to invoke `flatpak
-run` with the correct arguments directly. Wrapper scripts are recommended, as
-they work with the [`doctor` command](../../reference/commands/doctor.md).
+Command line programs installed with [Flatpak][flatpak] cannot be run directly.
+Instead, they must be run with `flatpak run`. This can either be added by using
+a wrapper script or by configuring chezmoi to invoke `flatpak run` with the
+correct arguments directly. Wrapper scripts are recommended, as they work with
+the [`doctor` command][doctor].
 
 ### Use a wrapper script
 
@@ -251,3 +247,17 @@ the following to your config file:
 
 Note that the command is `flatpak`, the first two arguments are `run` and the
 name of app, and any further arguments are passed to the app.
+
+[atuin]: https://atuin.sh/
+[auto-commit]: /user-guide/daily-operations.md#automatically-commit-and-push-changes-to-your-repo
+[bash]: https://www.gnu.org/software/bash/
+[choose]: https://github.com/twpayne/chezmoi/issues/new/choose
+[completion-cmd]: /reference/commands/completion.md
+[completion-fun]: /reference/templates/functions/completion.md
+[fish]: https://fishshell.com/
+[ignore]: /reference/special-files/chezmoiignore.md
+[powershell]: https://learn.microsoft.com/en-us/powershell/
+[scriptenv]: /user-guide/use-scripts-to-perform-actions.md#set-environment-variables
+[zsh]: https://zsh.sourceforge.io/
+[flatpak]: https://flatpak.org/
+[doctor]: /reference/commands/doctor.md

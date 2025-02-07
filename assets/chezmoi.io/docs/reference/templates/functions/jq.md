@@ -1,7 +1,7 @@
 # `jq` *query* *input*
 
-`jq` runs the [jq](https://stedolan.github.io/jq/) query *query* against *input*
-and returns a list of results.
+`jq` runs the [jq][jq] query *query* against *input* and returns a list of
+results.
 
 !!! example
 
@@ -11,6 +11,9 @@ and returns a list of results.
 
 !!! warning
 
-    `jq` uses [`github.com/itchyny/gojq`](https://github.com/itchyny/gojq),
-    which behaves slightly differently to the `jq` command in some [edge
-    cases](https://github.com/itchyny/gojq#difference-to-jq).
+    `jq` uses [`github.com/itchyny/gojq`][gojq], which behaves slightly
+    differently to the `jq` command in some [edge cases][cases].
+
+[jq]: https://jqlang.org
+[gojq]: https://github.com/itchyny/gojq
+[cases]: https://github.com/itchyny/gojq#difference-to-jq

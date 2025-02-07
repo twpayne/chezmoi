@@ -1,15 +1,10 @@
 # Containers and VMs
 
-You can use chezmoi to manage your dotfiles in [GitHub
-Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),
-[Visual Studio
-Codespaces](https://code.visualstudio.com/docs/remote/codespaces), and [Visual
-Studio Code Remote -
-Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
+You can use chezmoi to manage your dotfiles in [GitHub Codespaces][ghc], [Visual
+Studio Codespaces][vsc], and [Visual Studio Code Remote - Containers][vscrc].
 
-For a quick start, you can clone the [`chezmoi/dotfiles`
-repository](https://github.com/chezmoi/dotfiles) which supports Codespaces out
-of the box.
+For a quick start, you can clone the [`chezmoi/dotfiles` repository][czdot]
+which supports Codespaces out of the box.
 
 The workflow is different to using chezmoi on a new machine, notably:
 
@@ -20,7 +15,7 @@ The workflow is different to using chezmoi on a new machine, notably:
 
 * When running in a Codespace, the environment variable `CODESPACES` will be
   set to `true`. You can read its value with the [`env` template
-  function](http://masterminds.github.io/sprig/os.html).
+  function][sprit-os].
 
 First, if you are using a chezmoi configuration file template, ensure that it
 is non-interactive when running in Codespaces, for example,
@@ -78,3 +73,9 @@ needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
 sudo apt install -y vim-gtk
 {{- end -}}
 ```
+
+[ghc]: https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account
+[vsc]: https://code.visualstudio.com/docs/remote/codespaces
+[vscrc]: https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories
+[czdot]: https://github.com/chezmoi/dotfiles
+[sprig-os]: http://masterminds.github.io/sprig/os.html

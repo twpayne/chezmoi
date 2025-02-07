@@ -1,12 +1,11 @@
 # `gitHubTags` *owner-repo*
 
-`gitHubTags` calls the GitHub API to retrieve the first page of tags for
-the given *owner-repo*, returning structured data as defined by the [GitHub Go
-API
-bindings](https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryTag).
+`gitHubTags` calls the GitHub API to retrieve the first page of tags for the
+given *owner-repo*, returning structured data as defined by the
+[GitHub Go API bindings][github-go].
 
-Calls to `gitHubTags` are cached so calling `gitHubTags` with the
-same *owner-repo* will only result in one call to the GitHub API.
+Calls to `gitHubTags` are cached so calling `gitHubTags` with the same
+*owner-repo* will only result in one call to the GitHub API.
 
 !!! example
 
@@ -22,8 +21,11 @@ same *owner-repo* will only result in one call to the GitHub API.
 !!! warning
 
     The values returned by `gitHubTags` are not directly queryable via the
-    [`jq`](../functions/jq.md) function and must instead be converted through JSON:
+    [`jq`][jq] function and must instead be converted through JSON:
 
     ```
     {{ gitHubTags "docker/compose" | toJson | fromJson | jq ".[0].name" }}
     ```
+
+[github-go]: https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryTag
+[jq]: /reference/templates/functions/jq.md

@@ -7,8 +7,7 @@ machines, for example your personal macOS laptop, your work Ubuntu desktop, and
 your work Linux laptop. You will want to keep much configuration the same
 across these, but also need machine-specific configurations for email
 addresses, credentials, etc. chezmoi achieves this functionality by using
-[`text/template`](https://pkg.go.dev/text/template) for the source state where
-needed.
+[`text/template`][go-template] for the source state where needed.
 
 For example, your home `~/.gitconfig` on your personal machine might look like:
 
@@ -81,10 +80,9 @@ chezmoi data
 ```
 
 For more advanced usage, you can use the full power of the
-[`text/template`](https://pkg.go.dev/text/template) language. chezmoi includes
-all of the text functions from [sprig](http://masterminds.github.io/sprig/) and
-its own [functions for interacting with password
-managers](../reference/templates/functions/index.md).
+[`text/template`][go-template] language. chezmoi includes all of the text
+functions from [sprig][sprig] and its own [functions][functions] for interacting
+with [password managers][passman].
 
 Templates can be executed directly from the command line, without the need to
 create a file on disk, with the `execute-template` command, for example:
@@ -93,8 +91,7 @@ create a file on disk, with the `execute-template` command, for example:
 chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
 ```
 
-This is useful when developing or [debugging
-templates](../user-guide/templating.md#testing-templates).
+This is useful when developing or [debugging templates][debugging].
 
 Some password managers allow you to store complete files. The files can be
 retrieved with chezmoi's template functions. For example, if you have a file
@@ -158,8 +155,7 @@ Create the common file in the `.chezmoitemplates` directory in the source state.
 For example, create `.chezmoitemplates/file.conf`. The contents of this file are
 available in templates with the `template $NAME .` function where `$NAME` is the
 name of the file (`.` passes the current data to the template code in
-`file.conf`; see [`template`
-action](https://pkg.go.dev/text/template#hdr-Actions) for details).
+`file.conf`; see [`template` action][go-template-actions] for details).
 
 Then create files for each system, for example `Library/Application
 Support/App/file.conf.tmpl` for macOS and `dot_config/app/file.conf.tmpl` for
@@ -234,3 +230,10 @@ If you want to use templates within your templates, then, instead, create:
 {{-   template "bashrc_linux.tmpl" . -}}
 {{- end -}}
 ```
+
+[go-template]: https://pkg.go.dev/text/template
+[sprig]: http://masterminds.github.io/sprig/
+[functions]: /reference/templates/functions/index.md
+[debugging]: /user-guide/templating.md#testing-templates
+[go-template-actions]: https://pkg.go.dev/text/template#hdr-Actions
+[passman]: /user-guide/password-managers/index.md
