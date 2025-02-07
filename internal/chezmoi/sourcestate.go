@@ -704,6 +704,9 @@ func (s *SourceState) Apply(
 	options ApplyOptions,
 ) error {
 	sourceStateEntry := s.root.get(targetRelPath)
+	if sourceStateEntry == nil {
+		return nil
+	}
 
 	if !options.Filter.IncludeSourceStateEntry(sourceStateEntry) {
 		return nil
