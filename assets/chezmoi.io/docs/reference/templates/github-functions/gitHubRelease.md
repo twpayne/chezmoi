@@ -5,7 +5,7 @@ the given *owner-repo*, It iterates through all the versions of the release,
 fetching the first entry equal to *version*.
 
 It then returns structured data as defined by the [GitHub Go API
-bindings](https://pkg.go.dev/github.com/google/go-github/v68/github#RepositoryRelease).
+bindings](https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryRelease).
 
 Calls to `gitHubRelease` are cached so calling `gitHubRelease` with
 the same *owner-repo* *version* will only result in one call to the GitHub API.
