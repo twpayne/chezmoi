@@ -359,6 +359,7 @@ nav:
 
 markdown_extensions:
 - admonition
+- attr_list
 - meta
 - pymdownx.details
 - pymdownx.snippets:

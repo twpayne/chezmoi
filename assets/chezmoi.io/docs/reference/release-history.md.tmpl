@@ -8,7 +8,7 @@
 {{- $lastReleaseIndex := sub (len $releases) 1 }}
 {{- range $index, $release := $releases }}
 
-## [{{ $release.Name | trimPrefix "v" }}]({{ $release.HTMLURL }}) ({{ $release.PublishedAt | gitHubTimestampFormat "2006-01-02" }})
+## [{{ $release.Name | trimPrefix "v" }}]({{ $release.HTMLURL }}) ({{ $release.PublishedAt | gitHubTimestampFormat "2006-01-02" }}) { id="{{ $release.Name }}" }
 
 {{ $release.Body
    | replaceAllRegex "(?m)^#+ (Changelog\\r?|What's Changed)$" ""
