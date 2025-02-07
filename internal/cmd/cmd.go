@@ -16,7 +16,7 @@ import (
 	"github.com/charmbracelet/glamour/styles"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"go.etcd.io/bbolt"
+	bbolterrors "go.etcd.io/bbolt/errors"
 
 	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -345,7 +345,7 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 	defer chezmoierrors.CombineFunc(&err, config.Close)
 
 	switch err = config.execute(args); {
-	case errors.Is(err, bbolt.ErrTimeout):
+	case errors.Is(err, bbolterrors.ErrTimeout):
 		// Translate bbolt timeout errors into a friendlier message. As the
 		// persistent state is opened lazily, this error could occur at any
 		// time, so it's easiest to intercept it here.
