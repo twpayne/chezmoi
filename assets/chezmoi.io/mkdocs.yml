@@ -378,6 +378,7 @@ hooks:
 - docs/hooks.py
 
 plugins:
+- site-urls
 - mermaid2:
     arguments:
         # test if its __palette_1 (dark) or __palette_2 (light)
