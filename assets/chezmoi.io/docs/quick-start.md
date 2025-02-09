@@ -80,8 +80,8 @@ git push -u origin main
 
 !!! hint
 
-    chezmoi can be configured to automatically add, commit, and push changes to
-    your repo.
+    chezmoi can be configured to automatically [add, commit, and push][autogit]
+    changes to your repo.
 
 chezmoi can also be used with [GitLab][gitlab], or [BitBucket][bitbucket],
 [Source Hut][srht], or any other git hosting service.
@@ -238,3 +238,4 @@ from your password manager. Read the [user guide][user-guide] to explore and see
 [repos]: /links/dotfile-repos.md
 [srht]: https://sr.ht/
 [user-guide]: /user-guide/setup.md
+[autogit]: /user-guide/daily-operations.md#automatically-commit-and-push-changes-to-your-repo
