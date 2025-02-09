@@ -81,7 +81,7 @@ git push -u origin main
 
 !!! hint
 
-    chezmoi can be configured to automatically add, commit, and push changes to
+    chezmoi can be configured to automatically [add, commit, and push](./user-guide/daily-operations.md#automatically-commit-and-push-changes-to-your-repo) changes to
     your repo.
 
 chezmoi can also be used with [GitLab](https://gitlab.com), or
