@@ -231,7 +231,7 @@ pre-built binary and shell completions.
 {{- end }}
 
 === "Windows"
-{{ range $arch := list "amd64" "arm" "arm64" "i386" }}
+{{ range $arch := list "amd64" "arm64" "i386" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_windows_{{ $arch }}.zip)
 {{- end }}
 
