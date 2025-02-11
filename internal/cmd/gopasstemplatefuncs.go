@@ -109,7 +109,7 @@ func (c *Config) builtinGopassClient() (*api.Gopass, error) {
 		}
 		return c.Gopass.passwordCache[filename], nil
 	})
-	c.Gopass.ctx = ctx
+	c.Gopass.ctx = ctx //nolint:fatcontext
 	c.Gopass.client, c.Gopass.clientErr = api.New(c.Gopass.ctx)
 	return c.Gopass.client, c.Gopass.clientErr
 }
