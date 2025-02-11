@@ -177,7 +177,6 @@ check_goos_goarch() {
 	openbsd/riscv64) return 0 ;;
 	windows/386) return 0 ;;
 	windows/amd64) return 0 ;;
-	windows/arm) return 0 ;;
 	*)
 		printf '%s: unsupported platform\n' "${1}" 1>&2
 		return 1
