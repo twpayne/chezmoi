@@ -87,13 +87,13 @@ func (b *autoBool) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalYAML implements gopkg.in/yaml.Unmarshaler.UnmarshalYAML.
-func (b *autoBool) UnmarshalYAML(data []byte) error {
-	if bytes.Equal(data, []byte("auto")) {
+// UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
+func (b *autoBool) UnmarshalText(text []byte) error {
+	if bytes.Equal(text, []byte("auto")) {
 		b.auto = true
 		return nil
 	}
-	boolValue, err := chezmoi.ParseBool(string(data))
+	boolValue, err := chezmoi.ParseBool(string(text))
 	if err != nil {
 		return err
 	}
