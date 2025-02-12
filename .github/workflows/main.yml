@@ -171,9 +171,9 @@ jobs:
         elif [ "${{ matrix.test-index }}" = "1" ]; then
           go test ./internal/cmd -run=TestScript -filter='^[e-hE-H]' -race
         elif [ "${{ matrix.test-index }}" = "2" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[i-qI-Q]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[i-lI-L]' -race
         else
-          go test ./internal/cmd -run=TestScript -filter='^[r-zR-Z]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
         fi
   test-oldstable-go:
     needs: changes
