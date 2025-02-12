@@ -16,7 +16,7 @@ require (
 	github.com/bmatcuk/doublestar/v4 v4.8.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.3.0
+	github.com/charmbracelet/bubbletea v1.3.3
 	github.com/charmbracelet/glamour v0.8.0
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.8.0
@@ -50,8 +50,8 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.23.3
 	go.etcd.io/bbolt v1.4.0
 	go.uber.org/automaxprocs v1.6.0
-	golang.org/x/crypto v0.32.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20250204190303-9290511cd23a
+	golang.org/x/crypto v0.33.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250210163342-e47973b1c108
 	golang.org/x/oauth2 v0.26.0
 	golang.org/x/sync v0.11.0
 	golang.org/x/sys v0.30.0
@@ -102,13 +102,13 @@ require (
 	github.com/creack/pty/v2 v2.0.0-20231209135443-03db72c7b76c // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
 	github.com/danieljoos/wincred v1.2.2 // indirect
-	github.com/dlclark/regexp2 v1.11.4 // indirect
+	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/dylibso/observe-sdk/go v0.0.0-20240828172851-9145d8ad07e1 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
-	github.com/extism/go-sdk v1.6.1 // indirect
+	github.com/extism/go-sdk v1.7.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fatih/semgroup v1.3.0 // indirect
 	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
@@ -174,11 +174,17 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.4 // indirect
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
-	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
+	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
-	golang.org/x/tools v0.29.0 // indirect
+	golang.org/x/tools v0.30.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+)
+
+exclude (
+	github.com/goccy/go-yaml v1.15.18 // https://github.com/goccy/go-yaml/issues/652
+	github.com/goccy/go-yaml v1.15.19 // https://github.com/goccy/go-yaml/issues/652
+	github.com/goccy/go-yaml v1.15.20 // https://github.com/goccy/go-yaml/issues/652
 )

@@ -87,7 +87,7 @@ func (b *autoBool) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalYAML implements gopkg.in/yaml.Unmarshaler.UnmarshalYAML.
+// UnmarshalYAML implements github.com/goccy/go-yaml.BytesUnmarshaler.UnmarshalYAML.
 func (b *autoBool) UnmarshalYAML(data []byte) error {
 	if bytes.Equal(data, []byte("auto")) {
 		b.auto = true
