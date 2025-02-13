@@ -30,6 +30,11 @@ Or in chezmoi's configuration file:
     args = ["--wait"]
 ```
 
+!!! warning
+
+    If you use [Helix](https://helix-editor.com/), you must use Helix 25.01 or
+    later.
+
 ## Use chezmoi with VIM
 
 [`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim)
