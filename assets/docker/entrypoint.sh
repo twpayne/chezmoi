@@ -4,7 +4,8 @@ set -euf
 
 git config --global --add safe.directory /chezmoi
 
-GO=${GO:-go}
+export GO="${GO:-go}"
+export GOTOOLCHAIN=auto
 
 if [ -d "/go-cache" ]; then
 	export GOCACHE="/go-cache/cache"
