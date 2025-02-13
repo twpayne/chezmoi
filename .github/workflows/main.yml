@@ -382,9 +382,9 @@ jobs:
         } elseif (${{ matrix.test-index }} -eq 1) {
           go test ./internal/cmd -run=TestScript -filter='^[d-fD-F]' -race
         } elseif (${{ matrix.test-index }} -eq 2) {
-          go test ./internal/cmd -run=TestScript -filter='^[g-mG-M]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[g-lG-L]' -race
         } else {
-          go test ./internal/cmd -run=TestScript -filter='^[n-zN-Z]' -race
+          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
         }
   check:
     runs-on: ubuntu-22.04
