@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"archive/tar"
 	"bytes"
-	"context"
 	"io"
 	"io/fs"
 	"testing"
@@ -34,7 +33,7 @@ func TestTarWriterSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fileSystem vfs.FS) {
-		ctx := context.Background()
+		ctx := t.Context()
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithBaseSystem(system),

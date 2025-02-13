@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"archive/tar"
 	"bytes"
-	"context"
 	"crypto/sha256"
 	"errors"
 	"fmt"
@@ -516,7 +515,7 @@ func TestSourceStateAdd(t *testing.T) {
 					".template": "key = value\n",
 				},
 			}, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				persistentState := NewMockPersistentState()
 				if tc.extraRoot != nil {
@@ -577,7 +576,7 @@ func TestSourceStateAddInExternal(t *testing.T) {
 	}
 
 	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
-		ctx := context.Background()
+		ctx := t.Context()
 		system := NewRealSystem(fileSystem)
 		persistentState := NewMockPersistentState()
 		s := NewSourceState(
@@ -808,7 +807,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				persistentState := NewMockPersistentState()
 				sourceStateOptions := []SourceStateOption{
@@ -1516,7 +1515,7 @@ func TestSourceStateRead(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithBaseSystem(system),
@@ -1628,7 +1627,7 @@ func TestSourceStateReadExternal(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithBaseSystem(system),
@@ -1664,7 +1663,7 @@ func TestSourceStateReadScriptsConcurrent(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithBaseSystem(system),
@@ -1707,7 +1706,7 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 			),
 		},
 	}, func(fileSystem vfs.FS) {
-		ctx := context.Background()
+		ctx := t.Context()
 		system := NewRealSystem(fileSystem)
 
 		readSourceState := func(refreshExternals RefreshExternals) {
@@ -1798,7 +1797,7 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithBaseSystem(system),
@@ -2098,7 +2097,7 @@ func TestSourceStateExternalErrors(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]any{
 				"/home/user/.local/share/chezmoi": tc.shareDir,
 			}, func(fileSystem vfs.FS) {
-				ctx := context.Background()
+				ctx := t.Context()
 				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithBaseSystem(system),

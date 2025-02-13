@@ -21,7 +21,7 @@ env:
   FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
   GO_VERSION: 1.24.0 # https://go.dev/doc/devel/release
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
-  GOLANGCI_LINT_VERSION: 1.64.2 # https://github.com/golangci/golangci-lint/releases
+  GOLANGCI_LINT_VERSION: 1.64.4 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.7.0 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
@@ -456,7 +456,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@051d91933864810ecd5e2ea2cfd98f6a5bca5347
+    - uses: golangci/golangci-lint-action@e0ebdd245eea59746bb0b28ea6a9871d3e35fbc9
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m

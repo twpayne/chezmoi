@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"context"
 	"io/fs"
 	"testing"
 
@@ -31,7 +30,7 @@ func TestDumpSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fileSystem vfs.FS) {
-		ctx := context.Background()
+		ctx := t.Context()
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithBaseSystem(system),

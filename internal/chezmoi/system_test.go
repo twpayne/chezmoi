@@ -30,7 +30,7 @@ func TestConcurrentWalkSourceDir(t *testing.T) {
 
 	var actualSourceAbsPaths []AbsPath
 	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
-		ctx := context.Background()
+		ctx := t.Context()
 		system := NewRealSystem(fileSystem)
 		var mutex sync.Mutex
 		walkFunc := func(ctx context.Context, sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
