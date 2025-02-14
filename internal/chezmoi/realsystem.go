@@ -87,7 +87,7 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 func (s *RealSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) (err error) {
 	// Create the script temporary directory, if needed.
 	s.createScriptTempDirOnce.Do(func() {
-		if !s.scriptTempDir.Empty() {
+		if !s.scriptTempDir.IsEmpty() {
 			err = os.MkdirAll(s.scriptTempDir.String(), 0o700)
 		}
 	})

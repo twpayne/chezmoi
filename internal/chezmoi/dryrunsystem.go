@@ -56,9 +56,9 @@ func (s *DryRunSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	return nil
 }
 
-// Modified returns true if a method that would have modified the wrapped system
-// has been called.
-func (s *DryRunSystem) Modified() bool {
+// IsModified returns true if a method that would have modified the wrapped
+// system has been called.
+func (s *DryRunSystem) IsModified() bool {
 	return s.modified
 }
 

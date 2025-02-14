@@ -181,7 +181,7 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 
 	// If the source state entry was an encrypted file, then re-encrypt the
 	// plaintext.
-	if !plaintextAbsPath.Empty() {
+	if !plaintextAbsPath.IsEmpty() {
 		var encryptedContents []byte
 		if encryptedContents, err = c.encryption.EncryptFile(plaintextAbsPath); err != nil {
 			return

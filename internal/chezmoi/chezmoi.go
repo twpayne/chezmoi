@@ -192,8 +192,8 @@ func ParseBool(str string) (bool, error) {
 	}
 }
 
-// SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
-func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffixes []string) bool {
+// IsSuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
+func IsSuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffixes []string) bool {
 	switch fileInfo.Mode().Type() {
 	case 0:
 		if strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.Contains(base) {

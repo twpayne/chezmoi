@@ -44,8 +44,8 @@ func (p AbsPath) Dir() AbsPath {
 	return NewAbsPath(filepath.Dir(string(p))).ToSlash()
 }
 
-// Empty returns if p is empty.
-func (p AbsPath) Empty() bool {
+// IsEmpty returns if p is empty.
+func (p AbsPath) IsEmpty() bool {
 	return p == ""
 }
 

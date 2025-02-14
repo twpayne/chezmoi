@@ -55,8 +55,8 @@ func (s Set[T]) Elements() []T {
 	return elements
 }
 
-// Empty returns if s is empty.
-func (s Set[T]) Empty() bool {
+// IsEmpty returns if s is empty.
+func (s Set[T]) IsEmpty() bool {
 	return len(s) == 0
 }
 

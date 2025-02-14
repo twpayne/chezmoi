@@ -577,7 +577,7 @@ func (c *dirCheck) Run(config *Config) (checkResult, string) {
 		switch status, err := chezmoigit.ParseStatusPorcelainV2(output); {
 		case err != nil:
 			gitStatus = gitStatusError
-		case status.Empty():
+		case status.IsEmpty():
 			gitStatus = gitStatusClean
 		default:
 			gitStatus = gitStatusDirty
@@ -619,7 +619,7 @@ func (c *fileCheck) Name() string {
 }
 
 func (c *fileCheck) Run(config *Config) (checkResult, string) {
-	if c.filename.Empty() {
+	if c.filename.IsEmpty() {
 		return c.ifNotSet, "not set"
 	}
 
@@ -719,7 +719,7 @@ func (c *suspiciousEntriesCheck) Run(config *Config) (checkResult, string) {
 		if err != nil {
 			return err
 		}
-		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo, c.encryptedSuffixes) {
+		if chezmoi.IsSuspiciousSourceDirEntry(absPath.Base(), fileInfo, c.encryptedSuffixes) {
 			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil
