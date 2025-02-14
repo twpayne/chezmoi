@@ -12,13 +12,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/charmbracelet/glamour"
-	"github.com/charmbracelet/glamour/styles"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	bbolterrors "go.etcd.io/bbolt/errors"
 
-	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
@@ -30,10 +27,6 @@ var (
 	noArgs = []string(nil)
 
 	deDuplicateErrorRx = regexp.MustCompile(`:\s+`)
-	trailingSpaceRx    = regexp.MustCompile(` +\n`)
-	helpFlagsRx        = regexp.MustCompile("^### (?:`-([0-9A-Za-z])`, )?`--([-0-9A-Za-z]+)`")
-
-	helps = make(map[string]*help)
 )
 
 // A VersionInfo contains a version.
@@ -42,47 +35,6 @@ type VersionInfo struct {
 	Commit  string
 	Date    string
 	BuiltBy string
-}
-
-type help struct {
-	longHelp   string
-	example    string
-	longFlags  chezmoiset.Set[string]
-	shortFlags chezmoiset.Set[string]
-}
-
-func init() {
-	dirEntries := mustValue(commands.FS.ReadDir("."))
-
-	longHelpStyleConfig := styles.ASCIIStyleConfig
-	longHelpStyleConfig.Code.StylePrimitive.BlockPrefix = ""
-	longHelpStyleConfig.Code.StylePrimitive.BlockSuffix = ""
-	longHelpStyleConfig.Emph.BlockPrefix = ""
-	longHelpStyleConfig.Emph.BlockSuffix = ""
-	longHelpStyleConfig.H2.Prefix = ""
-	longHelpTermRenderer := mustValue(glamour.NewTermRenderer(
-		glamour.WithStyles(longHelpStyleConfig),
-		glamour.WithWordWrap(80),
-	))
-
-	exampleStyleConfig := styles.ASCIIStyleConfig
-	exampleStyleConfig.Code.StylePrimitive.BlockPrefix = ""
-	exampleStyleConfig.Code.StylePrimitive.BlockSuffix = ""
-	exampleStyleConfig.Document.Margin = nil
-	exampleTermRenderer := mustValue(glamour.NewTermRenderer(
-		glamour.WithStyles(exampleStyleConfig),
-		glamour.WithWordWrap(80),
-	))
-
-	for _, dirEntry := range dirEntries {
-		if dirEntry.Name() == "index.md" {
-			continue
-		}
-		command := strings.TrimSuffix(dirEntry.Name(), ".md")
-		data := mustValue(commands.FS.ReadFile(dirEntry.Name()))
-		help := mustValue(extractHelp(command, data, longHelpTermRenderer, exampleTermRenderer))
-		helps[command] = help
-	}
 }
 
 func (v VersionInfo) LogValue() slog.Value {
@@ -129,109 +81,6 @@ func example(command string) string {
 		return ""
 	}
 	return help.example
-}
-
-// extractHelp returns the helps parse from r.
-func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermRenderer *glamour.TermRenderer) (*help, error) {
-	type stateType int
-	const (
-		stateReadTitle stateType = iota
-		stateInLongHelp
-		stateInOptions
-		stateInExamples
-		stateInNotes
-		stateInAdmonition
-		stateInUnknownSection
-	)
-
-	state := stateReadTitle
-	var longHelpLines []string
-	var exampleLines []string
-	longFlags := chezmoiset.New[string]()
-	shortFlags := chezmoiset.New[string]()
-
-	stateChange := func(line string, state *stateType) bool {
-		switch {
-		case line == "## Flags" || line == "## Common flags":
-			*state = stateInOptions
-			return true
-		case line == "## Examples":
-			*state = stateInExamples
-			return true
-		case line == "## Notes":
-			*state = stateInNotes
-			return true
-		case strings.HasPrefix(line, "## "):
-			*state = stateInUnknownSection
-			return true
-		}
-		return false
-	}
-
-	for _, line := range strings.Split(string(data), "\n") {
-		switch state {
-		case stateReadTitle:
-			titleRx, err := regexp.Compile("# `" + command + "`")
-			if err != nil {
-				return nil, err
-			}
-			if titleRx.MatchString(line) {
-				state = stateInLongHelp
-			} else {
-				return nil, fmt.Errorf("expected title for '%s'", command)
-			}
-		case stateInLongHelp:
-			switch {
-			case stateChange(line, &state):
-				break
-			case strings.HasPrefix(line, "!!! "):
-				state = stateInAdmonition
-			default:
-				longHelpLines = append(longHelpLines, line)
-			}
-		case stateInExamples:
-			if !stateChange(line, &state) {
-				exampleLines = append(exampleLines, line)
-			}
-		case stateInOptions:
-			if !stateChange(line, &state) {
-				if m := helpFlagsRx.FindStringSubmatch(line); m != nil {
-					if m[1] != "" {
-						shortFlags.Add(m[1])
-					}
-					longFlags.Add(m[2])
-				}
-			}
-		default:
-			stateChange(line, &state)
-		}
-	}
-
-	longHelp, err := renderLines(longHelpLines, longHelpTermRenderer)
-	if err != nil {
-		return nil, err
-	}
-	example, err := renderLines(exampleLines, exampleTermRenderer)
-	if err != nil {
-		return nil, err
-	}
-	return &help{
-		longHelp:   "Description:\n" + longHelp,
-		example:    example,
-		longFlags:  longFlags,
-		shortFlags: shortFlags,
-	}, nil
-}
-
-// renderLines renders lines, trimming extraneous whitespace.
-func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, error) {
-	renderedLines, err := termRenderer.Render(strings.Join(lines, "\n"))
-	if err != nil {
-		return "", err
-	}
-	renderedLines = trailingSpaceRx.ReplaceAllString(renderedLines, "\n")
-	renderedLines = strings.Trim(renderedLines, "\n")
-	return renderedLines, nil
 }
 
 // markFlagsRequired marks all of flags as required for cmd.
