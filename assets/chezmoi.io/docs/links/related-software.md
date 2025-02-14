@@ -56,10 +56,15 @@ colorscheme switching using chezmoi templates.
 
 ### [`github.com/VorpalBlade/chezmoi_modify_manager`](https://github.com/VorpalBlade/chezmoi_modify_manager)
 
-An add-on to deal with config files that contain a mix of settings and
-transient state, such as with GUI program settings files also containing
-recently used files and window positions.
+An add-on to deal with config files that contain a mix of settings and transient
+state, such as with GUI program settings files also containing recently used
+files and window positions.
 
 ### [`install.doctor`](https://install.doctor)
 
 Desktop provisioning system.
+
+### [`github.com/halostatue/fish-chezmoi`](https://github.com/halostatue/fish-chezmoi)
+
+A plug-in for the Fish shell that ensures that completions are always loaded and
+a function that wraps `chezmoi cd` to not create a sub-shell.
