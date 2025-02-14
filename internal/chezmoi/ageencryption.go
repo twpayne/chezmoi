@@ -142,7 +142,7 @@ func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
 // age.
 func (e *AgeEncryption) builtinIdentities() ([]age.Identity, error) {
 	var identities []age.Identity
-	if !e.Identity.Empty() {
+	if !e.Identity.IsEmpty() {
 		parsedIdentities, err := parseIdentityFile(e.Identity)
 		if err != nil {
 			return nil, err
@@ -177,7 +177,7 @@ func (e *AgeEncryption) builtinRecipients() ([]age.Recipient, error) {
 		}
 		recipients = append(recipients, parsedRecipient)
 	}
-	if !e.RecipientsFile.Empty() {
+	if !e.RecipientsFile.IsEmpty() {
 		parsedRecipients, err := parseRecipientsFile(e.RecipientsFile)
 		if err != nil {
 			return nil, err
@@ -223,7 +223,7 @@ func (e *AgeEncryption) encryptArgs() []string {
 		for _, recipient := range e.Recipients {
 			args = append(args, "--recipient", recipient)
 		}
-		if !e.RecipientsFile.Empty() {
+		if !e.RecipientsFile.IsEmpty() {
 			args = append(args, "--recipients-file", e.RecipientsFile.String())
 		}
 		for _, recipientsFile := range e.RecipientsFiles {
@@ -236,7 +236,7 @@ func (e *AgeEncryption) encryptArgs() []string {
 // identityArgs returns the arguments for identity.
 func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
-	if !e.Identity.Empty() {
+	if !e.Identity.IsEmpty() {
 		args = append(args, "--identity", e.Identity.String())
 	}
 	for _, identity := range e.Identities {

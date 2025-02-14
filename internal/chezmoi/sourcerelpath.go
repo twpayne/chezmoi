@@ -36,8 +36,8 @@ func (p SourceRelPath) Dir() SourceRelPath {
 	}
 }
 
-// Empty returns true if p is empty.
-func (p SourceRelPath) Empty() bool {
+// IsEmpty returns true if p is empty.
+func (p SourceRelPath) IsEmpty() bool {
 	return p == SourceRelPath{}
 }
 

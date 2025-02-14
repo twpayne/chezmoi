@@ -66,7 +66,7 @@ func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *c
 		}
 		if !c.force {
 			var prompt string
-			if sourceAbsPath.Empty() {
+			if sourceAbsPath.IsEmpty() {
 				prompt = fmt.Sprintf("Destroy %s", destAbsPath)
 			} else {
 				prompt = fmt.Sprintf("Destroy %s and %s", destAbsPath, sourceAbsPath)
@@ -88,7 +88,7 @@ func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *c
 		if err := c.destSystem.RemoveAll(destAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
-		if !sourceAbsPath.Empty() {
+		if !sourceAbsPath.IsEmpty() {
 			if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return err
 			}

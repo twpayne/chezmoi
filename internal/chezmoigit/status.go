@@ -270,8 +270,8 @@ func ParseStatusPorcelainV2(output []byte) (*Status, error) {
 	return &status, nil
 }
 
-// Empty returns true if s is empty.
-func (s *Status) Empty() bool {
+// IsEmpty returns true if s is empty.
+func (s *Status) IsEmpty() bool {
 	switch {
 	case s == nil:
 		return true

@@ -397,7 +397,7 @@ func (s *SourceState) Add(
 	for _, destAbsPath := range destAbsPaths {
 		for _, protectedAbsPath := range options.ProtectedAbsPaths {
 			switch {
-			case protectedAbsPath.Empty():
+			case protectedAbsPath.IsEmpty():
 				// Do nothing.
 			case strings.HasPrefix(destAbsPath.String(), protectedAbsPath.String()):
 				format := "%s: cannot add chezmoi file to chezmoi (%s is protected)"
@@ -504,7 +504,7 @@ DEST_ABS_PATH:
 
 		if oldSourceStateEntry := s.root.get(targetRelPath); oldSourceStateEntry != nil {
 			oldSourceEntryRelPath := oldSourceStateEntry.SourceRelPath()
-			if !oldSourceEntryRelPath.Empty() && oldSourceEntryRelPath != sourceEntryRelPath {
+			if !oldSourceEntryRelPath.IsEmpty() && oldSourceEntryRelPath != sourceEntryRelPath {
 				if options.ReplaceFunc != nil {
 					switch err := options.ReplaceFunc(targetRelPath, newSourceStateEntry, oldSourceStateEntry); {
 					case errors.Is(err, fs.SkipDir):
@@ -624,7 +624,7 @@ DEST_ABS_PATH:
 				return err
 			}
 		}
-		if !sourceUpdate.destAbsPath.Empty() {
+		if !sourceUpdate.destAbsPath.IsEmpty() {
 			if err := PersistentStateSet(persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState); err != nil {
 				return err
 			}
@@ -1983,7 +1983,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 			// Create the script temporary directory, if needed.
 			s.createScriptTempDirOnce.Do(func() {
-				if !s.scriptTempDirAbsPath.Empty() {
+				if !s.scriptTempDirAbsPath.IsEmpty() {
 					err = os.MkdirAll(s.scriptTempDirAbsPath.String(), 0o700)
 				}
 			})

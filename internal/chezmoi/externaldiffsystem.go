@@ -60,7 +60,7 @@ func NewExternalDiffSystem(
 
 // Close frees all resources held by s.
 func (s *ExternalDiffSystem) Close() error {
-	if !s.tempDirAbsPath.Empty() {
+	if !s.tempDirAbsPath.IsEmpty() {
 		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
@@ -302,7 +302,7 @@ func (s *ExternalDiffSystem) WriteSymlink(oldName string, newName AbsPath) error
 // tempDir creates a temporary directory for s if it does not already exist and
 // returns its path.
 func (s *ExternalDiffSystem) tempDir() (AbsPath, error) {
-	if s.tempDirAbsPath.Empty() {
+	if s.tempDirAbsPath.IsEmpty() {
 		tempDir, err := os.MkdirTemp("", "chezmoi-diff")
 		if err != nil {
 			return EmptyAbsPath, err

@@ -558,7 +558,7 @@ func newConfig(options ...configOption) (*Config, error) {
 }
 
 func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
-	if c.customConfigFileAbsPath.Empty() {
+	if c.customConfigFileAbsPath.IsEmpty() {
 		return c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr
 	}
 	return c.customConfigFileAbsPath, nil
@@ -750,7 +750,7 @@ func (c *Config) checkVersion() error {
 func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	cmd.Stderr = os.Stderr
-	if !dirAbsPath.Empty() {
+	if !dirAbsPath.IsEmpty() {
 		dirRawAbsPath, err := c.baseSystem.RawPath(dirAbsPath)
 		if err != nil {
 			return nil, err
@@ -808,8 +808,8 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 
 	// Write the config.
 	configPath := c.init.configPath
-	if c.init.configPath.Empty() {
-		if c.customConfigFileAbsPath.Empty() {
+	if c.init.configPath.IsEmpty() {
+		if c.customConfigFileAbsPath.IsEmpty() {
 			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
 		} else {
 			configPath = c.customConfigFileAbsPath
@@ -1494,7 +1494,7 @@ type getSourceDirAbsPathOptions struct {
 // exists.
 func (c *Config) getSourceDirAbsPath(options *getSourceDirAbsPathOptions) (chezmoi.AbsPath, error) {
 	if options == nil || !options.refresh {
-		if !c.sourceDirAbsPath.Empty() || c.sourceDirAbsPathErr != nil {
+		if !c.sourceDirAbsPath.IsEmpty() || c.sourceDirAbsPathErr != nil {
 			return c.sourceDirAbsPath, c.sourceDirAbsPathErr
 		}
 	}
@@ -1577,7 +1577,7 @@ func (c *Config) gitAutoAdd() (*chezmoigit.Status, error) {
 // gitAutoCommit commits all changes in the git index, including generating a
 // commit message from status.
 func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) error {
-	if status.Empty() {
+	if status.IsEmpty() {
 		return nil
 	}
 	if err := c.runHookPre("git-auto-commit"); err != nil {
@@ -1598,7 +1598,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) er
 
 // gitAutoPush pushes all changes to the remote if status is not empty.
 func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
-	if status.Empty() {
+	if status.IsEmpty() {
 		return nil
 	}
 	if err := c.runHookPre("git-auto-push"); err != nil {
@@ -2025,7 +2025,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	})
 
 	// Enable CPU profiling if configured.
-	if !c.cpuProfile.Empty() {
+	if !c.cpuProfile.IsEmpty() {
 		f, err := os.Create(c.cpuProfile.String())
 		if err != nil {
 			return err
@@ -2260,7 +2260,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Determine the working tree directory if it is not configured.
-	if c.WorkingTreeAbsPath.Empty() {
+	if c.WorkingTreeAbsPath.IsEmpty() {
 		workingTreeAbsPath := c.SourceDirAbsPath
 		for {
 			gitDirAbsPath := workingTreeAbsPath.JoinString(git.GitDirName)
@@ -2342,7 +2342,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 // returning the first persistent file found, and returning the default path if
 // none are found.
 func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
-	if !c.PersistentStateAbsPath.Empty() {
+	if !c.PersistentStateAbsPath.IsEmpty() {
 		return c.PersistentStateAbsPath, nil
 	}
 	configFileAbsPath, err := c.getConfigFileAbsPath()
@@ -2496,7 +2496,7 @@ func (c *Config) resetSourceState() {
 // run runs name with args in dir.
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 	cmd := exec.Command(name, args...)
-	if !dir.Empty() {
+	if !dir.IsEmpty() {
 		dirRawAbsPath, err := c.baseSystem.RawPath(dir)
 		if err != nil {
 			return err
@@ -2840,7 +2840,7 @@ func (c *Config) useBuiltinGitAutoFunc() bool {
 
 // writeOutput writes data to the configured output.
 func (c *Config) writeOutput(data []byte) error {
-	if c.outputAbsPath.Empty() || c.outputAbsPath == chezmoi.NewAbsPath("-") {
+	if c.outputAbsPath.IsEmpty() || c.outputAbsPath == chezmoi.NewAbsPath("-") {
 		_, err := c.stdout.Write(data)
 		return err
 	}

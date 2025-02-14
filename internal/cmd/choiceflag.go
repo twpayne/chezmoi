@@ -34,7 +34,7 @@ type choiceFlag struct {
 // we must allow all values.
 func newChoiceFlag(value string, allowedValues []string) *choiceFlag {
 	allowedValuesSet := chezmoiset.New(allowedValues...)
-	if !allowedValuesSet.Empty() && !allowedValuesSet.Contains(value) {
+	if !allowedValuesSet.IsEmpty() && !allowedValuesSet.Contains(value) {
 		panic("value not allowed")
 	}
 	return &choiceFlag{
@@ -98,7 +98,7 @@ func (f *choiceFlag) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	if !f.allowedValues.Empty() && !f.allowedValues.Contains(value) {
+	if !f.allowedValues.IsEmpty() && !f.allowedValues.Contains(value) {
 		return fmt.Errorf("%s: invalid value", value)
 	}
 	f.value = value
@@ -108,7 +108,7 @@ func (f *choiceFlag) UnmarshalJSON(data []byte) error {
 // UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
 func (f *choiceFlag) UnmarshalText(text []byte) error {
 	value := string(text)
-	if !f.allowedValues.Empty() && !f.allowedValues.Contains(value) {
+	if !f.allowedValues.IsEmpty() && !f.allowedValues.Contains(value) {
 		return fmt.Errorf("%s: invalid value", value)
 	}
 	f.value = value
