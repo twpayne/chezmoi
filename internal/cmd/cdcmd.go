@@ -26,7 +26,7 @@ func (c *Config) newCDCmd() *cobra.Command {
 		Annotations: newAnnotations(
 			createSourceDirectoryIfNeeded,
 			doesNotRequireValidConfig,
-			persistentStateModeReadOnly,
+			persistentStateModeReadWrite,
 			requiresWorkingTree,
 			runsCommands,
 		),
