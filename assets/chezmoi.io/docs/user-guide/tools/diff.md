@@ -47,13 +47,12 @@ following to your config:
 ## Use delta as the diff tool
 
 To use [delta](https://dandavison.github.io/delta/) as the diff tool you must
-set both `diff.command` and `diff.pager` to delta, for example:
+set `diff.pager` to delta, for example:
 
 === "TOML"
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [diff]
-    command = "delta"
     pager = "delta"
     ```
 
@@ -61,7 +60,6 @@ set both `diff.command` and `diff.pager` to delta, for example:
 
     ```yaml title="~/.config/chezmoi/chezmoi.yaml"
     diff:
-      command: "delta"
       pager: "delta"
     ```
 
