@@ -94,10 +94,10 @@ authentication requirements for Git operations][gh-token-auth].
 ## Create a config file on a new machine automatically
 
 `chezmoi init` can also create a config file automatically, if one does not
-already exist. If your repo contains a file called `.chezmoi.$FORMAT.tmpl`
-where `$FORMAT` is one of the supported config file formats (e.g. `json`,
-`jsonc`, `toml`, or `yaml`) then `chezmoi init` will execute that template to
-generate your initial config file.
+already exist. If your repo contains a file called `.chezmoi.$FORMAT.tmpl` where
+`$FORMAT` is one of the supported config file formats (`json`, `jsonc`, `toml`,
+or `yaml`) then `chezmoi init` will execute that template to generate your
+initial config file.
 
 Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
