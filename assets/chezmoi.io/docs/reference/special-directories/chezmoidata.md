@@ -2,7 +2,8 @@
 
 If `.chezmoidata` directories exist in the source state, all files within them
 are interpreted as structured static data in the given formats. This data can
-then be used in templates. See also [`.chezmoidata.$FORMAT`][chezmoidata-format].
+then be used in templates. See also
+[`.chezmoidata.$FORMAT`][chezmoidata-format].
 
 --8<-- "config-format.md"
 
@@ -60,7 +61,7 @@ then be used in templates. See also [`.chezmoidata.$FORMAT`][chezmoidata-format]
 
     Files in `.chezmoidata` directories cannot be templates because they must be
     present prior to the start of the template engine. Dynamic machine data
-    should be set in the `data` section of [`.chezmo.$FORMAT.tmpl`][config].
+    should be set in the `data` section of [`.chezmoi.$FORMAT.tmpl`][config].
     Dynamic environment data should be read from templates using the
     [`output`][output], [`fromJson`][fromjson], [`fromJson`][fromjson], or
     similar functions.

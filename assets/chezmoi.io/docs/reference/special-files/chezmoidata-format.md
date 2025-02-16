@@ -79,7 +79,7 @@ templates. See also [`.chezmoidata/`][chezmoidata-dir].
 
     `.chezmoidata.$FORMAT` files cannot be templates because they must be
     present prior to the start of the template engine. Dynamic machine data
-    should be set in the `data` section of [`.chezmo.$FORMAT.tmpl`][config].
+    should be set in the `data` section of [`.chezmoi.$FORMAT.tmpl`][config].
     Dynamic environment data should be read from templates using the
     [`output`][output], [`fromJson`][fromjson], [`fromJson`][fromjson], or
     similar functions.

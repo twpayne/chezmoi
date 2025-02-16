@@ -39,7 +39,7 @@ To disable git repo URL guessing, pass the `--guess-repo-url=false` option.
 
     If you are using a different version control system, there are different
     steps [required for repo initialization][alt-vcs]. To prevent chezmoi from
-    trying to clone or create a Git repostory, add an empty `.git` directory to
+    trying to clone or create a Git repository, add an empty `.git` directory to
     the source directory.
 
     ```sh
