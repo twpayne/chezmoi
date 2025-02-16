@@ -1,9 +1,10 @@
 # Configuration file
 
 chezmoi searches for its configuration file according to the [XDG Base Directory
-Specification][xdg] and supports [JSON][json], JSONC, [TOML][toml], and
-[YAML][yaml]. The basename of the config file is `chezmoi`. If multiple
+Specification][xdg]. The base name of the config file is `chezmoi`. If multiple
 configuration file formats are present, chezmoi will report an error.
+
+--8<-- "config-format.md"
 
 In most installations, the config file will be read from
 `$HOME/.config/chezmoi/chezmoi.$FORMAT`
@@ -53,8 +54,6 @@ the extension of the config file name, but can be overridden with the
     git:
         autoPush: true
     ```
-
-
 
 [xdg]: https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 [json]: https://www.json.org/json-en.html

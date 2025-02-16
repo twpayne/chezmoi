@@ -5,11 +5,12 @@ exists anywhere in the source state (either `~/.local/share/chezmoi` or director
 defined inside `.chezmoiroot`), it is interpreted as a list of external files and
 archives to be included as if they were in the source state.
 
-`$FORMAT` must be one of chezmoi's supported configuration file formats, e.g.
-`json`, `jsonc`, `toml`, or `yaml`.
+`$FORMAT` must be one of chezmoi's supported configuration file formats.
 
-`.chezmoiexternal.$FORMAT` is interpreted as a template. This allows different
-externals to be included on different machines.
+--8<-- "config-format.md"
+
+`.chezmoiexternal.$FORMAT` is always interpreted as a template. This allows
+different externals to be included on different machines.
 
 If a `.chezmoiexternal.$FORMAT` file is located in an ignored directory (one
 listed in [`.chezmoiignore`][ignore]), all entries within the file are
