@@ -8,13 +8,16 @@ not the source path.
 Patterns can be excluded by prefixing them with a `!` character. All excludes
 take priority over all includes.
 
-Comments are introduced with the `#` character and run until the end of the
-line.
+Comments in `.chezmoiignore` files are introduced with the `#` character and run
+to the end of the line. If there is a `#` character introduced after the
+beginning of the line, it must be preceded by whitespace to be recognized as
+a comment and not part of the file.
 
 `.chezmoiignore` is interpreted as a template, whether or not it has a `.tmpl`
 extension. This allows different files to be ignored on different machines.
 
-`.chezmoiignore` files in subdirectories apply only to that subdirectory.
+`.chezmoiignore` files in source state subdirectories apply only to that
+subdirectory.
 
 !!! example
 
@@ -25,6 +28,8 @@ extension. This allows different files to be ignored on different machines.
     */*.txt # ignore *.txt in subdirectories of the target directory
             # but not in subdirectories of subdirectories;
             # so a/b/c.txt would *not* be ignored
+
+    */*.org# # Ignore org-mode backup files that end with `#`
 
     backups/   # ignore the backups folder, but not its contents
     backups/** # ignore the contents of backups folder but not the folder itself
