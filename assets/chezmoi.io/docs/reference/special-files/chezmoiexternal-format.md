@@ -1,20 +1,22 @@
 # `.chezmoiexternal.$FORMAT{,.tmpl}`
 
 If a file called `.chezmoiexternal.$FORMAT` (with an optional `.tmpl` extension)
-exists anywhere in the source state (either `~/.local/share/chezmoi` or directory
-defined inside `.chezmoiroot`), it is interpreted as a list of external files and
-archives to be included as if they were in the source state.
+exists anywhere in the source state (either `~/.local/share/chezmoi` or
+directory defined inside `.chezmoiroot`), it is interpreted as a list of
+external files and archives to be included as if they were in the source state.
+See also [`.chezmoiexternals/` directories][external-dir].
 
 `$FORMAT` must be one of chezmoi's supported configuration file formats.
 
 --8<-- "config-format.md"
 
-`.chezmoiexternal.$FORMAT` is always interpreted as a template. This allows
-different externals to be included on different machines.
+`.chezmoiexternal.$FORMAT` is interpreted as a template, whether or not it has a
+`.tmpl` extension. This allows different externals to be included on different
+machines.
 
 If a `.chezmoiexternal.$FORMAT` file is located in an ignored directory (one
-listed in [`.chezmoiignore`][ignore]), all entries within the file are
-also ignored.
+listed in [`.chezmoiignore`][ignore]), all entries within the file are also
+ignored.
 
 Entries are indexed by target name relative to the directory of the
 `.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` and/or a
@@ -91,14 +93,14 @@ extracted.
 
 The optional `include` and `exclude` fields are lists of patterns specify which
 archive members to include or exclude respectively. Patterns match paths in the
-archive, not the target state. chezmoi uses the following algorithm to
-determine whether an archive member is included:
+archive, not the target state. chezmoi uses the following algorithm to determine
+whether an archive member is included:
 
 1. If the archive member name matches any `exclude` pattern, then the archive
    member is excluded. In addition, if the archive member is a directory, then
    all contained files and sub-directories will be excluded, too (recursively).
-2. Otherwise, if the archive member name matches any `include` pattern, then
-   the archive member is included.
+2. Otherwise, if the archive member name matches any `include` pattern, then the
+   archive member is included.
 3. Otherwise, if only `include` patterns were specified then the archive member
    is excluded.
 4. Otherwise, if only `exclude` patterns were specified then the archive member
@@ -115,10 +117,10 @@ archive before comparing them with `path`. The behavior of `format` is the same
 as for `archive`. If `executable` is `true` then chezmoi will set the executable
 bits on the target file, even if they are not set in the archive.
 
-If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME`
-with the optional `clone.args` if the target does not exist. If the target
-exists, then chezmoi will run `git pull` with the optional `pull.args` to
-update the target.
+If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME` with
+the optional `clone.args` if the target does not exist. If the target exists,
+then chezmoi will run `git pull` with the optional `pull.args` to update the
+target.
 
 For `file` and `archive` externals, chezmoi will cache downloaded URLs. The
 optional duration `refreshPeriod` field specifies how often chezmoi will
@@ -165,7 +167,7 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
 
     Some more examples can be found in the [user guide][elsewhere].
 
-
 [ignore]: /reference/special-files/chezmoiignore.md
+[external-dir]: /reference/special-directories/chezmoiexternals.md
 [elsewhere]: /user-guide/include-files-from-elsewhere.md
 [appledouble]: https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats

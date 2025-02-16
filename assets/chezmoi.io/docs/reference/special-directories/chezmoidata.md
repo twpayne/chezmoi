@@ -1,9 +1,8 @@
-# `.chezmoidata`
+# `.chezmoidata/`
 
-If `.chezmoidata` directories exist in the source state, all files within them
-are interpreted as structured static data in the given formats. This data can
-then be used in templates. See also
-[`.chezmoidata.$FORMAT`][chezmoidata-format].
+If any `.chezmoidata/` directories exist in the source state, all files within
+them are interpreted as structured static data in the given formats. This data
+can then be used in templates. See also [`.chezmoidata.$FORMAT`][data-format].
 
 --8<-- "config-format.md"
 
@@ -66,7 +65,7 @@ then be used in templates. See also
     [`output`][output], [`fromJson`][fromjson], [`fromJson`][fromjson], or
     similar functions.
 
-[chezmoidata-format]: /reference/special-files/chezmoidata-format.md
+[data-format]: /reference/special-files/chezmoidata-format.md
 [config]: /reference/special-files/chezmoidata-format.md
 [fromjson]: /reference/templates/functions/fromJson.md
 [fromyaml]: /reference/templates/functions/fromYaml.md
