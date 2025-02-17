@@ -20,7 +20,6 @@ order:
 5. If the `--purge-binary` is passed, chezmoi will attempt to remove its own
    binary.
 
-
 By default, if *repo* is given, chezmoi will guess the full git repo URL, using
 HTTPS by default, or SSH if the `--ssh` option is specified, according to the
 following patterns:
@@ -113,16 +112,23 @@ default value instead of prompting.
 ### `--promptInt` *pairs*
 
 Populate the `promptInt` template function with values from *pairs*. *pairs* is
-a comma-separated list of *prompt*`=`*value* pairs. If `prompInt` is called
+a comma-separated list of *prompt*`=`*value* pairs. If `promptInt` is called
 with a *prompt* that does not match any of *pairs*, then it prompts the user for
 a value.
+
+### `--promptMultichoice` *pairs*
+
+Populate the `promptMultichoice` template function with values from *pairs*.
+*pairs* is a comma-separated list of *prompt*`=`*value*[`/`*value*] pairs. If
+`promptMultichoice` is called with a *prompt* that does not match any of
+*pairs*, then it prompts the user for values.
 
 ### `--promptString` *pairs*
 
-Populate the `promptString` template function with values from *pairs*. *pairs* is
-a comma-separated list of *prompt*`=`*value* pairs. If `promptString` is called
-with a *prompt* that does not match any of *pairs*, then it prompts the user for
-a value.
+Populate the `promptString` template function with values from *pairs*. *pairs*
+is a comma-separated list of *prompt*`=`*value* pairs. If `promptString` is
+called with a *prompt* that does not match any of *pairs*, then it prompts the
+user for a value.
 
 ### `-p`, `--purge`
 

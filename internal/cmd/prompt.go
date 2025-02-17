@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -123,6 +124,69 @@ func (c *Config) readLineRaw(prompt string) (string, error) {
 	return strings.TrimSpace(line), nil
 }
 
+// readMultichoice reads multiple choices from a list
+func (c *Config) readMultichoice(prompt string, choices []string, defaultValue *[]string) ([]string, error) {
+	switch {
+	case c.noTTY:
+		shortPrompt := "Choice (ENTER to stop)> "
+
+		fullPrompt := prompt + "?\nChoices (" + strings.Join(choices, "/") + ")"
+		if defaultValue != nil && len(*defaultValue) > 0 {
+			fullPrompt += "\nDefault [" + strings.Join(*defaultValue, ", ") + "]"
+		}
+		fullPrompt += "\n"
+
+		_, err := c.stdout.Write([]byte(fullPrompt))
+		if err != nil {
+			return []string{}, err
+		}
+
+		abbreviations := chezmoi.UniqueAbbreviations(choices)
+		selected := make(map[string]struct{})
+
+		for {
+			value, err := c.readLineRaw(shortPrompt)
+			if err != nil {
+				return []string{}, err
+			}
+
+			if value == "" {
+				if len(selected) == 0 && defaultValue != nil && len(*defaultValue) > 0 {
+					return *defaultValue, nil
+				}
+
+				if len(selected) > 0 {
+					break
+				}
+			}
+
+			if value, ok := abbreviations[value]; ok {
+				selected[value] = struct{}{}
+			}
+
+			if len(selected) == len(choices) {
+				break
+			}
+		}
+
+		result := make([]string, 0)
+		for name := range selected {
+			result = append(result, name)
+		}
+
+		return result, nil
+
+	default:
+		initModel := chezmoibubbles.NewMultichoiceInputModel(prompt, choices, defaultValue)
+		finalModel, err := tea.NewProgram(initModel, tea.WithOutput(os.Stderr)).Run()
+		if err != nil {
+			return []string{}, err
+		}
+
+		return finalModel.(chezmoibubbles.MultichoiceInputModel).Value(), nil
+	}
+}
+
 // readPassword reads a password.
 func (c *Config) readPassword(prompt, placeholder string) (string, error) {
 	switch {
@@ -217,6 +281,28 @@ func (c *Config) promptInt(prompt string, args ...int64) (int64, error) {
 		return *defaultValue, nil
 	}
 	return c.readInt(prompt, defaultValue)
+}
+
+// promptMultiChoice prompts the user to select zero or more values in a list
+func (c *Config) promptMultichoice(prompt string, choices []string, args ...[]string) ([]string, error) {
+	var defaultValue *[]string
+	switch len(args) {
+	case 0:
+		// Do nothing.
+	case 1:
+		for i, defaultValue := range args[0] {
+			if !slices.Contains(choices, defaultValue) {
+				return []string{}, fmt.Errorf("%s: invalid default value (index %d)", defaultValue, i+1)
+			}
+		}
+		defaultValue = &args[0]
+	default:
+		return []string{}, fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
+	}
+	if c.interactiveTemplateFuncs.promptDefaults && defaultValue != nil {
+		return *defaultValue, nil
+	}
+	return c.readMultichoice(prompt, choices, defaultValue)
 }
 
 func (c *Config) promptString(prompt string, args ...string) (string, error) {

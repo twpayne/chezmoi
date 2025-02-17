@@ -254,6 +254,8 @@ nav:
       - promptChoiceOnce: reference/templates/init-functions/promptChoiceOnce.md
       - promptInt: reference/templates/init-functions/promptInt.md
       - promptIntOnce: reference/templates/init-functions/promptIntOnce.md
+      - promptMultichoice: reference/templates/init-functions/promptMultichoice.md
+      - promptMultichoiceOnce: reference/templates/init-functions/promptMultichoiceOnce.md
       - promptString: reference/templates/init-functions/promptString.md
       - promptStringOnce: reference/templates/init-functions/promptStringOnce.md
       - stdinIsATTY: reference/templates/init-functions/stdinIsATTY.md

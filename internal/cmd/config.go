@@ -861,17 +861,19 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *co
 	}()
 
 	initTemplateFuncs := map[string]any{
-		"exit":             c.exitInitTemplateFunc,
-		"promptBool":       c.promptBoolInteractiveTemplateFunc,
-		"promptBoolOnce":   c.promptBoolOnceInteractiveTemplateFunc,
-		"promptChoice":     c.promptChoiceInteractiveTemplateFunc,
-		"promptChoiceOnce": c.promptChoiceOnceInteractiveTemplateFunc,
-		"promptInt":        c.promptIntInteractiveTemplateFunc,
-		"promptIntOnce":    c.promptIntOnceInteractiveTemplateFunc,
-		"promptString":     c.promptStringInteractiveTemplateFunc,
-		"promptStringOnce": c.promptStringOnceInteractiveTemplateFunc,
-		"stdinIsATTY":      c.stdinIsATTYInitTemplateFunc,
-		"writeToStdout":    c.writeToStdout,
+		"exit":                  c.exitInitTemplateFunc,
+		"promptBool":            c.promptBoolInteractiveTemplateFunc,
+		"promptBoolOnce":        c.promptBoolOnceInteractiveTemplateFunc,
+		"promptChoice":          c.promptChoiceInteractiveTemplateFunc,
+		"promptChoiceOnce":      c.promptChoiceOnceInteractiveTemplateFunc,
+		"promptInt":             c.promptIntInteractiveTemplateFunc,
+		"promptIntOnce":         c.promptIntOnceInteractiveTemplateFunc,
+		"promptMultichoice":     c.promptMultichoiceInteractiveTemplateFunc,
+		"promptMultichoiceOnce": c.promptMultichoiceOnceInteractiveTemplateFunc,
+		"promptString":          c.promptStringInteractiveTemplateFunc,
+		"promptStringOnce":      c.promptStringOnceInteractiveTemplateFunc,
+		"stdinIsATTY":           c.stdinIsATTYInitTemplateFunc,
+		"writeToStdout":         c.writeToStdout,
 	}
 	chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
 
@@ -1617,10 +1619,11 @@ func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status) ([]byte, error) {
 	templateFuncs := maps.Clone(c.templateFuncs)
 	maps.Copy(templateFuncs, map[string]any{
-		"promptBool":   c.promptBoolInteractiveTemplateFunc,
-		"promptChoice": c.promptChoiceInteractiveTemplateFunc,
-		"promptInt":    c.promptIntInteractiveTemplateFunc,
-		"promptString": c.promptStringInteractiveTemplateFunc,
+		"promptBool":        c.promptBoolInteractiveTemplateFunc,
+		"promptChoice":      c.promptChoiceInteractiveTemplateFunc,
+		"promptInt":         c.promptIntInteractiveTemplateFunc,
+		"promptMultichoice": c.promptMultichoiceInteractiveTemplateFunc,
+		"promptString":      c.promptStringInteractiveTemplateFunc,
 		"targetRelPath": func(source string) string {
 			return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
 		},
