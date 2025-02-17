@@ -27,7 +27,7 @@ it returns false.
 Simulate the `promptChoice` template function with a function that returns
 values from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value*
 pairs. If `promptChoice` is called with a *prompt* that does not match any of
-*pairs*, then it returns false.
+*pairs*, then it returns *prompt* unchanged.
 
 ### `--promptInt` *pairs*
 
@@ -35,6 +35,13 @@ Simulate the `promptInt` template function with a function that returns values
 from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
 `promptInt` is called with a *prompt* that does not match any of *pairs*, then
 it returns zero.
+
+### `--promptMultichoice` *pairs*
+
+Simulate the `promptMultichoice` template function with a function that returns
+values from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value*
+pairs. If `promptMultichoice` is called with a *prompt* that does not match any
+of *pairs*, then it returns *prompt* as an array.
 
 ### `-p`, `--promptString` *pairs*
 

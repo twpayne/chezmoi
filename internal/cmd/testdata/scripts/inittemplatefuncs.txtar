@@ -10,6 +10,10 @@ stdout true
 exec chezmoi execute-template --init --promptChoice choice=one '{{ promptChoiceOnce . "choice" "choice" (list "one" "two" "three") }}'
 stdout one
 
+# test promptMultichoiceOnce template function with execute-template --init
+exec chezmoi execute-template --init --promptMultichoice multichoice=one/two '{{ promptMultichoiceOnce . "multichoice" "multichoice" (list "one" "two" "three") }}'
+stdout '[one two]'
+
 # test promptIntOnce template function with execute-template --init
 exec chezmoi execute-template --init --promptInt int=1 '{{ promptIntOnce . "int" "int" }}'
 stdout 1

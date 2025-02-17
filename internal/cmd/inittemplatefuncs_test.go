@@ -243,6 +243,106 @@ func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
+	for _, tc := range []struct {
+		name              string
+		prompt            string
+		multichoices      []any
+		args              []any
+		stdinStr          string
+		expectedStdoutStr string
+		expected          []string
+		expectedErr       bool
+	}{
+		{
+			name:              "response_without_default",
+			prompt:            "multichoice",
+			multichoices:      []any{"one", "two", "three"},
+			stdinStr:          "one\n\n",
+			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nChoice (ENTER to stop)> Choice (ENTER to stop)> ",
+			expected:          []string{"one"},
+		},
+		{
+			name:              "response_with_default",
+			prompt:            "multichoice",
+			multichoices:      []any{"one", "two", "three"},
+			args:              []any{[]string{"one"}},
+			stdinStr:          "two\n\n",
+			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nDefault [one]\nChoice (ENTER to stop)> Choice (ENTER to stop)> ",
+			expected:          []string{"two"},
+		},
+		{
+			name:              "no_response_with_default",
+			prompt:            "multichoice",
+			multichoices:      []any{"one", "two", "three"},
+			args:              []any{[]string{"three", "two"}},
+			stdinStr:          "\n",
+			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nDefault [three, two]\nChoice (ENTER to stop)> ",
+			expected:          []string{"three", "two"},
+		},
+		{
+			name:              "empty_response_without_default",
+			prompt:            "multichoice",
+			multichoices:      []any{"one", "two", "three"},
+			stdinStr:          "[]\n",
+			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nChoice (ENTER to stop)> ",
+			expected:          []string{},
+		},
+		{
+			name:              "empty_response_without_default",
+			prompt:            "multichoice",
+			multichoices:      []any{"one", "two", "three"},
+			args:              []any{[]string{"three", "two"}},
+			stdinStr:          "[]\n",
+			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nDefault [three, two]\nChoice (ENTER to stop)> ",
+			expected:          []string{},
+		},
+		{
+			name:         "invalid_response",
+			prompt:       "multichoice",
+			multichoices: []any{"one", "two", "three"},
+			stdinStr:     "invalid\n",
+			expectedErr:  true,
+		},
+		{
+			name:         "invalid_response_with_default",
+			prompt:       "multichoice",
+			multichoices: []any{"one", "two", "three"},
+			args:         []any{[]string{"one"}},
+			stdinStr:     "invalid\n",
+			expectedErr:  true,
+		},
+		{
+			name:         "invalid_default",
+			prompt:       "multichoice",
+			multichoices: []any{"one", "two", "three"},
+			args:         []any{[]string{"four"}},
+			stdinStr:     "\n",
+			expectedErr:  true,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			stdin := strings.NewReader(tc.stdinStr)
+			stdout := &strings.Builder{}
+			config, err := newConfig(
+				withNoTTY(true),
+				withStdin(stdin),
+				withStdout(stdout),
+			)
+			assert.NoError(t, err)
+			if tc.expectedErr {
+				assert.Panics(t, func() {
+					config.promptMultichoiceInteractiveTemplateFunc(tc.prompt, tc.multichoices, tc.args...)
+				})
+			} else {
+				assert.Equal(t, tc.expected, config.promptMultichoiceInteractiveTemplateFunc(tc.prompt, tc.multichoices, tc.args...))
+
+				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
+			}
+		})
+	}
+}
+
 func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
