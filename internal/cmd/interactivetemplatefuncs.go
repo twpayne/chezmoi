@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/pflag"
 
@@ -9,12 +10,13 @@ import (
 )
 
 type interactiveTemplateFuncsConfig struct {
-	forcePromptOnce bool
-	promptBool      map[string]string
-	promptChoice    map[string]string
-	promptDefaults  bool
-	promptInt       map[string]int
-	promptString    map[string]string
+	forcePromptOnce   bool
+	promptBool        map[string]string
+	promptChoice      map[string]string
+	promptDefaults    bool
+	promptInt         map[string]int
+	promptMultichoice map[string]string
+	promptString      map[string]string
 }
 
 func (c *Config) addInteractiveTemplateFuncFlags(flags *pflag.FlagSet) {
@@ -41,6 +43,12 @@ func (c *Config) addInteractiveTemplateFuncFlags(flags *pflag.FlagSet) {
 		"promptChoice",
 		c.interactiveTemplateFuncs.promptChoice,
 		"Populate promptChoice",
+	)
+	flags.StringToStringVar(
+		&c.interactiveTemplateFuncs.promptMultichoice,
+		"promptMultichoice",
+		c.interactiveTemplateFuncs.promptMultichoice,
+		"Populate promptMultichoice",
 	)
 	flags.StringToIntVar(
 		&c.interactiveTemplateFuncs.promptInt,
@@ -124,6 +132,48 @@ func (c *Config) promptChoiceOnceInteractiveTemplateFunc(
 	}
 
 	return c.promptChoiceInteractiveTemplateFunc(prompt, choices, args...)
+}
+
+func (c *Config) promptMultichoiceInteractiveTemplateFunc(prompt string, choices any, args ...any) []string {
+	if len(args) > 1 {
+		panic(fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2))
+	}
+
+	if valueStr, ok := c.interactiveTemplateFuncs.promptMultichoice[prompt]; ok {
+		return strings.Split(valueStr, "/")
+	}
+
+	choiceStrs := mustValue(anyToStringSlice(choices))
+
+	var defaultValue *[]string
+
+	if len(args) == 1 && args[0] != nil {
+		values := mustValue(anyToStringSlice(args[0]))
+		defaultValue = &values
+	}
+
+	return mustValue(c.promptMultichoice(prompt, choiceStrs, defaultValue))
+}
+
+func (c *Config) promptMultichoiceOnceInteractiveTemplateFunc(
+	m map[string]any,
+	path any,
+	prompt string,
+	choices any,
+	args ...any,
+) []string {
+	if len(args) > 1 {
+		panic(fmt.Errorf("want 4 or 5 arguments, got %d", len(args)+4))
+	}
+
+	nestedMap, lastKey := mustValues(nestedMapAtPath(m, path))
+	if !c.interactiveTemplateFuncs.forcePromptOnce {
+		if value, ok := nestedMap[lastKey]; ok {
+			return mustValue(anyToStringSlice(value))
+		}
+	}
+
+	return c.promptMultichoiceInteractiveTemplateFunc(prompt, choices, args...)
 }
 
 func (c *Config) promptIntInteractiveTemplateFunc(prompt string, args ...int64) int64 {

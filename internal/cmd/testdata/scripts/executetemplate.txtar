@@ -72,6 +72,18 @@ stderr 'invalid choice'
 exec chezmoi execute-template --init '{{ promptChoice "value" (list "one" "two" "three") "three" }}'
 stdout three
 
+# test --init --promptMultichoice
+exec chezmoi execute-template --init --promptMultichoice value=one/two '{{ promptMultichoice "value" (list "one" "two" "three") }}'
+stdout '[one two]'
+
+# test --init --promptMultichoice with an invalid value
+! exec chezmoi execute-template --init --promptMultichoice value=four '{{ promptMultichoice "value" (list "one" "two" "three") }}'
+stderr 'invalid choice'
+
+# test --init --promptMultichoice with a default value
+exec chezmoi execute-template --init '{{ promptMultichoice "value" (list "one" "two" "three") (list "two" "three") }}'
+stdout '[two three]'
+
 # test --init --promptInt
 exec chezmoi execute-template --init --promptInt value=1 '{{ promptInt "value" }}'
 stdout 1
