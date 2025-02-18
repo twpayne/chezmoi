@@ -21,8 +21,8 @@ require (
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/go-git/go-git/v5 v5.13.2
-	github.com/goccy/go-yaml v1.15.22
-	github.com/google/go-github/v69 v69.1.0
+	github.com/goccy/go-yaml v1.15.23
+	github.com/google/go-github/v69 v69.2.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gopasspw/gopass v1.15.15
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
@@ -36,7 +36,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.3
 	github.com/rogpeppe/go-internal v1.13.1
 	github.com/sergi/go-diff v1.3.2-0.20230802210424-5b0b94c5c0d3
-	github.com/spf13/cobra v1.8.1
+	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	github.com/tailscale/hujson v0.0.0-20241010212012-29efb4a0184b
 	github.com/tobischo/gokeepasslib/v3 v3.6.1
@@ -51,7 +51,7 @@ require (
 	go.etcd.io/bbolt v1.4.0
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.33.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20250210163342-e47973b1c108
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250214233241-911360c8a4f4
 	golang.org/x/oauth2 v0.26.0
 	golang.org/x/sync v0.11.0
 	golang.org/x/sys v0.30.0
@@ -87,7 +87,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.24.15 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.28.14 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.14 // indirect
-	github.com/aws/smithy-go v1.22.2 // indirect
+	github.com/aws/smithy-go v1.22.3 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
@@ -174,7 +174,7 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.4 // indirect
 	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
+	golang.org/x/exp v0.0.0-20250215185904-eff6e970281f // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/tools v0.30.0 // indirect
