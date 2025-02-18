@@ -456,7 +456,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@818ec4d51a1feacefc42ff1b3ec25d4962690f39
+    - uses: golangci/golangci-lint-action@2226d7cb06a077cd73e56eedd38eecad18e5d837
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
