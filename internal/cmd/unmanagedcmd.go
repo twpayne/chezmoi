@@ -12,8 +12,9 @@ import (
 )
 
 type unmanagedCmdConfig struct {
-	pathStyle *choiceFlag
-	tree      bool
+	nulPathSeparator bool
+	pathStyle        *choiceFlag
+	tree             bool
 }
 
 func (c *Config) newUnmanagedCmd() *cobra.Command {
@@ -29,6 +30,8 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 		),
 	}
 
+	unmanagedCmd.Flags().
+		BoolVarP(&c.unmanaged.nulPathSeparator, "nul-path-separator", "0", c.unmanaged.nulPathSeparator, "Use the NUL character as a path separator")
 	unmanagedCmd.Flags().VarP(c.unmanaged.pathStyle, "path-style", "p", "Path style")
 	must(unmanagedCmd.RegisterFlagCompletionFunc("path-style", c.unmanaged.pathStyle.FlagCompletionFunc()))
 	unmanagedCmd.Flags().BoolVarP(&c.unmanaged.tree, "tree", "t", c.unmanaged.tree, "Print paths as a tree")
@@ -112,6 +115,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	}
 
 	return c.writePaths(stringersToStrings(paths), writePathsOptions{
-		tree: c.unmanaged.tree,
+		nulPathSeparator: c.unmanaged.nulPathSeparator,
+		tree:             c.unmanaged.tree,
 	})
 }
