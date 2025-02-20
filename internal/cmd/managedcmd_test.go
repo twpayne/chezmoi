@@ -28,6 +28,19 @@ func TestManagedCmd(t *testing.T) {
 			),
 		},
 		{
+			name: "nul_path_separator",
+			root: map[string]any{
+				"/home/user/.local/share/chezmoi": map[string]any{
+					"dot_file1": "# contents of .file1\n",
+					"dot_file2": "# contents of .file2\n",
+				},
+			},
+			args: []string{
+				"-0",
+			},
+			expectedOutput: ".file1\x00.file2\x00",
+		},
+		{
 			name: "template",
 			root: map[string]any{
 				"/home/user/.local/share/chezmoi/dot_template.tmpl": templateContents,
