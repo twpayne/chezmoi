@@ -10,10 +10,11 @@ import (
 )
 
 type managedCmdConfig struct {
-	filter    *chezmoi.EntryTypeFilter
-	format    *choiceFlag
-	pathStyle *choiceFlag
-	tree      bool
+	filter           *chezmoi.EntryTypeFilter
+	format           *choiceFlag
+	nulPathSeparator bool
+	pathStyle        *choiceFlag
+	tree             bool
 }
 
 func (c *Config) newManagedCmd() *cobra.Command {
@@ -33,6 +34,8 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd.Flags().VarP(c.managed.filter.Exclude, "exclude", "x", "Exclude entry types")
 	managedCmd.Flags().VarP(c.managed.format, "format", "f", "Format")
 	managedCmd.Flags().VarP(c.managed.filter.Include, "include", "i", "Include entry types")
+	managedCmd.Flags().
+		BoolVarP(&c.managed.nulPathSeparator, "nul-path-separator", "0", c.managed.nulPathSeparator, "Use the NUL character as a path separator")
 	managedCmd.Flags().VarP(c.managed.pathStyle, "path-style", "p", "Path style")
 	must(managedCmd.RegisterFlagCompletionFunc("path-style", c.managed.pathStyle.FlagCompletionFunc()))
 	managedCmd.Flags().BoolVarP(&c.managed.tree, "tree", "t", c.managed.tree, "Print paths as a tree")
@@ -116,7 +119,8 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 			}
 		}
 		return c.writePaths(paths, writePathsOptions{
-			tree: c.managed.tree,
+			nulPathSeparator: c.managed.nulPathSeparator,
+			tree:             c.managed.tree,
 		})
 	case pathStyleAll:
 		allEntryPathsMap := make(map[string]*entryPaths, len(allEntryPaths))

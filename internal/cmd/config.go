@@ -2848,17 +2848,23 @@ func (c *Config) writeOutput(data []byte) error {
 }
 
 type writePathsOptions struct {
-	tree bool
+	nulPathSeparator bool
+	tree             bool
 }
 
 func (c *Config) writePaths(paths []string, options writePathsOptions) error {
+	pathSeparator := byte('\n')
+	if options.nulPathSeparator {
+		pathSeparator = '\x00'
+	}
 	builder := strings.Builder{}
 	if options.tree {
 		newPathListTreeFromPathsSlice(paths).writeChildren(&builder, "", "  ")
 	} else {
 		slices.Sort(paths)
 		for _, path := range paths {
-			fmt.Fprintln(&builder, path)
+			builder.WriteString(path)
+			builder.WriteByte(pathSeparator)
 		}
 	}
 	return c.writeOutputString(builder.String())

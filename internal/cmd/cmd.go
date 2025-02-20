@@ -31,7 +31,7 @@ var (
 
 	deDuplicateErrorRx = regexp.MustCompile(`:\s+`)
 	trailingSpaceRx    = regexp.MustCompile(` +\n`)
-	helpFlagsRx        = regexp.MustCompile("^### (?:`-([a-zA-Z])`, )?`--([a-zA-Z-]+)`")
+	helpFlagsRx        = regexp.MustCompile("^### (?:`-([0-9A-Za-z])`, )?`--([-0-9A-Za-z]+)`")
 
 	helps = make(map[string]*help)
 )

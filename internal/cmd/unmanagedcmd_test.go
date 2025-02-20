@@ -33,6 +33,20 @@ func TestUnmanagedCmd(t *testing.T) {
 			),
 		},
 		{
+			name: "nul_path_separator",
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".file":                         "",
+					".local/share/chezmoi/dot_file": "# contents of .file\n",
+					".unmanaged":                    "",
+				},
+			},
+			args: []string{
+				"-0",
+			},
+			expectedOutput: ".local\x00.unmanaged\x00",
+		},
+		{
 			name: "private_subdir",
 			root: map[string]any{
 				"/home/user": map[string]any{

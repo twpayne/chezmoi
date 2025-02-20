@@ -18,6 +18,10 @@ the destination directory in alphabetical order.
 
 --8<-- "common-flags/include.md"
 
+### `-0`, `--nul-path-separator`
+
+--8<-- "common-flags/nul-path-separator.md"
+
 ### `-p`, `--path-style` *style*
 
 --8<-- "common-flags/path-style.md:all"

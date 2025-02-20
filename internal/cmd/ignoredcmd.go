@@ -7,7 +7,8 @@ import (
 )
 
 type ignoredCmdConfig struct {
-	tree bool
+	nulPathSeparator bool
+	tree             bool
 }
 
 func (c *Config) newIgnoredCmd() *cobra.Command {
@@ -24,12 +25,15 @@ func (c *Config) newIgnoredCmd() *cobra.Command {
 	}
 
 	ignoredCmd.Flags().BoolVarP(&c.ignored.tree, "tree", "t", c.ignored.tree, "Print paths as a tree")
+	ignoredCmd.Flags().
+		BoolVarP(&c.ignored.nulPathSeparator, "nul-path-separator", "0", c.ignored.nulPathSeparator, "Use the NUL character as a path separator")
 
 	return ignoredCmd
 }
 
 func (c *Config) runIgnoredCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	return c.writePaths(stringersToStrings(sourceState.Ignored()), writePathsOptions{
-		tree: c.ignored.tree,
+		nulPathSeparator: c.ignored.nulPathSeparator,
+		tree:             c.ignored.tree,
 	})
 }
