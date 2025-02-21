@@ -1,8 +1,8 @@
+//go:generate go run ./internal/cmds/generate-helps -o internal/cmd/helps.gen.go
 //go:generate go run . completion bash -o completions/chezmoi-completion.bash
 //go:generate go run . completion fish -o completions/chezmoi.fish
 //go:generate go run . completion powershell -o completions/chezmoi.ps1
 //go:generate go run . completion zsh -o completions/chezmoi.zsh
-//go:generate go run ./internal/cmds/generate-helps -o internal/cmd/helps.gen.go
 //go:generate go run ./internal/cmds/generate-install.sh -o assets/scripts/install.sh
 //go:generate go run ./internal/cmds/generate-install.sh -b .local/bin -o assets/scripts/install-local-bin.sh
 
