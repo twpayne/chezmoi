@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@08bc0cf022445eacafaa248bf48da20f26b8fd40
+    - uses: github/codeql-action/init@1bb15d06a6fbb5d9d9ffd228746bf8ee208caec8
       with:
         languages: go
-    - uses: github/codeql-action/analyze@08bc0cf022445eacafaa248bf48da20f26b8fd40
+    - uses: github/codeql-action/analyze@1bb15d06a6fbb5d9d9ffd228746bf8ee208caec8
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -92,7 +92,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+    - uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f
       with:
         path: |
           ~/.go-alpine
@@ -113,7 +113,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+    - uses: actions/cache@0c907a75c2c80ebcb7f088228285e798b750cf8f
       with:
         path: |
           ~/.go-archlinux
@@ -498,7 +498,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e
+    - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a
     - name: create-syso
       run: |
         make create-syso
