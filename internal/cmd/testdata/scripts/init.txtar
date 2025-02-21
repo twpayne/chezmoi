@@ -119,7 +119,7 @@ exec chezmoi init
 chhome home13/user
 
 # test chezmoi init --prompt*
-exec chezmoi init --promptBool bool=true,boolOncePrompt=true --promptChoice=choice=one,choiceOncePrompt=two --promptInt int=1,intOncePrompt=2 --promptString bool=string,stringOncePrompt=once
+exec chezmoi init --promptBool bool=true,boolOncePrompt=true --promptChoice=choice=one,choiceOncePrompt=two --promptInt int=1,intOncePrompt=2 --promptString string=string,stringOncePrompt=once --promptMultichoice multichoice=one/two,multichoiceOncePrompt=two/three
 cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi.yaml
 
 chhome home14/user
@@ -146,6 +146,8 @@ data:
   choiceOnce: two
   int: 1
   intOnce: 2
+  multichoice: ["one","two"]
+  multichoiceOnce: ["two","three"]
   string: string
   stringOnce: once
 -- home13/user/.local/share/chezmoi/.chezmoi.yaml.tmpl --
@@ -156,7 +158,9 @@ data:
   choiceOnce: {{ promptChoiceOnce . "choiceOnce" "choiceOncePrompt" (list "one" "two" "three") }}
   int: {{ promptInt "int" }}
   intOnce: {{ promptIntOnce . "intOnce" "intOncePrompt" }}
-  string: {{ promptString "bool" }}
+  multichoice: {{ promptMultichoice "multichoice" (list "one" "two" "three") | toJson}}
+  multichoiceOnce: {{ promptMultichoiceOnce . "multichoiceOnce" "multichoiceOncePrompt" (list "one" "two" "three") | toJson }}
+  string: {{ promptString "string" }}
   stringOnce: {{ promptStringOnce . "stringOnce" "stringOncePrompt" }}
 -- home14/user/.local/share/chezmoi/.chezmoi.yml.tmpl --
 data:

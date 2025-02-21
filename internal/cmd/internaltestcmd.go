@@ -42,7 +42,6 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptChoiceCmd)
-
 	internalTestPromptIntCmd := &cobra.Command{
 		Use:   "prompt-int",
 		Args:  cobra.MinimumNArgs(1),
@@ -54,6 +53,18 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 		),
 	}
 	internalTestCmd.AddCommand(internalTestPromptIntCmd)
+
+	internalTestPromptMultichoiceCmd := &cobra.Command{
+		Use:   "prompt-multichoice",
+		Args:  cobra.MinimumNArgs(2),
+		Short: "Run promptMultichoice",
+		RunE:  c.runInternalTestPromptMultichoiceCmd,
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+			persistentStateModeNone,
+		),
+	}
+	internalTestCmd.AddCommand(internalTestPromptMultichoiceCmd)
 
 	internalTestPromptStringCmd := &cobra.Command{
 		Use:   "prompt-string",
@@ -104,6 +115,28 @@ func (c *Config) runInternalTestPromptChoiceCmd(cmd *cobra.Command, args []strin
 		return err
 	}
 	return c.writeOutputString(value + "\n")
+}
+
+func (c *Config) runInternalTestPromptMultichoiceCmd(cmd *cobra.Command, args []string) error {
+	var defaults *[]string
+
+	if len(args) > 2 {
+		values := strings.Split(args[2], ",")
+		defaults = &values
+	}
+
+	value, err := c.promptMultichoice(args[0], strings.Split(args[1], ","), defaults)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range value {
+		if err := c.writeOutputString(entry + "\n"); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (c *Config) runInternalTestPromptIntCmd(cmd *cobra.Command, args []string) error {

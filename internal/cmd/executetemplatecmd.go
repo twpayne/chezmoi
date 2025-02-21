@@ -13,14 +13,15 @@ import (
 )
 
 type executeTemplateCmdConfig struct {
-	init            bool
-	promptBool      map[string]string
-	promptChoice    map[string]string
-	promptInt       map[string]int
-	promptString    map[string]string
-	stdinIsATTY     bool
-	templateOptions chezmoi.TemplateOptions
-	withStdin       bool
+	init              bool
+	promptBool        map[string]string
+	promptChoice      map[string]string
+	promptInt         map[string]int
+	promptMultichoice map[string]string
+	promptString      map[string]string
+	stdinIsATTY       bool
+	templateOptions   chezmoi.TemplateOptions
+	withStdin         bool
 }
 
 func (c *Config) newExecuteTemplateCmd() *cobra.Command {
@@ -42,6 +43,8 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 		StringToStringVar(&c.executeTemplate.promptChoice, "promptChoice", c.executeTemplate.promptChoice, "Simulate promptChoice")
 	executeTemplateCmd.Flags().
 		StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
+	executeTemplateCmd.Flags().
+		StringToStringVar(&c.executeTemplate.promptMultichoice, "promptMultichoice", c.executeTemplate.promptMultichoice, "Simulate promptMultichoice")
 	executeTemplateCmd.Flags().
 		StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "Simulate promptString")
 	executeTemplateCmd.Flags().
@@ -147,6 +150,37 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return promptChoiceInitTemplateFunc(prompt, choices, args...)
 		}
 
+		promptMultichoiceInitTemplateFunc := func(prompt string, choices any, args ...any) []string {
+			choiceStrs := mustValue(anyToStringSlice(choices))
+			if value, ok := c.executeTemplate.promptMultichoice[prompt]; ok {
+				values := strings.Split(value, "/")
+
+				for _, v := range values {
+					if !slices.Contains(choiceStrs, v) {
+						panic(fmt.Errorf("%s: invalid choice", value))
+					}
+				}
+
+				return values
+			}
+
+			if len(args) == 0 {
+				return []string{prompt}
+			}
+
+			return mustValue(anyToStringSlice(args[0]))
+		}
+
+		promptMultichoiceOnceInitTemplateFunc := func(m map[string]any, path any, prompt string, choices []any, args ...any) []string {
+			nestedMap, lastKey := mustValues(nestedMapAtPath(m, path))
+			if value, ok := nestedMap[lastKey]; ok {
+				if stringValue, ok := value.(string); ok {
+					return strings.Split(stringValue, ",")
+				}
+			}
+			return promptMultichoiceInitTemplateFunc(prompt, choices, args...)
+		}
+
 		promptIntInitTemplateFunc := func(prompt string, args ...int64) int64 {
 			switch len(args) {
 			case 0:
@@ -203,17 +237,19 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		}
 
 		initTemplateFuncs := map[string]any{
-			"exit":             c.exitInitTemplateFunc,
-			"promptBool":       promptBoolInitTemplateFunc,
-			"promptBoolOnce":   promptBoolOnceInitTemplateFunc,
-			"promptChoice":     promptChoiceInitTemplateFunc,
-			"promptChoiceOnce": promptChoiceOnceInitTemplateFunc,
-			"promptInt":        promptIntInitTemplateFunc,
-			"promptIntOnce":    promptIntOnceInitTemplateFunc,
-			"promptString":     promptStringInitTemplateFunc,
-			"promptStringOnce": promptStringOnceInitTemplateFunc,
-			"stdinIsATTY":      stdinIsATTYInitTemplateFunc,
-			"writeToStdout":    c.writeToStdout,
+			"exit":                  c.exitInitTemplateFunc,
+			"promptBool":            promptBoolInitTemplateFunc,
+			"promptBoolOnce":        promptBoolOnceInitTemplateFunc,
+			"promptChoice":          promptChoiceInitTemplateFunc,
+			"promptChoiceOnce":      promptChoiceOnceInitTemplateFunc,
+			"promptInt":             promptIntInitTemplateFunc,
+			"promptIntOnce":         promptIntOnceInitTemplateFunc,
+			"promptMultichoice":     promptMultichoiceInitTemplateFunc,
+			"promptMultichoiceOnce": promptMultichoiceOnceInitTemplateFunc,
+			"promptString":          promptStringInitTemplateFunc,
+			"promptStringOnce":      promptStringOnceInitTemplateFunc,
+			"stdinIsATTY":           stdinIsATTYInitTemplateFunc,
+			"writeToStdout":         c.writeToStdout,
 		}
 
 		chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
