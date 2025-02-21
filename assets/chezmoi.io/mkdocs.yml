@@ -133,10 +133,10 @@ nav:
     - .chezmoiversion: reference/special-files/chezmoiversion.md
   - Special directories:
     - reference/special-directories/index.md
-    - .chezmoidata: reference/special-directories/chezmoidata.md
-    - .chezmoiexternals: reference/special-directories/chezmoiexternals.md
-    - .chezmoiscripts: reference/special-directories/chezmoiscripts.md
-    - .chezmoitemplates: reference/special-directories/chezmoitemplates.md
+    - .chezmoidata/: reference/special-directories/chezmoidata.md
+    - .chezmoiexternals/: reference/special-directories/chezmoiexternals.md
+    - .chezmoiscripts/: reference/special-directories/chezmoiscripts.md
+    - .chezmoitemplates/: reference/special-directories/chezmoitemplates.md
   - Command line flags:
     - reference/command-line-flags/index.md
     - Global: reference/command-line-flags/global.md

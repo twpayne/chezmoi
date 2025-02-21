@@ -2,7 +2,7 @@
 
 If `.chezmoidata.$FORMAT` files exist in the source state, they are interpreted
 as structured static data in the given format. This data can then be used in
-templates. See also [`.chezmoidata/`][chezmoidata-dir].
+templates. See also [`.chezmoidata/`][data-dir].
 
 !!! example
 
@@ -85,7 +85,7 @@ templates. See also [`.chezmoidata/`][chezmoidata-dir].
     similar functions.
 
 [config]: /reference/special-files/chezmoidata-format.md
+[data-dir]: /reference/special-directories/chezmoidata.md
 [fromjson]: /reference/templates/functions/fromJson.md
 [fromyaml]: /reference/templates/functions/fromYaml.md
 [output]: /reference/templates/functions/output.md
-[chezmoidata-dir]: /reference/special-directories/chezmoidata.md
