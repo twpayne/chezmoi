@@ -27,7 +27,8 @@ organization ID in your config file, for example:
     applicationName = "my-application"
 ```
 
-With these default values, you can omit them in the call to `hcpVaultSecret`, for example:
+With these default values, you can omit them in the call to `hcpVaultSecret`,
+for example:
 
 ```text
 {{ hcpVaultSecret "secret_name" }}
@@ -41,4 +42,39 @@ as the `hcpVaultSecretJson` template function, for example:
 {{ (hcpVaultSecretJson "secret_name").created_by.email }}
 ```
 
+## `vlt` vs `hcp`: Upgrades that Break { id="hcp-broken" }
+
+Hashicorp has ended support for the `vlt` CLI tool (September 2024) and
+recommends migrating to the [`hcp` CLI][hcp]. Unfortunately, the new command
+does not [work like `vlt`][compat], rendering `hcpVaultSecret` and
+`hcpVaultSecretJson` inoperable when using the recommended command-line tool.
+[Contributions][contrib] to create new integrations for HCP Vault Secrets are
+welcome.
+
+Without these integrations, anyone using HCP Vault Secrets that must upgrade to
+the `hcp` client are recommended to use the [`output`][output] and
+[`fromJson`][fromjson] functions together:
+
+```ini
+{{- $app_name := "my-app-name" -}}
+{{- $secret_name := "gdrive-secrets" -}}
+{{- $secret :=
+    output "hcp" "vs" "s" "open" "--format" "json" "--app" $app_name $secret_name
+    | fromJson -}}
+[GDrive]
+type = drive
+client_secret = {{ $secret.static_version.value }}
+```
+
+`$HCP_CLIENT_ID` and `$HCP_CLIENT_SECRET` must be set and exported for use in
+chezmoi for the above template to work.
+
+See [issue #4146][issue-4146] for more details.
+
+[compat]: https://github.com/twpayne/chezmoi/issues/4146#issuecomment-2552752501
+[contrib]: /developer-guide/contributing-changes.md
+[fromjson]: /reference/templates/functions/fromJson.md
+[hcp]: https://developer.hashicorp.com/hcp/docs/vault-secrets/get-started/install-hcp-cli
+[issue-4146]: https://github.com/twpayne/chezmoi/issues/4146
+[output]: /reference/templates/functions/output.md
 [secrets]: https://developer.hashicorp.com/hcp/docs/vault-secrets
