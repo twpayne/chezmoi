@@ -14,4 +14,10 @@ omitted, then chezmoi will use the value from the
     {{ hcpVaultSecret "username" }}
     ```
 
+!!! info
+
+    If you access HCP Vault Secrets through the `hcp`, this function **will not
+    work**. See [`vlt` vs `hcp`: Upgrades that Break][break].
+
 [secrets]: https://developer.hashicorp.com/hcp/docs/vault-secrets
+[break]: /user-guide/password-managers/hcp-vault-secrets.md#hcp-broken
