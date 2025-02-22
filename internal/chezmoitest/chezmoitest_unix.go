@@ -2,10 +2,6 @@
 
 package chezmoitest
 
-import (
-	"golang.org/x/sys/unix"
-)
-
 var (
 	// umaskStr is the umask used in tests represented as a string so it can be
 	// set with the
@@ -23,7 +19,3 @@ var (
 	// tests.
 	Umask = mustParseFileMode(umaskStr)
 )
-
-func init() {
-	unix.Umask(int(Umask))
-}
