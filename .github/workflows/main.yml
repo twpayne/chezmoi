@@ -166,14 +166,14 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         if [ "${{ matrix.test-index }}" = "0" ]; then
-          go test ./... -short -race
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-dA-D]' -race
+          go test -tags=test ./... -short -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[0-9a-dA-D]' -race
         elif [ "${{ matrix.test-index }}" = "1" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[e-hE-H]' -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[e-hE-H]' -race
         elif [ "${{ matrix.test-index }}" = "2" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[i-lI-L]' -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[i-lI-L]' -race
         else
-          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
         fi
   test-oldstable-go:
     needs: changes
@@ -208,7 +208,7 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go test ./...
+        go test -tags=test ./...
   test-release:
     needs: changes
     runs-on: ubuntu-22.04 # use older Ubuntu for older glibc
@@ -323,10 +323,10 @@ jobs:
         TEST_FLAGS: '-ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h'
       run: |
         if [ "${{ matrix.test-index }}" = "0" ]; then
-          go test ./... -short ${{ env.TEST_FLAGS }}
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-hA-h]' ${{ env.TEST_FLAGS }}
+          go test -tags=test ./... -short ${{ env.TEST_FLAGS }}
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[0-9a-hA-h]' ${{ env.TEST_FLAGS }}
         else
-          go test ./internal/cmd -run=TestScript -filter='^[i-zI-Z]' ${{ env.TEST_FLAGS }}
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[i-zI-Z]' ${{ env.TEST_FLAGS }}
         fi
   test-website:
     runs-on: ubuntu-22.04
@@ -377,14 +377,14 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         if (${{ matrix.test-index }} -eq 0) {
-          go test ./... -short -race
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-cA-C]' -race
+          go test -tags=test ./... -short -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[0-9a-cA-C]' -race
         } elseif (${{ matrix.test-index }} -eq 1) {
-          go test ./internal/cmd -run=TestScript -filter='^[d-fD-F]' -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[d-fD-F]' -race
         } elseif (${{ matrix.test-index }} -eq 2) {
-          go test ./internal/cmd -run=TestScript -filter='^[g-lG-L]' -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[g-lG-L]' -race
         } else {
-          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
+          go test -tags=test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
         }
   check:
     runs-on: ubuntu-22.04
