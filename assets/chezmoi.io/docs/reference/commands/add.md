@@ -102,5 +102,37 @@ chezmoi add ~/.oh-my-zsh --exact --recursive
     implicitly created by an [external][external]. See [issue #1574][issue-1574]
     for details.
 
+!!! warning
+
+    `chezmoi add --exact --recursive DIR` works in predictable but surprising
+    ways and its use is not recommended for nested directories without taking
+    precautions.
+
+    If you have not previously added any files from `~/.config` to chezmoi and
+    run `chezmoi add --exact --recursive ~/.config/nvim`, chezmoi wlll consider
+    all files under `~/.config` to be managed, and any file *not* in
+    `~/.config/nvim` will be removed on your next `chezmoi apply`. This is
+    because `~/.config/nvim` is added as:
+
+    ```text
+    exact_dot_config/
+        exact_nvim/
+          exact_lua/
+            …
+          …
+    ```
+
+    To prevent this, add a `.keep` file *first* before adding the subdirectory
+    recursively.
+
+    ```sh
+    touch ~/.config/.keep
+    chezmoi add ~/.config/.keep
+    chezmoi add --recursive --exact ~/.config/nvim
+    ```
+
+    See [issure #4223][issue-4223] for details.
+
 [external]: /reference/special-files/chezmoiexternal-format.md
 [issue-1574]: https://github.com/twpayne/chezmoi/issues/1574
+[issue-4223]: https://github.com/twpayne/chezmoi/issues/4223
