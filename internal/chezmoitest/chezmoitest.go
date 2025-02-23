@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
-	"strconv"
 	"strings"
 	"testing"
 
@@ -97,13 +96,4 @@ func WithTestFS(t *testing.T, root any, f func(vfs.FS)) {
 	assert.NoError(t, err)
 	t.Cleanup(cleanup)
 	f(fileSystem)
-}
-
-// mustParseFileMode parses s as a fs.FileMode and panics on any error.
-func mustParseFileMode(s string) fs.FileMode {
-	u, err := strconv.ParseUint(s, 0, 32)
-	if err != nil {
-		panic(err)
-	}
-	return fs.FileMode(uint32(u))
 }
