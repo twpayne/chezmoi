@@ -20,7 +20,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
-var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
+var (
+	ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
+
+	Umask fs.FileMode
+)
 
 // AgeGenerateKey generates an identity in identityFile and returns the
 // recipient.

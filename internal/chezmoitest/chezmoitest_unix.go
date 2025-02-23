@@ -1,14 +1,16 @@
-//go:build unix
+//go:build unix && test
 
 package chezmoitest
 
-var (
-	// umaskStr is the umask used in tests represented as a string so it can be
-	// set with the
-	//   -ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=..."
-	// option to go build and go test.
-	umaskStr = "0o022"
+// umaskStr is the umask used in tests represented as a string so it can be
+// set with the
+//
+//	-ldflags="-X github.com/twpayne/chezmoi/v2/internal/chezmoitest.umaskStr=..."
+//
+// option to go build and go test.
+var umaskStr = "0o022"
 
+func init() {
 	// Umask is the umask used in tests.
 	//
 	// If you change this then you will need to update the testscripts in
@@ -18,4 +20,4 @@ var (
 	// process-level property and cannot be locally changed within individual
 	// tests.
 	Umask = mustParseFileMode(umaskStr)
-)
+}

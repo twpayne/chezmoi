@@ -6,7 +6,7 @@ git config --global --add safe.directory /chezmoi
 
 cd /chezmoi
 
-go test ./...
+go test -tags=test ./...
 
 sh assets/scripts/install.sh
 bin/chezmoi --version

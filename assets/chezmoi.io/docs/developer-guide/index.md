@@ -10,8 +10,8 @@
     for more information.
 
 chezmoi is written in [Go][go] and development happens on [GitHub][github].
-chezmoi is a standard Go project, using standard Go tooling. chezmoi requires
-Go 1.24 or later.
+chezmoi is a standard Go project, using standard Go tooling. chezmoi requires Go
+1.24 or later.
 
 Checkout chezmoi:
 
@@ -29,7 +29,7 @@ go build
 Run all tests:
 
 ```sh
-go test ./...
+go test -tags=test ./...
 ```
 
 chezmoi's tests include integration tests with other software. If the other
@@ -73,7 +73,7 @@ make test-release
     ```sh
     SHELL=bash make test
     SHELL=zsh make smoke-test
-    SHELL=bash go test ./...
+    SHELL=bash go test -tags=test ./...
     ```
 
 [coc]: https://github.com/twpayne/chezmoi/blob/master/.github/CODE_OF_CONDUCT.md

@@ -158,7 +158,7 @@ its contents SHA256 sum is then updated in the persistent state.
 
 ## Testing
 
-chezmoi has a mix of, unit, integration, and end-to-end tests. Unit and
+chezmoi has a mix of unit, integration, and end-to-end tests. Unit and
 integration tests use the [`github.com/alecthomas/assert/v2`][assert] framework.
 End-to-end tests use [`github.com/rogpeppe/go-internal/testscript`][testscript]
 with the test scripts themselves in
@@ -167,7 +167,7 @@ with the test scripts themselves in
 You can run individual end-to-end tests with
 
 ```sh
-go test ./internal/cmd -run=TestScript/$TEST_NAME
+go test -tags=test ./internal/cmd -run=TestScript/$TEST_NAME
 ```
 
 Tests should, if at all possible, run unmodified on all operating systems tested
