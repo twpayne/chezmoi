@@ -2,6 +2,8 @@
 
 package chezmoitest
 
+import "golang.org/x/sys/unix"
+
 // umaskStr is the umask used in tests represented as a string so it can be
 // set with the
 //
@@ -20,4 +22,5 @@ func init() {
 	// process-level property and cannot be locally changed within individual
 	// tests.
 	Umask = mustParseFileMode(umaskStr)
+	unix.Umask(int(Umask))
 }
