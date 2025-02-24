@@ -52,16 +52,16 @@ func TestMain(m *testing.M) {
 		flag.StringVar(&filterRegex, "filter", "", "regex to filter test scripts")
 		flag.Parse()
 	}
-	os.Exit(testscript.RunMain(m, map[string]func() int{
-		"chezmoi": func() int {
-			return cmd.Main(cmd.VersionInfo{
+	testscript.Main(m, map[string]func(){
+		"chezmoi": func() {
+			os.Exit(cmd.Main(cmd.VersionInfo{
 				Version: "v2.0.0+test",
 				Commit:  "HEAD",
 				Date:    time.Now().UTC().Format(time.RFC3339),
 				BuiltBy: "testscript",
-			}, os.Args[1:])
+			}, os.Args[1:]))
 		},
-	}))
+	})
 }
 
 func TestScript(t *testing.T) {
