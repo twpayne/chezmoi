@@ -1,3 +1,4 @@
+[!exec:echo] skip 'echo not found in $PATH'
 [!exec:git] skip 'git not found in $PATH'
 
 mkgitconfig
@@ -57,4 +58,3 @@ stdout 'Remove \.file'
 [hooks.git-auto-push.post]
     command = "echo"
     args = ["git-auto-push-post"]
-
