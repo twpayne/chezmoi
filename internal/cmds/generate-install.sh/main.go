@@ -2,6 +2,7 @@ package main
 
 import (
 	"cmp"
+	_ "embed"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -18,6 +19,9 @@ import (
 var (
 	binDir = flag.String("b", "bin", "binary directory")
 	output = flag.String("o", "", "output")
+
+	//go:embed install.sh.tmpl
+	installShTmpl string
 )
 
 type platform struct {
@@ -114,7 +118,7 @@ func run() error {
 	})
 
 	// Generate install.sh.
-	installShTemplate, err := template.ParseFiles("internal/cmds/generate-install.sh/install.sh.tmpl")
+	installShTemplate, err := template.New("install.sh.tmpl").Parse(installShTmpl)
 	if err != nil {
 		return err
 	}
