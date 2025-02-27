@@ -173,6 +173,20 @@ get_libc() {
 	if is_command ldd; then
 		case "$(ldd --version 2>&1 | tr '[:upper:]' '[:lower:]')" in
 		*glibc* | *"gnu libc"*)
+			# If the version of glibc is too old then use the statically-linked
+			# musl version instead. chezmoi releases are built on GitHub Actions
+			# ubuntu-22.04 runners, which have glibc version 2.35.
+			minimum_glibc_version=2.35
+			glibc_version="$(ldd --version 2>&1 | awk '$1 == "ldd" { print $NF }')"
+			# shellcheck disable=SC2046,SC2183
+			minimum_glibc_version_string="$(printf "%03d%03d" $(echo "${minimum_glibc_version}" | tr "." " "))"
+			# shellcheck disable=SC2046,SC2183
+			glibc_version_string="$(printf "%03d%03d" $(echo "${glibc_version}" | tr "." " "))"
+			log_info "found glibc version ${glibc_version}"
+			if [ "${glibc_version_string}" -lt "${minimum_glibc_version_string}" ]; then
+				printf musl
+				return
+			fi
 			printf glibc
 			return
 			;;

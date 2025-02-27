@@ -211,7 +211,7 @@ jobs:
         go test ./...
   test-release:
     needs: changes
-    runs-on: ubuntu-22.04 # use older Ubuntu for older glibc
+    runs-on: ubuntu-22.04 # use older Ubuntu for older glibc, update minimum glibc version in install.sh.tmpl if this changes
     permissions:
       contents: read
     steps:
@@ -473,7 +473,7 @@ jobs:
     - test-ubuntu
     - test-website
     - test-windows
-    runs-on: ubuntu-22.04 # use older Ubuntu for older glibc
+    runs-on: ubuntu-22.04 # use older Ubuntu for older glibc, update minimum glibc version in install.sh.tmpl if this changes
     permissions:
       contents: write
     steps:
