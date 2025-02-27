@@ -19,7 +19,6 @@ var (
 		regexp.MustCompile(`\A\.idea\z`),
 		regexp.MustCompile(`\A\.ruff_cache\z`),
 		regexp.MustCompile(`\A\.vagrant\z`),
-		regexp.MustCompile(`\b\.?venv\b`),
 		regexp.MustCompile(`\A\.vscode\z`),
 		regexp.MustCompile(`\ACOMMIT\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/site\z`),
