@@ -19,8 +19,14 @@ encryption = "age"
     recipient = "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
 ```
 
-chezmoi supports multiple recipients and recipient files, and multiple
-identities.
+chezmoi supports multiple identities and multiple recipients:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+encryption = "age"
+[age]
+    identities = ["/home/user/key1.txt", "/home/user/key2.txt"]
+    recipients = ["recipient1", "recipient2"]
+```
 
 !!! note
 
