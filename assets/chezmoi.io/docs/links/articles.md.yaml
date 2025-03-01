@@ -498,6 +498,10 @@ articles:
   lang: JP
   title: 'chezmoi で macOS の user defaults も管理する'
   url: https://pihero.hatenadiary.jp/entry/2025/01/26/130123
+- date: '2025-02-02'
+  version: 2.59.0
+  title: 'My journey in managing dotfiles'
+  url: https://seds.nl/notes/my-journey-in-managing-dotfiles/
 - date: '2025-02-19'
   version: 2.59.1
   lang: JP
