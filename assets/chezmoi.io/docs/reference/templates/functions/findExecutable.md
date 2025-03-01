@@ -1,8 +1,8 @@
-# `findExecutable` _file_ _path-list_
+# `findExecutable` *file* *path-list*
 
-`findExecutable` searches for an executable named _file_ in directories
-identified by _path-list_. The result will be the executable file concatenated
-with the matching path. If an executable _file_ cannot be found in _path-list_,
+`findExecutable` searches for an executable named *file* in directories
+identified by *path-list*. The result will be the executable file concatenated
+with the matching path. If an executable *file* cannot be found in *path-list*,
 `findExecutable` returns an empty string.
 
 `findExecutable` is provided as an alternative to [`lookPath`][site-lookpath] so

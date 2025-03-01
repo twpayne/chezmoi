@@ -1,12 +1,12 @@
-# `onepassword` _uuid_ [_vault_ [_account_]]
+# `onepassword` *uuid* [*vault* [*account*]]
 
 `onepassword` returns structured data from [1Password][1p] using the
-[1Password CLI][op] (`op`). _uuid_ is passed to
+[1Password CLI][op] (`op`). *uuid* is passed to
 `op item get $UUID --format json` and the output from `op` is parsed as JSON.
 The output from `op` is cached so calling `onepassword` multiple times with the
-same _uuid_ will only invoke `op` once. If the optional _vault_ is supplied, it
+same *uuid* will only invoke `op` once. If the optional *vault* is supplied, it
 will be passed along to the `op item get` call, which can significantly improve
-performance. If the optional _account_ is supplied, it will be passed along to
+performance. If the optional *account* is supplied, it will be passed along to
 the `op item get` call, which will help it look in the right account, in case
 you have multiple accounts (e.g., personal and work accounts).
 

@@ -35,7 +35,7 @@ The `onepassword*` template functions return structured data from
     - `my@account1.1password.ca`
     - `my@account1`
 
-    If there are multiple accounts and _any_ value exists more than once, that
+    If there are multiple accounts and any value exists more than once, that
     value will be removed from the account mapping. That is, if you are signed
     into `my@email.com` and `your@email.com` for `account1.1password.ca`, then
     `account1.1password.ca` will not be a valid lookup value, but `my@account1`,

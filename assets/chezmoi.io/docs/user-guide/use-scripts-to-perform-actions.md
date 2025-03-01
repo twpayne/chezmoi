@@ -45,8 +45,8 @@ If a `.chezmoiscripts` directory exists at the root of the source directory,
 scripts in this directory are executed as normal scripts, without creating
 a corresponding directory in the target state.
 
-In _verbose_ mode, the scripts' contents are printed before execution.
-In _dry-run_ mode, scripts are not executed.
+In verbose mode, the scripts' contents are printed before execution. In dry-run
+mode, scripts are not executed.
 
 ## Set environment variables
 

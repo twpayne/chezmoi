@@ -11,7 +11,7 @@ files are optional and are evaluated in a specific order.
 2. [`.chezmoi.$FORMAT.tmpl`][config] is used by [`chezmoi init`][init] to
    prepare or update the chezmoi config file. This is also used when the command
    supports the `--init` flag, such as `chezmoi apply --init`. This will be
-   applied _prior_ to any remaining special files or directories.
+   applied prior to any remaining special files or directories.
 
 3. Data files ([`.chezmoidata.$FORMAT`][data] files or files in
    [`.chezmoidata/` directories][data-dir]) are read before any templates are
