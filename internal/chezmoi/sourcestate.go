@@ -1813,8 +1813,8 @@ func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRel
 }
 
 // newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
-// file with sourceLazyContents if the file does not already exist, or returns
-// the actual file's contents unchanged if the file already exists.
+// file with the value of sourceContentsFunc if the file does not already exist,
+// or returns the actual file's contents unchanged if the file already exists.
 func (s *SourceState) newCreateTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
@@ -1860,15 +1860,15 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 }
 
 // newFileTargetStateEntryFunc returns a targetStateEntryFunc that returns a
-// file with sourceLazyContents.
+// file with the contents of the value of sourceContentsFunc.
 func (s *SourceState) newFileTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	contentsFunc func() ([]byte, error),
+	sourceContentsFunc func() ([]byte, error),
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
-			switch contents, err := contentsFunc(); {
+			switch contents, err := sourceContentsFunc(); {
 			case err != nil:
 				return nil, err
 			case isEmpty(contents) && !fileAttr.Empty:
@@ -1884,7 +1884,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			}
 		}
 		executedContentsFunc := sync.OnceValues(func() ([]byte, error) {
-			contents, err := contentsFunc()
+			contents, err := sourceContentsFunc()
 			if err != nil {
 				return nil, err
 			}
