@@ -1883,7 +1883,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 				}, nil
 			}
 		}
-		executedContentsFunc := func() ([]byte, error) {
+		executedContentsFunc := sync.OnceValues(func() ([]byte, error) {
 			contents, err := contentsFunc()
 			if err != nil {
 				return nil, err
@@ -1899,7 +1899,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 				}
 			}
 			return contents, nil
-		}
+		})
 		return &TargetStateFile{
 			contentsFunc:       executedContentsFunc,
 			contentsSHA256Func: lazySHA256(executedContentsFunc),
@@ -1922,7 +1922,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 	interpreter *Interpreter,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		contentsFunc := func() (contents []byte, err error) {
+		contentsFunc := sync.OnceValues(func() (contents []byte, err error) {
 			// FIXME this should share code with RealSystem.RunScript
 
 			// Read the current contents of the target.
@@ -2019,7 +2019,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			cmd.Stderr = os.Stderr
 			contents, err = chezmoilog.LogCmdOutput(s.logger, cmd)
 			return
-		}
+		})
 		return &TargetStateFile{
 			contentsFunc:       contentsFunc,
 			contentsSHA256Func: lazySHA256(contentsFunc),
@@ -2043,12 +2043,12 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	targetRelPath RelPath,
-	contentsFunc func() ([]byte, error),
+	sourceContentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
 ) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		contentsFunc := func() ([]byte, error) {
-			contents, err := contentsFunc()
+		contentsFunc := sync.OnceValues(func() ([]byte, error) {
+			contents, err := sourceContentsFunc()
 			if err != nil {
 				return nil, err
 			}
@@ -2063,7 +2063,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 				}
 			}
 			return contents, nil
-		}
+		})
 		return &TargetStateScript{
 			name:               targetRelPath,
 			contentsFunc:       contentsFunc,
