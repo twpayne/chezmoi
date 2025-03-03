@@ -1,0 +1,20 @@
+[windows] skip 'UNIX only'
+
+exec chmod a+x bin/prog
+
+# test that templates are only executed once
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+cmp count golden/count
+
+-- bin/prog --
+#!/bin/sh
+
+echo a >> count
+echo 1
+-- golden/.file --
+1
+-- golden/count --
+a
+-- home/user/.local/share/chezmoi/dot_file.tmpl --
+{{- output "prog" -}}
