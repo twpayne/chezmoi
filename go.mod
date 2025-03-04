@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	filippo.io/age v1.2.1
-	github.com/1password/onepassword-sdk-go v0.1.7
+	github.com/1password/onepassword-sdk-go v0.2.0
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.2
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.3.1
 	github.com/Masterminds/sprig/v3 v3.3.0
@@ -52,7 +52,7 @@ require (
 	go.etcd.io/bbolt v1.4.0
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.35.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20250228200319-bbc689cf5cfb
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250303191637-24852b6b3fe8
 	golang.org/x/oauth2 v0.27.0
 	golang.org/x/sync v0.11.0
 	golang.org/x/sys v0.30.0
