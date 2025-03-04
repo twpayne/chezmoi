@@ -507,3 +507,7 @@ articles:
   lang: JP
   title: 'WSLとWindowsの設定ファイルを「chezmoi」を使って安全に管理しよう'
   url: https://thinkit.co.jp/article/37943
+- date: '2025-03-04'
+  version: 2.60.0
+  title: 'Tools, tools, tools'
+  url: https://peterbraden.co.uk/article/tools-tools-tools/
