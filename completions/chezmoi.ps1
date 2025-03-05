@@ -46,7 +46,7 @@ filter __chezmoi_escapeStringWithSpecialChars {
     # Split the command at the first space to separate the program and arguments.
     $Program,$Arguments = $Command.Split(" ",2)
 
-    $RequestComp="$Program __completeNoDesc $Arguments"
+    $RequestComp="$Program __complete $Arguments"
     __chezmoi_debug "RequestComp: $RequestComp"
 
     # we cannot use $WordToComplete because it

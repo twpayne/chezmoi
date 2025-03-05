@@ -52,7 +52,7 @@ func completion(cmd *cobra.Command, shell string) (string, error) {
 			return "", err
 		}
 	case "powershell":
-		if err := cmd.Root().GenPowerShellCompletion(&builder); err != nil {
+		if err := cmd.Root().GenPowerShellCompletionWithDesc(&builder); err != nil {
 			return "", err
 		}
 	case "zsh":
