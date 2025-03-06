@@ -2,8 +2,8 @@
 
 set -eufo pipefail
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-REPO_ROOT=$( cd "${SCRIPT_DIR}/../.." &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+REPO_ROOT=$(cd "${SCRIPT_DIR}/../.." &>/dev/null && pwd)
 cd "${REPO_ROOT}"
 
 if [ "$#" -eq 0 ]; then
