@@ -9004,8 +9004,12 @@ least the identity and one recipient:</p>
 <span class="w">    </span><span class="n">identity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/home/user/key.txt&quot;</span>
 <span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&quot;</span>
 </code></pre></div>
-<p>chezmoi supports multiple recipients and recipient files, and multiple
-identities.</p>
+<p>chezmoi supports multiple identities and multiple recipients:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age&quot;</span>
+<span class="k">[age]</span>
+<span class="w">    </span><span class="n">identities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/home/user/key1.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;/home/user/key2.txt&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">recipients</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;recipient1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;recipient2&quot;</span><span class="p">]</span>
+</code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure <code>encryption</code> is added to the top level section at the beginning of
