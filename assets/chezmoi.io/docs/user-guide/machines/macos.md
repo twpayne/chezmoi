@@ -11,7 +11,7 @@ a `run_once_` script. For example, create a file in your source directory called
 {{- if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
-brew bundle --no-lock --file=/dev/stdin <<EOF
+brew bundle --file=/dev/stdin <<EOF
 brew "git"
 cask "google-chrome"
 EOF
