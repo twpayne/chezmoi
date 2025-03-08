@@ -208,7 +208,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		// Start the keepassxc-cli open command.
 		cmdArgs := []string{"open"}
 		cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
-		cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
+		cmdArgs = append(cmdArgs, strings.ReplaceAll(c.Keepassxc.Database.String(), "'", "\""))
 		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...)
 		env := os.Environ()
 		// Ensure prompt is in English.
