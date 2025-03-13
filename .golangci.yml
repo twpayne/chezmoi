@@ -69,7 +69,6 @@ linters:
   - testableexamples
   - testifylint
   - thelper
-  - typecheck
   - unconvert
   - unparam
   - unused
