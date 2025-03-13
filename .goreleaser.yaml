@@ -85,7 +85,7 @@ builds:
     goarch: amd64
 
 archives:
-- builds:
+- ids:
   - chezmoi-cgo-glibc # Required for chezmoi upgrade for versions <= 2.0.5
   - chezmoi-nocgo
   files:
@@ -105,7 +105,7 @@ archives:
     formats:
     - zip
 - id: glibc
-  builds:
+  ids:
   - chezmoi-cgo-glibc
   files:
   - LICENSE
@@ -113,7 +113,7 @@ archives:
   - completions/*
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}'
 - id: musl
-  builds:
+  ids:
   - chezmoi-cgo-musl
   files:
   - LICENSE
@@ -152,7 +152,7 @@ checksum:
     name_template: chezmoi-windows-amd64.exe
 
 nfpms:
-- builds:
+- ids:
   - chezmoi-cgo-glibc
   - chezmoi-nocgo
   vendor: Tom Payne <twpayne@gmail.com>
@@ -200,7 +200,7 @@ nfpms:
       - src: completions/chezmoi.zsh
         dst: /usr/share/zsh/site-functions/_chezmoi
 - id: apks
-  builds:
+  ids:
   - chezmoi-cgo-musl
   - chezmoi-nocgo
   vendor: Tom Payne <twpayne@gmail.com>
@@ -277,7 +277,7 @@ signs:
   artifacts: checksum
 
 snapcrafts:
-- builds:
+- ids:
   - chezmoi-cgo-glibc
   - chezmoi-nocgo
   summary: Manage your dotfiles across multiple diverse machines, securely.
