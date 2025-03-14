@@ -23,7 +23,7 @@ env:
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 1.64.7 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
-  GORELEASER_VERSION: 2.7.0 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.8.1 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
@@ -242,7 +242,7 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3
       with:
-        version: ${{ env.GORELEASER_VERSION }}
+        version: v${{ env.GORELEASER_VERSION }}
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -506,7 +506,7 @@ jobs:
         make create-syso
     - uses: goreleaser/goreleaser-action@90a3faa9d0182683851fbfa97ca1a2cb983bfca3
       with:
-        version: ${{ env.GORELEASER_VERSION }}
+        version: v${{ env.GORELEASER_VERSION }}
         args: release --timeout=1h
       env:
         CHOCOLATEY_API_KEY: ${{ secrets.CHOCOLATEY_API_KEY }}
