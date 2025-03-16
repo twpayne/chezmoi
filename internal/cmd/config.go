@@ -1426,6 +1426,15 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 	}
 	pagerCmd.Stdout = c.stdout
 	pagerCmd.Stderr = c.stderr
+	// If the LESS or LV environment variables are not set, set them to sensible
+	// defaults the same way the git does. See
+	// https://git-scm.com/docs/git-config#Documentation/git-config.txt-corepager.
+	if _, ok := os.LookupEnv("LESS"); !ok {
+		pagerCmd.Env = append(pagerCmd.Environ(), "LESS=FRX")
+	}
+	if _, ok := os.LookupEnv("LV"); !ok {
+		pagerCmd.Env = append(pagerCmd.Environ(), "LV=-c")
+	}
 	return pagerCmd, nil
 }
 
