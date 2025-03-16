@@ -17,9 +17,9 @@ var helps = map[string]*help{
 	"add": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Add targets to the source state. If any target is already in the source state,\n" +
-			"  then its source state is replaced with its current state in the destination\n" +
-			"  directory.",
+			"  Add targets to the source state. If any target is already in the source\n" +
+			"  state, then its source state is replaced with its current state in the\n" +
+			"  destination directory.",
 		example: "" +
 			"  chezmoi add ~/.bashrc\n" +
 			"  chezmoi add ~/.gitconfig --template\n" +
@@ -64,10 +64,10 @@ var helps = map[string]*help{
 	"apply": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Ensure that target... are in the target state, updating them if necessary. If no\n" +
-			"  targets are specified, the state of all targets are ensured. If a target has\n" +
-			"  been modified since chezmoi last wrote it then the user will be prompted if they\n" +
-			"  want to overwrite the file.",
+			"  Ensure that target... are in the target state, updating them if necessary.\n" +
+			"  If no targets are specified, the state of all targets are ensured. If a\n" +
+			"  target has been modified since chezmoi last wrote it then the user will be\n" +
+			"  prompted if they want to overwrite the file.",
 		example: "" +
 			"  chezmoi apply\n" +
 			"  chezmoi apply --dry-run --verbose\n" +
@@ -90,8 +90,8 @@ var helps = map[string]*help{
 	"archive": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Generate an archive of the target state, or only the targets specified. This can\n" +
-			"  be piped into tar to inspect the target state.",
+			"  Generate an archive of the target state, or only the targets specified. This\n" +
+			"  can be piped into tar to inspect the target state.",
 		example: "" +
 			"  chezmoi archive | tar tvf -\n" +
 			"  chezmoi archive --output=dotfiles.tar.gz\n" +
@@ -117,9 +117,10 @@ var helps = map[string]*help{
 	"cat": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Write the target contents of targets to stdout. targets must be files, scripts,\n" +
-			"  or symlinks. For files, the target file contents are written. For scripts, the\n" +
-			"  script's contents are written. For symlinks, the target is written.",
+			"  Write the target contents of targets to stdout. targets must be files,\n" +
+			"  scripts, or symlinks. For files, the target file contents are written. For\n" +
+			"  scripts, the script's contents are written. For symlinks, the target is\n" +
+			"  written.",
 		example: "" +
 			"  chezmoi cat ~/.bashrc",
 	},
@@ -134,14 +135,15 @@ var helps = map[string]*help{
 		longHelp: "" +
 			"Description:\n" +
 			"  Launch a shell in the working tree (typically the source directory). chezmoi\n" +
-			"  will launch the command set by the cd.command configuration variable with any\n" +
-			"  extra arguments specified by cd.args. If this is not set, chezmoi will attempt\n" +
-			"  to detect your shell and finally fall back to an OS-specific default.\n" +
+			"  will launch the command set by the cd.command configuration variable with\n" +
+			"  any extra arguments specified by cd.args. If this is not set, chezmoi will\n" +
+			"  attempt to detect your shell and finally fall back to an OS-specific default.\n" +
 			"\n" +
 			"  If the optional argument path is present, the shell will be launched in the\n" +
 			"  source directory corresponding to path.\n" +
 			"\n" +
-			"  The shell will have various CHEZMOI* environment variables set, as for scripts.",
+			"  The shell will have various CHEZMOI* environment variables set, as for\n" +
+			"  scripts.",
 		example: "" +
 			"  chezmoi cd\n" +
 			"  chezmoi cd ~\n" +
@@ -150,44 +152,45 @@ var helps = map[string]*help{
 	"chattr": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Change the attributes and/or type of targets. modifier specifies what to modify.\n" +
+			"  Change the attributes and/or type of targets. modifier specifies what to\n" +
+			"  modify.\n" +
 			"\n" +
-			"  Add attributes by specifying them or their abbreviations directly, optionally\n" +
-			"  prefixed with a plus sign (+). Remove attributes by prefixing them or their\n" +
-			"  attributes with the string no or a minus sign (-). The available attribute\n" +
-			"  modifiers and their abbreviations are:\n" +
+			"  Add attributes by specifying them or their abbreviations directly,\n" +
+			"  optionally prefixed with a plus sign (+). Remove attributes by prefixing\n" +
+			"  them or their attributes with the string no or a minus sign (-). The\n" +
+			"  available attribute modifiers and their abbreviations are:\n" +
 			"\n" +
-			"  Attribute modifier                         │Abbreviation\n" +
-			"  ───────────────────────────────────────────┼────────────────────────────────────\n" +
-			"  after                                      │a\n" +
-			"  before                                     │b\n" +
-			"  empty                                      │e\n" +
-			"  encrypted                                  │none\n" +
-			"  exact                                      │none\n" +
-			"  executable                                 │x\n" +
-			"  external                                   │none\n" +
-			"  once                                       │o\n" +
-			"  private                                    │p\n" +
-			"  readonly                                   │r\n" +
-			"  remove                                     │none\n" +
-			"  template                                   │t\n" +
+			"   Attribute modifier                  | Abbreviation\n" +
+			"  -------------------------------------|------------------------------------\n" +
+			"   after                               | a\n" +
+			"   before                              | b\n" +
+			"   empty                               | e\n" +
+			"   encrypted                           | none\n" +
+			"   exact                               | none\n" +
+			"   executable                          | x\n" +
+			"   external                            | none\n" +
+			"   once                                | o\n" +
+			"   private                             | p\n" +
+			"   readonly                            | r\n" +
+			"   remove                              | none\n" +
+			"   template                            | t\n" +
 			"\n" +
 			"  The type of a target can be changed using a type modifier:\n" +
 			"\n" +
-			"  Type modifier\n" +
-			"  ────────────────────────────────────────────────────────────────────────────────\n" +
-			"  create\n" +
-			"  modify\n" +
-			"  script\n" +
-			"  symlink\n" +
+			"   Type modifier\n" +
+			"  --------------------------------------------------------------------------\n" +
+			"   create\n" +
+			"   modify\n" +
+			"   script\n" +
+			"   symlink\n" +
 			"\n" +
-			"  The negative form of type modifiers, e.g. nocreate, changes the target to be a\n" +
-			"  regular file if it is of that type, otherwise the type is left unchanged.\n" +
+			"  The negative form of type modifiers, e.g. nocreate, changes the target to be\n" +
+			"  a regular file if it is of that type, otherwise the type is left unchanged.\n" +
 			"\n" +
-			"  Multiple modifications may be specified by separating them with a comma (,). If\n" +
-			"  you use the -modifier form then you must put modifier after a -- to prevent\n" +
-			"  chezmoi\n" +
-			"  from interpreting -modifier as an option.",
+			"  Multiple modifications may be specified by separating them with a comma (,).\n" +
+			"  If you use the -modifier form then you must put modifier after a -- to\n" +
+			"  prevent\n" +
+			"  chezmoi from interpreting -modifier as an option.",
 		example: "" +
 			"  chezmoi chattr template ~/.bashrc\n" +
 			"  chezmoi chattr noempty ~/.profile\n" +
@@ -204,8 +207,8 @@ var helps = map[string]*help{
 	"completion": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Generate shell completion code for the specified shell (bash, fish, powershell,\n" +
-			"  or zsh).",
+			"  Generate shell completion code for the specified shell (bash, fish,\n" +
+			"  powershell, or zsh).",
 		example: "" +
 			"  chezmoi completion bash\n" +
 			"  chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish",
@@ -249,16 +252,16 @@ var helps = map[string]*help{
 			"  Print the difference between the target state and the destination state for\n" +
 			"  targets. If no targets are specified, print the differences for all targets.\n" +
 			"\n" +
-			"  If a diff.pager command is set in the configuration file then the output will be\n" +
-			"  piped into it.\n" +
+			"  If a diff.pager command is set in the configuration file then the output\n" +
+			"  will be piped into it.\n" +
 			"\n" +
 			"  If diff.command is set then it will be invoked to show individual file\n" +
 			"  differences with diff.args passed as arguments. Each element of diff.args is\n" +
-			"  interpreted as a template with the variables .Destination and .Target available\n" +
-			"  corresponding to the path of the file in the source and target state\n" +
-			"  respectively. The default value of diff.args is [\"{{ .Destination }}\", \"{{\n" +
-			"  .Target }}\"]. If diff.args does not contain any template arguments then {{\n" +
-			"  .Destination }} and {{ .Target }} will be appended automatically.",
+			"  interpreted as a template with the variables .Destination and .Target\n" +
+			"  available corresponding to the path of the file in the source and target\n" +
+			"  state respectively. The default value of diff.args is [\"{{ .Destination }}\",\n" +
+			"  \"{{ .Target }}\"]. If diff.args does not contain any template arguments then\n" +
+			"  {{ .Destination }} and {{ .Target }} will be appended automatically.",
 		example: "" +
 			"  chezmoi diff\n" +
 			"  chezmoi diff ~/.bashrc",
@@ -292,8 +295,8 @@ var helps = map[string]*help{
 	"dump": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Dump the target state of targets. If no targets are specified, then the entire\n" +
-			"  target state.",
+			"  Dump the target state of targets. If no targets are specified, then the\n" +
+			"  entire target state.",
 		example: "" +
 			"  chezmoi dump ~/.bashrc\n" +
 			"  chezmoi dump --format=yaml",
@@ -329,17 +332,18 @@ var helps = map[string]*help{
 	"edit": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Edit the source state of targets, which must be files or symlinks. If no targets\n" +
-			"  are given then the working tree of the source directory is opened.\n" +
+			"  Edit the source state of targets, which must be files or symlinks. If no\n" +
+			"  targets are given then the working tree of the source directory is opened.\n" +
 			"\n" +
-			"  Encrypted files are decrypted to a private temporary directory and the editor is\n" +
-			"  invoked with the decrypted file. When the editor exits the edited decrypted file\n" +
-			"  is re-encrypted and replaces the original file in the source state.\n" +
+			"  Encrypted files are decrypted to a private temporary directory and the\n" +
+			"  editor is invoked with the decrypted file. When the editor exits the edited\n" +
+			"  decrypted file is re-encrypted and replaces the original file in the source\n" +
+			"  state.\n" +
 			"\n" +
-			"  If the operating system supports hard links, then the edit command invokes the\n" +
-			"  editor with filenames which match the target filename, unless the edit.hardlink\n" +
-			"  configuration variable is set to false or the --hardlink=false command line flag\n" +
-			"  is set.",
+			"  If the operating system supports hard links, then the edit command invokes\n" +
+			"  the editor with filenames which match the target filename, unless the\n" +
+			"  edit.hardlink configuration variable is set to false or the --hardlink=false\n" +
+			"  command line flag is set.",
 		example: "" +
 			"  chezmoi edit ~/.bashrc\n" +
 			"  chezmoi edit ~/.bashrc --apply\n" +
@@ -368,8 +372,9 @@ var helps = map[string]*help{
 	"edit-config-template": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Edit the configuration file template. If no configuration file template exists,\n" +
-			"  then a new one is created with the contents of the current config file.",
+			"  Edit the configuration file template. If no configuration file template\n" +
+			"  exists, then a new one is created with the contents of the current config\n" +
+			"  file.",
 		example: "" +
 			"  chezmoi edit-config-template",
 	},
@@ -383,10 +388,10 @@ var helps = map[string]*help{
 	"execute-template": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Execute templates. This is useful for testing templates or for calling chezmoi\n" +
-			"  from other scripts. templates are interpreted as literal templates, with no\n" +
-			"  whitespace added to the output between arguments. If no templates are specified,\n" +
-			"  the template is read from stdin.",
+			"  Execute templates. This is useful for testing templates or for calling\n" +
+			"  chezmoi from other scripts. templates are interpreted as literal templates,\n" +
+			"  with no whitespace added to the output between arguments. If no templates\n" +
+			"  are specified, the template is read from stdin.",
 		example: "" +
 			"  chezmoi execute-template '{{ .chezmoi.sourceDir }}'\n" +
 			"  chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'\n" +
@@ -413,8 +418,8 @@ var helps = map[string]*help{
 	"forget": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Remove targets from the source state, i.e. stop managing them. targets must have\n" +
-			"  entries in the source state. They cannot be externals.",
+			"  Remove targets from the source state, i.e. stop managing them. targets must\n" +
+			"  have entries in the source state. They cannot be externals.",
 		example: "" +
 			"  chezmoi forget ~/.bashrc",
 	},
@@ -423,10 +428,12 @@ var helps = map[string]*help{
 			"Description:\n" +
 			"  Generates output for use with chezmoi. The currently supported outputs are:\n" +
 			"\n" +
-			"  Output         │Description\n" +
-			"  ───────────────┼────────────────────────────────────────────────────────────────\n" +
-			"  git-commit-mes…│A git commit message, describing the changes to the source dire…\n" +
-			"  install.sh     │An install script, suitable for use with GitHub Codespaces",
+			"   Output             | Description\n" +
+			"  --------------------|-----------------------------------------------------\n" +
+			"   git-commit-message | A git commit message, describing the changes to the\n" +
+			"                      | source directory.\n" +
+			"   install.sh         | An install script, suitable for use with GitHub\n" +
+			"                      | Codespaces",
 		example: "" +
 			"  chezmoi generate install.sh > install.sh\n" +
 			"  chezmoi git commit -m \"$(chezmoi generate git-commit-message)\"",
@@ -443,7 +450,8 @@ var helps = map[string]*help{
 	"help": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Print the help associated with command, or general help if no command is given.",
+			"  Print the help associated with command, or general help if no command is\n" +
+			"  given.",
 	},
 	"ignored": {
 		longHelp: "" +
@@ -465,11 +473,12 @@ var helps = map[string]*help{
 			"Description:\n" +
 			"  Import the source state from an archive file in to a directory in the source\n" +
 			"  state. This is primarily used to make subdirectories of your home directory\n" +
-			"  exactly match the contents of a downloaded archive. You will generally always\n" +
-			"  want to set the --destination, --exact, and --remove-destination flags.\n" +
+			"  exactly match the contents of a downloaded archive. You will generally\n" +
+			"  always want to set the --destination, --exact, and --remove-destination\n" +
+			"  flags.\n" +
 			"\n" +
-			"  The supported archive formats are tar, tar.gz, tgz, tar.bz2, tbz2, txz, tar.zst,\n" +
-			"  and zip.",
+			"  The supported archive formats are tar, tar.gz, tgz, tar.bz2, tbz2, txz,\n" +
+			"  tar.zst, and zip.",
 		example: "" +
 			"  curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.\n" +
 			"com/ohmyzsh/ohmyzsh/archive/master.tar.gz\n" +
@@ -494,9 +503,9 @@ var helps = map[string]*help{
 	"init": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Setup the source directory, generate the config file, and optionally update the\n" +
-			"  destination directory to match the target state. This is done in the following\n" +
-			"  order:\n" +
+			"  Setup the source directory, generate the config file, and optionally update\n" +
+			"  the destination directory to match the target state. This is done in the\n" +
+			"  following order:\n" +
 			"\n" +
 			"  1. The source directory is initialized. If chezmoi does not detect a Git\n" +
 			"  repository in the source directory, chezmoi will clone the provided repo\n" +
@@ -510,17 +519,23 @@ var helps = map[string]*help{
 			"  5. If the --purge-binary is passed, chezmoi will attempt to remove its own\n" +
 			"  binary.\n" +
 			"\n" +
-			"  By default, if repo is given, chezmoi will guess the full git repo URL, using\n" +
-			"  HTTPS by default, or SSH if the --ssh option is specified, according to the\n" +
-			"  following patterns:\n" +
+			"  By default, if repo is given, chezmoi will guess the full git repo URL,\n" +
+			"  using HTTPS by default, or SSH if the --ssh option is specified, according\n" +
+			"  to\n" +
+			"  the following patterns:\n" +
 			"\n" +
-			"  Pattern     │HTTPS Repo                           │SSH repo\n" +
-			"  ────────────┼─────────────────────────────────────┼─────────────────────────────\n" +
-			"  user        │https://user@github.com/user/dotfile…│git@github.com:user/dotfiles…\n" +
-			"  user/repo   │https://user@github.com/user/repo.git│git@github.com:user/repo.git\n" +
-			"  site/user/r…│https://user@site/user/repo.git      │git@/user/repo.git\n" +
-			"  sr.ht/~user │https://user@git.sr.ht/~user/dotfiles│git@git.sr.ht:~user/dotfiles…\n" +
-			"  sr.ht/~user…│https://user@git.sr.ht/~user/repo    │git@git.sr.ht:~user/repo.git\n" +
+			"   Pattern          | HTTPS Repo                | SSH repo\n" +
+			"  ------------------|---------------------------|---------------------------\n" +
+			"   user             | https://user@github.com/u | git@github.com:user/dotfi\n" +
+			"                    | ser/dotfiles.git          | les.git\n" +
+			"   user/repo        | https://user@github.com/u | git@github.com:user/repo.\n" +
+			"                    | ser/repo.git              | git\n" +
+			"   site/user/repo   | https://user@site/user/re | git@/user/repo.git\n" +
+			"                    | po.git                    |\n" +
+			"   sr.ht/~user      | https://user@git.sr.ht/~u | git@git.sr.ht:~user/dotfi\n" +
+			"                    | ser/dotfiles              | les.git\n" +
+			"   sr.ht/~user/repo | https://user@git.sr.ht/~u | git@git.sr.ht:~user/repo.\n" +
+			"                    | ser/repo                  | git\n" +
 			"\n" +
 			"  To disable git repo URL guessing, pass the --guess-repo-url=false option.",
 		example: "" +
@@ -585,8 +600,8 @@ var helps = map[string]*help{
 		longHelp: "" +
 			"Description:\n" +
 			"  List all managed entries in the destination directory under all paths in\n" +
-			"  alphabetical order. When no paths are supplied, list all managed entries in the\n" +
-			"  destination directory in alphabetical order.",
+			"  alphabetical order. When no paths are supplied, list all managed entries in\n" +
+			"  the destination directory in alphabetical order.",
 		example: "" +
 			"  chezmoi managed\n" +
 			"  chezmoi managed --include=files\n" +
@@ -615,29 +630,30 @@ var helps = map[string]*help{
 	"merge": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Perform a three-way merge between the destination state, the target state, and\n" +
-			"  the source state for each target. The merge tool is defined by the merge.command\n" +
-			"  configuration variable, and defaults to vimdiff. If multiple targets are\n" +
-			"  specified the merge tool is invoked separately and sequentially for each target.\n" +
-			"  If the target state cannot be computed (for example if source is a template\n" +
-			"  containing errors or an encrypted file that cannot be decrypted) a two-way merge\n" +
-			"  is performed instead.\n" +
+			"  Perform a three-way merge between the destination state, the target state,\n" +
+			"  and the source state for each target. The merge tool is defined by the\n" +
+			"  merge.command configuration variable, and defaults to vimdiff. If multiple\n" +
+			"  targets are specified the merge tool is invoked separately and sequentially\n" +
+			"  for each target. If the target state cannot be computed (for example if\n" +
+			"  source is a template containing errors or an encrypted file that cannot be\n" +
+			"  decrypted) a two-way merge is performed instead.\n" +
 			"\n" +
-			"  The order of arguments to merge.command is set by merge.args. Each argument is\n" +
-			"  interpreted as a template with the variables .Destination, .Source, and .Target\n" +
-			"  available corresponding to the path of the file in the destination state, the\n" +
-			"  source state, and the target state respectively. The default value of merge.args\n" +
-			"  is [\"{{ .Destination }}\", \"{{ .Source }}\", \"{{ .Target }}\"]. If merge.args does\n" +
-			"  not contain any template arguments then {{ .Destination }}, {{ .Source }}, and\n" +
-			"  {{ .Target }} will be appended automatically.",
+			"  The order of arguments to merge.command is set by merge.args. Each argument\n" +
+			"  is interpreted as a template with the variables .Destination, .Source, and\n" +
+			"  .Target available corresponding to the path of the file in the destination\n" +
+			"  state, the source state, and the target state respectively. The default\n" +
+			"  value of merge.args is [\"{{ .Destination }}\", \"{{ .Source }}\", \"{{ .Target\n" +
+			"  }}\"]. If merge.args does not contain any template arguments then {{\n" +
+			"  .Destination }}, {{ .Source }}, and {{ .Target }} will be appended\n" +
+			"  automatically.",
 		example: "" +
 			"  chezmoi merge ~/.bashrc",
 	},
 	"merge-all": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Perform a three-way merge for file whose actual state does not match its target\n" +
-			"  state. The merge is performed with chezmoi merge.",
+			"  Perform a three-way merge for file whose actual state does not match its\n" +
+			"  target state. The merge is performed with chezmoi merge.",
 		example: "" +
 			"  chezmoi merge-all",
 		longFlags: chezmoiset.New(
@@ -667,12 +683,12 @@ var helps = map[string]*help{
 	"re-add": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Re-add modified files in the target state, preserving any encrypted_ attributes.\n" +
-			"  chezmoi will not overwrite templates, and all entries that are not files are\n" +
-			"  ignored. Directories are recursed into by default.\n" +
+			"  Re-add modified files in the target state, preserving any encrypted_\n" +
+			"  attributes. chezmoi will not overwrite templates, and all entries that are\n" +
+			"  not files are ignored. Directories are recursed into by default.\n" +
 			"\n" +
-			"  If no targets are specified then all modified files are re-added. If one or more\n" +
-			"  targets are given then only those targets are re-added.",
+			"  If no targets are specified then all modified files are re-added. If one or\n" +
+			"  more targets are given then only those targets are re-added.",
 		example: "" +
 			"  chezmoi re-add\n" +
 			"  chezmoi re-add ~/.bashrc\n" +
@@ -697,16 +713,16 @@ var helps = map[string]*help{
 	"rm": {
 		longHelp: "" +
 			"Description:\n" +
-			"  The rm command has been removed. Use the forget command or the destroy command\n" +
-			"  instead.",
+			"  The rm command has been removed. Use the forget command or the destroy\n" +
+			"  command instead.",
 	},
 	"secret": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Run a secret manager's CLI, passing any extra arguments to the secret manager's\n" +
-			"  CLI. This is primarily for verifying chezmoi's integration with a custom secret\n" +
-			"  manager. Normally you would use chezmoi's existing template functions to\n" +
-			"  retrieve secrets.",
+			"  Run a secret manager's CLI, passing any extra arguments to the secret\n" +
+			"  manager's CLI. This is primarily for verifying chezmoi's integration with a\n" +
+			"  custom secret manager. Normally you would use chezmoi's existing template\n" +
+			"  functions to retrieve secrets.",
 		example: "" +
 			"  chezmoi secret keyring set --service=service --user=user --value=password\n" +
 			"  chezmoi secret keyring get --service=service --user=user\n" +
@@ -715,8 +731,8 @@ var helps = map[string]*help{
 	"source-path": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Print the path to each target's source state. If no targets are specified then\n" +
-			"  print the source directory.",
+			"  Print the path to each target's source state. If no targets are specified\n" +
+			"  then print the source directory.",
 		example: "" +
 			"  chezmoi source-path\n" +
 			"  chezmoi source-path ~/.bashrc",
@@ -738,21 +754,21 @@ var helps = map[string]*help{
 	"status": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Print the status of the files and scripts managed by chezmoi in a format similar\n" +
-			"  to git status.\n" +
+			"  Print the status of the files and scripts managed by chezmoi in a format\n" +
+			"  similar to git status.\n" +
 			"\n" +
 			"  The first column of output indicates the difference between the last state\n" +
 			"  written by chezmoi and the actual state. The second column indicates the\n" +
 			"  difference between the actual state and the target state, and what effect\n" +
 			"  running chezmoi apply will have.\n" +
 			"\n" +
-			"  Character     │Meaning       │First column           │Second column\n" +
-			"  ──────────────┼──────────────┼───────────────────────┼──────────────────────────\n" +
-			"  Space         │No change     │No change              │No change\n" +
-			"  A             │Added         │Entry was created      │Entry will be created\n" +
-			"  D             │Deleted       │Entry was deleted      │Entry will be deleted\n" +
-			"  M             │Modified      │Entry was modified     │Entry will be modified\n" +
-			"  R             │Run           │Not applicable         │Script will be run",
+			"   Character    | Meaning     | First column       | Second column\n" +
+			"  --------------|-------------|--------------------|------------------------\n" +
+			"   Space        | No change   | No change          | No change\n" +
+			"   A            | Added       | Entry was created  | Entry will be created\n" +
+			"   D            | Deleted     | Entry was deleted  | Entry will be deleted\n" +
+			"   M            | Modified    | Entry was modified | Entry will be modified\n" +
+			"   R            | Run         | Not applicable     | Script will be run",
 		example: "" +
 			"  chezmoi status",
 		longFlags: chezmoiset.New(
@@ -774,8 +790,8 @@ var helps = map[string]*help{
 	"target-path": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Print the target path of each source path. If no source paths are specified then\n" +
-			"  print the target directory.",
+			"  Print the target path of each source path. If no source paths are specified\n" +
+			"  then print the target directory.",
 		example: "" +
 			"  chezmoi target-path\n" +
 			"  chezmoi target-path ~/.local/share/chezmoi/dot_zshrc",
@@ -811,10 +827,10 @@ var helps = map[string]*help{
 			"Description:\n" +
 			"  Pull changes from the source repo and apply any changes.\n" +
 			"\n" +
-			"  If update.command is set then chezmoi will run update.command with update.args\n" +
-			"  in the working tree. Otherwise, chezmoi will run git pull --autostash --rebase [--\n" +
-			"  recurse-submodules] , using chezmoi's builtin git if useBuiltinGit is true or if\n" +
-			"  git.command cannot be found in $PATH.",
+			"  If update.command is set then chezmoi will run update.command with\n" +
+			"  update.args in the working tree. Otherwise, chezmoi will run git pull --\n" +
+			"  autostash --rebase [--recurse-submodules] , using chezmoi's builtin git if\n" +
+			"  useBuiltinGit is true or if git.command cannot be found in $PATH.",
 		example: "" +
 			"  chezmoi update",
 		longFlags: chezmoiset.New(
@@ -837,16 +853,17 @@ var helps = map[string]*help{
 	"upgrade": {
 		longHelp: "" +
 			"Description:\n" +
-			"  Upgrade chezmoi by downloading and installing the latest released version. This\n" +
-			"  will call the GitHub API to determine if there is a new version of chezmoi\n" +
-			"  available, and if so, download and attempt to install it in the same way as\n" +
-			"  chezmoi was previously installed.\n" +
+			"  Upgrade chezmoi by downloading and installing the latest released version.\n" +
+			"  This will call the GitHub API to determine if there is a new version of\n" +
+			"  chezmoi available, and if so, download and attempt to install it in the same\n" +
+			"  way as chezmoi was previously installed.\n" +
 			"\n" +
 			"  If the any of the $CHEZMOI_GITHUB_ACCESS_TOKEN, $CHEZMOI_GITHUB_TOKEN,\n" +
-			"  $GITHUB_ACCESS_TOKEN, or $GITHUB_TOKEN environment variables are set, then the\n" +
-			"  first value found will be used to authenticate requests to the GitHub API,\n" +
-			"  otherwise unauthenticated requests are used which are subject to stricter rate\n" +
-			"  limiting. Unauthenticated requests should be sufficient for most cases.",
+			"  $GITHUB_ACCESS_TOKEN, or $GITHUB_TOKEN environment variables are set, then\n" +
+			"  the first value found will be used to authenticate requests to the GitHub\n" +
+			"  API, otherwise unauthenticated requests are used which are subject to\n" +
+			"  stricter rate limiting. Unauthenticated requests should be sufficient for\n" +
+			"  most cases.",
 		longFlags: chezmoiset.New(
 			"executable",
 			"method",
@@ -856,8 +873,8 @@ var helps = map[string]*help{
 		longHelp: "" +
 			"Description:\n" +
 			"  Verify that all targets match their target state. chezmoi exits with code 0\n" +
-			"  (success) if all targets match their target state, or 1 (failure) otherwise. If\n" +
-			"  no targets are specified then all targets are checked.",
+			"  (success) if all targets match their target state, or 1 (failure) otherwise.\n" +
+			"  If no targets are specified then all targets are checked.",
 		example: "" +
 			"  chezmoi verify\n" +
 			"  chezmoi verify ~/.bashrc",
