@@ -343,7 +343,8 @@ var helps = map[string]*help{
 			"  If the operating system supports hard links, then the edit command invokes\n" +
 			"  the editor with filenames which match the target filename, unless the\n" +
 			"  edit.hardlink configuration variable is set to false or the --hardlink=false\n" +
-			"  command line flag is set.",
+			"  command line flag is set. Templates preserve their .tmpl extension so\n" +
+			"  editors can highlight them as templates.",
 		example: "" +
 			"  chezmoi edit ~/.bashrc\n" +
 			"  chezmoi edit ~/.bashrc --apply\n" +
