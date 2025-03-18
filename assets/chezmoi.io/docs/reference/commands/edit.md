@@ -10,7 +10,14 @@ file is re-encrypted and replaces the original file in the source state.
 If the operating system supports hard links, then the edit command invokes the
 editor with filenames which match the target filename, unless the
 `edit.hardlink` configuration variable is set to `false` or the
-`--hardlink=false` command line flag is set.
+`--hardlink=false` command line flag is set. Templates preserve their `.tmpl`
+extension so editors can highlight them as templates.
+
+!!! hint
+
+    Depending on your editor, you can set the format of a file in the file itself
+    using a [modeline][modelines]. This can be useful if you want to syntax
+    highlight a template as a different format.
 
 ## Flags
 
@@ -64,3 +71,4 @@ Automatically apply changes when files are saved, with the following limitations
   ```
 
 [fsnotify]: https://github.com/fsnotify/fsnotify
+[modelines]: https://vimhelp.org/options.txt.html#auto-setting
