@@ -68,8 +68,8 @@ If you really want to use symlinks, then chezmoi provides a [symlink
 mode][symlink] which uses symlinks where possible. This configures chezmoi to
 work like GNU Stow and have it create a set of symlinks back to a central
 directory, but this currently requires a bit of manual work (as described in
-[issue #167][#167]). chezmoi might get some automation to help (see [issue
-#886][#886] for example) but it does need some convincing use cases that
+[issue #167][#167]). chezmoi might get some automation to help (see
+[issue #886][#886] for example) but it does need some convincing use cases that
 demonstrate that a symlink from a dotfile's location to its contents in
 a central directory is better than just having the correct dotfile contents.
 
