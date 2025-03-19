@@ -49,12 +49,13 @@ type upgradeCmdConfig struct {
 
 func (c *Config) newUpgradeCmd() *cobra.Command {
 	upgradeCmd := &cobra.Command{
-		Use:     "upgrade",
-		Short:   "Upgrade chezmoi to the latest released version",
-		Long:    mustLongHelp("upgrade"),
-		Example: example("upgrade"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runUpgradeCmd,
+		Use:               "upgrade",
+		Short:             "Upgrade chezmoi to the latest released version",
+		Long:              mustLongHelp("upgrade"),
+		Example:           example("upgrade"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.runUpgradeCmd,
 		Annotations: newAnnotations(
 			persistentStateModeNone,
 			runsCommands,
