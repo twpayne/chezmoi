@@ -182,3 +182,9 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+// Use a fork of gitleaks that uses the standard regexp package, not
+// github.com/wasilibs/go-re2. This improves startup time, and avoids linking in a
+// full WASM runtime.
+// See https://github.com/gitleaks/gitleaks/issues/1796.
+replace github.com/zricethezav/gitleaks/v8 => github.com/twpayne/gitleaks/v8 v8.0.0-20250319121243-993bde9542cc
