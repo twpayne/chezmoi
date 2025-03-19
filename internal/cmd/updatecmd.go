@@ -22,12 +22,13 @@ type updateCmdConfig struct {
 
 func (c *Config) newUpdateCmd() *cobra.Command {
 	updateCmd := &cobra.Command{
-		Use:     "update",
-		Short:   "Pull and apply any changes",
-		Long:    mustLongHelp("update"),
-		Example: example("update"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runUpdateCmd,
+		Use:               "update",
+		Short:             "Pull and apply any changes",
+		Long:              mustLongHelp("update"),
+		Example:           example("update"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.runUpdateCmd,
 		Annotations: newAnnotations(
 			modifiesDestinationDirectory,
 			persistentStateModeReadWrite,

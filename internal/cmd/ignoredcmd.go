@@ -13,12 +13,13 @@ type ignoredCmdConfig struct {
 
 func (c *Config) newIgnoredCmd() *cobra.Command {
 	ignoredCmd := &cobra.Command{
-		Use:     "ignored",
-		Short:   "Print ignored targets",
-		Long:    mustLongHelp("ignored"),
-		Example: example("ignored"),
-		Args:    cobra.NoArgs,
-		RunE:    c.makeRunEWithSourceState(c.runIgnoredCmd),
+		Use:               "ignored",
+		Short:             "Print ignored targets",
+		Long:              mustLongHelp("ignored"),
+		Example:           example("ignored"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.makeRunEWithSourceState(c.runIgnoredCmd),
 		Annotations: newAnnotations(
 			persistentStateModeReadMockWrite,
 		),

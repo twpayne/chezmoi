@@ -6,12 +6,13 @@ import (
 
 func (c *Config) newEditConfigCmd() *cobra.Command {
 	editConfigCmd := &cobra.Command{
-		Use:     "edit-config",
-		Short:   "Edit the configuration file",
-		Long:    mustLongHelp("edit-config"),
-		Example: example("edit-config"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runEditConfigCmd,
+		Use:               "edit-config",
+		Short:             "Edit the configuration file",
+		Long:              mustLongHelp("edit-config"),
+		Example:           example("edit-config"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.runEditConfigCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			modifiesConfigFile,

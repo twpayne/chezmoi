@@ -14,12 +14,13 @@ type dataCmdConfig struct {
 
 func (c *Config) newDataCmd() *cobra.Command {
 	dataCmd := &cobra.Command{
-		Use:     "data",
-		Short:   "Print the template data",
-		Long:    mustLongHelp("data"),
-		Example: example("data"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runDataCmd,
+		Use:               "data",
+		Short:             "Print the template data",
+		Long:              mustLongHelp("data"),
+		Example:           example("data"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.runDataCmd,
 		Annotations: newAnnotations(
 			persistentStateModeReadOnly,
 		),

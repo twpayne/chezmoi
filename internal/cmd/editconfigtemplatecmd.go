@@ -11,12 +11,13 @@ import (
 
 func (c *Config) newEditConfigTemplateCmd() *cobra.Command {
 	editConfigCmd := &cobra.Command{
-		Use:     "edit-config-template",
-		Short:   "Edit the configuration file template",
-		Long:    mustLongHelp("edit-config-template"),
-		Example: example("edit-config-template"),
-		Args:    cobra.NoArgs,
-		RunE:    c.makeRunEWithSourceState(c.runEditConfigTemplateCmd),
+		Use:               "edit-config-template",
+		Short:             "Edit the configuration file template",
+		Long:              mustLongHelp("edit-config-template"),
+		Example:           example("edit-config-template"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.makeRunEWithSourceState(c.runEditConfigTemplateCmd),
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			modifiesSourceDirectory,
