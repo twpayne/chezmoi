@@ -150,12 +150,13 @@ type doctorCmdConfig struct {
 
 func (c *Config) newDoctorCmd() *cobra.Command {
 	doctorCmd := &cobra.Command{
-		Args:    cobra.NoArgs,
-		Use:     "doctor",
-		Short:   "Check your system for potential problems",
-		Example: example("doctor"),
-		Long:    mustLongHelp("doctor"),
-		RunE:    c.runDoctorCmd,
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		Use:               "doctor",
+		Short:             "Check your system for potential problems",
+		Example:           example("doctor"),
+		Long:              mustLongHelp("doctor"),
+		RunE:              c.runDoctorCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,

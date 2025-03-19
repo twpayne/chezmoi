@@ -19,12 +19,13 @@ type purgeCmdConfig struct {
 
 func (c *Config) newPurgeCmd() *cobra.Command {
 	purgeCmd := &cobra.Command{
-		Use:     "purge",
-		Short:   "Purge chezmoi's configuration and data",
-		Long:    mustLongHelp("purge"),
-		Example: example("purge"),
-		Args:    cobra.NoArgs,
-		RunE:    c.runPurgeCmd,
+		Use:               "purge",
+		Short:             "Purge chezmoi's configuration and data",
+		Long:              mustLongHelp("purge"),
+		Example:           example("purge"),
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
+		RunE:              c.runPurgeCmd,
 		Annotations: newAnnotations(
 			modifiesDestinationDirectory,
 			modifiesSourceDirectory,
