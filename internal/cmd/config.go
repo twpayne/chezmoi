@@ -1760,9 +1760,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		rootCmd.RegisterFlagCompletionFunc("color", autoBoolFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("config-format", c.configFormat.FlagCompletionFunc()),
 		rootCmd.RegisterFlagCompletionFunc("mode", chezmoi.ModeFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("progress", autoBoolFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("refresh-externals", chezmoi.RefreshExternalsFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-age", autoBoolFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-git", autoBoolFlagCompletionFunc),
+		rootCmd.MarkPersistentFlagDirname("working-tree"),
 	); err != nil {
 		return nil, err
 	}
