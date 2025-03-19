@@ -15,4 +15,4 @@ the same *owner-repo* *version* will only result in one call to the GitHub API.
     {{ (gitHubRelease "docker/compose" "v2.29.1").TagName }}
     ```
 
-[bindings]: https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryRelease
+[bindings]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryRelease
