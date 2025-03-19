@@ -102,9 +102,6 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 				HCPVaultSecrets: hcpVaultSecretConfig{
 					Args: []string{},
 				},
-				Keepassxc: keepassxcConfig{
-					Args: []string{},
-				},
 				Keeper: keeperConfig{
 					Args: []string{},
 				},

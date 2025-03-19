@@ -81,26 +81,6 @@ func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
 }
 
 func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, fileInfo fs.FileInfo) error {
-	// Scan unencrypted files for secrets, if configured.
-	if c.Add.Secrets.String() != severityIgnore && fileInfo.Mode().Type() == 0 && !c.Add.Encrypt {
-		absPath := c.DestDirAbsPath.Join(targetRelPath)
-		content, err := c.destSystem.ReadFile(absPath)
-		if err != nil {
-			return err
-		}
-		gitleaksDetector, err := c.getGitleaksDetector()
-		if err != nil {
-			return err
-		}
-		findings := gitleaksDetector.DetectBytes(content)
-		for _, finding := range findings {
-			c.errorf("%s:%d: %s\n", absPath, finding.StartLine+1, finding.Description)
-		}
-		if !c.force && c.Add.Secrets.String() == severityError && len(findings) > 0 {
-			return chezmoi.ExitCodeError(1)
-		}
-	}
-
 	if !c.Add.prompt {
 		return nil
 	}

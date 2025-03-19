@@ -43,7 +43,6 @@ import (
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-xdg/v6"
-	"github.com/zricethezav/gitleaks/v8/detect"
 	"golang.org/x/term"
 	"mvdan.cc/sh/v3/expand"
 	"mvdan.cc/sh/v3/syntax"
@@ -106,7 +105,6 @@ type ConfigFile struct {
 	Env                    map[string]string              `json:"env"             mapstructure:"env"             yaml:"env"`
 	Format                 *choiceFlag                    `json:"format"          mapstructure:"format"          yaml:"format"`
 	DestDirAbsPath         chezmoi.AbsPath                `json:"destDir"         mapstructure:"destDir"         yaml:"destDir"`
-	GitHub                 gitHubConfig                   `json:"gitHub"          mapstructure:"gitHub"          yaml:"gitHub"`
 	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
 	Interactive            bool                           `json:"interactive"     mapstructure:"interactive"     yaml:"interactive"`
 	Interpreters           map[string]chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
@@ -130,25 +128,19 @@ type ConfigFile struct {
 	WorkingTreeAbsPath     chezmoi.AbsPath                `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
 
 	// Password manager configurations.
-	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"`
-	AzureKeyVault     azureKeyVaultConfig     `json:"azureKeyVault"     mapstructure:"azureKeyVault"     yaml:"azureKeyVault"`
-	Bitwarden         bitwardenConfig         `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
-	BitwardenSecrets  bitwardenSecretsConfig  `json:"bitwardenSecrets"  mapstructure:"bitwardenSecrets"  yaml:"bitwardenSecrets"`
-	Dashlane          dashlaneConfig          `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
-	Doppler           dopplerConfig           `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
-	Ejson             ejsonConfig             `json:"ejson"             mapstructure:"ejson"             yaml:"ejson"`
-	Gopass            gopassConfig            `json:"gopass"            mapstructure:"gopass"            yaml:"gopass"`
-	HCPVaultSecrets   hcpVaultSecretConfig    `json:"hcpVaultSecrets"   mapstructure:"hcpVaultSecrets"   yaml:"hcpVaultSecrets"`
-	Keepassxc         keepassxcConfig         `json:"keepassxc"         mapstructure:"keepassxc"         yaml:"keepassxc"`
-	Keeper            keeperConfig            `json:"keeper"            mapstructure:"keeper"            yaml:"keeper"`
-	Lastpass          lastpassConfig          `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
-	Onepassword       onepasswordConfig       `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
-	OnepasswordSDK    onepasswordSDKConfig    `json:"onepasswordSDK"    mapstructure:"onepasswordSDK"    yaml:"onepasswordSDK"` //nolint:tagliatelle
-	Pass              passConfig              `json:"pass"              mapstructure:"pass"              yaml:"pass"`
-	Passhole          passholeConfig          `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
-	RBW               rbwConfig               `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
-	Secret            secretConfig            `json:"secret"            mapstructure:"secret"            yaml:"secret"`
-	Vault             vaultConfig             `json:"vault"             mapstructure:"vault"             yaml:"vault"`
+	Bitwarden        bitwardenConfig        `json:"bitwarden"         mapstructure:"bitwarden"         yaml:"bitwarden"`
+	BitwardenSecrets bitwardenSecretsConfig `json:"bitwardenSecrets"  mapstructure:"bitwardenSecrets"  yaml:"bitwardenSecrets"`
+	Dashlane         dashlaneConfig         `json:"dashlane"          mapstructure:"dashlane"          yaml:"dashlane"`
+	Doppler          dopplerConfig          `json:"doppler"           mapstructure:"doppler"           yaml:"doppler"`
+	HCPVaultSecrets  hcpVaultSecretConfig   `json:"hcpVaultSecrets"   mapstructure:"hcpVaultSecrets"   yaml:"hcpVaultSecrets"`
+	Keeper           keeperConfig           `json:"keeper"            mapstructure:"keeper"            yaml:"keeper"`
+	Lastpass         lastpassConfig         `json:"lastpass"          mapstructure:"lastpass"          yaml:"lastpass"`
+	Onepassword      onepasswordConfig      `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
+	Pass             passConfig             `json:"pass"              mapstructure:"pass"              yaml:"pass"`
+	Passhole         passholeConfig         `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
+	RBW              rbwConfig              `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
+	Secret           secretConfig           `json:"secret"            mapstructure:"secret"            yaml:"secret"`
+	Vault            vaultConfig            `json:"vault"             mapstructure:"vault"             yaml:"vault"`
 
 	// Encryption configurations.
 	Encryption string                `json:"encryption" mapstructure:"encryption" yaml:"encryption"`
@@ -189,7 +181,6 @@ type Config struct {
 	useBuiltinDiff   bool
 
 	// Password manager data.
-	gitHub  gitHubData
 	keyring keyringData
 
 	// Command configurations, not settable in the config file.
@@ -213,7 +204,6 @@ type Config struct {
 	secret          secretCmdConfig
 	state           stateCmdConfig
 	unmanaged       unmanagedCmdConfig
-	upgrade         upgradeCmdConfig
 
 	// Common configuration.
 	interactiveTemplateFuncs interactiveTemplateFuncsConfig
@@ -245,8 +235,6 @@ type Config struct {
 	sourceState         *chezmoi.SourceState
 	sourceStateErr      error
 	templateData        *templateData
-	gitleaksDetector    *detect.Detector
-	gitleaksDetectorErr error
 
 	stdin             io.Reader
 	stdout            io.Writer
@@ -434,96 +422,76 @@ func newConfig(options ...configOption) (*Config, error) {
 	// The completion template function is added in persistentPreRunRootE as
 	// it needs a *cobra.Command, which we don't yet have.
 	for key, value := range map[string]any{
-		"awsSecretsManager":            c.awsSecretsManagerTemplateFunc,
-		"awsSecretsManagerRaw":         c.awsSecretsManagerRawTemplateFunc,
-		"azureKeyVault":                c.azureKeyVaultTemplateFunc,
-		"bitwarden":                    c.bitwardenTemplateFunc,
-		"bitwardenAttachment":          c.bitwardenAttachmentTemplateFunc,
-		"bitwardenAttachmentByRef":     c.bitwardenAttachmentByRefTemplateFunc,
-		"bitwardenFields":              c.bitwardenFieldsTemplateFunc,
-		"bitwardenSecrets":             c.bitwardenSecretsTemplateFunc,
-		"comment":                      c.commentTemplateFunc,
-		"dashlaneNote":                 c.dashlaneNoteTemplateFunc,
-		"dashlanePassword":             c.dashlanePasswordTemplateFunc,
-		"decrypt":                      c.decryptTemplateFunc,
-		"deleteValueAtPath":            c.deleteValueAtPathTemplateFunc,
-		"doppler":                      c.dopplerTemplateFunc,
-		"dopplerProjectJson":           c.dopplerProjectJSONTemplateFunc,
-		"ejsonDecrypt":                 c.ejsonDecryptTemplateFunc,
-		"ejsonDecryptWithKey":          c.ejsonDecryptWithKeyTemplateFunc,
-		"encrypt":                      c.encryptTemplateFunc,
-		"eqFold":                       c.eqFoldTemplateFunc,
-		"findExecutable":               c.findExecutableTemplateFunc,
-		"findOneExecutable":            c.findOneExecutableTemplateFunc,
-		"fromIni":                      c.fromIniTemplateFunc,
-		"fromJson":                     c.fromJsonTemplateFunc,
-		"fromJsonc":                    c.fromJsoncTemplateFunc,
-		"fromToml":                     c.fromTomlTemplateFunc,
-		"fromYaml":                     c.fromYamlTemplateFunc,
-		"gitHubKeys":                   c.gitHubKeysTemplateFunc,
-		"gitHubLatestRelease":          c.gitHubLatestReleaseTemplateFunc,
-		"gitHubLatestReleaseAssetURL":  c.gitHubLatestReleaseAssetURLTemplateFunc,
-		"gitHubLatestTag":              c.gitHubLatestTagTemplateFunc,
-		"gitHubRelease":                c.gitHubReleaseTemplateFunc,
-		"gitHubReleaseAssetURL":        c.gitHubReleaseAssetURLTemplateFunc,
-		"gitHubReleases":               c.gitHubReleasesTemplateFunc,
-		"gitHubTags":                   c.gitHubTagsTemplateFunc,
-		"glob":                         c.globTemplateFunc,
-		"gopass":                       c.gopassTemplateFunc,
-		"gopassRaw":                    c.gopassRawTemplateFunc,
-		"hcpVaultSecret":               c.hcpVaultSecretTemplateFunc,
-		"hcpVaultSecretJson":           c.hcpVaultSecretJSONTemplateFunc,
-		"hexDecode":                    c.hexDecodeTemplateFunc,
-		"hexEncode":                    c.hexEncodeTemplateFunc,
-		"include":                      c.includeTemplateFunc,
-		"includeTemplate":              c.includeTemplateTemplateFunc,
-		"ioreg":                        c.ioregTemplateFunc,
-		"isExecutable":                 c.isExecutableTemplateFunc,
-		"joinPath":                     c.joinPathTemplateFunc,
-		"jq":                           c.jqTemplateFunc,
-		"keepassxc":                    c.keepassxcTemplateFunc,
-		"keepassxcAttachment":          c.keepassxcAttachmentTemplateFunc,
-		"keepassxcAttribute":           c.keepassxcAttributeTemplateFunc,
-		"keeper":                       c.keeperTemplateFunc,
-		"keeperDataFields":             c.keeperDataFieldsTemplateFunc,
-		"keeperFindPassword":           c.keeperFindPasswordTemplateFunc,
-		"keyring":                      c.keyringTemplateFunc,
-		"lastpass":                     c.lastpassTemplateFunc,
-		"lastpassRaw":                  c.lastpassRawTemplateFunc,
-		"lookPath":                     c.lookPathTemplateFunc,
-		"lstat":                        c.lstatTemplateFunc,
-		"mozillaInstallHash":           c.mozillaInstallHashTemplateFunc,
-		"onepassword":                  c.onepasswordTemplateFunc,
-		"onepasswordDetailsFields":     c.onepasswordDetailsFieldsTemplateFunc,
-		"onepasswordDocument":          c.onepasswordDocumentTemplateFunc,
-		"onepasswordItemFields":        c.onepasswordItemFieldsTemplateFunc,
-		"onepasswordRead":              c.onepasswordReadTemplateFunc,
-		"onepasswordSDKItemsGet":       c.onepasswordSDKItemsGet,
-		"onepasswordSDKSecretsResolve": c.onepasswordSDKSecretsResolve,
-		"output":                       c.outputTemplateFunc,
-		"outputList":                   c.outputListTemplateFunc,
-		"pass":                         c.passTemplateFunc,
-		"passFields":                   c.passFieldsTemplateFunc,
-		"passRaw":                      c.passRawTemplateFunc,
-		"passhole":                     c.passholeTemplateFunc,
-		"pruneEmptyDicts":              c.pruneEmptyDictsTemplateFunc,
-		"quote":                        c.quoteTemplateFunc,
-		"quoteList":                    c.quoteListTemplateFunc,
-		"rbw":                          c.rbwTemplateFunc,
-		"rbwFields":                    c.rbwFieldsTemplateFunc,
-		"replaceAllRegex":              c.replaceAllRegexTemplateFunc,
-		"secret":                       c.secretTemplateFunc,
-		"secretJSON":                   c.secretJSONTemplateFunc,
-		"setValueAtPath":               c.setValueAtPathTemplateFunc,
-		"splitList":                    c.splitListTemplateFunc,
-		"squote":                       c.squoteTemplateFunc,
-		"stat":                         c.statTemplateFunc,
-		"toIni":                        c.toIniTemplateFunc,
-		"toPrettyJson":                 c.toPrettyJsonTemplateFunc,
-		"toToml":                       c.toTomlTemplateFunc,
-		"toYaml":                       c.toYamlTemplateFunc,
-		"vault":                        c.vaultTemplateFunc,
-		"warnf":                        c.warnfTemplateFunc,
+		"bitwarden":                c.bitwardenTemplateFunc,
+		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
+		"bitwardenAttachmentByRef": c.bitwardenAttachmentByRefTemplateFunc,
+		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
+		"bitwardenSecrets":         c.bitwardenSecretsTemplateFunc,
+		"comment":                  c.commentTemplateFunc,
+		"dashlaneNote":             c.dashlaneNoteTemplateFunc,
+		"dashlanePassword":         c.dashlanePasswordTemplateFunc,
+		"decrypt":                  c.decryptTemplateFunc,
+		"deleteValueAtPath":        c.deleteValueAtPathTemplateFunc,
+		"doppler":                  c.dopplerTemplateFunc,
+		"dopplerProjectJson":       c.dopplerProjectJSONTemplateFunc,
+		"encrypt":                  c.encryptTemplateFunc,
+		"eqFold":                   c.eqFoldTemplateFunc,
+		"findExecutable":           c.findExecutableTemplateFunc,
+		"findOneExecutable":        c.findOneExecutableTemplateFunc,
+		"fromIni":                  c.fromIniTemplateFunc,
+		"fromJson":                 c.fromJsonTemplateFunc,
+		"fromJsonc":                c.fromJsoncTemplateFunc,
+		"fromToml":                 c.fromTomlTemplateFunc,
+		"fromYaml":                 c.fromYamlTemplateFunc,
+		"glob":                     c.globTemplateFunc,
+		"hcpVaultSecret":           c.hcpVaultSecretTemplateFunc,
+		"hcpVaultSecretJson":       c.hcpVaultSecretJSONTemplateFunc,
+		"hexDecode":                c.hexDecodeTemplateFunc,
+		"hexEncode":                c.hexEncodeTemplateFunc,
+		"include":                  c.includeTemplateFunc,
+		"includeTemplate":          c.includeTemplateTemplateFunc,
+		"ioreg":                    c.ioregTemplateFunc,
+		"isExecutable":             c.isExecutableTemplateFunc,
+		"joinPath":                 c.joinPathTemplateFunc,
+		"jq":                       c.jqTemplateFunc,
+		"keeper":                   c.keeperTemplateFunc,
+		"keeperDataFields":         c.keeperDataFieldsTemplateFunc,
+		"keeperFindPassword":       c.keeperFindPasswordTemplateFunc,
+		"keyring":                  c.keyringTemplateFunc,
+		"lastpass":                 c.lastpassTemplateFunc,
+		"lastpassRaw":              c.lastpassRawTemplateFunc,
+		"lookPath":                 c.lookPathTemplateFunc,
+		"lstat":                    c.lstatTemplateFunc,
+		"mozillaInstallHash":       c.mozillaInstallHashTemplateFunc,
+		"onepassword":              c.onepasswordTemplateFunc,
+		"onepasswordDetailsFields": c.onepasswordDetailsFieldsTemplateFunc,
+		"onepasswordDocument":      c.onepasswordDocumentTemplateFunc,
+		"onepasswordItemFields":    c.onepasswordItemFieldsTemplateFunc,
+		"onepasswordRead":          c.onepasswordReadTemplateFunc,
+		"output":                   c.outputTemplateFunc,
+		"outputList":               c.outputListTemplateFunc,
+		"pass":                     c.passTemplateFunc,
+		"passFields":               c.passFieldsTemplateFunc,
+		"passRaw":                  c.passRawTemplateFunc,
+		"passhole":                 c.passholeTemplateFunc,
+		"pruneEmptyDicts":          c.pruneEmptyDictsTemplateFunc,
+		"quote":                    c.quoteTemplateFunc,
+		"quoteList":                c.quoteListTemplateFunc,
+		"rbw":                      c.rbwTemplateFunc,
+		"rbwFields":                c.rbwFieldsTemplateFunc,
+		"replaceAllRegex":          c.replaceAllRegexTemplateFunc,
+		"secret":                   c.secretTemplateFunc,
+		"secretJSON":               c.secretJSONTemplateFunc,
+		"setValueAtPath":           c.setValueAtPathTemplateFunc,
+		"splitList":                c.splitListTemplateFunc,
+		"squote":                   c.squoteTemplateFunc,
+		"stat":                     c.statTemplateFunc,
+		"toIni":                    c.toIniTemplateFunc,
+		"toPrettyJson":             c.toPrettyJsonTemplateFunc,
+		"toToml":                   c.toTomlTemplateFunc,
+		"toYaml":                   c.toYamlTemplateFunc,
+		"vault":                    c.vaultTemplateFunc,
+		"warnf":                    c.warnfTemplateFunc,
 	} {
 		c.addTemplateFunc(key, value)
 	}
@@ -1438,13 +1406,6 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 	return pagerCmd, nil
 }
 
-func (c *Config) getGitleaksDetector() (*detect.Detector, error) {
-	if c.gitleaksDetector == nil && c.gitleaksDetectorErr == nil {
-		c.gitleaksDetector, c.gitleaksDetectorErr = detect.NewDetectorDefaultConfig()
-	}
-	return c.gitleaksDetector, c.gitleaksDetectorErr
-}
-
 // A modifyHTTPRequestFunc is a function that modifies a net/http.Request before
 // it is sent.
 type modifyHTTPRequestFunc func(*http.Request) (*http.Request, error)
@@ -1812,7 +1773,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newTargetPathCmd(),
 		c.newUnmanagedCmd(),
 		c.newUpdateCmd(),
-		c.newUpgradeCmd(),
 		c.newVerifyCmd(),
 	} {
 		if cmd != nil {
@@ -2005,11 +1965,6 @@ func (c *Config) finalize() {
 		if err := c.restoreWindowsConsole(); err != nil {
 			c.errorf("error: failed to restore console: %v\n", err)
 		}
-	}
-
-	// Close any connection to keepassxc-cli.
-	if err := c.keepassxcClose(); err != nil {
-		c.errorf("error: failed to close connection to keepassxc-cli: %v\n", err)
 	}
 }
 
@@ -2932,19 +2887,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Doppler: dopplerConfig{
 			Command: "doppler",
 		},
-		Ejson: ejsonConfig{
-			KeyDir: cmp.Or(os.Getenv("EJSON_KEYDIR"), "/opt/ejson/keys"),
-		},
-		Gopass: gopassConfig{
-			Command: "gopass",
-		},
 		HCPVaultSecrets: hcpVaultSecretConfig{
 			Command: "vlt",
-		},
-		Keepassxc: keepassxcConfig{
-			Command: "keepassxc-cli",
-			Prompt:  true,
-			Mode:    keepassxcModeCachePassword,
 		},
 		Keeper: keeperConfig{
 			Command: "keeper",
@@ -2956,9 +2900,6 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			Command: "op",
 			Prompt:  true,
 			Mode:    onepasswordModeAccount,
-		},
-		OnepasswordSDK: onepasswordSDKConfig{
-			TokenEnvVar: "OP_SERVICE_ACCOUNT_TOKEN",
 		},
 		Pass: passConfig{
 			Command: "pass",
@@ -2998,9 +2939,6 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Format: newChoiceFlag(formatJSON, readDataFormatValues),
 		Git: gitCmdConfig{
 			Command: "git",
-		},
-		GitHub: gitHubConfig{
-			RefreshPeriod: 1 * time.Minute,
 		},
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",

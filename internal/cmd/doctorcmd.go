@@ -135,9 +135,6 @@ type suspiciousEntriesCheck struct {
 	encryptedSuffixes []string
 }
 
-// A upgradeMethodCheck checks the upgrade method.
-type upgradeMethodCheck struct{}
-
 // A versionCheck checks the version information.
 type versionCheck struct {
 	versionInfo VersionInfo
@@ -194,7 +191,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		systeminfoCheck{},
 		goVersionCheck{},
 		executableCheck{},
-		upgradeMethodCheck{},
 		&configFileCheck{
 			basename: chezmoiRelPath,
 			bds:      c.bds,
@@ -336,30 +332,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^v(\d+\.\d+\.\d+)`),
-		},
-		&binaryCheck{
-			name:        "gopass-command",
-			binaryName:  c.Gopass.Command,
-			ifNotSet:    checkResultWarning,
-			ifNotExist:  checkResultInfo,
-			versionArgs: gopassVersionArgs,
-			versionRx:   gopassVersionRx,
-			minVersion:  &gopassMinVersion,
-		},
-		&binaryCheck{
-			name:        "keepassxc-command",
-			binaryName:  c.Keepassxc.Command,
-			ifNotSet:    checkResultWarning,
-			ifNotExist:  checkResultInfo,
-			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
-			minVersion:  &keepassxcMinVersion,
-		},
-		&fileCheck{
-			name:       "keepassxc-db",
-			filename:   c.Keepassxc.Database,
-			ifNotSet:   checkResultInfo,
-			ifNotExist: checkResultInfo,
 		},
 		&binaryCheck{
 			name:        "keeper-command",
@@ -734,25 +706,6 @@ func (c *suspiciousEntriesCheck) Run(config *Config) (checkResult, string) {
 		return checkResultWarning, englishList(suspiciousEntries)
 	}
 	return checkResultOK, "no suspicious entries"
-}
-
-func (upgradeMethodCheck) Name() string {
-	return "upgrade-method"
-}
-
-func (upgradeMethodCheck) Run(config *Config) (checkResult, string) {
-	executable, err := os.Executable()
-	if err != nil {
-		return checkResultFailed, err.Error()
-	}
-	method, err := getUpgradeMethod(config.baseSystem.UnderlyingFS(), chezmoi.NewAbsPath(executable))
-	if err != nil {
-		return checkResultFailed, err.Error()
-	}
-	if method == "" {
-		return checkResultOmitted, ""
-	}
-	return checkResultOK, method
 }
 
 func (c *versionCheck) Name() string {
