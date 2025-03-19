@@ -22,6 +22,6 @@ call to the GitHub API.
     recent tag, the GitHub API documentation does not specify the order of the
     returned tags.
 
-[bindings]: https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryTag
+[bindings]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryTag
 [tags]: /reference/templates/github-functions/gitHubTags.md
 [endpoint]: https://docs.github.com/en/rest/repos/repos#list-repository-tags

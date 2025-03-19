@@ -28,5 +28,5 @@ Calls to `gitHubReleases` are cached so calling `gitHubReleases` with the same
     ```
 
 
-[github-go]: https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryRelease
+[github-go]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryRelease
 [jq]: /reference/templates/functions/jq.md

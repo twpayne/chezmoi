@@ -18,5 +18,5 @@ call to the GitHub API.
 
     ```
 
-[bindings]: https://pkg.go.dev/github.com/google/go-github/v69/github#RepositoryRelease
+[bindings]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryRelease
 [match]: https://pkg.go.dev/path#Match
