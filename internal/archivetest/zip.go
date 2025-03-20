@@ -7,7 +7,7 @@ import (
 	"maps"
 	"slices"
 
-	"github.com/klauspost/compress/zip"
+	"archive/zip"
 )
 
 func NewZip(root map[string]any) ([]byte, error) {

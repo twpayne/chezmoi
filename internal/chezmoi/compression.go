@@ -3,12 +3,9 @@ package chezmoi
 import (
 	"bytes"
 	"compress/bzip2"
+	"compress/gzip"
 	"fmt"
 	"io"
-
-	"github.com/klauspost/compress/gzip"
-	"github.com/klauspost/compress/zstd"
-	"github.com/ulikunitz/xz"
 )
 
 // A compressionFormat is a compression format.
@@ -19,8 +16,6 @@ const (
 	compressionFormatNone  compressionFormat = ""
 	compressionFormatBzip2 compressionFormat = "bzip2"
 	compressionFormatGzip  compressionFormat = "gzip"
-	compressionFormatXz    compressionFormat = "xz"
-	compressionFormatZstd  compressionFormat = "zstd"
 )
 
 func decompress(compressionFormat compressionFormat, data []byte) ([]byte, error) {
@@ -35,18 +30,6 @@ func decompress(compressionFormat compressionFormat, data []byte) ([]byte, error
 			return nil, err
 		}
 		return io.ReadAll(gzipReader)
-	case compressionFormatXz:
-		xzReader, err := xz.NewReader(bytes.NewReader(data))
-		if err != nil {
-			return nil, err
-		}
-		return io.ReadAll(xzReader)
-	case compressionFormatZstd:
-		zstdReader, err := zstd.NewReader(bytes.NewReader(data))
-		if err != nil {
-			return nil, err
-		}
-		return io.ReadAll(zstdReader)
 	default:
 		return nil, fmt.Errorf("%s: unknown compression format", compressionFormat)
 	}

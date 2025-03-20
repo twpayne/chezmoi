@@ -1,12 +1,12 @@
 package archivetest
 
 import (
+	"archive/zip"
 	"bytes"
 	"io/fs"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	"github.com/klauspost/compress/zip"
 )
 
 func TestNewZip(t *testing.T) {

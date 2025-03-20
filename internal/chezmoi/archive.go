@@ -2,8 +2,10 @@ package chezmoi
 
 import (
 	"archive/tar"
+	"archive/zip"
 	"bytes"
 	"compress/bzip2"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -11,11 +13,6 @@ import (
 	"path"
 	"strings"
 	"time"
-
-	"github.com/klauspost/compress/gzip"
-	"github.com/klauspost/compress/zip"
-	"github.com/klauspost/compress/zstd"
-	"github.com/ulikunitz/xz"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
@@ -30,8 +27,6 @@ const (
 	ArchiveFormatTar     ArchiveFormat = "tar"
 	ArchiveFormatTarBz2  ArchiveFormat = "tar.bz2"
 	ArchiveFormatTarGz   ArchiveFormat = "tar.gz"
-	ArchiveFormatTarXz   ArchiveFormat = "tar.xz"
-	ArchiveFormatTarZst  ArchiveFormat = "tar.zst"
 	ArchiveFormatZip     ArchiveFormat = "zip"
 )
 
@@ -47,10 +42,6 @@ func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
 		return ArchiveFormatTarBz2
 	case strings.HasSuffix(nameLower, ".tar.gz") || strings.HasSuffix(nameLower, ".tgz"):
 		return ArchiveFormatTarGz
-	case strings.HasSuffix(nameLower, ".tar.xz") || strings.HasSuffix(nameLower, ".txz"):
-		return ArchiveFormatTarXz
-	case strings.HasSuffix(nameLower, ".tar.zst"):
-		return ArchiveFormatTarZst
 	case strings.HasSuffix(nameLower, ".zip"):
 		return ArchiveFormatZip
 	}
@@ -60,10 +51,6 @@ func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
 		return ArchiveFormatTarGz
 	case len(data) >= 4 && bytes.Equal(data[:4], []byte{'P', 'K', 0x03, 0x04}):
 		return ArchiveFormatZip
-	case len(data) >= xz.HeaderLen && xz.ValidHeader(data):
-		return ArchiveFormatTarXz
-	case (&zstd.Header{}).Decode(data) == nil:
-		return ArchiveFormatTarZst
 	case isTarArchive(bytes.NewReader(data)):
 		return ArchiveFormatTar
 	case isTarArchive(bzip2.NewReader(bytes.NewReader(data))):
@@ -90,20 +77,6 @@ func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
 		// Decompress with gzip.
 		var err error
 		r, err = gzip.NewReader(r)
-		if err != nil {
-			return err
-		}
-	case ArchiveFormatTarXz:
-		// Decompress with xz.
-		var err error
-		r, err = xz.NewReader(r)
-		if err != nil {
-			return err
-		}
-	case ArchiveFormatTarZst:
-		// Decompress with zstd.
-		var err error
-		r, err = zstd.NewReader(r)
 		if err != nil {
 			return err
 		}

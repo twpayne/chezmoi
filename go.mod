@@ -20,7 +20,6 @@ require (
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.17
-	github.com/klauspost/compress v1.18.0
 	github.com/mattn/go-runewidth v0.0.16
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/mitchellh/mapstructure v1.5.0
@@ -36,7 +35,6 @@ require (
 	github.com/twpayne/go-shell v0.5.0
 	github.com/twpayne/go-vfs/v5 v5.0.4
 	github.com/twpayne/go-xdg/v6 v6.1.3
-	github.com/ulikunitz/xz v0.5.12
 	github.com/zalando/go-keyring v0.2.6
 	go.etcd.io/bbolt v1.4.0
 	go.uber.org/automaxprocs v1.6.0
