@@ -1,4 +1,5 @@
 //go:generate go run ./internal/cmds/generate-helps -o internal/cmd/helps.gen.go
+//go:generate go run ./internal/cmds/generate-license -o internal/cmd/license.gen.go
 //go:generate go run . completion bash -o completions/chezmoi-completion.bash
 //go:generate go run . completion fish -o completions/chezmoi.fish
 //go:generate go run . completion powershell -o completions/chezmoi.ps1
