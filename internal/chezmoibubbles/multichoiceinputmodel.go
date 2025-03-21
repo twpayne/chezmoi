@@ -222,9 +222,6 @@ func (m MultichoiceInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case key.Matches(msg, km.Submit):
 			m.quitting = true
-			if m.numSelected < 1 {
-				m.items[m.index].selected = true
-			}
 			m.submitted = true
 			return m, tea.Quit
 		}
