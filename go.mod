@@ -65,7 +65,7 @@ require (
 	al.essio.dev/pkg/shellescape v1.6.0 // indirect
 	dario.cat/mergo v1.0.1 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.1.1 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.4.1 // indirect
@@ -115,7 +115,7 @@ require (
 	github.com/go-git/go-billy/v5 v5.6.2 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
@@ -145,7 +145,7 @@ require (
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/rs/zerolog v1.33.0 // indirect
+	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sagikazarmark/locafero v0.8.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
@@ -159,7 +159,7 @@ require (
 	github.com/tobischo/argon2 v0.1.0 // indirect
 	github.com/twpayne/go-pinentry v0.3.0 // indirect
 	github.com/urfave/cli/v2 v2.27.6 // indirect
-	github.com/wasilibs/go-re2 v1.9.0 // indirect
+	github.com/wasilibs/go-re2 v1.10.0 // indirect
 	github.com/wasilibs/wazero-helpers v0.0.0-20250123031827-cd30c44769bb // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
@@ -175,8 +175,8 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// Use a fork of gitleaks that uses the standard regexp package, not
+// Use a commit of gitleaks that uses the standard regexp package, not
 // github.com/wasilibs/go-re2. This improves startup time, and avoids linking in a
 // full WASM runtime.
 // See https://github.com/gitleaks/gitleaks/issues/1796.
-replace github.com/zricethezav/gitleaks/v8 => github.com/twpayne/gitleaks/v8 v8.0.0-20250319121243-993bde9542cc
+replace github.com/zricethezav/gitleaks/v8 => github.com/gitleaks/gitleaks/v8 v8.24.1-0.20250321004818-6cc0e386ac59
