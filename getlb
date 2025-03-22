@@ -40,7 +40,7 @@ main() {
 	TAG="$(real_tag "${TAGARG}")"
 	VERSION="${TAG#v}"
 
-	log_info "found version ${VERSION} for ${TAGARG}/${GOOS}/${GOARCH}"
+	log_info "found chezmoi version ${VERSION} for ${TAGARG}/${GOOS}/${GOARCH}"
 
 	BINSUFFIX=
 	FORMAT=tar.gz
