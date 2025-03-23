@@ -70,17 +70,17 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@80f993039571a6de66594ecaa432875a6942e8e0
+    - uses: github/codeql-action/init@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22
       with:
         languages: go
-    - uses: github/codeql-action/analyze@80f993039571a6de66594ecaa432875a6942e8e0
+    - uses: github/codeql-action/analyze@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22
   misspell:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: reviewdog/action-misspell@18ffb61effb93b47e332f185216be7e49592e7e1
+    - uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4
       with:
         locale: US
         ignore: ackward,importas
@@ -92,7 +92,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
       with:
         path: |
           ~/.go-alpine
@@ -113,7 +113,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
       with:
         path: |
           ~/.go-archlinux
@@ -185,7 +185,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
+    - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b
       with:
         go-version: oldstable
     - name: build
@@ -246,31 +246,31 @@ jobs:
         args: release --skip=sign --snapshot --timeout=1h
     - name: upload-artifact-chezmoi-darwin-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-darwin-arm64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64_v8.0/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-linux-musl-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-windows-amd64.exe
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
@@ -340,7 +340,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@f94ec6bedd8674c4426838e6b50417d36b6ab231
+    - uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -529,7 +529,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@f94ec6bedd8674c4426838e6b50417d36b6ab231
+    - uses: astral-sh/setup-uv@22695119d769bdb6f7032ad67b9bca0ef8c4a174
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}

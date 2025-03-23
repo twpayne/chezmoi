@@ -40,7 +40,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: reviewdog/action-misspell@18ffb61effb93b47e332f185216be7e49592e7e1
+    - uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4
       with:
         locale: US
         ignore: ackward
