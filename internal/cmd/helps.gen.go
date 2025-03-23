@@ -531,7 +531,7 @@ var helps = map[string]*help{
 			"                    | ser/dotfiles.git          | les.git\n" +
 			"   user/repo        | https://user@github.com/u | git@github.com:user/repo.\n" +
 			"                    | ser/repo.git              | git\n" +
-			"   site/user/repo   | https://user@site/user/re | git@/user/repo.git\n" +
+			"   site/user/repo   | https://user@site/user/re | git@site:user/repo.git\n" +
 			"                    | po.git                    |\n" +
 			"   sr.ht/~user      | https://user@git.sr.ht/~u | git@git.sr.ht:~user/dotfi\n" +
 			"                    | ser/dotfiles              | les.git\n" +
