@@ -36,7 +36,7 @@ The website is automatically deployed when new releases are created, but manual
 deployments can be triggered by maintainers with appropriate access using:
 
 ```sh
-uv run task mkdocs gh-deploy
+uv run task deploy-docs
 ```
 
 [website]: https://chezmoi.io
