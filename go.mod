@@ -47,7 +47,7 @@ require (
 	github.com/twpayne/go-xdg/v6 v6.1.3
 	github.com/ulikunitz/xz v0.5.12
 	github.com/zalando/go-keyring v0.2.6
-	github.com/zricethezav/gitleaks/v8 v8.24.0
+	github.com/zricethezav/gitleaks/v8 v8.24.2
 	go.etcd.io/bbolt v1.4.0
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.36.0
@@ -174,9 +174,3 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// Use a commit of gitleaks that uses the standard regexp package, not
-// github.com/wasilibs/go-re2. This improves startup time, and avoids linking in a
-// full WASM runtime.
-// See https://github.com/gitleaks/gitleaks/issues/1796.
-replace github.com/zricethezav/gitleaks/v8 => github.com/gitleaks/gitleaks/v8 v8.24.1-0.20250321004818-6cc0e386ac59
