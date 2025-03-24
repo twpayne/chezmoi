@@ -9,7 +9,7 @@ import (
 	"github.com/alecthomas/assert/v2"
 )
 
-func PanicsWithError(tb testing.TB, expected error, fn func(), msgAndArgs ...interface{}) {
+func PanicsWithError(tb testing.TB, expected error, fn func(), msgAndArgs ...any) {
 	tb.Helper()
 	defer func() {
 		if value, ok := recover().(error); ok {
@@ -22,7 +22,7 @@ func PanicsWithError(tb testing.TB, expected error, fn func(), msgAndArgs ...int
 	fn()
 }
 
-func PanicsWithErrorString(tb testing.TB, errString string, fn func(), msgAndArgs ...interface{}) {
+func PanicsWithErrorString(tb testing.TB, errString string, fn func(), msgAndArgs ...any) {
 	tb.Helper()
 	defer func() {
 		if value, ok := recover().(error); ok {
@@ -35,7 +35,7 @@ func PanicsWithErrorString(tb testing.TB, errString string, fn func(), msgAndArg
 	fn()
 }
 
-func formatMsgAndArgs(dflt string, msgAndArgs ...interface{}) string {
+func formatMsgAndArgs(dflt string, msgAndArgs ...any) string {
 	if len(msgAndArgs) == 0 {
 		return dflt
 	}

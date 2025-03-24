@@ -54,7 +54,7 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err = chezmoilog.LogCmdRun(slog.Default(), cmd)
-	return
+	return key, passphrase, err
 }
 
 // HomeDir returns the home directory.

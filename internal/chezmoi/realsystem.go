@@ -100,7 +100,7 @@ func (s *RealSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, opt
 	var f *os.File
 	f, err = os.CreateTemp(s.scriptTempDir.String(), "*."+scriptName.Base())
 	if err != nil {
-		return
+		return err
 	}
 	defer chezmoierrors.CombineFunc(&err, func() error {
 		return os.RemoveAll(f.Name())
@@ -109,14 +109,14 @@ func (s *RealSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, opt
 	// Make the script private before writing it in case it contains any
 	// secrets.
 	if runtime.GOOS != "windows" {
-		if err = f.Chmod(0o700); err != nil {
-			return
+		if err := f.Chmod(0o700); err != nil {
+			return err
 		}
 	}
 	_, err = f.Write(data)
 	err = chezmoierrors.Combine(err, f.Close())
 	if err != nil {
-		return
+		return err
 	}
 
 	cmd := options.Interpreter.ExecCommand(f.Name())

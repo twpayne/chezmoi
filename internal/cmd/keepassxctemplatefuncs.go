@@ -42,7 +42,7 @@ type keepassxcConfig struct {
 	Prompt          bool            `json:"prompt"   mapstructure:"prompt"   yaml:"prompt"`
 	cmd             *exec.Cmd
 	console         *expect.Console
-	prompt          string
+	promptStr       string
 	cache           map[string]map[string]string
 	attachmentCache map[string]map[string]string
 	attributeCache  map[keepassxcAttributeCacheKey]string
@@ -284,7 +284,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 
 		c.Keepassxc.cmd = cmd
 		c.Keepassxc.console = console
-		c.Keepassxc.prompt = keepassxcPromptRx.FindString(response)
+		c.Keepassxc.promptStr = keepassxcPromptRx.FindString(response)
 	}
 
 	// Build the command line. Strings with spaces and other non-word characters
@@ -301,7 +301,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 	}
 
 	// Read everything up to and including the prompt.
-	output, err := c.Keepassxc.console.ExpectString(c.Keepassxc.prompt)
+	output, err := c.Keepassxc.console.ExpectString(c.Keepassxc.promptStr)
 	if err != nil {
 		return nil, err
 	}
@@ -355,10 +355,7 @@ func (c *Config) keepassxcClose() error {
 	if err := chezmoilog.LogCmdWait(c.logger, c.Keepassxc.cmd); err != nil {
 		return err
 	}
-	if err := c.Keepassxc.console.Close(); err != nil {
-		return err
-	}
-	return nil
+	return c.Keepassxc.console.Close()
 }
 
 // keepassxcBuiltinExtractValues extract builtin values.

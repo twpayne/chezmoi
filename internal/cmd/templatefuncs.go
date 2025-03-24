@@ -129,12 +129,11 @@ func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
 		panic(fmt.Errorf("path list: %w", err))
 	}
 
-	switch path, err := chezmoi.FindExecutable(files, paths); {
-	case err == nil:
-		return path
-	default:
+	path, err := chezmoi.FindExecutable(files, paths)
+	if err != nil {
 		panic(err)
 	}
+	return path
 }
 
 func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
@@ -148,12 +147,11 @@ func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
 		panic(fmt.Errorf("path list: %w", err))
 	}
 
-	switch path, err := chezmoi.FindExecutable(files, paths); {
-	case err == nil:
-		return path
-	default:
+	path, err := chezmoi.FindExecutable(files, paths)
+	if err != nil {
 		panic(err)
 	}
+	return path
 }
 
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
@@ -163,7 +161,7 @@ func (c *Config) fromIniTemplateFunc(s string) map[string]any {
 // fromJsonTemplateFunc parses s as JSON and returns the result. In contrast to
 // encoding/json, numbers are represented as int64s or float64s if possible.
 //
-//nolint:revive,stylecheck
+//nolint:revive,staticcheck
 func (c *Config) fromJsonTemplateFunc(s string) any {
 	var value any
 	must(chezmoi.FormatJSON.Unmarshal([]byte(s), &value))
@@ -437,7 +435,7 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 
 func (c *Config) splitListTemplateFunc(sep, s string) []any {
 	strSlice := strings.Split(s, sep)
-	result := make([]interface{}, len(strSlice))
+	result := make([]any, len(strSlice))
 	for i, v := range strSlice {
 		result[i] = v
 	}
@@ -461,7 +459,7 @@ func (c *Config) toIniTemplateFunc(data map[string]any) string {
 	return builder.String()
 }
 
-func (c *Config) toPrettyJsonTemplateFunc(args ...any) string { //nolint:revive,stylecheck
+func (c *Config) toPrettyJsonTemplateFunc(args ...any) string { //nolint:revive,staticcheck
 	var (
 		indent = "  "
 		value  any

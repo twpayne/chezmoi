@@ -360,7 +360,7 @@ func TestIssue3980(t *testing.T) {
 		contents               string
 		expectsErr             bool
 		warns                  []string
-		expectedEncryptionType interface{}
+		expectedEncryptionType any
 		usesBuiltinAge         bool
 	}{
 		{

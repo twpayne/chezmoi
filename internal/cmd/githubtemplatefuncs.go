@@ -368,8 +368,9 @@ func (c *Config) getGitHubClient(ctx context.Context) (*github.Client, error) {
 	return c.gitHub.client, nil
 }
 
-func gitHubSplitOwnerRepo(ownerRepo string) (string, string, error) {
-	owner, repo, ok := strings.Cut(ownerRepo, "/")
+func gitHubSplitOwnerRepo(ownerRepo string) (owner, repo string, err error) {
+	var ok bool
+	owner, repo, ok = strings.Cut(ownerRepo, "/")
 	if !ok {
 		return "", "", fmt.Errorf("%s: not an owner/repo", ownerRepo)
 	}

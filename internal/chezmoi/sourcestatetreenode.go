@@ -38,11 +38,11 @@ func (n *sourceStateEntryTreeNode) getNodes(targetRelPath RelPath) []*sourceStat
 	nodes := make([]*sourceStateEntryTreeNode, 0, len(targetRelPathComponents))
 	nodes = append(nodes, n)
 	for _, childRelPath := range targetRelPathComponents {
-		if childNode, ok := nodes[len(nodes)-1].children[childRelPath]; ok {
-			nodes = append(nodes, childNode)
-		} else {
+		childNode, ok := nodes[len(nodes)-1].children[childRelPath]
+		if !ok {
 			return nil
 		}
+		nodes = append(nodes, childNode)
 	}
 	return nodes
 }
@@ -115,8 +115,7 @@ func (n *sourceStateEntryTreeNode) mkdirAll(
 			node = child
 		}
 
-		switch {
-		case node.sourceStateEntry == nil:
+		if node.sourceStateEntry == nil {
 			dirAttr := DirAttr{
 				TargetName: componentRelPath.String(),
 			}
@@ -131,7 +130,7 @@ func (n *sourceStateEntryTreeNode) mkdirAll(
 				targetStateEntry: targetStateDir,
 			}
 			node.sourceStateEntry = sourceStateDir
-		default:
+		} else {
 			var ok bool
 			sourceStateDir, ok = node.sourceStateEntry.(*SourceStateDir)
 			if !ok {

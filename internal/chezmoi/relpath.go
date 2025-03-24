@@ -99,7 +99,7 @@ func (p RelPath) SourceRelDirPath() SourceRelPath {
 }
 
 // Split returns p's directory and path.
-func (p RelPath) Split() (RelPath, RelPath) {
+func (p RelPath) Split() (dirRelPath, fileRelPath RelPath) {
 	dir, file := path.Split(p.relPath)
 	return NewRelPath(dir), NewRelPath(file)
 }

@@ -179,7 +179,7 @@ func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkFunc) e
 	if err != nil {
 		err = walkFunc(sourceDirAbsPath, nil, err)
 	} else {
-		err = walkSourceDir(system, sourceDirAbsPath, fileInfo, walkFunc)
+		err = walkSourceDirHelper(system, sourceDirAbsPath, fileInfo, walkFunc)
 		if errors.Is(err, fs.SkipDir) {
 			err = nil
 		}
@@ -198,8 +198,8 @@ var sourceDirEntryOrder = map[string]int{
 	TemplatesDirName:   -1,
 }
 
-// walkSourceDir is a helper function for WalkSourceDir.
-func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc WalkFunc) error {
+// walkSourceDirHelper is a helper function for WalkSourceDir.
+func walkSourceDirHelper(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc WalkFunc) error {
 	switch err := walkFunc(name, fileInfo, nil); {
 	case fileInfo.IsDir() && errors.Is(err, fs.SkipDir):
 		return nil
@@ -226,7 +226,7 @@ func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc W
 				return err
 			}
 		}
-		if err := walkSourceDir(system, name.JoinString(dirEntry.Name()), fileInfo, walkFunc); err != nil {
+		if err := walkSourceDirHelper(system, name.JoinString(dirEntry.Name()), fileInfo, walkFunc); err != nil {
 			if !errors.Is(err, fs.SkipDir) {
 				return err
 			}

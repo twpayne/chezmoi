@@ -1,3 +1,4 @@
+// generate-license generates internal/cmd/license.gen.go.
 package main
 
 // FIXME merge this with internal/cmds/generate-helps

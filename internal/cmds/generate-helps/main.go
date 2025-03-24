@@ -1,3 +1,4 @@
+// generate-helps generates internal/cmd/helps.gen.go.
 package main
 
 import (
@@ -48,8 +49,8 @@ func run() error {
 	}
 
 	longHelpStyleConfig := styles.ASCIIStyleConfig
-	longHelpStyleConfig.Code.StylePrimitive.BlockPrefix = ""
-	longHelpStyleConfig.Code.StylePrimitive.BlockSuffix = ""
+	longHelpStyleConfig.Code.BlockPrefix = ""
+	longHelpStyleConfig.Code.BlockSuffix = ""
 	longHelpStyleConfig.Emph.BlockPrefix = ""
 	longHelpStyleConfig.Emph.BlockSuffix = ""
 	longHelpStyleConfig.H2.Prefix = ""
@@ -62,8 +63,8 @@ func run() error {
 	}
 
 	exampleStyleConfig := styles.ASCIIStyleConfig
-	exampleStyleConfig.Code.StylePrimitive.BlockPrefix = ""
-	exampleStyleConfig.Code.StylePrimitive.BlockSuffix = ""
+	exampleStyleConfig.Code.BlockPrefix = ""
+	exampleStyleConfig.Code.BlockSuffix = ""
 	exampleStyleConfig.Document.Margin = nil
 	exampleTermRenderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(exampleStyleConfig),
@@ -195,15 +196,14 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 			if err != nil {
 				return nil, err
 			}
-			if titleRx.MatchString(line) {
-				state = stateInLongHelp
-			} else {
+			if !titleRx.MatchString(line) {
 				return nil, fmt.Errorf("expected title for '%s'", command)
 			}
+			state = stateInLongHelp
 		case stateInLongHelp:
 			switch {
 			case stateChange(line, &state):
-				break
+				// Do nothing.
 			case strings.HasPrefix(line, "!!! "):
 				state = stateInAdmonition
 			default:

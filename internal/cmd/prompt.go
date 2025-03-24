@@ -341,5 +341,5 @@ func runCancelableModel[M cancelableModel](initModel M) (M, error) {
 func runModel[M tea.Model](initModel M) (M, error) {
 	program := tea.NewProgram(initModel)
 	finalModel, err := program.Run()
-	return finalModel.(M), err //nolint:forcetypeassert
+	return finalModel.(M), err //nolint:forcetypeassert,revive
 }

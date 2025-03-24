@@ -54,10 +54,10 @@ func (cmd OSExecCmdLogValuer) LogValuer() slog.Value {
 // LogValuer implements log/slog.LogValuer.LogValue.
 func (err OSExecExitLogValuerError) LogValuer() slog.Value {
 	attrs := []slog.Attr{
-		slog.Any("processState", OSProcessStateLogValuer{err.ExitError.ProcessState}),
+		slog.Any("processState", OSProcessStateLogValuer{err.ProcessState}),
 	}
 	if osExecExitError := (&exec.ExitError{}); errors.As(err, &osExecExitError) {
-		attrs = append(attrs, Bytes("stderr", err.ExitError.Stderr))
+		attrs = append(attrs, Bytes("stderr", err.Stderr))
 	}
 	return slog.GroupValue(attrs...)
 }
@@ -114,7 +114,7 @@ func Bytes(key string, data []byte) slog.Attr {
 // FirstFewBytes returns an slog.Attr with the value of the first few bytes of
 // data.
 func FirstFewBytes(key string, data []byte) slog.Attr {
-	return slog.String(key, string(firstFewBytes(data)))
+	return slog.String(key, string(firstFewBytesHelper(data)))
 }
 
 // LogHTTPRequest calls httpClient.Do, logs the result to logger, and returns
@@ -146,7 +146,7 @@ func LogCmdCombinedOutput(logger *slog.Logger, cmd *exec.Cmd) ([]byte, error) {
 		slog.Any("cmd", OSExecCmdLogValuer{Cmd: cmd}),
 		slog.Duration("duration", time.Since(start)),
 		slog.Int("size", len(combinedOutput)),
-		slog.Any("combinedOutput", firstFewBytes(combinedOutput)),
+		slog.Any("combinedOutput", firstFewBytesHelper(combinedOutput)),
 	}
 	attrs = AppendExitErrorAttrs(attrs, err)
 	InfoOrErrorContext(context.Background(), logger, "Output", err, attrs...)
@@ -161,7 +161,7 @@ func LogCmdOutput(logger *slog.Logger, cmd *exec.Cmd) ([]byte, error) {
 		slog.Any("cmd", OSExecCmdLogValuer{Cmd: cmd}),
 		slog.Duration("duration", time.Since(start)),
 		slog.Int("size", len(output)),
-		slog.Any("output", firstFewBytes(output)),
+		slog.Any("output", firstFewBytesHelper(output)),
 	}
 	attrs = AppendExitErrorAttrs(attrs, err)
 	InfoOrErrorContext(context.Background(), logger, "Output", err, attrs...)
@@ -234,8 +234,8 @@ func Stringer(key string, value fmt.Stringer) slog.Attr {
 	return slog.String(key, value.String())
 }
 
-// firstFewBytes returns the first few bytes of data.
-func firstFewBytes(data []byte) []byte {
+// firstFewBytesHelper returns the first few bytes of data.
+func firstFewBytesHelper(data []byte) []byte {
 	if len(data) > few {
 		data = slices.Clone(data[:few])
 		data = append(data, '.', '.', '.')

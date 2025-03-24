@@ -241,7 +241,7 @@ func TestUserAgent(t *testing.T) {
 }
 
 func TestIssue2132(t *testing.T) {
-	chezmoitest.WithTestFS(t, map[string]interface{}{
+	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user/.local/share/chezmoi/remove_dot_dir/non_existent_file": "",
 	}, func(fileSystem vfs.FS) {
 		config1 := newTestConfig(t, fileSystem)

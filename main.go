@@ -7,6 +7,7 @@
 //go:generate go run ./internal/cmds/generate-install.sh -o assets/scripts/install.sh
 //go:generate go run ./internal/cmds/generate-install.sh -b .local/bin -o assets/scripts/install-local-bin.sh
 
+// chezmoi manages your dotfiles across multiple machines, securely.
 package main
 
 import (

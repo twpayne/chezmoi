@@ -1,6 +1,6 @@
+version: '2'
 run:
   go: '1.24'
-
 linters:
   enable:
   - asciicheck
@@ -14,7 +14,6 @@ linters:
   - dupword
   - durationcheck
   - err113
-  - errcheck
   - errchkjson
   - errname
   - errorlint
@@ -22,24 +21,17 @@ linters:
   - fatcontext
   - forbidigo
   - forcetypeassert
-  - gci
   - gocheckcompilerdirectives
   - gochecksumtype
   - gocritic
   - godot
-  - gofmt
-  - gofumpt
-  - goimports
   - gomodguard
   - goprintffuncname
-  - gosimple
   - gosmopolitan
-  - govet
   - grouper
   - iface
   - importas
   - inamedparam
-  - ineffassign
   - interfacebloat
   - intrange
   - loggercheck
@@ -63,7 +55,6 @@ linters:
   - spancheck
   - sqlclosecheck
   - staticcheck
-  - stylecheck
   - tagalign
   - tagliatelle
   - testableexamples
@@ -71,7 +62,6 @@ linters:
   - thelper
   - unconvert
   - unparam
-  - unused
   - usestdlibvars
   - usetesting
   - wastedassign
@@ -112,62 +102,102 @@ linters:
   - varnamelen
   - wrapcheck
   - wsl
-
-linters-settings:
-  forbidigo:
-    forbid:
-    - ^archive/zip\.
-    - ^compress/gzip\.
-    - ^fmt\.Print.*$
-    - ^ioutil\..*$
-    - ^os\.(DirEntry|ErrExist|ErrNotExist|FileInfo|FileMode|Is.*|Mode.*)$
-  gci:
-    sections:
-    - standard
-    - default
-    - prefix(github.com/twpayne/chezmoi)
-  gocritic:
-    enable-all: true
-    disabled-checks:
-    - emptyFallthrough
-    - hugeParam
-    - rangeValCopy
-    - unnamedResult
-    - whyNoLint
-  gofumpt:
-    extra-rules: true
-    module-path: github.com/twpayne/chezmoi
-  goimports:
-    local-prefixes: github.com/twpayne/chezmoi
-  govet:
-    disable:
-    - fieldalignment
-    - shadow
-    enable-all: true
-  misspell:
-    locale: US
-    ignore-words:
-    - ackward
-  stylecheck:
-    checks:
-    - all
-
-issues:
-  include:
-  - EXC0011 # include issues about comments from `stylecheck`
-  exclude-rules:
-  - linters:
-    - err113
-    text: do not define dynamic errors, use wrapped static errors instead
-  - linters:
-    - revive
-    text: unused-parameter
-  - linters:
-    - forbidigo
-    path: ^internal/cmds/
-  - linters:
-    - forcetypeassert
-    path: _test\.go$
-  - linters:
-    - forbidigo
-    path: assets/scripts/generate-commit.go
+  settings:
+    forbidigo:
+      forbid:
+      - pattern: ^archive/zip\.
+      - pattern: ^compress/gzip\.
+      - pattern: ^fmt\.Print.*$
+      - pattern: ^ioutil\..*$
+      - pattern: ^os\.(DirEntry|ErrExist|ErrNotExist|FileInfo|FileMode|Is.*|Mode.*)$
+    gocritic:
+      enable-all: true
+      disabled-checks:
+      - emptyFallthrough
+      - hugeParam
+      - rangeValCopy
+      - unnamedResult
+      - whyNoLint
+    govet:
+      disable:
+      - fieldalignment
+      - shadow
+      enable-all: true
+    misspell:
+      locale: US
+    revive:
+      enable-all-rules: true
+      rules:
+      - name: add-constant
+        disabled: true
+      - name: cognitive-complexity
+        disabled: true
+      - name: cyclomatic
+        disabled: true
+      - name: empty-block
+        disabled: true
+      - name: exported
+        disabled: true
+      - name: filename-format
+        arguments:
+        - ^[a-z][-0-9_a-z]*(?:\.gen)?\.go$
+      - name: flag-parameter
+        disabled: true
+      - name: function-length
+        disabled: true
+      - name: function-result-limit
+        disabled: true
+      - name: import-shadowing
+        disabled: true
+      - name: line-length-limit
+        disabled: true
+      - name: max-control-nesting
+        disabled: true
+      - name: max-public-structs
+        disabled: true
+      - name: nested-structs
+        disabled: true
+      - name: unused-parameter
+        disabled: true
+      - name: unused-receiver
+        disabled: true
+    staticcheck:
+      checks:
+      - all
+  exclusions:
+    generated: lax
+    presets:
+    - common-false-positives
+    - legacy
+    - std-error-handling
+    rules:
+    - linters:
+      - err113
+      text: do not define dynamic errors, use wrapped static errors instead
+    - linters:
+      - forbidigo
+      path: ^internal/cmds/
+    - linters:
+      - forcetypeassert
+      path: _test\.go$
+    - linters:
+      - forbidigo
+      path: assets/scripts/generate-commit.go
+formatters:
+  enable:
+  - gci
+  - gofmt
+  - gofumpt
+  - goimports
+  settings:
+    gci:
+      sections:
+      - standard
+      - default
+      - prefix(github.com/twpayne/chezmoi)
+    gofumpt:
+      module-path: github.com/twpayne/chezmoi
+      extra-rules: true
+    goimports:
+      local-prefixes:
+      - github.com/twpayne/chezmoi

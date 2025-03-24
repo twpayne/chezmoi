@@ -43,7 +43,6 @@ jobs:
     - uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4
       with:
         locale: US
-        ignore: ackward
   test-install-sh:
     if: ${{ needs.changes.outputs.sh == 'true' }}
     strategy:

@@ -250,11 +250,10 @@ func (e *AgeEncryption) identityArgs() []string {
 func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err error) {
 	var file *os.File
 	if file, err = os.Open(identityFile.String()); err != nil {
-		return
+		return nil, err
 	}
 	defer chezmoierrors.CombineFunc(&err, file.Close)
-	identities, err = age.ParseIdentities(file)
-	return
+	return age.ParseIdentities(file)
 }
 
 // parseRecipientsFile parses the recipients from recipientsFile using the
@@ -262,9 +261,8 @@ func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err err
 func parseRecipientsFile(recipientsFile AbsPath) (recipients []age.Recipient, err error) {
 	var file *os.File
 	if file, err = os.Open(recipientsFile.String()); err != nil {
-		return
+		return nil, err
 	}
 	defer chezmoierrors.CombineFunc(&err, file.Close)
-	recipients, err = age.ParseRecipients(file)
-	return
+	return age.ParseRecipients(file)
 }

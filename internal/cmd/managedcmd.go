@@ -46,14 +46,15 @@ func (c *Config) newManagedCmd() *cobra.Command {
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	// Build queued relPaths. When there are no arguments, start from root,
 	// otherwise start from arguments.
-	var relPaths []chezmoi.RelPath
-	for _, arg := range args {
-		if absPath, err := chezmoi.NormalizePath(arg); err != nil {
+	relPaths := make([]chezmoi.RelPath, len(args))
+	for i, arg := range args {
+		absPath, err := chezmoi.NormalizePath(arg)
+		if err != nil {
 			return err
-		} else if relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath); err != nil {
+		}
+		relPaths[i], err = absPath.TrimDirPrefix(c.DestDirAbsPath)
+		if err != nil {
 			return err
-		} else { //nolint:revive
-			relPaths = append(relPaths, relPath)
 		}
 	}
 

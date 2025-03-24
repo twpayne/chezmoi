@@ -51,7 +51,7 @@ func (m httpProgressModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	case progress.FrameMsg:
 		model, cmd := m.progress.Update(msg)
-		m.progress = model.(progress.Model) //nolint:forcetypeassert
+		m.progress = model.(progress.Model) //nolint:forcetypeassert,revive
 		return m, cmd
 	case tea.KeyMsg:
 		switch msg.Type {

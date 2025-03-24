@@ -14,7 +14,7 @@ var (
 
 // FindExecutable is like LookPath except that:
 //
-//   - You can specify the needle as `string`, `[]string`, or `[]interface{}`
+//   - You can specify the needle as `string`, `[]string`, or `[]any`
 //     (that converts to `[]string`).
 //   - You specify the haystack instead of relying on `$PATH`/`%PATH%`.
 //

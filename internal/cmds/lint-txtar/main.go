@@ -1,3 +1,4 @@
+// lint-txtar lints txtar files.
 package main
 
 import (
