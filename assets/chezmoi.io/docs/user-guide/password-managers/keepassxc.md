@@ -1,6 +1,6 @@
 # KeePassXC
 
-chezmoi includes support for [KeePassXC][keepasxc] using the KeePassXC CLI
+chezmoi includes support for [KeePassXC][keepassxc] using the KeePassXC CLI
 (`keepassxc-cli`) to expose data as a template function.
 
 Provide the path to your KeePassXC database in your configuration file:
