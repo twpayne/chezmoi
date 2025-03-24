@@ -60,7 +60,7 @@ videos:
 - date: '2024-11-18'
   version: 2.54.0
   lang: AR
-  title: 'Chezmoi, Dotfiles, Workflow, Templates and Encryption Arabic شرح' # removed | from title as it breaks Markdown tables
+  title: Chezmoi, Dotfiles, Workflow, Templates and Encryption Arabic شرح   # removed | from title as it breaks Markdown tables
   url: https://www.youtube.com/watch?v=Jrrd2dHYBmY
 - date: 2025-03-22
   version: 2.61.0
