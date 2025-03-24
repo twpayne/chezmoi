@@ -164,12 +164,10 @@ func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
 		if text == "" {
 			continue
 		}
-		//nolint:gocritic
 		switch section {
 		case "application":
 			if m := mackupKeyValueRx.FindStringSubmatch(text); m != nil {
-				switch m[1] {
-				case "name":
+				if m[1] == "name" {
 					config.Application.Name = m[2]
 				}
 			}

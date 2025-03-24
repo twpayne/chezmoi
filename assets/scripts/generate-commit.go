@@ -1,3 +1,4 @@
+// generate-commit generates the COMMIT file.
 package main
 
 import (

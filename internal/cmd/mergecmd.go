@@ -70,7 +70,7 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 		if sourceStateFile.Attr.Encrypted {
 			var plaintextTempDirAbsPath chezmoi.AbsPath
 			if plaintextTempDirAbsPath, err = c.tempDir("chezmoi-merge-plaintext"); err != nil {
-				return
+				return err
 			}
 			plaintextAbsPath = plaintextTempDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 			defer chezmoierrors.CombineFunc(&err, func() error {
@@ -78,13 +78,13 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 			})
 			var plaintext []byte
 			if plaintext, err = sourceStateFile.Contents(); err != nil {
-				return
+				return err
 			}
-			if err = chezmoi.MkdirAll(c.baseSystem, plaintextAbsPath.Dir(), 0o700); err != nil {
-				return
+			if err := chezmoi.MkdirAll(c.baseSystem, plaintextAbsPath.Dir(), 0o700); err != nil {
+				return err
 			}
-			if err = c.baseSystem.WriteFile(plaintextAbsPath, plaintext, 0o600); err != nil {
-				return
+			if err := c.baseSystem.WriteFile(plaintextAbsPath, plaintext, 0o600); err != nil {
+				return err
 			}
 			sourceAbsPath = plaintextAbsPath
 		}
@@ -96,30 +96,28 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	// are an invalid template
 	var targetStateEntry chezmoi.TargetStateEntry
 	if targetStateEntry, err = sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath)); err != nil {
-		err = fmt.Errorf("%s: %w", targetRelPath, err)
-		return
+		return fmt.Errorf("%s: %w", targetRelPath, err)
 	}
 	targetStateFile, ok := targetStateEntry.(*chezmoi.TargetStateFile)
 	if !ok {
 		// LATER consider handling symlinks?
-		err = fmt.Errorf("%s: not a file", targetRelPath)
-		return
+		return fmt.Errorf("%s: not a file", targetRelPath)
 	}
 	var contents []byte
 	if contents, err = targetStateFile.Contents(); err != nil {
-		return
+		return err
 	}
 
 	// Create a temporary directory to store the target state and ensure that it
 	// is removed afterwards.
 	var tempDirAbsPath chezmoi.AbsPath
 	if tempDirAbsPath, err = c.tempDir("chezmoi-merge"); err != nil {
-		return
+		return err
 	}
 
 	targetStateAbsPath := tempDirAbsPath.JoinString(targetRelPath.Base())
-	if err = c.baseSystem.WriteFile(targetStateAbsPath, contents, 0o600); err != nil {
-		return
+	if err := c.baseSystem.WriteFile(targetStateAbsPath, contents, 0o600); err != nil {
+		return err
 	}
 
 	templateData := struct {
@@ -149,12 +147,12 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	for i, arg := range c.Merge.Args {
 		var tmpl *template.Template
 		if tmpl, err = template.New("merge.args[" + strconv.Itoa(i) + "]").Parse(arg); err != nil {
-			return
+			return err
 		}
 
 		builder := strings.Builder{}
-		if err = tmpl.Execute(&builder, templateData); err != nil {
-			return
+		if err := tmpl.Execute(&builder, templateData); err != nil {
+			return err
 		}
 		args = append(args, builder.String())
 
@@ -170,13 +168,12 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 		args = append(args, templateData.Destination, templateData.Source, templateData.Target)
 	}
 
-	if err = c.persistentState.Close(); err != nil {
-		return
+	if err := c.persistentState.Close(); err != nil {
+		return err
 	}
 
 	if err = c.run(c.DestDirAbsPath, c.Merge.Command, args); err != nil {
-		err = fmt.Errorf("%s: %w", targetRelPath, err)
-		return
+		return fmt.Errorf("%s: %w", targetRelPath, err)
 	}
 
 	// If the source state entry was an encrypted file, then re-encrypt the
@@ -184,12 +181,12 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	if !plaintextAbsPath.IsEmpty() {
 		var encryptedContents []byte
 		if encryptedContents, err = c.encryption.EncryptFile(plaintextAbsPath); err != nil {
-			return
+			return err
 		}
-		if err = c.baseSystem.WriteFile(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()), encryptedContents, 0o644); err != nil {
-			return
+		if err := c.baseSystem.WriteFile(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()), encryptedContents, 0o644); err != nil {
+			return err
 		}
 	}
 
-	return
+	return nil
 }

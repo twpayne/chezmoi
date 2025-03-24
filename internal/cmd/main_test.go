@@ -751,7 +751,7 @@ func goosCondition(cond string) (result, valid bool) {
 	if !strings.HasPrefix(cond, "(") || !strings.HasSuffix(cond, ")") {
 		result = false
 		valid = false
-		return
+		return result, valid
 	}
 	cond = strings.TrimPrefix(cond, "(")
 	cond = strings.TrimSuffix(cond, ")")
@@ -766,7 +766,7 @@ func goosCondition(cond string) (result, valid bool) {
 		if _, ok := imports.KnownOS[term]; !ok {
 			if _, ok := imports.KnownArch[term]; !ok {
 				valid = false
-				return
+				return result, valid
 			}
 		}
 	}
@@ -780,16 +780,16 @@ func goosCondition(cond string) (result, valid bool) {
 		switch {
 		case term == runtime.GOOS || term == "unix" && imports.UnixOS[runtime.GOOS]:
 			result = true
-			return
+			return result, valid
 		case term == runtime.GOARCH:
 			result = true
-			return
+			return result, valid
 		}
 	}
 
 	// Otherwise, the condition is false.
 	result = false
-	return
+	return result, valid
 }
 
 func prependDirToPath(dir, pathStr string) string {

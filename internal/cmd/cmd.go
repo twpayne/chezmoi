@@ -228,5 +228,5 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 			}
 		}
 	}
-	return
+	return err
 }

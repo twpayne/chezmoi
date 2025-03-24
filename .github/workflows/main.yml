@@ -21,7 +21,7 @@ env:
   FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
   GO_VERSION: 1.24.1 # https://go.dev/doc/devel/release
   GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
-  GOLANGCI_LINT_VERSION: 1.64.8 # https://github.com/golangci/golangci-lint/releases
+  GOLANGCI_LINT_VERSION: 2.0.1 # https://github.com/golangci/golangci-lint/releases
   GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.8.1 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
@@ -83,7 +83,6 @@ jobs:
     - uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4
       with:
         locale: US
-        ignore: ackward,importas
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -458,7 +457,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@4696ba8babb6127d732c3c6dde519db15edab9ea
+    - uses: golangci/golangci-lint-action@1481404843c368bc19ca9406f87d6e0fc97bdcfd
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m

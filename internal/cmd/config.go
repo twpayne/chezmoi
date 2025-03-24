@@ -695,12 +695,11 @@ func (c *Config) applyArgs(
 			continue
 		case err != nil:
 			err = fmt.Errorf("%s: %w", targetRelPath, err)
-			if c.keepGoing {
-				c.errorf("%v\n", err)
-				keptGoingAfterErr = true
-			} else {
+			if !c.keepGoing {
 				return err
 			}
+			c.errorf("%v\n", err)
+			keptGoingAfterErr = true
 		}
 	}
 
@@ -838,11 +837,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return err
 	}
 
-	if err := c.setEnvironmentVariables(); err != nil {
-		return err
-	}
-
-	return nil
+	return c.setEnvironmentVariables()
 }
 
 // createConfigFile creates a config file using a template and returns its
@@ -1598,10 +1593,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) er
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)}); err != nil {
 		return err
 	}
-	if err := c.runHookPost("git-auto-commit"); err != nil {
-		return err
-	}
-	return nil
+	return c.runHookPost("git-auto-commit")
 }
 
 // gitAutoPush pushes all changes to the remote if status is not empty.
@@ -1615,10 +1607,7 @@ func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"}); err != nil {
 		return err
 	}
-	if err := c.runHookPost("git-auto-push"); err != nil {
-		return err
-	}
-	return nil
+	return c.runHookPost("git-auto-push")
 }
 
 // gitCommitMessage returns the git commit message for the given status.
@@ -1939,7 +1928,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			var format chezmoi.Format
 			if format, err = chezmoi.FormatFromAbsPath(configFileAbsPath); err == nil {
 				var config map[string]any
-				if err = format.Unmarshal(configFileContents, &config); err != nil { //nolint:revive
+				if err = format.Unmarshal(configFileContents, &config); err != nil {
 					// err is already set, do nothing.
 				} else {
 					err = c.decodeConfigMap(config, &ConfigFile{})
@@ -1973,11 +1962,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
-	if err := c.runHookPost(cmd.Name()); err != nil {
-		return err
-	}
-
-	return nil
+	return c.runHookPost(cmd.Name())
 }
 
 // finalize cleans up.
@@ -2342,11 +2327,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		return err
 	}
 
-	if err := c.runHookPre(cmd.Name()); err != nil {
-		return err
-	}
-
-	return nil
+	return c.runHookPre(cmd.Name())
 }
 
 // persistentStateFile returns the absolute path to the persistent state file,
@@ -2460,7 +2441,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		cacheDir:          c.CacheDirAbsPath,
 		command:           cmd.Name(),
 		commandDir:        c.commandDirAbsPath,
-		config:            c.ConfigFile.toMap(),
+		config:            c.toMap(),
 		configFile:        configFileAbsPath,
 		destDir:           c.DestDirAbsPath,
 		executable:        chezmoi.NewAbsPath(executable),

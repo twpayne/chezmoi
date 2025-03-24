@@ -78,8 +78,7 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 			}
 			statT, ok := fileInfo.Sys().(*syscall.Stat_t)
 			if !ok {
-				err = errors.New("fs.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
-				return
+				return errors.New("fs.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
 			}
 			dev = uint(statT.Dev)
 			s.devCache[dir] = dev
@@ -91,17 +90,16 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 		}
 		var t *renameio.PendingFile
 		if t, err = renameio.TempFile(tempDir, filename.String()); err != nil {
-			return
+			return err
 		}
 		defer chezmoierrors.CombineFunc(&err, t.Cleanup)
-		if err = t.Chmod(perm); err != nil {
-			return
+		if err := t.Chmod(perm); err != nil {
+			return err
 		}
-		if _, err = t.Write(data); err != nil {
-			return
+		if _, err := t.Write(data); err != nil {
+			return err
 		}
-		err = t.CloseAtomicallyReplace()
-		return
+		return t.CloseAtomicallyReplace()
 	}
 
 	return writeFile(s.fileSystem, filename, data, perm)
@@ -127,17 +125,17 @@ func writeFile(fileSystem vfs.FS, filename AbsPath, data []byte, perm fs.FileMod
 	// Create a new file, or truncate any existing one.
 	var f *os.File
 	if f, err = fileSystem.OpenFile(filename.String(), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm); err != nil {
-		return
+		return err
 	}
 	defer chezmoierrors.CombineFunc(&err, f.Close)
 
 	// Set permissions after truncation but before writing any data, in case the
 	// file contained private data before, but before writing the new contents,
 	// in case the new contents contain private data after.
-	if err = f.Chmod(perm); err != nil {
-		return
+	if err := f.Chmod(perm); err != nil {
+		return err
 	}
 
 	_, err = f.Write(data)
-	return
+	return err
 }

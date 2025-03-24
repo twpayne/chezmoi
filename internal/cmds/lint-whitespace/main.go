@@ -1,3 +1,4 @@
+// lint-whitespace lints files for whitespace.
 package main
 
 import (

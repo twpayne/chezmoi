@@ -61,11 +61,11 @@ func TestNormalizeLinkname(t *testing.T) {
 			expected: "rel/forward",
 		},
 		{
-			linkname: "rel\\backward",
+			linkname: "rel\\" + "backward",
 			expected: "rel/backward",
 		},
 		{
-			linkname: "rel/forward\\backward",
+			linkname: "rel/forward\\" + "backward",
 			expected: "rel/forward/backward",
 		},
 		{
@@ -73,11 +73,11 @@ func TestNormalizeLinkname(t *testing.T) {
 			expected: "/abs/forward",
 		},
 		{
-			linkname: "\\abs\\backward",
+			linkname: "\\abs\\" + "backward",
 			expected: "/abs/backward",
 		},
 		{
-			linkname: "/abs/forward\\backward",
+			linkname: "/abs/forward\\" + "backward",
 			expected: "/abs/forward/backward",
 		},
 		{
@@ -85,11 +85,11 @@ func TestNormalizeLinkname(t *testing.T) {
 			expected: "C:/abs/forward",
 		},
 		{
-			linkname: "c:\\abs\\backward",
+			linkname: "c:\\abs\\" + "backward",
 			expected: "C:/abs/backward",
 		},
 		{
-			linkname: "c:/abs/forward\\backward",
+			linkname: "c:/abs/forward\\" + "backward",
 			expected: "C:/abs/forward/backward",
 		},
 	} {

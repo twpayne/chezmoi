@@ -1331,7 +1331,7 @@ func (s *SourceState) TemplateData() map[string]any {
 	if err != nil {
 		panic(err)
 	}
-	return templateData.(map[string]any) //nolint:forcetypeassert
+	return templateData.(map[string]any) //nolint:forcetypeassert,revive
 }
 
 // addExternal adds external source entries to s.
@@ -1504,7 +1504,7 @@ func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.File
 			}
 		}
 	}
-	return walkSourceDir(s.system, sourceAbsPath, fileInfo, walkFunc)
+	return walkSourceDirHelper(s.system, sourceAbsPath, fileInfo, walkFunc)
 }
 
 // addTemplatesDir adds all templates in templatesDirAbsPath to s.
@@ -1929,14 +1929,14 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			var currentContents []byte
 			currentContents, err = destSystem.ReadFile(destAbsPath)
 			if err != nil && !errors.Is(err, fs.ErrNotExist) {
-				return
+				return nil, err
 			}
 
 			// Compute the contents of the modifier.
 			var modifierContents []byte
 			modifierContents, err = contentsFunc()
 			if err != nil {
-				return
+				return nil, err
 			}
 			if fileAttr.Template {
 				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
@@ -1945,14 +1945,13 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 					Destination: destAbsPath.String(),
 				})
 				if err != nil {
-					return
+					return nil, err
 				}
 			}
 
 			// If the modifier is empty then return the current contents unchanged.
 			if isEmpty(modifierContents) {
-				contents = currentContents
-				return
+				return currentContents, nil
 			}
 
 			// If the modifier contains chezmoi:modify-template then execute it
@@ -1966,7 +1965,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 					Options: slices.Clone(s.templateOptions),
 				})
 				if err != nil {
-					return
+					return nil, err
 				}
 
 				// Temporarily set .chezmoi.stdin to the current contents and
@@ -1977,8 +1976,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 					chezmoiTemplateData["sourceFile"] = sourceFile
 				}
 
-				contents, err = tmpl.Execute(templateData)
-				return
+				return tmpl.Execute(templateData)
 			}
 
 			// Create the script temporary directory, if needed.
@@ -1988,26 +1986,26 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				}
 			})
 			if err != nil {
-				return
+				return nil, err
 			}
 
 			// Write the modifier to a temporary file.
 			var tempFile *os.File
 			if tempFile, err = os.CreateTemp(s.scriptTempDirAbsPath.String(), "*."+fileAttr.TargetName); err != nil {
-				return
+				return nil, err
 			}
 			defer chezmoierrors.CombineFunc(&err, func() error {
 				return os.RemoveAll(tempFile.Name())
 			})
 			if runtime.GOOS != "windows" {
-				if err = tempFile.Chmod(0o700); err != nil {
-					return
+				if err := tempFile.Chmod(0o700); err != nil {
+					return nil, err
 				}
 			}
 			_, err = tempFile.Write(modifierContents)
 			err = chezmoierrors.Combine(err, tempFile.Close())
 			if err != nil {
-				return
+				return nil, err
 			}
 
 			// Run the modifier on the current contents.
@@ -2017,8 +2015,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			)
 			cmd.Stdin = bytes.NewReader(currentContents)
 			cmd.Stderr = os.Stderr
-			contents, err = chezmoilog.LogCmdOutput(s.logger, cmd)
-			return
+			return chezmoilog.LogCmdOutput(s.logger, cmd)
 		})
 		return &TargetStateFile{
 			contentsFunc:       contentsFunc,

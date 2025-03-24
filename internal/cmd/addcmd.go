@@ -181,7 +181,6 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	case severityIgnore:
 	case severityWarning:
 	case severityError:
-		break
 	default:
 		return fmt.Errorf("%s: invalid severity", severity)
 	}

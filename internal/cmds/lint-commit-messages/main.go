@@ -1,3 +1,4 @@
+// lint-commit-messages lints commit messages.
 package main
 
 import (

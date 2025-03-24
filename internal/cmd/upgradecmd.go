@@ -235,7 +235,7 @@ func (c *Config) replaceExecutable(
 		archiveFormat = chezmoi.ArchiveFormatTarGz
 		var libc string
 		if libc, err = getLibc(); err != nil {
-			return
+			return err
 		}
 		archiveName = fmt.Sprintf("chezmoi_%s_%s-%s_%s.tar.gz", releaseVersion, runtime.GOOS, libc, runtime.GOARCH)
 	case runtime.GOOS == "linux" && runtime.GOARCH == "386":
@@ -250,16 +250,15 @@ func (c *Config) replaceExecutable(
 	}
 	releaseAsset := getReleaseAssetByName(rr, archiveName)
 	if releaseAsset == nil {
-		err = fmt.Errorf("%s: cannot find release asset", archiveName)
-		return
+		return fmt.Errorf("%s: cannot find release asset", archiveName)
 	}
 
 	var archiveData []byte
 	if archiveData, err = c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL()); err != nil {
-		return
+		return err
 	}
-	if err = c.verifyChecksum(ctx, rr, releaseAsset.GetName(), archiveData); err != nil {
-		return
+	if err := c.verifyChecksum(ctx, rr, releaseAsset.GetName(), archiveData); err != nil {
+		return err
 	}
 
 	// Extract the executable from the archive.
@@ -279,12 +278,11 @@ func (c *Config) replaceExecutable(
 		}
 		return nil
 	}
-	if err = chezmoi.WalkArchive(archiveData, archiveFormat, walkArchiveFunc); err != nil {
-		return
+	if err := chezmoi.WalkArchive(archiveData, archiveFormat, walkArchiveFunc); err != nil {
+		return err
 	}
 	if executableData == nil {
-		err = fmt.Errorf("%s: cannot find executable in archive", archiveName)
-		return
+		return fmt.Errorf("%s: cannot find executable in archive", archiveName)
 	}
 
 	// Replace the executable.
@@ -293,9 +291,7 @@ func (c *Config) replaceExecutable(
 			return err
 		}
 	}
-	err = c.baseSystem.WriteFile(executableFilenameAbsPath, executableData, 0o755)
-
-	return
+	return c.baseSystem.WriteFile(executableFilenameAbsPath, executableData, 0o755)
 }
 
 func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryRelease, name string, data []byte) error {

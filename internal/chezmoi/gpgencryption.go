@@ -150,17 +150,16 @@ func (e *GPGEncryption) run(args []string) error {
 func withPrivateTempDir(f func(tempDirAbsPath AbsPath) error) (err error) {
 	var tempDir string
 	if tempDir, err = os.MkdirTemp("", "chezmoi-encryption"); err != nil {
-		return
+		return err
 	}
 	defer chezmoierrors.CombineFunc(&err, func() error {
 		return os.RemoveAll(tempDir)
 	})
 	if runtime.GOOS != "windows" {
-		if err = os.Chmod(tempDir, 0o700); err != nil {
-			return
+		if err := os.Chmod(tempDir, 0o700); err != nil {
+			return err
 		}
 	}
 
-	err = f(NewAbsPath(tempDir))
-	return
+	return f(NewAbsPath(tempDir))
 }

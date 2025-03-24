@@ -1,3 +1,4 @@
+// execute-template executes a template with optional data.
 package main
 
 import (
