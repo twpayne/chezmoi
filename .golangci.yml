@@ -189,6 +189,7 @@ formatters:
   - gofmt
   - gofumpt
   - goimports
+  - golines
   settings:
     gci:
       sections:
@@ -201,3 +202,6 @@ formatters:
     goimports:
       local-prefixes:
       - github.com/twpayne/chezmoi
+    golines:
+      max-len: 128
+      tab-len: 4

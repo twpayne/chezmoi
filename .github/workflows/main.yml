@@ -20,9 +20,7 @@ env:
   EDITORCONFIG_CHECKER_VERSION: 3.2.1 # https://github.com/editorconfig-checker/editorconfig-checker/releases
   FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
   GO_VERSION: 1.24.1 # https://go.dev/doc/devel/release
-  GOFUMPT_VERSION: 0.7.0 # https://github.com/mvdan/gofumpt/releases
   GOLANGCI_LINT_VERSION: 2.0.1 # https://github.com/golangci/golangci-lint/releases
-  GOLINES_VERSION: 0.12.2 # https://github.com/segmentio/golines/releases
   GORELEASER_VERSION: 2.8.1 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.4.1 # https://github.com/josephspurrier/goversioninfo/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
@@ -461,6 +459,10 @@ jobs:
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
+    - name: format
+      run: |
+        make format
+        git diff --exit-code
   release: # FIXME this should be merged into test-release above
     if: startsWith(github.ref, 'refs/tags/')
     needs:

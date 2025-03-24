@@ -24,8 +24,7 @@ that:
 * All generated files are up to date. You can ensure this by running `make
   generate` and including any modified files in your commit.
 
-* The code is correctly formatted, according to [`gofumpt`][gofumpt]. You can
-  ensure this by running `make format`.
+* The code is correctly formatted. You can ensure this by running `make format`.
 
 * The code passes [`golangci-lint`][golangci-lint]. You can ensure this by
   running `make lint`.
@@ -41,7 +40,6 @@ that:
 [issue]: https://github.com/twpayne/chezmoi/issues/new/choose
 [pr]: https://help.github.com/en/articles/creating-a-pull-request
 [rationale]: https://dave.cheney.net/2019/02/18/talk-then-code
-[gofumpt]: https://mvdan.cc/gofumpt/
 [golangci-lint]: https://github.com/golangci/golangci-lint
 [commits]: https://www.conventionalcommits.org/en/v1.0.0/
 [website]: /developer-guide/website.md
