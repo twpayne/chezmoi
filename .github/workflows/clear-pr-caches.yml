@@ -2,7 +2,8 @@ name: clear-pr-caches
 
 on:
   pull_request_target:
-    types: [ closed ]
+    types:
+    - closed
 
 permissions:
   actions: write
@@ -11,14 +12,14 @@ jobs:
   clear-caches:
     runs-on: ubuntu-24.04
     steps:
-      - name: clear-caches
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
-        run: |
-          cacheKeysForPR=$(gh cache list --ref "$BRANCH" --limit 100 --json id --jq '.[].id')
-          set +e
-          for cacheKey in $cacheKeysForPR; do
-            gh cache delete "$cacheKey"
-          done
+    - name: clear-caches
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
+      run: |
+        cacheKeysForPR=$(gh cache list --ref "$BRANCH" --limit 100 --json id --jq '.[].id')
+        set +e
+        for cacheKey in $cacheKeysForPR; do
+          gh cache delete "$cacheKey"
+        done

@@ -464,7 +464,7 @@ articles:
   url: https://www.gkr.one/blg-20241107-chezmoi
 - date: '2024-11-16'
   version: 2.54.0
-  title: 'Swapping to Chezmoi'
+  title: Swapping to Chezmoi
   url: https://jsnfwlr.com/blog/2024/11/16/swapping-to-chezmoi/
 - date: '2024-11-19'
   version: 2.54.0
@@ -474,7 +474,7 @@ articles:
 - date: '2024-12-02'
   version: 2.55.0
   lang: JP
-  title: 'chezmoiを使ったローカル環境爆速構築'
+  title: chezmoiを使ったローカル環境爆速構築
   url: https://qiita.com/cb400sp2/items/c04ec9472455d9022532
 - date: '2024-12-18'
   version: 2.56.0
@@ -483,11 +483,11 @@ articles:
 - date: '2024-12-19'
   version: 2.56.0
   lang: JP
-  title: 'chezmoiでdotfilesを管理する'
+  title: chezmoiでdotfilesを管理する
   url: https://devops-blog.virtualtech.jp/entry/20241219/1734585262
 - date: '2025-01-03'
   version: 2.57.0
-  title: 'Frictionless Dotfile Management With Chezmoi'
+  title: Frictionless Dotfile Management With Chezmoi
   url: https://marcusb.org/posts/2025/01/frictionless-dotfile-management-with-chezmoi/
 - date: '2025-01-19'
   version: 2.58.0
@@ -496,18 +496,18 @@ articles:
 - date: '2025-01-26'
   version: 2.58.0
   lang: JP
-  title: 'chezmoi で macOS の user defaults も管理する'
+  title: chezmoi で macOS の user defaults も管理する
   url: https://pihero.hatenadiary.jp/entry/2025/01/26/130123
 - date: '2025-02-02'
   version: 2.59.0
-  title: 'My journey in managing dotfiles'
+  title: My journey in managing dotfiles
   url: https://seds.nl/notes/my-journey-in-managing-dotfiles/
 - date: '2025-02-19'
   version: 2.59.1
   lang: JP
-  title: 'WSLとWindowsの設定ファイルを「chezmoi」を使って安全に管理しよう'
+  title: WSLとWindowsの設定ファイルを「chezmoi」を使って安全に管理しよう
   url: https://thinkit.co.jp/article/37943
 - date: '2025-03-04'
   version: 2.60.0
-  title: 'Tools, tools, tools'
+  title: Tools, tools, tools
   url: https://peterbraden.co.uk/article/tools-tools-tools/
