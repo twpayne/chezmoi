@@ -4,8 +4,6 @@
 /bin/chezmoi
 /bin/editorconfig-checker
 /bin/find-typos
-/bin/gofumpt
-/bin/golines
 /bin/golangci-lint
 /bin/goreleaser
 /bin/goversioninfo

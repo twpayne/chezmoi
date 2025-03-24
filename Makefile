@@ -4,9 +4,7 @@ GOARCH=$(shell ${GO} env GOARCH)
 ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 EDITORCONFIG_CHECKER_VERSION=$(shell awk '/EDITORCONFIG_CHECKER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 FIND_TYPOS_VERSION=$(shell awk '/FIND_TYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-GOLINES_VERSION=$(shell awk '/GOLINES_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
@@ -129,8 +127,8 @@ lint-markdown:
 	markdownlint-cli2 --config .markdownlint-cli2.yaml
 
 .PHONY: format
-format: ensure-gofumpt ensure-golines
-	find . -name \*.go | xargs ./bin/golines --base-formatter="./bin/gofumpt -extra" --max-len=128 --write-output
+format: ensure-golangci-lint
+	./bin/golangci-lint fmt
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
 .PHONY: format-yaml
@@ -146,9 +144,7 @@ create-syso: ensure-goversioninfo
 ensure-tools: \
 	ensure-actionlint \
 	ensure-find-typos \
-	ensure-gofumpt \
 	ensure-golangci-lint \
-	ensure-golines \
 	ensure-goreleaser \
 	ensure-goversioninfo
 
@@ -171,20 +167,6 @@ ensure-find-typos:
 	if [ ! -x bin/find-typos ] ; then \
 		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}" ; \
-	fi
-
-.PHONY: ensure-gofumpt
-ensure-gofumpt:
-	if [ ! -x bin/gofumpt ] || ( ./bin/gofumpt --version | grep -Fqv "v${GOFUMPT_VERSION}" ) ; then \
-		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin ${GO} install "mvdan.cc/gofumpt@v${GOFUMPT_VERSION}" ; \
-	fi
-
-.PHONY: ensure-golines
-ensure-golines:
-	if [ ! -x bin/golines ] || ( ./bin/actionlint --version | grep -Fqv "v${GOLINES_VERSION}" ) ; then \
-		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin ${GO} install "github.com/segmentio/golines@v${GOLINES_VERSION}" ; \
 	fi
 
 .PHONY: ensure-golangci-lint
