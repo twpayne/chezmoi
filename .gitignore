@@ -1,12 +1,5 @@
 /.vagrant
 /COMMIT
-/bin/actionlint
-/bin/chezmoi
-/bin/editorconfig-checker
-/bin/find-typos
-/bin/golangci-lint
-/bin/goreleaser
-/bin/goversioninfo
 /chezmoi
 /chezmoi.exe
 /coverage.out

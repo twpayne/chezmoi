@@ -151,7 +151,6 @@ ensure-tools: \
 .PHONY: ensure-actionlint
 ensure-actionlint:
 	if [ ! -x bin/actionlint ] || ( ./bin/actionlint --version | grep -Fqv "v${ACTIONLINT_VERSION}" ) ; then \
-		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}" ; \
 	fi
 
@@ -165,7 +164,6 @@ ensure-editorconfig-checker:
 .PHONY: ensure-find-typos
 ensure-find-typos:
 	if [ ! -x bin/find-typos ] ; then \
-		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}" ; \
 	fi
 
