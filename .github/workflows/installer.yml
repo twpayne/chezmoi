@@ -50,7 +50,7 @@ jobs:
         os:
         - macos-13
         - ubuntu-22.04
-        #- windows-2022 # fails with "debug http_download_curl received HTTP status 000"
+        - windows-2022
     needs: changes
     runs-on: ${{ matrix.os }}
     env:
