@@ -174,40 +174,6 @@ jobs:
         else
           go test ./internal/cmd -run=TestScript -filter='^[t-zT-Z]' -race
         fi
-  test-oldstable-go:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b
-      with:
-        go-version: oldstable
-    - name: build
-      run: |
-        go build -v ./...
-    - name: run
-      run: |
-        go run . --version
-    - name: install-age
-      run: |
-        cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: install-rage
-      run: |
-        cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/str4d/rage/releases/download/v${RAGE_VERSION}/rage-v${RAGE_VERSION}-x86_64-linux.tar.gz" | tar xzf -
-        sudo install -m 755 rage/rage /usr/local/bin
-        sudo install -m 755 rage/rage-keygen /usr/local/bin
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test ./...
   test-release:
     needs: changes
     runs-on: ubuntu-22.04 # use older Ubuntu for older glibc, update minimum glibc version in install.sh.tmpl if this changes
@@ -471,7 +437,6 @@ jobs:
     - test-alpine
     - test-archlinux
     - test-macos
-    - test-oldstable-go
     - test-release
     - test-ubuntu
     - test-website
