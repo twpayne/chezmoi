@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	_ "embed"
+	"encoding/hex"
 	"errors"
 	"flag"
 	"fmt"
@@ -97,6 +98,7 @@ func TestScript(t *testing.T) {
 			"cmpmod":         cmdCmpMod,
 			"edit":           cmdEdit,
 			"expandenv":      cmdExpandEnv,
+			"hexdecode":      cmdHexDecode,
 			"httpd":          cmdHTTPD,
 			"isdir":          cmdIsDir,
 			"issymlink":      cmdIsSymlink,
@@ -258,6 +260,33 @@ func cmdHTTPD(ts *testscript.TestScript, neg bool, args []string) {
 	dir := ts.MkAbs(args[0])
 	server := httptest.NewServer(http.FileServer(http.Dir(dir)))
 	ts.Setenv("HTTPD_URL", server.URL)
+}
+
+// cmdHexDecode decodes each argument, which must be a file with the extension
+// .hex, writing the result to the same path but without the .hex extension.
+func cmdHexDecode(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! hexdecode")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		if filepath.Ext(filename) != ".hex" {
+			ts.Fatalf("%s: no .hex extension", arg)
+		}
+		hexData, err := os.ReadFile(filename)
+		if err != nil {
+			ts.Fatalf("%s: %v", arg, err)
+		}
+		hexData = regexp.MustCompile(`(?m)#.*$`).ReplaceAll(hexData, nil)
+		hexData = regexp.MustCompile(`\s+`).ReplaceAll(hexData, nil)
+		data := make([]byte, hex.DecodedLen(len(hexData)))
+		if _, err := hex.Decode(data, hexData); err != nil {
+			ts.Fatalf("%s: %v", arg, err)
+		}
+		if err := os.WriteFile(strings.TrimSuffix(filename, ".hex"), data, 0o666); err != nil {
+			ts.Fatalf("%s: %v", arg, err)
+		}
+	}
 }
 
 // cmdIsDir succeeds if all of its arguments are directories.
