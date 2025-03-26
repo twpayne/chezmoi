@@ -5,17 +5,6 @@ classifiers = ["Private :: Do Not Upload"]
 requires-python = ">=3.10"
 license = { text = "MIT" }
 
-[tool.uv]
-dev-dependencies = [
-  "mkdocs-material==9.6.2",
-  "mkdocs-mermaid2-plugin==1.2.1",
-  "mkdocs==1.6.1",
-  "pymdown-extensions==10.14.3",
-  "ruamel-yaml==0.18.10",
-  "ruff==0.9.4",
-  "taskipy==1.14.1",
-]
-
 [tool.taskipy.tasks]
 build-docs = { cmd = "mkdocs build -f assets/chezmoi.io/mkdocs.yml" }
 serve-docs = { cmd = "mkdocs serve -f assets/chezmoi.io/mkdocs.yml" }
@@ -55,6 +44,17 @@ ignore = ["ANN003", "COM812"]
 
 [tool.ruff.format]
 quote-style = "single"
+
+[dependency-groups]
+dev = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.9",
+    "mkdocs-mermaid2-plugin>=1.2.1",
+    "pymdown-extensions>=10.14.3",
+    "ruamel-yaml>=0.18.10",
+    "ruff>=0.11.2",
+    "taskipy>=1.14.1",
+]
 
 [tool.uv.workspace]
 members = ["chezmoi"]
