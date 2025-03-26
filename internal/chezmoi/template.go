@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"maps"
 	"strconv"
 	"strings"
@@ -12,6 +13,8 @@ import (
 	"github.com/mattn/go-runewidth"
 	"github.com/mitchellh/copystructure"
 	"github.com/pelletier/go-toml/v2"
+	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/unicode"
 )
 
 // A Template extends text/template.Template with support for directives.
@@ -23,6 +26,7 @@ type Template struct {
 
 // TemplateOptions are template options that can be set with directives.
 type TemplateOptions struct {
+	Encoding       encoding.Encoding
 	Funcs          template.FuncMap
 	FormatIndent   string
 	LeftDelimiter  string
@@ -107,7 +111,12 @@ func (t *Template) Execute(data any) ([]byte, error) {
 	if err := t.template.ExecuteTemplate(&builder, t.name, data); err != nil {
 		return nil, err
 	}
-	return []byte(replaceLineEndings(builder.String(), t.options.LineEnding)), nil
+
+	result := []byte(replaceLineEndings(builder.String(), t.options.LineEnding))
+	if t.options.Encoding != nil {
+		return t.options.Encoding.NewEncoder().Bytes(result)
+	}
+	return result, nil
 }
 
 // parseAndRemoveDirectives updates o by parsing all template directives in data
@@ -126,6 +135,23 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) ([]byte, error) 
 			key := string(keyValuePairMatch[1])
 			value := maybeUnquote(string(keyValuePairMatch[2]))
 			switch key {
+			case "encoding":
+				switch value {
+				case "utf-8":
+					o.Encoding = unicode.UTF8
+				case "utf-8-bom":
+					o.Encoding = unicode.UTF8BOM
+				case "utf-16-be":
+					o.Encoding = unicode.UTF16(unicode.BigEndian, unicode.IgnoreBOM)
+				case "utf-16-be-bom":
+					o.Encoding = unicode.UTF16(unicode.BigEndian, unicode.UseBOM)
+				case "utf-16-le":
+					o.Encoding = unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM)
+				case "utf-16-le-bom":
+					o.Encoding = unicode.UTF16(unicode.LittleEndian, unicode.UseBOM)
+				default:
+					return nil, fmt.Errorf("%s: unknown encoding", value)
+				}
 			case "format-indent":
 				o.FormatIndent = value
 			case "format-indent-width":
