@@ -2,16 +2,24 @@
 exec chezmoi execute-template --left-delimiter=[[ --right-delimiter=]] '[[ "ok" ]]'
 stdout ^ok$
 
-# test that template delimiters can be set in files
-exec chezmoi cat $HOME${/}template
-cmp stdout golden/template
+# test that missing key behavior can be set in files
+exec chezmoi cat $HOME${/}missing-key
+cmp stdout golden/missing-key
 
--- golden/template --
-<no value>(nested)
+# test that template delimiters can be set in files
+exec chezmoi cat $HOME${/}nested-template
+cmp stdout golden/nested-template
+
+-- golden/missing-key --
+<no value>
+-- golden/nested-template --
+(nested)
 -- home/user/.local/share/chezmoi/.chezmoitemplates/nested --
 # chezmoi:template:left-delimiter=(( right-delimiter=))
 ((- . -))
--- home/user/.local/share/chezmoi/template.tmpl --
-# chezmoi:template:left-delimiter=[[ right-delimiter=]]
+-- home/user/.local/share/chezmoi/missing-key.tmpl --
 # chezmoi:template:missing-key=default
-[[ .MissingKey ]]([[ template "nested" "nested" ]])
+{{ .MissingKey }}
+-- home/user/.local/share/chezmoi/nested-template.tmpl --
+# chezmoi:template:left-delimiter=[[ right-delimiter=]]
+([[ template "nested" "nested" ]])
