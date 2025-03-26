@@ -1,6 +1,12 @@
+hexdecode golden/encoding.hex
+
 # test --left-delimiter and --right-delimiter flags to chezmoi execute-template
 exec chezmoi execute-template --left-delimiter=[[ --right-delimiter=]] '[[ "ok" ]]'
 stdout ^ok$
+
+# test that the encoding can be set in files
+exec chezmoi cat $HOME${/}encoding
+cmp stdout golden/encoding
 
 # test that missing key behavior can be set in files
 exec chezmoi cat $HOME${/}missing-key
@@ -10,6 +16,9 @@ cmp stdout golden/missing-key
 exec chezmoi cat $HOME${/}nested-template
 cmp stdout golden/nested-template
 
+-- golden/encoding.hex --
+fffe                                                     # UTF-16 BOM
+480065006c006c006f002c00200077006f0072006c00640021000a00 # "Hello, world!\n"
 -- golden/missing-key --
 <no value>
 -- golden/nested-template --
@@ -17,6 +26,9 @@ cmp stdout golden/nested-template
 -- home/user/.local/share/chezmoi/.chezmoitemplates/nested --
 # chezmoi:template:left-delimiter=(( right-delimiter=))
 ((- . -))
+-- home/user/.local/share/chezmoi/encoding.tmpl --
+# chezmoi:template:encoding=utf-16-le-bom
+Hello, world!
 -- home/user/.local/share/chezmoi/missing-key.tmpl --
 # chezmoi:template:missing-key=default
 {{ .MissingKey }}
