@@ -439,6 +439,8 @@ github.com/tobischo/argon2 v0.1.0 h1:mwAx/9DK/4rP0xzNifb/XMAf43dU3eG1B3aeF88qu4Y
 github.com/tobischo/argon2 v0.1.0/go.mod h1:4NLmLFwhWPbT66nRZNgcktV/mibJ6fESoeEp43h9GRw=
 github.com/tobischo/gokeepasslib/v3 v3.6.1 h1:AShQlTypdM19glj0UUePQcUi56qQyeFI5NcrWnVFudA=
 github.com/tobischo/gokeepasslib/v3 v3.6.1/go.mod h1:B31dx/dj0egameQrNtuoOx9RnwxnYaZR4kXaahRuZN8=
+github.com/twpayne/find-typos v0.0.3 h1:ht/lBr6E7llyqBlRIwWXcWG1nhPemW1Db/QE6vK43L8=
+github.com/twpayne/find-typos v0.0.3/go.mod h1:+6q93VenFlU95gXd6qPbTyqh4vYvIuqDk4msgBeW36s=
 github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd h1:/ekqcdG89euFEeFfuFYGF2An2AwsaJHnYxVwW8hqvcw=
 github.com/twpayne/go-expect v0.0.2-0.20241130000624-916db2914efd/go.mod h1:Z1PlEHxKw23bid0pq2RhO4NMScxckEhBXZLebwJpjrk=
 github.com/twpayne/go-pinentry v0.3.0 h1:Rr+fEOZXmeItOb4thjeVaBWJKB9Xa/eojolycyF/26c=

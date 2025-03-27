@@ -2,6 +2,17 @@ module github.com/twpayne/chezmoi/v2
 
 go 1.24.0
 
+tool (
+	github.com/twpayne/chezmoi/v2/internal/cmds/execute-template
+	github.com/twpayne/chezmoi/v2/internal/cmds/generate-helps
+	github.com/twpayne/chezmoi/v2/internal/cmds/generate-install.sh
+	github.com/twpayne/chezmoi/v2/internal/cmds/generate-license
+	github.com/twpayne/chezmoi/v2/internal/cmds/lint-commit-messages
+	github.com/twpayne/chezmoi/v2/internal/cmds/lint-txtar
+	github.com/twpayne/chezmoi/v2/internal/cmds/lint-whitespace
+	github.com/twpayne/find-typos
+)
+
 require (
 	filippo.io/age v1.2.1
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.2
@@ -158,6 +169,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tetratelabs/wazero v1.9.0 // indirect
 	github.com/tobischo/argon2 v0.1.0 // indirect
+	github.com/twpayne/find-typos v0.0.3 // indirect
 	github.com/twpayne/go-pinentry v0.3.0 // indirect
 	github.com/urfave/cli/v2 v2.27.6 // indirect
 	github.com/wasilibs/go-re2 v1.10.0 // indirect

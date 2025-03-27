@@ -32,11 +32,7 @@ def on_pre_build(config: MkDocsConfig, **kwargs) -> None:
         output_path = docs_dir.joinpath(src_path)
         template_path = output_path.parent / (output_path.name + '.tmpl')
         data_path = output_path.parent / (output_path.name + '.yaml')
-        args = [
-            'go',
-            'run',
-            Path(config_dir, '../../internal/cmds/execute-template/main.go'),
-        ]
+        args = ['go', 'tool', 'execute-template']
         if Path(data_path).exists():
             args.extend(['-data', data_path])
         args.extend(['-output', output_path, template_path])

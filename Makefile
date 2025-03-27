@@ -3,7 +3,6 @@ GOOS=$(shell ${GO} env GOOS)
 GOARCH=$(shell ${GO} env GOARCH)
 ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 EDITORCONFIG_CHECKER_VERSION=$(shell awk '/EDITORCONFIG_CHECKER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-FIND_TYPOS_VERSION=$(shell awk '/FIND_TYPOS_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
@@ -113,14 +112,14 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-actionlint ensure-editorconfig-checker ensure-find-typos ensure-golangci-lint shellcheck
+lint: ensure-actionlint ensure-editorconfig-checker ensure-golangci-lint shellcheck
 	./bin/actionlint
 	./bin/editorconfig-checker
 	./bin/golangci-lint run
-	${GO} run ./internal/cmds/lint-whitespace
+	${GO} tool lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
-	./bin/find-typos chezmoi .
-	go run ./internal/cmds/lint-commit-messages ${UPSTREAM}/master..HEAD
+	go tool find-typos chezmoi .
+	go tool lint-commit-messages ${UPSTREAM}/master..HEAD
 
 .PHONY: lint-markdown
 lint-markdown:
@@ -129,7 +128,7 @@ lint-markdown:
 .PHONY: format
 format: ensure-golangci-lint
 	./bin/golangci-lint fmt
-	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
+	find . -name \*.txtar | xargs ${GO} tool lint-txtar -w
 
 .PHONY: format-yaml
 format-yaml:
@@ -137,13 +136,12 @@ format-yaml:
 
 .PHONY: create-syso
 create-syso: ensure-goversioninfo
-	${GO} run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
+	${GO} tool execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
 	./bin/goversioninfo -platform-specific
 
 .PHONY: ensure-tools
 ensure-tools: \
 	ensure-actionlint \
-	ensure-find-typos \
 	ensure-golangci-lint \
 	ensure-goreleaser \
 	ensure-goversioninfo
@@ -159,12 +157,6 @@ ensure-editorconfig-checker:
 	if [ ! -x bin/editorconfig-checker ] || ( ./bin/editorconfig-checker --version | grep -Fqv "v${EDITORCONFIG_CHECKER_VERSION}" ) ; then \
 		curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/v${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf - "bin/ec-${GOOS}-${GOARCH}" ; \
 		mv "bin/ec-${GOOS}-${GOARCH}" bin/editorconfig-checker ; \
-	fi
-
-.PHONY: ensure-find-typos
-ensure-find-typos:
-	if [ ! -x bin/find-typos ] ; then \
-		GOBIN=$(shell pwd)/bin ${GO} install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}" ; \
 	fi
 
 .PHONY: ensure-golangci-lint
