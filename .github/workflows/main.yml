@@ -18,7 +18,6 @@ env:
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.4.3 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.2.1 # https://github.com/editorconfig-checker/editorconfig-checker/releases
-  FIND_TYPOS_VERSION: 0.0.3 # https://github.com/twpayne/find-typos/tags
   GO_VERSION: 1.24.1 # https://go.dev/doc/devel/release
   GOLANGCI_LINT_VERSION: 2.0.2 # https://github.com/golangci/golangci-lint/releases
   GORELEASER_VERSION: 2.8.1 # https://github.com/goreleaser/goreleaser/releases
@@ -382,22 +381,21 @@ jobs:
         "bin/ec-${GOOS}-${GOARCH}"
     - name: lint-whitespace
       run: |
-        go run ./internal/cmds/lint-whitespace
+        go tool lint-whitespace
     - name: lint-txtar
       run: |
-        find . -name '*.txtar' -print0 | xargs -0 go run ./internal/cmds/lint-txtar
+        find . -name '*.txtar' -print0 | xargs -0 go tool lint-txtar
     - name: find-typos
       run: |
-        go install "github.com/twpayne/find-typos@v${FIND_TYPOS_VERSION}"
-        find-typos -format=github-actions chezmoi .
+        go tool find-typos -format=github-actions chezmoi .
     - name: lint-commit-messages
       if: github.event_name == 'push'
       run: |
-        go run ./internal/cmds/lint-commit-messages HEAD~1..HEAD
+        go tool lint-commit-messages HEAD~1..HEAD
     - name: lint-commit-messages
       if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
       run: |
-        go run ./internal/cmds/lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
+        go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
       if: false # FIXME
       uses: DavidAnson/markdownlint-cli2-action@05f32210e84442804257b2a6f20b273450ec8265
