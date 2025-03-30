@@ -28,7 +28,6 @@ import (
 	"strings"
 	"text/template"
 	"time"
-	"unicode"
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
@@ -1402,11 +1401,11 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 		return nil, nil
 	}
 
-	// If the pager command contains any spaces, assume that it is a full
-	// shell command to be executed via the user's shell. Otherwise, execute
-	// it directly.
+	// If we're not on Windows and the pager command contains any spaces, assume
+	// that it is a full shell command to be executed via the user's shell.
+	// Otherwise, execute it directly.
 	var pagerCmd *exec.Cmd
-	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
+	if runtime.GOOS != "windows" && whitespaceRx.MatchString(pager) {
 		shellCommand, _ := shell.CurrentUserShell()
 		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
 		if err != nil {
