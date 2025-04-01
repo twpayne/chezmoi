@@ -32,7 +32,7 @@ require (
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.8.0
 	github.com/go-git/go-git/v5 v5.14.0
-	github.com/goccy/go-yaml v1.16.0
+	github.com/goccy/go-yaml v1.17.1
 	github.com/google/go-github/v61 v61.0.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gopasspw/gopass v1.15.15
