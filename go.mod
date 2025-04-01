@@ -1,6 +1,6 @@
 module github.com/twpayne/chezmoi/v2
 
-go 1.24.1
+go 1.24.2
 
 tool (
 	github.com/twpayne/chezmoi/v2/internal/cmds/execute-template
