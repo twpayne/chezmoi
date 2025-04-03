@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -343,7 +343,7 @@ func (s *EntryTypeSet) Type() string {
 }
 
 // StringSliceToEntryTypeSetHookFunc is a
-// github.com/mitchellh/mapstructure.DecodeHookFunc that parses an EntryTypeSet
+// github.com/go-viper/mapstructure/v2.DecodeHookFunc that parses an EntryTypeSet
 // from a []string.
 func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {

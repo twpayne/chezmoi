@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
+	"github.com/go-viper/mapstructure/v2"
 )
 
 var (
@@ -160,7 +160,7 @@ func HomeDirAbsPath() (AbsPath, error) {
 	return absPath, nil
 }
 
-// StringToAbsPathHookFunc is a github.com/mitchellh/mapstructure.DecodeHookFunc
+// StringToAbsPathHookFunc is a github.com/go-viper/mapstructure/v2.DecodeHookFunc
 // that parses an AbsPath from a string.
 func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {
