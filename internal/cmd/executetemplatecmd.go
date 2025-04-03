@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -13,6 +14,7 @@ import (
 )
 
 type executeTemplateCmdConfig struct {
+	file              bool
 	init              bool
 	promptBool        map[string]string
 	promptChoice      map[string]string
@@ -36,6 +38,8 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 		),
 	}
 
+	executeTemplateCmd.Flags().
+		BoolVarP(&c.executeTemplate.file, "file", "f", c.executeTemplate.file, "Treat arguments as filenames")
 	executeTemplateCmd.Flags().BoolVarP(&c.executeTemplate.init, "init", "i", c.executeTemplate.init, "Simulate chezmoi init")
 	executeTemplateCmd.Flags().
 		StringToStringVar(&c.executeTemplate.promptBool, "promptBool", c.executeTemplate.promptBool, "Simulate promptBool")
@@ -273,9 +277,18 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 
 	output := strings.Builder{}
 	for i, arg := range args {
+		var data []byte
+		if c.executeTemplate.file {
+			data, err = os.ReadFile(arg)
+			if err != nil {
+				return err
+			}
+		} else {
+			data = []byte(arg)
+		}
 		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
 			Name:            "arg" + strconv.Itoa(i+1),
-			Data:            []byte(arg),
+			Data:            data,
 			TemplateOptions: c.executeTemplate.templateOptions,
 		})
 		if err != nil {

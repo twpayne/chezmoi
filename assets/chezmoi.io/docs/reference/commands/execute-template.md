@@ -7,6 +7,10 @@ templates are specified, the template is read from stdin.
 
 ## Flags
 
+### `-f`, `--file`
+
+Treat the arguments as filenames, not literal templates.
+
 ### `-i`, `--init`
 
 Include simulated functions only available during `chezmoi init`.

@@ -400,6 +400,7 @@ var helps = map[string]*help{
 			"  chezmoi execute-template --init --promptString email=me@home.org < ~/.\n" +
 			"local/share/chezmoi/.chezmoi.toml.tmpl",
 		longFlags: chezmoiset.New(
+			"file",
 			"init",
 			"left-delimiter",
 			"promptBool",
@@ -412,6 +413,7 @@ var helps = map[string]*help{
 			"with-stdin",
 		),
 		shortFlags: chezmoiset.New(
+			"f",
 			"i",
 			"p",
 		),

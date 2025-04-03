@@ -110,6 +110,10 @@ stdout default
 exec chezmoi execute-template '{{ .a }}{{ .b }}'
 stdout 'alphabeta'
 
+# test chezmoi execute-template --file
+exec chezmoi execute-template --file $HOME${/}file.tmpl
+stdout '# contents of file.tmpl'
+
 chhome home2/user
 
 # test that files in .chezmoidata must have known extensions
@@ -156,5 +160,7 @@ last:
 {{ "invalid template"
 -- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
 {{ cat "hello" "world" }}
+-- home/user/file.tmpl --
+# contents of file.tmpl
 -- home2/user/.local/share/chezmoi/.chezmoidata/unknown --
 -- home3/user/.local/share/chezmoi/.chezmoidata/.chezmoiignore --
