@@ -4,6 +4,7 @@ go 1.24.2
 
 tool (
 	github.com/twpayne/chezmoi/v2/internal/cmds/execute-template
+	github.com/twpayne/chezmoi/v2/internal/cmds/generate-commit
 	github.com/twpayne/chezmoi/v2/internal/cmds/generate-helps
 	github.com/twpayne/chezmoi/v2/internal/cmds/generate-install.sh
 	github.com/twpayne/chezmoi/v2/internal/cmds/generate-license
