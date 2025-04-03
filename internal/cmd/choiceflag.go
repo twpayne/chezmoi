@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -116,7 +116,7 @@ func (f *choiceFlag) UnmarshalText(text []byte) error {
 }
 
 // StringToChoiceFlagHookFunc is a
-// github.com/mitchellh/mapstructure.DecodeHookFunc that parses a choiceFlag
+// github.com/go-viper/mapstructure/v2.DecodeHookFunc that parses a choiceFlag
 // from a string.
 //
 // Unfortunately, we only receive the type of the value that we're decoding

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mitchellh/mapstructure"
+	"github.com/go-viper/mapstructure/v2"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -112,8 +112,8 @@ func (b *autoBool) Value(autoFunc func() bool) bool {
 }
 
 // StringOrBoolToAutoBoolHookFunc is a
-// github.com/mitchellh/mapstructure.DecodeHookFunc that parses an autoBool from
-// a bool or string.
+// github.com/go-viper/mapstructure/v2.DecodeHookFunc that parses an autoBool
+// from a bool or string.
 func StringOrBoolToAutoBoolHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {
 		if to != reflect.TypeOf(autoBool{}) {
