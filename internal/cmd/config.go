@@ -1402,11 +1402,11 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 		return nil, nil
 	}
 
-	// If the pager command contains any spaces, assume that it is a full
-	// shell command to be executed via the user's shell. Otherwise, execute
-	// it directly.
+	// If we're not on Windows and the pager command contains any spaces, assume
+	// that it is a full shell command to be executed via the user's shell.
+	// Otherwise, execute it directly.
 	var pagerCmd *exec.Cmd
-	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
+	if runtime.GOOS != "windows" && strings.IndexFunc(pager, unicode.IsSpace) != -1 {
 		shellCommand, _ := shell.CurrentUserShell()
 		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
 		if err != nil {
