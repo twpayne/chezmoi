@@ -21,7 +21,7 @@ jobs:
       with:
         process-only: issues, prs
         issue-lock-reason: resolved
-        issue-inactive-days: 7
+        issue-inactive-days: 28
         pr-lock-reason: resolved
-        pr-inactive-days: 7
+        pr-inactive-days: 28
         log-output: true
