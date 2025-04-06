@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
@@ -30,7 +30,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.4af4bdda.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
@@ -4520,6 +4520,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Encoding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#format-indent" class="md-nav__link">
     <span class="md-ellipsis">
       Format indent
@@ -8847,6 +8856,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#encoding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Encoding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#format-indent" class="md-nav__link">
     <span class="md-ellipsis">
       Format indent
@@ -8920,6 +8938,53 @@ inherited by templates called from the file.</p>
 <span class="c1"># chezmoi:template:left-delimiter=&quot;# [[&quot; right-delimiter=]]</span>
 
 <span class="c1"># [[ &quot;true&quot; ]]</span>
+</code></pre></div>
+</div>
+<h2 id="encoding">Encoding</h2>
+<p>Templates are always written in UTF-8 with no byte order mark.</p>
+<p>By default, the result of executing a template is also UTF-8 with no
+byte order mark but this can be transformed into another encoding with the
+template directive:</p>
+<pre><code>chezmoi:template:encoding=$ENCODING
+</code></pre>
+<p>where <code>$ENCODING</code> is one of:</p>
+<table>
+<thead>
+<tr>
+<th>Encoding</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>utf-8</code></td>
+<td>UTF-8 with no byte order mark</td>
+</tr>
+<tr>
+<td><code>utf-8-bom</code></td>
+<td>UTF-8 with a byte order mark</td>
+</tr>
+<tr>
+<td><code>utf-16-be</code></td>
+<td>Big-endian UTF-16 with no byte order mark</td>
+</tr>
+<tr>
+<td><code>utf-16-be-bom</code></td>
+<td>Big-endian UTF-16 with a byte order mark</td>
+</tr>
+<tr>
+<td><code>utf-16-le</code></td>
+<td>Little-endian UTF-16 with no byte order mark</td>
+</tr>
+<tr>
+<td><code>utf-16-le-bom</code></td>
+<td>Little-endian UTF-16 with a byte order mark</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code>{{/* chezmoi:template:encoding=utf-16-le */}}
 </code></pre></div>
 </div>
 <h2 id="format-indent">Format indent</h2>
@@ -9061,7 +9126,7 @@ that is not present in the map. This behavior can be changed globally with the
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.f13b1293.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
