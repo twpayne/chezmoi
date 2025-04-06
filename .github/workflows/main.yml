@@ -25,6 +25,7 @@ env:
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
   UV_VERSION: 0.6.12 # https://github.com/astral-sh/uv/releases
+  ZIG_VERSION: 0.13.0 # https://ziglang.org/download/
 jobs:
   changes:
     runs-on: ubuntu-22.04
@@ -187,6 +188,9 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
+    - uses: mlugg/setup-zig@a67e68dc5c8281d9608136d3d7ca1b282213e4ac
+      with:
+        version: ${{ env.ZIG_VERSION }}
     - name: install-release-dependencies
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
@@ -464,6 +468,9 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
+    - uses: mlugg/setup-zig@a67e68dc5c8281d9608136d3d7ca1b282213e4ac
+      with:
+        version: ${{ env.ZIG_VERSION }}
     - uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a
     - name: create-syso
       run: |

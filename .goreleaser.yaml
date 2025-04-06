@@ -41,6 +41,23 @@ builds:
   - -X main.builtBy=goreleaser
   - -linkmode external
   - --extldflags "-static"
+- id: chezmoi-cgo-windows
+  env:
+  - CGO_ENABLED=1
+  - CC="zig cc -target {{ if eq .Runtime.Goarch "amd64" }}x86_64{{ else if eq .Runtime.Goarch "arm64" }}aarch64{{ end }}-windows"
+  - CXX="zig c++ -target {{ if eq .Runtime.Goarch "amd64" }}x86_64{{ else if eq .Runtime.Goarch "arm64" }}aarch64{{ end }}-windows"
+  goos:
+  - windows
+  goarch:
+  - amd64
+  - arm64
+  ldflags:
+  - -s
+  - -w
+  - -X main.version={{ .Version }}
+  - -X main.commit={{ .Commit }}
+  - -X main.date={{ .Date }}
+  - -X main.builtBy=goreleaser
 - id: chezmoi-nocgo
   env:
   - CGO_ENABLED=0
@@ -83,10 +100,15 @@ builds:
     goarch: '386'
   - goos: linux
     goarch: amd64
+  - goos: windows
+    goarch: amd64
+  - goos: windows
+    goarch: arm64
 
 archives:
 - ids:
   - chezmoi-cgo-glibc # Required for chezmoi upgrade for versions <= 2.0.5
+  - chezmoi-cgo-windows
   - chezmoi-nocgo
   files:
   - LICENSE
@@ -148,7 +170,7 @@ checksum:
     name_template: chezmoi-linux-amd64
   - glob: ./dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
     name_template: chezmoi-linux-amd64-musl
-  - glob: ./dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
+  - glob: ./dist/chezmoi-cgo-windows_windows_amd64_v1/chezmoi.exe
     name_template: chezmoi-windows-amd64.exe
 
 nfpms:
