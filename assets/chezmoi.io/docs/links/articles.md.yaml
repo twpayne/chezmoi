@@ -512,6 +512,6 @@ articles:
   title: Tools, tools, tools
   url: https://peterbraden.co.uk/article/tools-tools-tools/
 - date: '2025-04-03'
-  version: 2.16.0
+  version: 2.61.0
   title: Migrating From Nix and Home Manager to Homebrew and Chezmoi
   url: https://htdocs.dev/posts/migrating-from-nix-and-home-manager-to-homebrew-and-chezmoi/
