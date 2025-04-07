@@ -515,3 +515,8 @@ articles:
   version: 2.61.0
   title: Migrating From Nix and Home Manager to Homebrew and Chezmoi
   url: https://htdocs.dev/posts/migrating-from-nix-and-home-manager-to-homebrew-and-chezmoi/
+- date: '2025-04-06'
+  version: 2.62.0
+  lang: FR
+  title: Chezmoi, comment je gère mes dotfiles
+  url: https://julien-noblet.github.io/posts/2025/chezmoi/
