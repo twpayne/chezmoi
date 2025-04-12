@@ -21,6 +21,7 @@ linters:
   - fatcontext
   - forbidigo
   - forcetypeassert
+  - funcorder
   - gocheckcompilerdirectives
   - gochecksumtype
   - gocritic

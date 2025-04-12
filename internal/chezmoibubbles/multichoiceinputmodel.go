@@ -232,25 +232,6 @@ func (m MultichoiceInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m MultichoiceInputModel) selectAll() MultichoiceInputModel {
-	for i := range m.items {
-		if m.items[i].selected {
-			continue
-		}
-		m.items[i].selected = true
-		m.numSelected++
-	}
-	return m
-}
-
-func (m MultichoiceInputModel) deselectAll() MultichoiceInputModel {
-	for i := range m.items {
-		m.items[i].selected = false
-	}
-	m.numSelected = 0
-	return m
-}
-
 func (m MultichoiceInputModel) View() string {
 	if m.quitting {
 		return ""
@@ -308,6 +289,25 @@ func (m MultichoiceInputModel) Value() []string {
 	}
 
 	return out
+}
+
+func (m MultichoiceInputModel) deselectAll() MultichoiceInputModel {
+	for i := range m.items {
+		m.items[i].selected = false
+	}
+	m.numSelected = 0
+	return m
+}
+
+func (m MultichoiceInputModel) selectAll() MultichoiceInputModel {
+	for i := range m.items {
+		if m.items[i].selected {
+			continue
+		}
+		m.items[i].selected = true
+		m.numSelected++
+	}
+	return m
 }
 
 func clamp(x, low, high int) int {
