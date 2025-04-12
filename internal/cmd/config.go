@@ -553,13 +553,6 @@ func newConfig(options ...configOption) (*Config, error) {
 	return c, nil
 }
 
-func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
-	if c.customConfigFileAbsPath.IsEmpty() {
-		return c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr
-	}
-	return c.customConfigFileAbsPath, nil
-}
-
 // Close closes resources associated with c.
 func (c *Config) Close() error {
 	errs := make([]error, 0, len(c.tempDirs))
@@ -1379,6 +1372,13 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 		}
 		return nil, fmt.Errorf("multiple config file templates: %s ", englishList(sourceAbsPathStrs))
 	}
+}
+
+func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
+	if c.customConfigFileAbsPath.IsEmpty() {
+		return c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr
+	}
+	return c.customConfigFileAbsPath, nil
 }
 
 // getDiffPager returns the pager for diff output.
