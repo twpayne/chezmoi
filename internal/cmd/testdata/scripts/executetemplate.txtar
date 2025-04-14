@@ -114,6 +114,13 @@ stdout 'alphabeta'
 exec chezmoi execute-template --file $HOME${/}file.tmpl
 stdout '# contents of file.tmpl'
 
+exec chezmoi execute-template --file $HOME${/}.local${/}share${/}chezmoi${/}path${/}to${/}template.tmpl
+stdout '# contents of path[/\\]to[/\\]template.tmpl'
+
+exec chezmoi execute-template --file $HOME${/}path${/}to${/}template.tmpl
+# \S+ stands in here for the opaque $WORK directory
+stdout '# contents of \S+[/\\]home[/\\]user[/\\]path[/\\]to[/\\]template.tmpl'
+
 chhome home2/user
 
 # test that files in .chezmoidata must have known extensions
@@ -160,7 +167,11 @@ last:
 {{ "invalid template"
 -- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
 {{ cat "hello" "world" }}
+-- home/user/.local/share/chezmoi/path/to/template.tmpl --
+# contents of {{ .chezmoi.sourceFile }}
 -- home/user/file.tmpl --
 # contents of file.tmpl
+-- home/user/path/to/template.tmpl --
+# contents of {{ .chezmoi.sourceFile }}
 -- home2/user/.local/share/chezmoi/.chezmoidata/unknown --
 -- home3/user/.local/share/chezmoi/.chezmoidata/.chezmoiignore --

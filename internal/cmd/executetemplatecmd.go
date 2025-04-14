@@ -278,16 +278,35 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	output := strings.Builder{}
 	for i, arg := range args {
 		var data []byte
+		var name string
 		if c.executeTemplate.file {
+			// If the argument filename is in the source directory, then
+			// specify the template sourcePath as relative to sourceDir, just
+			// like `chezmoi apply` does. If it is not, then pass it unmodified.
+			path, err := chezmoi.NormalizePath(arg)
+			if err != nil {
+				return err
+			}
+			sourceDir, err := c.getSourceDirAbsPath(&getSourceDirAbsPathOptions{})
+			if err != nil {
+				return err
+			}
+			if relPath, err := path.TrimDirPrefix(sourceDir); err == nil {
+				name = relPath.String()
+			} else {
+				name = arg
+			}
+
 			data, err = os.ReadFile(arg)
 			if err != nil {
 				return err
 			}
 		} else {
+			name = "arg" + strconv.Itoa(i+1)
 			data = []byte(arg)
 		}
 		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
-			Name:            "arg" + strconv.Itoa(i+1),
+			Name:            name,
 			Data:            data,
 			TemplateOptions: c.executeTemplate.templateOptions,
 		})
