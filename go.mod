@@ -35,7 +35,7 @@ require (
 	github.com/go-git/go-git/v5 v5.15.0
 	github.com/go-viper/mapstructure/v2 v2.2.1
 	github.com/goccy/go-yaml v1.17.1
-	github.com/google/go-github/v61 v61.0.0
+	github.com/google/go-github/v71 v71.0.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gopasspw/gopass v1.15.15
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
@@ -186,3 +186,5 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/google/go-github/v61 v61.0.0 => github.com/google/go-github/v71 v71.0.0
