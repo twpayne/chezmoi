@@ -26,7 +26,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.35.3
 	github.com/bmatcuk/doublestar/v4 v4.8.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
-	github.com/charmbracelet/bubbles v0.21.0
+	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.3.4
 	github.com/charmbracelet/glamour v0.9.1
 	github.com/charmbracelet/lipgloss v1.1.0
@@ -186,3 +186,5 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+exclude github.com/charmbracelet/bubbles v0.21.0 // https://github.com/twpayne/chezmoi/issues/4405
