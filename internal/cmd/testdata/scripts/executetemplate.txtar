@@ -112,7 +112,7 @@ stdout 'alphabeta'
 
 # test chezmoi execute-template --file
 exec chezmoi execute-template --file $HOME${/}file.tmpl
-stdout '# contents of file.tmpl'
+cmpenv stdout golden/file
 
 chhome home2/user
 
@@ -126,6 +126,8 @@ chhome home3/user
 ! exec chezmoi execute-template
 stderr 'not allowed in .chezmoidata directory'
 
+-- golden/file --
+# contents of $HOME/file.tmpl
 -- golden/stdin --
 # contents of stdin
 -- golden/stdin.tmpl --
@@ -161,6 +163,6 @@ last:
 -- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
 {{ cat "hello" "world" }}
 -- home/user/file.tmpl --
-# contents of file.tmpl
+# contents of {{ .chezmoi.sourceFile }}
 -- home2/user/.local/share/chezmoi/.chezmoidata/unknown --
 -- home3/user/.local/share/chezmoi/.chezmoidata/.chezmoiignore --

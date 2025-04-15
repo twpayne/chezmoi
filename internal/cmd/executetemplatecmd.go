@@ -277,17 +277,20 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 
 	output := strings.Builder{}
 	for i, arg := range args {
+		var name string
 		var data []byte
 		if c.executeTemplate.file {
-			data, err = os.ReadFile(arg)
+			name = arg
+			data, err = os.ReadFile(name)
 			if err != nil {
 				return err
 			}
 		} else {
+			name = "arg" + strconv.Itoa(i+1)
 			data = []byte(arg)
 		}
 		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
-			Name:            "arg" + strconv.Itoa(i+1),
+			Name:            name,
 			Data:            data,
 			TemplateOptions: c.executeTemplate.templateOptions,
 		})
