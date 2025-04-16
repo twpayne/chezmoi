@@ -114,12 +114,13 @@ stdout 'alphabeta'
 exec chezmoi execute-template --file $HOME${/}file.tmpl
 stdout '# contents of file.tmpl'
 
+# test that .chezmoi.sourceFile is a relative path in the source dir
 exec chezmoi execute-template --file $HOME${/}.local${/}share${/}chezmoi${/}path${/}to${/}template.tmpl
-stdout '# contents of path[/\\]to[/\\]template.tmpl'
+stdout '# contents of path/to/template.tmpl'
 
+# test that .chezmoi.sourceFile is an absolute path outside the source dir
 exec chezmoi execute-template --file $HOME${/}path${/}to${/}template.tmpl
-# \S+ stands in here for the opaque $WORK directory
-stdout '# contents of \S+[/\\]home[/\\]user[/\\]path[/\\]to[/\\]template.tmpl'
+stdout '# contents of .*/home/user/path/to/template.tmpl'
 
 chhome home2/user
 

@@ -287,14 +287,14 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			if err != nil {
 				return err
 			}
-			sourceDir, err := c.getSourceDirAbsPath(&getSourceDirAbsPathOptions{})
+			sourceDir, err := c.getSourceDirAbsPath(nil)
 			if err != nil {
 				return err
 			}
 			if relPath, err := path.TrimDirPrefix(sourceDir); err == nil {
 				name = relPath.String()
 			} else {
-				name = arg
+				name = path.String()
 			}
 
 			data, err = os.ReadFile(arg)
