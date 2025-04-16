@@ -89,7 +89,7 @@ func (c *Config) upgradeUNIXPackage(_ context.Context, _ *semver.Version, _ *git
 	return errUnsupportedUpgradeMethod
 }
 
-func (c *Config) winGetUpgrade() error {
+func (c *Config) winGetUpgrade() error { //nolint:nolintlint,staticcheck
 	return errors.New(
 		"upgrade command is not currently supported for WinGet installations. chezmoi can still be upgraded via WinGet by running `winget upgrade --id twpayne.chezmoi --source winget`",
 	)
