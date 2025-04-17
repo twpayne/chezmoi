@@ -525,6 +525,10 @@ articles:
   lang: CN
   title: dotfiles：一键配置你的开发环境
   url: https://blog.csdn.net/gitblog_00574/article/details/147021711
+- date: '2025-04-11'
+  version: 2.62.0
+  title: Installing the Tmux Plugin Manager (tpm) with Chezmoi
+  url: https://www.lorenzobettini.it/2025/04/installing-the-tmux-plugin-manager-tpm-with-chezmoi/
 - date: '2025-04-13'
   version: 2.62.0
   title: Managing External Dependencies with Chezmoi
