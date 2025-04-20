@@ -189,3 +189,5 @@ require (
 )
 
 exclude github.com/charmbracelet/bubbles v0.21.0 // https://github.com/twpayne/chezmoi/issues/4405
+
+replace github.com/nbutton23/zxcvbn-go => github.com/twpayne/zxcvbn-go v0.0.0-20250420184843-b60d24943c99 // https://github.com/gopasspw/gopass/issues/3132
