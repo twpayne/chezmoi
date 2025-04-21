@@ -486,6 +486,10 @@ func (c *Config) toPrettyJsonTemplateFunc(args ...any) string { //nolint:revive,
 	return builder.String()
 }
 
+func (c *Config) toStringTemplateFunc(value any) string {
+	return anyToString(value)
+}
+
 func (c *Config) toTomlTemplateFunc(data any) string {
 	return string(mustValue(chezmoi.FormatTOML.Marshal(data)))
 }
@@ -504,20 +508,32 @@ func anyToString(value any) string {
 	case bool:
 		return strconv.FormatBool(value)
 	case *bool:
+		if value == nil {
+			return "false"
+		}
 		return strconv.FormatBool(*value)
 	case []byte:
 		return string(value)
 	case float64:
 		return strconv.FormatFloat(value, 'f', -1, 64)
 	case *float64:
+		if value == nil {
+			return "0"
+		}
 		return strconv.FormatFloat(*value, 'f', -1, 64)
 	case int:
 		return strconv.Itoa(value)
 	case *int:
+		if value == nil {
+			return "0"
+		}
 		return strconv.Itoa(*value)
 	case string:
 		return value
 	case *string:
+		if value == nil {
+			return ""
+		}
 		return *value
 	case error:
 		return value.Error()
