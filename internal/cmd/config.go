@@ -428,6 +428,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	delete(c.templateFuncs, "splitList")
 	delete(c.templateFuncs, "squote")
 	delete(c.templateFuncs, "toPrettyJson")
+	delete(c.templateFuncs, "toString")
 
 	// The completion template function is added in persistentPreRunRootE as
 	// it needs a *cobra.Command, which we don't yet have.
@@ -516,6 +517,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"stat":                        c.statTemplateFunc,
 		"toIni":                       c.toIniTemplateFunc,
 		"toPrettyJson":                c.toPrettyJsonTemplateFunc,
+		"toString":                    c.toStringTemplateFunc,
 		"toToml":                      c.toTomlTemplateFunc,
 		"toYaml":                      c.toYamlTemplateFunc,
 		"vault":                       c.vaultTemplateFunc,
