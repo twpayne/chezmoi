@@ -233,6 +233,7 @@ nav:
       - toIni: reference/templates/functions/toIni.md
       - toPrettyJson: reference/templates/functions/toPrettyJson.md
       - toString: reference/templates/functions/toString.md
+      - toStrings: reference/templates/functions/toStrings.md
       - toToml: reference/templates/functions/toToml.md
       - toYaml: reference/templates/functions/toYaml.md
       - warnf: reference/templates/functions/warnf.md
