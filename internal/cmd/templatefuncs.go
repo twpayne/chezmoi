@@ -490,6 +490,14 @@ func (c *Config) toStringTemplateFunc(value any) string {
 	return anyToString(value)
 }
 
+func (c *Config) toStringsTemplateFunc(values ...any) []string {
+	result, err := anyToStringSlice(values)
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+
 func (c *Config) toTomlTemplateFunc(data any) string {
 	return string(mustValue(chezmoi.FormatTOML.Marshal(data)))
 }
@@ -550,6 +558,24 @@ func anyToStringSlice(slice any) ([]string, error) {
 		result := make([]string, len(slice))
 		for i, elem := range slice {
 			result[i] = anyToString(elem)
+		}
+		return result, nil
+	case []bool:
+		result := make([]string, len(slice))
+		for i, value := range slice {
+			result[i] = strconv.FormatBool(value)
+		}
+		return result, nil
+	case []float64:
+		result := make([]string, len(slice))
+		for i, value := range slice {
+			result[i] = strconv.FormatFloat(value, 'f', -1, 64)
+		}
+		return result, nil
+	case []int:
+		result := make([]string, len(slice))
+		for i, value := range slice {
+			result[i] = strconv.Itoa(value)
 		}
 		return result, nil
 	case []string:
