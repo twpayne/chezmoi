@@ -37,7 +37,7 @@ require (
 	github.com/goccy/go-yaml v1.17.1
 	github.com/google/go-github/v61 v61.0.0
 	github.com/google/renameio/v2 v2.0.0
-	github.com/gopasspw/gopass v1.15.15
+	github.com/gopasspw/gopass v1.15.16
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.17
 	github.com/klauspost/compress v1.18.0
@@ -110,7 +110,7 @@ require (
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.8.0 // indirect
 	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
-	github.com/charmbracelet/x/exp/slice v0.0.0-20250417172821-98fd948af1b1 // indirect
+	github.com/charmbracelet/x/exp/slice v0.0.0-20250421203656-b717fa12d308 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
@@ -134,6 +134,7 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/gopasspw/gitconfig v0.0.1 // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
@@ -153,7 +154,6 @@ require (
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
-	github.com/nbutton23/zxcvbn-go v0.0.0-20210217022336-fa2cb2858354 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pjbgf/sha1cd v0.3.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
@@ -171,7 +171,6 @@ require (
 	github.com/tetratelabs/wazero v1.9.0 // indirect
 	github.com/tobischo/argon2 v0.1.0 // indirect
 	github.com/twpayne/find-typos v0.0.3 // indirect
-	github.com/twpayne/go-pinentry v0.3.0 // indirect
 	github.com/urfave/cli/v2 v2.27.6 // indirect
 	github.com/wasilibs/go-re2 v1.10.0 // indirect
 	github.com/wasilibs/wazero-helpers v0.0.0-20250123031827-cd30c44769bb // indirect
@@ -179,7 +178,7 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/yuin/goldmark v1.7.10 // indirect
-	github.com/yuin/goldmark-emoji v1.0.5 // indirect
+	github.com/yuin/goldmark-emoji v1.0.6 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0 // indirect
 	golang.org/x/net v0.39.0 // indirect
@@ -189,5 +188,3 @@ require (
 )
 
 exclude github.com/charmbracelet/bubbles v0.21.0 // https://github.com/twpayne/chezmoi/issues/4405
-
-replace github.com/nbutton23/zxcvbn-go => github.com/twpayne/zxcvbn-go v0.0.0-20250420184843-b60d24943c99 // https://github.com/gopasspw/gopass/issues/3132
