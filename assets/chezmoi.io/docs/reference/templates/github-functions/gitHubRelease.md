@@ -15,4 +15,10 @@ the same *owner-repo* *version* will only result in one call to the GitHub API.
     {{ (gitHubRelease "docker/compose" "v2.29.1").TagName }}
     ```
 
+!!! hint
+
+    Some fields in the returned object have type `*string`. Use the
+    [`toString` template function][toString] to convert these to strings.
+
 [bindings]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryRelease
+[toString]: ../functions/toString.md

@@ -27,5 +27,11 @@ Calls to `gitHubTags` are cached so calling `gitHubTags` with the same
     {{ gitHubTags "docker/compose" | toJson | fromJson | jq ".[0].name" }}
     ```
 
+!!! hint
+
+    Some fields in the returned object have type `*string`. Use the
+    [`toString` template function][toString] to convert these to strings.
+
 [github-go]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryTag
 [jq]: /reference/templates/functions/jq.md
+[toString]: ../functions/toString.md

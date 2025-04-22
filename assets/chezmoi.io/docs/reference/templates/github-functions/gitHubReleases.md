@@ -27,6 +27,11 @@ Calls to `gitHubReleases` are cached so calling `gitHubReleases` with the same
     {{ gitHubReleases "docker/compose" | toJson | fromJson | jq ".[0].tag_name" }}
     ```
 
+!!! hint
+
+    Some fields in the returned object have type `*string`. Use the
+    [`toString` template function][toString] to convert these to strings.
 
 [github-go]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryRelease
 [jq]: /reference/templates/functions/jq.md
+[toString]: ../functions/toString.md

@@ -17,6 +17,11 @@ call to the GitHub API.
     {{ gitHubLatestReleaseAssetURL "twpayne/chezmoi" (printf "chezmoi-%s-%s" .chezmoi.os .chezmoi.arch) }}
 
     ```
+!!! hint
+
+    Some fields in the returned object have type `*string`. Use the
+    [`toString` template function][toString] to convert these to strings.
 
 [bindings]: https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryRelease
 [match]: https://pkg.go.dev/path#Match
+[toString]: ../functions/toString.md
