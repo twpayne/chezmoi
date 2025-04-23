@@ -62,12 +62,12 @@ videos:
   lang: AR
   title: Chezmoi, Dotfiles, Workflow, Templates and Encryption Arabic شرح   # removed | from title as it breaks Markdown tables
   url: https://www.youtube.com/watch?v=Jrrd2dHYBmY
-- date: 2025-03-22
+- date: '2025-03-22'
   version: 2.61.0
   lang: DE
   title: 'Effiziente Dotfile-Verwaltung: Chezmoi im Einsatz'
   url: https://media.ccc.de/v/clt25-240-effiziente-dotfile-verwaltung-chezmoi-im-einsatz
-- data: 2025-04-23
+- data: '2025-04-23'
   version: 2.62.2
   title: Managing Dotfiles with Chezmoi
   url: https://www.youtube.com/watch?v=KsEj_pvOXdE
