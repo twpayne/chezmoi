@@ -10,9 +10,7 @@ the following additions for LLM (Large Language Model)-generated contributions:
   contributing it.
 
 * If you contribute un-reviewed LLM-generated content with the admission that
-  you do not understand the content then you will receive a warning. If you post
-  any un-reviewed LLM-generated content after the warning then you will be
-  banned without recourse.
+  you do not understand the content then you will receive a warning.
 
 * If you contribute un-reviewed LLM-generated content without any admission that
   you used an LLM then you will immediately be banned without recourse.
