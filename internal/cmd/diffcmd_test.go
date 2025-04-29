@@ -118,6 +118,69 @@ func TestDiffCmd(t *testing.T) {
 				`+.file`,
 			),
 		},
+		{
+			name: "issue_4425",
+			extraRoot: map[string]any{
+				"/home/user": map[string]any{
+					".config/git/config": "# contents of .config/git/config\n",
+					".local/share/chezmoi": map[string]any{
+						"dot_config/remove_git/config": "# contents of .config/git/config\n",
+					},
+				},
+			},
+		},
+		{
+			name: "issue_4425_nested_dir",
+			extraRoot: map[string]any{
+				"/home/user": map[string]any{
+					".config/git": map[string]any{
+						"subdir": &vfst.Dir{
+							Perm: fs.ModePerm &^ chezmoitest.Umask,
+						},
+					},
+					".local/share/chezmoi": map[string]any{
+						"dot_config/remove_git/remove_subdir/.keep": "",
+					},
+				},
+			},
+			stdoutStr: chezmoitest.JoinLines(
+				"diff --git a/.config/git/subdir b/.config/git/subdir",
+				"deleted file mode 40755",
+				"index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000",
+				"--- a/.config/git/subdir",
+				"+++ /dev/null",
+				"diff --git a/.config/git b/.config/git",
+				"deleted file mode 40755",
+				"index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000",
+				"--- a/.config/git",
+				"+++ /dev/null",
+			),
+		},
+		{
+			name: "issue_4425_nested_file",
+			extraRoot: map[string]any{
+				"/home/user": map[string]any{
+					".config/git/config": "# contents of .config/git/config\n",
+					".local/share/chezmoi": map[string]any{
+						"dot_config/remove_git/config": "",
+					},
+				},
+			},
+			stdoutStr: chezmoitest.JoinLines(
+				"diff --git a/.config/git/config b/.config/git/config",
+				"deleted file mode 100644",
+				"index c3d477a648b5cb9739a359d54234ec5627c3a64b..0000000000000000000000000000000000000000",
+				"--- a/.config/git/config",
+				"+++ /dev/null",
+				"@@ -1 +0,0 @@",
+				"-# contents of .config/git/config",
+				"diff --git a/.config/git b/.config/git",
+				"deleted file mode 40755",
+				"index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000",
+				"--- a/.config/git",
+				"+++ /dev/null",
+			),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]any{

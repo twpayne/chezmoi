@@ -12,6 +12,8 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/filemode"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	vfs "github.com/twpayne/go-vfs/v5"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
 )
 
 // A GitDiffSystem wraps a System and logs all of the actions executed as a git
@@ -20,6 +22,7 @@ type GitDiffSystem struct {
 	system         System
 	dirAbsPath     AbsPath
 	filter         *EntryTypeFilter
+	removedEntries chezmoiset.Set[AbsPath]
 	reverse        bool
 	scriptContents bool
 	textConvFunc   TextConvFunc
@@ -47,6 +50,7 @@ func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *G
 		system:         system,
 		dirAbsPath:     dirAbsPath,
 		filter:         options.Filter,
+		removedEntries: chezmoiset.New[AbsPath](),
 		reverse:        options.Reverse,
 		scriptContents: options.ScriptContents,
 		textConvFunc:   options.TextConvFunc,
@@ -78,12 +82,27 @@ func (s *GitDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 
 // Chtimes implements system.Chtimes.
 func (s *GitDiffSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
+	if s.isRemoved(name) {
+		return fs.ErrNotExist
+	}
 	return s.system.Chtimes(name, atime, mtime)
 }
 
 // Glob implements System.Glob.
 func (s *GitDiffSystem) Glob(pattern string) ([]string, error) {
-	return s.system.Glob(pattern)
+	matches, err := s.system.Glob(pattern)
+	if err != nil {
+		return nil, err
+	}
+	n := 0
+	for _, match := range matches {
+		if s.isRemoved(NewAbsPath(match)) {
+			continue
+		}
+		matches[n] = match
+		n++
+	}
+	return matches[:n], nil
 }
 
 // Link implements System.Link.
@@ -94,6 +113,9 @@ func (s *GitDiffSystem) Link(oldName, newName AbsPath) error {
 
 // Lstat implements System.Lstat.
 func (s *GitDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
+	if s.isRemoved(name) {
+		return nil, fs.ErrNotExist
+	}
 	return s.system.Lstat(name)
 }
 
@@ -114,7 +136,22 @@ func (s *GitDiffSystem) RawPath(path AbsPath) (AbsPath, error) {
 
 // ReadDir implements System.ReadDir.
 func (s *GitDiffSystem) ReadDir(name AbsPath) ([]fs.DirEntry, error) {
-	return s.system.ReadDir(name)
+	if s.isRemoved(name) {
+		return nil, fs.ErrNotExist
+	}
+	dirEntries, err := s.system.ReadDir(name)
+	if err != nil {
+		return nil, err
+	}
+	n := 0
+	for _, dirEntry := range dirEntries {
+		if s.isRemoved(name.JoinString(dirEntry.Name())) {
+			continue
+		}
+		dirEntries[n] = dirEntry
+		n++
+	}
+	return dirEntries[:n], nil
 }
 
 // ReadFile implements System.ReadFile.
@@ -129,10 +166,29 @@ func (s *GitDiffSystem) Readlink(name AbsPath) (string, error) {
 
 // Remove implements System.Remove.
 func (s *GitDiffSystem) Remove(name AbsPath) error {
-	if err := s.encodeDiff(name, nil, 0); err != nil {
+	// Only emit diffs for removing directories if the underlying directory is
+	// empty. Keep track of removed entries to handled nested removes.
+	switch fileInfo, err := s.system.Stat(name); {
+	case err != nil:
+		return err
+	case fileInfo.IsDir():
+		switch dirEntries, err := s.ReadDir(name); {
+		case err != nil:
+			return err
+		case len(dirEntries) != 0:
+			return fs.ErrExist
+		}
+	}
+	if s.filter.IncludeEntryTypeBits(EntryTypeRemove) {
+		if err := s.encodeDiff(name, nil, 0); err != nil {
+			return err
+		}
+	}
+	if err := s.system.Remove(name); err != nil {
 		return err
 	}
-	return s.system.Remove(name)
+	s.removedEntries.Add(name)
+	return nil
 }
 
 // RemoveAll implements System.RemoveAll.
@@ -142,7 +198,11 @@ func (s *GitDiffSystem) RemoveAll(name AbsPath) error {
 			return err
 		}
 	}
-	return s.system.RemoveAll(name)
+	if err := s.system.RemoveAll(name); err != nil {
+		return err
+	}
+	s.removedEntries.Add(name)
+	return nil
 }
 
 // Rename implements System.Rename.
@@ -189,7 +249,11 @@ func (s *GitDiffSystem) Rename(oldPath, newPath AbsPath) error {
 			return err
 		}
 	}
-	return s.system.Rename(oldPath, newPath)
+	if err := s.system.Rename(oldPath, newPath); err != nil {
+		return err
+	}
+	s.removedEntries.Add(oldPath)
+	return nil
 }
 
 // RunCmd implements System.RunCmd.
@@ -226,6 +290,9 @@ func (s *GitDiffSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, 
 
 // Stat implements System.Stat.
 func (s *GitDiffSystem) Stat(name AbsPath) (fs.FileInfo, error) {
+	if s.isRemoved(name) {
+		return nil, fs.ErrNotExist
+	}
 	return s.system.Stat(name)
 }
 
@@ -311,6 +378,25 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 	}
 
 	return s.unifiedEncoder.Encode(diffPatch)
+}
+
+func (s *GitDiffSystem) isRemoved(absPath AbsPath) bool {
+	if s.removedEntries.IsEmpty() {
+		return false
+	}
+	if s.removedEntries.Contains(absPath) {
+		return true
+	}
+	var lastPrefixAbsPath AbsPath
+	prefixAbsPath, _ := absPath.Split()
+	for prefixAbsPath != lastPrefixAbsPath {
+		if s.removedEntries.Contains(prefixAbsPath) {
+			return true
+		}
+		lastPrefixAbsPath = prefixAbsPath
+		prefixAbsPath, _ = prefixAbsPath.Split()
+	}
+	return false
 }
 
 // trimPrefix removes s's directory prefix from absPath.

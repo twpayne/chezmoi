@@ -107,7 +107,7 @@ func (p *AbsPath) Set(s string) error {
 // Split returns p's directory and file.
 func (p AbsPath) Split() (AbsPath, RelPath) {
 	dir, file := path.Split(p.String())
-	return NewAbsPath(dir), NewRelPath(file)
+	return NewAbsPath(strings.TrimSuffix(dir, "/")), NewRelPath(file)
 }
 
 func (p AbsPath) String() string {
