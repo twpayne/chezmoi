@@ -901,9 +901,9 @@ TARGET:
 		case err == nil:
 			// Do nothing.
 		case errors.Is(err, fs.ErrExist):
-			// Do nothing.
+			continue TARGET
 		case errors.Is(err, fs.ErrNotExist):
-			// Do nothing.
+			continue TARGET
 		default:
 			return err
 		}
@@ -1400,7 +1400,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 			return nil
 		case fileInfo.Mode().IsRegular():
 			parentAbsPath, _ := externalAbsPath.Split()
-			return s.addExternal(externalAbsPath, parentAbsPath.TrimSuffix("/").Dir())
+			return s.addExternal(externalAbsPath, parentAbsPath.Dir())
 		case fileInfo.IsDir():
 			return nil
 		default:
