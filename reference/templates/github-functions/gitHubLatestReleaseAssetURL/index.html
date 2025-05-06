@@ -4565,6 +4565,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -5349,6 +5353,50 @@
   
   <span class="md-ellipsis">
     toPrettyJson
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functions/toString/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toString
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functions/toStrings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toStrings
     
   </span>
   
@@ -8795,6 +8843,11 @@ call to the GitHub API.</p>
 <div class="highlight"><pre><span></span><code>{{ gitHubLatestReleaseAssetURL &quot;FiloSottile/age&quot; (printf &quot;age-*-%s-%s.tar.gz&quot; .chezmoi.os .chezmoi.arch) }}
 {{ gitHubLatestReleaseAssetURL &quot;twpayne/chezmoi&quot; (printf &quot;chezmoi-%s-%s&quot; .chezmoi.os .chezmoi.arch) }}
 </code></pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Some fields in the returned object have type <code>*string</code>. Use the
+<a href="../../functions/toString/"><code>toString</code> template function</a> to convert these to strings.</p>
 </div>
 
 

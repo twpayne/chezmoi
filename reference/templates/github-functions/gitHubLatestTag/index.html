@@ -4565,6 +4565,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -5349,6 +5353,50 @@
   
   <span class="md-ellipsis">
     toPrettyJson
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functions/toString/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toString
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functions/toStrings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toStrings
     
   </span>
   
@@ -8785,21 +8833,6 @@
 <p><code>gitHubLatestTag</code> calls the GitHub API to retrieve the latest tag for the given
 <em>owner-repo</em>, returning structured data as defined by the <a href="https://pkg.go.dev/github.com/google/go-github/v61/github#RepositoryTag">GitHub Go API
 bindings</a>.</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>06c3cb379a68 (WIP)</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
 <p>Calls to <code>gitHubLatestTag</code> are cached the same as <a href="../gitHubTags/"><code>githubTags</code></a>,
 so calling <code>gitHubLatestTag</code> with the same <em>owner-repo</em> will only result in one
 call to the GitHub API.</p>
@@ -8814,6 +8847,11 @@ call to the GitHub API.</p>
 tags GitHub API endpoint</a>. Although this seems to be the most
 recent tag, the GitHub API documentation does not specify the order of the
 returned tags.</p>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Some fields in the returned object have type <code>*string</code>. Use the
+<a href="../../functions/toString/"><code>toString</code> template function</a> to convert these to strings.</p>
 </div>
 
 

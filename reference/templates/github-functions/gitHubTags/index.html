@@ -4565,6 +4565,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -5349,6 +5353,50 @@
   
   <span class="md-ellipsis">
     toPrettyJson
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functions/toString/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toString
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../functions/toStrings/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    toStrings
     
   </span>
   
@@ -8803,6 +8851,11 @@ default page size for the GitHub API.</p>
 <a href="../../functions/jq/"><code>jq</code></a> function and must instead be converted through JSON:</p>
 <div class="highlight"><pre><span></span><code>{{ gitHubTags &quot;docker/compose&quot; | toJson | fromJson | jq &quot;.[0].name&quot; }}
 </code></pre></div>
+</div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>Some fields in the returned object have type <code>*string</code>. Use the
+<a href="../../functions/toString/"><code>toString</code> template function</a> to convert these to strings.</p>
 </div>
 
 
