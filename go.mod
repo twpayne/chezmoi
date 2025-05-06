@@ -62,13 +62,13 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.25.1
 	go.etcd.io/bbolt v1.4.0
 	go.uber.org/automaxprocs v1.6.0
-	golang.org/x/crypto v0.37.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20250418111936-9c1aa6af88df
-	golang.org/x/oauth2 v0.29.0
-	golang.org/x/sync v0.13.0
-	golang.org/x/sys v0.32.0
-	golang.org/x/term v0.31.0
-	golang.org/x/text v0.24.0
+	golang.org/x/crypto v0.38.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20250505184708-aae6e6107042
+	golang.org/x/oauth2 v0.30.0
+	golang.org/x/sync v0.14.0
+	golang.org/x/sys v0.33.0
+	golang.org/x/term v0.32.0
+	golang.org/x/text v0.25.0
 	gopkg.in/ini.v1 v1.67.0
 	howett.net/plist v1.0.1
 	mvdan.cc/sh/v3 v3.11.0
@@ -110,7 +110,7 @@ require (
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.9.2 // indirect
 	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
-	github.com/charmbracelet/x/exp/slice v0.0.0-20250501183327-ad3bc78c6a81 // indirect
+	github.com/charmbracelet/x/exp/slice v0.0.0-20250505150409-97991a1f17d1 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
@@ -180,9 +180,9 @@ require (
 	github.com/yuin/goldmark v1.7.11 // indirect
 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0 // indirect
-	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/tools v0.32.0 // indirect
+	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
+	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/tools v0.33.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
