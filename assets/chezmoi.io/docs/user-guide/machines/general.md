@@ -8,7 +8,7 @@ The following template sets the `$chassisType` variable to `"desktop"` or
 ```text
 {{- $chassisType := "desktop" }}
 {{- if eq .chezmoi.os "darwin" }}
-{{-   if contains "MacBook" (output "sysctl" "-n" "hw.model") }}
+{{-   if contains "MacBook" (output "system_profiler" "SPHardwareDataType") }}
 {{-     $chassisType = "laptop" }}
 {{-   else }}
 {{-     $chassisType = "desktop" }}
