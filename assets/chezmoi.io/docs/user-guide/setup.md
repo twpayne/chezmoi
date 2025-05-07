@@ -116,7 +116,7 @@ To test this template, use `chezmoi execute-template` with the `--init` and
 `--promptString` flags, for example:
 
 ```sh
-chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+chezmoi execute-template --init --promptString "Email address=me@home.org" < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 ```
 
 ## Re-create your config file
