@@ -187,6 +187,10 @@ stdout '^key = .value.$'
 exec chezmoi execute-template '{{ dict "a" (dict "b" "&") | toPrettyJson "    " }}'
 cmp stdout golden/toPrettyJson
 
+# test that toStrings flattens nested lists
+exec chezmoi execute-template '{{ toStrings (list "a" "b" (list "c" "d")) }}'
+stdout '\[a b c d\]'
+
 # test fromYaml template function
 exec chezmoi execute-template '{{ (fromYaml "key1: value1\nkey2: value2").key2 }}'
 stdout '^value2$'
