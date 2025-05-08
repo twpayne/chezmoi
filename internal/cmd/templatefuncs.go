@@ -552,36 +552,40 @@ func anyToString(value any) string {
 	}
 }
 
-func anyToStringSlice(slice any) ([]string, error) {
-	switch slice := slice.(type) {
+func anyToStringSlice(value any) ([]string, error) {
+	switch value := value.(type) {
 	case []any:
-		result := make([]string, len(slice))
-		for i, elem := range slice {
-			result[i] = anyToString(elem)
+		result := make([]string, 0, len(value))
+		for _, elem := range value {
+			elemStrs, err := anyToStringSlice(elem)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, elemStrs...)
 		}
 		return result, nil
 	case []bool:
-		result := make([]string, len(slice))
-		for i, value := range slice {
+		result := make([]string, len(value))
+		for i, value := range value {
 			result[i] = strconv.FormatBool(value)
 		}
 		return result, nil
 	case []float64:
-		result := make([]string, len(slice))
-		for i, value := range slice {
+		result := make([]string, len(value))
+		for i, value := range value {
 			result[i] = strconv.FormatFloat(value, 'f', -1, 64)
 		}
 		return result, nil
 	case []int:
-		result := make([]string, len(slice))
-		for i, value := range slice {
+		result := make([]string, len(value))
+		for i, value := range value {
 			result[i] = strconv.Itoa(value)
 		}
 		return result, nil
 	case []string:
-		return slice, nil
+		return value, nil
 	default:
-		return nil, fmt.Errorf("%v: not a slice", slice)
+		return []string{anyToString(value)}, nil
 	}
 }
 
