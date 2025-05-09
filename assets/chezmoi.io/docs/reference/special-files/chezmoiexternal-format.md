@@ -167,7 +167,22 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
 
     Some more examples can be found in the [user guide][elsewhere].
 
+!!! info
+
+    Externals may be set up with a private Git repository. This must be done
+    with an SSH URL. The SSH key should be configured in a `before_` script;
+    and possible errors can be avoided by using [`stat`][stat]:
+
+    ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+    {{ if stat (joinPath .chezmoi.homeDir ".ssh" "id_rsa") }}
+    [".path/to/private/repo"]
+    type = "git-repo"
+    url = "git@private.com:org/repo.git"
+    {{ end }}
+    ```
+
 [ignore]: /reference/special-files/chezmoiignore.md
 [external-dir]: /reference/special-directories/chezmoiexternals.md
 [elsewhere]: /user-guide/include-files-from-elsewhere.md
 [appledouble]: https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats
+[stat]: /reference/templates/functions/stat.md
