@@ -75,6 +75,9 @@ templates. See also [`.chezmoidata/`][data-dir].
     }
     ```
 
+    Only dictionaries are merged; all other values (in particular lists) are
+    replaced.
+
 !!! warning
 
     `.chezmoidata.$FORMAT` files cannot be templates because they must be
