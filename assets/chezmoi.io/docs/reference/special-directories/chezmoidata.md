@@ -56,6 +56,9 @@ can then be used in templates. See also [`.chezmoidata.$FORMAT`][data-format].
     }
     ```
 
+    Only dictionaries are merged; all other values (in particular lists) are
+    replaced.
+
 !!! warning
 
     Files in `.chezmoidata` directories cannot be templates because they must be
