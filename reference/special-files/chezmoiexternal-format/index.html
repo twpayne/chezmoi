@@ -9109,6 +9109,18 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
 </code></pre></div>
 <p>Some more examples can be found in the <a href="../../../user-guide/include-files-from-elsewhere/">user guide</a>.</p>
 </div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Externals may be set up with a private Git repository. This must be done
+with an SSH URL. The SSH key should be configured in a <code>before_</code> script;
+and possible errors can be avoided by using <a href="../../templates/functions/stat/"><code>stat</code></a>:</p>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="n">if</span><span class="w"> </span><span class="n">stat</span><span class="w"> </span><span class="err">(</span><span class="n">joinPath</span><span class="w"> </span><span class="p">.</span><span class="n">chezmoi</span><span class="p">.</span><span class="n">homeDir</span><span class="w"> </span><span class="s2">&quot;.ssh&quot;</span><span class="w"> </span><span class="s2">&quot;id_rsa&quot;</span><span class="err">)</span><span class="w"> </span><span class="err">}}</span>
+<span class="k">[</span><span class="s2">&quot;.path/to/private/repo&quot;</span><span class="k">]</span>
+<span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span>
+<span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git@private.com:org/repo.git&quot;</span>
+<span class="err">{{</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="err">}}</span>
+</code></pre></div>
+</div>
 
 
 

@@ -3155,7 +3155,7 @@ initial config file.</p>
 if it is not already set in your <code>data</code>.</p>
 <p>To test this template, use <code>chezmoi execute-template</code> with the <code>--init</code> and
 <code>--promptString</code> flags, for example:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="nv">email</span><span class="o">=</span>me@home.org<span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="s2">"Email address=me@home.org"</span><span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre></div>
 <h2 id="re-create-your-config-file">Re-create your config file</h2>
 <p>If you change your config file template, chezmoi will warn you if your current

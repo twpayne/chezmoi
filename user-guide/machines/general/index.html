@@ -8910,7 +8910,7 @@
 <code>"laptop"</code> on macOS, Linux, and Windows.</p>
 <div class="highlight"><pre><span></span><code>{{- $chassisType := &quot;desktop&quot; }}
 {{- if eq .chezmoi.os &quot;darwin&quot; }}
-{{-   if contains &quot;MacBook&quot; (output &quot;sysctl&quot; &quot;-n&quot; &quot;hw.model&quot;) }}
+{{-   if contains &quot;MacBook&quot; (output &quot;system_profiler&quot; &quot;SPHardwareDataType&quot;) }}
 {{-     $chassisType = &quot;laptop&quot; }}
 {{-   else }}
 {{-     $chassisType = &quot;desktop&quot; }}
