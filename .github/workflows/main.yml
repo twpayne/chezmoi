@@ -67,10 +67,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@018ac1a585e52f775ee7460e25bd00c4d516240e
+    - uses: github/codeql-action/init@15bce5bb14748fcfd6fe32738ca1cba36e5f218f
       with:
         languages: go
-    - uses: github/codeql-action/analyze@018ac1a585e52f775ee7460e25bd00c4d516240e
+    - uses: github/codeql-action/analyze@15bce5bb14748fcfd6fe32738ca1cba36e5f218f
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -398,7 +398,7 @@ jobs:
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
       if: false # FIXME
-      uses: DavidAnson/markdownlint-cli2-action@05f32210e84442804257b2a6f20b273450ec8265
+      uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
