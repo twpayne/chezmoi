@@ -16,8 +16,8 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	xdg "github.com/twpayne/go-xdg/v6"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
 func TestTagFieldNamesMatch(t *testing.T) {

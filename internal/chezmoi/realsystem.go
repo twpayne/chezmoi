@@ -12,8 +12,8 @@ import (
 
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 // A RealSystemOption sets an option on a RealSystem.

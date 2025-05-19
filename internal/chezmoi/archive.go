@@ -17,7 +17,7 @@ import (
 	"github.com/klauspost/compress/zstd"
 	"github.com/ulikunitz/xz"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
+	"github.com/twpayne/chezmoi/internal/chezmoiset"
 )
 
 // An ArchiveFormat is an archive format and implements the

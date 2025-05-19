@@ -8,7 +8,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 type rbwConfig struct {

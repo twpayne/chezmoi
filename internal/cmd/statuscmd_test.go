@@ -8,7 +8,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
 func TestStatusCmd(t *testing.T) {

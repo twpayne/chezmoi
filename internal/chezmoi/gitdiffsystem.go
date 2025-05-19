@@ -13,7 +13,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
+	"github.com/twpayne/chezmoi/internal/chezmoiset"
 )
 
 // A GitDiffSystem wraps a System and logs all of the actions executed as a git

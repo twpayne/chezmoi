@@ -13,7 +13,7 @@ import (
 	"github.com/gopasspw/gopass/pkg/gopass"
 	"github.com/gopasspw/gopass/pkg/gopass/api"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 type gopassMode string

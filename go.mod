@@ -1,16 +1,16 @@
-module github.com/twpayne/chezmoi/v2
+module github.com/twpayne/chezmoi
 
 go 1.24.2
 
 tool (
-	github.com/twpayne/chezmoi/v2/internal/cmds/execute-template
-	github.com/twpayne/chezmoi/v2/internal/cmds/generate-commit
-	github.com/twpayne/chezmoi/v2/internal/cmds/generate-helps
-	github.com/twpayne/chezmoi/v2/internal/cmds/generate-install.sh
-	github.com/twpayne/chezmoi/v2/internal/cmds/generate-license
-	github.com/twpayne/chezmoi/v2/internal/cmds/lint-commit-messages
-	github.com/twpayne/chezmoi/v2/internal/cmds/lint-txtar
-	github.com/twpayne/chezmoi/v2/internal/cmds/lint-whitespace
+	github.com/twpayne/chezmoi/internal/cmds/execute-template
+	github.com/twpayne/chezmoi/internal/cmds/generate-commit
+	github.com/twpayne/chezmoi/internal/cmds/generate-helps
+	github.com/twpayne/chezmoi/internal/cmds/generate-install.sh
+	github.com/twpayne/chezmoi/internal/cmds/generate-license
+	github.com/twpayne/chezmoi/internal/cmds/lint-commit-messages
+	github.com/twpayne/chezmoi/internal/cmds/lint-txtar
+	github.com/twpayne/chezmoi/internal/cmds/lint-whitespace
 	github.com/twpayne/find-typos
 )
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 
-	"github.com/twpayne/chezmoi/v2/internal/cmd"
+	"github.com/twpayne/chezmoi/internal/cmd"
 )
 
 func TestMain(t *testing.T) {

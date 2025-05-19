@@ -22,8 +22,8 @@ import (
 	"gopkg.in/ini.v1"
 	"howett.net/plist"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 type ioregData struct {

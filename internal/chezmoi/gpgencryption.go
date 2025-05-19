@@ -6,8 +6,8 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 // A GPGEncryption uses gpg for encryption and decryption. See https://gnupg.org/.

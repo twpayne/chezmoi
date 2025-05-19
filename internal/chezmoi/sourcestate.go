@@ -33,9 +33,9 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/mitchellh/copystructure"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
+	"github.com/twpayne/chezmoi/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoiset"
 )
 
 // An ExternalType is a type of external source.

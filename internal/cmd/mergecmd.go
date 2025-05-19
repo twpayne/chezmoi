@@ -9,8 +9,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoierrors"
 )
 
 type mergeCmdConfig struct {
