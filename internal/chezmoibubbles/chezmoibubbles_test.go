@@ -6,7 +6,7 @@ import (
 	"github.com/alecthomas/assert/v2"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoiset"
+	"github.com/twpayne/chezmoi/internal/chezmoiset"
 )
 
 var keyTypes = chezmoiset.New(

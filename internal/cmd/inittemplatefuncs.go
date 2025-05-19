@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 func (c *Config) exitInitTemplateFunc(code int) string {

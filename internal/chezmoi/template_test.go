@@ -5,7 +5,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
 func TestTemplateParseAndExecute(t *testing.T) {

@@ -21,7 +21,7 @@ import (
 	"github.com/google/go-github/v61/github"
 	"github.com/google/renameio/v2/maybe"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var (

@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/v2/assets/templates"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoigit"
+	"github.com/twpayne/chezmoi/assets/templates"
+	"github.com/twpayne/chezmoi/internal/chezmoigit"
 )
 
 func (c *Config) newGenerateCmd() *cobra.Command {

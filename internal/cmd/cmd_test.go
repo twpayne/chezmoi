@@ -7,13 +7,13 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
 func init() {
-	// github.com/twpayne/chezmoi/v2/internal/chezmoi reads the umask before
-	// github.com/twpayne/chezmoi/v2/internal/chezmoitest sets it, so update it.
+	// github.com/twpayne/chezmoi/internal/chezmoi reads the umask before
+	// github.com/twpayne/chezmoi/internal/chezmoitest sets it, so update it.
 	chezmoi.Umask = chezmoitest.Umask
 }
 

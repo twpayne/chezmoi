@@ -10,8 +10,8 @@ import (
 	"filippo.io/age"
 	"filippo.io/age/armor"
 
-	"github.com/twpayne/chezmoi/v2/internal/chezmoierrors"
-	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/internal/chezmoierrors"
+	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 // An AgeEncryption uses age for encryption and decryption. See

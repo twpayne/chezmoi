@@ -18,7 +18,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/glamour/styles"
 
-	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs"
+	"github.com/twpayne/chezmoi/assets/chezmoi.io/docs"
 )
 
 //go:embed license.go.tmpl

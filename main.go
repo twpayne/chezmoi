@@ -15,7 +15,7 @@ import (
 
 	"go.uber.org/automaxprocs/maxprocs"
 
-	"github.com/twpayne/chezmoi/v2/internal/cmd"
+	"github.com/twpayne/chezmoi/internal/cmd"
 )
 
 var (
