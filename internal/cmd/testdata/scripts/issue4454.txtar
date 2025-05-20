@@ -1,0 +1,29 @@
+# test that chezmoi diff ignores errors from the custom diff command when there are differences in files
+exec chezmoi diff
+
+chhome home2/user
+
+# test that chezmoi diff ignores errors from the custom diff command when there are differences in directories
+exec chezmoi diff
+
+chhome home3/user
+
+# test that chezmoi diff ignores errors from the custom diff command when there are differences in symlinks
+exec chezmoi diff
+
+-- bin/false.cmd --
+@exit 1
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "false"
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "false"
+-- home2/user/.local/share/chezmoi/dot_dir/.keep --
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "false"
+-- home3/user/.local/share/chezmoi/symlink_symlink --
+target

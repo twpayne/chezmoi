@@ -51,7 +51,7 @@ example:
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [diff]
-    pager = "delta"
+        pager = "delta"
     ```
 
 === "YAML"
