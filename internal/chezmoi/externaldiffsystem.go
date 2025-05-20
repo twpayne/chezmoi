@@ -312,6 +312,56 @@ func (s *ExternalDiffSystem) tempDir() (AbsPath, error) {
 	return s.tempDirAbsPath, nil
 }
 
+// entriesDiffer returns whether the two given entries differ.
+//
+// This function employs negative logic, i.e. that the default is that the
+// function returns that the entries DO differ unless it can prove otherwise.
+func (s *ExternalDiffSystem) entriesDiffer(absPath1, absPath2 AbsPath) (bool, error) {
+	fileInfo1, err1 := s.Lstat(absPath1)
+	fileInfo2, err2 := s.Lstat(absPath2)
+	switch {
+	case errors.Is(err1, fs.ErrNotExist) && errors.Is(err2, fs.ErrNotExist):
+		// If neither entry exists, then they do not differ.
+		return false, nil
+	case err1 != nil || err2 != nil:
+		// If lstating either entry returned an error, then combine both errors.
+		return true, errors.Join(err1, err2)
+	case fileInfo1.Mode() != fileInfo2.Mode():
+		// If the modes are not equal, then the entries are not equal. This
+		// covers the case where the entries are of different types, or that
+		// their permissions differ.
+		return true, nil
+	case fileInfo1.Mode()&fs.ModeType == 0:
+		// If both entries are files, then their contents must be equal.
+		contents1, err1 := s.ReadFile(absPath1)
+		if err1 != nil {
+			return true, err1
+		}
+		contents2, err2 := s.ReadFile(absPath2)
+		if err2 != nil {
+			return true, err2
+		}
+		return !bytes.Equal(contents1, contents2), nil
+	case fileInfo1.Mode()&fs.ModeType == fs.ModeSymlink:
+		// If both entries are symlinks, then their targets must be equal.
+		linkname1, err1 := s.Readlink(absPath1)
+		if err1 != nil {
+			return true, err1
+		}
+		linkname2, err2 := s.Readlink(absPath2)
+		if err2 != nil {
+			return true, err2
+		}
+		return linkname1 != linkname2, nil
+	default:
+		// Otherwise return that the entries DO differ. This code should not be
+		// reached. This does not cover the case where both entries are special
+		// files (e.g. device nodes with the same device numbers or UNIX domain
+		// sockets) but chezmoi does not manage these types of entries.
+		return true, nil
+	}
+}
+
 // runDiffCommand runs the external diff command.
 func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) error {
 	templateData := struct {
@@ -368,26 +418,17 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	cmd.Stderr = os.Stderr
 	err := chezmoilog.LogCmdRun(slog.Default(), cmd)
 
-	// Swallow exit status 1 errors if the files differ as diff commands
-	// traditionally exit with code 1 in this case.
+	// Swallow exit status 1 errors if the entries differ and there are actual
+	// differences between the entries as diff commands traditionally exit with
+	// code 1 in this case.
 	if exitError := (&exec.ExitError{}); errors.As(err, &exitError) && exitError.ExitCode() == 1 {
-		destData, err2 := s.ReadFile(destAbsPath)
-		switch {
-		case errors.Is(err2, fs.ErrNotExist):
-			// Do nothing.
-		case err2 != nil:
-			return errors.Join(err, err2)
-		}
-		targetData, err2 := s.ReadFile(targetAbsPath)
-		switch {
-		case errors.Is(err2, fs.ErrNotExist):
-			// Do nothing.
-		case err2 != nil:
-			return errors.Join(err, err2)
-		}
-		if !bytes.Equal(destData, targetData) {
+		switch entriesDiffer, err := s.entriesDiffer(destAbsPath, targetAbsPath); {
+		case err != nil:
+			return err
+		case entriesDiffer:
 			return nil
 		}
 	}
+
 	return err
 }
