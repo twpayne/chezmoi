@@ -41,7 +41,7 @@ of tests requires `age`, `base64`, `bash`, `bzip2`, `git`, `gpg`, `gzip`,
 Run chezmoi:
 
 ```sh
-go run .
+go tool chezmoi
 ```
 
 Run a set of smoke tests, including cross-compilation, tests, and linting:

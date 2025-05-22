@@ -3,6 +3,7 @@ module github.com/twpayne/chezmoi
 go 1.24.2
 
 tool (
+	github.com/twpayne/chezmoi
 	github.com/twpayne/chezmoi/internal/cmds/execute-template
 	github.com/twpayne/chezmoi/internal/cmds/generate-commit
 	github.com/twpayne/chezmoi/internal/cmds/generate-helps
