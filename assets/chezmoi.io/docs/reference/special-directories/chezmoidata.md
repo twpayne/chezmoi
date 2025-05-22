@@ -65,11 +65,11 @@ can then be used in templates. See also [`.chezmoidata.$FORMAT`][data-format].
     present prior to the start of the template engine. Dynamic machine data
     should be set in the `data` section of [`.chezmoi.$FORMAT.tmpl`][config].
     Dynamic environment data should be read from templates using the
-    [`output`][output], [`fromJson`][fromjson], [`fromJson`][fromjson], or
+    [`output`][output], [`fromJson`][fromjson], [`fromYaml`][fromyaml], or
     similar functions.
 
 [data-format]: /reference/special-files/chezmoidata-format.md
-[config]: /reference/special-files/chezmoidata-format.md
+[config]: /reference/special-files/chezmoi-format-tmpl.md
 [fromjson]: /reference/templates/functions/fromJson.md
 [fromyaml]: /reference/templates/functions/fromYaml.md
 [output]: /reference/templates/functions/output.md
