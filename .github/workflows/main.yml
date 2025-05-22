@@ -143,7 +143,7 @@ jobs:
         go build -v ./...
     - name: run
       run: |
-        go run . --version
+        go tool chezmoi --version
     - name: install-age
       run: |
         brew install age
@@ -279,7 +279,7 @@ jobs:
     - name: run
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || (matrix.umask == '022' && matrix.test-index == 0)
       run: |
-        go run . --version
+        go tool chezmoi --version
     - name: test-umask-${{ matrix.umask }}
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
@@ -335,7 +335,7 @@ jobs:
         go build -v ./...
     - name: run
       run: |
-        go run . --version
+        go tool chezmoi --version
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
