@@ -49,6 +49,10 @@ A web UI for managing a list of apps to seed/feed a chezmoi setup.
 
 chezmoi plugin for asdf version manager.
 
+### [`github.com/matmaer/chezmoi-mousse`](https://github.com/matmaer/chezmoi-mousse) { id="matmaer/chezmoi-mousse" }
+
+Visual interface in the terminal for the chezmoi dotfile managar, with a wink to the mouse.
+
 ### [`github.com/tcaxle/drapeau`](https://github.com/tcaxle/drapeau) { id="tcaxle/drapeau" }
 
 An add-on to synchronize your colorschemes across systems and allow easy
