@@ -23,7 +23,7 @@ A plugin for VIM to apply the dotfile you are editing on `:w`.
 
 Edit your chezmoi-managed files and automatically apply.
 
-### [`https://github.com/GianniBYoung/chezmoi-telescope.nvim`](https://github.com/GianniBYoung/chezmoi-telescope.nvim) { id="GianniBYoung/chezmoi-telescope.nvim" }
+### [`github.com/GianniBYoung/chezmoi-telescope.nvim`](https://github.com/GianniBYoung/chezmoi-telescope.nvim) { id="GianniBYoung/chezmoi-telescope.nvim" }
 
 Custom Telescope Picker for Chez Moi Managed Dot files.
 
