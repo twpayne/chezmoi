@@ -1050,7 +1050,7 @@ func (c *Config) defaultPreApplyFunc(
 				c.Interactive = false
 				return nil
 			case choice == "quit":
-				return chezmoi.ExitCodeError(0)
+				return chezmoi.ExitCodeError(1)
 			default:
 				panic(choice + ": unexpected choice")
 			}
