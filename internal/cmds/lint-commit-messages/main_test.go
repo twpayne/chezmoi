@@ -17,6 +17,7 @@ func TestCommitRx(t *testing.T) {
 		"docs: Text":            true,
 		"feat: Text":            true,
 		"fix: Text":             true,
+		"chore: text":           true,
 		"fixup!":                false,
 		"snapshot":              false,
 	} {

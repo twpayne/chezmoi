@@ -33,6 +33,14 @@ that:
   chezmoi's release notes are generated directly from the commit messages. For
   trivial or user-invisible changes, please use the prefix `chore:`.
 
+    The following criteria can be used to determine the commit type:
+
+    1. Small changes, such as fixing a typo or correcting grammar: `chore`
+    2. Bug fixes: `fix`
+    3. Extending an existing feature, or adding a new feature: `feat`
+    4. Adding to, or updating, the documentation: `docs`
+    5. Anything else: `chore`
+
 * Commits are logically separate, with no merge or "fixup" commits.
 
 * The branch applies cleanly to `master`.
