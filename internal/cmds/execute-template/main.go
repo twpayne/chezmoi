@@ -128,6 +128,16 @@ func run() error {
 	funcMap["replaceAllRegex"] = func(expr, repl, s string) string {
 		return regexp.MustCompile(expr).ReplaceAllString(s, repl)
 	}
+	funcMap["toSentenceCaseCommitMessages"] = func(s string) string {
+		re := regexp.MustCompile(`(?m)([[:alpha:]]+:) +([[:alpha:]])`)
+		return re.ReplaceAllStringFunc(s, func(m string) string {
+			submatches := re.FindStringSubmatch(m)
+			if len(submatches) != 3 {
+				return m
+			}
+			return fmt.Sprintf("%s %s", strings.ToLower(submatches[1]), strings.ToUpper(submatches[2]))
+		})
+	}
 	tmpl, err := template.New(templateName).Funcs(funcMap).ParseFiles(flag.Args()...)
 	if err != nil {
 		return err
