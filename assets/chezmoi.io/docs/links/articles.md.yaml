@@ -537,3 +537,8 @@ articles:
   version: 2.62.2
   title: 'Continuous Improvement in DevOps: Streamlining with chezmoi and mise'
   url: https://manuelchichi.com.ar/blog/personal-toolset-2025/
+- date: '2025-05-23'
+  version: 2.62.5
+  lang: JP
+  title: chezmoiでdotfilesを管理する
+  url: https://hiratake.dev/blog/20250523/
