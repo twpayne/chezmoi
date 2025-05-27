@@ -1234,7 +1234,7 @@ func (c *Config) diffFile(
 			return err
 		}
 	}
-	diffPatch, err := chezmoi.DiffPatch(relPath, fromData, fromMode, toData, toMode)
+	diffPatch, err := chezmoi.DiffPatch(relPath, fromData, fromMode, toData, toMode, c.Diff.IgnoreLineEndings)
 	if err != nil {
 		return err
 	}

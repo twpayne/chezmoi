@@ -7,16 +7,17 @@ import (
 )
 
 type diffCmdConfig struct {
-	Command        string                `json:"command"        mapstructure:"command"        yaml:"command"`
-	Args           []string              `json:"args"           mapstructure:"args"           yaml:"args"`
-	Exclude        *chezmoi.EntryTypeSet `json:"exclude"        mapstructure:"exclude"        yaml:"exclude"`
-	Pager          string                `json:"pager"          mapstructure:"pager"          yaml:"pager"`
-	Reverse        bool                  `json:"reverse"        mapstructure:"reverse"        yaml:"reverse"`
-	ScriptContents bool                  `json:"scriptContents" mapstructure:"scriptContents" yaml:"scriptContents"`
-	include        *chezmoi.EntryTypeSet
-	init           bool
-	parentDirs     bool
-	recursive      bool
+	Command           string                `json:"command"           mapstructure:"command"           yaml:"command"`
+	Args              []string              `json:"args"              mapstructure:"args"              yaml:"args"`
+	Exclude           *chezmoi.EntryTypeSet `json:"exclude"           mapstructure:"exclude"           yaml:"exclude"`
+	IgnoreLineEndings bool                  `json:"ignoreLineEndings" mapstructure:"ignoreLineEndings" yaml:"ignoreLineEndings"`
+	Pager             string                `json:"pager"             mapstructure:"pager"             yaml:"pager"`
+	Reverse           bool                  `json:"reverse"           mapstructure:"reverse"           yaml:"reverse"`
+	ScriptContents    bool                  `json:"scriptContents"    mapstructure:"scriptContents"    yaml:"scriptContents"`
+	include           *chezmoi.EntryTypeSet
+	init              bool
+	parentDirs        bool
+	recursive         bool
 }
 
 func (c *Config) newDiffCmd() *cobra.Command {
@@ -37,6 +38,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 
 	diffCmd.Flags().VarP(c.Diff.Exclude, "exclude", "x", "Exclude entry types")
 	diffCmd.Flags().VarP(c.Diff.include, "include", "i", "Include entry types")
+	diffCmd.Flags().
+		BoolVar(&c.Diff.IgnoreLineEndings, "ignore-line-endings", c.Diff.IgnoreLineEndings, "Ignore line endings in text files")
 	diffCmd.Flags().BoolVar(&c.Diff.init, "init", c.Diff.init, "Recreate config file from template")
 	diffCmd.Flags().StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
 	diffCmd.Flags().

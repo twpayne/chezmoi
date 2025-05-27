@@ -17,6 +17,12 @@ appended automatically.
 
 ## Flags
 
+### `--ignore-line-endings`
+
+> Configuration: `diff.ignoreLineEndings`
+
+Ignore differences in UNIX/Windows line endings when comparing files.
+
 ### `--pager` *pager*
 
 > Configuration: `diff.pager`

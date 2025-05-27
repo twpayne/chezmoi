@@ -157,6 +157,9 @@ sections:
     exclude:
       type: '[]string'
       description: Entry types to exclude from diffs
+    ignoreLineEndings:
+      type: bool
+      description: Ignore line endings when diffing text files
     pager:
       description: Diff-specific pager
     reverse:

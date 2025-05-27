@@ -267,6 +267,7 @@ var helps = map[string]*help{
 			"  chezmoi diff ~/.bashrc",
 		longFlags: chezmoiset.New(
 			"exclude",
+			"ignore-line-endings",
 			"include",
 			"init",
 			"pager",

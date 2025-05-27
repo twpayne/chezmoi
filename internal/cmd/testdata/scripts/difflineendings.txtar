@@ -1,0 +1,20 @@
+unix2dos $HOME/.file
+
+# test that chezmoi status reports an error when the line endings in a file differ
+exec chezmoi status
+cmp stdout golden/status
+
+# test that chezmoi diff prints a diff when the line endings in a file differ
+exec chezmoi diff
+stdout 'index 73237197b957c663186b27ceaaba018f55738059..8a52cb9ce9551221716a53786ad74104c5902362 100644'
+
+# test that chezmoi diff --ignore-line-endings does not print a diff when the line endings in a file differ
+exec chezmoi diff --ignore-line-endings
+! stdout diff
+
+-- golden/status --
+ M .file
+-- home/user/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
