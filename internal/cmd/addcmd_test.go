@@ -286,7 +286,7 @@ func TestAddCmdChmod(t *testing.T) {
 func TestAddCmdSecretsError(t *testing.T) {
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user": map[string]any{
-			".secret": "AWS_ACCESS_KEY_ID=AKIA0123456789ABCDEF\n",
+			".secret": "AWS_ACCESS_KEY_ID=AKIALALEMEL33243OLIA\n",
 		},
 	}, func(fileSystem vfs.FS) {
 		assert.Error(t, newTestConfig(t, fileSystem).execute([]string{"add", "--secrets=error", "/home/user/.secret"}))
@@ -296,7 +296,7 @@ func TestAddCmdSecretsError(t *testing.T) {
 func TestIssue4107(t *testing.T) {
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user": map[string]any{
-			".secret": "AWS_ACCESS_KEY_ID=AKIA0123456789ABCDEF\n",
+			".secret": "AWS_ACCESS_KEY_ID=AKIALALEMEL33243OLIA\n",
 			".config/chezmoi": map[string]any{
 				"chezmoi.toml": chezmoitest.JoinLines(
 					`[add]`,
