@@ -1,6 +1,6 @@
 module github.com/twpayne/chezmoi
 
-go 1.24.2
+go 1.24.4
 
 tool (
 	github.com/twpayne/chezmoi
