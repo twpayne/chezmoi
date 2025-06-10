@@ -164,8 +164,6 @@ nfpms:
   - archlinux
   - deb
   - rpm
-  dependencies:
-  - git
   bindir: /usr/bin
   overrides:
     deb:
