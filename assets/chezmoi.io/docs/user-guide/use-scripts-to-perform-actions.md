@@ -50,9 +50,9 @@ mode, scripts are not executed.
 
 ## Set environment variables
 
-You can set extra environment variables for your scripts in the `scriptEnv`
-section of your config file. For example, to set the `MY_VAR` environment
-variable to `my_value`, specify:
+You can set extra environment variables for your scripts, hooks, and commands in
+the `scriptEnv` section of your config file. For example, to set the `MY_VAR`
+environment variable to `my_value`, specify:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [scriptEnv]
