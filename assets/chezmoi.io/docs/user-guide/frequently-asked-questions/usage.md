@@ -118,7 +118,7 @@ chezmoi will make sure to execute it before templating other files.
 
 !!! tip
 
-    You can [use `scriptEnv` to inject data into your scripts through environment
+    You can [use `scriptEnv` to inject data into your scripts and hooks through environment
     variables][scriptenv].
 
 ## How do I write a literal `{{` or `}}` in a template?
