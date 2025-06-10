@@ -62,20 +62,20 @@ environment variable to `my_value`, specify:
 chezmoi sets a number of environment variables when running scripts, including
 `CHEZMOI=1` and common template data like `CHEZMOI_OS` and `CHEZMOI_ARCH`.
 
-!!! note
+## Don't show scripts that would run in `chezmoi diff`/`chezmoi status`
 
-    By default, `chezmoi diff` will print the contents of scripts that would be
-    run by `chezmoi apply`. To exclude scripts from the output of `chezmoi
-    diff`, set `diff.exclude` in your configuration file, for example:
+By default, `chezmoi diff` will print the contents of scripts that would be run
+by `chezmoi apply`. To exclude scripts from the output of `chezmoi diff`, set
+`diff.exclude` in your configuration file, for example:
 
-    ```toml title="~/.config/chezmoi/chezmoi.toml"
-    [diff]
-        exclude = ["scripts"]
-    ```
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[diff]
+    exclude = ["scripts"]
+```
 
-    Similarly, `chezmoi status` will print the names of the scripts that it
-    will execute with the status `R`. This can similarly disabled by setting
-    `status.exclude` to `["scripts"]` in your configuration file.
+Similarly, `chezmoi status` will print the names of the scripts that it will
+execute with the status `R`. This can similarly disabled by setting
+`status.exclude` to `["scripts"]` in your configuration file.
 
 ## Install packages with scripts
 
