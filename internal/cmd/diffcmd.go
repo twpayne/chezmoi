@@ -11,6 +11,7 @@ type diffCmdConfig struct {
 	Args           []string              `json:"args"           mapstructure:"args"           yaml:"args"`
 	Exclude        *chezmoi.EntryTypeSet `json:"exclude"        mapstructure:"exclude"        yaml:"exclude"`
 	Pager          string                `json:"pager"          mapstructure:"pager"          yaml:"pager"`
+	PagerArgs      []string              `json:"pagerArgs"      mapstructure:"pagerArgs"      yaml:"pagerArgs"`
 	Reverse        bool                  `json:"reverse"        mapstructure:"reverse"        yaml:"reverse"`
 	ScriptContents bool                  `json:"scriptContents" mapstructure:"scriptContents" yaml:"scriptContents"`
 	include        *chezmoi.EntryTypeSet
