@@ -71,9 +71,10 @@ example using `sed`.
     will be empty and it is the script's responsibility to write a complete
     file to the standard output.
 
-`modify_` scripts that contain the string `chezmoi:modify-template` are executed
-as templates with the current contents of the file passed as `.chezmoi.stdin`
-and the result of the template execution used as the new contents of the file.
+`modify_` scripts that contain the string `chezmoi:modify-template` will have all lines
+containing that string removed, and the rest of the file will be interpreted as a template.
+The template is executed with the current contents of the file passed as `.chezmoi.stdin`,
+and the result of the template execution becomes the new contents of the file.
 
 !!! example
 
