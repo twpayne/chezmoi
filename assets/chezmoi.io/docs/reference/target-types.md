@@ -32,14 +32,16 @@ unchanged.
 Files with the `modify_` prefix are treated as scripts that modify an existing
 file.
 
-If the file contains a line with the text `chezmoi:modify-template` then that
-line is removed and the rest of the script is executed template with the
-existing file's contents passed as a string in `.chezmoi.stdin`. The result of
-executing the template are the new contents of the file.
+If the file contains the string `chezmoi:modify-template`, then all lines
+containing that string will be removed, and the rest of the file will be
+interpreted as a template. The template is executed with the existing file's
+contents passed as a string in `.chezmoi.stdin`. The result of the template
+execution becomes the new contents of the file.
 
-Otherwise, the contents of the existing file (which maybe empty if the existing
-file does not exist or is empty) are passed to the script's standard input, and
-the new contents are read from the script's standard output.
+Otherwise, the script receives the current contents of the target file on
+standard input and must write the new contents to standard output.
+If the target file does not exist, the script's standard input will be empty,
+and the script is responsible for generating the complete file contents.
 
 ### Remove entry
 
