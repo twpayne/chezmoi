@@ -111,6 +111,7 @@ type ConfigFile struct {
 	Interpreters           map[string]chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
 	Mode                   chezmoi.Mode                   `json:"mode"            mapstructure:"mode"            yaml:"mode"`
 	Pager                  string                         `json:"pager"           mapstructure:"pager"           yaml:"pager"`
+	PagerArgs              []string                       `json:"pagerArgs"       mapstructure:"pagerArgs"       yaml:"pagerArgs"`
 	PersistentStateAbsPath chezmoi.AbsPath                `json:"persistentState" mapstructure:"persistentState" yaml:"persistentState"`
 	PINEntry               pinEntryConfig                 `json:"pinentry"        mapstructure:"pinentry"        yaml:"pinentry"`
 	Progress               autoBool                       `json:"progress"        mapstructure:"progress"        yaml:"progress"`
@@ -1386,21 +1387,21 @@ func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
 }
 
 // getDiffPager returns the pager for diff output.
-func (c *Config) getDiffPager() string {
+func (c *Config) getDiffPager() (command string, args []string) {
 	switch {
 	case c.noPager:
-		return ""
+		return "", nil
 	case c.Diff.Pager != defaultSentinel:
-		return c.Diff.Pager
+		return c.Diff.Pager, c.Diff.PagerArgs
 	default:
-		return c.Pager
+		return c.Pager, c.PagerArgs
 	}
 }
 
 // getDiffPagerCmd returns a command to run the diff pager, or nil if there is
 // no diff pager configured.
 func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
-	pager := c.getDiffPager()
+	pager, pagerArgs := c.getDiffPager()
 	if pager == "" {
 		return nil, nil
 	}
@@ -1415,9 +1416,9 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 		if err != nil {
 			return nil, err
 		}
-		pagerCmd = exec.Command(shellCommand, shellArgs...)
+		pagerCmd = exec.Command(shellCommand, slices.Concat(shellArgs, pagerArgs)...)
 	} else {
-		pagerCmd = exec.Command(pager)
+		pagerCmd = exec.Command(pager, pagerArgs...)
 	}
 	pagerCmd.Stdout = c.stdout
 	pagerCmd.Stderr = c.stderr

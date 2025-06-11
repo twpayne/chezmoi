@@ -34,6 +34,9 @@ sections:
     pager:
       default: '`$PAGER`'
       description: Default pager CLI command
+    pagerArgs:
+      type: '[]string'
+      description: Extra args to the pager command
     persistentState:
       default: >-
         `$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb` <br/>
@@ -159,6 +162,9 @@ sections:
       description: Entry types to exclude from diffs
     pager:
       description: Diff-specific pager
+    pagerArgs:
+      type: '[]string'
+      description: Extra args to the diff-specific pager command
     reverse:
       type: bool
       description: Reverse order of arguments to diff

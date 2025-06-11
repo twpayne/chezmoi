@@ -1,0 +1,28 @@
+[windows] skip 'UNIX only'
+chmod 755 bin/shell
+
+# test that chezmoi diff uses args from diff.pager and diff.pagerArgs
+exec chezmoi diff
+stdout 'a b c d'
+
+chhome home2/user
+
+# test that chezmoi diff uses pager and pagerArgs from pager and pagerArgs
+exec chezmoi diff
+stdout 'u v x y z'
+
+-- bin/shell --
+#!/bin/sh
+
+echo "$*"
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    pager = "echo a b"
+    pagerArgs = ["c", "d"]
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home2/user/.config/chezmoi/chezmoi.toml --
+pager = "echo u v"
+pagerArgs = ["x", "y", "z"]
+-- home2/user/.local/share/chezmoi/dot_file --
+# contents of .file
