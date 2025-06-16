@@ -24,7 +24,8 @@ from `~/.local/share/chezmoi/home/dot_gitconfig` (instead of
 `~/.local/share/chezmoi/dot_gitconfig`).
 
 When migrating an existing chezmoi dotfiles repo to use `.chezmoiroot` you will
-need to move the relevant files in to the new root subdirectory manually. You
+need to move the relevant files in to the new root subdirectory manually,
+including special "root directory" files such as `.chezmoi.$FORMAT.tmpl`. You
 do not need to move files that are ignored by chezmoi in all cases (i.e. are
 listed in `.chezmoiignore` when executed as a template on all machines), and
 you can afterwards remove their entries from `home/.chezmoiignore`.
