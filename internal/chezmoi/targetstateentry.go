@@ -203,7 +203,7 @@ func (t *TargetStateFile) Apply(
 	if err != nil {
 		return false, err
 	}
-	if !t.empty && isEmpty(contents) {
+	if !t.sourceAttr.External && !t.empty && isEmpty(contents) {
 		if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
 			return false, nil
 		}
@@ -250,7 +250,7 @@ func (t *TargetStateFile) EntryState(umask fs.FileMode) (*EntryState, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !t.empty && isEmpty(contents) {
+	if !t.sourceAttr.External && !t.empty && isEmpty(contents) {
 		return &EntryState{
 			Type: EntryStateTypeRemove,
 		}, nil

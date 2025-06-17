@@ -1,0 +1,19 @@
+hexdecode www/whitespace.txt.hex
+exec tar -cf www/archive.tar www/whitespace.txt
+httpd www
+
+# test that externals files containing only whitespace are preserved
+exec chezmoi apply
+cmp $HOME/.whitespace www/whitespace.txt
+cmp $HOME/.dir/whitespace.txt www/whitespace.txt
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".whitespace"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/whitespace.txt"
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar"
+    stripComponents = 1
+-- www/whitespace.txt.hex --
+0d0a # "\r\n"
