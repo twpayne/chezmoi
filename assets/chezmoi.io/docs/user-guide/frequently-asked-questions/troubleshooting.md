@@ -71,13 +71,13 @@ remove the temporary directory.
 
 === "VIM"
 
-    Pass the `-f` flag, e.g. by setting the `edit.flags` configuration variable
+    Pass the `-f` flag, e.g. by setting the `edit.args` configuration variable
     to `["-f"]`, or by setting the `EDITOR` environment variable to include the
     `-f` flag, e.g. `export EDITOR="vim -f"`.
 
 === "VSCode"
 
-    Pass the `--wait` flag, e.g. by setting the `edit.flags` configuration
+    Pass the `--wait` flag, e.g. by setting the `edit.args` configuration
     variable to `["--wait"]` or by setting the `EDITOR` environment variable to
     include the `--wait` flag, e.g. `export EDITOR="code --wait"`.
 
