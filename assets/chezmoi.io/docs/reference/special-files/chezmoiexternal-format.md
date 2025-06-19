@@ -117,6 +117,33 @@ archive before comparing them with `path`. The behavior of `format` is the same
 as for `archive`. If `executable` is `true` then chezmoi will set the executable
 bits on the target file, even if they are not set in the archive.
 
+!!! info
+
+    Be sure to check that you have the correct `path` for the file in your archive.
+    You can use your archive tooling to check for the correct paths.  For example:
+
+    ```console
+    $ tar tzf eza_x86_64-unknown-linux-gnu.tar.gz
+    ./eza
+    $ tar tzf zellij-x86_64-unknown-linux-musl.tar.gz
+    zellij
+    ```
+
+    Notice how `path = "zellij"` in the configuration does not include a leading `./`.
+
+    ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+    [".local/bin/zellij"]
+        type = "archive-file"
+        url = {{ gitHubLatestReleaseAssetURL "zellij-org/zellij" "zellij-x86_64-unknown-linux-musl.tar.gz" | quote }}
+        executable = true
+        path = "zellij"
+    [".local/bin/eza"]
+        type = "archive-file"
+        url = {{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" | quote }}
+        executable = true
+        path = "./eza"
+    ```
+
 If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME` with
 the optional `clone.args` if the target does not exist. If the target exists,
 then chezmoi will run `git pull` with the optional `pull.args` to update the
