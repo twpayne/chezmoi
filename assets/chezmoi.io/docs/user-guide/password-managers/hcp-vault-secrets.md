@@ -42,10 +42,19 @@ as the `hcpVaultSecretJson` template function, for example:
 {{ (hcpVaultSecretJson "secret_name").created_by.email }}
 ```
 
+!!! warning
+
+    Hashicorp has announced the [closure the Vault Secrets service][eol] for
+    most customers 27 August 2025 with a recommendation of migrating to
+    Hashicorp Vault, which is an enterprise-scale product.
+
+    These functions will be removed from chezmoi after the service is no longer
+    available.
+
 ## `vlt` vs `hcp`: Upgrades that Break { id="hcp-broken" }
 
-Hashicorp has ended support for the `vlt` CLI tool (September 2024) and
-recommends migrating to the [`hcp` CLI][hcp]. Unfortunately, the new command
+Hashicorp ended support for the `vlt` CLI tool in September 2024 and recommended
+migrating to the [`hcp` CLI][hcp]. Unfortunately, the new command
 does not [work like `vlt`][compat], rendering `hcpVaultSecret` and
 `hcpVaultSecretJson` inoperable when using the recommended command-line tool.
 [Contributions][contrib] to create new integrations for HCP Vault Secrets are
@@ -78,3 +87,4 @@ See [issue #4146][issue-4146] for more details.
 [issue-4146]: https://github.com/twpayne/chezmoi/issues/4146
 [output]: /reference/templates/functions/output.md
 [secrets]: https://developer.hashicorp.com/hcp/docs/vault-secrets
+[eol]: https://support.hashicorp.com/hc/en-us/articles/41802449287955-HCP-Vault-Secrets-End-Of-Life
