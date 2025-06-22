@@ -25,6 +25,7 @@ type ExternalDiffSystem struct {
 	destDirAbsPath AbsPath
 	tempDirAbsPath AbsPath
 	filter         *EntryTypeFilter
+	pagerCmdFunc   func() (*exec.Cmd, error)
 	reverse        bool
 	scriptContents bool
 	textConvFunc   TextConvFunc
@@ -44,6 +45,7 @@ func NewExternalDiffSystem(
 	command string,
 	args []string,
 	destDirAbsPath AbsPath,
+	pagerCmdFunc func() (*exec.Cmd, error),
 	options *ExternalDiffSystemOptions,
 ) *ExternalDiffSystem {
 	return &ExternalDiffSystem{
@@ -52,6 +54,7 @@ func NewExternalDiffSystem(
 		args:           args,
 		destDirAbsPath: destDirAbsPath,
 		filter:         options.Filter,
+		pagerCmdFunc:   pagerCmdFunc,
 		reverse:        options.Reverse,
 		scriptContents: options.ScriptContents,
 		textConvFunc:   options.TextConvFunc,
@@ -233,16 +236,40 @@ func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 		args = append(args, templateData.Destination, templateData.Target)
 	}
 
-	cmd := exec.Command(s.command, args...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := chezmoilog.LogCmdRun(slog.Default(), cmd)
+	diffCmd := exec.Command(s.command, args...)
+	diffCmd.Stdin = os.Stdin
+	diffCmd.Stderr = os.Stderr
+	var diffCmdErr error
+	switch diffPagerCmd, err := s.pagerCmdFunc(); {
+	case err != nil:
+		return err
+	case diffPagerCmd == nil:
+		diffCmd.Stdout = os.Stdout
+		diffCmdErr = chezmoilog.LogCmdRun(slog.Default(), diffCmd)
+	default:
+		reader, writer, err := os.Pipe()
+		if err != nil {
+			return err
+		}
+		defer writer.Close()
+		diffPagerCmd.Stdin = reader
+		if err := chezmoilog.LogCmdStart(slog.Default(), diffPagerCmd); err != nil {
+			return err
+		}
+		diffCmd.Stdout = writer
+		diffCmdErr = chezmoilog.LogCmdRun(slog.Default(), diffCmd)
+		if err := writer.Close(); err != nil {
+			return err
+		}
+		if err := diffPagerCmd.Wait(); err != nil {
+			return err
+		}
+	}
 
 	// Swallow exit status 1 errors if the entries differ and there are actual
 	// differences between the entries as diff commands traditionally exit with
 	// code 1 in this case.
-	if exitError := (&exec.ExitError{}); errors.As(err, &exitError) && exitError.ExitCode() == 1 {
+	if exitError := (&exec.ExitError{}); errors.As(diffCmdErr, &exitError) && exitError.ExitCode() == 1 {
 		switch entriesDiffer, err := s.entriesDiffer(destAbsPath, targetAbsPath); {
 		case err != nil:
 			return err
@@ -251,7 +278,7 @@ func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 		}
 	}
 
-	return err
+	return diffCmdErr
 }
 
 // RunScript implements System.RunScript.

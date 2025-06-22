@@ -1919,7 +1919,7 @@ func (c *Config) newExternalDiffSystem(s chezmoi.System) *chezmoi.ExternalDiffSy
 		ScriptContents: c.Diff.ScriptContents,
 		TextConvFunc:   c.TextConv.convert,
 	}
-	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, options)
+	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, c.getDiffPagerCmd, options)
 }
 
 // newSourceState returns a new SourceState with options.
