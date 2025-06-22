@@ -9050,13 +9050,15 @@ unchanged.</p>
 <h3 id="modify-file">Modify file</h3>
 <p>Files with the <code>modify_</code> prefix are treated as scripts that modify an existing
 file.</p>
-<p>If the file contains a line with the text <code>chezmoi:modify-template</code> then that
-line is removed and the rest of the script is executed template with the
-existing file's contents passed as a string in <code>.chezmoi.stdin</code>. The result of
-executing the template are the new contents of the file.</p>
-<p>Otherwise, the contents of the existing file (which maybe empty if the existing
-file does not exist or is empty) are passed to the script's standard input, and
-the new contents are read from the script's standard output.</p>
+<p>If the file contains the string <code>chezmoi:modify-template</code>, then all lines
+containing that string will be removed, and the rest of the file will be
+interpreted as a template. The template is executed with the existing file's
+contents passed as a string in <code>.chezmoi.stdin</code>. The result of the template
+execution becomes the new contents of the file.</p>
+<p>Otherwise, the script receives the current contents of the target file on
+standard input and must write the new contents to standard output.
+If the target file does not exist, the script's standard input will be empty,
+and the script is responsible for generating the complete file contents.</p>
 <h3 id="remove-entry">Remove entry</h3>
 <p>Files with the <code>remove_</code> prefix will cause the corresponding entry (file,
 directory, or symlink) to be removed in the target state.</p>

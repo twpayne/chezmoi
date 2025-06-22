@@ -8922,7 +8922,8 @@ source directory, for example the desired state of <code>~/.gitconfig</code> wil
 from <code>~/.local/share/chezmoi/home/dot_gitconfig</code> (instead of
 <code>~/.local/share/chezmoi/dot_gitconfig</code>).</p>
 <p>When migrating an existing chezmoi dotfiles repo to use <code>.chezmoiroot</code> you will
-need to move the relevant files in to the new root subdirectory manually. You
+need to move the relevant files in to the new root subdirectory manually,
+including special "root directory" files such as <code>.chezmoi.$FORMAT.tmpl</code>. You
 do not need to move files that are ignored by chezmoi in all cases (i.e. are
 listed in <code>.chezmoiignore</code> when executed as a template on all machines), and
 you can afterwards remove their entries from <code>home/.chezmoiignore</code>.</p>

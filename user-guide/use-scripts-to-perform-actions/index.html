@@ -867,6 +867,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dont-show-scripts-that-would-run-in-chezmoi-diffchezmoi-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Don't show scripts that would run in chezmoi diff/chezmoi status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install-packages-with-scripts" class="md-nav__link">
     <span class="md-ellipsis">
       Install packages with scripts
@@ -8913,6 +8922,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dont-show-scripts-that-would-run-in-chezmoi-diffchezmoi-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Don't show scripts that would run in chezmoi diff/chezmoi status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#install-packages-with-scripts" class="md-nav__link">
     <span class="md-ellipsis">
       Install packages with scripts
@@ -8999,26 +9017,24 @@ a corresponding directory in the target state.</p>
 <p>In verbose mode, the scripts' contents are printed before execution. In dry-run
 mode, scripts are not executed.</p>
 <h2 id="set-environment-variables">Set environment variables</h2>
-<p>You can set extra environment variables for your scripts in the <code>scriptEnv</code>
-section of your config file. For example, to set the <code>MY_VAR</code> environment
-variable to <code>my_value</code>, specify:</p>
+<p>You can set extra environment variables for your scripts, hooks, and commands in
+the <code>scriptEnv</code> section of your config file. For example, to set the <code>MY_VAR</code>
+environment variable to <code>my_value</code>, specify:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[scriptEnv]</span>
 <span class="w">    </span><span class="n">MY_VAR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_value&quot;</span>
 </code></pre></div>
 <p>chezmoi sets a number of environment variables when running scripts, including
 <code>CHEZMOI=1</code> and common template data like <code>CHEZMOI_OS</code> and <code>CHEZMOI_ARCH</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, <code>chezmoi diff</code> will print the contents of scripts that would be
-run by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezmoi
-diff</code>, set <code>diff.exclude</code> in your configuration file, for example:</p>
+<h2 id="dont-show-scripts-that-would-run-in-chezmoi-diffchezmoi-status">Don't show scripts that would run in <code>chezmoi diff</code>/<code>chezmoi status</code></h2>
+<p>By default, <code>chezmoi diff</code> will print the contents of scripts that would be run
+by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezmoi diff</code>, set
+<code>diff.exclude</code> in your configuration file, for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
 <span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;scripts&quot;</span><span class="p">]</span>
 </code></pre></div>
-<p>Similarly, <code>chezmoi status</code> will print the names of the scripts that it
-will execute with the status <code>R</code>. This can similarly disabled by setting
+<p>Similarly, <code>chezmoi status</code> will print the names of the scripts that it will
+execute with the status <code>R</code>. This can similarly disabled by setting
 <code>status.exclude</code> to <code>["scripts"]</code> in your configuration file.</p>
-</div>
 <h2 id="install-packages-with-scripts">Install packages with scripts</h2>
 <p>Change to the source directory and create a file called
 <code>run_onchange_install-packages.sh</code>. In this file create your package

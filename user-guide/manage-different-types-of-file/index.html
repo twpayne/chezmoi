@@ -9029,9 +9029,10 @@ cat<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</sp
 will be empty and it is the script's responsibility to write a complete
 file to the standard output.</p>
 </div>
-<p><code>modify_</code> scripts that contain the string <code>chezmoi:modify-template</code> are executed
-as templates with the current contents of the file passed as <code>.chezmoi.stdin</code>
-and the result of the template execution used as the new contents of the file.</p>
+<p><code>modify_</code> scripts that contain the string <code>chezmoi:modify-template</code> will have all lines
+containing that string removed, and the rest of the file will be interpreted as a template.
+The template is executed with the current contents of the file passed as <code>.chezmoi.stdin</code>,
+and the result of the template execution becomes the new contents of the file.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>To replace the string <code>old</code> with <code>new</code> in a file while leaving the rest of

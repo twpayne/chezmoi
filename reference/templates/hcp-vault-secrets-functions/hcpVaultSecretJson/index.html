@@ -8846,6 +8846,14 @@ omitted, then chezmoi will use the value from the
 <p>If you access HCP Vault Secrets through the <code>hcp</code>, this function <strong>will not
 work</strong>. See <a href="../../../../user-guide/password-managers/hcp-vault-secrets/#hcp-broken"><code>vlt</code> vs <code>hcp</code>: Upgrades that Break</a>.</p>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Hashicorp has announced the <a href="https://support.hashicorp.com/hc/en-us/articles/41802449287955-HCP-Vault-Secrets-End-Of-Life">closure the Vault Secrets service</a> for
+most customers 27 August 2025 with a recommendation of migrating to
+Hashicorp Vault, which is an enterprise-scale product.</p>
+<p>This function will be removed from chezmoi after the service is no longer
+available.</p>
+</div>
 
 
 

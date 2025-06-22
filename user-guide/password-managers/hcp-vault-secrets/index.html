@@ -8913,9 +8913,17 @@ for example:</p>
 as the <code>hcpVaultSecretJson</code> template function, for example:</p>
 <div class="highlight"><pre><span></span><code>{{ (hcpVaultSecretJson &quot;secret_name&quot;).created_by.email }}
 </code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Hashicorp has announced the <a href="https://support.hashicorp.com/hc/en-us/articles/41802449287955-HCP-Vault-Secrets-End-Of-Life">closure the Vault Secrets service</a> for
+most customers 27 August 2025 with a recommendation of migrating to
+Hashicorp Vault, which is an enterprise-scale product.</p>
+<p>These functions will be removed from chezmoi after the service is no longer
+available.</p>
+</div>
 <h2 id="hcp-broken"><code>vlt</code> vs <code>hcp</code>: Upgrades that Break</h2>
-<p>Hashicorp has ended support for the <code>vlt</code> CLI tool (September 2024) and
-recommends migrating to the <a href="https://developer.hashicorp.com/hcp/docs/vault-secrets/get-started/install-hcp-cli"><code>hcp</code> CLI</a>. Unfortunately, the new command
+<p>Hashicorp ended support for the <code>vlt</code> CLI tool in September 2024 and recommended
+migrating to the <a href="https://developer.hashicorp.com/hcp/docs/vault-secrets/get-started/install-hcp-cli"><code>hcp</code> CLI</a>. Unfortunately, the new command
 does not <a href="https://github.com/twpayne/chezmoi/issues/4146#issuecomment-2552752501">work like <code>vlt</code></a>, rendering <code>hcpVaultSecret</code> and
 <code>hcpVaultSecretJson</code> inoperable when using the recommended command-line tool.
 <a href="../../../developer-guide/contributing-changes/">Contributions</a> to create new integrations for HCP Vault Secrets are
