@@ -1,0 +1,33 @@
+[windows] skip 'UNIX only'
+[!exec:diff] skip 'diff not found in $PATH'
+
+chmod 755 bin/custom-pager
+
+# test that chezmoi diff does invoke the diff pager when there is a diff and the command is not "diff"
+cp golden/dot_file $CHEZMOISOURCEDIR
+exec chezmoi diff
+stdout custom-pager
+
+chhome home2/user
+
+# test that chezmoi diff does invoke the diff pager when there is a diff and the command is "diff"
+cp golden/dot_file $CHEZMOISOURCEDIR
+exec chezmoi diff
+stdout custom-pager
+
+-- bin/custom-pager --
+#!/bin/sh
+
+echo custom-pager
+-- golden/dot_file --
+# contents of .file
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    pager = "custom-pager"
+-- home/user/.local/share/chezmoi/.keep --
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "diff"
+    pager = "custom-pager"
+-- home2/user/.local/share/chezmoi/.keep --
+
