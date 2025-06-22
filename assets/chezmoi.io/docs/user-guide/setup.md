@@ -57,7 +57,7 @@ checkout, and apply:
 chezmoi init --apply --verbose https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
-These commands are summarized this sequence diagram:
+These commands are summarized in this sequence diagram:
 
 ```mermaid
 sequenceDiagram
