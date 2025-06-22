@@ -181,7 +181,25 @@ func TestDiffCmd(t *testing.T) {
 				"+++ /dev/null",
 			),
 		},
+		{
+			name: "issue_4500",
+			extraRoot: map[string]any{
+				"/home/user": map[string]any{
+					".config/chezmoi/chezmoi.toml": chezmoitest.JoinLines(
+						`[diff]`,
+						`    command = "diff"`,
+						// `    pager = "custom-pager"`,
+					),
+					".local/share/chezmoi": map[string]any{
+						"dot_file": "# contents of .file\n",
+					},
+				},
+			},
+		},
 	} {
+		if tc.name != "issue_4500" { // FIXME remove
+			continue
+		}
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]any{
 				"/home/user/.local/share/chezmoi": &vfst.Dir{

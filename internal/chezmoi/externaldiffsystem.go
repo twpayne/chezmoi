@@ -388,11 +388,14 @@ func (s *ExternalDiffSystem) tempDir() (AbsPath, error) {
 // This function employs negative logic, i.e. that the default is that the
 // function returns that the entries DO differ unless it can prove otherwise.
 func (s *ExternalDiffSystem) entriesDiffer(absPath1, absPath2 AbsPath) (bool, error) {
+	// FIXME with an external diff system we need to ensure that absPath{1,2}
+	// refer to real paths on disk as seen by the diff command
 	fileInfo1, err1 := s.Lstat(absPath1)
 	fileInfo2, err2 := s.Lstat(absPath2)
 	switch {
 	case errors.Is(err1, fs.ErrNotExist) && errors.Is(err2, fs.ErrNotExist):
 		// If neither entry exists, then they do not differ.
+		// FIXME put a breakpoint here and run go test ./internal/cmd -run=TestScript/issue4500 -v
 		return false, nil
 	case err1 != nil || err2 != nil:
 		// If lstating either entry returned an error, then combine both errors.
