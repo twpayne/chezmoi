@@ -489,6 +489,10 @@ articles:
   version: 2.57.0
   title: Frictionless Dotfile Management With Chezmoi
   url: https://marcusb.org/posts/2025/01/frictionless-dotfile-management-with-chezmoi/
+- date: '2025-01-09'
+  version: 2.57.0
+  title: Using chezmoi to manage dotfiles
+  url: https://kidoni.dev/using-chezmoi
 - date: '2025-01-19'
   version: 2.58.0
   title: Managing dotfiles with chezmoi
@@ -525,6 +529,10 @@ articles:
   lang: CN
   title: dotfiles：一键配置你的开发环境
   url: https://blog.csdn.net/gitblog_00574/article/details/147021711
+- date: '2025-04-07'
+  version: 2.62.0
+  title: Using chezmoi Part 2 — Templates
+  url: https://kidoni.dev/using-templates-with-chezmoi
 - date: '2025-04-11'
   version: 2.62.0
   title: Installing the Tmux Plugin Manager (tpm) with Chezmoi
@@ -542,3 +550,7 @@ articles:
   lang: JP
   title: chezmoiでdotfilesを管理する
   url: https://hiratake.dev/blog/20250523/
+- date: '2025-06-20'
+  version: 2.62.6
+  title: Protecting Secrets in Dotfiles with Chezmoi
+  url: https://kidoni.dev/chezmoi-templates-and-secrets
