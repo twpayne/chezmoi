@@ -4,8 +4,8 @@
 
 Homebrew's [`brew bundle` subcommand][bundle] allows you to specify a list of
 brews and casks to be installed. You can integrate this with chezmoi by creating
-a `run_once_` script. For example, create a file in your source directory called
-`run_once_before_install-packages-darwin.sh.tmpl` containing:
+a `run_onchange_` script. For example, create a file in your source directory
+called `run_onchange_before_install-packages-darwin.sh.tmpl` containing:
 
 ```text
 {{- if eq .chezmoi.os "darwin" -}}

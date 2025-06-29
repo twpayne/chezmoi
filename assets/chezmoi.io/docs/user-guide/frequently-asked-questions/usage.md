@@ -163,10 +163,10 @@ echo "~/emacs.d updated"
 
 ## How do I run a script periodically?
 
-Use a `run_once_*.tmpl` script that includes the current time truncated to a
+Use a `run_onchange_*.tmpl` script that includes the current time truncated to a
 suitable unit. For example, to run a script daily:
 
-```text title="~/.local/share/chezmoi/run_once_daily.tmpl"
+```text title="~/.local/share/chezmoi/run_onchange_daily.tmpl"
 #!/bin/sh
 
 # {{ now | date "2006-01-02" }}
@@ -175,7 +175,7 @@ echo "new day"
 
 For weekly, use the week number from the output of `date`, for example:
 
-```text title="~/.local/share/chezmoi/run_once_weekly.tmpl"
+```text title="~/.local/share/chezmoi/run_onchange_weekly.tmpl"
 #!/bin/sh
 
 # {{ output "date" "+%V" | trim }}
@@ -184,7 +184,7 @@ echo "new week"
 
 Or, approximate the week number with template functions:
 
-```text title="~/.local/share/chezmoi/run_once_weekly.tmpl"
+```text title="~/.local/share/chezmoi/run_onchange_weekly.tmpl"
 #!/bin/sh
 
 # {{ div now.YearDay 7 }}

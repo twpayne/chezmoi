@@ -40,7 +40,7 @@ echo key.txt.age >> .chezmoiignore
 Configure chezmoi to decrypt the passphrase-encrypted private key if needed:
 
 ```console
-$ cat > run_once_before_decrypt-private-key.sh.tmpl <<EOF
+$ cat > run_onchange_before_decrypt-private-key.sh.tmpl <<EOF
 #!/bin/sh
 
 if [ ! -f "${HOME}/.config/chezmoi/key.txt" ]; then
@@ -80,7 +80,7 @@ Untracked files:
         .chezmoi.toml.tmpl
         .chezmoiignore
         key.txt.age
-        run_once_before_decrypt-private-key.sh.tmpl
+        run_onchange_before_decrypt-private-key.sh.tmpl
 
 nothing added to commit but untracked files present (use "git add" to track)
 ```
