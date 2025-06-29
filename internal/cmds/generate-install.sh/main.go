@@ -43,6 +43,7 @@ func (p platform) String() string {
 
 type platformValue struct {
 	platform
+
 	CgoSupported bool
 }
 

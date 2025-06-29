@@ -23,6 +23,7 @@ const (
 type DumpSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
+
 	data map[string]any
 }
 

@@ -13,6 +13,7 @@ linters:
   - dogsled
   - dupword
   - durationcheck
+  - embeddedstructfieldcheck
   - err113
   - errchkjson
   - errname
@@ -47,7 +48,6 @@ linters:
   - perfsprint
   - prealloc
   - predeclared
-  - promlinter
   - protogetter
   - reassign
   - revive
@@ -59,7 +59,6 @@ linters:
   - tagalign
   - tagliatelle
   - testableexamples
-  - testifylint
   - thelper
   - unconvert
   - unparam
@@ -67,8 +66,8 @@ linters:
   - usetesting
   - wastedassign
   - whitespace
-  - zerologlint
   disable:
+  - arangolint
   - asasalint
   - contextcheck
   - cyclop
@@ -97,12 +96,15 @@ linters:
   - nlreturn
   - nonamedreturns
   - paralleltest
+  - promlinter
   - recvcheck
+  - testifylint
   - testpackage
   - tparallel
   - varnamelen
   - wrapcheck
-  - wsl
+  - wsl_v5
+  - zerologlint
   settings:
     forbidigo:
       forbid:

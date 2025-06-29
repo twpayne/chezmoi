@@ -11,6 +11,7 @@ import (
 type TarWriterSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
+
 	tarWriter      *tar.Writer
 	headerTemplate tar.Header
 }

@@ -13,6 +13,7 @@ import (
 type ZIPWriterSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
+
 	zipWriter *zip.Writer
 	modified  time.Time
 }

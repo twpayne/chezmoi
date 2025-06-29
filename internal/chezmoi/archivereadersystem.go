@@ -12,6 +12,7 @@ import (
 type ArchiveReaderSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
+
 	fileInfos map[AbsPath]fs.FileInfo
 	contents  map[AbsPath][]byte
 	linkname  map[AbsPath]string
