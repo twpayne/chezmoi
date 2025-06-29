@@ -65,7 +65,7 @@ running from.
 
 Finally, modify any of your templates to use the `codespaces` variable if
 needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
-`run_once_install-packages.sh.tmpl` might contain:
+`run_onchange_install-packages.sh.tmpl` might contain:
 
 ```text
 {{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
