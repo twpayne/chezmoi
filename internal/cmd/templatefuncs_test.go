@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"errors"
+	"net/http"
+	"net/http/httptest"
 	"strconv"
 	"testing"
 
@@ -928,4 +930,74 @@ func TestQuoteListTemplateFunc(t *testing.T) {
 		`"1"`,
 		`"true"`,
 	}, actual)
+}
+
+func TestGetRedirectedUrlTemplateFunc(t *testing.T) {
+	var redirectServer *httptest.Server
+
+	// Create a test server that redirects /redirect to /target
+	redirectServer = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/redirect":
+			// Use absolute URL for redirect
+			targetURL := redirectServer.URL + "/target"
+			http.Redirect(w, r, targetURL, http.StatusFound)
+		case "/redirect-relative":
+			// Use relative URL for redirect
+			http.Redirect(w, r, "/target", http.StatusFound)
+		case "/redirect-chain-1":
+			// First redirect in a chain (will be followed to final destination)
+			chainURL := redirectServer.URL + "/redirect-chain-2"
+			http.Redirect(w, r, chainURL, http.StatusFound)
+		case "/redirect-chain-2":
+			// Second redirect in a chain (will be followed to final destination)
+			finalURL := redirectServer.URL + "/final-target"
+			http.Redirect(w, r, finalURL, http.StatusFound)
+		case "/final-target":
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("final target content"))
+		case "/not-modified":
+			// Return 304 Not Modified (should not be followed as redirect)
+			w.WriteHeader(http.StatusNotModified)
+		case "/target":
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("target content"))
+		case "/no-redirect":
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write([]byte("direct content"))
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer redirectServer.Close()
+
+	c := &Config{}
+
+	// Test URL that redirects (absolute)
+	redirectURL := redirectServer.URL + "/redirect"
+	expectedRedirectTarget := redirectServer.URL + "/target"
+	actualRedirectTarget := c.getRedirectedURLTemplateFunc(redirectURL)
+	assert.Equal(t, expectedRedirectTarget, actualRedirectTarget)
+
+	// Test URL that redirects (relative)
+	redirectRelativeURL := redirectServer.URL + "/redirect-relative"
+	expectedRelativeRedirectTarget := redirectServer.URL + "/target"
+	actualRelativeRedirectTarget := c.getRedirectedURLTemplateFunc(redirectRelativeURL)
+	assert.Equal(t, expectedRelativeRedirectTarget, actualRelativeRedirectTarget)
+
+	// Test URL that doesn't redirect
+	directURL := redirectServer.URL + "/no-redirect"
+	actualDirectURL := c.getRedirectedURLTemplateFunc(directURL)
+	assert.Equal(t, directURL, actualDirectURL)
+
+	// Test URL with 304 Not Modified (should not be treated as redirect)
+	notModifiedURL := redirectServer.URL + "/not-modified"
+	actualNotModifiedURL := c.getRedirectedURLTemplateFunc(notModifiedURL)
+	assert.Equal(t, notModifiedURL, actualNotModifiedURL)
+
+	// Test multiple redirects (should follow all redirects to final destination)
+	multipleRedirectURL := redirectServer.URL + "/redirect-chain-1"
+	expectedFinalRedirectTarget := redirectServer.URL + "/final-target"
+	actualMultipleRedirectTarget := c.getRedirectedURLTemplateFunc(multipleRedirectURL)
+	assert.Equal(t, expectedFinalRedirectTarget, actualMultipleRedirectTarget)
 }

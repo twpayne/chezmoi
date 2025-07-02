@@ -461,6 +461,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"fromJsonc":                   c.fromJsoncTemplateFunc,
 		"fromToml":                    c.fromTomlTemplateFunc,
 		"fromYaml":                    c.fromYamlTemplateFunc,
+		"getRedirectedURL":            c.getRedirectedURLTemplateFunc,
 		"gitHubKeys":                  c.gitHubKeysTemplateFunc,
 		"gitHubLatestRelease":         c.gitHubLatestReleaseTemplateFunc,
 		"gitHubLatestReleaseAssetURL": c.gitHubLatestReleaseAssetURLTemplateFunc,

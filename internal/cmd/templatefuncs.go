@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -8,6 +9,7 @@ import (
 	"io"
 	"io/fs"
 	"maps"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -186,6 +188,23 @@ func (c *Config) fromYamlTemplateFunc(s string) any {
 	var value any
 	must(chezmoi.FormatYAML.Unmarshal([]byte(s), &value))
 	return value
+}
+
+func (c *Config) getRedirectedURLTemplateFunc(requestURL string) string {
+	client := &http.Client{}
+
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodHead, requestURL, http.NoBody)
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	return resp.Request.URL.String()
 }
 
 func (c *Config) globTemplateFunc(pattern string) []string {
