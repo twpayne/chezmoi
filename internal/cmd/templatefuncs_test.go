@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
+	"github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/internal/chezmoiassert"
 	"github.com/twpayne/chezmoi/internal/chezmoitest"
@@ -932,7 +933,7 @@ func TestQuoteListTemplateFunc(t *testing.T) {
 	}, actual)
 }
 
-func TestGetRedirectedUrlTemplateFunc(t *testing.T) {
+func TestGetRedirectedURLTemplateFunc(t *testing.T) {
 	var redirectServer *httptest.Server
 
 	// Create a test server that redirects /redirect to /target
@@ -971,33 +972,35 @@ func TestGetRedirectedUrlTemplateFunc(t *testing.T) {
 	}))
 	defer redirectServer.Close()
 
-	c := &Config{}
+	chezmoitest.WithTestFS(t, nil, func(fs vfs.FS) {
+		c := newTestConfig(t, fs)
 
-	// Test URL that redirects (absolute)
-	redirectURL := redirectServer.URL + "/redirect"
-	expectedRedirectTarget := redirectServer.URL + "/target"
-	actualRedirectTarget := c.getRedirectedURLTemplateFunc(redirectURL)
-	assert.Equal(t, expectedRedirectTarget, actualRedirectTarget)
+		// Test URL that redirects (absolute)
+		redirectURL := redirectServer.URL + "/redirect"
+		expectedRedirectTarget := redirectServer.URL + "/target"
+		actualRedirectTarget := c.getRedirectedURLTemplateFunc(redirectURL)
+		assert.Equal(t, expectedRedirectTarget, actualRedirectTarget)
 
-	// Test URL that redirects (relative)
-	redirectRelativeURL := redirectServer.URL + "/redirect-relative"
-	expectedRelativeRedirectTarget := redirectServer.URL + "/target"
-	actualRelativeRedirectTarget := c.getRedirectedURLTemplateFunc(redirectRelativeURL)
-	assert.Equal(t, expectedRelativeRedirectTarget, actualRelativeRedirectTarget)
+		// Test URL that redirects (relative)
+		redirectRelativeURL := redirectServer.URL + "/redirect-relative"
+		expectedRelativeRedirectTarget := redirectServer.URL + "/target"
+		actualRelativeRedirectTarget := c.getRedirectedURLTemplateFunc(redirectRelativeURL)
+		assert.Equal(t, expectedRelativeRedirectTarget, actualRelativeRedirectTarget)
 
-	// Test URL that doesn't redirect
-	directURL := redirectServer.URL + "/no-redirect"
-	actualDirectURL := c.getRedirectedURLTemplateFunc(directURL)
-	assert.Equal(t, directURL, actualDirectURL)
+		// Test URL that doesn't redirect
+		directURL := redirectServer.URL + "/no-redirect"
+		actualDirectURL := c.getRedirectedURLTemplateFunc(directURL)
+		assert.Equal(t, directURL, actualDirectURL)
 
-	// Test URL with 304 Not Modified (should not be treated as redirect)
-	notModifiedURL := redirectServer.URL + "/not-modified"
-	actualNotModifiedURL := c.getRedirectedURLTemplateFunc(notModifiedURL)
-	assert.Equal(t, notModifiedURL, actualNotModifiedURL)
+		// Test URL with 304 Not Modified (should not be treated as redirect)
+		notModifiedURL := redirectServer.URL + "/not-modified"
+		actualNotModifiedURL := c.getRedirectedURLTemplateFunc(notModifiedURL)
+		assert.Equal(t, notModifiedURL, actualNotModifiedURL)
 
-	// Test multiple redirects (should follow all redirects to final destination)
-	multipleRedirectURL := redirectServer.URL + "/redirect-chain-1"
-	expectedFinalRedirectTarget := redirectServer.URL + "/final-target"
-	actualMultipleRedirectTarget := c.getRedirectedURLTemplateFunc(multipleRedirectURL)
-	assert.Equal(t, expectedFinalRedirectTarget, actualMultipleRedirectTarget)
+		// Test multiple redirects (should follow all redirects to final destination)
+		multipleRedirectURL := redirectServer.URL + "/redirect-chain-1"
+		expectedFinalRedirectTarget := redirectServer.URL + "/final-target"
+		actualMultipleRedirectTarget := c.getRedirectedURLTemplateFunc(multipleRedirectURL)
+		assert.Equal(t, expectedFinalRedirectTarget, actualMultipleRedirectTarget)
+	})
 }
