@@ -945,7 +945,7 @@ func TestGetRedirectedURLTemplateFunc(t *testing.T) {
 			http.Redirect(w, r, targetURL, http.StatusFound)
 		case "/redirect-relative":
 			// Use relative URL for redirect
-			http.Redirect(w, r, "/target", http.StatusFound)
+			http.Redirect(w, r, "target", http.StatusFound)
 		case "/redirect-chain-1":
 			// First redirect in a chain (will be followed to final destination)
 			chainURL := redirectServer.URL + "/redirect-chain-2"
