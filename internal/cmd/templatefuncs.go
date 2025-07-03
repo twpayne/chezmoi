@@ -191,7 +191,10 @@ func (c *Config) fromYamlTemplateFunc(s string) any {
 }
 
 func (c *Config) getRedirectedURLTemplateFunc(requestURL string) string {
-	client := &http.Client{}
+	client, err := c.getHTTPClient()
+	if err != nil {
+		panic(err)
+	}
 
 	req, err := http.NewRequestWithContext(context.Background(), http.MethodHead, requestURL, http.NoBody)
 	if err != nil {
