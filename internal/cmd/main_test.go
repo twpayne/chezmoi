@@ -1,6 +1,7 @@
 package cmd_test
 
 import (
+	"archive/tar"
 	"bufio"
 	"bytes"
 	_ "embed"
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"io/fs"
 	"net"
 	"net/http"
@@ -114,6 +116,7 @@ func TestScript(t *testing.T) {
 			"readlink":       cmdReadLink,
 			"removeline":     cmdRemoveLine,
 			"rmfinalnewline": cmdRmFinalNewline,
+			"tarcontains":    cmdTarContains,
 			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
@@ -749,6 +752,44 @@ func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
 		}
 		if err := os.WriteFile(filename, data[:len(data)-1], 0o666); err != nil {
 			ts.Fatalf("%s: %v", filename, err)
+		}
+	}
+}
+
+// cmdTarContains succeeds if all args are found inside the tar archive (or not found if negated).
+func cmdTarContains(ts *testscript.TestScript, neg bool, args []string) {
+	if len(args) < 2 {
+		ts.Fatalf("usage: tarcontains TARFILE FILE1 [FILE2 ...]")
+	}
+
+	tarPath := ts.MkAbs(args[0])
+	f, err := os.Open(tarPath)
+	if err != nil {
+		ts.Fatalf("failed to open tar file %s: %v", tarPath, err)
+	}
+	defer f.Close()
+
+	tr := tar.NewReader(f)
+
+	found := make(map[string]bool)
+	for {
+		hdr, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			ts.Fatalf("error reading tar file %s: %v", tarPath, err)
+		}
+		found[hdr.Name] = true
+	}
+
+	for _, target := range args[1:] {
+		_, exists := found[target]
+		if exists && neg {
+			ts.Fatalf("unexpectedly found %q in tar file", target)
+		}
+		if !exists && !neg {
+			ts.Fatalf("did not find expected file %q in tar file", target)
 		}
 	}
 }

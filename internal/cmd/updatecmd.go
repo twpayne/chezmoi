@@ -98,7 +98,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 			parentDirs:   c.Update.parentDirs,
 			recursive:    c.Update.recursive,
 			umask:        c.Umask,
-			preApplyFunc: c.defaultPreApplyFunc,
+			preApplyFunc: c.preApplyFunc(),
 		}); err != nil {
 			return err
 		}

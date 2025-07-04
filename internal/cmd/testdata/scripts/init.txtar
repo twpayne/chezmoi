@@ -184,3 +184,12 @@ data:
 -- home8/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
 [diff]
 exclude: ["scripts"]
+
+# test that chezmoi init --backup with --apply fetches a git repo and runs chezmoi apply saving replaced in backup.tar
+mkgitconfig
+mkfile $HOME/.file
+exec chezmoi init --backup $HOME/backup.tar --apply --force file://$WORK/home/user/.local/share/chezmoi
+exists $HOME/backup.tar
+tarcontains $HOME/backup.tar .file
+! tarcontains $HOME/backup.tar .empty
+exists $HOME/.file

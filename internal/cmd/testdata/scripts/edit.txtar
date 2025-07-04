@@ -50,3 +50,10 @@ sourceDir = "~/.local/share/chezmoi/home"
 -- home2/user/.local/share/chezmoi/.git/.keep --
 -- home2/user/.local/share/chezmoi/home/dot_file --
 # contents of .file
+
+# test that chezmoi apply backups changed files
+exec chezmoi edit --backup $HOME/backup.tar $HOME${/}.file
+exists $HOME/backup.tar
+tarcontains $HOME/backup.tar .file
+! tarcontains $HOME/backup.tar .empty
+exists $HOME/.file

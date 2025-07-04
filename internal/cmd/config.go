@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"archive/tar"
 	"bufio"
 	"bytes"
 	"cmp"
@@ -125,6 +126,7 @@ type ConfigFile struct {
 	Umask                  fs.FileMode                    `json:"umask"           mapstructure:"umask"           yaml:"umask"`
 	UseBuiltinAge          autoBool                       `json:"useBuiltinAge"   mapstructure:"useBuiltinAge"   yaml:"useBuiltinAge"`
 	UseBuiltinGit          autoBool                       `json:"useBuiltinGit"   mapstructure:"useBuiltinGit"   yaml:"useBuiltinGit"`
+	Backup                 backupFlag                     `json:"backup"          mapstructure:"backup"          yaml:"backup"`
 	Verbose                bool                           `json:"verbose"         mapstructure:"verbose"         yaml:"verbose"`
 	Warnings               warningsConfig                 `json:"warnings"        mapstructure:"warnings"        yaml:"warnings"`
 	WorkingTreeAbsPath     chezmoi.AbsPath                `json:"workingTree"     mapstructure:"workingTree"     yaml:"workingTree"`
@@ -186,6 +188,7 @@ type Config struct {
 	sourcePath       bool
 	templateFuncs    template.FuncMap
 	useBuiltinDiff   bool
+	backup           backupFlag
 
 	// Password manager data.
 	gitHub  gitHubData
@@ -253,6 +256,10 @@ type Config struct {
 	bufioReader       *bufio.Reader
 	diffPagerCmdStdin io.WriteCloser
 	diffPagerCmd      *exec.Cmd
+
+	backupTarWriter  *tar.Writer
+	backupTarFile    *os.File
+	backupTarAbsPath chezmoi.AbsPath
 
 	tempDirs map[string]chezmoi.AbsPath
 
@@ -994,6 +1001,7 @@ func (c *Config) decodeConfigMap(configMap map[string]any, configFile *ConfigFil
 			chezmoi.StringSliceToEntryTypeSetHookFunc(),
 			chezmoi.StringToAbsPathHookFunc(),
 			StringOrBoolToAutoBoolHookFunc(),
+			StringToBackupFlagHookFunc(),
 			StringToChoiceFlagHookFunc(),
 		),
 		Result: configFile,
@@ -1098,6 +1106,76 @@ func (c *Config) defaultPreApplyFunc(
 			panic(choice + ": unexpected choice")
 		}
 	}
+}
+
+func (c *Config) backupPreApplyFunc(
+	targetRelPath chezmoi.RelPath,
+	targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
+) error {
+	if c.backupTarWriter != nil && actualEntryState != nil && actualEntryState.Type != chezmoi.EntryStateTypeRemove &&
+		!targetEntryState.Equivalent(actualEntryState) {
+		absPath := c.DestDirAbsPath.Join(targetRelPath)
+		if err := c.backupPath(absPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
+	}
+	return c.defaultPreApplyFunc(targetRelPath, targetEntryState, lastWrittenEntryState, actualEntryState)
+}
+
+func (c *Config) backupPath(absPath chezmoi.AbsPath) error {
+	if c.dryRun {
+		fmt.Fprintf(c.stderr, "would backup %s to %s\n", absPath, c.backupTarAbsPath)
+		return nil
+	}
+	fi, err := c.baseSystem.Lstat(absPath)
+	if err != nil {
+		return err
+	}
+	header, err := tar.FileInfoHeader(fi, "")
+	if err != nil {
+		return err
+	}
+	var destPath chezmoi.RelPath
+	destPath, err = absPath.TrimDirPrefix(c.homeDirAbsPath)
+	if err != nil {
+		return err
+	}
+	header.Name = destPath.String()
+	switch {
+	case fi.Mode().IsRegular():
+		data, err := c.baseSystem.ReadFile(absPath)
+		if err != nil {
+			return err
+		}
+		header.Size = int64(len(data))
+		if err := c.backupTarWriter.WriteHeader(header); err != nil {
+			return err
+		}
+		if _, err := c.backupTarWriter.Write(data); err != nil {
+			return err
+		}
+	case fi.Mode()&fs.ModeSymlink != 0:
+		linkname, err := c.baseSystem.Readlink(absPath)
+		if err != nil {
+			return err
+		}
+		header.Typeflag = tar.TypeSymlink
+		header.Linkname = linkname
+		if err := c.backupTarWriter.WriteHeader(header); err != nil {
+			return err
+		}
+	default:
+		return nil
+	}
+	fmt.Fprintf(c.stderr, "backed up %s to %s\n", absPath, c.backupTarAbsPath)
+	return nil
+}
+
+func (c *Config) preApplyFunc() chezmoi.PreApplyFunc {
+	if c.backupTarWriter != nil {
+		return c.backupPreApplyFunc
+	}
+	return c.defaultPreApplyFunc
 }
 
 // defaultSourceDir returns the default source directory according to the XDG
@@ -1731,6 +1809,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
+	persistentFlags.Var(&c.backup, "backup", "Back up replaced files to the specified tar archive")
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
@@ -1986,6 +2065,15 @@ func (c *Config) finalize() {
 			if err := chezmoilog.LogCmdWait(c.logger, c.diffPagerCmd); err != nil {
 				c.errorf("error: failed to wait for diff pager to close: %v\n", err)
 			}
+		}
+	}
+
+	if c.backupTarWriter != nil {
+		if err := c.backupTarWriter.Close(); err != nil {
+			c.errorf("error: failed to close backup archive: %v\n", err)
+		}
+		if err := c.backupTarFile.Close(); err != nil {
+			c.errorf("error: failed to close backup archive file: %v\n", err)
 		}
 	}
 
@@ -2331,6 +2419,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		return err
 	}
 
+	if !c.backup.path.IsEmpty() && annotations.hasTag(modifiesDestinationDirectory) {
+		if err := c.openBackupTar(); err != nil {
+			return err
+		}
+	}
+
 	return c.runHookPre(cmd.Name())
 }
 
@@ -2565,6 +2659,36 @@ func (c *Config) runHookPre(hook string) error {
 	if err := c.runHook(c.Hooks[hook].Pre); err != nil {
 		return fmt.Errorf("%s: pre: %w", hook, err)
 	}
+	return nil
+}
+
+func (c *Config) openBackupTar() error {
+	if c.dryRun {
+		fmt.Fprintf(c.stderr, "would backup replaced files to %s\n", c.backupTarAbsPath)
+		return nil
+	}
+	if c.backup.path.IsEmpty() {
+		return errors.New("--backup requires a path")
+	}
+	c.backupTarAbsPath = c.backup.path
+	if err := chezmoi.MkdirAll(c.baseSystem, c.backupTarAbsPath.Dir(), fs.ModePerm); err != nil {
+		return err
+	}
+	rawPath, err := c.baseSystem.RawPath(c.backupTarAbsPath)
+	if err != nil {
+		return err
+	}
+	f, err := os.OpenFile(rawPath.String(), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+	if err != nil {
+		return err
+	}
+	if _, err := f.Seek(0, io.SeekEnd); err != nil {
+		_ = f.Close()
+		return err
+	}
+	c.backupTarFile = f
+	c.backupTarWriter = tar.NewWriter(f)
+	fmt.Fprintf(c.stderr, "backing up replaced files to %s\n", c.backupTarAbsPath)
 	return nil
 }
 

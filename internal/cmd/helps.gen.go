@@ -73,6 +73,7 @@ var helps = map[string]*help{
 			"  chezmoi apply --dry-run --verbose\n" +
 			"  chezmoi apply ~/.bashrc",
 		longFlags: chezmoiset.New(
+			"backup",
 			"exclude",
 			"include",
 			"init",
@@ -351,6 +352,7 @@ var helps = map[string]*help{
 			"  chezmoi edit",
 		longFlags: chezmoiset.New(
 			"apply",
+			"backup",
 			"exclude",
 			"hardlink",
 			"include",
@@ -550,6 +552,7 @@ var helps = map[string]*help{
 			"  chezmoi init gitlab.com/user",
 		longFlags: chezmoiset.New(
 			"apply",
+			"backup",
 			"branch",
 			"config-path",
 			"data",
@@ -838,6 +841,7 @@ var helps = map[string]*help{
 			"  chezmoi update",
 		longFlags: chezmoiset.New(
 			"apply",
+			"backup",
 			"exclude",
 			"include",
 			"init",
