@@ -20,6 +20,14 @@ exec chezmoi execute-template '{{ dict "a" (dict "b" (dict "c" 1 "d" 2)) | delet
 rmfinalnewline golden/deleteValueAtPath
 cmp stdout golden/deleteValueAtPath
 
+# test ensureLinePrefix template function with two arguments
+exec chezmoi execute-template '{{ "### Heading\nBody\n" | ensureLinePrefix "#" }}'
+cmp stdout golden/ensureLinePrefix2
+
+# test ensureLinePrefix template function with three arguments
+exec chezmoi execute-template '{{ "### Heading\nBody\n" | ensureLinePrefix "#" "# " }}'
+cmp stdout golden/ensureLinePrefix3
+
 # test eqFold template function
 exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
 stdout '^true$'
@@ -265,6 +273,12 @@ echo '</plist>'
 # line2
 -- golden/deleteValueAtPath --
 {"a":{"b":{"d":2}}}
+-- golden/ensureLinePrefix2 --
+### Heading
+#Body
+-- golden/ensureLinePrefix3 --
+### Heading
+# Body
 -- golden/example.jsonc --
 {
   "key": 1, // Comment

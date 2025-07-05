@@ -203,6 +203,7 @@ nav:
       - decrypt: reference/templates/functions/decrypt.md
       - deleteValueAtPath: reference/templates/functions/deleteValueAtPath.md
       - encrypt: reference/templates/functions/encrypt.md
+      - ensureLinePrefix: reference/templates/functions/ensureLinePrefix.md
       - eqFold: reference/templates/functions/eqFold.md
       - findExecutable: reference/templates/functions/findExecutable.md
       - findOneExecutable: reference/templates/functions/findOneExecutable.md

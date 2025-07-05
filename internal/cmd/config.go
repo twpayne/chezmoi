@@ -453,6 +453,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"ejsonDecrypt":                c.ejsonDecryptTemplateFunc,
 		"ejsonDecryptWithKey":         c.ejsonDecryptWithKeyTemplateFunc,
 		"encrypt":                     c.encryptTemplateFunc,
+		"ensureLinePrefix":            c.ensureLinePrefixTemplateFunc,
 		"eqFold":                      c.eqFoldTemplateFunc,
 		"findExecutable":              c.findExecutableTemplateFunc,
 		"findOneExecutable":           c.findOneExecutableTemplateFunc,
