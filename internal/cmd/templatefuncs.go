@@ -106,6 +106,26 @@ func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	return false
 }
 
+func (c *Config) ensureLinePrefixTemplateFunc(args ...string) string {
+	var prefix, prefixToAdd, s string
+	switch len(args) {
+	case 2:
+		prefix, prefixToAdd, s = args[0], args[0], args[1]
+	case 3:
+		prefix, prefixToAdd, s = args[0], args[1], args[2]
+	default:
+		panic(fmt.Errorf("expected 2 or 3 arguments, got %d", len(args)))
+	}
+	var builder strings.Builder
+	for line := range strings.Lines(s) {
+		if !strings.HasPrefix(line, prefix) {
+			builder.WriteString(prefixToAdd)
+		}
+		builder.WriteString(line)
+	}
+	return builder.String()
+}
+
 func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
 	files := []string{file}
 	paths, err := anyToStringSlice(pathList)
