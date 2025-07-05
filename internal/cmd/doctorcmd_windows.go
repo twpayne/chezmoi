@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"log/slog"
 	"os/exec"
@@ -29,9 +27,8 @@ func (systeminfoCheck) Run(config *Config) (checkResult, string) {
 	}
 
 	var osName, osVersion string
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		switch key, value, found := strings.Cut(s.Text(), ":"); {
+	for line := range strings.Lines(string(data)) {
+		switch key, value, found := strings.Cut(line, ":"); {
 		case !found:
 			// Do nothing.
 		case key == "OS Name":

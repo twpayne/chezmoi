@@ -67,28 +67,10 @@ var errEmptyPath = errors.New("empty path")
 var needsQuoteRx = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
-	type stateType int
-	const (
-		startOfLine stateType = iota
-		inLine
-	)
-
-	state := startOfLine
 	var builder strings.Builder
-	for _, r := range s {
-		switch state {
-		case startOfLine:
-			_ = mustValue(builder.WriteString(prefix))
-			_ = mustValue(builder.WriteRune(r))
-			if r != '\n' {
-				state = inLine
-			}
-		case inLine:
-			_ = mustValue(builder.WriteRune(r))
-			if r == '\n' {
-				state = startOfLine
-			}
-		}
+	for line := range strings.Lines(s) {
+		builder.WriteString(prefix)
+		builder.WriteString(line)
 	}
 	return builder.String()
 }
