@@ -3,7 +3,6 @@ package chezmoi
 // FIXME implement externals in chezmoi source state format
 
 import (
-	"bufio"
 	"bytes"
 	"cmp"
 	"context"
@@ -1425,28 +1424,23 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	defer s.mutex.Unlock()
 
 	dir := sourceRelPath.Dir().TargetRelPath("")
-	scanner := bufio.NewScanner(bytes.NewReader(data))
 	lineNumber := 0
-	for scanner.Scan() {
+	for line := range bytes.Lines(data) {
 		lineNumber++
-		text := scanner.Text()
-		text = commentRx.ReplaceAllString(text, "")
-		text = strings.TrimSpace(text)
-		if text == "" {
+		line = commentRx.ReplaceAll(line, nil)
+		line = bytes.TrimSpace(line)
+		if len(line) == 0 {
 			continue
 		}
 		include := patternSetInclude
-		text, ok := strings.CutPrefix(text, "!")
+		line, ok := bytes.CutPrefix(line, []byte{'!'})
 		if ok {
 			include = patternSetExclude
 		}
-		pattern := dir.JoinString(text).String()
+		pattern := dir.JoinString(string(line)).String()
 		if err := patternSet.add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
 	return nil
 }

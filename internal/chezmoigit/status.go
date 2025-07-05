@@ -1,10 +1,9 @@
 package chezmoigit
 
 import (
-	"bufio"
-	"bytes"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 // A ParseError is a parse error.
@@ -136,136 +135,135 @@ func (e ParseError) Error() string {
 // See https://git-scm.com/docs/git-status.
 func ParseStatusPorcelainV2(output []byte) (*Status, error) {
 	var status Status
-	s := bufio.NewScanner(bytes.NewReader(output))
-	for s.Scan() {
-		text := s.Text()
-		switch text[0] {
+	for line := range strings.Lines(string(output)) {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		switch line[0] {
 		case '1':
-			m := statusPorcelainV2ZOrdinaryRx.FindStringSubmatchIndex(text)
+			m := statusPorcelainV2ZOrdinaryRx.FindStringSubmatchIndex(line)
 			if m == nil {
-				return nil, ParseError(text)
+				return nil, ParseError(line)
 			}
-			mH, err := strconv.ParseInt(text[m[8]:m[9]], 8, 64)
+			mH, err := strconv.ParseInt(line[m[8]:m[9]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			mI, err := strconv.ParseInt(text[m[10]:m[11]], 8, 64)
+			mI, err := strconv.ParseInt(line[m[10]:m[11]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			mW, err := strconv.ParseInt(text[m[12]:m[13]], 8, 64)
+			mW, err := strconv.ParseInt(line[m[12]:m[13]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
 			os := OrdinaryStatus{
-				X:    text[m[2]],
-				Y:    text[m[4]],
-				Sub:  text[m[6]:m[7]],
+				X:    line[m[2]],
+				Y:    line[m[4]],
+				Sub:  line[m[6]:m[7]],
 				MH:   mH,
 				MI:   mI,
 				MW:   mW,
-				HH:   text[m[14]:m[15]],
-				HI:   text[m[16]:m[17]],
-				Path: text[m[18]:m[19]],
+				HH:   line[m[14]:m[15]],
+				HI:   line[m[16]:m[17]],
+				Path: line[m[18]:m[19]],
 			}
 			status.Ordinary = append(status.Ordinary, os)
 		case '2':
-			m := statusPorcelainV2ZRenamedOrCopiedRx.FindStringSubmatchIndex(text)
+			m := statusPorcelainV2ZRenamedOrCopiedRx.FindStringSubmatchIndex(line)
 			if m == nil {
-				return nil, ParseError(text)
+				return nil, ParseError(line)
 			}
-			mH, err := strconv.ParseInt(text[m[8]:m[9]], 8, 64)
+			mH, err := strconv.ParseInt(line[m[8]:m[9]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			mI, err := strconv.ParseInt(text[m[10]:m[11]], 8, 64)
+			mI, err := strconv.ParseInt(line[m[10]:m[11]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			mW, err := strconv.ParseInt(text[m[12]:m[13]], 8, 64)
+			mW, err := strconv.ParseInt(line[m[12]:m[13]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			score, err := strconv.ParseInt(text[m[20]:m[21]], 10, 64)
+			score, err := strconv.ParseInt(line[m[20]:m[21]], 10, 64)
 			if err != nil {
 				return nil, err
 			}
 			rocs := RenamedOrCopiedStatus{
-				X:        text[m[2]],
-				Y:        text[m[4]],
-				Sub:      text[m[6]:m[7]],
+				X:        line[m[2]],
+				Y:        line[m[4]],
+				Sub:      line[m[6]:m[7]],
 				MH:       mH,
 				MI:       mI,
 				MW:       mW,
-				HH:       text[m[14]:m[15]],
-				HI:       text[m[16]:m[17]],
-				RC:       text[m[18]],
+				HH:       line[m[14]:m[15]],
+				HI:       line[m[16]:m[17]],
+				RC:       line[m[18]],
 				Score:    score,
-				Path:     text[m[22]:m[23]],
-				OrigPath: text[m[24]:m[25]],
+				Path:     line[m[22]:m[23]],
+				OrigPath: line[m[24]:m[25]],
 			}
 			status.RenamedOrCopied = append(status.RenamedOrCopied, rocs)
 		case 'u':
-			m := statusPorcelainV2ZUnmergedRx.FindStringSubmatchIndex(text)
+			m := statusPorcelainV2ZUnmergedRx.FindStringSubmatchIndex(line)
 			if m == nil {
-				return nil, ParseError(text)
+				return nil, ParseError(line)
 			}
-			m1, err := strconv.ParseInt(text[m[8]:m[9]], 8, 64)
+			m1, err := strconv.ParseInt(line[m[8]:m[9]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			m2, err := strconv.ParseInt(text[m[10]:m[11]], 8, 64)
+			m2, err := strconv.ParseInt(line[m[10]:m[11]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			m3, err := strconv.ParseInt(text[m[12]:m[13]], 8, 64)
+			m3, err := strconv.ParseInt(line[m[12]:m[13]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			mW, err := strconv.ParseInt(text[m[14]:m[15]], 8, 64)
+			mW, err := strconv.ParseInt(line[m[14]:m[15]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
 			us := UnmergedStatus{
-				X:    text[m[2]],
-				Y:    text[m[4]],
-				Sub:  text[m[6]:m[7]],
+				X:    line[m[2]],
+				Y:    line[m[4]],
+				Sub:  line[m[6]:m[7]],
 				M1:   m1,
 				M2:   m2,
 				M3:   m3,
 				MW:   mW,
-				H1:   text[m[16]:m[17]],
-				H2:   text[m[18]:m[19]],
-				H3:   text[m[20]:m[21]],
-				Path: text[m[22]:m[23]],
+				H1:   line[m[16]:m[17]],
+				H2:   line[m[18]:m[19]],
+				H3:   line[m[20]:m[21]],
+				Path: line[m[22]:m[23]],
 			}
 			status.Unmerged = append(status.Unmerged, us)
 		case '?':
-			m := statusPorcelainV2ZUntrackedRx.FindStringSubmatchIndex(text)
+			m := statusPorcelainV2ZUntrackedRx.FindStringSubmatchIndex(line)
 			if m == nil {
-				return nil, ParseError(text)
+				return nil, ParseError(line)
 			}
 			us := UntrackedStatus{
-				Path: text[m[2]:m[3]],
+				Path: line[m[2]:m[3]],
 			}
 			status.Untracked = append(status.Untracked, us)
 		case '!':
-			m := statusPorcelainV2ZIgnoredRx.FindStringSubmatchIndex(text)
+			m := statusPorcelainV2ZIgnoredRx.FindStringSubmatchIndex(line)
 			if m == nil {
-				return nil, ParseError(text)
+				return nil, ParseError(line)
 			}
 			us := IgnoredStatus{
-				Path: text[m[2]:m[3]],
+				Path: line[m[2]:m[3]],
 			}
 			status.Ignored = append(status.Ignored, us)
 		case '#':
 			continue
 		default:
-			return nil, ParseError(text)
+			return nil, ParseError(line)
 		}
-	}
-	if err := s.Err(); err != nil {
-		return nil, err
 	}
 	return &status, nil
 }

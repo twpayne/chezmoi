@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -57,7 +56,7 @@ var (
 		"^Please present or touch your \\S+ to continue\\.\r\n",
 	)
 	keepassxcAnyResponseRx = regexp.MustCompile(`(?m)\A.*\r\n`)
-	keepassxcPairRx        = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
+	keepassxcPairRx        = regexp.MustCompile(`\A([A-Z]\w*):\s*(.*?)\r?\n\z`)
 	keepassxcPromptRx      = regexp.MustCompile(`^.*> `)
 )
 
@@ -108,7 +107,7 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	args := []string{"--quiet", "--show-protected", entry}
 	output := mustValue(c.keepassxcOutput("show", args...))
 
-	data := mustValue(keepassxcParseOutput(output))
+	data := keepassxcParseOutput(output)
 
 	c.Keepassxc.cache[entry] = data
 
@@ -321,23 +320,19 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 }
 
 // keepassxcParseOutput parses a list of key-value pairs.
-func keepassxcParseOutput(output []byte) (map[string]string, error) {
+func keepassxcParseOutput(output []byte) map[string]string {
 	data := make(map[string]string)
-	s := bufio.NewScanner(bytes.NewReader(output))
 	var key string
-	for i := 0; s.Scan(); i++ {
-		switch match := keepassxcPairRx.FindStringSubmatch(s.Text()); {
+	for line := range bytes.Lines(output) {
+		switch match := keepassxcPairRx.FindSubmatch(line); {
 		case match != nil:
-			key = match[1]
-			data[key] = match[2]
+			key = string(match[1])
+			data[key] = string(match[2])
 		case key != "":
-			data[key] += "\n" + s.Text()
+			data[key] += "\n" + string(bytes.TrimSuffix(line, []byte{'\n'}))
 		}
 	}
-	if err := s.Err(); err != nil {
-		return nil, err
-	}
-	return data, nil
+	return data
 }
 
 // keepassxcClose closes any open connection to keepassxc-cli.

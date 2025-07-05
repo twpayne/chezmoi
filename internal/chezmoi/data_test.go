@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"bytes"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -234,7 +233,7 @@ func TestParseOSRelease(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := parseOSRelease(bytes.NewBufferString(tc.s))
+			actual, err := parseOSRelease([]byte(tc.s))
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expected, actual)
 		})

@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -16,9 +14,9 @@ import (
 )
 
 var (
-	mackupCommentRx  = regexp.MustCompile(`\A#.*\z`)
+	mackupCommentRx  = regexp.MustCompile(`\A#.*\n\z`)
 	mackupKeyValueRx = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
-	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\z`)
+	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\n\z`)
 )
 
 type mackupApplicationApplicationConfig struct {
@@ -77,10 +75,7 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 		if err != nil {
 			return err
 		}
-		config, err := parseMackupApplication(data)
-		if err != nil {
-			return err
-		}
+		config := parseMackupApplication(data)
 		for _, filename := range config.ConfigurationFiles {
 			addArg := c.DestDirAbsPath.Join(filename)
 			addArgs = append(addArgs, addArg.String())
@@ -147,35 +142,33 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	return chezmoi.EmptyAbsPath, fmt.Errorf("%s: mackup application directory not found", libDirAbsPath)
 }
 
-func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
+func parseMackupApplication(data []byte) mackupApplicationConfig {
 	var config mackupApplicationConfig
 	var section string
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		text := s.Text()
-		if mackupCommentRx.MatchString(text) {
+	for line := range strings.Lines(string(data)) {
+		if mackupCommentRx.MatchString(line) {
 			continue
 		}
-		if m := mackupSectionRx.FindStringSubmatch(s.Text()); m != nil {
+		if m := mackupSectionRx.FindStringSubmatch(line); m != nil {
 			section = m[1]
 			continue
 		}
-		text = strings.TrimSpace(text)
-		if text == "" {
+		line = strings.TrimSpace(line)
+		if line == "" {
 			continue
 		}
 		switch section {
 		case "application":
-			if m := mackupKeyValueRx.FindStringSubmatch(text); m != nil {
+			if m := mackupKeyValueRx.FindStringSubmatch(line); m != nil {
 				if m[1] == "name" {
 					config.Application.Name = m[2]
 				}
 			}
 		case "configuration_files":
-			config.ConfigurationFiles = append(config.ConfigurationFiles, chezmoi.NewRelPath(text))
+			config.ConfigurationFiles = append(config.ConfigurationFiles, chezmoi.NewRelPath(line))
 		case "xdg_configuration_files":
-			config.XDGConfigurationFiles = append(config.XDGConfigurationFiles, chezmoi.NewRelPath(text))
+			config.XDGConfigurationFiles = append(config.XDGConfigurationFiles, chezmoi.NewRelPath(line))
 		}
 	}
-	return config, s.Err()
+	return config
 }

@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -21,7 +19,7 @@ var (
 	// https://github.com/lastpass/lastpass-cli/commit/e5a22e2eeef31ab6c54595616e0f57ca0a1c162d
 	// and the first tag containing that commit is v1.3.0~6.
 	lastpassMinVersion  = semver.Version{Major: 1, Minor: 3, Patch: 0}
-	lastpassParseNoteRx = regexp.MustCompile(`\A([ A-Za-z]*):(.*)\z`)
+	lastpassParseNoteRx = regexp.MustCompile(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
 	lastpassVersionArgs = []string{"--version"}
 	lastpassVersionRx   = regexp.MustCompile(`^LastPass CLI v(\d+\.\d+\.\d+)`)
 )
@@ -35,7 +33,7 @@ func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
 	data := mustValue(c.lastpassData(id))
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
-			d["note"] = mustValue(lastpassParseNote(note))
+			d["note"] = lastpassParseNote(note)
 		}
 	}
 	return data
@@ -79,12 +77,11 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	return output, nil
 }
 
-func lastpassParseNote(note string) (map[string]string, error) {
+func lastpassParseNote(note string) map[string]string {
 	result := make(map[string]string)
-	s := bufio.NewScanner(bytes.NewBufferString(note))
 	key := ""
-	for s.Scan() {
-		if m := lastpassParseNoteRx.FindStringSubmatch(s.Text()); m != nil {
+	for line := range strings.Lines(note) {
+		if m := lastpassParseNoteRx.FindStringSubmatch(line); m != nil {
 			keyComponents := strings.Split(m[1], " ")
 			firstComponentRunes := []rune(keyComponents[0])
 			firstComponentRunes[0] = unicode.ToLower(firstComponentRunes[0])
@@ -92,11 +89,8 @@ func lastpassParseNote(note string) (map[string]string, error) {
 			key = strings.Join(keyComponents, "")
 			result[key] = m[2] + "\n"
 		} else {
-			result[key] += s.Text() + "\n"
+			result[key] += line
 		}
 	}
-	if err := s.Err(); err != nil {
-		return nil, err
-	}
-	return result, nil
+	return result
 }

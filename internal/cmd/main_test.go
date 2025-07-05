@@ -1,7 +1,6 @@
 package cmd_test
 
 import (
-	"bufio"
 	"bytes"
 	_ "embed"
 	"encoding/hex"
@@ -910,17 +909,13 @@ func setup(env *testscript.Env) error {
 // unix2DOS returns data with UNIX line endings converted to DOS line endings.
 func unix2DOS(data []byte) ([]byte, error) {
 	builder := strings.Builder{}
-	scanner := bufio.NewScanner(bytes.NewReader(data))
-	for scanner.Scan() {
-		if _, err := builder.Write(scanner.Bytes()); err != nil {
+	for line := range bytes.Lines(data) {
+		if _, err := builder.Write(line); err != nil {
 			return nil, err
 		}
 		if _, err := builder.WriteString("\r\n"); err != nil {
 			return nil, err
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		return nil, err
 	}
 	return []byte(builder.String()), nil
 }
