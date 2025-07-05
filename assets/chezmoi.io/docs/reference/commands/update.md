@@ -39,6 +39,11 @@ Update submodules recursively. This defaults to `true`. Can be disabled with `--
 
 --8<-- "common-flags/recursive.md:default-true"
 
+### `--backup`
+
+--8<-- "common-flags/backup.md"
+
+
 ## Examples
 
 ```sh

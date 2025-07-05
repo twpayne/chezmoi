@@ -27,6 +27,10 @@ they want to overwrite the file.
 
 --8<-- "common-flags/recursive.md:default-true"
 
+### `--backup`
+
+--8<-- "common-flags/backup.md"
+
 ### `--source-path`
 
 Specify targets by source path, rather than target path. This is useful for

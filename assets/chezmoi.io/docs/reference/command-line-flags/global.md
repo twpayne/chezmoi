@@ -11,6 +11,13 @@ may not have any effect on certain commands.
 
 Use *directory* as the cache directory.
 
+### `--backup` *archive*
+
+> Configuration: `backup`
+
+Back up replaced files that differ from the target to *archive*. The archive is
+created if it does not exist, and subsequent runs append to it.
+
 ### `--color` *value*
 
 > Configuration: `color`

@@ -156,6 +156,10 @@ Guess an SSH repo URL instead of an HTTPS repo.
 
 --8<-- "common-flags/include.md"
 
+### `--backup`
+
+--8<-- "common-flags/backup.md"
+
 ## Examples
 
 ```sh

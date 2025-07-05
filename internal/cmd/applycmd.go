@@ -45,6 +45,6 @@ func (c *Config) runApplyCmd(cmd *cobra.Command, args []string) error {
 		parentDirs:   c.apply.parentDirs,
 		recursive:    c.apply.recursive,
 		umask:        c.Umask,
-		preApplyFunc: c.defaultPreApplyFunc,
+		preApplyFunc: c.preApplyFunc(),
 	})
 }

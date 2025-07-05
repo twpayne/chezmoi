@@ -62,6 +62,10 @@ Automatically apply changes when files are saved, with the following limitations
 
 --8<-- "common-flags/init.md"
 
+### `--backup`
+
+--8<-- "common-flags/backup.md"
+
 ## Examples
 
   ```sh

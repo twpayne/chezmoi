@@ -70,3 +70,11 @@ grep -count=2 '# edited' $HOME/.file
 # test that chezmoi apply --source-path fails when called with a targetDirAbsPath
 ! exec chezmoi apply --force --source-path $HOME${/}.file
 [!windows] stderr ${HOME@R}/\.file:\snot\sin\s${CHEZMOISOURCEDIR@R}$
+
+# test that chezmoi apply backups changed files
+edit $HOME/.file
+exec chezmoi apply --force --backup $HOME/backup.tar
+exists $HOME/backup.tar
+tarcontains $HOME/backup.tar .file
+! tarcontains $HOME/backup.tar .empty
+exists $HOME/.file

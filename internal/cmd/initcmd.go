@@ -211,7 +211,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 			filter:       c.init.filter,
 			recursive:    false,
 			umask:        c.Umask,
-			preApplyFunc: c.defaultPreApplyFunc,
+			preApplyFunc: c.preApplyFunc(),
 		}); err != nil {
 			return err
 		}

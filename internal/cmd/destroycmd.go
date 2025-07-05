@@ -85,6 +85,11 @@ func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *c
 				return nil
 			}
 		}
+		if c.backupTarWriter != nil {
+			if err := c.backupPath(destAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+				return err
+			}
+		}
 		if err := c.destSystem.RemoveAll(destAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}

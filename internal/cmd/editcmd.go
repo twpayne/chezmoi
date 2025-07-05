@@ -64,7 +64,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 				init:         c.Edit.init,
 				recursive:    true,
 				umask:        c.Umask,
-				preApplyFunc: c.defaultPreApplyFunc,
+				preApplyFunc: c.preApplyFunc(),
 			}); err != nil {
 				return err
 			}
@@ -198,7 +198,7 @@ TARGET_REL_PATH:
 				init:         c.Edit.init,
 				recursive:    true,
 				umask:        c.Umask,
-				preApplyFunc: c.defaultPreApplyFunc,
+				preApplyFunc: c.preApplyFunc(),
 			}); err != nil {
 				return err
 			}

@@ -57,6 +57,15 @@ exec chezmoi update --init
 exec chezmoi execute-template '{{ .key }}'
 stdout value
 
+# test that chezmoi update --backup with --apply
+edit $HOME/.file
+exec chezmoi update --backup $HOME/backup.tar --apply --force
+exists $HOME/backup.tar
+tarcontains $HOME/backup.tar .file
+! tarcontains $HOME/backup.tar .empty
+exists $HOME/.file
+
+
 -- golden/.chezmoi.toml.tmpl --
 [data]
     key = "value"
