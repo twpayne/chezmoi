@@ -2,7 +2,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
 	"os"
@@ -24,15 +23,10 @@ func run() error {
 	}
 
 	var invalidCommitMessages []string
-	scanner := bufio.NewScanner(bytes.NewReader(output))
-	for scanner.Scan() {
-		commitMessage := scanner.Text()
-		if !commitRx.MatchString(commitMessage) {
-			invalidCommitMessages = append(invalidCommitMessages, commitMessage)
+	for commitMessage := range bytes.Lines(output) {
+		if !commitRx.Match(commitMessage) {
+			invalidCommitMessages = append(invalidCommitMessages, string(commitMessage))
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("scanner: %w", err)
 	}
 
 	if len(invalidCommitMessages) != 0 {
