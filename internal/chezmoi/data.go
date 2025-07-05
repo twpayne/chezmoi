@@ -1,16 +1,12 @@
 package chezmoi
 
 import (
-	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"path/filepath"
 	"strconv"
-	"strings"
-	"unicode"
 
 	"github.com/twpayne/go-vfs/v5"
 )
@@ -63,7 +59,7 @@ func OSRelease(fileSystem vfs.FS) (map[string]any, error) {
 		} else if err != nil {
 			return nil, err
 		}
-		m, err := parseOSRelease(bytes.NewBuffer(data))
+		m, err := parseOSRelease(data)
 		if err != nil {
 			return nil, err
 		}
@@ -84,21 +80,18 @@ func maybeUnquote(s string) string {
 
 // parseOSRelease parses operating system identification data from r as defined
 // by the os-release specification.
-func parseOSRelease(r io.Reader) (map[string]any, error) {
+func parseOSRelease(data []byte) (map[string]any, error) {
 	result := make(map[string]any)
-	s := bufio.NewScanner(r)
-	for s.Scan() {
-		// Trim all leading whitespace, but not necessarily trailing whitespace.
-		token := strings.TrimLeftFunc(s.Text(), unicode.IsSpace)
-		// If the line is empty or starts with #, skip.
-		if token == "" || token[0] == '#' {
+	for line := range bytes.Lines(data) {
+		token := bytes.TrimSpace(line)
+		if len(token) == 0 || token[0] == '#' {
 			continue
 		}
-		key, value, ok := strings.Cut(token, "=")
+		key, value, ok := bytes.Cut(token, []byte{'='})
 		if !ok {
 			return nil, fmt.Errorf("%s: parse error", token)
 		}
-		result[key] = maybeUnquote(value)
+		result[string(key)] = maybeUnquote(string(value))
 	}
-	return result, s.Err()
+	return result, nil
 }

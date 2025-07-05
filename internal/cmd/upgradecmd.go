@@ -3,7 +3,6 @@
 package cmd
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"crypto/sha256"
@@ -38,7 +37,7 @@ const (
 )
 
 var (
-	checksumRx                  = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
+	checksumRx                  = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
 	errUnsupportedUpgradeMethod = errors.New("unsupported upgrade method")
 )
 
@@ -184,15 +183,14 @@ func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease)
 	}
 
 	checksums := make(map[string][]byte)
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		m := checksumRx.FindStringSubmatch(s.Text())
+	for line := range bytes.Lines(data) {
+		m := checksumRx.FindSubmatch(line)
 		if m == nil {
-			return nil, fmt.Errorf("%q: cannot parse checksum", s.Text())
+			return nil, fmt.Errorf("%q: cannot parse checksum", line)
 		}
-		checksums[m[2]], _ = hex.DecodeString(m[1])
+		checksums[string(m[2])], _ = hex.DecodeString(string(m[1]))
 	}
-	return checksums, s.Err()
+	return checksums, nil
 }
 
 func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
