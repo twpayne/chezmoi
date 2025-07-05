@@ -2,7 +2,6 @@
 package chezmoi
 
 import (
-	"bufio"
 	"bytes"
 	"crypto/md5"
 	"crypto/sha1"
@@ -251,15 +250,13 @@ func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s := bufio.NewScanner(bytes.NewReader(contents))
-	for s.Scan() {
-		text := s.Text()
-		text, _, _ = strings.Cut(text, "#")
-		if hostname := strings.TrimSpace(text); hostname != "" {
-			return hostname, nil
+	for line := range bytes.Lines(contents) {
+		line, _, _ = bytes.Cut(line, []byte{'#'})
+		if hostname := bytes.TrimSpace(line); len(hostname) != 0 {
+			return string(hostname), nil
 		}
 	}
-	return "", s.Err()
+	return "", nil
 }
 
 // etcMynameFQDNHostname returns the FQDN hostname from parsing /etc/myname.
@@ -269,17 +266,15 @@ func etcMynameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s := bufio.NewScanner(bytes.NewReader(contents))
-	for s.Scan() {
-		text := s.Text()
-		if strings.HasPrefix(text, "#") {
+	for line := range bytes.Lines(contents) {
+		if bytes.HasPrefix(line, []byte{'#'}) {
 			continue
 		}
-		if hostname := strings.TrimSpace(text); hostname != "" {
-			return hostname, nil
+		if hostname := bytes.TrimSpace(line); len(hostname) != 0 {
+			return string(hostname), nil
 		}
 	}
-	return "", s.Err()
+	return "", nil
 }
 
 // etcHostsFQDNHostname returns the FQDN hostname from parsing /etc/hosts.
@@ -288,12 +283,9 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s := bufio.NewScanner(bytes.NewReader(contents))
-	for s.Scan() {
-		text := s.Text()
-		text = strings.TrimSpace(text)
-		text, _, _ = strings.Cut(text, "#")
-		fields := whitespaceRx.Split(text, -1)
+	for line := range bytes.Lines(contents) {
+		line, _, _ = bytes.Cut(bytes.TrimSpace(line), []byte{'#'})
+		fields := whitespaceRx.Split(string(line), -1)
 		if len(fields) < 2 {
 			continue
 		}
@@ -320,7 +312,7 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 		}
 		return fields[1], nil
 	}
-	return "", s.Err()
+	return "", nil
 }
 
 // isEmpty returns true if data is empty after trimming whitespace from both

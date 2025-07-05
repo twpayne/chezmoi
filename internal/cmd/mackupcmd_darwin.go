@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -16,9 +14,9 @@ import (
 )
 
 var (
-	mackupCommentRx  = regexp.MustCompile(`\A#.*\z`)
+	mackupCommentRx  = regexp.MustCompile(`\A#.*\n\z`)
 	mackupKeyValueRx = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
-	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\z`)
+	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\n\z`)
 )
 
 type mackupApplicationApplicationConfig struct {
@@ -77,10 +75,7 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 		if err != nil {
 			return err
 		}
-		config, err := parseMackupApplication(data)
-		if err != nil {
-			return err
-		}
+		config := parseMackupApplication(data)
 		for _, filename := range config.ConfigurationFiles {
 			addArg := c.DestDirAbsPath.Join(filename)
 			addArgs = append(addArgs, addArg.String())
@@ -147,16 +142,14 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	return chezmoi.EmptyAbsPath, fmt.Errorf("%s: mackup application directory not found", libDirAbsPath)
 }
 
-func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
+func parseMackupApplication(data []byte) mackupApplicationConfig {
 	var config mackupApplicationConfig
 	var section string
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		text := s.Text()
+	for text := range strings.Lines(string(data)) {
 		if mackupCommentRx.MatchString(text) {
 			continue
 		}
-		if m := mackupSectionRx.FindStringSubmatch(s.Text()); m != nil {
+		if m := mackupSectionRx.FindStringSubmatch(text); m != nil {
 			section = m[1]
 			continue
 		}
@@ -177,5 +170,5 @@ func parseMackupApplication(data []byte) (mackupApplicationConfig, error) {
 			config.XDGConfigurationFiles = append(config.XDGConfigurationFiles, chezmoi.NewRelPath(text))
 		}
 	}
-	return config, s.Err()
+	return config
 }
