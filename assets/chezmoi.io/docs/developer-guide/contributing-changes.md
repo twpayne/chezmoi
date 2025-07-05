@@ -30,8 +30,16 @@ that:
   running `make lint`.
 
 * The commit messages follow the [conventional commits specification][commits].
-  chezmoi's release notes are generated directly from the commit messages. For
-  trivial or user-invisible changes, please use the prefix `chore:`.
+  chezmoi's release notes are generated directly from the commit messages. The
+  following criteria can be used to determine the commit type:
+
+      * Small changes, such as fixing a typo or correcting grammar: `chore`
+      * Bug fixes: `fix`
+      * Extending an existing feature, or adding a new feature: `feat`
+      * Adding to, or updating, the documentation: `docs`
+      * Anything not covered by the above: `chore`
+
+    Examples can be found in the [commit history][history].
 
 * Commits are logically separate, with no merge or "fixup" commits.
 
@@ -42,4 +50,5 @@ that:
 [rationale]: https://dave.cheney.net/2019/02/18/talk-then-code
 [golangci-lint]: https://github.com/golangci/golangci-lint
 [commits]: https://www.conventionalcommits.org/en/v1.0.0/
+[history]: https://github.com/twpayne/chezmoi/commits/master/
 [website]: /developer-guide/website.md

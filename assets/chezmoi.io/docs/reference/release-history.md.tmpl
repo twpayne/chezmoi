@@ -21,6 +21,7 @@
    | replaceAllRegex "(https://github\\.com/twpayne/chezmoi/pull/(\\d+))" "[#$2]($1)"
    | replaceAllRegex "(?m)^([0-9a-f]{7,})" "* $1"
    | replaceAllRegex "(?m)^\\* (([0-9a-f]{7})[0-9a-f]*)" "* [`$2`](https://github.com/twpayne/chezmoi/commit/$1)"
+   | toSentenceCaseCommitMessages
    | replaceAllRegex "\\r\\n" "\\n"
    | trim
    | default "Internal changes only"

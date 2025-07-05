@@ -124,19 +124,19 @@ archives:
 changelog:
   groups:
   - title: Features
-    regexp: ^.*?feat(\([[:word:]]+\))??!?:.+$
+    regexp: "^[[:space:]]*feat: +[[:alpha:]]"
     order: 0
   - title: Fixes
-    regexp: ^.*?fix(\([[:word:]]+\))??!?:.+$
+    regexp: "^[[:space:]]*fix: +[[:alpha:]]"
     order: 1
   - title: Documentation updates
-    regexp: ^.*?docs?(\([[:word:]]+\))??!?:.+$
+    regexp: "^[[:space:]]*docs: +[[:alpha:]]"
     order: 2
-  - title: Other
-    order: 999
   filters:
-    exclude:
-    - ^.*?chore(\(.*\))??!?:.+$
+    include:
+    - "^[[:space:]]*feat: +[[:alpha:]]"
+    - "^[[:space:]]*fix: +[[:alpha:]]"
+    - "^[[:space:]]*docs: +[[:alpha:]]"
 
 checksum:
   extra_files:
