@@ -61,7 +61,7 @@ func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
 	for i, relPath := range relPaths {
 		relPathStrs[i+1] = relPath.String()
 	}
-	return NewAbsPath(path.Join(relPathStrs...))
+	return NewAbsPath(filepath.ToSlash(filepath.Join(relPathStrs...)))
 }
 
 // JoinString returns a new AbsPath with ss appended.
@@ -69,7 +69,7 @@ func (p AbsPath) JoinString(ss ...string) AbsPath {
 	strs := make([]string, len(ss)+1)
 	strs[0] = string(p)
 	copy(strs[1:len(ss)+1], ss)
-	return NewAbsPath(path.Join(strs...))
+	return NewAbsPath(filepath.ToSlash(filepath.Join(strs...)))
 }
 
 // Len returns the length of p.
