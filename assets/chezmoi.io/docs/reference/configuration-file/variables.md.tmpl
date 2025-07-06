@@ -1,23 +1,17 @@
 # Variables
 
-The following configuration variables are available:
-
-| Section | Variable | Type | Default value | Description |
-| ------- | -------- | ---- | ------------- | ----------- |
 {{ $lastSectionValue := "" -}}
 {{ range $sectionName, $variables := .sections -}}
 {{   $sectionValue := "" -}}
 {{   if $sectionName -}}
-{{     $sectionValue = printf "`%s`" $sectionName -}}
+## `{{ $sectionName }}`
+
 {{   else -}}
-{{     $sectionValue = "Top level" -}}
+## Top level
+
 {{   end -}}
+
 {{   range $variableName, $variable := $variables -}}
-{{     if eq $sectionValue $lastSectionValue -}}
-{{       $sectionValue = "" -}}
-{{     else -}}
-{{       $lastSectionValue = $sectionValue -}}
-{{     end -}}
 {{     with $variable -}}
 {{       $nameValue := $variableName -}}
 {{       if regexMatch "\\A\\w+\\z" $nameValue -}}
@@ -27,7 +21,26 @@ The following configuration variables are available:
 {{       if eq .type "bool" -}}
 {{         $defaultValue = "`false`" -}}
 {{       end -}}
-| {{ $sectionValue }} | {{ $nameValue }} | {{ .type | default "string" }} | {{ .default | default $defaultValue }} | {{ .description }} |
+{{       $slug := $variableName | slugify -}}
+{{       if $sectionName -}}
+{{         $slug = printf "%s.%s" $sectionName $variableName | slugify -}}
+{{       end -}}
+{{       $title := printf "`%s.%s`" $sectionName $variableName -}}
+{{       if contains "`" $variableName -}}
+{{         $title = printf "`%s.`%s" $sectionName $variableName -}}
+{{       end -}}
+{{       $defaultValue := "*none*" -}}
+{{       if eq .type "bool" -}}
+{{         $defaultValue = "`false`" -}}
+{{       end -}}
+
+### {{ $title }}{{ if .deprecated }} (deprecated){{ end }} { #{{$slug}} }
+| Type | Default |
+| - | - |
+| `{{ .type | default "string" }}` | {{ .default | default $defaultValue }} |
+
+{{ .description }}
+
 {{     end -}}
 {{   end -}}
 {{ end -}}

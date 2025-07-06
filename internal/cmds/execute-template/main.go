@@ -27,6 +27,7 @@ import (
 var (
 	templateDataFilename = flag.String("data", "", "data filename")
 	outputFilename       = flag.String("output", "", "output filename")
+	nonLetterRx          = regexp.MustCompile(`[^a-z]+`)
 )
 
 type gitHubClient struct {
@@ -79,6 +80,13 @@ func (c *gitHubClient) gitHubLatestRelease(ownerRepo string) *github.RepositoryR
 	return rr
 }
 
+func slugify(s string) string {
+	s = strings.ToLower(s)
+	s = nonLetterRx.ReplaceAllString(s, "-")
+	s = strings.Trim(s, "-")
+	return s
+}
+
 func run() error {
 	flag.Parse()
 
@@ -128,6 +136,7 @@ func run() error {
 	funcMap["replaceAllRegex"] = func(expr, repl, s string) string {
 		return regexp.MustCompile(expr).ReplaceAllString(s, repl)
 	}
+	funcMap["slugify"] = slugify
 	tmpl, err := template.New(templateName).Funcs(funcMap).ParseFiles(flag.Args()...)
 	if err != nil {
 		return err
