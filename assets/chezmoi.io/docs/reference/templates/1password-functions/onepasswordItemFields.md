@@ -21,7 +21,11 @@ interactively prompted to sign in.
 
     ```console
     $ op item get abcdefghijklmnopqrstuvwxyz --fields label=exampleLabel
-    # or
+    ```
+
+    or
+
+    ```console
     $ op item get abcdefghijklmnopqrstuvwxyz --fields exampleLabel
     ```
 
