@@ -7,10 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"log/slog"
 	"os"
-	"os/exec"
-	"regexp"
 	"runtime"
 	"strings"
 
@@ -19,13 +16,9 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
 )
 
 const (
-	libcTypeGlibc = "glibc"
-	libcTypeMusl  = "musl"
-
 	packageTypeNone = ""
 	packageTypeAPK  = "apk"
 	packageTypeAUR  = "aur"
@@ -59,9 +52,6 @@ var (
 			"arm64": "aarch64",
 		},
 	}
-
-	libcTypeGlibcRx = regexp.MustCompile(`(?i)glibc|gnu libc`)
-	libcTypeMuslRx  = regexp.MustCompile(`(?i)musl`)
 )
 
 func (c *Config) brewUpgrade() error {
@@ -163,28 +153,6 @@ func (c *Config) upgradeUNIXPackage(
 
 func (c *Config) winGetUpgrade() error {
 	return errUnsupportedUpgradeMethod
-}
-
-// getLibc attempts to determine the system's libc.
-func getLibc() (string, error) {
-	// First, try parsing the output of ldd --version. On glibc systems it
-	// writes to stdout and exits with code 0. On musl libc systems it writes to
-	// stderr and exits with code 1.
-	lddCmd := exec.Command("ldd", "--version")
-	switch output, _ := chezmoilog.LogCmdCombinedOutput(slog.Default(), lddCmd); {
-	case libcTypeGlibcRx.Match(output):
-		return libcTypeGlibc, nil
-	case libcTypeMuslRx.Match(output):
-		return libcTypeMusl, nil
-	}
-
-	// Second, try getconf GNU_LIBC_VERSION.
-	getconfCmd := exec.Command("getconf", "GNU_LIBC_VERSION")
-	if output, _ := chezmoilog.LogCmdCombinedOutput(slog.Default(), getconfCmd); libcTypeGlibcRx.Match(output) {
-		return libcTypeGlibc, nil
-	}
-
-	return "", errors.New("unable to determine libc")
 }
 
 // getPackageType returns the distributions package type based on is OS release.
