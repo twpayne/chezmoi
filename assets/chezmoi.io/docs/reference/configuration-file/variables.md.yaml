@@ -1,429 +1,424 @@
 sections:
   '':
     cacheDir:
-      default: >-
-        `$XDG_CACHE_HOME/chezmoi` <br/>
-        `$HOME/.cache/chezmoi` <br/>
-        `%USERPROFILE%/.cache/chezmoi`
-      description: Cache directory
+      default: '`$XDG_CACHE_HOME/chezmoi` / `$HOME/.cache/chezmoi` / `%USERPROFILE%/.cache/chezmoi`'
+      description: Cache directory.
     color:
       default: '`auto`'
-      description: Colorize output
+      description: Colorize output.
     data:
       type: object
-      description: Template data
+      description: Template data.
     destDir:
-      default: >-
-        `$HOME` <br/>
-        `%USERPROFILE%`
-      description: Destination directory
+      default: '`$HOME` / `%USERPROFILE%`'
+      description: Destination directory.
     encryption:
-      description: Encryption type, either `age` or `gpg`
+      description: Encryption type, either `age` or `gpg`.
     env:
       type: object
-      description: Extra environment variables for scripts and commands
+      description: Extra environment variables for scripts and commands.
     format:
       default: '`json`'
-      description: Format for data output, either `json` or `yaml`
+      description: Format for data output, either `json` or `yaml`.
     interactive:
       default: '`false`'
-      description: Prompt for all changes
+      description: Prompt for all changes.
     mode:
       default: '`file`'
-      description: Mode in target dir, either `file` or `symlink`
+      description: Mode in target dir, either `file` or `symlink`.
     pager:
       default: '`$PAGER`'
-      description: Default pager CLI command
+      description: Default pager CLI command.
     pagerArgs:
       type: '[]string'
-      description: Extra args to the pager command
+      description: Extra args to the pager command.
     persistentState:
-      default: >-
-        `$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb` <br/>
-        `$HOME/.config/chezmoi/chezmoi.boltdb` <br/>
-        `%USERPROFILE%/.config/chezmoi/chezmoi.boltdb`
-      description: Location of the persistent state file
+      default: '`$XDG_CONFIG_HOME/chezmoi/chezmoi.boltdb` / `$HOME/.config/chezmoi/chezmoi.boltdb` / `%USERPROFILE%/.config/chezmoi/chezmoi.boltdb`'
+      description: Location of the persistent state file.
     progress:
       type: bool
-      description: Display progress bars
+      description: Display progress bars.
     scriptEnv:
       type: object
-      description: Extra environment variables for scripts, hooks, and commands
+      description: Extra environment variables for scripts, hooks, and commands.
     scriptTempDir:
-      description: Temporary directory for scripts
+      description: Temporary directory for scripts.
     sourceDir:
-      default: >-
-        `$XDG_SHARE_HOME/chezmoi` <br/>
-        `$HOME/.local/share/chezmoi` <br/>
-        `%USERPROFILE%/.local/share/chezmoi`
-      description: Source directory
+      default: '`$XDG_SHARE_HOME/chezmoi` / `$HOME/.local/share/chezmoi` / `%USERPROFILE%/.local/share/chezmoi`'
+      description: Source directory.
     tempDir:
       default: '*from system*'
-      description: Temporary directory
+      description: Temporary directory.
     umask:
       type: int
       default: '*from system*'
-      description: Umask
+      description: Umask.
     useBuiltinAge:
       default: '`auto`'
-      description: Use builtin age if `age` command is not found in `$PATH`
+      description: Use builtin age if `age` command is not found in `$PATH`.
     useBuiltinGit:
       default: '`auto`'
-      description: Use builtin git if `git` command is not found in `$PATH`
+      description: Use builtin git if `git` command is not found in `$PATH`.
     verbose:
       type: bool
-      description: Make output more verbose
+      description: Make output more verbose.
     workingTree:
       default: '*source directory*'
-      description: git working tree directory
+      description: git working tree directory.
   add:
     encrypt:
       type: bool
-      description: Encrypt by default
+      description: Encrypt by default.
     secrets:
       default: '`warning`'
-      description: Action when secrets are found when adding files
+      description: Action when secrets are found when adding files.
     templateSymlinks:
       type: bool
-      description: Template symlinks to source and home dirs
+      description: Template symlinks to source and home dirs.
   age:
     args:
       type: '[]string'
-      description: Extra args to age CLI command
+      description: Extra args to age CLI command.
     command:
       default: '`age`'
-      description: age CLI command
+      description: age CLI command.
     identity:
-      description: age identity file
+      description: age identity file.
     identities:
       type: '[]string'
-      description: age identity files
+      description: age identity files.
     passphrase:
       type: bool
-      description: Use age passphrase instead of identity
+      description: Use age passphrase instead of identity.
     recipient:
-      description: age recipient
+      description: age recipient.
     recipients:
       type: '[]string'
-      description: age recipients
+      description: age recipients.
     recipientsFile:
-      description: age recipients file
+      description: age recipients file.
     recipientsFiles:
       type: '[]string'
-      description: age recipients files
+      description: age recipients files.
     suffix:
       default: '`.age`'
-      description: Suffix appended to age-encrypted files
+      description: Suffix appended to age-encrypted files.
     symmetric:
       type: bool
-      description: Use age symmetric encryption
+      description: Use age symmetric encryption.
   awsSecretsManager:
     profile:
-      description: AWS shared profile name
+      description: AWS shared profile name.
     region:
-      description: AWS region
+      description: AWS region.
   azureKeyVault:
     defaultVault:
-      description: Default Azure Key Vault name
+      description: Default Azure Key Vault name.
   bitwarden:
     command:
       default: '`bw`'
-      description: Bitwarden CLI command
+      description: Bitwarden CLI command.
   bitwardenSecrets:
     command:
       default: '`bws`'
-      description: Bitwarden Secrets CLI command
+      description: Bitwarden Secrets CLI command.
   cd:
     args:
       type: '[]string'
-      description: Extra args to shell in `cd` command
+      description: Extra args to shell in `cd` command.
     command:
-      description: Shell to run in `cd` command
+      description: Shell to run in `cd` command.
   completion:
     custom:
       type: bool
-      description: Enable custom shell completions
+      description: Enable custom shell completions.
   dashlane:
     args:
       type: '[]string'
-      description: Extra args to Dashlane CLI command
+      description: Extra args to Dashlane CLI command.
     command:
       default: '`dcli`'
-      description: Dashlane CLI command
+      description: Dashlane CLI command.
   diff:
     args:
       type: '[]string'
       default: '*see [`diff`](/user-guide/tools/diff.md)*'
-      description: Extra args to external diff command
+      description: Extra args to external diff command.
     command:
-      description: External diff command
+      description: External diff command.
     exclude:
       type: '[]string'
-      description: Entry types to exclude from diffs
+      description: Entry types to exclude from diffs.
     pager:
-      description: Diff-specific pager
+      description: Diff-specific pager.
     pagerArgs:
       type: '[]string'
-      description: Extra args to the diff-specific pager command
+      description: Extra args to the diff-specific pager command.
     reverse:
       type: bool
-      description: Reverse order of arguments to diff
+      description: Reverse order of arguments to diff.
     scriptContents:
       type: bool
       default: '`true`'
-      description: Show script contents
+      description: Show script contents.
   doppler:
     args:
       type: '[]string'
-      description: Extra args to Doppler CLI command
+      description: Extra args to Doppler CLI command.
     command:
       default: '`doppler`'
-      description: Doppler CLI command
+      description: Doppler CLI command.
     config:
       type: string
-      description: Default config (aka environment) if none is specified
+      description: Default config (aka environment) if none is specified.
     project:
       type: string
-      description: Default project name if none is specified
+      description: Default project name if none is specified.
   edit:
     apply:
       type: bool
-      description: Apply changes on exit
+      description: Apply changes on exit.
     args:
       type: '[]string'
-      description: Extra args to edit command
+      description: Extra args to edit command.
     command:
       default: '`$EDITOR` / `$VISUAL`'
-      description: Edit command
+      description: Edit command.
     hardlink:
       type: bool
       default: '`true`'
-      description: Invoke editor with a hardlink to the source file
+      description: Invoke editor with a hardlink to the source file.
     minDuration:
       type: duration
       default: '`1s`'
-      description: Minimum duration for edit command
+      description: Minimum duration for edit command.
     watch:
       type: bool
-      description: Automatically apply changes when files are saved
+      description: Automatically apply changes when files are saved.
   ejson:
     keyDir:
       type: string
-      description: Path to directory containing private keys. Defaults to /opt/ejson/keys. Setting the EJSON_KEYDIR environment will also set this value, with lower precedence.
+      default: '`/opt/ejson/keys`'
+      description: Path to directory containing private keys. Setting the `$EJSON_KEYDIR` environment variable will also set this value, with lower precedence.
     key:
       type: string
-      description: The private key to use for decryption, will supersede using the keyDir if set.
+      description: The private key to use for decryption, will supersede using the `keyDir` if set.
   git:
     autoAdd:
       type: bool
-      description: Add changes to the source state after any change
+      description: Add changes to the source state after any change.
     autoCommit:
       type: bool
-      description: Commit changes to the source state after any change
+      description: Commit changes to the source state after any change.
     autoPush:
       type: bool
-      description: Push changes to the source state after any change
+      description: Push changes to the source state after any change.
     command:
       default: '`git`'
-      description: git CLI command
+      description: git CLI command.
     commitMessageTemplate:
       type: string
-      description: Commit message template
+      description: Commit message template.
     commitMessageTemplateFile:
       type: string
-      description: Commit message template file (relative to source directory)
+      description: Commit message template file (relative to source directory).
     lfs:
       type: bool
-      description: Run `git lfs pull` after cloning
+      description: Run `git lfs pull` after cloning.
   gitHub:
     refreshPeriod:
       type: duration
       default: '`1m`'
-      description: Minimum duration between identical GitHub API requests
+      description: Minimum duration between identical GitHub API requests.
   gopass:
     command:
       default: '`gopass`'
-      description: gopass CLI command
+      description: gopass CLI command.
     mode:
-      description: see [gopass functions](/reference/templates/gopass-functions/index.md)
+      description: See [gopass functions](/reference/templates/gopass-functions/index.md).
   gpg:
     args:
       type: '[]string'
-      description: Extra args to GPG CLI command
+      description: Extra args to GPG CLI command.
     command:
       default: '`gpg`'
-      description: GPG CLI command
+      description: GPG CLI command.
     recipient:
-      description: GPG recipient
+      description: GPG recipient.
     recipients:
       type: '[]string'
-      description: GPG recipients
+      description: GPG recipients.
     suffix:
       default: '`.asc`'
-      description: Suffix appended to GPG-encrypted files
+      description: Suffix appended to GPG-encrypted files.
     symmetric:
       type: bool
-      description: Use symmetric GPG encryption
+      description: Use symmetric GPG encryption.
   hcpVaultSecrets:
     applicationName:
       type: string
-      description: Default application name if none is specified
+      description: Default application name if none is specified.
+      deprecated: true
     args:
       type: '[]string'
-      description: Extra args to HCP Vault Secrets CLI command
+      description: Extra args to HCP Vault Secrets CLI command.
+      deprecated: true
     command:
       default: '`vlt`'
-      description: HCP Vault Secrets CLI command
+      description: HCP Vault Secrets CLI command.
+      deprecated: true
     organizationId:
       type: string
-      description: Default organization ID if none is specified
+      description: Default organization ID if none is specified.
+      deprecated: true
     projectId:
       type: string
-      description: Default project ID if none is specified
+      description: Default project ID if none is specified.
+      deprecated: true
   hooks:
     '*command*`.post.args`':
       type: '[]string'
-      description: Extra arguments to command to run after *command*
+      description: Extra arguments to command to run after *command*.
     '*command*`.post.command`':
       type: '[]string'
-      description: Command to run after *command*
+      description: Command to run after *command*.
     '*command*`.pre.args`':
       type: '[]string'
-      description: Extra arguments to command to run before *command*
+      description: Extra arguments to command to run before *command*.
     '*command*`.pre.command`':
       type: '[]string'
-      description: Command to run before *command*
+      description: Command to run before *command*.
   interpreters:
     '*extension*.`args`':
       type: '[]string'
-      description: see [Interpreters](/reference/configuration-file/interpreters.md)
+      description: See [Interpreters](/reference/configuration-file/interpreters.md).
     '*extension*.`command`':
       default: '*special*'
-      description: see [Interpreters](/reference/configuration-file/interpreters.md)
+      description: See [Interpreters](/reference/configuration-file/interpreters.md).
   keepassxc:
     args:
       type: '[]string'
-      description: Extra args to KeePassXC CLI command
+      description: Extra args to KeePassXC CLI command.
     command:
       default: '`keepassxc-cli`'
-      description: KeePassXC CLI command
+      description: KeePassXC CLI command.
     database:
-      description: KeePassXC database
+      description: KeePassXC database.
     mode:
       default: '`cache-password`'
-      description: see [KeePassXC functions](/reference/templates/keepassxc-functions/index.md)
+      description: See [KeePassXC functions](/reference/templates/keepassxc-functions/index.md).
     prompt:
       type: bool
       default: '`true`'
-      description: Prompt for password
+      description: Prompt for password.
   keeper:
     args:
       type: '[]string'
-      description: Extra args to Keeper CLI command
+      description: Extra args to Keeper CLI command.
     command:
       default: '`keeper`'
-      description: Keeper CLI command
+      description: Keeper CLI command.
   lastpass:
     command:
       default: '`lpass`'
-      description: LastPass CLI command
+      description: LastPass CLI command.
   merge:
     args:
       type: '[]string'
-      default: see [`merge`](/user-guide/tools/merge.md)
-      description: Extra args to three-way merge CLI command
+      default: See [`merge`](/user-guide/tools/merge.md)
+      description: Extra args to three-way merge CLI command.
     command:
-      description: Three-way merge CLI command
+      description: Three-way merge CLI command.
   onepassword:
     cache:
       type: bool
       default: '`true`'
-      description: Enable optional caching provided by `op`
+      description: Enable optional caching provided by `op`.
     command:
       default: '`op`'
-      description: 1Password CLI command
+      description: 1Password CLI command.
     prompt:
       type: bool
       default: '`true`'
-      description: Prompt for sign-in when no valid session is available
+      description: Prompt for sign-in when no valid session is available.
     mode:
       default: '`account`'
-      description: see [1Password Secrets Automation](/user-guide/password-managers/1password.md#secrets-automation)
+      description: See [1Password Secrets Automation](/user-guide/password-managers/1password.md#secrets-automation).
   pass:
     command:
       default: '`pass`'
-      description: Pass CLI command
+      description: Pass CLI command.
   passhole:
     args:
       type: '[]string'
-      description: Extra args to Passhole CLI command
+      description: Extra args to Passhole CLI command.
     command:
       default: '`ph`'
-      description: Passhole CLI command
+      description: Passhole CLI command.
     prompt:
       type: bool
       default: '`true`'
-      description: Prompt for password
+      description: Prompt for password.
   pinentry:
     args:
       type: '[]string'
-      description: Extra args to pinentry CLI command
+      description: Extra args to pinentry CLI command.
     command:
-      description: pinentry CLI command
+      description: pinentry CLI command.
     options:
       type: '[]string'
-      default: see [`pinentry`](/reference/configuration-file/pinentry.md)
-      description: Extra options for pinentry
+      default: See [`pinentry`](/reference/configuration-file/pinentry.md)
+      description: Extra options for pinentry.
   rbw:
     command:
       default: '`rbw`'
-      description: Unofficial Bitwarden CLI command
+      description: Unofficial Bitwarden CLI command.
   secret:
     args:
       type: '[]string'
-      description: Extra args to secret CLI command
+      description: Extra args to secret CLI command.
     command:
-      description: Generic secret CLI command
+      description: Generic secret CLI command.
   status:
     exclude:
       type: '[]string'
-      description: Entry types to exclude from status
+      description: Entry types to exclude from status.
     pathStyle:
       type: string
       default: '`relative`'
-      description: How to present the path to files in status output
+      description: How to present the path to files in status output.
   template:
     options:
       type: '[]string'
       default: '`["missingkey=error"]`'
-      description: Template options
+      description: Template options.
   textconv:
     '':
       type: '[]object'
-      description: see [textconv](/reference/configuration-file/textconv.md)
+      description: See [textconv](/reference/configuration-file/textconv.md).
   vault:
     command:
       default: '`vault`'
-      description: Vault CLI command
+      description: Vault CLI command.
   update:
     apply:
       type: bool
       default: '`true`'
-      description: Apply after pulling
+      description: Apply after pulling.
     args:
       type: '[]string'
-      description: Extra args to update command
+      description: Extra args to update command.
     command:
-      description: Update command
+      description: Update command.
     recurseSubmodules:
       type: bool
       default: '`true`'
-      description: Update submodules recursively
+      description: Update submodules recursively.
   verify:
     exclude:
       type: '[]string'
-      description: Entry types to exclude from verify
+      description: Entry types to exclude from verify.
   warnings:
     '':
       type: object
-      description: see [Warnings](/reference/configuration-file/warnings.md)
+      description: See [Warnings](/reference/configuration-file/warnings.md).
