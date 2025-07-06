@@ -193,22 +193,10 @@ func (c *Config) fromYamlTemplateFunc(s string) any {
 }
 
 func (c *Config) getRedirectedURLTemplateFunc(requestURL string) string {
-	client, err := c.getHTTPClient()
-	if err != nil {
-		panic(err)
-	}
-
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodHead, requestURL, http.NoBody)
-	if err != nil {
-		panic(err)
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
+	client := mustValue(c.getHTTPClient())
+	req := mustValue(http.NewRequestWithContext(context.Background(), http.MethodHead, requestURL, http.NoBody))
+	resp := mustValue(client.Do(req)) //nolint:bodyclose
 	defer resp.Body.Close()
-
 	return resp.Request.URL.String()
 }
 
