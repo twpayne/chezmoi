@@ -39,7 +39,7 @@ EOF
 ```
 
 Now, when you run `chezmoi apply`, chezmoi will execute the
-`install-packages.sh` script with when the list of packages defined in
+`install-packages.sh` script when the list of packages defined in
 `.chezmoidata/packages.yaml` changes.
 
 [homebrew]: https://brew.sh
