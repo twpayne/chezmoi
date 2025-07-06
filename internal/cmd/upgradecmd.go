@@ -231,9 +231,14 @@ func (c *Config) replaceExecutable(
 	switch {
 	case runtime.GOOS == "linux" && runtime.GOARCH == "amd64":
 		archiveFormat = chezmoi.ArchiveFormatTarGz
+		// Determine the libc to use. If the executable is dynamically linked
+		// (as indicated by ldd running and returning without error), then use
+		// glibc, otherwise use musl.
 		var libc string
-		if libc, err = getLibc(); err != nil {
-			return err
+		if err := exec.Command("ldd", executableFilenameAbsPath.String()).Run(); err == nil {
+			libc = "glibc"
+		} else {
+			libc = "musl"
 		}
 		archiveName = fmt.Sprintf("chezmoi_%s_%s-%s_%s.tar.gz", releaseVersion, runtime.GOOS, libc, runtime.GOARCH)
 	case runtime.GOOS == "linux" && runtime.GOARCH == "386":

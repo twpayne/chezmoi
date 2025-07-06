@@ -95,11 +95,6 @@ func (c *Config) winGetUpgrade() error { //nolint:nolintlint,staticcheck
 	)
 }
 
-// getLibc attempts to determine the system's libc.
-func getLibc() (string, error) {
-	return "", nil
-}
-
 // getUpgradeMethod attempts to determine the method by which chezmoi can be
 // upgraded by looking at how it was installed.
 func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
