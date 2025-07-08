@@ -16,7 +16,7 @@ call to the GitHub API.
 
 !!! warning
 
-    The `gitHubLatestTag` returns the first tag returned by the [list repository
+    `gitHubLatestTag` returns the first tag returned by the [list repository
     tags GitHub API endpoint][endpoint]. Although this seems to be the most
     recent tag, the GitHub API documentation does not specify the order of the
     returned tags.
