@@ -4769,6 +4769,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -4915,6 +4919,28 @@
   
   <span class="md-ellipsis">
     encrypt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/ensureLinePrefix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ensureLinePrefix
     
   </span>
   
@@ -5091,6 +5117,28 @@
   
   <span class="md-ellipsis">
     fromYaml
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/getRedirectedURL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    getRedirectedURL
     
   </span>
   
@@ -9318,21 +9366,21 @@ if <code>~/.emacs.d</code> is a <code>git-repo</code> external, then create:</p>
 echo &quot;~/emacs.d updated&quot;
 </code></pre></div>
 <h2 id="how-do-i-run-a-script-periodically">How do I run a script periodically?</h2>
-<p>Use a <code>run_once_*.tmpl</code> script that includes the current time truncated to a
+<p>Use a <code>run_onchange_*.tmpl</code> script that includes the current time truncated to a
 suitable unit. For example, to run a script daily:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/run_once_daily.tmpl</span><pre><span></span><code>#!/bin/sh
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/run_onchange_daily.tmpl</span><pre><span></span><code>#!/bin/sh
 
 # {{ now | date &quot;2006-01-02&quot; }}
 echo &quot;new day&quot;
 </code></pre></div>
 <p>For weekly, use the week number from the output of <code>date</code>, for example:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/run_once_weekly.tmpl</span><pre><span></span><code>#!/bin/sh
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/run_onchange_weekly.tmpl</span><pre><span></span><code>#!/bin/sh
 
 # {{ output &quot;date&quot; &quot;+%V&quot; | trim }}
 echo &quot;new week&quot;
 </code></pre></div>
 <p>Or, approximate the week number with template functions:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/run_once_weekly.tmpl</span><pre><span></span><code>#!/bin/sh
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/run_onchange_weekly.tmpl</span><pre><span></span><code>#!/bin/sh
 
 # {{ div now.YearDay 7 }}
 echo &quot;new week&quot;

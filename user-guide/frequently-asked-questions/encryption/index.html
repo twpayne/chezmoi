@@ -4643,6 +4643,10 @@
       
         
       
+        
+      
+        
+      
     
     
       
@@ -4789,6 +4793,28 @@
   
   <span class="md-ellipsis">
     encrypt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/ensureLinePrefix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ensureLinePrefix
     
   </span>
   
@@ -4965,6 +4991,28 @@
   
   <span class="md-ellipsis">
     fromYaml
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/getRedirectedURL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    getRedirectedURL
     
   </span>
   
@@ -8961,7 +9009,7 @@
 <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>key.txt.age<span class="w"> </span>&gt;&gt;<span class="w"> </span>.chezmoiignore
 </code></pre></div>
 <p>Configure chezmoi to decrypt the passphrase-encrypted private key if needed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;<span class="w"> </span>run_once_before_decrypt-private-key.sh.tmpl<span class="w"> </span>&lt;&lt;EOF
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>cat<span class="w"> </span>&gt;<span class="w"> </span>run_onchange_before_decrypt-private-key.sh.tmpl<span class="w"> </span>&lt;&lt;EOF
 <span class="gp">#</span>!/bin/sh
 
 <span class="go">if [ ! -f &quot;${HOME}/.config/chezmoi/key.txt&quot; ]; then</span>
@@ -8992,7 +9040,7 @@ private key:</p>
 <span class="go">        .chezmoi.toml.tmpl</span>
 <span class="go">        .chezmoiignore</span>
 <span class="go">        key.txt.age</span>
-<span class="go">        run_once_before_decrypt-private-key.sh.tmpl</span>
+<span class="go">        run_onchange_before_decrypt-private-key.sh.tmpl</span>
 
 <span class="go">nothing added to commit but untracked files present (use &quot;git add&quot; to track)</span>
 </code></pre></div>
