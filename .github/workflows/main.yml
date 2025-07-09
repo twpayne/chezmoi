@@ -18,7 +18,7 @@ env:
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.4.3 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.3.0 # https://github.com/editorconfig-checker/editorconfig-checker/releases
-  GO_VERSION: 1.24.4 # https://go.dev/doc/devel/release
+  GO_VERSION: 1.24.5 # https://go.dev/doc/devel/release
   GOLANGCI_LINT_VERSION: 2.2.1 # https://github.com/golangci/golangci-lint/releases
   GORELEASER_VERSION: 2.10.2 # https://github.com/goreleaser/goreleaser/releases
   GOVERSIONINFO_VERSION: 1.5.0 # https://github.com/josephspurrier/goversioninfo/releases
