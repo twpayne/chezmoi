@@ -71,3 +71,8 @@ videos:
   version: 2.62.2
   title: Managing Dotfiles with Chezmoi
   url: https://www.youtube.com/watch?v=KsEj_pvOXdE
+- date: '2025-06-19'
+  version: 2.62.6
+  lang: DE
+  title: 'Immutable Linux Desktops: Produktive Arbeit mit Fedora Silverblue, Chezmoi und Distrobox'
+  url: https://media.ccc.de/v/gpn23-31-immutable-linux-desktops-produktive-arbeit-mit-fedora-silverblue-chezmoi-und-distrobox#t=2424
