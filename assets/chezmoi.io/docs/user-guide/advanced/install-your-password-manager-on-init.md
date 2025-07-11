@@ -51,5 +51,5 @@ the source state:
 
 ```toml title=".config/chezmoi/chezmoi.toml"
 [hooks.read-source-state.pre]
-    command = ".local/share/chezmoi/.install-password-manager.sh"
+    script = ".local/share/chezmoi/.install-password-manager.sh"
 ```
