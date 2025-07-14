@@ -1573,10 +1573,10 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 
 // gitAutoAdd adds all changes to the git index and returns the new git status.
 func (c *Config) gitAutoAdd() (*chezmoigit.Status, error) {
-	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
+	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
 	}
-	output, err := c.cmdOutput(c.WorkingTreeAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
+	output, err := c.cmdOutput(c.SourceDirAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
 	if err != nil {
 		return nil, err
 	}
@@ -1596,7 +1596,7 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) er
 	if err != nil {
 		return err
 	}
-	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)}); err != nil {
+	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)}); err != nil {
 		return err
 	}
 	return c.runHookPost("git-auto-commit")
@@ -1610,7 +1610,7 @@ func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 	if err := c.runHookPre("git-auto-push"); err != nil {
 		return err
 	}
-	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"}); err != nil {
+	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"push"}); err != nil {
 		return err
 	}
 	return c.runHookPost("git-auto-push")
