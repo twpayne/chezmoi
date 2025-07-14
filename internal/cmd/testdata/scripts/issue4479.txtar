@@ -1,0 +1,23 @@
+[!exec:git] 'skip git not found in $PATH'
+
+mkgitconfig
+
+exec git -C $CHEZMOISOURCEDIR init
+exec git -C $CHEZMOISOURCEDIR add .
+exec git -C $CHEZMOISOURCEDIR commit -m 'initial commit'
+
+# test that autoCommit does not add or commit files outside the source directory
+edit $CHEZMOISOURCEDIR/README.md
+exec chezmoi edit ~/.file
+exec git -C $CHEZMOISOURCEDIR status
+stdout 'modified:\s+README\.md'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[git]
+    autoCommit = true
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/README.md --
+# README.md
+-- home/user/.local/share/chezmoi/home/dot_file --
+# contents of .file
