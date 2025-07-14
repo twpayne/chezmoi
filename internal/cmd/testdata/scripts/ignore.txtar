@@ -41,6 +41,46 @@ cp golden/.chezmoiignore-star-star-slash-star-dot-txt $CHEZMOISOURCEDIR/.chezmoi
 exec chezmoi managed
 cmp stdout golden/managed-ignore-star-star-slash-star-dot-txt
 
+# test adding a wildcard pattern when there are no matches already
+! grep 'test1' $CHEZMOISOURCEDIR/.chezmoiignore
+! grep '\*\.log' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore add '*.log'
+exec chezmoi ignore add 'test1'
+grep 'test1' $CHEZMOISOURCEDIR/.chezmoiignore
+grep '\*\.log' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore remove '*.log'
+! grep '\*\.log' $CHEZMOISOURCEDIR/.chezmoiignore
+grep 'test1' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore remove 'test1'
+! grep '\*\.log' $CHEZMOISOURCEDIR/.chezmoiignore
+! grep 'test1' $CHEZMOISOURCEDIR/.chezmoiignore
+
+# test removing entries works
+! grep 'test1' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore add README.md
+exec chezmoi ignore add test1
+grep 'README\.md' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore remove README.md
+! grep 'README\.md' $CHEZMOISOURCEDIR/.chezmoiignore
+grep 'test1' $CHEZMOISOURCEDIR/.chezmoiignore
+
+# test activating and deactivating entries
+! grep '#\.file.txt' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore add '#*.tmp'
+exec chezmoi ignore activate '*.tmp'
+grep '\*\.tmp' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore deactivate '*.tmp'
+grep '# \*\.tmp' $CHEZMOISOURCEDIR/.chezmoiignore
+exec chezmoi ignore remove '# *.tmp'
+
+# test querying ignore patterns
+! exec chezmoi ignore query test.log
+! stdout \*\.log
+exec chezmoi ignore add '*.log'
+exec chezmoi ignore query test.log
+stdout \*\.log
+exec chezmoi ignore remove '*.log'
+
 -- golden/.chezmoiignore-dir --
 .dir
 -- golden/.chezmoiignore-dir-subdir --

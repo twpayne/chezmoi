@@ -168,6 +168,7 @@ nav:
     - forget: reference/commands/forget.md
     - generate: reference/commands/generate.md
     - git: reference/commands/git.md
+    - ignore: reference/commands/ignore.md
     - help: reference/commands/help.md
     - ignored: reference/commands/ignored.md
     - import: reference/commands/import.md

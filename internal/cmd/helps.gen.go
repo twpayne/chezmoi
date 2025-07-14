@@ -456,6 +456,23 @@ var helps = map[string]*help{
 			"  Print the help associated with command, or general help if no command is\n" +
 			"  given.",
 	},
+	"ignore": {
+		longHelp: "" +
+			"Description:\n" +
+			"  Add, remove, activate, or deactivate patterns in .chezmoiignore.",
+		example: "" +
+			"  chezmoi ignore add '*.log'\n" +
+			"  chezmoi ignore remove README.md\n" +
+			"  chezmoi ignore activate '*.tmp'\n" +
+			"  chezmoi ignore deactivate notes.md\n" +
+			"  chezmoi ignore query foo.log",
+		longFlags: chezmoiset.New(
+			"force",
+		),
+		shortFlags: chezmoiset.New(
+			"f",
+		),
+	},
 	"ignored": {
 		longHelp: "" +
 			"Description:\n" +

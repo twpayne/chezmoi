@@ -1785,6 +1785,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newForgetCmd(),
 		c.newGenerateCmd(),
 		c.newGitCmd(),
+		c.newIgnoreCmd(),
 		c.newIgnoredCmd(),
 		c.newImportCmd(),
 		c.newInitCmd(),
