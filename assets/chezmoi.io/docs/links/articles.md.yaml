@@ -554,3 +554,7 @@ articles:
   version: 2.62.6
   title: Protecting Secrets in Dotfiles with Chezmoi
   url: https://kidoni.dev/chezmoi-templates-and-secrets
+- date: '2025-07-13'
+  version: 2.63.0
+  title: Sync Claude Code commands and hooks across machines with chezmoi and age
+  url: https://www.arun.blog/sync-claude-code-with-chezmoi-and-age/
