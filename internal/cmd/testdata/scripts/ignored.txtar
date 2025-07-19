@@ -10,7 +10,7 @@ cmp stdout golden/ignored
 .readonly
 .template
 -- home/user/.local/share/chezmoi/.chezmoiignore --
-.dir/subdir
+.dir/subdir # Comment following pattern
 .read*
 **/file
 .template
