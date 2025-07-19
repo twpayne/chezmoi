@@ -49,7 +49,7 @@ const (
 )
 
 var (
-	commentRx                       = regexp.MustCompile(`(?:\A|\s+)#.*$`)
+	commentRx                       = regexp.MustCompile(`(?:\A|\s+)#.*(?:\r?\n)?$`)
 	lineEndingRx                    = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
 	modifyTemplateRx                = regexp.MustCompile(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
 	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
