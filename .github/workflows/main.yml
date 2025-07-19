@@ -302,7 +302,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba
+    - uses: astral-sh/setup-uv@7edac99f961f18b581bbd960d59d049f04c0002f
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -464,7 +464,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@398d4b0eeef1380460a10c8013a76f728fb906ac
+    - uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159
     - name: create-syso
       run: |
         make create-syso
@@ -493,7 +493,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@bd01e18f51369d5a26f1651c3cb451d3417e3bba
+    - uses: astral-sh/setup-uv@7edac99f961f18b581bbd960d59d049f04c0002f
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
