@@ -8895,8 +8895,16 @@ that:</p>
 </li>
 <li>
 <p>The commit messages follow the <a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits specification</a>.
-  chezmoi's release notes are generated directly from the commit messages. For
-  trivial or user-invisible changes, please use the prefix <code>chore:</code>.</p>
+  chezmoi's release notes are generated directly from the commit messages. The
+  following criteria can be used to determine the commit type:</p>
+<ul>
+<li>Small changes, such as fixing a typo or correcting grammar: <code>chore</code></li>
+<li>Bug fixes: <code>fix</code></li>
+<li>Extending an existing feature, or adding a new feature: <code>feat</code></li>
+<li>Adding to, or updating, the documentation: <code>docs</code></li>
+<li>Anything not covered by the above: <code>chore</code></li>
+</ul>
+<p>Examples can be found in the <a href="https://github.com/twpayne/chezmoi/commits/master/">commit history</a>.</p>
 </li>
 <li>
 <p>Commits are logically separate, with no merge or "fixup" commits.</p>
