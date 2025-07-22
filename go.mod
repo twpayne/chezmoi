@@ -60,7 +60,7 @@ require (
 	github.com/twpayne/go-xdg/v6 v6.1.3
 	github.com/ulikunitz/xz v0.5.12
 	github.com/zalando/go-keyring v0.2.6
-	github.com/zricethezav/gitleaks/v8 v8.27.2
+	github.com/zricethezav/gitleaks/v8 v8.28.0
 	go.etcd.io/bbolt v1.4.2
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.40.0
@@ -115,7 +115,7 @@ require (
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.9.3 // indirect
 	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
-	github.com/charmbracelet/x/exp/slice v0.0.0-20250714123521-bc8a1995e079 // indirect
+	github.com/charmbracelet/x/exp/slice v0.0.0-20250720010745-3615766e35a0 // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
