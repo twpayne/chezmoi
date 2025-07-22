@@ -42,7 +42,6 @@ linters:
   - misspell
   - nilerr
   - nilnesserr
-  - noctx
   - nolintlint
   - nosprintfhostport
   - perfsprint
@@ -94,6 +93,7 @@ linters:
   - nestif
   - nilnil
   - nlreturn
+  - noctx
   - nonamedreturns
   - paralleltest
   - promlinter
@@ -138,6 +138,8 @@ linters:
       - name: cyclomatic
         disabled: true
       - name: empty-block
+        disabled: true
+      - name: enforce-switch-style
         disabled: true
       - name: exported
         disabled: true
