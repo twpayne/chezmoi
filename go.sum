@@ -227,8 +227,8 @@ github.com/charmbracelet/x/cellbuf v0.0.13 h1:/KBBKHuVRbq1lYx5BzEHBAFBP8VcQzJejZ
 github.com/charmbracelet/x/cellbuf v0.0.13/go.mod h1:xe0nKWGd3eJgtqZRaN9RjMtK7xUYchjzPr7q6kcvCCs=
 github.com/charmbracelet/x/exp/golden v0.0.0-20240815200342-61de596daa2b h1:MnAMdlwSltxJyULnrYbkZpp4k58Co7Tah3ciKhSNo0Q=
 github.com/charmbracelet/x/exp/golden v0.0.0-20240815200342-61de596daa2b/go.mod h1:wDlXFlCrmJ8J+swcL/MnGUuYnqgQdW9rhSD61oNMb6U=
-github.com/charmbracelet/x/exp/slice v0.0.0-20250714123521-bc8a1995e079 h1:Ob4QDyxNr3dCzOLTOTcefZtpCurHHZdlVeQPke4NQpc=
-github.com/charmbracelet/x/exp/slice v0.0.0-20250714123521-bc8a1995e079/go.mod h1:vI5nDVMWi6veaYH+0Fmvpbe/+cv/iJfMntdh+N0+Tms=
+github.com/charmbracelet/x/exp/slice v0.0.0-20250720010745-3615766e35a0 h1:m3ovGcCv2nFgxcYrLJc/S4jk9WXCN4uDiXcTSOPyZp4=
+github.com/charmbracelet/x/exp/slice v0.0.0-20250720010745-3615766e35a0/go.mod h1:vI5nDVMWi6veaYH+0Fmvpbe/+cv/iJfMntdh+N0+Tms=
 github.com/charmbracelet/x/term v0.2.1 h1:AQeHeLZ1OqSXhrAWpYUtZyX1T3zVxfpZuEQMIQaGIAQ=
 github.com/charmbracelet/x/term v0.2.1/go.mod h1:oQ4enTYFV7QN4m0i9mzHrViD7TQKvNEEkHUMCmsxdUg=
 github.com/chavacava/garif v0.1.0 h1:2JHa3hbYf5D9dsgseMKAmc/MZ109otzgNFk5s87H9Pc=
@@ -892,8 +892,8 @@ github.com/zalando/go-keyring v0.2.6 h1:r7Yc3+H+Ux0+M72zacZoItR3UDxeWfKTcabvkI8u
 github.com/zalando/go-keyring v0.2.6/go.mod h1:2TCrxYrbUNYfNS/Kgy/LSrkSQzZ5UPVH85RwfczwvcI=
 github.com/zeebo/blake3 v0.2.4 h1:KYQPkhpRtcqh0ssGYcKLG1JYvddkEA8QwCM/yBqhaZI=
 github.com/zeebo/blake3 v0.2.4/go.mod h1:7eeQ6d2iXWRGF6npfaxl2CU+xy2Fjo2gxeyZGCRUjcE=
-github.com/zricethezav/gitleaks/v8 v8.27.2 h1:gztgJLjD/ITdfm5reG2XLJBhnZX4wHtCXU8W9Ea6qDk=
-github.com/zricethezav/gitleaks/v8 v8.27.2/go.mod h1:daiqIDK19snPotPOaqo0hHRnoa6cGioPojAfEKffEIY=
+github.com/zricethezav/gitleaks/v8 v8.28.0 h1:XXeibrt4XbdrYm3FnzXR3uUPs9HbgGduroICjBl6PMw=
+github.com/zricethezav/gitleaks/v8 v8.28.0/go.mod h1:hcFf0KivlxYt85WxJ0wtUB75OR9qVneuD1OwauHOHx0=
 gitlab.com/bosi/decorder v0.4.2 h1:qbQaV3zgwnBZ4zPMhGLW4KZe7A7NwxEhJx39R3shffo=
 gitlab.com/bosi/decorder v0.4.2/go.mod h1:muuhHoaJkA9QLcYHq4Mj8FJUwDZ+EirSHRiaTcTf6T8=
 go-simpler.org/musttag v0.13.0 h1:Q/YAW0AHvaoaIbsPj3bvEI5/QFP7w696IMUpnKXQfCE=
