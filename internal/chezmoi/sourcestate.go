@@ -823,7 +823,11 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 		chezmoiTemplateData["targetFile"] = options.Destination
 	}
 
-	return tmpl.Execute(templateData)
+	result, err := tmpl.Execute(templateData)
+	if errors.Is(err, errReturnEmpty) {
+		return nil, nil
+	}
+	return result, err
 }
 
 // ForEach calls f for each source state entry.
