@@ -163,6 +163,10 @@ cmp stdout golden/pruneEmptyDicts
 exec chezmoi execute-template '{{ "foo bar baz" | replaceAllRegex "ba" "BA" }}'
 stdout 'foo BAr BAz'
 
+# test the returnEmpty template function
+exec chezmoi execute-template 'before {{ returnEmpty }} after'
+! stdout .
+
 # test setValueAtPath template function
 exec chezmoi execute-template '{{ dict | setValueAtPath "key1.key2" "value2" | toJson }}'
 rmfinalnewline golden/setValueAtPath

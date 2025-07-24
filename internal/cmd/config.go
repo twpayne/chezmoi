@@ -513,6 +513,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"rbw":                         c.rbwTemplateFunc,
 		"rbwFields":                   c.rbwFieldsTemplateFunc,
 		"replaceAllRegex":             c.replaceAllRegexTemplateFunc,
+		"returnEmpty":                 chezmoi.ReturnEmptyTemplateFunc,
 		"secret":                      c.secretTemplateFunc,
 		"secretJSON":                  c.secretJSONTemplateFunc,
 		"setValueAtPath":              c.setValueAtPathTemplateFunc,
