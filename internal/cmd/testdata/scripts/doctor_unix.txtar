@@ -20,7 +20,6 @@ chmod 755 bin/secret
 chmod 755 bin/shell
 chmod 755 bin/vault
 chmod 755 bin/vimdiff
-chmod 755 bin/vlt
 
 mkhomedir
 mksourcedir
@@ -61,7 +60,6 @@ stdout '^ok\s+lastpass-command\s+'
 stdout '^ok\s+pass-command\s+'
 stdout '^ok\s+rbw-command\s+'
 stdout '^ok\s+vault-command\s+'
-stdout '^ok\s+vlt-command\s+'
 stdout '^ok\s+secret-command\s+'
 
 chhome home2/user
@@ -193,10 +191,6 @@ echo rbw 1.7.0
 echo "Vault v1.5.5 ('f5d1ddb3750e7c28e25036e1ef26a4c02379fc01+CHANGES')"
 -- bin/vimdiff --
 #!/bin/sh
--- bin/vlt --
-#!/bin/sh
-
-echo "0.2.1, git sha (8d9af42c8b98c9527741a239b23a3e384812f514), go1.20.4 arm64"
 -- home/user/.config/chezmoi/chezmoi.toml --
 [pinentry]
     command = "pinentry"

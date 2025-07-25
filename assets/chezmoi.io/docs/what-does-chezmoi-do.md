@@ -40,15 +40,15 @@ also runs on less commonly-used platforms, like FreeBSD, OpenBSD, and Termux.
 
 Nothing leaves your machine, unless you want it to. Your configuration remains
 in a git repo under your control. You can write the configuration file in the
-format of your choice. chezmoi can retrieve secrets from [1Password][1p],
-[AWS Secrets Manager][aws-secrets-manager], [Azure Key Vault][azure-key-vault],
+format of your choice. chezmoi can retrieve secrets from [1Password][1p], [AWS
+Secrets Manager][aws-secrets-manager], [Azure Key Vault][azure-key-vault],
 [Bitwarden][bitwarden], [Dashlane][dashlane], [Doppler][doppler],
-[gopass][gopass], [HCP Vault Secrets][hcp-vault-secrets], [KeePassXC][keepass],
-[Keeper][keeper], [LastPass][lastpass], [pass][pass], [passage][passage],
-[passhole][passhole], [Vault][vault], macOS Keychain, GNOME [Keyring][keyring],
-or any command-line utility of your choice. You can encrypt individual files
-with [GnuPG][gnupg] or [age][age]. You can checkout your dotfiles repo on as
-many machines as you want without revealing any secrets to anyone.
+[gopass][gopass], [KeePassXC][keepass], [Keeper][keeper], [LastPass][lastpass],
+[pass][pass], [passage][passage], [passhole][passhole], [Vault][vault], macOS
+Keychain, GNOME [Keyring][keyring], or any command-line utility of your choice.
+You can encrypt individual files with [GnuPG][gnupg] or [age][age]. You can
+checkout your dotfiles repo on as many machines as you want without revealing
+any secrets to anyone.
 
 ### Transparent
 
@@ -84,7 +84,6 @@ single command, and automatically commit and push changes.
 [doppler]: https://www.doppler.com
 [gnupg]: https://www.gnupg.org
 [gopass]: https://www.gopass.pw/
-[hcp-vault-secrets]: https://developer.hashicorp.com/hcp/docs/vault-secrets
 [keepass]: https://keepassxc.org/
 [keeper]: https://www.keepersecurity.com/
 [keyring]: https://wiki.gnome.org/Projects/GnomeKeyring
