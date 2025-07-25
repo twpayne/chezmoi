@@ -4,6 +4,6 @@ import "errors"
 
 var errReturnEmpty = errors.New("return empty")
 
-func ReturnEmptyTemplateFunc() string {
+func AbortEmptyTemplateFunc() string {
 	panic(errReturnEmpty)
 }

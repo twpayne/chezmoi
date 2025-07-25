@@ -163,8 +163,8 @@ cmp stdout golden/pruneEmptyDicts
 exec chezmoi execute-template '{{ "foo bar baz" | replaceAllRegex "ba" "BA" }}'
 stdout 'foo BAr BAz'
 
-# test the returnEmpty template function
-exec chezmoi execute-template 'before {{ returnEmpty }} after'
+# test the abortEmpty template function
+exec chezmoi execute-template 'before {{ abortEmpty }} after'
 ! stdout .
 
 # test setValueAtPath template function

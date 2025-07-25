@@ -198,6 +198,7 @@ nav:
     - Directives: reference/templates/directives.md
     - Functions:
       - reference/templates/functions/index.md
+      - abortEmpty: reference/templates/functions/abortEmpty.md
       - comment: reference/templates/functions/comment.md
       - completion: reference/templates/functions/completion.md
       - decrypt: reference/templates/functions/decrypt.md
@@ -230,7 +231,6 @@ nav:
       - pruneEmptyDicts: reference/templates/functions/pruneEmptyDicts.md
       - quoteList: reference/templates/functions/quoteList.md
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md
-      - returnEmpty: reference/templates/functions/returnEmpty.md
       - setValueAtPath: reference/templates/functions/setValueAtPath.md
       - stat: reference/templates/functions/stat.md
       - toIni: reference/templates/functions/toIni.md

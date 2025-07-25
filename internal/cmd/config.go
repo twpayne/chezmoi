@@ -435,6 +435,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	// The completion template function is added in persistentPreRunRootE as
 	// it needs a *cobra.Command, which we don't yet have.
 	for key, value := range map[string]any{
+		"abortEmpty":                  chezmoi.AbortEmptyTemplateFunc,
 		"awsSecretsManager":           c.awsSecretsManagerTemplateFunc,
 		"awsSecretsManagerRaw":        c.awsSecretsManagerRawTemplateFunc,
 		"azureKeyVault":               c.azureKeyVaultTemplateFunc,
@@ -513,7 +514,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		"rbw":                         c.rbwTemplateFunc,
 		"rbwFields":                   c.rbwFieldsTemplateFunc,
 		"replaceAllRegex":             c.replaceAllRegexTemplateFunc,
-		"returnEmpty":                 chezmoi.ReturnEmptyTemplateFunc,
 		"secret":                      c.secretTemplateFunc,
 		"secretJSON":                  c.secretJSONTemplateFunc,
 		"setValueAtPath":              c.setValueAtPathTemplateFunc,
