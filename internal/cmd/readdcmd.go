@@ -148,7 +148,11 @@ TARGET_REL_PATH:
 				case err != nil:
 					return err
 				case choice == "diff":
-					if err := c.diffFile(targetRelPath, targetContents, targetStateFile.Perm(c.Umask), actualContents, actualStateFile.Perm()); err != nil {
+					if err := c.diffFile(
+						targetRelPath,
+						c.SourceDirAbsPath.Join(sourceStateFile.SourceRelPath().RelPath()), targetContents, targetStateFile.Perm(c.Umask),
+						destAbsPath, actualContents, actualStateFile.Perm(),
+					); err != nil {
 						return err
 					}
 				case choice == "yes":
