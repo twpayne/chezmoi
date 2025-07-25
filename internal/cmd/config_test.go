@@ -99,9 +99,6 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 				Doppler: dopplerConfig{
 					Args: []string{},
 				},
-				HCPVaultSecrets: hcpVaultSecretConfig{
-					Args: []string{},
-				},
 				Keepassxc: keepassxcConfig{
 					Args: []string{},
 				},
