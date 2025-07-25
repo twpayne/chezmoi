@@ -718,6 +718,43 @@ func (c *Config) applyArgs(
 	return nil
 }
 
+// builtinDiffFile outputs the diff between fromData and fromMode and toData and toMode
+// at path.
+func (c *Config) builtinDiffFile(
+	relPath chezmoi.RelPath,
+	fromData []byte, fromMode fs.FileMode,
+	toData []byte, toMode fs.FileMode,
+) error {
+	builder := strings.Builder{}
+	unifiedEncoder := diff.NewUnifiedEncoder(&builder, diff.DefaultContextLines)
+	color := c.Color.Value(c.colorAutoFunc)
+	if color {
+		unifiedEncoder.SetColor(diff.NewColorConfig())
+	}
+	if fromMode.IsRegular() {
+		var err error
+		fromData, _, err = c.TextConv.convert(relPath.String(), fromData)
+		if err != nil {
+			return err
+		}
+	}
+	if toMode.IsRegular() {
+		var err error
+		toData, _, err = c.TextConv.convert(relPath.String(), toData)
+		if err != nil {
+			return err
+		}
+	}
+	diffPatch, err := chezmoi.DiffPatch(relPath, fromData, fromMode, toData, toMode)
+	if err != nil {
+		return err
+	}
+	if err := unifiedEncoder.Encode(diffPatch); err != nil {
+		return err
+	}
+	return c.pageDiffOutput(builder.String())
+}
+
 // checkVersion checks that chezmoi is at least the required version for the
 // source state.
 func (c *Config) checkVersion() error {
@@ -1042,7 +1079,11 @@ func (c *Config) defaultPreApplyFunc(
 			case err != nil:
 				return err
 			case choice == "diff":
-				err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode)
+				err := c.diffFile(
+					targetRelPath,
+					c.DestDirAbsPath.Join(targetRelPath), actualContents, actualEntryState.Mode,
+					chezmoi.EmptyAbsPath, targetContents, targetEntryState.Mode,
+				)
 				if err != nil {
 					return err
 				}
@@ -1085,7 +1126,11 @@ func (c *Config) defaultPreApplyFunc(
 		case err != nil:
 			return err
 		case choice == "diff":
-			if err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode); err != nil {
+			if err := c.diffFile(
+				targetRelPath,
+				c.DestDirAbsPath.Join(targetRelPath), actualContents, actualEntryState.Mode,
+				chezmoi.EmptyAbsPath, targetContents, targetEntryState.Mode,
+			); err != nil {
 				return err
 			}
 		case choice == "overwrite":
@@ -1209,43 +1254,21 @@ func (c *Config) destAbsPathInfos(
 	return destAbsPathInfos, nil
 }
 
-// diffFile outputs the diff between fromData and fromMode and toData and toMode
-// at path.
+// diffFile outputs the diff between fromAbsPath, fromData and fromMode and
+// toAbsPath, toData and toMode at relPath.
 func (c *Config) diffFile(
 	relPath chezmoi.RelPath,
-	fromData []byte,
-	fromMode fs.FileMode,
-	toData []byte,
-	toMode fs.FileMode,
+	fromAbsPath chezmoi.AbsPath, fromData []byte, fromMode fs.FileMode,
+	toAbsPath chezmoi.AbsPath, toData []byte, toMode fs.FileMode,
 ) error {
-	builder := strings.Builder{}
-	unifiedEncoder := diff.NewUnifiedEncoder(&builder, diff.DefaultContextLines)
-	color := c.Color.Value(c.colorAutoFunc)
-	if color {
-		unifiedEncoder.SetColor(diff.NewColorConfig())
+	if c.useBuiltinDiff || c.Diff.Command == "" {
+		return c.builtinDiffFile(relPath, fromData, fromMode, toData, toMode)
 	}
-	if fromMode.IsRegular() {
-		var err error
-		fromData, _, err = c.TextConv.convert(relPath.String(), fromData)
-		if err != nil {
-			return err
-		}
-	}
-	if toMode.IsRegular() {
-		var err error
-		toData, _, err = c.TextConv.convert(relPath.String(), toData)
-		if err != nil {
-			return err
-		}
-	}
-	diffPatch, err := chezmoi.DiffPatch(relPath, fromData, fromMode, toData, toMode)
-	if err != nil {
-		return err
-	}
-	if err := unifiedEncoder.Encode(diffPatch); err != nil {
-		return err
-	}
-	return c.pageDiffOutput(builder.String())
+	return c.externalDiffFile(
+		relPath,
+		fromAbsPath, fromData, fromMode,
+		toAbsPath, toData, toMode,
+	)
 }
 
 // editor returns the path to the user's editor and any extra arguments.
@@ -1280,6 +1303,43 @@ func (c *Config) execute(args []string) error {
 	rootCmd.SetArgs(args)
 
 	return rootCmd.Execute()
+}
+
+func (c *Config) externalDiffFile(
+	relPath chezmoi.RelPath,
+	fromAbsPath chezmoi.AbsPath, fromData []byte, fromMode fs.FileMode,
+	toAbsPath chezmoi.AbsPath, toData []byte, toMode fs.FileMode,
+) error {
+	if fromAbsPath.IsEmpty() {
+		fromTempDir, err := c.tempDir("chezmoi-diff-from")
+		if err != nil {
+			return err
+		}
+		fromAbsPath = fromTempDir.Join(relPath)
+		if err := os.MkdirAll(fromAbsPath.Dir().String(), 0o777); err != nil {
+			return err
+		}
+		if err := os.WriteFile(fromAbsPath.String(), fromData, fromMode); err != nil {
+			return err
+		}
+	}
+
+	if toAbsPath.IsEmpty() {
+		toTempDir, err := c.tempDir("chezmoi-diff-to")
+		if err != nil {
+			return err
+		}
+		toAbsPath = toTempDir.Join(relPath)
+		if err := os.MkdirAll(toAbsPath.Dir().String(), 0o777); err != nil {
+			return err
+		}
+		if err := os.WriteFile(toAbsPath.String(), toData, toMode); err != nil {
+			return err
+		}
+	}
+
+	externalDiffSystem := c.newExternalDiffSystem(c.baseSystem)
+	return externalDiffSystem.RunDiffCommand(fromAbsPath, toAbsPath)
 }
 
 // filterInput reads from args (or the standard input if args is empty),
@@ -1699,6 +1759,18 @@ func (c *Config) marshal(dataFormat string, data any) error {
 	return c.writeOutput(marshaledData)
 }
 
+// newBuiltinDifSystem returns a new builtin diff system.
+func (c *Config) newBuiltinDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) *chezmoi.GitDiffSystem {
+	options := &chezmoi.GitDiffSystemOptions{
+		Color:          c.Color.Value(c.colorAutoFunc),
+		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
+		Reverse:        c.Diff.Reverse,
+		ScriptContents: c.Diff.ScriptContents,
+		TextConvFunc:   c.TextConv.convert,
+	}
+	return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
+}
+
 // newRootCmd returns a new root github.com/spf13/cobra.Command.
 func (c *Config) newRootCmd() (*cobra.Command, error) {
 	rootCmd := &cobra.Command{
@@ -1834,15 +1906,13 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 // diff.command if set or the builtin git diff otherwise.
 func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
 	if c.useBuiltinDiff || c.Diff.Command == "" {
-		options := &chezmoi.GitDiffSystemOptions{
-			Color:          c.Color.Value(c.colorAutoFunc),
-			Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
-			Reverse:        c.Diff.Reverse,
-			ScriptContents: c.Diff.ScriptContents,
-			TextConvFunc:   c.TextConv.convert,
-		}
-		return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
+		return c.newBuiltinDiffSystem(s, w, dirAbsPath)
 	}
+	return c.newExternalDiffSystem(s)
+}
+
+// newExternalDiffSystem returns a new external diff system.
+func (c *Config) newExternalDiffSystem(s chezmoi.System) *chezmoi.ExternalDiffSystem {
 	options := &chezmoi.ExternalDiffSystemOptions{
 		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 		Reverse:        c.Diff.Reverse,
