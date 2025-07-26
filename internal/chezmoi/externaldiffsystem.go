@@ -1,8 +1,11 @@
 package chezmoi
 
+// FIXME fold pager into this
+
 import (
 	"bytes"
 	"errors"
+	"io"
 	"io/fs"
 	"log/slog"
 	"os"
@@ -111,7 +114,7 @@ func (s *ExternalDiffSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 		if err := os.MkdirAll(targetAbsPath.String(), perm); err != nil {
 			return err
 		}
-		if err := s.RunDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
+		if err := s.RunDiffCommand(devNullAbsPath, targetAbsPath, os.Stdout, os.Stderr); err != nil {
 			return err
 		}
 	}
@@ -147,7 +150,7 @@ func (s *ExternalDiffSystem) Remove(name AbsPath) error {
 		case err != nil:
 			return err
 		case s.filter.IncludeFileInfo(fileInfo):
-			if err := s.RunDiffCommand(name, devNullAbsPath); err != nil {
+			if err := s.RunDiffCommand(name, devNullAbsPath, os.Stdout, os.Stderr); err != nil {
 				return err
 			}
 		}
@@ -164,7 +167,7 @@ func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
 		case err != nil:
 			return err
 		case s.filter.IncludeFileInfo(fileInfo):
-			if err := s.RunDiffCommand(name, devNullAbsPath); err != nil {
+			if err := s.RunDiffCommand(name, devNullAbsPath, os.Stdout, os.Stderr); err != nil {
 				return err
 			}
 		}
@@ -184,7 +187,7 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunDiffCommand runs the external diff command.
-func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) error {
+func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath, stdout, stderr io.Writer) error {
 	templateData := struct {
 		Destination string
 		Target      string
@@ -235,8 +238,8 @@ func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 
 	cmd := exec.Command(s.command, args...)
 	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = stdout
+	cmd.Stderr = stderr
 	err := chezmoilog.LogCmdRun(slog.Default(), cmd)
 
 	// Swallow exit status 1 errors if the entries differ and there are actual
@@ -276,7 +279,7 @@ func (s *ExternalDiffSystem) RunScript(scriptName RelPath, dir AbsPath, data []b
 		if err := os.WriteFile(targetAbsPath.String(), toData, 0o700); err != nil {
 			return err
 		}
-		if err := s.RunDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
+		if err := s.RunDiffCommand(devNullAbsPath, targetAbsPath, os.Stdout, os.Stderr); err != nil {
 			return err
 		}
 	}
@@ -357,7 +360,7 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 		}
 
 		// Run the external diff command.
-		if err := s.RunDiffCommand(fromAbsPath, toAbsPath); err != nil {
+		if err := s.RunDiffCommand(fromAbsPath, toAbsPath, os.Stdout, os.Stderr); err != nil {
 			return err
 		}
 	}

@@ -1338,8 +1338,14 @@ func (c *Config) externalDiffFile(
 		}
 	}
 
+	var (
+		stdout io.Writer = os.Stdout
+		stderr io.Writer = os.Stderr
+	)
+	// FIXME check diff pager
+
 	externalDiffSystem := c.newExternalDiffSystem(c.baseSystem)
-	return externalDiffSystem.RunDiffCommand(fromAbsPath, toAbsPath)
+	return externalDiffSystem.RunDiffCommand(fromAbsPath, toAbsPath, stdout, stderr)
 }
 
 // filterInput reads from args (or the standard input if args is empty),
