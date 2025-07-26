@@ -30,9 +30,9 @@ smoke-test: run build-all test lint format
 .PHONY: build
 build:
 ifeq (${GO_LDFLAGS},)
-	go build . || ( rm -f chezmoi ; false )
+	${GO} build . || ( rm -f chezmoi ; false )
 else
-	go build -ldflags "${GO_LDFLAGS}" . || ( rm -f chezmoi ; false )
+	${GO} build -ldflags "${GO_LDFLAGS}" . || ( rm -f chezmoi ; false )
 endif
 
 .PHONY: install
@@ -42,14 +42,14 @@ install: build
 
 .PHONY: install-from-git-working-copy
 install-from-git-working-copy:
-	go install -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
+	${GO} install -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
 		-X main.commit=$(shell git rev-parse HEAD) \
 		-X main.date=$(shell git show -s --format=%ct HEAD) \
 		-X main.builtBy=source"
 
 .PHONY: build-in-git-working-copy
 build-in-git-working-copy:
-	go build -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
+	${GO} build -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
 		-X main.commit=$(shell git rev-parse HEAD) \
 		-X main.date=$(shell git show -s --format=%ct HEAD) \
 		-X main.builtBy=source"
@@ -77,7 +77,7 @@ build-windows: create-syso
 
 .PHONY: run
 run:
-	${GO} run . --version
+	${GO} tool chezmoi --version
 
 .PHONY: test-all
 test-all: test test-release rm-dist test-docker test-vagrant
@@ -118,8 +118,8 @@ lint: ensure-actionlint ensure-editorconfig-checker ensure-golangci-lint shellch
 	./bin/golangci-lint run
 	${GO} tool lint-whitespace
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
-	go tool find-typos chezmoi .
-	go tool lint-commit-messages ${UPSTREAM}/master..HEAD
+	${GO} tool find-typos chezmoi .
+	${GO} tool lint-commit-messages ${UPSTREAM}/master..HEAD
 
 .PHONY: lint-markdown
 lint-markdown:
