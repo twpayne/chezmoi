@@ -563,3 +563,8 @@ articles:
   lang: JP
   title: なぜchezmoiが最強のdotfiles管理ツールなのか?
   url: https://zenn.dev/smasato/articles/e382902ec4aa17
+- date: '2025-07-27'
+  version: 2.36.1
+  lang: CN
+  title: 使用 chezmoi & vscode, 管理你的 dotfiles
+  url: https://www.shuzhiduo.com/A/kvJ3V17Xzg/
