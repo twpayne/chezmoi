@@ -123,11 +123,9 @@ jobs:
         export DOCKER_GOCACHE="$HOME/.go-archlinux"
         ./assets/docker/test.sh archlinux
   test-macos:
-    name: test-macos-${{ matrix.test-index }}
+    name: test-macos
     strategy:
       fail-fast: false
-      matrix:
-        test-index: [0, 1, 2, 3, 4]
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-15
@@ -161,18 +159,7 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        if [ "${{ matrix.test-index }}" = "0" ]; then
-          go test ./... -short -race
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-dA-D]' -race
-        elif [ "${{ matrix.test-index }}" = "1" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[e-hE-H]' -race
-        elif [ "${{ matrix.test-index }}" = "2" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[i-lI-L]' -race
-        elif [ "${{ matrix.test-index }}" = "3" ]; then
-          go test ./internal/cmd -run=TestScript -filter='^[m-sM-S]' -race
-        else
-          go test ./internal/cmd -run=TestScript -filter='^[t-zT-Z]' -race
-        fi
+        go test ./... -race
   test-release:
     needs: changes
     runs-on: ubuntu-22.04 # use older Ubuntu for older glibc, update minimum glibc version in install.sh.tmpl if this changes
@@ -237,25 +224,24 @@ jobs:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
-    name: test-ubuntu-umask${{ matrix.umask }}-${{ matrix.test-index }}
+    name: test-ubuntu-umask${{ matrix.umask }}
     strategy:
       fail-fast: false
       matrix:
         umask:
         - '022'
         - '002'
-        test-index: [0, 1]
     needs: changes
     runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || (matrix.umask == '022' && matrix.test-index == 0)
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         fetch-depth: 0
     - uses: ./.github/actions/setup-go
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || (matrix.umask == '022' && matrix.test-index == 0)
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: install-age
@@ -273,11 +259,11 @@ jobs:
         sudo install -m 755 rage/rage /usr/local/bin
         sudo install -m 755 rage/rage-keygen /usr/local/bin
     - name: build
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || (matrix.umask == '022' && matrix.test-index == 0)
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       run: |
         go build -v ./...
     - name: run
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || (matrix.umask == '022' && matrix.test-index == 0)
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       run: |
         go tool chezmoi --version
     - name: test-umask-${{ matrix.umask }}
@@ -286,12 +272,7 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         TEST_FLAGS: -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h
       run: |
-        if [ "${{ matrix.test-index }}" = "0" ]; then
-          go test ./... -short ${{ env.TEST_FLAGS }}
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-hA-h]' ${{ env.TEST_FLAGS }}
-        else
-          go test ./internal/cmd -run=TestScript -filter='^[i-zI-Z]' ${{ env.TEST_FLAGS }}
-        fi
+        go test ./... ${{ env.TEST_FLAGS }}
   test-website:
     runs-on: ubuntu-22.04
     permissions:
