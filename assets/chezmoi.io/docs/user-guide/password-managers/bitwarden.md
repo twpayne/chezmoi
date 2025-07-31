@@ -35,6 +35,12 @@ Set the `BW_SESSION` environment variable, as instructed.
     export BW_SESSION=$(bw login --sso && bw unlock --raw)  # You are not logged in and login with SSO or API key
     ```
 
+!!! tip "Bitwarden automatic unlock"
+
+    If you set the `bitwarden.unlock` configuration variable to `"auto"` in
+    your config file, chezmoi will automatically call `bw unlock` if the
+    `BW_SESSION` environment variable is not set.
+
 The structured data from `bw get` is available as the `bitwarden` template
 function in your config files, for example:
 

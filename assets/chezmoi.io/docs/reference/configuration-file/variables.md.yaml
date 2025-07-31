@@ -118,6 +118,9 @@ sections:
     command:
       default: '`bw`'
       description: Bitwarden CLI command.
+    unlock:
+      type: bool
+      description: Whether to unlock the Bitwarden CLI.
   bitwardenSecrets:
     command:
       default: '`bws`'

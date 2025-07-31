@@ -1,4 +1,5 @@
 #!/bin/sh
+
 {{ range $index, $response := .Responses }}
 {{   if $index }}elif{{ else }}if{{ end }} [ "$*" = {{ $response.Args | quote }} ]; then
 {{   $response | renderResponse }}
