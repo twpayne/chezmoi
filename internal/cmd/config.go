@@ -2068,6 +2068,11 @@ func (c *Config) finalize() {
 		}
 	}
 
+	// Lock Bitwarden CLI.
+	if err := c.bitwardenLock(); err != nil {
+		c.errorf("error: failed to lock bitwarden-cli: %v\n", err)
+	}
+
 	// Close any connection to keepassxc-cli.
 	if err := c.keepassxcClose(); err != nil {
 		c.errorf("error: failed to close connection to keepassxc-cli: %v\n", err)

@@ -1,0 +1,64 @@
+mockcommand bin/bw
+
+# test Bitwarden CLI automatic unlock without BW_SESSION set
+exec chezmoi execute-template '{{ (bitwarden "item" "example.com").login.password }}'
+stdout ^password-value$
+
+# test Bitwarden CLI automatic unlock with BW_SESSION set
+env BW_SESSION=my-bitwarden-session-id
+exec chezmoi execute-template '{{ (bitwarden "item" "example.com").login.password }}'
+stdout ^password-value$
+
+# test Bitwarden CLI automatic unlock with BW_SESSION set to an incorrect value
+env BW_SESSION=my-invalid-bitwarden-session-id
+! exec chezmoi execute-template '{{ (bitwarden "item" "example.com").login.password }}'
+
+-- bin/bw.yaml --
+responses:
+- args: 'get item example.com'
+  requireEnv:
+    BW_SESSION: my-bitwarden-session-id
+  response: |
+    {
+      "object": "item",
+      "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
+      "organizationId": null,
+      "folderId": null,
+      "type": 1,
+      "name": "example.com",
+      "notes": null,
+      "favorite": false,
+      "fields": [
+        {
+          "name": "Text",
+          "value": "text-value",
+          "type": 0
+        },
+        {
+          "name": "Hidden",
+          "value": "hidden-value",
+          "type": 1
+        }
+      ],
+      "login": {
+        "username": "username-value",
+        "password": "password-value",
+        "totp": null,
+        "passwordRevisionDate": null
+      },
+      "collectionIds": [],
+      "revisionDate": "2020-10-28T00:21:02.690Z"
+    }
+- args: 'lock'
+  requireEnv:
+    BW_SESSION: my-bitwarden-session-id
+- args: 'unlock --raw'
+  response: my-bitwarden-session-id
+default:
+  response: |
+    Invalid command: $*
+    See --help for a list of available commands.
+  exitCode: 1
+-- home/user/.config/chezmoi/chezmoi.toml --
+[bitwarden]
+    unlock = "auto"

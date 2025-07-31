@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
+	"maps"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -16,6 +17,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -575,14 +577,15 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 
 	// Parse the definition.
 	type response struct {
-		Args                string   `yaml:"args"`
-		OrArgs              []string `yaml:"orArgs"`
-		WindowsArgs         string   `yaml:"windowsArgs"`
-		Response            string   `yaml:"response"`
-		Destination         string   `yaml:"destination"`
-		EscapeChars         bool     `yaml:"escapeChars"`
-		SuppressLastNewline bool     `yaml:"suppressLastNewline"`
-		ExitCode            int      `yaml:"exitCode"`
+		Args                string            `yaml:"args"`
+		OrArgs              []string          `yaml:"orArgs"`
+		WindowsArgs         string            `yaml:"windowsArgs"`
+		RequireEnv          map[string]string `yaml:"requireEnv"`
+		Response            string            `yaml:"response"`
+		Destination         string            `yaml:"destination"`
+		EscapeChars         bool              `yaml:"escapeChars"`
+		SuppressLastNewline bool              `yaml:"suppressLastNewline"`
+		ExitCode            int               `yaml:"exitCode"`
 	}
 	var definition struct {
 		Responses []response `yaml:"responses"`
@@ -603,6 +606,13 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 		}
 		renderResponseFunc = func(r response) string {
 			var builder strings.Builder
+			for _, key := range slices.Sorted(maps.Keys(r.RequireEnv)) {
+				value := r.RequireEnv[key]
+				fmt.Fprintf(&builder, "    IF NOT \"%%%s%%\" == \"%s\" (\n", key, value)
+				fmt.Fprintf(&builder, "        echo.%s=%%%s%%, expected %s\n", key, key, value)
+				fmt.Fprintf(&builder, "        exit /b 1\n") //nolint:revive
+				fmt.Fprintf(&builder, "    )\n")             //nolint:revive
+			}
 			var redirect string
 			if r.Destination == "stderr" {
 				redirect = " 1>&2"
@@ -626,6 +636,13 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 		templateText = mockcommandTmplText
 		renderResponseFunc = func(r response) string {
 			var builder strings.Builder
+			for _, key := range slices.Sorted(maps.Keys(r.RequireEnv)) {
+				value := r.RequireEnv[key]
+				fmt.Fprintf(&builder, "    if [ \"${%s}\" != \"%s\" ]; then\n", key, value)
+				fmt.Fprintf(&builder, "        echo \"%s=${%s}, expected %s\"\n", key, key, value)
+				fmt.Fprintf(&builder, "        exit 1\n") //nolint:revive
+				fmt.Fprintf(&builder, "    fi\n")         //nolint:revive
+			}
 			var redirect string
 			if r.Destination == "stderr" {
 				redirect = " 1>&2"
