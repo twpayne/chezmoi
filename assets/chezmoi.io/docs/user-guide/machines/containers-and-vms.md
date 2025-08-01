@@ -15,7 +15,7 @@ The workflow is different to using chezmoi on a new machine, notably:
 
 * When running in a Codespace, the environment variable `CODESPACES` will be
   set to `true`. You can read its value with the [`env` template
-  function][sprit-os].
+  function][sprig-os].
 
 First, if you are using a chezmoi configuration file template, ensure that it
 is non-interactive when running in Codespaces, for example,
