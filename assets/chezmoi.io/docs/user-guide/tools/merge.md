@@ -32,6 +32,30 @@ state, source state, and target state respectively. For example, to use
         ]
     ```
 
+## Use Beyond Compare as the merge tool
+
+To use [Beyond Compare][bcomp] as the merge tool, add the following to your config:
+
+=== "TOML"
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [merge]
+        command = "bcomp"
+        args = ["{{ .Destination }}", "{{ .Source }}", "{{ .Target }}", "{{ .Source }}"]
+    ```
+
+=== "YAML"
+
+    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
+    merge:
+      command: "bcomp"
+      args:
+      - "{{ .Destination }}"
+      - "{{ .Source }}"
+      - "{{ .Target }}"
+      - "{{ .Source }}"
+    ```
+
 ## Use VSCode as the merge tool
 
 To use [VSCode][vscode] as the merge tool, add the following to your config:
@@ -57,5 +81,6 @@ To use [VSCode][vscode] as the merge tool, add the following to your config:
       - "cp {{ .Target }} {{ .Target }}.base && code --new-window --wait --merge {{ .Destination }} {{ .Target }} {{ .Target }}.base {{ .Source }}"
     ```
 
+[bcomp]: https://www.scootersoftware.com/
 [nvim]: https://neovim.io/doc/user/diff.html
 [vscode]: https://code.visualstudio.com/
