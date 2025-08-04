@@ -6,6 +6,12 @@ destination directory.
 
 ## Flags
 
+### `--age-recipient` *recipient*
+
+Temporarily override `age.recipient` and `age.recipients` for this command. This
+only has an effect if age encryption is configured and the `--encrypt` flag is
+passed.
+
 ### `-a`, `--autotemplate`
 
 Automatically generate a template by replacing strings that match variable
