@@ -22,7 +22,6 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
-	"runtime/pprof"
 	"slices"
 	"strconv"
 	"strings"
@@ -173,7 +172,6 @@ type Config struct {
 
 	// Global configuration.
 	configFormat     *choiceFlag
-	cpuProfile       chezmoi.AbsPath
 	debug            bool
 	dryRun           bool
 	force            bool
@@ -571,7 +569,6 @@ func (c *Config) Close() error {
 		)
 		errs = append(errs, err)
 	}
-	pprof.StopCPUProfile()
 	return chezmoierrors.Combine(errs...)
 }
 
@@ -1801,7 +1798,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.VarP(&c.customConfigFileAbsPath, "config", "c", "Set config file")
 	persistentFlags.Var(c.configFormat, "config-format", "Set config file format")
-	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
@@ -1816,8 +1812,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	if err := chezmoierrors.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
-		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
-		persistentFlags.MarkHidden("cpu-profile"),
 		rootCmd.MarkPersistentFlagDirname("destination"),
 		rootCmd.MarkPersistentFlagFilename("output"),
 		persistentFlags.MarkHidden("safe"),
@@ -2101,17 +2095,6 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	c.addTemplateFunc("completion", func(shell string) string {
 		return mustValue(completion(cmd, shell))
 	})
-
-	// Enable CPU profiling if configured.
-	if !c.cpuProfile.IsEmpty() {
-		f, err := os.Create(c.cpuProfile.String())
-		if err != nil {
-			return err
-		}
-		if err := pprof.StartCPUProfile(f); err != nil {
-			return err
-		}
-	}
 
 	if runtime.GOOS == "windows" {
 		var err error
