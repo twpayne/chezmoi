@@ -27,6 +27,7 @@ var helps = map[string]*help{
 			"  chezmoi add ~/.vim --recursive\n" +
 			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
 		longFlags: chezmoiset.New(
+			"age-recipient",
 			"autotemplate",
 			"create",
 			"encrypt",

@@ -26,6 +26,7 @@ type addCmdConfig struct {
 	Encrypt          bool        `json:"encrypt"          mapstructure:"encrypt"          yaml:"encrypt"`
 	Secrets          *choiceFlag `json:"secrets"          mapstructure:"secrets"          yaml:"secrets"`
 	TemplateSymlinks bool        `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
+	ageRecipient     string
 	autoTemplate     bool
 	create           bool
 	exact            bool
@@ -54,6 +55,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 		),
 	}
 
+	addCmd.Flags().StringVar(&c.Add.ageRecipient, "age-recipient", c.Add.ageRecipient, "Override age recipient")
 	addCmd.Flags().
 		BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates")
 	addCmd.Flags().BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
@@ -183,6 +185,12 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	case severityError:
 	default:
 		return fmt.Errorf("%s: invalid severity", severity)
+	}
+
+	// Override age recipient for encryption if --age-recipient is set.
+	if c.Add.ageRecipient != "" {
+		c.Age.Recipient = c.Add.ageRecipient
+		c.Age.Recipients = nil
 	}
 
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, destAbsPathInfosOptions{
