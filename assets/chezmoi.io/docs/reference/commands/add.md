@@ -8,9 +8,15 @@ destination directory.
 
 ### `--age-recipient` *recipient*
 
-Temporarily override `age.recipient` and `age.recipients` for this command. This
+Temporarily override the age recipient for this command. This
 only has an effect if age encryption is configured and the `--encrypt` flag is
-passed.
+passed, and cannot be combined with `--age-recipient-file`.
+
+### `--age-recipient-file` *recipient-file*
+
+Temporarily override the age recipient for this command. This
+only has an effect if age encryption is configured and the `--encrypt` flag is
+passed, and cannot be combined with `--age-recipient`.
 
 ### `-a`, `--autotemplate`
 
