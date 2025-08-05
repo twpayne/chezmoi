@@ -28,6 +28,7 @@ var helps = map[string]*help{
 			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
 		longFlags: chezmoiset.New(
 			"age-recipient",
+			"age-recipient-file",
 			"autotemplate",
 			"create",
 			"encrypt",
