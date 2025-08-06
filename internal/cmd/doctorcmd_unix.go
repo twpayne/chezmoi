@@ -53,7 +53,7 @@ func (hardlinkCheck) Run(config *Config) (checkResult, string) {
 	if err := config.baseSystem.Link(config.SourceDirAbsPath.JoinString(testFileName), hardlinkAbsPath); err != nil {
 		errCleanUp := config.baseSystem.Remove(sourceAbsPath)
 		return checkResultError, fmt.Sprintf(
-			"Failed creating hardlink %s -> %s: %s",
+			"failed creating hardlink from %s to %s: %s",
 			config.SourceDirAbsPath,
 			config.TempDir,
 			errors.Join(err, errCleanUp),
@@ -64,7 +64,7 @@ func (hardlinkCheck) Run(config *Config) (checkResult, string) {
 		return checkResultFailed, err.Error()
 	}
 
-	return checkResultOK, fmt.Sprintf("Can create hardlinks %s -> %s", config.SourceDirAbsPath, config.TempDir)
+	return checkResultOK, fmt.Sprintf("created hardlink from %s to %s", config.SourceDirAbsPath, config.TempDir)
 }
 
 func (umaskCheck) Name() string {
