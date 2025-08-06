@@ -10,6 +10,7 @@ import (
 )
 
 type (
+	hardlinkCheck   struct{ omittedCheck }
 	systeminfoCheck struct{}
 	umaskCheck      struct{ omittedCheck }
 	unameCheck      struct{ omittedCheck }

@@ -219,6 +219,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:    "dest-dir",
 			dirname: c.DestDirAbsPath,
 		},
+		hardlinkCheck{},
 		umaskCheck{},
 		&binaryCheck{
 			name:       "cd-command",
