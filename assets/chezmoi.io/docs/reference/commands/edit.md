@@ -35,6 +35,13 @@ Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
 
+
+!!! hint
+
+    Creating hardlinks is not possible between different filesystems. Hence,
+    if your [`tempDir`][tempdir] resides on a different filesystem (e.g. a
+    [tmpfs][tmpfs], which is sometimes used for `/tmp`), this will not work.
+
 ### `--watch`
 
 > Configuration: `edit.watch`
@@ -47,6 +54,7 @@ Automatically apply changes when files are saved, with the following limitations
 * Only the edited files are watched, not any dependent files (e.g.
   `.chezmoitemplates` and `include`d files in templates are not watched).
 * Only works on operating systems supported by [fsnotify][fsnotify].
+* Only works if `edit.hardlink` is enabled and works.
 
 ## Common flags
 
@@ -72,3 +80,5 @@ Automatically apply changes when files are saved, with the following limitations
 
 [fsnotify]: https://github.com/fsnotify/fsnotify
 [modelines]: https://vimhelp.org/options.txt.html#auto-setting
+[tempdir]: /reference/configuration-file/variables.md#tempdir
+[tmpfs]: https://en.wikipedia.org/wiki/Tmpfs
