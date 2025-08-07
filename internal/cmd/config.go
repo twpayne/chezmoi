@@ -170,6 +170,8 @@ type Config struct {
 	ConfigFile
 
 	// Global configuration.
+	ageRecipient     string
+	ageRecipientFile string
 	configFormat     *choiceFlag
 	debug            bool
 	dryRun           bool
@@ -1779,6 +1781,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
+	persistentFlags.StringVar(&c.ageRecipient, "age-recipient", c.ageRecipient, "Override age recipient")
+	persistentFlags.StringVar(&c.ageRecipientFile, "age-recipient-file", c.ageRecipient, "Override age recipient")
 	persistentFlags.Var(&c.CacheDirAbsPath, "cache", "Set cache directory")
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
@@ -2628,6 +2632,23 @@ func (c *Config) runHookPre(hook string) error {
 
 // setEncryption configures c's encryption.
 func (c *Config) setEncryption() error {
+	// Override the age recipients for encryption if --age-recipient or
+	// --age-recipient-file is set.
+	switch {
+	case c.ageRecipient != "" && c.ageRecipientFile != "":
+		return errors.New("--age-recipient and --age-recipient-file cannot both be set")
+	case c.ageRecipient != "":
+		c.Age.Recipient = c.ageRecipient
+		c.Age.Recipients = nil
+		c.Age.RecipientsFile = chezmoi.EmptyAbsPath
+		c.Age.RecipientsFiles = nil
+	case c.ageRecipientFile != "":
+		c.Age.Recipient = ""
+		c.Age.Recipients = nil
+		c.Age.RecipientsFile = chezmoi.NewAbsPath(c.ageRecipientFile)
+		c.Age.RecipientsFiles = nil
+	}
+
 	switch c.Encryption {
 	case "age":
 		c.Age.UseBuiltin = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)

@@ -6,18 +6,6 @@ destination directory.
 
 ## Flags
 
-### `--age-recipient` *recipient*
-
-Temporarily override the age recipient for this command. This
-only has an effect if age encryption is configured and the `--encrypt` flag is
-passed, and cannot be combined with `--age-recipient-file`.
-
-### `--age-recipient-file` *recipient-file*
-
-Temporarily override the age recipient for this command. This
-only has an effect if age encryption is configured and the `--encrypt` flag is
-passed, and cannot be combined with `--age-recipient`.
-
 ### `-a`, `--autotemplate`
 
 Automatically generate a template by replacing strings that match variable
