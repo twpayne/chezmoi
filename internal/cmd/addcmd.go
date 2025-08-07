@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -27,8 +26,6 @@ type addCmdConfig struct {
 	Encrypt          bool        `json:"encrypt"          mapstructure:"encrypt"          yaml:"encrypt"`
 	Secrets          *choiceFlag `json:"secrets"          mapstructure:"secrets"          yaml:"secrets"`
 	TemplateSymlinks bool        `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
-	ageRecipient     string
-	ageRecipientFile string
 	autoTemplate     bool
 	create           bool
 	exact            bool
@@ -57,8 +54,6 @@ func (c *Config) newAddCmd() *cobra.Command {
 		),
 	}
 
-	addCmd.Flags().StringVar(&c.Add.ageRecipient, "age-recipient", c.Add.ageRecipient, "Override age recipient")
-	addCmd.Flags().StringVar(&c.Add.ageRecipientFile, "age-recipient-file", c.Add.ageRecipient, "Override age recipient")
 	addCmd.Flags().
 		BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates")
 	addCmd.Flags().BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
@@ -188,23 +183,6 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	case severityError:
 	default:
 		return fmt.Errorf("%s: invalid severity", severity)
-	}
-
-	// Override the age recipients for encryption if --age-recipient or
-	// --age-recipient-file is set.
-	switch {
-	case c.Add.ageRecipient != "" && c.Add.ageRecipientFile != "":
-		return errors.New("--age-recipient and --age-recipient-file cannot both be set")
-	case c.Add.ageRecipient != "":
-		c.Age.Recipient = c.Add.ageRecipient
-		c.Age.Recipients = nil
-		c.Age.RecipientsFile = chezmoi.EmptyAbsPath
-		c.Age.RecipientsFiles = nil
-	case c.Add.ageRecipientFile != "":
-		c.Age.Recipient = ""
-		c.Age.Recipients = nil
-		c.Age.RecipientsFile = chezmoi.NewAbsPath(c.Add.ageRecipientFile)
-		c.Age.RecipientsFiles = nil
 	}
 
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, destAbsPathInfosOptions{

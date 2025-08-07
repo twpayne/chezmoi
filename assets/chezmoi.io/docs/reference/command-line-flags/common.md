@@ -4,6 +4,18 @@ The following flags apply to multiple commands where they are relevant.
 
 ## Flags
 
+### `--age-recipient` *recipient*
+
+Temporarily override the age recipient for this command. This
+only has an effect if age encryption is configured and the `--encrypt` flag is
+passed, and cannot be combined with `--age-recipient-file`.
+
+### `--age-recipient-file` *recipient-file*
+
+Temporarily override the age recipient for this command. This
+only has an effect if age encryption is configured and the `--encrypt` flag is
+passed, and cannot be combined with `--age-recipient`.
+
 ### `-x`, `--exclude` *types*
 
 --8<-- "common-flags/exclude.md"
