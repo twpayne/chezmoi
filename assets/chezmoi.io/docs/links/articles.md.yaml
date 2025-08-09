@@ -563,8 +563,16 @@ articles:
   lang: JP
   title: なぜchezmoiが最強のdotfiles管理ツールなのか?
   url: https://zenn.dev/smasato/articles/e382902ec4aa17
+- date: '2025-07-25'
+  version: 2.63.0
+  title: Habits in the Shell, shared
+  url: https://offby1.website/posts/habits-in-the-shell-shared.html
 - date: '2025-07-27'
   version: 2.36.1
   lang: CN
   title: 使用 chezmoi & vscode, 管理你的 dotfiles
   url: https://www.shuzhiduo.com/A/kvJ3V17Xzg/
+- date: '2025-08-02'
+  version: 2.63.1
+  title: Dotfile management with Chezmoi and Vim
+  url: https://www.probableodyssey.blog/all-posts/dotfile_management_with_chezmoi_and_vim/
