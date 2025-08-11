@@ -295,9 +295,13 @@ snapcrafts:
 
 source:
   enabled: true
-  prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
+  prefix_template: '{{ .ProjectName }}-{{ .Major }}.{{ .Minor }}.{{ .Patch }}/'
   files:
   - COMMIT
+
+srpm:
+  enabled: true
+  spec_template_file: chezmoi.spec.tmpl
 
 winget:
 - name: chezmoi
