@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
     - id: filter
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
       with:
@@ -60,23 +60,23 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       with:
         fetch-depth: 1
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@f53ec7c550f4c3cafe07061ed7fba6f002286003
+    - uses: github/codeql-action/init@7273f08caa1dcf2c2837f362f1982de0ab4dc344
       with:
         languages: go
-    - uses: github/codeql-action/analyze@f53ec7c550f4c3cafe07061ed7fba6f002286003
+    - uses: github/codeql-action/analyze@7273f08caa1dcf2c2837f362f1982de0ab4dc344
   misspell:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
     - uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4
       with:
         locale: US
@@ -87,8 +87,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
       with:
         path: |
           ~/.go-alpine
@@ -108,8 +108,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
       with:
         path: |
           ~/.go-archlinux
@@ -134,7 +134,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -179,7 +179,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       with:
         fetch-depth: 0
     - uses: ./.github/actions/free-disk-space
@@ -250,7 +250,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || (matrix.umask == '022' && matrix.test-index == 0)
       with:
         fetch-depth: 0
@@ -297,7 +297,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: website-go
@@ -326,7 +326,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -355,7 +355,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       with:
         fetch-depth: 0
     - uses: ./.github/actions/setup-go
@@ -414,7 +414,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -456,7 +456,7 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       with:
         fetch-depth: 0
     - uses: ./.github/actions/free-disk-space
@@ -486,7 +486,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
       with:
         fetch-depth: 0
     - uses: ./.github/actions/setup-go
