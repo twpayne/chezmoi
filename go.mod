@@ -1,6 +1,6 @@
 module github.com/twpayne/chezmoi
 
-go 1.24.5
+go 1.25.0
 
 tool (
 	github.com/twpayne/chezmoi
@@ -62,7 +62,6 @@ require (
 	github.com/zalando/go-keyring v0.2.6
 	github.com/zricethezav/gitleaks/v8 v8.28.0
 	go.etcd.io/bbolt v1.4.2
-	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/crypto v0.41.0
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/sync v0.16.0

@@ -13,8 +13,6 @@ package main
 import (
 	"os"
 
-	"go.uber.org/automaxprocs/maxprocs"
-
 	"github.com/twpayne/chezmoi/internal/cmd"
 )
 
@@ -26,9 +24,6 @@ var (
 )
 
 func main() {
-	// Set GOMAXPROCS to match the Linux CPU quota.
-	_, _ = maxprocs.Set()
-
 	if exitCode := cmd.Main(cmd.VersionInfo{
 		Version: version,
 		Commit:  commit,
