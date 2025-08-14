@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func (c *Config) newEncryptCommand() *cobra.Command {
+func (c *Config) newEncryptCmd() *cobra.Command {
 	encryptCmd := &cobra.Command{
 		Use:     "encrypt [file...]",
 		Short:   "Encrypt file or standard input",
