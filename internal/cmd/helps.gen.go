@@ -61,6 +61,21 @@ var helps = map[string]*help{
 			"  chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt\n" +
 			"  chezmoi age decrypt --passphrase ciphertext.txt > decrypted-ciphertext.txt",
 	},
+	"age-keygen": {
+		longHelp: "" +
+			"Description:\n" +
+			"  Generate an age identity or convert an age identity to an age recipient.",
+		example: "" +
+			"  chezmoi age-keygen\n" +
+			"  chezmoi age-keygen -o identity.txt\n" +
+			"  chezmoi age-keygen -y identity.txt",
+		longFlags: chezmoiset.New(
+			"convert",
+		),
+		shortFlags: chezmoiset.New(
+			"y",
+		),
+	},
 	"apply": {
 		longHelp: "" +
 			"Description:\n" +
