@@ -145,6 +145,7 @@ nav:
     - reference/commands/index.md
     - add: reference/commands/add.md
     - age: reference/commands/age.md
+    - age-keygen: reference/commands/age-keygen.md
     - apply: reference/commands/apply.md
     - archive: reference/commands/archive.md
     - cat: reference/commands/cat.md

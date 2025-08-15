@@ -192,7 +192,7 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 	if runtime.GOOS == "windows" {
 		return
 	}
-	fileInfo, err := os.Stat(args[1])
+	fileInfo, err := os.Stat(ts.MkAbs(args[1]))
 	if err != nil {
 		ts.Fatalf("%s: %v", args[1], err)
 	}

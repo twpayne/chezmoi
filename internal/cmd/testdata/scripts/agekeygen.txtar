@@ -1,0 +1,13 @@
+# test that age-keygen generates an age identity on stdout
+exec chezmoi age-keygen
+stdout AGE-SECRET-KEY
+
+# test that age-keygen generates an age identity and writes it to a file
+exec chezmoi age-keygen --output=identity.txt
+grep AGE-SECRET-KEY identity.txt
+[umask:002] cmpmod 660 identity.txt
+[umask:022] cmpmod 640 identity.txt
+
+# test that age-keygen --convert converts an age identity to an age recipient
+exec chezmoi age-keygen --convert identity.txt
+stdout '^age'
