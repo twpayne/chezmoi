@@ -23,5 +23,5 @@ func (c *Config) newLicenseCmd() *cobra.Command {
 }
 
 func (c *Config) runLicenseCmd(cmd *cobra.Command, args []string) error {
-	return c.writeOutputString(license)
+	return c.writeOutputString(license, 0o666)
 }

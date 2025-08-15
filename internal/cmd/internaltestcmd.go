@@ -106,7 +106,7 @@ func (c *Config) runInternalTestPromptBoolCmd(cmd *cobra.Command, args []string)
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(strconv.FormatBool(value) + "\n")
+	return c.writeOutputString(strconv.FormatBool(value)+"\n", 0o666)
 }
 
 func (c *Config) runInternalTestPromptChoiceCmd(cmd *cobra.Command, args []string) error {
@@ -114,7 +114,7 @@ func (c *Config) runInternalTestPromptChoiceCmd(cmd *cobra.Command, args []strin
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(value + "\n")
+	return c.writeOutputString(value+"\n", 0o666)
 }
 
 func (c *Config) runInternalTestPromptMultichoiceCmd(cmd *cobra.Command, args []string) error {
@@ -131,7 +131,7 @@ func (c *Config) runInternalTestPromptMultichoiceCmd(cmd *cobra.Command, args []
 	}
 
 	for _, entry := range value {
-		if err := c.writeOutputString(entry + "\n"); err != nil {
+		if err := c.writeOutputString(entry+"\n", 0o666); err != nil {
 			return err
 		}
 	}
@@ -152,7 +152,7 @@ func (c *Config) runInternalTestPromptIntCmd(cmd *cobra.Command, args []string) 
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(strconv.FormatInt(value, 10) + "\n")
+	return c.writeOutputString(strconv.FormatInt(value, 10)+"\n", 0o666)
 }
 
 func (c *Config) runInternalTestPromptStringCmd(cmd *cobra.Command, args []string) error {
@@ -160,7 +160,7 @@ func (c *Config) runInternalTestPromptStringCmd(cmd *cobra.Command, args []strin
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(value + "\n")
+	return c.writeOutputString(value+"\n", 0o666)
 }
 
 func (c *Config) runInternalTestReadPasswordCmd(cmd *cobra.Command, args []string) error {
@@ -168,5 +168,5 @@ func (c *Config) runInternalTestReadPasswordCmd(cmd *cobra.Command, args []strin
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(password + "\n")
+	return c.writeOutputString(password+"\n", 0o666)
 }

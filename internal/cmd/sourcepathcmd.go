@@ -29,7 +29,7 @@ func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		return c.writeOutputString(sourceDirAbsPath.String() + "\n")
+		return c.writeOutputString(sourceDirAbsPath.String()+"\n", 0o666)
 	}
 
 	sourceState, err := c.getSourceState(cmd.Context(), cmd)
@@ -46,5 +46,5 @@ func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
 	for _, sourceAbsPath := range sourceAbsPaths {
 		fmt.Fprintln(&builder, sourceAbsPath)
 	}
-	return c.writeOutputString(builder.String())
+	return c.writeOutputString(builder.String(), 0o666)
 }

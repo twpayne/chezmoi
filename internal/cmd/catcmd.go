@@ -64,5 +64,5 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			return fmt.Errorf("%s: not a file, script, or symlink", targetRelPath)
 		}
 	}
-	return c.writeOutputString(builder.String())
+	return c.writeOutputString(builder.String(), 0o666)
 }

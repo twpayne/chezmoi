@@ -272,7 +272,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		return c.writeOutput(output)
+		return c.writeOutput(output, 0o666)
 	}
 
 	output := strings.Builder{}
@@ -317,5 +317,5 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return err
 		}
 	}
-	return c.writeOutputString(output.String())
+	return c.writeOutputString(output.String(), 0o666)
 }

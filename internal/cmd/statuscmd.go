@@ -96,7 +96,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.writeOutputString(builder.String())
+	return c.writeOutputString(builder.String(), 0o666)
 }
 
 func statusRune(fromState, toState *chezmoi.EntryState) rune {
