@@ -22,7 +22,7 @@ Generate an age private key encrypted with a passphrase in the file
 `key.txt.age` with the command:
 
 ```console
-$ age-keygen | age --armor --passphrase > key.txt.age
+$ chezmoi age-keygen | chezmoi age encrypt --passphrase --output=key.txt.age
 Public key: age193wd0hfuhtjfsunlq3c83s8m93pde442dkcn7lmj3lspeekm9g7stwutrl
 Enter passphrase (leave empty to autogenerate a secure one):
 Confirm passphrase:
