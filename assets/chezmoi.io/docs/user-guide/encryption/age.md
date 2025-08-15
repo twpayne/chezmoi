@@ -2,10 +2,10 @@
 
 chezmoi supports encrypting files with [age][age].
 
-Generate a key using `age-keygen`:
+Generate a key using the `age-keygen`:
 
 ```console
-$ age-keygen -o $HOME/key.txt
+$ chezmoi age-keygen --output=$HOME/key.txt
 Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
 ```
 
