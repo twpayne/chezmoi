@@ -99,7 +99,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	if format == chezmoi.ArchiveFormatZip || !gzipOutput {
-		return c.writeOutputString(output.String())
+		return c.writeOutputString(output.String(), 0o666)
 	}
 
 	gzippedArchive := strings.Builder{}
@@ -110,7 +110,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	if err := gzipWriter.Close(); err != nil {
 		return err
 	}
-	return c.writeOutputString(gzippedArchive.String())
+	return c.writeOutputString(gzippedArchive.String(), 0o666)
 }
 
 // tarHeaderTemplate returns a tar.Header template populated with the current

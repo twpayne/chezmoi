@@ -30,5 +30,5 @@ func (c *Config) runCatConfigCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.writeOutput(data)
+	return c.writeOutput(data, 0o666)
 }

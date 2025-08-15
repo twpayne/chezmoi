@@ -34,7 +34,7 @@ func (c *Config) runCompletionCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(completion)
+	return c.writeOutputString(completion, 0o666)
 }
 
 func completion(cmd *cobra.Command, shell string) (string, error) {

@@ -211,7 +211,7 @@ func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.writeOutput(value)
+	return c.writeOutput(value, 0o666)
 }
 
 func (c *Config) runStateGetBucketCmd(cmd *cobra.Command, args []string) error {

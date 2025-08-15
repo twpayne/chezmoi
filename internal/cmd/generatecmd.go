@@ -55,5 +55,5 @@ func (c *Config) runGenerateCmd(cmd *cobra.Command, args []string) error {
 	default:
 		return fmt.Errorf("%s: unsupported file", args[0])
 	}
-	return c.writeOutputString(builder.String())
+	return c.writeOutputString(builder.String(), 0o666)
 }

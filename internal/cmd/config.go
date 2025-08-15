@@ -1350,7 +1350,7 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 		if err != nil {
 			return err
 		}
-		return c.writeOutput(output)
+		return c.writeOutput(output, 0o666)
 	}
 
 	for _, arg := range args {
@@ -1366,7 +1366,7 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 		if err != nil {
 			return err
 		}
-		if err := c.writeOutput(output); err != nil {
+		if err := c.writeOutput(output, 0o666); err != nil {
 			return err
 		}
 	}
@@ -1752,7 +1752,7 @@ func (c *Config) marshal(dataFormat string, data any) error {
 	if err != nil {
 		return err
 	}
-	return c.writeOutput(marshaledData)
+	return c.writeOutput(marshaledData, 0o666)
 }
 
 // newBuiltinDifSystem returns a new builtin diff system.
@@ -2080,7 +2080,7 @@ func (c *Config) pageDiffOutput(output string) error {
 	case err != nil:
 		return err
 	case pagerCmd == nil:
-		return c.writeOutputString(output)
+		return c.writeOutputString(output, 0o666)
 	default:
 		pagerCmd.Stdin = bytes.NewBufferString(output)
 		return chezmoilog.LogCmdRun(c.logger, pagerCmd)
@@ -2914,12 +2914,12 @@ func (c *Config) useBuiltinGitAutoFunc() bool {
 }
 
 // writeOutput writes data to the configured output.
-func (c *Config) writeOutput(data []byte) error {
+func (c *Config) writeOutput(data []byte, perm fs.FileMode) error {
 	if c.outputAbsPath.IsEmpty() || c.outputAbsPath == chezmoi.NewAbsPath("-") {
 		_, err := c.stdout.Write(data)
 		return err
 	}
-	return os.WriteFile(c.outputAbsPath.String(), data, 0o666)
+	return os.WriteFile(c.outputAbsPath.String(), data, perm)
 }
 
 type writePathsOptions struct {
@@ -2942,12 +2942,12 @@ func (c *Config) writePaths(paths []string, options writePathsOptions) error {
 			builder.WriteByte(pathSeparator)
 		}
 	}
-	return c.writeOutputString(builder.String())
+	return c.writeOutputString(builder.String(), 0o666)
 }
 
 // writeOutputString writes data to the configured output.
-func (c *Config) writeOutputString(data string) error {
-	return c.writeOutput([]byte(data))
+func (c *Config) writeOutputString(data string, perm fs.FileMode) error {
+	return c.writeOutput([]byte(data), perm)
 }
 
 func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {

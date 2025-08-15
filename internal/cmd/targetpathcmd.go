@@ -25,7 +25,7 @@ func (c *Config) newTargetPathCmd() *cobra.Command {
 
 func (c *Config) runTargetPathCmd(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		return c.writeOutputString(c.DestDirAbsPath.String() + "\n")
+		return c.writeOutputString(c.DestDirAbsPath.String()+"\n", 0o666)
 	}
 
 	builder := strings.Builder{}
@@ -67,5 +67,5 @@ func (c *Config) runTargetPathCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	return c.writeOutputString(builder.String())
+	return c.writeOutputString(builder.String(), 0o666)
 }
