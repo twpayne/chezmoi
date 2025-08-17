@@ -42,11 +42,11 @@ func (hardlinkCheck) Run(config *Config) (checkResult, string) {
 	hardlinkAbsPath := tempDirAbsPath.JoinString(testFileName)
 	sourceAbsPath := config.SourceDirAbsPath.JoinString(testFileName)
 
-	if err := config.baseSystem.WriteFile(sourceAbsPath, []byte(""), 0o700); err != nil {
+	if err := config.baseSystem.WriteFile(sourceAbsPath, nil, 0o666); err != nil {
 		return checkResultFailed, err.Error()
 	}
 
-	if err := os.MkdirAll(hardlinkAbsPath.Dir().String(), 0o700); err != nil {
+	if err := os.MkdirAll(hardlinkAbsPath.Dir().String(), 0o666); err != nil {
 		return checkResultFailed, err.Error()
 	}
 
