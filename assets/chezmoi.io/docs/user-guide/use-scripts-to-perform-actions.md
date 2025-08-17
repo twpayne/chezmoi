@@ -11,12 +11,13 @@ they are executed in alphabetical order.
 
 - **`run_` scripts**: These scripts are executed every time you run `chezmoi apply`.
 - **`run_onchange_` scripts**: These scripts are only executed if their content
-has changed since the last time they were run.
+has changed since the last time they were run successfully.
 - **`run_once_` scripts**: These scripts are executed once for each unique
 version of the content. If the script is a template, the content is hashed after
-template execution. chezmoi tracks the content's SHA256 hash and stores it in
-a database. If the content has been run before (even under a different filename),
-the script will not run again unless the content itself changes.
+template execution. chezmoi tracks the content's SHA256 hash and stores it in a
+database. If the content has been run successfully before (even under a
+different filename), the script will not run again unless the content itself
+changes.
 
 Scripts break chezmoi's declarative approach and should be used sparingly.
 All scripts should be idempotent, including `run_onchange_` and `run_once_` scripts.
@@ -139,7 +140,7 @@ chezmoi does not create `dconf.ini` in your home directory.
 ## Clear the state of all `run_onchange_` and `run_once_` scripts
 
 chezmoi stores whether and when `run_onchange_` and `run_once_` scripts have
-been run in its persistent state.
+been run successfully in its persistent state.
 
 To clear the state of `run_onchange_` scripts, run:
 

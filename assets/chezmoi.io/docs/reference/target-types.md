@@ -73,9 +73,10 @@ suffix) are executed.
 
 Scripts are executed on every `chezmoi apply`, unless they have the `once_` or
 `onchange_` attribute. `run_once_` scripts are only executed if a script with
-the same contents has not been run before, i.e. if the script is new or if its
-contents have changed. `run_onchange_` scripts are executed whenever their
-contents change, even if a script with the same contents has run before.
+the same contents has not been run successfully before, i.e. if the script is new
+or if its contents have changed, or if it previously failed. `run_onchange_`
+scripts are executed whenever their contents change, even if a script with the
+same contents has run successfully before.
 
 Scripts with the `before_` attribute are executed before any files, directories,
 or symlinks are updated. Scripts with the `after_` attribute are executed after
