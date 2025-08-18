@@ -576,3 +576,7 @@ articles:
   version: 2.63.1
   title: Dotfile management with Chezmoi and Vim
   url: https://www.probableodyssey.blog/all-posts/dotfile_management_with_chezmoi_and_vim/
+- date: '2025-08-18'
+  version: 2.64.0
+  title: secure dotfiles management with chezmoi
+  url: https://walterra.dev/blog/2025-08-18-chezmoi-keychain-integration
