@@ -384,9 +384,13 @@ func (c *Config) squoteTemplateFunc(list ...any) string {
 	return strings.Join(ss, " ")
 }
 
-func (c *Config) quoteListTemplateFunc(list []any) []string {
-	result := make([]string, len(list))
-	for i, elem := range list {
+func (c *Config) quoteListTemplateFunc(list any) []string {
+	stringSlice, err := anyToStringSlice(list)
+	if err != nil {
+		panic(err)
+	}
+	result := make([]string, len(stringSlice))
+	for i, elem := range stringSlice {
 		result[i] = strconv.Quote(anyToString(elem))
 	}
 	return result
