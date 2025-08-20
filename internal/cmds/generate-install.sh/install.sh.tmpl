@@ -163,7 +163,7 @@ check_goos_goarch() {
 	{{ .GOOS }}/{{ .GOARCH }}) return 0 ;;
 {{- end }}
 	*)
-		printf '%s: unsupported platform\n' "${1}" 1>&2
+		log_crit '%s: unsupported platform\n' "${1}" 1>&2
 		return 1
 		;;
 	esac
