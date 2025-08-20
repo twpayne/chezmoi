@@ -179,7 +179,7 @@ check_goos_goarch() {
 	windows/386) return 0 ;;
 	windows/amd64) return 0 ;;
 	*)
-		printf '%s: unsupported platform\n' "${1}" 1>&2
+		log_crit '%s: unsupported platform\n' "${1}" 1>&2
 		return 1
 		;;
 	esac
