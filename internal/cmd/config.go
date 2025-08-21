@@ -202,6 +202,7 @@ type Config struct {
 	dump            dumpCmdConfig
 	dumpConfig      dumpConfigCmdConfig
 	executeTemplate executeTemplateCmdConfig
+	generate        generateCmdConfig
 	ignored         ignoredCmdConfig
 	_import         importCmdConfig
 	init            initCmdConfig
@@ -369,6 +370,12 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		executeTemplate: executeTemplateCmdConfig{
 			stdinIsATTY: true,
+		},
+		generate: generateCmdConfig{
+			installInitShellSh: generateInstallInitShellShCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
 		},
 		_import: importCmdConfig{
 			destination: homeDirAbsPath,

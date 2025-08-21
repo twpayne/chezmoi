@@ -446,15 +446,18 @@ var helps = map[string]*help{
 			"Description:\n" +
 			"  Generates output for use with chezmoi. The currently supported outputs are:\n" +
 			"\n" +
-			"   Output             | Description\n" +
-			"  --------------------|-----------------------------------------------------\n" +
-			"   git-commit-message | A git commit message, describing the changes to the\n" +
-			"                      | source directory.\n" +
-			"   install.sh         | An install script, suitable for use with GitHub\n" +
-			"                      | Codespaces",
+			"   Output                | Description\n" +
+			"  -----------------------|--------------------------------------------------\n" +
+			"   git-commit-message    | A git commit message, describing the changes to\n" +
+			"                         | the source directory.\n" +
+			"   install.sh            | An install script, suitable for use with GitHub\n" +
+			"                         | Codespaces\n" +
+			"   install-init-shell.sh | A script which installs chezmoi, runs chezmoi\n" +
+			"                         | init, and executes your shell",
 		example: "" +
 			"  chezmoi generate install.sh > install.sh\n" +
-			"  chezmoi git commit -m \"$(chezmoi generate git-commit-message)\"",
+			"  chezmoi git commit -m \"$(chezmoi generate git-commit-message)\"\n" +
+			"  chezmoi generate install-init-shell.sh $GITHUB_USERNAME",
 	},
 	"git": {
 		longHelp: "" +
