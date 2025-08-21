@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# FIXME inline install.sh here instead of using curl | sh
+# FIXME consider using packages to install chezmoi on deb and rpm-based systems
+
+set -e
+
+cd "${HOME}"
+
+is_command() {
+	type "${1}" >/dev/null 2>&1
+}
+
+if [ -n "${LOGNAME}" ]; then
+	username="${LOGNAME}"
+elif [ -n "${USER}" ]; then
+	username="${USER}"
+elif [ -n "${USERNAME}" ]; then
+	username="${USERNAME}"
+elif is_command logname; then
+	username="$(logname)"
+elif is_command whoami; then
+	username="$(whoami)"
+else
+	printf "unable to determine username" 1>&2
+	exit 1
+fi
+
+sudo=
+if [ "${username}" != "root" ]; then
+	sudo="sudo "
+fi
+
+chezmoi=chezmoi
+if ! (is_command chezmoi); then
+	if is_command "${HOME}/.local/bin/chezmoi"; then
+		chezmoi="${HOME}/.local/bin/chezmoi"
+	elif is_command "${HOME}/bin/chezmoi"; then
+		chezmoi="${HOME}/bin/chezmoi"
+{{- if .package }}
+	elif is_command apk; then
+		${sudo}apk add chezmoi
+	elif is_command brew; then
+		${sudo}brew install chezmoi
+	elif is_command pacman; then
+		${sudo}pacman -S chezmoi
+	elif is_command port; then
+		${sudo}port install chezmoi
+	elif is_command nix-env; then
+		${sudo}nix-env -i chezmoi
+	elif is_command snap; then
+		${sudo}snap install chezmoi --classic
+	elif is_command zypper; then
+		${sudo}zypper install chezmoi
+	elif is_command pkg; then
+		${sudo}pkg install chezmoi
+	elif is_command xbps-install; then
+		${sudo}xbps-install -S chezmoi
+{{- end }}
+	elif is_command curl; then
+		sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+		chezmoi="$HOME/.local/bin/chezmoi"
+	elif is_command wget; then
+		sh -c "$(wget -qO- get.chezmoi.io/lb)"
+		chezmoi="$HOME/.local/bin/chezmoi"
+{{- if .package }}
+	elif is_command apt-get; then
+		export DEBIAN_FRONTEND=noninteractive
+		${sudo}apt-get update
+		${sudo}apt-get install --yes curl
+		sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+		chezmoi="$HOME/.local/bin/chezmoi"
+	elif is_command dnf; then
+		${sudo}dnf install curl
+		sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+		chezmoi="$HOME/.local/bin/chezmoi"
+{{- end }}
+	else
+		echo "unable to install chezmoi" 1>&2
+		exit 1
+	fi
+fi
+
+${chezmoi} init --apply {{ .args | quoteList | join " " }}
+{{- if .shell }}
+
+shell="$(awk -F : "\$1 == \"${username}\" { print \$7 }" /etc/passwd)"
+exec "${shell}"
+{{- end }}
