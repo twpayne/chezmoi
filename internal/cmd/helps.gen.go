@@ -766,6 +766,20 @@ var helps = map[string]*help{
 			"  chezmoi source-path\n" +
 			"  chezmoi source-path ~/.bashrc",
 	},
+	"ssh": {
+		longHelp: "" +
+			"Description:\n" +
+			"",
+		example: "" +
+			"  chezmoi ssh $HOSTNAME $GITHUB_USERNAME\n" +
+			"  chezmoi ssh $HOSTNAME -- --one-shot $GITHUB_USERNAME",
+		longFlags: chezmoiset.New(
+			"shell",
+		),
+		shortFlags: chezmoiset.New(
+			"s",
+		),
+	},
 	"state": {
 		longHelp: "" +
 			"Description:\n" +

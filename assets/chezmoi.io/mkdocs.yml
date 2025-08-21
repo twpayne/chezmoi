@@ -185,6 +185,7 @@ nav:
     - rm: reference/commands/rm.md
     - secret: reference/commands/secret.md
     - source-path: reference/commands/source-path.md
+    - ssh: reference/commands/ssh.md
     - state: reference/commands/state.md
     - status: reference/commands/status.md
     - target-path: reference/commands/target-path.md
