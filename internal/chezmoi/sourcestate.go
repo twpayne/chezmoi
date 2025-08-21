@@ -796,6 +796,7 @@ type ExecuteTemplateDataOptions struct {
 	Destination     string
 	Data            []byte
 	TemplateOptions TemplateOptions
+	ExtraData       map[string]any
 }
 
 // ExecuteTemplateData returns the result of executing template data.
@@ -822,6 +823,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 		chezmoiTemplateData["sourceFile"] = options.Name
 		chezmoiTemplateData["targetFile"] = options.Destination
 	}
+	RecursiveMerge(templateData, options.ExtraData)
 
 	result, err := tmpl.Execute(templateData)
 	if errors.Is(err, errReturnEmpty) {

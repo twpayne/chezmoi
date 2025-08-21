@@ -202,11 +202,14 @@ type Config struct {
 	dump            dumpCmdConfig
 	dumpConfig      dumpConfigCmdConfig
 	executeTemplate executeTemplateCmdConfig
+	generate        generateCmdConfig
 	ignored         ignoredCmdConfig
 	_import         importCmdConfig
 	init            initCmdConfig
 	managed         managedCmdConfig
 	mergeAll        mergeAllCmdConfig
+	podman          podmanCmdConfig
+	ssh             sshCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
 	secret          secretCmdConfig
@@ -370,6 +373,12 @@ func newConfig(options ...configOption) (*Config, error) {
 		executeTemplate: executeTemplateCmdConfig{
 			stdinIsATTY: true,
 		},
+		generate: generateCmdConfig{
+			installInitShellSh: generateInstallInitShellShCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
+		},
 		_import: importCmdConfig{
 			destination: homeDirAbsPath,
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
@@ -391,6 +400,15 @@ func newConfig(options ...configOption) (*Config, error) {
 		reAdd: reAddCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
+		},
+		podman: podmanCmdConfig{
+			exec: podmanExecCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
+		},
+		ssh: sshCmdConfig{
+			shell: true,
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
@@ -1866,9 +1884,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newMergeAllCmd(),
+		c.newPodmanCmd(),
 		c.newPurgeCmd(),
 		c.newReAddCmd(),
 		c.newRemoveCmd(),
+		c.newSSHCmd(),
 		c.newSecretCmd(),
 		c.newSourcePathCmd(),
 		c.newStateCmd(),
@@ -2630,6 +2650,37 @@ func (c *Config) runHookPre(hook string) error {
 		return fmt.Errorf("%s: pre: %w", hook, err)
 	}
 	return nil
+}
+
+type runInstallInitShellOptions struct {
+	args        []string
+	interactive bool
+	shell       bool
+}
+
+func (c *Config) runInstallInitShellSh(
+	sourceState *chezmoi.SourceState,
+	command string,
+	commandArgs []string,
+	options runInstallInitShellOptions,
+) error {
+	script, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
+		Name: "install-init-shell.sh.tmpl",
+		Data: templates.InstallInitShellShTmpl,
+		ExtraData: map[string]any{
+			"args":        options.args,
+			"interactive": options.interactive,
+			"shell":       options.shell,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	allArgs := slices.Concat(
+		commandArgs,
+		[]string{"sh", "-c", string(script)},
+	)
+	return c.run(chezmoi.EmptyAbsPath, command, allArgs)
 }
 
 // setEncryption configures c's encryption.
