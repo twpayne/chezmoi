@@ -208,6 +208,7 @@ type Config struct {
 	init            initCmdConfig
 	managed         managedCmdConfig
 	mergeAll        mergeAllCmdConfig
+	podman          podmanCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
 	secret          secretCmdConfig
@@ -398,6 +399,12 @@ func newConfig(options ...configOption) (*Config, error) {
 		reAdd: reAddCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
+		},
+		podman: podmanCmdConfig{
+			exec: podmanExecCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
@@ -1873,6 +1880,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newMergeAllCmd(),
+		c.newPodmanCmd(),
 		c.newPurgeCmd(),
 		c.newReAddCmd(),
 		c.newRemoveCmd(),
