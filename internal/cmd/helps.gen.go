@@ -685,6 +685,14 @@ var helps = map[string]*help{
 			"r",
 		),
 	},
+	"podman": {
+		longHelp: "" +
+			"Description:\n" +
+			"",
+		example: "" +
+			"  chezmoi podman run alpine:latest $GITHUB_USERNAME\n" +
+			"  chezmoi podman exec $CONTAINER_ID $GITHUB_USERNAME",
+	},
 	"purge": {
 		longHelp: "" +
 			"Description:\n" +
