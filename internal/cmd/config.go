@@ -202,6 +202,7 @@ type Config struct {
 	dump            dumpCmdConfig
 	dumpConfig      dumpConfigCmdConfig
 	executeTemplate executeTemplateCmdConfig
+	generate        generateCmdConfig
 	ignored         ignoredCmdConfig
 	_import         importCmdConfig
 	init            initCmdConfig
@@ -369,6 +370,12 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		executeTemplate: executeTemplateCmdConfig{
 			stdinIsATTY: true,
+		},
+		generate: generateCmdConfig{
+			installInitShellSh: generateInstallInitShellShCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
 		},
 		_import: importCmdConfig{
 			destination: homeDirAbsPath,
@@ -2630,6 +2637,39 @@ func (c *Config) runHookPre(hook string) error {
 		return fmt.Errorf("%s: pre: %w", hook, err)
 	}
 	return nil
+}
+
+type runInstallInitShellOptions struct {
+	args        []string
+	interactive bool
+	_package    bool
+	shell       bool
+}
+
+func (c *Config) runInstallInitShellSh(
+	sourceState *chezmoi.SourceState,
+	command string,
+	commandArgs []string,
+	options runInstallInitShellOptions,
+) error {
+	script, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
+		Name: "install-init-shell.sh.tmpl",
+		Data: templates.InstallInitShellShTmpl,
+		ExtraData: map[string]any{
+			"args":        options.args,
+			"interactive": options.interactive,
+			"package":     options._package,
+			"shell":       options.shell,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	allArgs := slices.Concat(
+		commandArgs,
+		[]string{"sh", "-c", string(script)},
+	)
+	return c.run(chezmoi.EmptyAbsPath, command, allArgs)
 }
 
 // setEncryption configures c's encryption.

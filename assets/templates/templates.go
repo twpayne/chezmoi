@@ -7,4 +7,7 @@ import _ "embed"
 var CommitMessageTmpl string
 
 //go:embed install.sh
-var InstallSH []byte
+var InstallSh []byte
+
+//go:embed install-init-shell.sh.tmpl
+var InstallInitShellShTmpl []byte
