@@ -209,6 +209,7 @@ type Config struct {
 	managed         managedCmdConfig
 	mergeAll        mergeAllCmdConfig
 	podman          podmanCmdConfig
+	ssh             sshCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
 	secret          secretCmdConfig
@@ -405,6 +406,9 @@ func newConfig(options ...configOption) (*Config, error) {
 				interactive: true,
 				shell:       true,
 			},
+		},
+		ssh: sshCmdConfig{
+			shell: true,
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
@@ -1884,6 +1888,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newPurgeCmd(),
 		c.newReAddCmd(),
 		c.newRemoveCmd(),
+		c.newSSHCmd(),
 		c.newSecretCmd(),
 		c.newSourcePathCmd(),
 		c.newStateCmd(),
