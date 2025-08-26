@@ -3193,6 +3193,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
       
@@ -3274,6 +3282,28 @@
   
   <span class="md-ellipsis">
     age
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../age-keygen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    age-keygen
     
   </span>
   
@@ -3516,6 +3546,28 @@
   
   <span class="md-ellipsis">
     diff
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker
     
   </span>
   
@@ -4045,6 +4097,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../podman/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    podman
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../purge/" class="md-nav__link">
         
   
@@ -4160,6 +4234,28 @@
   
   <span class="md-ellipsis">
     source-path
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ssh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ssh
     
   </span>
   
@@ -8835,11 +8931,16 @@
 <td><code>install.sh</code></td>
 <td>An install script, suitable for use with GitHub Codespaces</td>
 </tr>
+<tr>
+<td><code>install-init-shell.sh</code></td>
+<td>A script which installs chezmoi, runs <code>chezmoi init</code>, and executes your shell</td>
+</tr>
 </tbody>
 </table>
 <h2 id="examples">Examples</h2>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>generate<span class="w"> </span>install.sh<span class="w"> </span>&gt;<span class="w"> </span>install.sh
 chezmoi<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>chezmoi<span class="w"> </span>generate<span class="w"> </span>git-commit-message<span class="k">)</span><span class="s2">&quot;</span>
+chezmoi<span class="w"> </span>generate<span class="w"> </span>install-init-shell.sh<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 
 

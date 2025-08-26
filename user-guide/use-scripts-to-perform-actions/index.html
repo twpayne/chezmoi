@@ -3292,6 +3292,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
       
@@ -3372,6 +3380,28 @@
   
   <span class="md-ellipsis">
     age
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/age-keygen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    age-keygen
     
   </span>
   
@@ -3614,6 +3644,28 @@
   
   <span class="md-ellipsis">
     diff
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker
     
   </span>
   
@@ -4093,6 +4145,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/commands/podman/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    podman
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/commands/purge/" class="md-nav__link">
         
   
@@ -4208,6 +4282,28 @@
   
   <span class="md-ellipsis">
     source-path
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/commands/ssh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ssh
     
   </span>
   
@@ -8917,12 +9013,13 @@ they are executed in alphabetical order.</p>
 <ul>
 <li><strong><code>run_</code> scripts</strong>: These scripts are executed every time you run <code>chezmoi apply</code>.</li>
 <li><strong><code>run_onchange_</code> scripts</strong>: These scripts are only executed if their content
-has changed since the last time they were run.</li>
+has changed since the last time they were run successfully.</li>
 <li><strong><code>run_once_</code> scripts</strong>: These scripts are executed once for each unique
 version of the content. If the script is a template, the content is hashed after
-template execution. chezmoi tracks the content's SHA256 hash and stores it in
-a database. If the content has been run before (even under a different filename),
-the script will not run again unless the content itself changes.</li>
+template execution. chezmoi tracks the content's SHA256 hash and stores it in a
+database. If the content has been run successfully before (even under a
+different filename), the script will not run again unless the content itself
+changes.</li>
 </ul>
 <p>Scripts break chezmoi's declarative approach and should be used sparingly.
 All scripts should be idempotent, including <code>run_onchange_</code> and <code>run_once_</code> scripts.</p>
@@ -9011,7 +9108,7 @@ change.</p>
 chezmoi does not create <code>dconf.ini</code> in your home directory.</p>
 <h2 id="clear-the-state-of-all-run_onchange_-and-run_once_-scripts">Clear the state of all <code>run_onchange_</code> and <code>run_once_</code> scripts</h2>
 <p>chezmoi stores whether and when <code>run_onchange_</code> and <code>run_once_</code> scripts have
-been run in its persistent state.</p>
+been run successfully in its persistent state.</p>
 <p>To clear the state of <code>run_onchange_</code> scripts, run:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>state<span class="w"> </span>delete-bucket<span class="w"> </span>--bucket<span class="o">=</span>entryState
 </code></pre></div>

@@ -3265,6 +3265,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
       
@@ -3345,6 +3353,28 @@
   
   <span class="md-ellipsis">
     age
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/commands/age-keygen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    age-keygen
     
   </span>
   
@@ -3587,6 +3617,28 @@
   
   <span class="md-ellipsis">
     diff
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/commands/docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker
     
   </span>
   
@@ -4066,6 +4118,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/commands/podman/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    podman
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/commands/purge/" class="md-nav__link">
         
   
@@ -4181,6 +4255,28 @@
   
   <span class="md-ellipsis">
     source-path
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/commands/ssh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ssh
     
   </span>
   
@@ -8855,8 +8951,8 @@
 
 <h1 id="age">age</h1>
 <p>chezmoi supports encrypting files with <a href="https://age-encryption.org/">age</a>.</p>
-<p>Generate a key using <code>age-keygen</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>age-keygen<span class="w"> </span>-o<span class="w"> </span><span class="nv">$HOME</span>/key.txt
+<p>Generate a key using the <code>age-keygen</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>age-keygen<span class="w"> </span>--output<span class="o">=</span><span class="nv">$HOME</span>/key.txt
 <span class="go">Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p</span>
 </code></pre></div>
 <p>Specify age encryption in your configuration file, being sure to specify at

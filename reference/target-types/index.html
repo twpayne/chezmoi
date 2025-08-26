@@ -3310,6 +3310,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
       
@@ -3393,6 +3401,28 @@
   
   <span class="md-ellipsis">
     age
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/age-keygen/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    age-keygen
     
   </span>
   
@@ -3635,6 +3665,28 @@
   
   <span class="md-ellipsis">
     diff
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    docker
     
   </span>
   
@@ -4114,6 +4166,28 @@
   
   
     <li class="md-nav__item">
+      <a href="../commands/podman/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    podman
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../commands/purge/" class="md-nav__link">
         
   
@@ -4229,6 +4303,28 @@
   
   <span class="md-ellipsis">
     source-path
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/ssh/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ssh
     
   </span>
   
@@ -9012,9 +9108,10 @@ The file's contents (after being interpreted as a template if it has a <code>.tm
 suffix) are executed.</p>
 <p>Scripts are executed on every <code>chezmoi apply</code>, unless they have the <code>once_</code> or
 <code>onchange_</code> attribute. <code>run_once_</code> scripts are only executed if a script with
-the same contents has not been run before, i.e. if the script is new or if its
-contents have changed. <code>run_onchange_</code> scripts are executed whenever their
-contents change, even if a script with the same contents has run before.</p>
+the same contents has not been run successfully before, i.e. if the script is
+new or if its contents have changed, or if it previously failed. <code>run_onchange_</code>
+scripts are executed whenever their contents change, even if a script with the
+same contents has run successfully before.</p>
 <p>Scripts with the <code>before_</code> attribute are executed before any files, directories,
 or symlinks are updated. Scripts with the <code>after_</code> attribute are executed after
 all files, directories, and symlinks have been updated. Scripts without an
