@@ -9,6 +9,7 @@ tool (
 	github.com/twpayne/chezmoi/internal/cmds/generate-helps
 	github.com/twpayne/chezmoi/internal/cmds/generate-install.sh
 	github.com/twpayne/chezmoi/internal/cmds/generate-license
+	github.com/twpayne/chezmoi/internal/cmds/hexencode
 	github.com/twpayne/chezmoi/internal/cmds/lint-commit-messages
 	github.com/twpayne/chezmoi/internal/cmds/lint-txtar
 	github.com/twpayne/chezmoi/internal/cmds/lint-whitespace
