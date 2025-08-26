@@ -1,0 +1,19 @@
+hexdecode www/testfile.rar5.rar.hex
+
+httpd www
+
+# test that chezmoi unpacks .rar externals
+exec chezmoi apply
+cmp $HOME/testfile.txt golden/testfile.txt
+
+-- golden/testfile.txt --
+Testing 123
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+["testfile.txt"]
+    type = "archive-file"
+    url = "{{ env "HTTPD_URL" }}/testfile.rar5.rar"
+    path = "testfile.txt"
+-- www/testfile.rar5.rar.hex --
+526172211a0701003392b5e50a010506000501018080002499eca12202028c00068c00b68302d00e
+503afe8fc16e8000010c7465737466696c652e74787454657374696e67203132330a1d7756510305
+0400

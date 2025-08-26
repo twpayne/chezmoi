@@ -15,6 +15,7 @@ import (
 	"github.com/klauspost/compress/gzip"
 	"github.com/klauspost/compress/zip"
 	"github.com/klauspost/compress/zstd"
+	"github.com/nwaples/rardecode/v2"
 	"github.com/ulikunitz/xz"
 
 	"github.com/twpayne/chezmoi/internal/chezmoiset"
@@ -27,6 +28,7 @@ type ArchiveFormat string
 // Archive formats.
 const (
 	ArchiveFormatUnknown ArchiveFormat = ""
+	ArchiveFormatRar     ArchiveFormat = "rar"
 	ArchiveFormatTar     ArchiveFormat = "tar"
 	ArchiveFormatTarBz2  ArchiveFormat = "tar.bz2"
 	ArchiveFormatTarGz   ArchiveFormat = "tar.gz"
@@ -41,6 +43,8 @@ type WalkArchiveFunc func(name string, info fs.FileInfo, r io.Reader, linkname s
 // GuessArchiveFormat guesses the archive format from the name and data.
 func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
 	switch nameLower := strings.ToLower(name); {
+	case strings.HasSuffix(nameLower, ".rar"):
+		return ArchiveFormatRar
 	case strings.HasSuffix(nameLower, ".tar"):
 		return ArchiveFormatTar
 	case strings.HasSuffix(nameLower, ".tar.bz2") || strings.HasSuffix(nameLower, ".tbz2"):
@@ -56,6 +60,8 @@ func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
 	}
 
 	switch {
+	case len(data) >= 6 && bytes.Equal(data[:6], []byte{'R', 'a', 'r', '!', 0x1a, 0x07}):
+		return ArchiveFormatRar
 	case len(data) >= 3 && bytes.Equal(data[:3], []byte{0x1f, 0x8b, 0x08}):
 		return ArchiveFormatTarGz
 	case len(data) >= 4 && bytes.Equal(data[:4], []byte{'P', 'K', 0x03, 0x04}):
@@ -75,7 +81,10 @@ func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
 
 // WalkArchive walks over all the entries in an archive.
 func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
-	if format == ArchiveFormatZip {
+	switch format {
+	case ArchiveFormatRar:
+		return walkArchiveRar(bytes.NewReader(data), f)
+	case ArchiveFormatZip:
 		return walkArchiveZip(bytes.NewReader(data), int64(len(data)), f)
 	}
 	// r will read bytes in tar format.
@@ -120,13 +129,73 @@ func isTarArchive(r io.Reader) bool {
 	return err == nil
 }
 
-func implicitDirHeader(dir string, modTime time.Time) *tar.Header {
+func implicitTarDirHeader(dir string, modTime time.Time) *tar.Header {
 	return &tar.Header{
 		Typeflag: tar.TypeDir,
 		Name:     dir,
 		Mode:     0o777,
 		Size:     0,
 		ModTime:  modTime,
+	}
+}
+
+// A rarFileInfo wraps a *rardecode.FileHeader so that it implements
+// fs.FileInfo.
+type rarFileInfo struct {
+	*rardecode.FileHeader
+}
+
+func (i rarFileInfo) Name() string       { return i.FileHeader.Name }
+func (i rarFileInfo) Size() int64        { return i.UnPackedSize }
+func (i rarFileInfo) Mode() fs.FileMode  { return i.FileHeader.Mode() }
+func (i rarFileInfo) ModTime() time.Time { return i.ModificationTime }
+func (i rarFileInfo) IsDir() bool        { return i.FileHeader.IsDir }
+func (i rarFileInfo) Sys() any           { return nil }
+
+// walkArchiveRar walks over all the entries in a rar archive.
+func walkArchiveRar(r io.Reader, f WalkArchiveFunc) error {
+	rarReader, err := rardecode.NewReader(r)
+	if err != nil {
+		return err
+	}
+	var skippedDirPrefixes []string
+	seenDirs := chezmoiset.New[string]()
+	processHeader := func(header *rardecode.FileHeader, dir string) error {
+		for _, skippedDirPrefix := range skippedDirPrefixes {
+			if strings.HasPrefix(header.Name, skippedDirPrefix) {
+				return fs.SkipDir
+			}
+		}
+		if seenDirs.Contains(dir) {
+			return nil
+		}
+		seenDirs.Add(dir)
+		name := strings.TrimSuffix(header.Name, "/")
+		switch err := f(name, rarFileInfo{FileHeader: header}, rarReader, ""); {
+		case errors.Is(err, fs.SkipDir):
+			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
+		case err != nil:
+			return err
+		}
+		return nil
+	}
+HEADER:
+	for {
+		fileHeader, err := rarReader.Next()
+		switch {
+		case errors.Is(err, io.EOF):
+			return nil
+		case err != nil:
+			return err
+		}
+		switch err := processHeader(fileHeader, fileHeader.Name); {
+		case errors.Is(err, fs.SkipDir):
+			continue HEADER
+		case errors.Is(err, fs.SkipAll):
+			return nil
+		case err != nil:
+			return err
+		}
 	}
 }
 
@@ -170,7 +239,7 @@ HEADER:
 				dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
 				for i := range dirComponents {
 					if dir := strings.Join(dirComponents[0:i+1], "/"); dir != "" {
-						switch err := processHeader(implicitDirHeader(dir+"/", header.ModTime), dir+"/"); {
+						switch err := processHeader(implicitTarDirHeader(dir+"/", header.ModTime), dir+"/"); {
 						case errors.Is(err, fs.SkipDir):
 							continue HEADER
 						case errors.Is(err, fs.SkipAll):
@@ -216,7 +285,7 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 		}
 		seenDirs.Add(dir)
 		name := strings.TrimSuffix(dir, "/")
-		dirFileInfo := implicitDirHeader(dir, fileInfo.ModTime()).FileInfo()
+		dirFileInfo := implicitTarDirHeader(dir, fileInfo.ModTime()).FileInfo()
 		switch err := f(name, dirFileInfo, nil, ""); {
 		case errors.Is(err, fs.SkipDir):
 			skippedDirPrefixes = append(skippedDirPrefixes, dir)

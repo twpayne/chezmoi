@@ -65,8 +65,8 @@ encrypted.
 
 The optional string `decompress` specifies how the file should be decompressed.
 Supported compression formats are `bzip2`, `gzip`, `xz`, and `zstd`. Note the
-`.zip` files are archives and you must use the `archive-file` type to extract a
-single file from a `.zip` archive.
+`.rar` and `.zip` files are archives and you must use the `archive-file` type to
+extract a single file from a `.rar` or `.zip` archive.
 
 If optional string `filter.command` and array of strings `filter.args` are
 specified, the file or archive is filtered by piping it into the command's
