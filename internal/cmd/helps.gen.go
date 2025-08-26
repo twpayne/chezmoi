@@ -495,7 +495,7 @@ var helps = map[string]*help{
 			"  always want to set the --destination, --exact, and --remove-destination\n" +
 			"  flags.\n" +
 			"\n" +
-			"  The supported archive formats are tar, tar.gz, tgz, tar.bz2, tbz2, txz,\n" +
+			"  The supported archive formats are rar, tar, tar.gz, tgz, tar.bz2, tbz2, txz,\n" +
 			"  tar.zst, and zip.",
 		example: "" +
 			"  curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.\n" +
