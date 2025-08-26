@@ -297,6 +297,14 @@ var helps = map[string]*help{
 			"x",
 		),
 	},
+	"docker": {
+		longHelp: "" +
+			"Description:\n" +
+			"",
+		example: "" +
+			"  chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME\n" +
+			"  chezmoi docker run alpine:latest $GITHUB_USERNAME",
+	},
 	"doctor": {
 		longHelp: "" +
 			"Description:\n" +

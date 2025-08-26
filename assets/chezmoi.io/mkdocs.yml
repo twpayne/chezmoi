@@ -157,6 +157,7 @@ nav:
     - decrypt: reference/commands/decrypt.md
     - destroy: reference/commands/destroy.md
     - diff: reference/commands/diff.md
+    - docker: reference/commands/docker.md
     - doctor: reference/commands/doctor.md
     - dump: reference/commands/dump.md
     - dump-config: reference/commands/dump-config.md

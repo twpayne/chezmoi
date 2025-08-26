@@ -198,6 +198,7 @@ type Config struct {
 	chattr          chattrCmdConfig
 	data            dataCmdConfig
 	destroy         destroyCmdConfig
+	docker          dockerPodmanCmdConfig
 	doctor          doctorCmdConfig
 	dump            dumpCmdConfig
 	dumpConfig      dumpConfigCmdConfig
@@ -208,7 +209,7 @@ type Config struct {
 	init            initCmdConfig
 	managed         managedCmdConfig
 	mergeAll        mergeAllCmdConfig
-	podman          podmanCmdConfig
+	podman          dockerPodmanCmdConfig
 	ssh             sshCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
@@ -362,6 +363,12 @@ func newConfig(options ...configOption) (*Config, error) {
 		data: dataCmdConfig{
 			format: newChoiceFlag("", writeDataFormatValues),
 		},
+		docker: dockerPodmanCmdConfig{
+			exec: dockerPodmanExecCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
+		},
 		dump: dumpCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			format:    newChoiceFlag("", writeDataFormatValues),
@@ -401,8 +408,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
-		podman: podmanCmdConfig{
-			exec: podmanExecCmdConfig{
+		podman: dockerPodmanCmdConfig{
+			exec: dockerPodmanExecCmdConfig{
 				interactive: true,
 				shell:       true,
 			},
@@ -1864,6 +1871,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newDecryptCommand(),
 		c.newDestroyCmd(),
 		c.newDiffCmd(),
+		c.newDockerPodmanCmd("docker", &c.docker),
+		c.newDockerPodmanCmd("podman", &c.podman),
 		c.newDoctorCmd(),
 		c.newDumpCmd(),
 		c.newDumpConfigCmd(),
@@ -1884,7 +1893,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newMergeAllCmd(),
-		c.newPodmanCmd(),
 		c.newPurgeCmd(),
 		c.newReAddCmd(),
 		c.newRemoveCmd(),
