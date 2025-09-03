@@ -83,6 +83,8 @@ builds:
     goarch: '386'
   - goos: linux
     goarch: amd64
+  - goos: openbsd
+    goarch: riscv64
   - goos: windows
     goarch: arm
 
