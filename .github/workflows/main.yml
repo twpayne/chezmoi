@@ -302,7 +302,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@4959332f0f014c5280e7eac8b70c90cb574c9f9b
+    - uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -493,7 +493,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@4959332f0f014c5280e7eac8b70c90cb574c9f9b
+    - uses: astral-sh/setup-uv@557e51de59eb14aaaba2ed9621916900a91d50c6
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
