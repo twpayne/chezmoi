@@ -42,6 +42,11 @@ subdirectory.
     {{- if ne .email "me@home.org" }}
     .personal-file
     {{- end }}
+
+    {{- if eq .chezmoi.os "windows" }}
+    Documents/*
+    !Documents/*PowerShell/ # ignore a folder, except for Windows PowerShell profiles
+    {{- end }}
     ```
 
 [match]: https://pkg.go.dev/github.com/bmatcuk/doublestar/v4#Match
