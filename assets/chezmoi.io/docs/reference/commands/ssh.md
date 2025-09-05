@@ -9,11 +9,13 @@ executes your shell.
 
 ## Flags
 
-### `-p`, `--package`
+### `-p`, `--package-manager` *package-manager*
 
-Install chezmoi using the distribution's package manager, if possible.
-Otherwise, fall back to `curl` or `wget` installation. If neither `curl` nor
-`wget` are installed then install them with the distribution's package manager.
+Install chezmoi using *package-manager*, if possible. Valid values for
+*package-manager* include `apk`, `apt-get`, `brew`, `dnf`, `nix-env`, `pacman`,
+`port`, `pkg`, `rpm`, `snap`, `xbps-install`, and `zypper`. Otherwise, fall back
+to `curl` or `wget` installation. If neither `curl` nor `wget` are installed
+then install them with *package-manager*.
 
 ### `-s`, `--shell`
 

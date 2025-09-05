@@ -7,8 +7,8 @@ import (
 )
 
 type sshCmdConfig struct {
-	_package bool
-	shell    bool
+	packageManager string
+	shell          bool
 }
 
 func (c *Config) newSSHCmd() *cobra.Command {
@@ -23,7 +23,7 @@ func (c *Config) newSSHCmd() *cobra.Command {
 			persistentStateModeReadWrite,
 		),
 	}
-	sshCmd.Flags().BoolVarP(&c.ssh._package, "package", "p", c.ssh._package, "Install with package")
+	sshCmd.Flags().StringVarP(&c.ssh.packageManager, "package-manager", "p", c.ssh.packageManager, "Package manager")
 	sshCmd.Flags().BoolVarP(&c.ssh.shell, "shell", "s", c.ssh.shell, "Execute shell afterwards")
 
 	return sshCmd
@@ -33,10 +33,10 @@ func (c *Config) runSSHCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	return c.runInstallInitShellSh(sourceState,
 		"ssh", []string{args[0]},
 		runInstallInitShellOptions{
-			args:        args[1:],
-			interactive: true,
-			_package:    c.ssh._package,
-			shell:       c.ssh.shell,
+			args:           args[1:],
+			interactive:    true,
+			packageManager: c.ssh.packageManager,
+			shell:          c.ssh.shell,
 		},
 	)
 }

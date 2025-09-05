@@ -20,11 +20,13 @@ in the existing Docker container *container-id*.
 
 Keep stdin open even if not attached.
 
-#### `-p`, `--package`
+#### `-p`, `--package-manager` *package-manager*
 
-Install chezmoi using the distribution's package manager, if possible.
-Otherwise, fall back to `curl` or `wget` installation. If neither `curl` nor
-`wget` are installed then install them with the distribution's package manager.
+Install chezmoi using *package-manager*, if possible. Valid values for
+*package-manager* include `apk`, `apt-get`, `brew`, `dnf`, `nix-env`, `pacman`,
+`port`, `pkg`, `rpm`, `snap`, `xbps-install`, and `zypper`. Otherwise, fall back
+to `curl` or `wget` installation. If neither `curl` nor `wget` are installed
+then install them *package-manager*.
 
 #### `-s`, `--shell`
 
@@ -46,5 +48,5 @@ Otherwise, fall back to `curl` or `wget` installation. If neither `curl` nor
 
 ```sh
 chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME
-chezmoi docker run alpine:latest $GITHUB_USERNAME
+chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME
 ```

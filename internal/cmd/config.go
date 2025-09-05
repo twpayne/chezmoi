@@ -2661,10 +2661,10 @@ func (c *Config) runHookPre(hook string) error {
 }
 
 type runInstallInitShellOptions struct {
-	args        []string
-	interactive bool
-	_package    bool
-	shell       bool
+	args           []string
+	interactive    bool
+	packageManager string
+	shell          bool
 }
 
 func (c *Config) runInstallInitShellSh(
@@ -2677,10 +2677,10 @@ func (c *Config) runInstallInitShellSh(
 		Name: "install-init-shell.sh.tmpl",
 		Data: templates.InstallInitShellShTmpl,
 		ExtraData: map[string]any{
-			"args":        options.args,
-			"interactive": options.interactive,
-			"package":     options._package,
-			"shell":       options.shell,
+			"args":           options.args,
+			"interactive":    options.interactive,
+			"packageManager": options.packageManager,
+			"shell":          options.shell,
 		},
 	})
 	if err != nil {
