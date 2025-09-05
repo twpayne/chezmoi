@@ -15,9 +15,9 @@ type generateCmdConfig struct {
 }
 
 type generateInstallInitShellShCmdConfig struct {
-	interactive bool
-	_package    bool
-	shell       bool
+	interactive    bool
+	packageManager string
+	shell          bool
 }
 
 func (c *Config) newGenerateCmd() *cobra.Command {
@@ -66,7 +66,7 @@ func (c *Config) newGenerateCmd() *cobra.Command {
 	generateInstallInitShellShCmd.Flags().
 		BoolVarP(&c.generate.installInitShellSh.interactive, "interactive", "i", c.generate.installInitShellSh.interactive, "Set interactive")
 	generateInstallInitShellShCmd.Flags().
-		BoolVarP(&c.generate.installInitShellSh.shell, "package", "p", c.generate.installInitShellSh._package, "Install with package")
+		StringVarP(&c.generate.installInitShellSh.packageManager, "package-manager", "p", c.generate.installInitShellSh.packageManager, "Package manager")
 	generateInstallInitShellShCmd.Flags().
 		BoolVarP(&c.generate.installInitShellSh.shell, "shell", "s", c.generate.installInitShellSh.shell, "Set shell")
 	generateCmd.AddCommand(generateInstallInitShellShCmd)
@@ -104,10 +104,10 @@ func (c *Config) runGenerateInstallInitShellShCmd(cmd *cobra.Command, args []str
 		Name: "install-init-shell.sh.tmpl",
 		Data: templates.InstallInitShellShTmpl,
 		ExtraData: map[string]any{
-			"args":        args,
-			"interactive": c.generate.installInitShellSh.interactive,
-			"package":     c.generate.installInitShellSh._package,
-			"shell":       c.generate.installInitShellSh.shell,
+			"args":           args,
+			"interactive":    c.generate.installInitShellSh.interactive,
+			"packageManager": c.generate.installInitShellSh.packageManager,
+			"shell":          c.generate.installInitShellSh.shell,
 		},
 	})
 	if err != nil {

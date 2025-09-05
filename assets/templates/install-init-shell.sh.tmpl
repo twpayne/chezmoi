@@ -32,53 +32,72 @@ if [ "${username}" != "root" ]; then
 fi
 
 chezmoi=chezmoi
-if ! (is_command chezmoi); then
-	if is_command "${HOME}/.local/bin/chezmoi"; then
-		chezmoi="${HOME}/.local/bin/chezmoi"
-	elif is_command "${HOME}/bin/chezmoi"; then
-		chezmoi="${HOME}/bin/chezmoi"
-{{- if .package }}
-	elif is_command apk; then
-		${sudo}apk add chezmoi
-	elif is_command brew; then
-		${sudo}brew install chezmoi
-	elif is_command pacman; then
-		${sudo}pacman -S chezmoi
-	elif is_command port; then
-		${sudo}port install chezmoi
-	elif is_command nix-env; then
-		${sudo}nix-env -i chezmoi
-	elif is_command snap; then
-		${sudo}snap install chezmoi --classic
-	elif is_command zypper; then
-		${sudo}zypper install chezmoi
-	elif is_command pkg; then
-		${sudo}pkg install chezmoi
-	elif is_command xbps-install; then
-		${sudo}xbps-install -S chezmoi
-{{- end }}
-	elif is_command curl; then
-		sh -c "$(curl -fsSL get.chezmoi.io/lb)"
-		chezmoi="$HOME/.local/bin/chezmoi"
-	elif is_command wget; then
-		sh -c "$(wget -qO- get.chezmoi.io/lb)"
-		chezmoi="$HOME/.local/bin/chezmoi"
-{{- if .package }}
-	elif is_command apt-get; then
+if is_command chezmoi; then
+	chezmoi --version
+elif is_command "${HOME}/.local/bin/chezmoi"; then
+	chezmoi="${HOME}/.local/bin/chezmoi"
+elif is_command "${HOME}/bin/chezmoi"; then
+	chezmoi="${HOME}/bin/chezmoi"
+{{- if eq .packageManager "apk" }}
+elif is_command apk; then
+	${sudo}apk add chezmoi
+{{- else if eq .packageManager "apt-get" }}
+elif is_command apt-get; then
+	if ! (is_command curl); then
 		export DEBIAN_FRONTEND=noninteractive
 		${sudo}apt-get update
 		${sudo}apt-get install --yes curl
-		sh -c "$(curl -fsSL get.chezmoi.io/lb)"
-		chezmoi="$HOME/.local/bin/chezmoi"
-	elif is_command dnf; then
-		${sudo}dnf install curl
-		sh -c "$(curl -fsSL get.chezmoi.io/lb)"
-		chezmoi="$HOME/.local/bin/chezmoi"
-{{- end }}
-	else
-		echo "unable to install chezmoi" 1>&2
-		exit 1
 	fi
+	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	chezmoi="$HOME/.local/bin/chezmoi"
+{{- else if eq .packageManager "brew" }}
+elif is_command brew; then
+	${sudo}brew install chezmoi
+{{- else if eq .packageManager "dnf" }}
+elif is_command dnf; then
+	if ! (is_command curl); then
+		${sudo}dnf install curl
+	fi
+	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	chezmoi="$HOME/.local/bin/chezmoi"
+{{- else if eq .packageManager "nix-env" }}
+elif is_command nix-env; then
+	${sudo}nix-env -i chezmoi
+{{- else if eq .packageManager "pacman" }}
+elif is_command pacman; then
+	${sudo}pacman -S chezmoi
+{{- else if eq .packageManager "port" }}
+elif is_command port; then
+	${sudo}port install chezmoi
+{{- else if eq .packageManager "pkg" }}
+elif is_command pkg; then
+	${sudo}pkg install chezmoi
+{{- else if eq .packageManager "rpm" }}
+elif is_command dnf; then
+	if ! (is_command curl); then
+		${sudo}rpm --install curl
+	fi
+	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	chezmoi="$HOME/.local/bin/chezmoi"
+{{- else if eq .packageManager "snap" }}
+elif is_command snap; then
+	${sudo}snap install chezmoi --classic
+{{- else if eq .packageManager "xbps-install" }}
+elif is_command xbps-install; then
+	${sudo}xbps-install -S chezmoi
+{{- else if eq .packageManager "zypper" }}
+elif is_command zypper; then
+	${sudo}zypper install chezmoi
+{{- end }}
+elif is_command curl; then
+	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	chezmoi="$HOME/.local/bin/chezmoi"
+elif is_command wget; then
+	sh -c "$(wget -qO- get.chezmoi.io/lb)"
+	chezmoi="$HOME/.local/bin/chezmoi"
+else
+	echo "unable to install chezmoi" 1>&2
+	exit 1
 fi
 
 ${chezmoi} init --apply {{ .args | quoteList | join " " }}

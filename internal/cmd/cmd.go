@@ -27,6 +27,8 @@ var (
 	noArgs = []string(nil)
 
 	deDuplicateErrorRx = regexp.MustCompile(`:\s+`)
+
+	chezmoiDev = make(map[string]string)
 )
 
 // A VersionInfo contains a version.
@@ -48,6 +50,11 @@ func (v VersionInfo) LogValue() slog.Value {
 
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
+	for _, pair := range strings.Split(os.Getenv("CHEZMOIDEV"), ",") {
+		key, value, _ := strings.Cut(pair, "=")
+		chezmoiDev[key] = value
+	}
+
 	if err := runMain(versionInfo, args); err != nil {
 		if errExitCode := chezmoi.ExitCodeError(0); errors.As(err, &errExitCode) {
 			return int(errExitCode)
@@ -114,16 +121,21 @@ func mustValues[T1, T2 any](value1 T1, value2 T2, err error) (T1, T2) {
 }
 
 // mustLongHelp returns the long help for command or panics if no long help
-// exists.
+// exists, unless ignorehelp=1 is set in the CHEZMOIDEV environment variable.
 func mustLongHelp(command string) string {
 	help, ok := helps[command]
-	if !ok {
+	if !ok && chezmoiDev["ignorehelp"] != "1" {
 		panic(command + ": missing long help")
 	}
 	return help.longHelp
 }
 
+// ensureAllFlagsDocumented ensures that all flags are documented, unless
+// ignoreflags=1 is set in the CHEZMOIDEV environment variable.
 func ensureAllFlagsDocumented(cmd *cobra.Command, persistentFlags *pflag.FlagSet) {
+	if chezmoiDev["ignoreflags"] == "1" {
+		return
+	}
 	cmdName := cmd.Name()
 	help, ok := helps[cmdName]
 	if !ok && !cmd.Flags().HasFlags() {

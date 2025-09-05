@@ -12,13 +12,13 @@ type dockerPodmanCmdConfig struct {
 }
 
 type dockerPodmanExecCmdConfig struct {
-	interactive bool
-	_package    bool
-	shell       bool
+	interactive    bool
+	packageManager string
+	shell          bool
 }
 
 type dockerPodmanRunCmdConfig struct {
-	_package bool
+	packageManager string
 }
 
 func (c *Config) newDockerPodmanCmd(command string, config *dockerPodmanCmdConfig) *cobra.Command {
@@ -46,10 +46,10 @@ func (c *Config) newDockerPodmanCmd(command string, config *dockerPodmanCmdConfi
 			return c.runInstallInitShellSh(sourceState,
 				command, commandArgs,
 				runInstallInitShellOptions{
-					args:        args[1:],
-					interactive: config.exec.interactive,
-					_package:    config.exec._package,
-					shell:       config.exec.shell,
+					args:           args[1:],
+					interactive:    config.exec.interactive,
+					packageManager: config.exec.packageManager,
+					shell:          config.exec.shell,
 				},
 			)
 		}),
@@ -59,7 +59,8 @@ func (c *Config) newDockerPodmanCmd(command string, config *dockerPodmanCmdConfi
 	}
 	commandExecCmd.Flags().
 		BoolVarP(&config.exec.interactive, "interactive", "i", config.exec.interactive, "Run interactively")
-	commandExecCmd.Flags().BoolVarP(&config.exec._package, "package", "p", config.exec._package, "Install with package")
+	commandExecCmd.Flags().
+		StringVarP(&config.exec.packageManager, "package-manager", "p", config.exec.packageManager, "Package manager")
 	commandExecCmd.Flags().BoolVarP(&config.exec.shell, "shell", "s", config.exec.shell, "Execute shell afterwards")
 	commandCmd.AddCommand(commandExecCmd)
 
@@ -71,10 +72,10 @@ func (c *Config) newDockerPodmanCmd(command string, config *dockerPodmanCmdConfi
 			return c.runInstallInitShellSh(sourceState,
 				command, []string{"run", "--interactive", "--tty", args[0]},
 				runInstallInitShellOptions{
-					args:        args[1:],
-					interactive: true,
-					_package:    config.run._package,
-					shell:       true,
+					args:           args[1:],
+					interactive:    true,
+					packageManager: config.run.packageManager,
+					shell:          true,
 				},
 			)
 		}),
@@ -82,7 +83,8 @@ func (c *Config) newDockerPodmanCmd(command string, config *dockerPodmanCmdConfi
 			persistentStateModeReadWrite,
 		),
 	}
-	commandRunCmd.Flags().BoolVarP(&config.run._package, "package", "p", config.run._package, "Install with package")
+	commandRunCmd.Flags().
+		StringVarP(&config.run.packageManager, "package-manager", "p", config.run.packageManager, "Package manager")
 	commandCmd.AddCommand(commandRunCmd)
 
 	return commandCmd
