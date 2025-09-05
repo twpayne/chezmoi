@@ -303,7 +303,7 @@ var helps = map[string]*help{
 			"",
 		example: "" +
 			"  chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME\n" +
-			"  chezmoi docker run alpine:latest $GITHUB_USERNAME",
+			"  chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME",
 	},
 	"doctor": {
 		longHelp: "" +
@@ -699,7 +699,7 @@ var helps = map[string]*help{
 			"",
 		example: "" +
 			"  chezmoi podman exec $CONTAINER_ID $GITHUB_USERNAME\n" +
-			"  chezmoi podman run alpine:latest $GITHUB_USERNAME",
+			"  chezmoi podman run -p apk alpine:latest $GITHUB_USERNAME",
 	},
 	"purge": {
 		longHelp: "" +
@@ -782,7 +782,7 @@ var helps = map[string]*help{
 			"  chezmoi ssh $HOSTNAME $GITHUB_USERNAME\n" +
 			"  chezmoi ssh $HOSTNAME -- --one-shot $GITHUB_USERNAME",
 		longFlags: chezmoiset.New(
-			"package",
+			"package-manager",
 			"shell",
 		),
 		shortFlags: chezmoiset.New(

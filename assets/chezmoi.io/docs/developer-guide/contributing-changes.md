@@ -24,7 +24,7 @@ that:
   missing for a command. You can disable this panic during development by
   setting the environment variable `CHEZMOIDEV` to `ignoreflags=1,ignorehelp=1`.
   Once you have documented the command and its flags, run
-  `CHEZMOIDEV=ignoreflags=1,ignorehelp=1 go generate` to generate the embedded
+  `make generate` to generate the embedded
   documentation.
 
 * All generated files are up to date. You can ensure this by running `make
