@@ -100,6 +100,7 @@ type External struct {
 	ReadOnly        bool              `json:"readonly"        toml:"readonly"        yaml:"readonly"`
 	Checksum        externalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
 	Clone           externalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
+	Commit          string            `json:"commit"          toml:"commit"          yaml:"commit"`
 	Decompress      compressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
 	Exclude         []string          `json:"exclude"         toml:"exclude"         yaml:"exclude"`
 	Filter          externalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
@@ -1216,10 +1217,22 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					// $PATH when os/exec.Command is called, not the state of
 					// $PATH when os/exec.Cmd.{Run,Start} is called.
 					cmdFunc: sync.OnceValue(func() *exec.Cmd {
-						args := []string{"clone"}
-						args = append(args, external.Clone.Args...)
-						args = append(args, external.URL, destAbsPath.String())
-						cmd := exec.Command("git", args...)
+						var cmd *exec.Cmd
+						if external.Commit != "" {
+							// TODO: Do not rely on platform-dependent shell execution
+							script := fmt.Sprintf(
+								"git clone %s %s && git -C %s checkout %s",
+								shellQuote(external.URL),
+								shellQuote(destAbsPath.String()),
+								shellQuote(destAbsPath.String()),
+								shellQuote(external.Commit),
+							)
+							cmd = exec.Command("sh", "-c", script)
+						} else {
+							args := append([]string{"clone"}, external.Clone.Args...)
+							args = append(args, external.URL, destAbsPath.String())
+							cmd = exec.Command("git", args...)
+						}
 						cmd.Stdin = os.Stdin
 						cmd.Stdout = os.Stdout
 						cmd.Stderr = os.Stderr
@@ -2993,4 +3006,9 @@ func canonicalSourceStateEntry(sourceStateEntries []SourceStateEntry) (SourceSta
 // expected signature of an AppleDouble file.
 func isAppleDoubleFile(name string, contents []byte) bool {
 	return strings.HasPrefix(path.Base(name), appleDoubleNamePrefix) && bytes.HasPrefix(contents, appleDoubleContentsPrefix)
+}
+
+// shellQuote returns s quoted as a shell argument.
+func shellQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", `'\''`) + "'"
 }

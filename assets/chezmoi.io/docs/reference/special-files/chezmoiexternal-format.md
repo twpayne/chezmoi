@@ -48,6 +48,7 @@ Entries may have the following fields:
 | `checksum.sha512`            | string   | *none*        | Expected SHA512 checksum of data                                 |
 | `checksum.size`              | int      | *none*        | Expected size of data                                            |
 | `clone.args`                 | []string | *none*        | Extra args to `git clone`                                        |
+| `commit`                     | string   | *none*        | Git commit SHA to checkout for `git-repo` type                   |
 | `filter.command`             | string   | *none*        | Command to filter contents                                       |
 | `filter.args`                | []string | *none*        | Extra args to command to filter contents                         |
 | `pull.args`                  | []string | *none*        | Extra args to `git pull`                                         |

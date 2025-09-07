@@ -1,0 +1,55 @@
+[windows] skip 'UNIX only'
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+expandenv $WORK/home/user/.local/share/chezmoi/.chezmoiexternal.toml
+
+# create a git repo with multiple commits
+cd $WORK/repo
+exec git init
+exec git add .
+exec git commit --message 'initial commit'
+edit $WORK/repo/.file
+exec git commit --message 'second commit' .
+# add one more commit to make it clear we're not at HEAD
+exec git commit --allow-empty --message 'third commit'
+cd $WORK
+
+# test that chezmoi apply clones the git repo at specific commit (HEAD~1)
+exec chezmoi apply
+cmp $HOME/.dir/.file golden/.file-edited
+
+# verify that the repo was cloned and we're NOT at the latest commit
+cd $HOME/.dir
+exec git log --oneline
+! stdout 'third commit'
+stdout 'second commit'
+cd $WORK
+
+# test that chezmoi managed lists the directory
+exec chezmoi managed
+stdout ^\.dir$
+
+# test that subsequent apply doesn't change the commit (no pull since commit is specified)
+cd $WORK/repo
+exec git commit --allow-empty --message 'fourth commit'
+cd $WORK
+exec chezmoi apply
+cd $HOME/.dir
+exec git log --oneline
+! stdout 'fourth commit'
+! stdout 'third commit'
+stdout 'second commit'
+
+-- golden/.file --
+# contents of .file
+-- golden/.file-edited --
+# contents of .file
+# edited
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "git-repo"
+    url = "file://$WORK/repo"
+    commit = "HEAD~1"
+-- repo/.file --
+# contents of .file
