@@ -177,6 +177,10 @@ ensure-goversioninfo:
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${GOVERSIONINFO_VERSION}" ; \
 	fi
 
+.PHONY: generate
+embed:
+	CHEZMOIDEV=ignoreflags=1,ignorehelp=1 go generate
+
 .PHONY: release
 release: ensure-goreleaser
 	./bin/goreleaser release \
