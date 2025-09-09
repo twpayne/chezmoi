@@ -3199,8 +3199,6 @@
       
         
       
-        
-      
     
     
       
@@ -4047,28 +4045,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../podman/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    podman
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../purge/" class="md-nav__link">
         
   
@@ -4259,9 +4235,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-p-package" class="md-nav__link">
+  <a href="#-p-package-manager-package-manager" class="md-nav__link">
     <span class="md-ellipsis">
-      -p, --package
+      -p, --package-manager package-manager
     </span>
   </a>
   
@@ -8929,9 +8905,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-p-package" class="md-nav__link">
+  <a href="#-p-package-manager-package-manager" class="md-nav__link">
     <span class="md-ellipsis">
-      -p, --package
+      -p, --package-manager package-manager
     </span>
   </a>
   
@@ -8987,10 +8963,12 @@
 <p>SSH to <em>host</em>, install chezmoi, run <code>chezmoi init --apply *init-args*</code>, and
 executes your shell.</p>
 <h2 id="flags">Flags</h2>
-<h3 id="-p-package"><code>-p</code>, <code>--package</code></h3>
-<p>Install chezmoi using the distribution's package manager, if possible.
-Otherwise, fall back to <code>curl</code> or <code>wget</code> installation. If neither <code>curl</code> nor
-<code>wget</code> are installed then install them with the distribution's package manager.</p>
+<h3 id="-p-package-manager-package-manager"><code>-p</code>, <code>--package-manager</code> <em>package-manager</em></h3>
+<p>Install chezmoi using <em>package-manager</em>, if possible. Valid values for
+<em>package-manager</em> include <code>apk</code>, <code>apt-get</code>, <code>brew</code>, <code>dnf</code>, <code>nix-env</code>, <code>pacman</code>,
+<code>port</code>, <code>pkg</code>, <code>rpm</code>, <code>snap</code>, <code>xbps-install</code>, and <code>zypper</code>. Otherwise, fall back
+to <code>curl</code> or <code>wget</code> installation. If neither <code>curl</code> nor <code>wget</code> are installed
+then install them with <em>package-manager</em>.</p>
 <h3 id="-s-shell"><code>-s</code>, <code>--shell</code></h3>
 <p>After installing chezmoi, initializing your dotfiles, execute your shell. This
 is the default.</p>

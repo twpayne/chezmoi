@@ -3182,8 +3182,6 @@
       
         
       
-        
-      
     
     
       
@@ -4012,28 +4010,6 @@
   
   <span class="md-ellipsis">
     merge-all
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/podman/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    podman
     
   </span>
   
@@ -8859,7 +8835,13 @@ that:</p>
 <p>The documentation is updated, if necessary. For new features you should add an
   entry in <code>assets/chezmoi.io/docs/user-guide/</code> and a complete description in
   <code>assets/chezmoi.io/docs/reference/</code>. See the <a href="../website/">website</a> for
-  instructions on how to build and view a local version of the documentation.</p>
+  instructions on how to build and view a local version of the documentation. By
+  default, chezmoi will panic if a flag is undocumented or a long help is
+  missing for a command. You can disable this panic during development by
+  setting the environment variable <code>CHEZMOIDEV</code> to <code>ignoreflags=1,ignorehelp=1</code>.
+  Once you have documented the command and its flags, run
+  <code>make generate</code> to generate the embedded
+  documentation.</p>
 </li>
 <li>
 <p>All generated files are up to date. You can ensure this by running <code>make
