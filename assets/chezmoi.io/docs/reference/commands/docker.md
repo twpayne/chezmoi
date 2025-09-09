@@ -4,8 +4,13 @@
 
     `docker` is an experimental command.
 
+!!! Hint
+
+    To use [podman](https://podman.io/) instead of Docker, set the
+    `docker.command` configuration variable to `podman`.
+
 Install chezmoi, run `chezmoi init --apply`, and optionally execute your shell
-in Docker containers.
+in [Docker](https://docker.com/) containers.
 
 ## Subcommands
 

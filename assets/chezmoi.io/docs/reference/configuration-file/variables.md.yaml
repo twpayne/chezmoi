@@ -164,6 +164,10 @@ sections:
       type: bool
       default: '`true`'
       description: Show script contents.
+  docker:
+    command:
+      default: '`docker`'
+      description: Docker CLI command.
   doppler:
     args:
       type: '[]string'

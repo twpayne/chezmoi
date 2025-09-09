@@ -156,6 +156,7 @@ type ConfigFile struct {
 	Add        addCmdConfig        `json:"add"        mapstructure:"add"        yaml:"add"`
 	CD         cdCmdConfig         `json:"cd"         mapstructure:"cd"         yaml:"cd"`
 	Completion completionCmdConfig `json:"completion" mapstructure:"completion" yaml:"completion"`
+	Docker     dockerCmdConfig     `json:"docker"     mapstructure:"docker"     yaml:"docker"`
 	Diff       diffCmdConfig       `json:"diff"       mapstructure:"diff"       yaml:"diff"`
 	Edit       editCmdConfig       `json:"edit"       mapstructure:"edit"       yaml:"edit"`
 	Git        gitCmdConfig        `json:"git"        mapstructure:"git"        yaml:"git"`
@@ -198,7 +199,6 @@ type Config struct {
 	chattr          chattrCmdConfig
 	data            dataCmdConfig
 	destroy         destroyCmdConfig
-	docker          dockerPodmanCmdConfig
 	doctor          doctorCmdConfig
 	dump            dumpCmdConfig
 	dumpConfig      dumpConfigCmdConfig
@@ -209,7 +209,6 @@ type Config struct {
 	init            initCmdConfig
 	managed         managedCmdConfig
 	mergeAll        mergeAllCmdConfig
-	podman          dockerPodmanCmdConfig
 	ssh             sshCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
@@ -363,12 +362,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		data: dataCmdConfig{
 			format: newChoiceFlag("", writeDataFormatValues),
 		},
-		docker: dockerPodmanCmdConfig{
-			exec: dockerPodmanExecCmdConfig{
-				interactive: true,
-				shell:       true,
-			},
-		},
 		dump: dumpCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			format:    newChoiceFlag("", writeDataFormatValues),
@@ -407,12 +400,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		reAdd: reAddCmdConfig{
 			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
-		},
-		podman: dockerPodmanCmdConfig{
-			exec: dockerPodmanExecCmdConfig{
-				interactive: true,
-				shell:       true,
-			},
 		},
 		ssh: sshCmdConfig{
 			shell: true,
@@ -1871,8 +1858,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newDecryptCommand(),
 		c.newDestroyCmd(),
 		c.newDiffCmd(),
-		c.newDockerPodmanCmd("docker", &c.docker),
-		c.newDockerPodmanCmd("podman", &c.podman),
+		c.newDockerCmd(),
 		c.newDoctorCmd(),
 		c.newDumpCmd(),
 		c.newDumpConfigCmd(),
@@ -3109,6 +3095,13 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			Pager:          defaultSentinel,
 			ScriptContents: true,
 			include:        chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+		},
+		Docker: dockerCmdConfig{
+			Command: "docker",
+			exec: dockerExecCmdConfig{
+				interactive: true,
+				shell:       true,
+			},
 		},
 		Edit: editCmdConfig{
 			Hardlink:    true,
