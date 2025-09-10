@@ -107,9 +107,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 // github.com/go-git/go-git/v5/plumbing/format/diff.Chunks required to transform
 // from into to.
 func diffChunks(from, to string) []diff.Chunk {
-	fromLines := withoutEmpty(strings.SplitAfter(from, "\n"))
-	toLines := withoutEmpty(strings.SplitAfter(to, "\n"))
-	edits := znkrdiff.Edits(fromLines, toLines, znkrdiff.Optimal())
+	edits := znkrdiff.Edits(splitLines(from), splitLines(to), znkrdiff.Optimal())
 	chunks := make([]diff.Chunk, len(edits))
 	for i, edit := range edits {
 		switch edit.Op {
@@ -148,15 +146,14 @@ func isBinary(data []byte) bool {
 	return len(data) != 0 && !strings.HasPrefix(http.DetectContentType(data), "text/")
 }
 
-func withoutEmpty(s []string) []string {
-	switch {
-	case len(s) == 0:
-		return nil
-	case s[0] == "":
-		return s[1:]
-	case s[len(s)-1] == "":
-		return s[:len(s)-1]
+// splitLines splits s into lines.
+func splitLines(s string) []string {
+	switch lines := strings.SplitAfter(s, "\n"); {
+	case lines[len(lines)-1] == "":
+		// If s ends with a newline then lines will end with an empty string.
+		// Remove it as we don't care about newlines in diffs.
+		return lines[:len(lines)-1]
 	default:
-		return s
+		return lines
 	}
 }
