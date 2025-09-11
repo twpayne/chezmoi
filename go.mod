@@ -24,12 +24,12 @@ require (
 	github.com/Shopify/ejson v1.5.4
 	github.com/alecthomas/assert/v2 v2.11.0
 	github.com/aws/aws-sdk-go-v2 v1.39.0
-	github.com/aws/aws-sdk-go-v2/config v1.31.7
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.3
+	github.com/aws/aws-sdk-go-v2/config v1.31.8
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.39.4
 	github.com/bmatcuk/doublestar/v4 v4.9.1
 	github.com/bradenhilton/mozillainstallhash v1.0.1
 	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.3.8
+	github.com/charmbracelet/bubbletea v1.3.9
 	github.com/charmbracelet/glamour v0.10.0
 	github.com/charmbracelet/lipgloss v1.1.1-0.20250404203927-76690c660834
 	github.com/coreos/go-semver v0.3.1
@@ -79,7 +79,7 @@ require (
 	al.essio.dev/pkg/shellescape v1.6.0 // indirect
 	dario.cat/mergo v1.0.2 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.19.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.19.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.11.2 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.2.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.5.0 // indirect
@@ -93,16 +93,16 @@ require (
 	github.com/alecthomas/repr v0.5.2 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.18.11 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.18.12 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.7 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.7 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.7 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.7 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.29.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.34.3 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.38.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.29.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.34.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.38.4 // indirect
 	github.com/aws/smithy-go v1.23.0 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
@@ -116,7 +116,7 @@ require (
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.10.1 // indirect
 	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
-	github.com/charmbracelet/x/exp/slice v0.0.0-20250909190653-d79841eb2127 // indirect
+	github.com/charmbracelet/x/exp/slice v0.0.0-20250911160549-0e720abcae8b // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
@@ -196,9 +196,9 @@ require (
 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
-	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
+	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
 	golang.org/x/net v0.44.0 // indirect
-	golang.org/x/tools v0.36.0 // indirect
+	golang.org/x/tools v0.37.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
