@@ -11,4 +11,3 @@ before all other files in the source directory.
     as [`.chezmoi.$FORMAT.tmpl`][config] into your new root.
 
 [config]: /reference/special-files/chezmoi-format-tmpl.md
-

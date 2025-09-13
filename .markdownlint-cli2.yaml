@@ -2,6 +2,8 @@ globs:
 - '**/*.md'
 ignores:
 - .github/ISSUE_TEMPLATE/*.md
+- .venv/
 - assets/chezmoi.io/docs/reference/release-history.md
 config:
+  fenced-code-language: true
   line-length: false

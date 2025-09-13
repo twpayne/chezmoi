@@ -11,6 +11,7 @@ By default, you must have unlocked your Bitwarden CLI session with the command
 ```bash
 export BW_SESSION="$(bw unlock --raw)"
 ```
+
 before running chezmoi.
 
 Optionally, you can tell chezmoi to automatically run `bw unlock --raw` and set

@@ -37,6 +37,7 @@
 {{       end -}}
 
 ### {{ $title }}{{ if .deprecated }} (deprecated){{ end }} { #{{$slug}} }
+
 | Type | Default |
 | - | - |
 | `{{ .type | default "string" }}` | {{ .default | default $defaultValue }} |
