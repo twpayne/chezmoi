@@ -169,6 +169,8 @@ linters:
     staticcheck:
       checks:
       - all
+    sloglint:
+      attr-only: true
   exclusions:
     generated: lax
     presets:

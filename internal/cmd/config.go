@@ -1948,7 +1948,7 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
-	sourceStateLogger := c.logger.With(logComponentKey, logComponentValueSourceState)
+	sourceStateLogger := c.logger.With(slog.String(logComponentKey, logComponentValueSourceState))
 
 	c.SourceDirAbsPath, err = c.getSourceDirAbsPath(nil)
 	if err != nil {
@@ -2729,7 +2729,7 @@ func (c *Config) setEncryption() error {
 	}
 
 	if c.debug {
-		encryptionLogger := c.logger.With(logComponentKey, logComponentValueEncryption)
+		encryptionLogger := c.logger.With(slog.String(logComponentKey, logComponentValueEncryption))
 		c.encryption = chezmoi.NewDebugEncryption(c.encryption, encryptionLogger)
 	}
 
