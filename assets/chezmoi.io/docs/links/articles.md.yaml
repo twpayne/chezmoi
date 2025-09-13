@@ -589,3 +589,7 @@ articles:
   lang: JP
   title: chezmoi
   url: https://www.ebiyuu.com/dotfiles/chezmoi/
+- date: '2025-09-08'
+  version: 2.65.1
+  title: Improving My Dotfiles Posture
+  url: https://benprisby.com/blog/improving-my-dotfiles-posture/
