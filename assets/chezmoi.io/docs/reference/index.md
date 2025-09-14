@@ -17,5 +17,5 @@ This reference covers the following topics:
   - [Variables](/reference/templates/variables.md)
   - [Directives](/reference/templates/directives.md)
   - [Functions](/reference/templates/functions/index.md)
-- [Plugins support](/reference/plugins.md)
+- [Plugins](/reference/plugins.md)
 - [Release history](/reference/release-history.md)
