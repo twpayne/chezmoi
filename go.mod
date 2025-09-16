@@ -39,7 +39,7 @@ require (
 	github.com/goccy/go-yaml v1.18.0
 	github.com/google/go-github/v61 v61.0.0
 	github.com/google/renameio/v2 v2.0.0
-	github.com/gopasspw/gopass v1.15.16
+	github.com/gopasspw/gopass v1.15.17
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.17
 	github.com/klauspost/compress v1.18.0
@@ -112,11 +112,12 @@ require (
 	github.com/bodgit/windows v1.0.1 // indirect
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
 	github.com/caspr-io/yamlpath v0.0.0-20200722075116-502e8d113a9b // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/charmbracelet/colorprofile v0.3.2 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/x/ansi v0.10.1 // indirect
 	github.com/charmbracelet/x/cellbuf v0.0.13 // indirect
-	github.com/charmbracelet/x/exp/slice v0.0.0-20250911160549-0e720abcae8b // indirect
+	github.com/charmbracelet/x/exp/slice v0.0.0-20250915185223-c03fb6f5130b // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
@@ -141,7 +142,7 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/gopasspw/gitconfig v0.0.2 // indirect
+	github.com/gopasspw/gitconfig v0.0.3-0.20250819161336-9ff4f059ac1d // indirect
 	github.com/gorilla/css v1.0.1 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
