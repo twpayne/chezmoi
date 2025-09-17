@@ -4,12 +4,19 @@ import (
 	"io/fs"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
-	znkrdiff "znkr.io/diff"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
+
+var gitDiffOperation = map[diffmatchpatch.Operation]diff.Operation{
+	diffmatchpatch.DiffDelete: diff.Delete,
+	diffmatchpatch.DiffEqual:  diff.Equal,
+	diffmatchpatch.DiffInsert: diff.Add,
+}
 
 // A gitDiffChunk implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Chunk interface.
@@ -18,8 +25,8 @@ type gitDiffChunk struct {
 	operation diff.Operation
 }
 
-func (c gitDiffChunk) Content() string      { return c.content }
-func (c gitDiffChunk) Type() diff.Operation { return c.operation }
+func (c *gitDiffChunk) Content() string      { return c.content }
+func (c *gitDiffChunk) Type() diff.Operation { return c.operation }
 
 // A gitDiffFile implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.File interface.
@@ -107,26 +114,17 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 // github.com/go-git/go-git/v5/plumbing/format/diff.Chunks required to transform
 // from into to.
 func diffChunks(from, to string) []diff.Chunk {
-	edits := znkrdiff.Edits(splitLines(from), splitLines(to), znkrdiff.Optimal())
-	chunks := make([]diff.Chunk, len(edits))
-	for i, edit := range edits {
-		switch edit.Op {
-		case znkrdiff.Delete:
-			chunks[i] = gitDiffChunk{
-				content:   edit.X,
-				operation: diff.Delete,
-			}
-		case znkrdiff.Insert:
-			chunks[i] = gitDiffChunk{
-				content:   edit.Y,
-				operation: diff.Add,
-			}
-		case znkrdiff.Match:
-			chunks[i] = gitDiffChunk{
-				content:   edit.X,
-				operation: diff.Equal,
-			}
+	dmp := diffmatchpatch.New()
+	dmp.DiffTimeout = time.Second
+	fromRunes, toRunes, runesToLines := dmp.DiffLinesToRunes(from, to)
+	diffs := dmp.DiffCharsToLines(dmp.DiffMainRunes(fromRunes, toRunes, false), runesToLines)
+	chunks := make([]diff.Chunk, len(diffs))
+	for i, d := range diffs {
+		chunk := &gitDiffChunk{
+			content:   d.Text,
+			operation: gitDiffOperation[d.Type],
 		}
+		chunks[i] = chunk
 	}
 	return chunks
 }
@@ -144,16 +142,4 @@ func diffFileMode(mode fs.FileMode) (filemode.FileMode, error) {
 // isBinary returns true if data contains binary (non-human-readable) data.
 func isBinary(data []byte) bool {
 	return len(data) != 0 && !strings.HasPrefix(http.DetectContentType(data), "text/")
-}
-
-// splitLines splits s into lines.
-func splitLines(s string) []string {
-	switch lines := strings.SplitAfter(s, "\n"); {
-	case lines[len(lines)-1] == "":
-		// If s ends with a newline then lines will end with an empty string.
-		// Remove it as we don't care about newlines in diffs.
-		return lines[:len(lines)-1]
-	default:
-		return lines
-	}
 }
