@@ -16,7 +16,7 @@ func (c *Config) newSourcePathCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runSourcePathCmd,
 		Annotations: newAnnotations(
-			persistentStateModeReadMockWrite,
+			persistentStateModeNone,
 		),
 	}
 

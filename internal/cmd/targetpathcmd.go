@@ -16,7 +16,7 @@ func (c *Config) newTargetPathCmd() *cobra.Command {
 		Example: example("target-path"),
 		RunE:    c.runTargetPathCmd,
 		Annotations: newAnnotations(
-			persistentStateModeReadMockWrite,
+			persistentStateModeNone,
 		),
 	}
 
