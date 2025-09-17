@@ -1,0 +1,99 @@
+# test that chezmoi diff shows only three lines of context
+exec chezmoi diff
+[umask:002] cmp stdout golden/umask-002.diff
+[umask:022] cmp stdout golden/umask-022.diff
+
+-- golden/umask-002.diff --
+diff --git a/.file b/.file
+index 1cb5bd7432f53fc594236648d89f0c5c4185ba18..0edb85647c20325c18d158529b73bc2105696c97 100664
+--- a/.file
++++ b/.file
+@@ -2,6 +2,7 @@ a
+ b
+ c
+ d
++e
+ f
+ g
+ h
+@@ -18,6 +19,7 @@ r
+ s
+ t
+ u
++v
+ w
+ x
+ y
+-- golden/umask-022.diff --
+diff --git a/.file b/.file
+index 1cb5bd7432f53fc594236648d89f0c5c4185ba18..0edb85647c20325c18d158529b73bc2105696c97 100644
+--- a/.file
++++ b/.file
+@@ -2,6 +2,7 @@ a
+ b
+ c
+ d
++e
+ f
+ g
+ h
+@@ -18,6 +19,7 @@ r
+ s
+ t
+ u
++v
+ w
+ x
+ y
+-- home/user/.file --
+a
+b
+c
+d
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+q
+r
+s
+t
+u
+w
+x
+y
+z
+-- home/user/.local/share/chezmoi/dot_file --
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+l
+m
+n
+o
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
