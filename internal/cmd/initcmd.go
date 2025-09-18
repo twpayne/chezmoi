@@ -204,8 +204,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// Apply.
+	// Apply. Explicitly run any apply pre or post hooks because the normal hook
+	// mechanism will only run init's hooks.
 	if c.init.apply {
+		if err := c.runHookPre("apply"); err != nil {
+			return err
+		}
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 			cmd:          cmd,
 			filter:       c.init.filter,
@@ -213,6 +217,9 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,
 		}); err != nil {
+			return err
+		}
+		if err := c.runHookPost("apply"); err != nil {
 			return err
 		}
 	}
