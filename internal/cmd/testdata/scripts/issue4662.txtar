@@ -1,0 +1,15 @@
+# test that chezmoi init --apply runs apply's pre and post hooks
+exec chezmoi init --apply
+cmp stdout golden/init
+
+-- golden/init --
+pre-apply-hook
+post-apply-hook
+-- home/user/.config/chezmoi/chezmoi.toml --
+[hooks.apply.pre]
+    command = "echo"
+    args = ["pre-apply-hook"]
+[hooks.apply.post]
+    command = "echo"
+    args = ["post-apply-hook"]
+-- home/user/.local/share/chezmoi/.keep --
