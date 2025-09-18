@@ -124,8 +124,6 @@ jobs:
         ./assets/docker/test.sh archlinux
   test-macos:
     name: test-macos
-    strategy:
-      fail-fast: false
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-15
