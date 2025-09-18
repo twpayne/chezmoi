@@ -345,6 +345,10 @@ jobs:
       run: |
         go generate
         git diff --exit-code
+    - name: capslock
+      run: |
+        make capslock
+        git diff --exit-code
     - name: actionlint
       run: |
         go install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}"
