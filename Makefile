@@ -1,7 +1,6 @@
 GO?=go
 GOOS=$(shell ${GO} env GOOS)
 GOARCH=$(shell ${GO} env GOARCH)
-EDITORCONFIG_CHECKER_VERSION=$(shell awk '/EDITORCONFIG_CHECKER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
@@ -110,9 +109,9 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-editorconfig-checker ensure-golangci-lint shellcheck
+lint: ensure-golangci-lint shellcheck
 	${GO} tool actionlint
-	./bin/editorconfig-checker
+	${GO} tool editorconfig-checker
 	./bin/golangci-lint run
 	${GO} tool lint-whitespace
 	find . -name \*.txtar | xargs ${GO} tool lint-txtar
@@ -141,13 +140,6 @@ create-syso:
 ensure-tools: \
 	ensure-golangci-lint \
 	ensure-goreleaser
-
-.PHONY: ensure-editorconfig-checker
-ensure-editorconfig-checker:
-	if [ ! -x bin/editorconfig-checker ] || ( ./bin/editorconfig-checker --version | grep -Fqv "v${EDITORCONFIG_CHECKER_VERSION}" ) ; then \
-		curl -sSfL "https://github.com/editorconfig-checker/editorconfig-checker/releases/download/v${EDITORCONFIG_CHECKER_VERSION}/ec-${GOOS}-${GOARCH}.tar.gz" | tar -xzf - "bin/ec-${GOOS}-${GOARCH}" ; \
-		mv "bin/ec-${GOOS}-${GOARCH}" bin/editorconfig-checker ; \
-	fi
 
 .PHONY: ensure-golangci-lint
 ensure-golangci-lint:
