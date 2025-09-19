@@ -4,7 +4,6 @@ GOARCH=$(shell ${GO} env GOARCH)
 EDITORCONFIG_CHECKER_VERSION=$(shell awk '/EDITORCONFIG_CHECKER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
@@ -134,15 +133,14 @@ format-yaml:
 	find . -name \*.yaml -o -name \*.yml | xargs uv run task format-yaml
 
 .PHONY: create-syso
-create-syso: ensure-goversioninfo
+create-syso:
 	${GO} tool execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
-	./bin/goversioninfo -platform-specific
+	${GO} tool goversioninfo -platform-specific
 
 .PHONY: ensure-tools
 ensure-tools: \
 	ensure-golangci-lint \
-	ensure-goreleaser \
-	ensure-goversioninfo
+	ensure-goreleaser
 
 .PHONY: ensure-editorconfig-checker
 ensure-editorconfig-checker:
@@ -161,12 +159,6 @@ ensure-golangci-lint:
 ensure-goreleaser:
 	if [ ! -x bin/goreleaser ] || ( ./bin/goreleaser --version | grep -Fqv "${GORELEASER_VERSION}" ) ; then \
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/goreleaser/goreleaser/v2@v${GORELEASER_VERSION}" ; \
-	fi
-
-.PHONY: ensure-goversioninfo
-ensure-goversioninfo:
-	if [ ! -x bin/goversioninfo ] ; then \
-		GOBIN=$(shell pwd)/bin ${GO} install "github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${GOVERSIONINFO_VERSION}" ; \
 	fi
 
 .PHONY: generate
