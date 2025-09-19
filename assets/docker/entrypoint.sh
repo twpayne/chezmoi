@@ -15,7 +15,7 @@ if [ -d "/go-cache" ]; then
 fi
 
 cd /chezmoi
-${GO} run . doctor || true
+${GO} tool chezmoi doctor || true
 ${GO} test ./...
 
 sh assets/scripts/install.sh

@@ -117,7 +117,7 @@ lint: ensure-actionlint ensure-editorconfig-checker ensure-golangci-lint shellch
 	./bin/editorconfig-checker
 	./bin/golangci-lint run
 	${GO} tool lint-whitespace
-	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
+	find . -name \*.txtar | xargs ${GO} tool lint-txtar
 	${GO} tool find-typos chezmoi .
 	${GO} tool lint-commit-messages ${UPSTREAM}/master..HEAD
 
