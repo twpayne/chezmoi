@@ -1,7 +1,6 @@
 GO?=go
 GOOS=$(shell ${GO} env GOOS)
 GOARCH=$(shell ${GO} env GOARCH)
-ACTIONLINT_VERSION=$(shell awk '/ACTIONLINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 EDITORCONFIG_CHECKER_VERSION=$(shell awk '/EDITORCONFIG_CHECKER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
@@ -112,8 +111,8 @@ generate:
 	${GO} generate
 
 .PHONY: lint
-lint: ensure-actionlint ensure-editorconfig-checker ensure-golangci-lint shellcheck
-	./bin/actionlint
+lint: ensure-editorconfig-checker ensure-golangci-lint shellcheck
+	${GO} tool actionlint
 	./bin/editorconfig-checker
 	./bin/golangci-lint run
 	${GO} tool lint-whitespace
@@ -141,16 +140,9 @@ create-syso: ensure-goversioninfo
 
 .PHONY: ensure-tools
 ensure-tools: \
-	ensure-actionlint \
 	ensure-golangci-lint \
 	ensure-goreleaser \
 	ensure-goversioninfo
-
-.PHONY: ensure-actionlint
-ensure-actionlint:
-	if [ ! -x bin/actionlint ] || ( ./bin/actionlint --version | grep -Fqv "v${ACTIONLINT_VERSION}" ) ; then \
-		GOBIN=$(shell pwd)/bin ${GO} install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}" ; \
-	fi
 
 .PHONY: ensure-editorconfig-checker
 ensure-editorconfig-checker:

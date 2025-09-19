@@ -14,7 +14,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 env:
-  ACTIONLINT_VERSION: 1.7.7 # https://github.com/rhysd/actionlint/releases
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.5.1 # https://github.com/chocolatey/choco/releases
   EDITORCONFIG_CHECKER_VERSION: 3.4.0 # https://github.com/editorconfig-checker/editorconfig-checker/releases
@@ -347,8 +346,7 @@ jobs:
         git diff --exit-code
     - name: actionlint
       run: |
-        go install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}"
-        actionlint
+        go tool actionlint
     - uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38
       with:
         ignore_paths: completions
