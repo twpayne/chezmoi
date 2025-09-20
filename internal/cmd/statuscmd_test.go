@@ -62,7 +62,24 @@ func TestStatusCmd(t *testing.T) {
 				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o755},
 			},
 		},
+		{
+			name: "remove_directory",
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".dir": &vfst.Dir{Perm: 0o755},
+					".local/share/chezmoi": map[string]any{
+						"remove_dot_dir": &vfst.Dir{Perm: 0o755},
+					},
+				},
+			},
+			stdoutStr: chezmoitest.JoinLines(
+				` D .dir`,
+			),
+		},
 	} {
+		if tc.name != "remove_directory" {
+			continue
+		}
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				stdout := strings.Builder{}

@@ -1,0 +1,10 @@
+# test that chezmoi status shows that directories will be removed
+mkdir $HOME/.dir
+exec chezmoi status
+cmp stdout golden/status
+exec chezmoi apply
+! exists $HOME/.dir
+
+-- golden/status --
+ D .dir
+-- home/user/.local/share/chezmoi/remove_dot_dir/.keep --

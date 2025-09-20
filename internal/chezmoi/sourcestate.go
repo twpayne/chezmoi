@@ -878,6 +878,7 @@ func (s *SourceState) PostApply(
 	persistentState PersistentState,
 	targetDirAbsPath AbsPath,
 	targetRelPaths []RelPath,
+	applyOptions ApplyOptions,
 ) error {
 	// Remove empty directories with the remove_ attribute. This assumes that
 	// targetRelPaths is already sorted and iterates in reverse order so that
@@ -891,13 +892,30 @@ TARGET:
 
 		// Ensure that we are attempting to remove a directory, not any other entry type.
 		targetAbsPath := targetDirAbsPath.Join(targetRelPath)
-		switch fileInfo, err := targetSystem.Stat(targetAbsPath); {
+		fileInfo, err := targetSystem.Stat(targetAbsPath)
+		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			continue TARGET
 		case err != nil:
 			return err
 		case !fileInfo.IsDir():
 			return fmt.Errorf("%s: not a directory", targetAbsPath)
+		}
+
+		if applyOptions.PreApplyFunc != nil {
+			targetEntryState := &EntryState{
+				Type: EntryStateTypeRemove,
+			}
+			actualEntryState := &EntryState{
+				Type: EntryStateTypeDir,
+				Mode: fileInfo.Mode(),
+			}
+			switch err := applyOptions.PreApplyFunc(targetRelPath, targetEntryState, actualEntryState, actualEntryState); {
+			case errors.Is(err, fs.SkipDir):
+				continue TARGET
+			case err != nil:
+				return err
+			}
 		}
 
 		// Attempt to remove the directory, but ignore any "not exist" or "not
