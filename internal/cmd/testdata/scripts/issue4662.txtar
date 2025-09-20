@@ -1,3 +1,5 @@
+[!exec:echo] skip 'echo not found in $PATH'
+
 # test that chezmoi init --apply runs apply's pre and post hooks
 exec chezmoi init --apply
 cmp stdout golden/init
