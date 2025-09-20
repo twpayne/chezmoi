@@ -46,12 +46,12 @@ import (
 	"mvdan.cc/sh/v3/expand"
 	"mvdan.cc/sh/v3/syntax"
 
-	"github.com/twpayne/chezmoi/assets/templates"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoierrors"
-	"github.com/twpayne/chezmoi/internal/chezmoigit"
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/assets/templates"
+	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/internal/chezmoigit"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 // defaultSentinel is a string value used to indicate that the default value

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 var (

@@ -12,7 +12,7 @@ import (
 	"github.com/google/renameio/v2"
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"github.com/twpayne/chezmoi/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/internal/chezmoierrors"
 )
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.

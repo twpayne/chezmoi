@@ -85,8 +85,8 @@ rm-dist:
 
 .PHONY: test
 test:
-	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
-	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
+	${GO} test -ldflags="-X chezmoi.io/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
+	${GO} test -ldflags="-X chezmoi.io/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
 
 .PHONY: test-docker
 test-docker:
@@ -102,7 +102,7 @@ coverage-html: coverage
 
 .PHONY: coverage
 coverage:
-	${GO} test -coverprofile=coverage.out -coverpkg=github.com/twpayne/chezmoi/... ./...
+	${GO} test -coverprofile=coverage.out -coverpkg=chezmoi.io/chezmoi/... ./...
 
 .PHONY: generate
 generate:

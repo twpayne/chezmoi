@@ -11,8 +11,8 @@ import (
 
 	"github.com/rogpeppe/go-internal/txtar"
 
-	"github.com/twpayne/chezmoi/internal/chezmoierrors"
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 var write = flag.Bool("w", false, "rewrite archives")

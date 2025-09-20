@@ -6,7 +6,7 @@ import (
 	"io/fs"
 	"syscall"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoi"
 )
 
 const defaultEditor = "vi"

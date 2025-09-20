@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 type secretConfig struct {

@@ -1,21 +1,21 @@
-module github.com/twpayne/chezmoi
+module chezmoi.io/chezmoi
 
 go 1.25.1
 
 tool (
+	chezmoi.io/chezmoi
+	chezmoi.io/chezmoi/internal/cmds/execute-template
+	chezmoi.io/chezmoi/internal/cmds/generate-commit
+	chezmoi.io/chezmoi/internal/cmds/generate-helps
+	chezmoi.io/chezmoi/internal/cmds/generate-install.sh
+	chezmoi.io/chezmoi/internal/cmds/generate-license
+	chezmoi.io/chezmoi/internal/cmds/hexencode
+	chezmoi.io/chezmoi/internal/cmds/lint-commit-messages
+	chezmoi.io/chezmoi/internal/cmds/lint-txtar
+	chezmoi.io/chezmoi/internal/cmds/lint-whitespace
 	github.com/editorconfig-checker/editorconfig-checker/v3/cmd/editorconfig-checker
 	github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 	github.com/rhysd/actionlint/cmd/actionlint
-	github.com/twpayne/chezmoi
-	github.com/twpayne/chezmoi/internal/cmds/execute-template
-	github.com/twpayne/chezmoi/internal/cmds/generate-commit
-	github.com/twpayne/chezmoi/internal/cmds/generate-helps
-	github.com/twpayne/chezmoi/internal/cmds/generate-install.sh
-	github.com/twpayne/chezmoi/internal/cmds/generate-license
-	github.com/twpayne/chezmoi/internal/cmds/hexencode
-	github.com/twpayne/chezmoi/internal/cmds/lint-commit-messages
-	github.com/twpayne/chezmoi/internal/cmds/lint-txtar
-	github.com/twpayne/chezmoi/internal/cmds/lint-whitespace
 	github.com/twpayne/find-typos
 )
 

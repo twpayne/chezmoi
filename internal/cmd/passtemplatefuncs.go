@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 type passConfig struct {
