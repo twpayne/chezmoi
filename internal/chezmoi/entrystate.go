@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"runtime"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 // An EntryStateType is an entry state type.

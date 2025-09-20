@@ -10,8 +10,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoibubbles"
+	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoibubbles"
 )
 
 // readBool reads a bool.

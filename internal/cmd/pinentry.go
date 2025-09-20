@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/twpayne/go-pinentry/v4"
 
-	"github.com/twpayne/chezmoi/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/internal/chezmoierrors"
 )
 
 type pinEntryConfig struct {

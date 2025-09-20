@@ -29,9 +29,9 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
-	"github.com/twpayne/chezmoi/internal/cmd"
+	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/internal/cmd"
 )
 
 var (

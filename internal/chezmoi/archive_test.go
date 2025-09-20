@@ -7,7 +7,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 
-	"github.com/twpayne/chezmoi/internal/archivetest"
+	"chezmoi.io/chezmoi/internal/archivetest"
 )
 
 func TestWalkArchive(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-viper/mapstructure/v2"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoi"
 )
 
 type autoBool struct {

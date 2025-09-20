@@ -11,7 +11,7 @@ import (
 	"github.com/klauspost/compress/gzip"
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoi"
 )
 
 var archiveFormatValues = []string{"", "tar", "tar.gz", "tgz", "zip"}

@@ -14,7 +14,7 @@ import (
 
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 // An ExternalDiffSystem is a DiffSystem that uses an external diff tool.

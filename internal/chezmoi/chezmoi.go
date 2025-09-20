@@ -21,7 +21,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
 
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 var (

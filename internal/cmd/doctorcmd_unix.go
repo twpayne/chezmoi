@@ -12,7 +12,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 type (

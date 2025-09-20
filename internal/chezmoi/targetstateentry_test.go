@@ -13,7 +13,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/internal/chezmoitest"
 )
 
 func TestTargetStateEntryApply(t *testing.T) {

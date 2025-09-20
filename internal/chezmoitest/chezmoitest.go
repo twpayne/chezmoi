@@ -17,7 +17,7 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)

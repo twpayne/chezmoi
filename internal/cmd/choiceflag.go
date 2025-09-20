@@ -13,8 +13,8 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 // A choiceFlag is a flag which accepts a limited set of allowed values.

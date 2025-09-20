@@ -202,13 +202,13 @@ formatters:
       sections:
       - standard
       - default
-      - prefix(github.com/twpayne/chezmoi)
+      - prefix(chezmoi.io)
     gofumpt:
-      module-path: github.com/twpayne/chezmoi
+      module-path: chezmoi.io
       extra-rules: true
     goimports:
       local-prefixes:
-      - github.com/twpayne/chezmoi
+      - chezmoi.io
     golines:
       max-len: 128
       tab-len: 4

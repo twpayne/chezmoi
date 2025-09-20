@@ -10,8 +10,8 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"github.com/twpayne/chezmoi/internal/archivetest"
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/internal/archivetest"
+	"chezmoi.io/chezmoi/internal/chezmoitest"
 )
 
 func TestImportCmd(t *testing.T) {

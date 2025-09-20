@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/assets/templates"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoigit"
+	"chezmoi.io/chezmoi/assets/templates"
+	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoigit"
 )
 
 type generateCmdConfig struct {

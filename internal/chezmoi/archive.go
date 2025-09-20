@@ -18,7 +18,7 @@ import (
 	"github.com/nwaples/rardecode/v2"
 	"github.com/ulikunitz/xz"
 
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 // An ArchiveFormat is an archive format and implements the

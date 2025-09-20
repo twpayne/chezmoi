@@ -11,7 +11,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 var (

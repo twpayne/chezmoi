@@ -7,7 +7,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 
-	"github.com/twpayne/chezmoi/internal/archivetest"
+	"chezmoi.io/chezmoi/internal/archivetest"
 )
 
 func TestArchiveReaderSystemTar(t *testing.T) {

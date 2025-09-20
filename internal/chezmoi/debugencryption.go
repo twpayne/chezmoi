@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"log/slog"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
 // A DebugEncryption logs all calls to an Encryption.

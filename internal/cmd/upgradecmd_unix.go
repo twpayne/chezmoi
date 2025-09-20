@@ -15,7 +15,7 @@ import (
 	"github.com/google/go-github/v61/github"
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoi"
 )
 
 const (

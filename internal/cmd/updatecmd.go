@@ -6,7 +6,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoi"
 )
 
 type updateCmdConfig struct {

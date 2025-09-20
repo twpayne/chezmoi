@@ -10,7 +10,7 @@ import (
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/twpayne/go-vfs/v5"
 
-	"github.com/twpayne/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 type patternSetIncludeType bool
