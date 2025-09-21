@@ -108,6 +108,10 @@ coverage:
 generate:
 	${GO} generate
 
+.PHONY: capslock
+capslock:
+	go tool capslock -output json | go tool summarize-capslock --output=.capslock-summary.yaml
+
 .PHONY: lint
 lint: ensure-golangci-lint shellcheck
 	${GO} tool actionlint

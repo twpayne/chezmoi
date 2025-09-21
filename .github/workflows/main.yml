@@ -342,6 +342,10 @@ jobs:
       run: |
         go generate
         git diff --exit-code
+    - name: capslock
+      run: |
+        make capslock
+        git diff --exit-code
     - name: actionlint
       run: |
         go tool actionlint
