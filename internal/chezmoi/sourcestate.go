@@ -1474,7 +1474,8 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	return nil
 }
 
-// addTemplateDataDir adds all template data in the directory sourceAbsPath to s.
+// addTemplateDataDir adds all template data in the directory sourceAbsPath to
+// s.
 func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.FileInfo) error {
 	walkFunc := func(dataAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if dataAbsPath == sourceAbsPath {
@@ -2180,7 +2181,8 @@ func (s *SourceState) newSourceStateFile(
 	}
 }
 
-// newSourceStateDirEntry returns a SourceStateEntry constructed from a directory in s.
+// newSourceStateDirEntry returns a SourceStateEntry constructed from a
+// directory in s.
 func (s *SourceState) newSourceStateDirEntry(
 	actualStateDir *ActualStateDir,
 	fileInfo fs.FileInfo,
@@ -2314,7 +2316,8 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	}, nil
 }
 
-// populateImplicitParentDirs creates implicit parent directories for externalRelPath.
+// populateImplicitParentDirs creates implicit parent directories for
+// externalRelPath.
 func (s *SourceState) populateImplicitParentDirs(
 	externalRelPath RelPath,
 	external *External,

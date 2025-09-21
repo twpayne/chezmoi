@@ -1,6 +1,6 @@
 version: '2'
 run:
-  go: '1.24'
+  go: '1.25'
 linters:
   enable:
   - asciicheck
@@ -26,6 +26,7 @@ linters:
   - gocheckcompilerdirectives
   - gochecksumtype
   - gocritic
+  - godoclint
   - godot
   - gomodguard
   - goprintffuncname
@@ -36,6 +37,7 @@ linters:
   - inamedparam
   - interfacebloat
   - intrange
+  - iotamixing
   - loggercheck
   - makezero
   - mirror
@@ -61,6 +63,7 @@ linters:
   - thelper
   - unconvert
   - unparam
+  - unqueryvet
   - usestdlibvars
   - usetesting
   - wastedassign
@@ -121,6 +124,10 @@ linters:
       - rangeValCopy
       - unnamedResult
       - whyNoLint
+    godoclint:
+      default: all
+      disable:
+      - require-doc
     govet:
       disable:
       - fieldalignment
@@ -154,6 +161,8 @@ linters:
         disabled: true
       - name: import-shadowing
         disabled: true
+      - name: identical-switch-branches
+        disabled: true
       - name: line-length-limit
         disabled: true
       - name: max-control-nesting
@@ -162,9 +171,13 @@ linters:
         disabled: true
       - name: nested-structs
         disabled: true
+      - name: unhandled-error
+        disabled: true
       - name: unused-parameter
         disabled: true
       - name: unused-receiver
+        disabled: true
+      - name: useless-fallthrough
         disabled: true
     staticcheck:
       checks:
@@ -178,6 +191,9 @@ linters:
     - legacy
     - std-error-handling
     rules:
+    - linters:
+      - godoclint
+      path: internal/chezmoi/chezmoi_windows.go # https://github.com/godoc-lint/godoc-lint/issues/56
     - linters:
       - err113
       text: do not define dynamic errors, use wrapped static errors instead

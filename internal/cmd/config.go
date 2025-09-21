@@ -727,8 +727,8 @@ func (c *Config) applyArgs(
 	return nil
 }
 
-// builtinDiffFile outputs the diff between fromData and fromMode and toData and toMode
-// at path.
+// builtinDiffFile outputs the diff between fromData and fromMode and toData and
+// toMode at path.
 func (c *Config) builtinDiffFile(
 	relPath chezmoi.RelPath,
 	fromData []byte, fromMode fs.FileMode,

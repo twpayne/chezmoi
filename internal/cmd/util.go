@@ -72,8 +72,8 @@ func englishList(ss []string) string {
 	}
 }
 
-// englishListWithNoun returns ss formatted as an English list, including an Oxford
-// comma.
+// englishListWithNoun returns ss formatted as an English list, including an
+// Oxford comma.
 func englishListWithNoun(ss []string, singular, plural string) string {
 	if len(ss) == 1 {
 		return ss[0] + " " + singular

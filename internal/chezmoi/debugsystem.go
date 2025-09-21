@@ -17,7 +17,8 @@ type DebugSystem struct {
 	system System
 }
 
-// NewDebugSystem returns a new DebugSystem that logs methods on system to logger.
+// NewDebugSystem returns a new DebugSystem that logs methods on system to
+// logger.
 func NewDebugSystem(system System, logger *slog.Logger) *DebugSystem {
 	return &DebugSystem{
 		logger: logger,

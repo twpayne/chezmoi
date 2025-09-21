@@ -59,7 +59,8 @@ func PersistentStateData(s PersistentState, buckets map[string][]byte) (map[stri
 	return result, nil
 }
 
-// PersistentStateGet gets the value associated with key in bucket in s, if it exists.
+// PersistentStateGet gets the value associated with key in bucket in s, if it
+// exists.
 func PersistentStateGet(s PersistentState, bucket, key []byte, value any) (bool, error) {
 	data, err := s.Get(bucket, key)
 	if err != nil {

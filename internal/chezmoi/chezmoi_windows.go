@@ -28,8 +28,8 @@ func findExecutableExtensions(path string) []string {
 	return result
 }
 
-// IsExecutable checks if the file is a regular file and has an extension listed
-// in the PATHEXT environment variable as per
+// IsExecutable checks if the file is a regular file and has an
+// extension listed in the PATHEXT environment variable as per
 // https://www.nextofwindows.com/what-is-pathext-environment-variable-in-windows.
 func IsExecutable(fileInfo fs.FileInfo) bool {
 	if fileInfo.Mode().Perm()&0o111 != 0 {

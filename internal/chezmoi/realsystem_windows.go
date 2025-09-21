@@ -24,7 +24,8 @@ func RealSystemWithSafe(safe bool) RealSystemOption {
 	return func(s *RealSystem) {}
 }
 
-// RealSystemWithScriptTempDir sets the script temporary directory of the RealSystem.
+// RealSystemWithScriptTempDir sets the script temporary directory of the
+// RealSystem.
 func RealSystemWithScriptTempDir(scriptTempDir AbsPath) RealSystemOption {
 	return func(s *RealSystem) {}
 }

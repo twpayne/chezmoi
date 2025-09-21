@@ -325,7 +325,8 @@ func cmdIsSymlink(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
-// cmdLExists succeeds if all if its arguments exist, without following symlinks.
+// cmdLExists succeeds if all if its arguments exist, without following
+// symlinks.
 func cmdLExists(ts *testscript.TestScript, neg bool, args []string) {
 	if len(args) == 0 {
 		ts.Fatalf("usage: exists file...")

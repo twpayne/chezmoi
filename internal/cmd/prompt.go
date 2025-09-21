@@ -251,7 +251,8 @@ func (c *Config) promptBool(prompt string, args ...bool) (bool, error) {
 	return c.readBool(prompt, defaultValue)
 }
 
-// promptChoice prompts the user for one of choices until a valid choice is made.
+// promptChoice prompts the user for one of choices until a valid choice is
+// made.
 func (c *Config) promptChoice(prompt string, choices []string, args ...string) (string, error) {
 	var defaultValue *string
 	switch len(args) {

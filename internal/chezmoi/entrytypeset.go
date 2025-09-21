@@ -343,8 +343,8 @@ func (s *EntryTypeSet) Type() string {
 }
 
 // StringSliceToEntryTypeSetHookFunc is a
-// github.com/go-viper/mapstructure/v2.DecodeHookFunc that parses an EntryTypeSet
-// from a []string.
+// github.com/go-viper/mapstructure/v2.DecodeHookFunc that parses an
+// EntryTypeSet from a []string.
 func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {
 		if to != reflect.TypeOf(EntryTypeSet{}) {

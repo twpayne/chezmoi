@@ -46,7 +46,8 @@ func (h *HexBytes) UnmarshalText(text []byte) error {
 	return nil
 }
 
-// UnmarshalYAML implements github.com/goccy/go-yaml.BytesUnmarshaler.UnmarshalYAML.
+// UnmarshalYAML implements
+// github.com/goccy/go-yaml.BytesUnmarshaler.UnmarshalYAML.
 func (h *HexBytes) UnmarshalYAML(data []byte) error {
 	s, err := strconv.Unquote(string(data))
 	if err != nil {
