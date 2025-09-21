@@ -10,7 +10,8 @@ import (
 	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
-// A GPGEncryption uses gpg for encryption and decryption. See https://gnupg.org/.
+// A GPGEncryption uses gpg for encryption and decryption. See
+// https://gnupg.org/.
 type GPGEncryption struct {
 	Command    string   `json:"command"    mapstructure:"command"    yaml:"command"`
 	Args       []string `json:"args"       mapstructure:"args"       yaml:"args"`

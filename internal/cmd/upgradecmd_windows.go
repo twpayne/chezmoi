@@ -36,7 +36,8 @@ func (c *Config) brewUpgrade() error {
 	return errUnsupportedUpgradeMethod
 }
 
-// isWinGetInstall determines if executableAbsPath contains a WinGet installation path.
+// isWinGetInstall determines if executableAbsPath contains a WinGet
+// installation path.
 func isWinGetInstall(fileSystem vfs.Stater, executableAbsPath string) (bool, error) {
 	realExecutableAbsPath := executableAbsPath
 	fi, err := os.Lstat(executableAbsPath)

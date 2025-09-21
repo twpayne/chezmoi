@@ -1,4 +1,5 @@
-// generate-install.sh generates assets/scripts/install.sh and assets/scripts/install-local-bin.sh.
+// generate-install.sh generates assets/scripts/install.sh and
+// assets/scripts/install-local-bin.sh.
 package main
 
 import (

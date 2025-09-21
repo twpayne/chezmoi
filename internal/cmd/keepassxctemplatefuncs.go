@@ -385,7 +385,8 @@ func (c *Config) keepassxcBuiltinExtractValues(
 	return keepassxcBuiltinBuildCache(db, "", db.Content.Root.Groups[0].Groups, nil, entry, mapper)
 }
 
-// keepassxcBuiltinBuildCache build the builtin cache using a given mapper function.
+// keepassxcBuiltinBuildCache build the builtin cache using a given mapper
+// function.
 func keepassxcBuiltinBuildCache(
 	db *gokeepasslib.Database,
 	path string,

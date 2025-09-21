@@ -15,9 +15,7 @@ import (
 )
 
 var (
-	// chezmoi uses lpass show --json which was added in
-	// https://github.com/lastpass/lastpass-cli/commit/e5a22e2eeef31ab6c54595616e0f57ca0a1c162d
-	// and the first tag containing that commit is v1.3.0~6.
+	// chezmoi uses lpass show --json which was added in v1.3.0~6.
 	lastpassMinVersion  = semver.Version{Major: 1, Minor: 3, Patch: 0}
 	lastpassParseNoteRx = regexp.MustCompile(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
 	lastpassVersionArgs = []string{"--version"}

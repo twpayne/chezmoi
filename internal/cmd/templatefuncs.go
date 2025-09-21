@@ -41,7 +41,8 @@ func (e emptyPathElementError) Error() string {
 	return fmt.Sprintf("empty path element at index %d", e.index)
 }
 
-// An invalidPathElementTypeError is returned when an element in a path has an invalid type.
+// An invalidPathElementTypeError is returned when an element in a path has an
+// invalid type.
 type invalidPathElementTypeError struct {
 	element any
 }

@@ -65,8 +65,8 @@ func Main(versionInfo VersionInfo, args []string) int {
 	return 0
 }
 
-// deDuplicateError returns err's human-readable string with duplicate components
-// removed.
+// deDuplicateError returns err's human-readable string with duplicate
+// components removed.
 func deDuplicateError(err error) string {
 	components := deDuplicateErrorRx.Split(err.Error(), -1)
 	seenComponents := chezmoiset.NewWithCapacity[string](len(components))

@@ -138,7 +138,8 @@ func LogHTTPRequest(ctx context.Context, logger *slog.Logger, client *http.Clien
 	return resp, err
 }
 
-// LogCmdCombinedOutput calls cmd.CombinedOutput, logs the result, and returns the result.
+// LogCmdCombinedOutput calls cmd.CombinedOutput, logs the result, and returns
+// the result.
 func LogCmdCombinedOutput(logger *slog.Logger, cmd *exec.Cmd) ([]byte, error) {
 	start := time.Now()
 	combinedOutput, err := cmd.CombinedOutput()

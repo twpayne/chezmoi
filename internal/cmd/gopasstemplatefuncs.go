@@ -24,9 +24,7 @@ const (
 )
 
 var (
-	// chezmoi uses gopass show --password which was added in
-	// https://github.com/gopasspw/gopass/commit/8fa13d84e3656cfc4ee6717f5f485c9e471ad996
-	// and the first tag containing that commit is v1.6.1.
+	// chezmoi uses gopass show --password which was added in v1.6.1.
 	gopassMinVersion  = semver.Version{Major: 1, Minor: 6, Patch: 1}
 	gopassVersionArgs = []string{"--version"}
 	gopassVersionRx   = regexp.MustCompile(`gopass\s+(\d+\.\d+\.\d+)`)
