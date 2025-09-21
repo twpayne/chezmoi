@@ -21,7 +21,7 @@ func (c *Config) newEditConfigTemplateCmd() *cobra.Command {
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			modifiesSourceDirectory,
-			persistentStateModeReadOnly,
+			persistentStateModeReadWrite,
 			runsCommands,
 		),
 	}
