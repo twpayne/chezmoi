@@ -53,6 +53,10 @@ chezmoi plugin for asdf version manager.
 
 Visual interface in the terminal for the chezmoi dotfile managar, with a wink to the mouse.
 
+### [Chezetc](https://silverrainz.me/chezetc/) { id="silverrainz.me/chezetc" }
+
+Extending chezmoi to manage files under /etc and other root-owned directories.
+
 ### [`github.com/tcaxle/drapeau`](https://github.com/tcaxle/drapeau) { id="tcaxle/drapeau" }
 
 An add-on to synchronize your colorschemes across systems and allow easy
