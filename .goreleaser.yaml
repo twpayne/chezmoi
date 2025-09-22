@@ -288,6 +288,7 @@ snapcrafts:
   grade: stable
   confinement: classic
   license: MIT
+  base: bare
   apps:
     chezmoi:
       command: chezmoi
