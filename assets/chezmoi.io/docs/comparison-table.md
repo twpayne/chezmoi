@@ -6,9 +6,9 @@
 | Install method                         | Many               | git submodule     | Many              | Many                     | Many                         | Manual               |
 | Non-root install on bare system        | ✅                 | ⁉️                | ✅                | ✅                       | ✅                           | ✅                   |
 | Windows support                        | ✅                 | ✅                | ❌                | ❌                       | ✅                           | ✅                   |
-| Bootstrap requirements                 | None               | Python, git       | Perl              | sh, git                  | git                          | git                  |
+| Bootstrap requirements                 | None               | Python, git       | Bash              | sh, git                  | git                          | git                  |
 | Source repos                           | Single             | Single            | Multiple          | Multiple                 | Single                       | Single               |
-| dotfiles are...                        | Files              | Symlinks          | Files             | Files                    | Files                        | Files                |
+| dotfiles are...                        | Files              | Symlinks          | Symlinks          | Files                    | Files                        | Files                |
 | Config file                            | Optional           | Required          | Optional          | None                     | Optional                     | Optional             |
 | Private files                          | ✅                 | ❌                | ❌                | ❌                       | ✅                           | ❌                   |
 | Show differences without applying      | ✅                 | ❌                | ❌                | ✅                       | ✅                           | ✅                   |
@@ -28,7 +28,7 @@
 | Shell completion                       | ✅                 | ❌                | ❌                | ✅                       | ✅                           | ✅                   |
 | Archive import                         | ✅                 | ❌                | ❌                | ✅                       | ❌                           | ✅                   |
 | Archive export                         | ✅                 | ❌                | ❌                | ✅                       | ❌                           | ✅                   |
-| Implementation language                | Go                 | Python            | Perl              | POSIX Shell              | Bash                         | C                    |
+| Implementation language                | Go                 | Python            | Bash              | POSIX Shell              | Bash                         | C                    |
 
 ✅ Supported, ⁉️ Possible with significant manual effort, ❌ Not supported
 
