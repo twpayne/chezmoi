@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"io/fs"
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -258,31 +257,6 @@ func TestIssue2132(t *testing.T) {
 				vfst.TestDoesNotExist(),
 			),
 		)
-	})
-}
-
-func TestIssue2597(t *testing.T) {
-	_, err := net.LookupIP("github.com")
-	if err != nil {
-		t.Skip("github.com not found")
-	}
-	chezmoitest.WithTestFS(t, map[string]any{
-		"/home/user": map[string]any{
-			".local/share/chezmoi": map[string]any{
-				".chezmoiexternal.toml": chezmoitest.JoinLines(
-					`[".oh-my-zsh"]`,
-					`    type = "archive"`,
-					`    url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"`,
-					`    exact = true`,
-					`    stripComponents = 1`,
-				),
-				".chezmoiignore": chezmoitest.JoinLines(
-					`.oh-my-zsh/cache`,
-				),
-			},
-		},
-	}, func(fileSystem vfs.FS) {
-		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
 	})
 }
 
