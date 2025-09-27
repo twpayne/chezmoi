@@ -108,6 +108,7 @@ type ConfigFile struct {
 	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
 	Interactive            bool                           `json:"interactive"     mapstructure:"interactive"     yaml:"interactive"`
 	Interpreters           map[string]chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
+	LessInteractive        bool                           `json:"lessInteractive" mapstructure:"lessInteractive" yaml:"lessInteractive"`
 	Mode                   chezmoi.Mode                   `json:"mode"            mapstructure:"mode"            yaml:"mode"`
 	Pager                  string                         `json:"pager"           mapstructure:"pager"           yaml:"pager"`
 	PagerArgs              []string                       `json:"pagerArgs"       mapstructure:"pagerArgs"       yaml:"pagerArgs"`
@@ -1074,64 +1075,67 @@ func (c *Config) defaultPreApplyFunc(
 		return nil
 	}
 
-	if c.Interactive {
-		prompt := fmt.Sprintf("Apply %s", targetRelPath)
-		var choices []string
-		actualContents := actualEntryState.Contents()
-		targetContents := targetEntryState.Contents()
-		if actualContents != nil || targetContents != nil {
-			choices = append(choices, "diff")
-		}
-		choices = append(choices, choicesYesNoAllQuit...)
-		for {
-			switch choice, err := c.promptChoice(prompt, choices); {
-			case err != nil:
-				return err
-			case choice == "diff":
-				err := c.diffFile(
-					targetRelPath,
-					c.DestDirAbsPath.Join(targetRelPath), actualContents, actualEntryState.Mode,
-					chezmoi.EmptyAbsPath, targetContents, targetEntryState.Mode,
-				)
-				if err != nil {
-					return err
-				}
-			case choice == "yes":
-				return nil
-			case choice == "no":
-				return fs.SkipDir
-			case choice == "all":
-				c.Interactive = false
-				return nil
-			case choice == "quit":
-				return chezmoi.ExitCodeError(1)
-			default:
-				panic(choice + ": unexpected choice")
-			}
-		}
-	}
+	// Prepare decision for which kind of prompt we need (if any)
+	type promptMode int
+	const (
+		promptNone     promptMode = iota
+		promptYesNoAll            // yes/no/all/quit (just ask, don't indicate if there is a conflict)
+		promptConflict            // overwrite/all-overwrite/skip/quit (conflict-specific prompt)
+	)
+	mode := promptNone
 
+	targetDirty := lastWrittenEntryState != nil && !lastWrittenEntryState.Equivalent(actualEntryState)
+	targetPreExisting := lastWrittenEntryState == nil && actualEntryState.Type != chezmoi.EntryStateTypeRemove
+
+	// Select prompt mode based on command line flag
 	switch {
-	case targetEntryState.Overwrite():
-		return nil
-	case targetEntryState.Type == chezmoi.EntryStateTypeScript:
-		return nil
-	case lastWrittenEntryState == nil:
-		return nil
-	case lastWrittenEntryState.Equivalent(actualEntryState):
+	case c.Interactive: // Prompt no matter what
+		mode = promptYesNoAll
+	case c.LessInteractive: // Prompt if target is dirty or pre-existing (i.e., only overwrite what chezmoi has written)
+		if targetDirty || targetPreExisting {
+			mode = promptConflict
+		}
+	default: // Prompt in *some* cases of a dirty target:
+		switch {
+		case targetEntryState.Overwrite():
+			mode = promptNone
+		case targetEntryState.Type == chezmoi.EntryStateTypeScript:
+			mode = promptNone
+		case lastWrittenEntryState == nil:
+			mode = promptNone
+		case lastWrittenEntryState.Equivalent(actualEntryState):
+			mode = promptNone
+		case targetDirty:
+			mode = promptConflict
+		}
+	}
+
+	if mode == promptNone {
 		return nil
 	}
 
-	prompt := fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath)
-	var choices []string
+	// Now prompt based on choice made above
 	actualContents := actualEntryState.Contents()
 	targetContents := targetEntryState.Contents()
+	var choices []string
 	if actualContents != nil || targetContents != nil {
 		choices = append(choices, "diff")
 	}
-	choices = append(choices, "overwrite", "all-overwrite", "skip", "quit")
+	var promptText string
+	if mode == promptYesNoAll {
+		choices = append(choices, choicesYesNoAllQuit...)
+		promptText = fmt.Sprintf("Apply %s", targetRelPath)
+	} else {
+		choices = append(choices, choicesOverwrite...)
+		if targetDirty {
+			promptText = fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath)
+		} else {
+			promptText = fmt.Sprintf("%s already exists", targetRelPath)
+		}
+	}
+
 	for {
-		switch choice, err := c.promptChoice(prompt, choices); {
+		switch choice, err := c.promptChoice(promptText, choices); {
 		case err != nil:
 			return err
 		case choice == "diff":
@@ -1142,6 +1146,15 @@ func (c *Config) defaultPreApplyFunc(
 			); err != nil {
 				return err
 			}
+		case choice == "yes":
+			return nil
+		case choice == "no":
+			return fs.SkipDir
+		case choice == "all":
+			// Delicate difference to all-overwrite (mainly for backwards compatibility): Disabling --interactive means
+			// we still prompt for dirty files, whereas all-overwrite adds --force to really prompt no more.
+			c.Interactive = false
+			return nil
 		case choice == "overwrite":
 			return nil
 		case choice == "all-overwrite":
@@ -1800,6 +1813,12 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.BoolVar(&c.Interactive, "interactive", c.Interactive, "Prompt for all changes")
+	persistentFlags.BoolVar(
+		&c.LessInteractive,
+		"less-interactive",
+		c.LessInteractive,
+		"Prompt for changed or pre-existing targets",
+	)
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.PersistentStateAbsPath, "persistent-state", "Set persistent state file")
 	persistentFlags.Var(&c.Progress, "progress", "Display progress bars")
