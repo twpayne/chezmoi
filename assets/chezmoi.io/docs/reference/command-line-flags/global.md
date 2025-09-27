@@ -49,6 +49,10 @@ Make changes without prompting.
 
 Prompt before applying each target.
 
+### `--less-interactive`
+
+Prompt before applying changed or pre-existing targets.
+
 ### `-k`, `--keep-going`
 
 Keep going as far as possible after a encountering an error.
