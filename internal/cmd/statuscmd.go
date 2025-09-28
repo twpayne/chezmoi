@@ -23,6 +23,7 @@ type statusCmdConfig struct {
 
 func (c *Config) newStatusCmd() *cobra.Command {
 	statusCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "status [target]...",
 		Short:             "Show the status of targets",
 		Long:              mustLongHelp("status"),

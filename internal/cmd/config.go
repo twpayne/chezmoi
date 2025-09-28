@@ -67,6 +67,28 @@ const (
 	logComponentValueSystem          = "system"
 )
 
+const (
+	groupIDAdvanced      = "advanced"
+	groupIDDaily         = "daily"
+	groupIDDocumentation = "documentation"
+	groupIDEncryption    = "encryption"
+	groupIDInternal      = "internal"
+	groupIDMigration     = "migration"
+	groupIDRemote        = "remote"
+	groupIDTemplate      = "template"
+)
+
+var groups = []*cobra.Group{
+	{ID: groupIDDocumentation, Title: "Documentation commands:"},
+	{ID: groupIDDaily, Title: "Daily commands:"},
+	{ID: groupIDTemplate, Title: "Template commands:"},
+	{ID: groupIDAdvanced, Title: "Advanced commands:"},
+	{ID: groupIDEncryption, Title: "Encryption commands:"},
+	{ID: groupIDRemote, Title: "Remote commands:"},
+	{ID: groupIDMigration, Title: "Migration commands:"},
+	{ID: groupIDInternal, Title: "Internal commands:"},
+}
+
 type doPurgeOptions struct {
 	binary          bool
 	cache           bool
@@ -1791,6 +1813,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		SilenceErrors:      true,
 		SilenceUsage:       true,
 	}
+	rootCmd.AddGroup(groups...)
 
 	persistentFlags := rootCmd.PersistentFlags()
 
@@ -1894,6 +1917,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newVerifyCmd(),
 	} {
 		if cmd != nil {
+			ensureHasGroupID(cmd)
 			ensureAllFlagsDocumented(cmd, persistentFlags)
 			registerCommonFlagCompletionFuncs(cmd)
 			rootCmd.AddCommand(cmd)

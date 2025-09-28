@@ -18,6 +18,7 @@ type importCmdConfig struct {
 
 func (c *Config) newImportCmd() *cobra.Command {
 	importCmd := &cobra.Command{
+		GroupID: groupIDMigration,
 		Use:     "import archive",
 		Short:   "Import an archive into the source state",
 		Long:    mustLongHelp("import"),

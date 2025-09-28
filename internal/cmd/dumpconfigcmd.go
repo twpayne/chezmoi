@@ -12,6 +12,7 @@ type dumpConfigCmdConfig struct {
 
 func (c *Config) newDumpConfigCmd() *cobra.Command {
 	dumpConfigCmd := &cobra.Command{
+		GroupID:           groupIDInternal,
 		Use:               "dump-config",
 		Short:             "Dump the configuration values",
 		Long:              mustLongHelp("dump-config"),

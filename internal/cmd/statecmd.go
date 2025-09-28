@@ -56,6 +56,7 @@ type stateSetCmdConfig struct {
 
 func (c *Config) newStateCmd() *cobra.Command {
 	stateCmd := &cobra.Command{
+		GroupID: groupIDInternal,
 		Use:     "state",
 		Short:   "Manipulate the persistent state",
 		Long:    mustLongHelp("state"),

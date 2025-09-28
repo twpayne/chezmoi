@@ -130,6 +130,14 @@ func mustLongHelp(command string) string {
 	return help.longHelp
 }
 
+// ensureHasGroupID ensures that cmd has a GroupID set, unless it has the
+// explicit "hidden" annotation.
+func ensureHasGroupID(cmd *cobra.Command) {
+	if cmd.GroupID == "" && !cmd.Hidden {
+		panic(cmd.Name() + ": missing group ID")
+	}
+}
+
 // ensureAllFlagsDocumented ensures that all flags are documented, unless
 // ignoreflags=1 is set in the CHEZMOIDEV environment variable.
 func ensureAllFlagsDocumented(cmd *cobra.Command, persistentFlags *pflag.FlagSet) {

@@ -6,6 +6,7 @@ import (
 
 func (c *Config) newDecryptCommand() *cobra.Command {
 	decryptCmd := &cobra.Command{
+		GroupID: groupIDEncryption,
 		Use:     "decrypt [file...]",
 		Short:   "Decrypt file or standard input",
 		Long:    mustLongHelp("decrypt"),

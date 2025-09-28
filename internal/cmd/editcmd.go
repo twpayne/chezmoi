@@ -27,6 +27,7 @@ type editCmdConfig struct {
 
 func (c *Config) newEditCmd() *cobra.Command {
 	editCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "edit targets...",
 		Short:             "Edit the source state of a target",
 		Long:              mustLongHelp("edit"),

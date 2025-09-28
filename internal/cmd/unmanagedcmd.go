@@ -19,6 +19,7 @@ type unmanagedCmdConfig struct {
 
 func (c *Config) newUnmanagedCmd() *cobra.Command {
 	unmanagedCmd := &cobra.Command{
+		GroupID: groupIDAdvanced,
 		Use:     "unmanaged [path]...",
 		Short:   "List the unmanaged files in the destination directory",
 		Long:    mustLongHelp("unmanaged"),

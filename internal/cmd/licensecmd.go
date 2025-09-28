@@ -6,6 +6,7 @@ import (
 
 func (c *Config) newLicenseCmd() *cobra.Command {
 	licenseCmd := &cobra.Command{
+		GroupID:           groupIDDocumentation,
 		Use:               "license",
 		Short:             "Print license",
 		Long:              mustLongHelp("license"),

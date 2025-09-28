@@ -22,6 +22,7 @@ type updateCmdConfig struct {
 
 func (c *Config) newUpdateCmd() *cobra.Command {
 	updateCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "update",
 		Short:             "Pull and apply any changes",
 		Long:              mustLongHelp("update"),

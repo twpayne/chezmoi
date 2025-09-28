@@ -39,6 +39,7 @@ type addCmdConfig struct {
 
 func (c *Config) newAddCmd() *cobra.Command {
 	addCmd := &cobra.Command{
+		GroupID: groupIDDaily,
 		Use:     "add targets...",
 		Aliases: []string{"manage"},
 		Short:   "Add an existing file, directory, or symlink to the source state",

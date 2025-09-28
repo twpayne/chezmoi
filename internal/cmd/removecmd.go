@@ -13,6 +13,7 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		Aliases:    []string{"rm"},
 		RunE:       c.runRemoveCmd,
 		Long:       mustLongHelp("remove"),
+		Hidden:     true,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,

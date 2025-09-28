@@ -10,6 +10,7 @@ import (
 
 func (c *Config) newForgetCmd() *cobra.Command {
 	forgetCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "forget target...",
 		Aliases:           []string{"unmanage"},
 		Short:             "Remove a target from the source state",

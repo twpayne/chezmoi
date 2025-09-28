@@ -48,6 +48,7 @@ type upgradeCmdConfig struct {
 
 func (c *Config) newUpgradeCmd() *cobra.Command {
 	upgradeCmd := &cobra.Command{
+		GroupID:           groupIDMigration,
 		Use:               "upgrade",
 		Short:             "Upgrade chezmoi to the latest released version",
 		Long:              mustLongHelp("upgrade"),

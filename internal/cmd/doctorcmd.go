@@ -150,6 +150,7 @@ type doctorCmdConfig struct {
 
 func (c *Config) newDoctorCmd() *cobra.Command {
 	doctorCmd := &cobra.Command{
+		GroupID:           groupIDDocumentation,
 		Args:              cobra.NoArgs,
 		ValidArgsFunction: cobra.NoFileCompletions,
 		Use:               "doctor",
