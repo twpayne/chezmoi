@@ -1,0 +1,9 @@
+# test that chezmoi add does not warn when adding a simple JSON file
+exec chezmoi add ${HOME}${/}settings.json
+! stderr .
+
+-- home/user/.local/share/chezmoi/.keep --
+-- home/user/settings.json --
+{
+    "key": "ctrl+shift+down"
+}
