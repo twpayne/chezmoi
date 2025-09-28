@@ -16,6 +16,7 @@ type gitCmdConfig struct {
 
 func (c *Config) newGitCmd() *cobra.Command {
 	gitCmd := &cobra.Command{
+		GroupID: groupIDAdvanced,
 		Use:     "git [arg]...",
 		Short:   "Run git in the source directory",
 		Long:    mustLongHelp("git"),

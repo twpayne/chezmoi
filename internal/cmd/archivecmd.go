@@ -27,6 +27,7 @@ type archiveCmdConfig struct {
 
 func (c *Config) newArchiveCmd() *cobra.Command {
 	archiveCmd := &cobra.Command{
+		GroupID:           groupIDMigration,
 		Use:               "archive [target]...",
 		Short:             "Generate a tar archive of the target state",
 		Long:              mustLongHelp("archive"),

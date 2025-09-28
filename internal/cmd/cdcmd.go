@@ -17,6 +17,7 @@ type cdCmdConfig struct {
 
 func (c *Config) newCDCmd() *cobra.Command {
 	cdCmd := &cobra.Command{
+		GroupID: groupIDAdvanced,
 		Use:     "cd [path]",
 		Short:   "Launch a shell in the source directory",
 		Long:    mustLongHelp("cd"),

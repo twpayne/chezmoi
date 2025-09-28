@@ -13,6 +13,7 @@ type sshCmdConfig struct {
 
 func (c *Config) newSSHCmd() *cobra.Command {
 	sshCmd := &cobra.Command{
+		GroupID: groupIDRemote,
 		Use:     "ssh host",
 		Short:   "SSH to a host and initialize dotfiles",
 		Long:    mustLongHelp("ssh"),

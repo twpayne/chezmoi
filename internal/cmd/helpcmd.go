@@ -9,6 +9,7 @@ import (
 
 func (c *Config) newHelpCmd() *cobra.Command {
 	helpCmd := &cobra.Command{
+		GroupID:           groupIDDocumentation,
 		Use:               "help [command]",
 		Short:             "Print help about a command",
 		Long:              mustLongHelp("help"),

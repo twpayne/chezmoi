@@ -20,6 +20,7 @@ type mergeCmdConfig struct {
 
 func (c *Config) newMergeCmd() *cobra.Command {
 	mergeCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "merge target...",
 		Args:              cobra.MinimumNArgs(1),
 		Short:             "Perform a three-way merge between the destination state, the source state, and the target state",

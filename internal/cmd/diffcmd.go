@@ -22,6 +22,7 @@ type diffCmdConfig struct {
 
 func (c *Config) newDiffCmd() *cobra.Command {
 	diffCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "diff [target]...",
 		Short:             "Print the diff between the target state and the destination state",
 		Long:              mustLongHelp("diff"),

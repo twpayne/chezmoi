@@ -21,6 +21,7 @@ type ageKeygenCmdConfig struct {
 
 func (c *Config) newAgeKeygenCmd() *cobra.Command {
 	ageKeygenCommand := &cobra.Command{
+		GroupID: groupIDEncryption,
 		Use:     "age-keygen",
 		Args:    cobra.MaximumNArgs(1),
 		Short:   "Generate an age identity or convert an age identity to an age recipient",

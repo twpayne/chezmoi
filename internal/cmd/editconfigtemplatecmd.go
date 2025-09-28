@@ -11,6 +11,7 @@ import (
 
 func (c *Config) newEditConfigTemplateCmd() *cobra.Command {
 	editConfigCmd := &cobra.Command{
+		GroupID:           groupIDAdvanced,
 		Use:               "edit-config-template",
 		Short:             "Edit the configuration file template",
 		Long:              mustLongHelp("edit-config-template"),

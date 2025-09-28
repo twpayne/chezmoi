@@ -8,6 +8,7 @@ type secretCmdConfig struct {
 
 func (c *Config) newSecretCmd() *cobra.Command {
 	secretCmd := &cobra.Command{
+		GroupID: groupIDInternal,
 		Use:     "secret",
 		Args:    cobra.NoArgs,
 		Short:   "Interact with a secret manager",

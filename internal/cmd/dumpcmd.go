@@ -18,6 +18,7 @@ type dumpCmdConfig struct {
 
 func (c *Config) newDumpCmd() *cobra.Command {
 	dumpCmd := &cobra.Command{
+		GroupID:           groupIDInternal,
 		Use:               "dump [target]...",
 		Short:             "Generate a dump of the target state",
 		Long:              mustLongHelp("dump"),

@@ -86,6 +86,7 @@ type gitCloneOptionsLogValuer git.CloneOptions
 
 func (c *Config) newInitCmd() *cobra.Command {
 	initCmd := &cobra.Command{
+		GroupID: groupIDDaily,
 		Args:    cobra.MaximumNArgs(1),
 		Use:     "init [repo]",
 		Short:   "Setup the source directory and update the destination directory to match the target state",

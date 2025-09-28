@@ -19,6 +19,7 @@ type managedCmdConfig struct {
 
 func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd := &cobra.Command{
+		GroupID: groupIDAdvanced,
 		Use:     "managed [path]...",
 		Aliases: []string{"list"},
 		Short:   "List the managed entries in the destination directory",

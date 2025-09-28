@@ -37,6 +37,7 @@ func (fi *fileInfo) Sys() any           { return nil } // Sys always returns nil
 
 func (c *Config) newReAddCmd() *cobra.Command {
 	reAddCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "re-add",
 		Short:             "Re-add modified files",
 		Long:              mustLongHelp("re-add"),

@@ -75,6 +75,7 @@ type modifier struct {
 
 func (c *Config) newChattrCmd() *cobra.Command {
 	chattrCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "chattr attributes target...",
 		Short:             "Change the attributes of a target in the source state",
 		Long:              mustLongHelp("chattr"),

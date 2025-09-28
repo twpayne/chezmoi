@@ -4,6 +4,7 @@ import "github.com/spf13/cobra"
 
 func (c *Config) newCatConfigCmd() *cobra.Command {
 	catConfigCmd := &cobra.Command{
+		GroupID:           groupIDInternal,
 		Use:               "cat-config",
 		Short:             "Print the configuration file",
 		Long:              mustLongHelp("cat-config"),
