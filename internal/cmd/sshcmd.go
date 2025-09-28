@@ -14,7 +14,7 @@ type sshCmdConfig struct {
 func (c *Config) newSSHCmd() *cobra.Command {
 	sshCmd := &cobra.Command{
 		Use:     "ssh host",
-		Short:   "ssh to a host and initialize dotfiles",
+		Short:   "SSH to a host and initialize dotfiles",
 		Long:    mustLongHelp("ssh"),
 		Example: example("ssh"),
 		Args:    cobra.MinimumNArgs(1),
