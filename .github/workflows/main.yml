@@ -64,10 +64,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@16df4fbc19aea13d921737861d6c622bf3cefe23
+    - uses: github/codeql-action/init@573acd9552f33577783abde4acb66a1058e762e5
       with:
         languages: go
-    - uses: github/codeql-action/analyze@16df4fbc19aea13d921737861d6c622bf3cefe23
+    - uses: github/codeql-action/analyze@573acd9552f33577783abde4acb66a1058e762e5
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -85,7 +85,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: |
           ~/.go-alpine
@@ -106,7 +106,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: |
           ~/.go-archlinux
@@ -490,7 +490,7 @@ jobs:
         cp assets/scripts/install.ps1 assets/get.chezmoi.io/ps1
         cp LICENSE assets/get.chezmoi.io/LICENSE
     - name: push-get.chezmoi.io
-      uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900
+      uses: cpina/github-action-push-to-another-repository@55306faa4ed53b815ae49e564af8cfb359d32ae2
       env:
         SSH_DEPLOY_KEY: ${{ secrets.GET_CHEZMOI_IO_SSH_DEPLOY_KEY }}
       with:
