@@ -120,6 +120,7 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 				paths[i] = structuredPath.SourceRelative.String()
 			}
 		}
+		paths = chezmoi.Distinct(paths)
 		return c.writePaths(paths, writePathsOptions{
 			nulPathSeparator: c.managed.nulPathSeparator,
 			tree:             c.managed.tree,
