@@ -139,18 +139,18 @@ func implicitTarDirHeader(dir string, modTime time.Time) *tar.Header {
 	}
 }
 
-// A rarFileInfo wraps a *rardecode.FileHeader so that it implements
+// A RARFileInfo wraps a *rardecode.FileHeader so that it implements
 // fs.FileInfo.
-type rarFileInfo struct {
+type RARFileInfo struct {
 	*rardecode.FileHeader
 }
 
-func (i rarFileInfo) Name() string       { return i.FileHeader.Name }
-func (i rarFileInfo) Size() int64        { return i.UnPackedSize }
-func (i rarFileInfo) Mode() fs.FileMode  { return i.FileHeader.Mode() }
-func (i rarFileInfo) ModTime() time.Time { return i.ModificationTime }
-func (i rarFileInfo) IsDir() bool        { return i.FileHeader.IsDir }
-func (i rarFileInfo) Sys() any           { return nil }
+func (i RARFileInfo) Name() string       { return i.FileHeader.Name }
+func (i RARFileInfo) Size() int64        { return i.UnPackedSize }
+func (i RARFileInfo) Mode() fs.FileMode  { return i.FileHeader.Mode() }
+func (i RARFileInfo) ModTime() time.Time { return i.ModificationTime }
+func (i RARFileInfo) IsDir() bool        { return i.FileHeader.IsDir }
+func (i RARFileInfo) Sys() any           { return nil }
 
 // walkArchiveRar walks over all the entries in a rar archive.
 func walkArchiveRar(r io.Reader, f WalkArchiveFunc) error {
@@ -171,7 +171,7 @@ func walkArchiveRar(r io.Reader, f WalkArchiveFunc) error {
 		}
 		seenDirs.Add(dir)
 		name := strings.TrimSuffix(header.Name, "/")
-		switch err := f(name, rarFileInfo{FileHeader: header}, rarReader, ""); {
+		switch err := f(name, RARFileInfo{FileHeader: header}, rarReader, ""); {
 		case errors.Is(err, fs.SkipDir):
 			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
 		case err != nil:
