@@ -60,11 +60,11 @@ var (
 	appleDoubleContentsPrefix = []byte{0x00, 0x05, 0x16, 0x07, 0x00, 0x02, 0x00, 0x00}
 )
 
-type externalArchive struct {
+type ExternalArchive struct {
 	ExtractAppleDoubleFiles bool `json:"extractAppleDoubleFiles" toml:"extractAppleDoubleFiles" yaml:"extractAppleDoubleFiles"`
 }
 
-type externalChecksum struct {
+type ExternalChecksum struct {
 	MD5       HexBytes `json:"md5"       toml:"md5"       yaml:"md5"`
 	RIPEMD160 HexBytes `json:"ripemd160" toml:"ripemd160" yaml:"ripemd160"`
 	SHA1      HexBytes `json:"sha1"      toml:"sha1"      yaml:"sha1"`
@@ -74,16 +74,16 @@ type externalChecksum struct {
 	Size      int      `json:"size"      toml:"size"      yaml:"size"`
 }
 
-type externalClone struct {
+type ExternalClone struct {
 	Args []string `json:"args" toml:"args" yaml:"args"`
 }
 
-type externalFilter struct {
+type ExternalFilter struct {
 	Command string   `json:"command" toml:"command" yaml:"command"`
 	Args    []string `json:"args"    toml:"args"    yaml:"args"`
 }
 
-type externalPull struct {
+type ExternalPull struct {
 	Args []string `json:"args" toml:"args" yaml:"args"`
 }
 
@@ -98,16 +98,16 @@ type External struct {
 	Executable      bool              `json:"executable"      toml:"executable"      yaml:"executable"`
 	Private         bool              `json:"private"         toml:"private"         yaml:"private"`
 	ReadOnly        bool              `json:"readonly"        toml:"readonly"        yaml:"readonly"`
-	Checksum        externalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
-	Clone           externalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
+	Checksum        ExternalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
+	Clone           ExternalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
 	Decompress      CompressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
 	Exclude         []string          `json:"exclude"         toml:"exclude"         yaml:"exclude"`
-	Filter          externalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
+	Filter          ExternalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
 	Format          ArchiveFormat     `json:"format"          toml:"format"          yaml:"format"`
-	Archive         externalArchive   `json:"archive"         toml:"archive"         yaml:"archive"`
+	Archive         ExternalArchive   `json:"archive"         toml:"archive"         yaml:"archive"`
 	Include         []string          `json:"include"         toml:"include"         yaml:"include"`
 	ArchivePath     string            `json:"path"            toml:"path"            yaml:"path"`
-	Pull            externalPull      `json:"pull"            toml:"pull"            yaml:"pull"`
+	Pull            ExternalPull      `json:"pull"            toml:"pull"            yaml:"pull"`
 	RefreshPeriod   Duration          `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
 	StripComponents int               `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string            `json:"url"             toml:"url"             yaml:"url"`
