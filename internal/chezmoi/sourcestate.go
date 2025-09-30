@@ -100,7 +100,7 @@ type External struct {
 	ReadOnly        bool              `json:"readonly"        toml:"readonly"        yaml:"readonly"`
 	Checksum        externalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
 	Clone           externalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
-	Decompress      compressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
+	Decompress      CompressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
 	Exclude         []string          `json:"exclude"         toml:"exclude"         yaml:"exclude"`
 	Filter          externalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
 	Format          ArchiveFormat     `json:"format"          toml:"format"          yaml:"format"`
