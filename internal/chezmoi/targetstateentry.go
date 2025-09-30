@@ -69,15 +69,15 @@ type TargetStateSymlink struct {
 	sourceAttr   SourceAttr
 }
 
-// A modifyDirWithCmdState records the state of a directory modified by a
+// A ModifyDirWithCmdState records the state of a directory modified by a
 // command.
-type modifyDirWithCmdState struct {
+type ModifyDirWithCmdState struct {
 	Name  AbsPath   `json:"name"  yaml:"name"`
 	RunAt time.Time `json:"runAt" yaml:"runAt"`
 }
 
-// A scriptState records the state of a script that has been run.
-type scriptState struct {
+// A ScriptState records the state of a script that has been run.
+type ScriptState struct {
 	Name  RelPath   `json:"name"  yaml:"name"`
 	RunAt time.Time `json:"runAt" yaml:"runAt"`
 }
@@ -101,7 +101,7 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 
 	modifyDirWithCmdStateKey := []byte(actualStateEntry.Path().String())
 	if err := PersistentStateSet(
-		persistentState, GitRepoExternalStateBucket, modifyDirWithCmdStateKey, &modifyDirWithCmdState{
+		persistentState, GitRepoExternalStateBucket, modifyDirWithCmdStateKey, &ModifyDirWithCmdState{
 			Name:  actualStateEntry.Path(),
 			RunAt: runAt,
 		}); err != nil {
@@ -136,7 +136,7 @@ func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState,
 	case modifyDirWithCmdStateBytes == nil:
 		return false, nil
 	default:
-		var modifyDirWithCmdState modifyDirWithCmdState
+		var modifyDirWithCmdState ModifyDirWithCmdState
 		if err := stateFormat.Unmarshal(modifyDirWithCmdStateBytes, &modifyDirWithCmdState); err != nil {
 			return false, err
 		}
@@ -363,7 +363,7 @@ func (t *TargetStateScript) Apply(
 	}
 
 	scriptStateKey := []byte(hex.EncodeToString(contentsSHA256[:]))
-	if err := PersistentStateSet(persistentState, ScriptStateBucket, scriptStateKey, &scriptState{
+	if err := PersistentStateSet(persistentState, ScriptStateBucket, scriptStateKey, &ScriptState{
 		Name:  t.name,
 		RunAt: runAt,
 	}); err != nil {
