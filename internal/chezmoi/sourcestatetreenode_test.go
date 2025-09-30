@@ -8,20 +8,20 @@ import (
 )
 
 func TestSourceStateEntryTreeNodeEmpty(t *testing.T) {
-	n := newSourceStateTreeNode()
-	assert.Equal(t, nil, n.get(EmptyRelPath))
-	assert.Equal(t, []*sourceStateEntryTreeNode{n}, n.getNodes(EmptyRelPath))
-	assert.NoError(t, n.forEach(EmptyRelPath, func(RelPath, SourceStateEntry) error {
+	n := NewSourceStateEntryTreeNode()
+	assert.Equal(t, nil, n.Get(EmptyRelPath))
+	assert.Equal(t, []*SourceStateEntryTreeNode{n}, n.GetNodes(EmptyRelPath))
+	assert.NoError(t, n.ForEach(EmptyRelPath, func(RelPath, SourceStateEntry) error {
 		return errors.New("should not be called")
 	}))
 }
 
 func TestSourceStateEntryTreeNodeSingle(t *testing.T) {
-	n := newSourceStateTreeNode()
+	n := NewSourceStateEntryTreeNode()
 	sourceStateFile := &SourceStateFile{}
-	n.set(NewRelPath("file"), sourceStateFile)
-	assert.Equal(t, sourceStateFile, n.get(NewRelPath("file")).(*SourceStateFile))
-	err := n.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+	n.Set(NewRelPath("file"), sourceStateFile)
+	assert.Equal(t, sourceStateFile, n.Get(NewRelPath("file")).(*SourceStateFile))
+	err := n.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 		assert.Equal(t, NewRelPath("file"), targetRelPath)
 		assert.Equal(t, sourceStateFile, sourceStateEntry.(*SourceStateFile))
 		return nil
@@ -38,13 +38,13 @@ func TestSourceStateEntryTreeNodeMultiple(t *testing.T) {
 		NewRelPath("dir/a_file"): &SourceStateFile{},
 		NewRelPath("dir/b_file"): &SourceStateFile{},
 	}
-	n := newSourceStateTreeNode()
+	n := NewSourceStateEntryTreeNode()
 	for targetRelPath, sourceStateEntry := range entries {
-		n.set(targetRelPath, sourceStateEntry)
+		n.Set(targetRelPath, sourceStateEntry)
 	}
 
 	var targetRelPaths []RelPath
-	err := n.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+	err := n.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 		assert.Equal(t, entries[targetRelPath], sourceStateEntry)
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 		return nil
@@ -59,5 +59,5 @@ func TestSourceStateEntryTreeNodeMultiple(t *testing.T) {
 		NewRelPath("dir/b_file"),
 	}, targetRelPaths)
 
-	assert.Equal(t, entries, n.getMap())
+	assert.Equal(t, entries, n.GetMap())
 }

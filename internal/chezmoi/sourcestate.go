@@ -118,7 +118,7 @@ type External struct {
 // A SourceState is a source state.
 type SourceState struct {
 	mutex                   sync.Mutex
-	root                    sourceStateEntryTreeNode
+	root                    SourceStateEntryTreeNode
 	removeDirs              chezmoiset.Set[RelPath]
 	baseSystem              System
 	system                  System
@@ -434,7 +434,7 @@ DEST_ABS_PATH:
 			parentSourceRelPath = SourceRelPath{}
 		} else if parentEntry, ok := newSourceStateEntriesByTargetRelPath[targetParentRelPath]; ok {
 			parentSourceRelPath = parentEntry.SourceRelPath()
-		} else if nodes := s.root.getNodes(targetParentRelPath); nodes != nil {
+		} else if nodes := s.root.GetNodes(targetParentRelPath); nodes != nil {
 			for i, node := range nodes {
 				if i == 0 {
 					// nodes[0].sourceStateEntry should always be nil because it
@@ -443,14 +443,14 @@ DEST_ABS_PATH:
 					// the destination directory itself. For example, chezmoi
 					// does not set the name or permissions of the user's home
 					// directory.
-					if node.sourceStateEntry != nil {
-						panic(fmt.Errorf("nodes[0]: expected nil, got %+v", node.sourceStateEntry))
+					if node.SourceStateEntry != nil {
+						panic(fmt.Errorf("nodes[0]: expected nil, got %+v", node.SourceStateEntry))
 					}
 					continue
 				}
-				switch sourceStateDir, ok := node.sourceStateEntry.(*SourceStateDir); {
+				switch sourceStateDir, ok := node.SourceStateEntry.(*SourceStateDir); {
 				case i != len(nodes)-1 && !ok:
-					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.sourceStateEntry))
+					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.SourceStateEntry))
 				case ok && sourceStateDir.Attr.External:
 					targetRelPathComponents := targetRelPath.SplitAll()
 					externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
@@ -461,7 +461,7 @@ DEST_ABS_PATH:
 					continue DEST_ABS_PATH
 				}
 			}
-			parentSourceRelPath = nodes[len(nodes)-1].sourceStateEntry.SourceRelPath()
+			parentSourceRelPath = nodes[len(nodes)-1].SourceStateEntry.SourceRelPath()
 		} else {
 			return fmt.Errorf("%s: parent directory not in source state", destAbsPath)
 		}
@@ -501,7 +501,7 @@ DEST_ABS_PATH:
 			sourceRelPaths: []SourceRelPath{sourceEntryRelPath},
 		}
 
-		if oldSourceStateEntry := s.root.get(targetRelPath); oldSourceStateEntry != nil {
+		if oldSourceStateEntry := s.root.Get(targetRelPath); oldSourceStateEntry != nil {
 			oldSourceEntryRelPath := oldSourceStateEntry.SourceRelPath()
 			if !oldSourceEntryRelPath.IsEmpty() && oldSourceEntryRelPath != sourceEntryRelPath {
 				if options.ReplaceFunc != nil {
@@ -569,16 +569,16 @@ DEST_ABS_PATH:
 		}
 	}
 
-	var sourceRoot sourceStateEntryTreeNode
+	var sourceRoot SourceStateEntryTreeNode
 	for sourceRelPath, sourceStateEntry := range newSourceStateEntries {
-		sourceRoot.set(sourceRelPath.RelPath(), sourceStateEntry)
+		sourceRoot.Set(sourceRelPath.RelPath(), sourceStateEntry)
 	}
 
 	// Simulate removing a directory by creating SourceStateRemove entries for
 	// all existing source state entries that are in options.RemoveDir and not
 	// in the new source state.
 	if options.RemoveDir != EmptyRelPath {
-		_ = s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+		_ = s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 			if !targetRelPath.HasDirPrefix(options.RemoveDir) {
 				return nil
 			}
@@ -586,7 +586,7 @@ DEST_ABS_PATH:
 				return nil
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
-			sourceRoot.set(sourceRelPath.RelPath(), &SourceStateRemove{
+			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
 				sourceRelPath: sourceRelPath,
 				targetRelPath: targetRelPath,
 			})
@@ -675,7 +675,7 @@ func (s *SourceState) AddDestAbsPathInfos(
 			return nil
 		}
 		parentRelPath := parentAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
-		if _, ok := s.root.get(parentRelPath).(*SourceStateDir); ok {
+		if _, ok := s.root.Get(parentRelPath).(*SourceStateDir); ok {
 			return nil
 		}
 
@@ -702,7 +702,7 @@ func (s *SourceState) Apply(
 	targetRelPath RelPath,
 	options ApplyOptions,
 ) error {
-	sourceStateEntry := s.root.get(targetRelPath)
+	sourceStateEntry := s.root.Get(targetRelPath)
 	if sourceStateEntry == nil {
 		return nil
 	}
@@ -834,14 +834,14 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 
 // ForEach calls f for each source state entry.
 func (s *SourceState) ForEach(f func(RelPath, SourceStateEntry) error) error {
-	return s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, entry SourceStateEntry) error {
+	return s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, entry SourceStateEntry) error {
 		return f(targetRelPath, entry)
 	})
 }
 
 // Get returns the source state entry for targetRelPath.
 func (s *SourceState) Get(targetRelPath RelPath) SourceStateEntry {
-	return s.root.get(targetRelPath)
+	return s.root.Get(targetRelPath)
 }
 
 // Ignore returns if targetRelPath should be ignored.
@@ -865,7 +865,7 @@ func (s *SourceState) Ignored() []RelPath {
 // MustEntry returns the source state entry associated with targetRelPath, and
 // panics if it does not exist.
 func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
-	sourceStateEntry := s.root.get(targetRelPath)
+	sourceStateEntry := s.root.Get(targetRelPath)
 	if sourceStateEntry == nil {
 		panic(fmt.Sprintf("%s: not in source state", targetRelPath))
 	}
@@ -1094,7 +1094,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		for _, external := range s.externals[externalRelPath] {
 			parentRelPath, _ := externalRelPath.Split()
 			var parentSourceRelPath SourceRelPath
-			switch parentSourceStateEntry, err := s.root.mkdirAll(parentRelPath, external, s.umask); {
+			switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external, s.umask); {
 			case err != nil:
 				return err
 			case parentSourceStateEntry != nil:
@@ -1295,7 +1295,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Populate s.Entries with the unique source entry for each target.
 	for targetRelPath, sourceEntries := range allSourceStateEntries {
-		s.root.set(targetRelPath, sourceEntries[0])
+		s.root.Set(targetRelPath, sourceEntries[0])
 	}
 
 	return nil
@@ -1303,7 +1303,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 // TargetRelPaths returns all of s's target relative paths in order.
 func (s *SourceState) TargetRelPaths() []RelPath {
-	entries := s.root.getMap()
+	entries := s.root.GetMap()
 	targetRelPaths := make([]RelPath, 0, len(entries))
 	for targetRelPath := range entries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)

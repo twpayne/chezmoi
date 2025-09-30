@@ -2136,7 +2136,7 @@ func (s *SourceState) applyAll(
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	err := s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+	err := s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 		assert.NoError(t, sourceStateEntry.Evaluate())
 		if sourceStateFile, ok := sourceStateEntry.(*SourceStateFile); ok {
 			contents, err := sourceStateFile.Contents()
@@ -2170,9 +2170,9 @@ func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 
 func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 	return func(s *SourceState) {
-		s.root = sourceStateEntryTreeNode{}
+		s.root = SourceStateEntryTreeNode{}
 		for targetRelPath, sourceStateEntry := range sourceEntries {
-			s.root.set(targetRelPath, sourceStateEntry)
+			s.root.Set(targetRelPath, sourceStateEntry)
 		}
 	}
 }
