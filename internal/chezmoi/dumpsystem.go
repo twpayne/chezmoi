@@ -21,8 +21,8 @@ const (
 
 // A DumpSystem is a System that writes to a data file.
 type DumpSystem struct {
-	emptySystemMixin
-	noUpdateSystemMixin
+	EmptySystemMixin
+	NoUpdateSystemMixin
 
 	Data map[string]any
 }

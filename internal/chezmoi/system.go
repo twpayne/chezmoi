@@ -44,62 +44,62 @@ type System interface { //nolint:interfacebloat
 	WriteSymlink(oldName string, newName AbsPath) error
 }
 
-// A emptySystemMixin simulates an empty system.
-type emptySystemMixin struct{}
+// A EmptySystemMixin simulates an empty system.
+type EmptySystemMixin struct{}
 
-func (emptySystemMixin) Glob(pattern string) ([]string, error)       { return nil, nil }
-func (emptySystemMixin) Lstat(name AbsPath) (fs.FileInfo, error)     { return nil, fs.ErrNotExist }
-func (emptySystemMixin) RawPath(path AbsPath) (AbsPath, error)       { return path, nil }
-func (emptySystemMixin) ReadDir(name AbsPath) ([]fs.DirEntry, error) { return nil, fs.ErrNotExist }
-func (emptySystemMixin) ReadFile(name AbsPath) ([]byte, error)       { return nil, fs.ErrNotExist }
-func (emptySystemMixin) Readlink(name AbsPath) (string, error)       { return "", fs.ErrNotExist }
-func (emptySystemMixin) Stat(name AbsPath) (fs.FileInfo, error)      { return nil, fs.ErrNotExist }
-func (emptySystemMixin) UnderlyingFS() vfs.FS                        { return nil }
+func (EmptySystemMixin) Glob(pattern string) ([]string, error)       { return nil, nil }
+func (EmptySystemMixin) Lstat(name AbsPath) (fs.FileInfo, error)     { return nil, fs.ErrNotExist }
+func (EmptySystemMixin) RawPath(path AbsPath) (AbsPath, error)       { return path, nil }
+func (EmptySystemMixin) ReadDir(name AbsPath) ([]fs.DirEntry, error) { return nil, fs.ErrNotExist }
+func (EmptySystemMixin) ReadFile(name AbsPath) ([]byte, error)       { return nil, fs.ErrNotExist }
+func (EmptySystemMixin) Readlink(name AbsPath) (string, error)       { return "", fs.ErrNotExist }
+func (EmptySystemMixin) Stat(name AbsPath) (fs.FileInfo, error)      { return nil, fs.ErrNotExist }
+func (EmptySystemMixin) UnderlyingFS() vfs.FS                        { return nil }
 
-// A noUpdateSystemMixin panics on any update.
-type noUpdateSystemMixin struct{}
+// A NoUpdateSystemMixin panics on any update.
+type NoUpdateSystemMixin struct{}
 
-func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error {
+func (NoUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Chtimes(name AbsPath, atime, mtime time.Time) error {
+func (NoUpdateSystemMixin) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Link(oldName, newName AbsPath) error {
+func (NoUpdateSystemMixin) Link(oldName, newName AbsPath) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error {
+func (NoUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Remove(name AbsPath) error {
+func (NoUpdateSystemMixin) Remove(name AbsPath) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RemoveAll(name AbsPath) error {
+func (NoUpdateSystemMixin) RemoveAll(name AbsPath) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) Rename(oldPath, newPath AbsPath) error {
+func (NoUpdateSystemMixin) Rename(oldPath, newPath AbsPath) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
+func (NoUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
+func (NoUpdateSystemMixin) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
+func (NoUpdateSystemMixin) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	panic("update to no update system")
 }
 
-func (noUpdateSystemMixin) WriteSymlink(oldName string, newName AbsPath) error {
+func (NoUpdateSystemMixin) WriteSymlink(oldName string, newName AbsPath) error {
 	panic("update to no update system")
 }
 
