@@ -302,9 +302,9 @@ func WithWarnFunc(warnFunc WarnFunc) SourceStateOption {
 	}
 }
 
-// A targetStateEntryFunc returns a TargetStateEntry based on reading an AbsPath
+// A TargetStateEntryFunc returns a TargetStateEntry based on reading an AbsPath
 // on a System.
-type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
+type TargetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
 
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
@@ -1820,7 +1820,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	sourceContentsFunc func() ([]byte, error),
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		var contentsFunc func() ([]byte, error)
 		switch contents, err := destSystem.ReadFile(destAbsPath); {
@@ -1866,7 +1866,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	sourceContentsFunc func() ([]byte, error),
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
 			switch contents, err := sourceContentsFunc(); {
@@ -1921,7 +1921,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 	fileAttr FileAttr,
 	contentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() (contents []byte, err error) {
 			// FIXME this should share code with RealSystem.RunScript
@@ -2029,7 +2029,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 // newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
 // target.
-func (s *SourceState) newRemoveTargetStateEntryFunc() targetStateEntryFunc {
+func (s *SourceState) newRemoveTargetStateEntryFunc() TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		return &TargetStateRemove{}, nil
 	}
@@ -2043,7 +2043,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 	targetRelPath RelPath,
 	sourceContentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() ([]byte, error) {
 			contents, err := sourceContentsFunc()
@@ -2082,7 +2082,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	contentsFunc func() ([]byte, error),
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
 			linknameBytes, err := contentsFunc()
@@ -2130,7 +2130,7 @@ func (s *SourceState) newSourceStateFile(
 		return contents, nil
 	})
 
-	var targetStateEntryFunc targetStateEntryFunc
+	var targetStateEntryFunc TargetStateEntryFunc
 	switch fileAttr.Type {
 	case SourceFileTypeCreate:
 		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
