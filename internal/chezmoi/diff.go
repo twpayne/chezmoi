@@ -18,49 +18,49 @@ var gitDiffOperation = map[diffmatchpatch.Operation]diff.Operation{
 	diffmatchpatch.DiffInsert: diff.Add,
 }
 
-// A gitDiffChunk implements the
+// A GitDiffChunk implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Chunk interface.
-type gitDiffChunk struct {
+type GitDiffChunk struct {
 	content   string
 	operation diff.Operation
 }
 
-func (c *gitDiffChunk) Content() string      { return c.content }
-func (c *gitDiffChunk) Type() diff.Operation { return c.operation }
+func (c *GitDiffChunk) Content() string      { return c.content }
+func (c *GitDiffChunk) Type() diff.Operation { return c.operation }
 
-// A gitDiffFile implements the
+// A GitDiffFile implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.File interface.
-type gitDiffFile struct {
+type GitDiffFile struct {
 	hash     plumbing.Hash
 	fileMode filemode.FileMode
 	relPath  RelPath
 }
 
-func (f *gitDiffFile) Hash() plumbing.Hash     { return f.hash }
-func (f *gitDiffFile) Mode() filemode.FileMode { return f.fileMode }
-func (f *gitDiffFile) Path() string            { return f.relPath.String() }
+func (f *GitDiffFile) Hash() plumbing.Hash     { return f.hash }
+func (f *GitDiffFile) Mode() filemode.FileMode { return f.fileMode }
+func (f *GitDiffFile) Path() string            { return f.relPath.String() }
 
-// A gitDiffFilePatch implements the
+// A GitDiffFilePatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.FilePatch interface.
-type gitDiffFilePatch struct {
-	isBinary bool
+type GitDiffFilePatch struct {
+	binary   bool
 	from, to diff.File
 	chunks   []diff.Chunk
 }
 
-func (fp *gitDiffFilePatch) IsBinary() bool              { return fp.isBinary }
-func (fp *gitDiffFilePatch) Files() (from, to diff.File) { return fp.from, fp.to }
-func (fp *gitDiffFilePatch) Chunks() []diff.Chunk        { return fp.chunks }
+func (fp *GitDiffFilePatch) IsBinary() bool              { return fp.binary }
+func (fp *GitDiffFilePatch) Files() (from, to diff.File) { return fp.from, fp.to }
+func (fp *GitDiffFilePatch) Chunks() []diff.Chunk        { return fp.chunks }
 
-// A gitDiffPatch implements the
+// A GitDiffPatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Patch interface.
-type gitDiffPatch struct {
+type GitDiffPatch struct {
 	filePatches []diff.FilePatch
 	message     string
 }
 
-func (p *gitDiffPatch) FilePatches() []diff.FilePatch { return p.filePatches }
-func (p *gitDiffPatch) Message() string               { return p.message }
+func (p *GitDiffPatch) FilePatches() []diff.FilePatch { return p.filePatches }
+func (p *GitDiffPatch) Message() string               { return p.message }
 
 // DiffPatch returns a github.com/go-git/go-git/plumbing/format/diff.Patch for
 // path from the given data and mode to the given data and mode.
@@ -73,7 +73,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 		if err != nil {
 			return nil, err
 		}
-		from = &gitDiffFile{
+		from = &GitDiffFile{
 			fileMode: fromFileMode,
 			relPath:  path,
 			hash:     plumbing.ComputeHash(plumbing.BlobObject, fromData),
@@ -86,7 +86,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 		if err != nil {
 			return nil, err
 		}
-		to = &gitDiffFile{
+		to = &GitDiffFile{
 			fileMode: toFileMode,
 			relPath:  path,
 			hash:     plumbing.ComputeHash(plumbing.BlobObject, toData),
@@ -98,13 +98,13 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 		chunks = diffChunks(string(fromData), string(toData))
 	}
 
-	return &gitDiffPatch{
+	return &GitDiffPatch{
 		filePatches: []diff.FilePatch{
-			&gitDiffFilePatch{
-				isBinary: isBinary,
-				from:     from,
-				to:       to,
-				chunks:   chunks,
+			&GitDiffFilePatch{
+				binary: isBinary,
+				from:   from,
+				to:     to,
+				chunks: chunks,
 			},
 		},
 	}, nil
@@ -120,7 +120,7 @@ func diffChunks(from, to string) []diff.Chunk {
 	diffs := dmp.DiffCharsToLines(dmp.DiffMainRunes(fromRunes, toRunes, false), runesToLines)
 	chunks := make([]diff.Chunk, len(diffs))
 	for i, d := range diffs {
-		chunk := &gitDiffChunk{
+		chunk := &GitDiffChunk{
 			content:   d.Text,
 			operation: gitDiffOperation[d.Type],
 		}
