@@ -129,8 +129,8 @@ type SourceState struct {
 	scriptTempDirAbsPath    AbsPath
 	umask                   fs.FileMode
 	encryption              Encryption
-	ignore                  *patternSet
-	remove                  *patternSet
+	ignore                  *PatternSet
+	remove                  *PatternSet
 	interpreters            map[string]Interpreter
 	httpClient              *http.Client
 	logger                  *slog.Logger
@@ -312,8 +312,8 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		removeDirs:           chezmoiset.New[RelPath](),
 		umask:                Umask,
 		encryption:           NoEncryption{},
-		ignore:               newPatternSet(),
-		remove:               newPatternSet(),
+		ignore:               NewPatternSet(),
+		remove:               NewPatternSet(),
 		httpClient:           http.DefaultClient,
 		logger:               slog.Default(),
 		readTemplateData:     true,
@@ -848,7 +848,7 @@ func (s *SourceState) Get(targetRelPath RelPath) SourceStateEntry {
 func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	ignore := s.ignore.match(targetRelPath.String()) == patternSetMatchInclude
+	ignore := s.ignore.Match(targetRelPath.String()) == PatternSetMatchInclude
 	if ignore {
 		s.ignoredRelPaths.Add(targetRelPath)
 	}
@@ -1121,7 +1121,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Generate SourceStateRemoves for existing targets.
-	matches, err := s.remove.glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
+	matches, err := s.remove.Glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
 	if err != nil {
 		return err
 	}
@@ -1420,7 +1420,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 
 // addPatterns executes the template at sourceAbsPath, interprets the result as
 // a list of patterns, and adds all patterns found to patternSet.
-func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath, sourceRelPath SourceRelPath) error {
+func (s *SourceState) addPatterns(patternSet *PatternSet, sourceAbsPath AbsPath, sourceRelPath SourceRelPath) error {
 	data, err := s.executeTemplate(sourceAbsPath)
 	if err != nil {
 		return err
@@ -1438,13 +1438,13 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 		if len(line) == 0 {
 			continue
 		}
-		include := patternSetInclude
+		include := PatternSetInclude
 		line, ok := bytes.CutPrefix(line, []byte{'!'})
 		if ok {
-			include = patternSetExclude
+			include = PatternSetExclude
 		}
 		pattern := dir.JoinString(string(line)).String()
-		if err := patternSet.add(pattern, include); err != nil {
+		if err := patternSet.Add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
 		}
 	}
@@ -2393,14 +2393,14 @@ func (s *SourceState) readExternalArchive(
 		externalRelPath: {sourceStateDir},
 	}
 
-	patternSet := newPatternSet()
+	patternSet := NewPatternSet()
 	for _, includePattern := range external.Include {
-		if err := patternSet.add(includePattern, patternSetInclude); err != nil {
+		if err := patternSet.Add(includePattern, PatternSetInclude); err != nil {
 			return nil, err
 		}
 	}
 	for _, excludePattern := range external.Exclude {
-		if err := patternSet.add(excludePattern, patternSetExclude); err != nil {
+		if err := patternSet.Add(excludePattern, PatternSetExclude); err != nil {
 			return nil, err
 		}
 	}
@@ -2410,11 +2410,11 @@ func (s *SourceState) readExternalArchive(
 		// Perform matching against the name before stripping any components,
 		// otherwise it is not possible to differentiate between
 		// identically-named files at the same level.
-		if patternSet.match(name) == patternSetMatchExclude {
+		if patternSet.Match(name) == PatternSetMatchExclude {
 			// In case that `name` is a directory which matched an explicit
 			// exclude pattern, return fs.SkipDir to exclude not just the
 			// directory itself but also everything it contains (recursively).
-			if fileInfo.IsDir() && len(patternSet.excludePatterns) > 0 {
+			if fileInfo.IsDir() && len(patternSet.ExcludePatterns) > 0 {
 				return fs.SkipDir
 			}
 			return nil
