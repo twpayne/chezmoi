@@ -10,9 +10,9 @@ const (
 	ModeSymlink Mode = "symlink"
 )
 
-type invalidModeError string
+type InvalidModeError string
 
-func (e invalidModeError) Error() string {
+func (e InvalidModeError) Error() string {
 	return "invalid mode: " + string(e)
 }
 
@@ -32,7 +32,7 @@ func (m *Mode) Set(s string) error {
 		*m = ModeSymlink
 		return nil
 	default:
-		return invalidModeError(Mode(s))
+		return InvalidModeError(Mode(s))
 	}
 }
 

@@ -28,12 +28,12 @@ func (e *TooOldError) Error() string {
 	return fmt.Sprintf(format, e.Need, e.Have)
 }
 
-type inconsistentStateError struct {
+type InconsistentStateError struct {
 	targetRelPath RelPath
 	origins       []string
 }
 
-func (e *inconsistentStateError) Error() string {
+func (e *InconsistentStateError) Error() string {
 	format := "%s: inconsistent state (%s)"
 	return fmt.Sprintf(format, e.targetRelPath, strings.Join(e.origins, ", "))
 }
@@ -47,20 +47,20 @@ func (e *NotInAbsDirError) Error() string {
 	return fmt.Sprintf("%s: not in %s", e.pathAbsPath, e.dirAbsPath)
 }
 
-type notInRelDirError struct {
+type NotInRelDirError struct {
 	pathRelPath RelPath
 	dirRelPath  RelPath
 }
 
-func (e *notInRelDirError) Error() string {
+func (e *NotInRelDirError) Error() string {
 	return fmt.Sprintf("%s: not in %s", e.pathRelPath, e.dirRelPath)
 }
 
-type unsupportedFileTypeError struct {
+type UnsupportedFileTypeError struct {
 	absPath AbsPath
 	mode    fs.FileMode
 }
 
-func (e *unsupportedFileTypeError) Error() string {
+func (e *UnsupportedFileTypeError) Error() string {
 	return fmt.Sprintf("%s: unsupported file type %s", e.absPath, modeTypeName(e.mode))
 }

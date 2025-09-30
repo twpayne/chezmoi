@@ -1067,7 +1067,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			addSourceStateEntries(targetRelPath, sourceStateEntry)
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: sourceAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1284,7 +1284,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			origins[i] = sourceStateEntry.Origin().OriginString()
 		}
 		slices.Sort(origins)
-		errs = append(errs, &inconsistentStateError{
+		errs = append(errs, &InconsistentStateError{
 			targetRelPath: targetRelPath,
 			origins:       origins,
 		})
@@ -1409,7 +1409,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 		case fileInfo.IsDir():
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: externalAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1499,7 +1499,7 @@ func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.File
 		case fileInfo.IsDir():
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: dataAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1549,7 +1549,7 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 		case fileInfo.IsDir():
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: templateAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -2878,7 +2878,7 @@ func (s *SourceState) readScriptsDir(ctx context.Context, scriptsDirAbsPath AbsP
 			addSourceStateEntry(targetRelPath, sourceStateEntry)
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: sourceAbsPath,
 				mode:    fileInfo.Mode(),
 			}
