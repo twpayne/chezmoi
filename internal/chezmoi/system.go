@@ -160,9 +160,9 @@ func Walk(system System, rootAbsPath AbsPath, walkFunc WalkFunc) error {
 	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), outerWalkFunc)
 }
 
-// A concurrentWalkSourceDirFunc is a function called concurrently for every
+// A ConcurrentWalkSourceDirFunc is a function called concurrently for every
 // entry in a source directory.
-type concurrentWalkSourceDirFunc func(ctx context.Context, absPath AbsPath, fileInfo fs.FileInfo, err error) error
+type ConcurrentWalkSourceDirFunc func(ctx context.Context, absPath AbsPath, fileInfo fs.FileInfo, err error) error
 
 // WalkSourceDir walks the source directory rooted at sourceDirAbsPath in
 // system, calling walkFunc for each file or directory in the tree, including
@@ -240,7 +240,7 @@ func concurrentWalkSourceDir(
 	ctx context.Context,
 	system System,
 	dirAbsPath AbsPath,
-	walkFunc concurrentWalkSourceDirFunc,
+	walkFunc ConcurrentWalkSourceDirFunc,
 ) error {
 	dirEntries, err := system.ReadDir(dirAbsPath)
 	if err != nil {
