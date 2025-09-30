@@ -11,37 +11,37 @@ import (
 	"github.com/ulikunitz/xz"
 )
 
-// A compressionFormat is a compression format.
-type compressionFormat string
+// A CompressionFormat is a compression format.
+type CompressionFormat string
 
 // Compression formats.
 const (
-	compressionFormatNone  compressionFormat = ""
-	compressionFormatBzip2 compressionFormat = "bzip2"
-	compressionFormatGzip  compressionFormat = "gzip"
-	compressionFormatXz    compressionFormat = "xz"
-	compressionFormatZstd  compressionFormat = "zstd"
+	CompressionFormatNone  CompressionFormat = ""
+	CompressionFormatBzip2 CompressionFormat = "bzip2"
+	CompressionFormatGzip  CompressionFormat = "gzip"
+	CompressionFormatXz    CompressionFormat = "xz"
+	CompressionFormatZstd  CompressionFormat = "zstd"
 )
 
-func decompress(compressionFormat compressionFormat, data []byte) ([]byte, error) {
+func decompress(compressionFormat CompressionFormat, data []byte) ([]byte, error) {
 	switch compressionFormat {
-	case compressionFormatNone:
+	case CompressionFormatNone:
 		return data, nil
-	case compressionFormatBzip2:
+	case CompressionFormatBzip2:
 		return io.ReadAll(bzip2.NewReader(bytes.NewReader(data)))
-	case compressionFormatGzip:
+	case CompressionFormatGzip:
 		gzipReader, err := gzip.NewReader(bytes.NewReader(data))
 		if err != nil {
 			return nil, err
 		}
 		return io.ReadAll(gzipReader)
-	case compressionFormatXz:
+	case CompressionFormatXz:
 		xzReader, err := xz.NewReader(bytes.NewReader(data))
 		if err != nil {
 			return nil, err
 		}
 		return io.ReadAll(xzReader)
-	case compressionFormatZstd:
+	case CompressionFormatZstd:
 		zstdReader, err := zstd.NewReader(bytes.NewReader(data))
 		if err != nil {
 			return nil, err
