@@ -1,0 +1,10 @@
+# test that the exec template function returns true if the command succeeds
+exec chezmoi execute-template '{{ exec "true" }}'
+stdout ^true$
+
+# test that the exec template function returns false if the command fails
+exec chezmoi execute-template '{{ exec "false" }}'
+stdout ^false$
+
+# test that the exec template function returns fails if the command cannot be found
+! exec chezmoi execute-template '{{ exec "non-existent-command" }}'

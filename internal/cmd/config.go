@@ -490,6 +490,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"encrypt":                     c.encryptTemplateFunc,
 		"ensureLinePrefix":            c.ensureLinePrefixTemplateFunc,
 		"eqFold":                      c.eqFoldTemplateFunc,
+		"exec":                        c.execTemplateFunc,
 		"findExecutable":              c.findExecutableTemplateFunc,
 		"findOneExecutable":           c.findOneExecutableTemplateFunc,
 		"fromIni":                     c.fromIniTemplateFunc,
