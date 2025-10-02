@@ -104,10 +104,6 @@ coverage-html: coverage
 coverage:
 	${GO} test -coverprofile=coverage.out -coverpkg=chezmoi.io/chezmoi/... ./...
 
-.PHONY: generate
-generate:
-	${GO} generate
-
 .PHONY: capslock
 capslock:
 	${GO} tool capslock -output json | ${GO} tool summarize-capslock --output=.capslock-summary.yaml
@@ -158,7 +154,7 @@ ensure-goreleaser:
 	fi
 
 .PHONY: generate
-embed:
+generate:
 	CHEZMOIDEV=ignoreflags=1,ignorehelp=1 ${GO} generate
 
 .PHONY: release
