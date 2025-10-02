@@ -16,7 +16,6 @@ type help struct {
 var helps = map[string]*help{
 	"add": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Add targets to the source state. If any target is already in the source\n" +
 			"  state, then its source state is replaced with its current state in the\n" +
 			"  destination directory.",
@@ -55,7 +54,6 @@ var helps = map[string]*help{
 	},
 	"age": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Interact with age's passphrase-based encryption.",
 		example: "" +
 			"  chezmoi age encrypt --passphrase plaintext.txt > ciphertext.txt\n" +
@@ -63,7 +61,6 @@ var helps = map[string]*help{
 	},
 	"age-keygen": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Generate an age identity or convert an age identity to an age recipient.",
 		example: "" +
 			"  chezmoi age-keygen\n" +
@@ -78,7 +75,6 @@ var helps = map[string]*help{
 	},
 	"apply": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Ensure that target... are in the target state, updating them if necessary.\n" +
 			"  If no targets are specified, the state of all targets are ensured. If a\n" +
 			"  target has been modified since chezmoi last wrote it then the user will be\n" +
@@ -104,7 +100,6 @@ var helps = map[string]*help{
 	},
 	"archive": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Generate an archive of the target state, or only the targets specified. This\n" +
 			"  can be piped into tar to inspect the target state.",
 		example: "" +
@@ -131,7 +126,6 @@ var helps = map[string]*help{
 	},
 	"cat": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Write the target contents of targets to stdout. targets must be files,\n" +
 			"  scripts, or symlinks. For files, the target file contents are written. For\n" +
 			"  scripts, the script's contents are written. For symlinks, the target is\n" +
@@ -141,14 +135,12 @@ var helps = map[string]*help{
 	},
 	"cat-config": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the configuration file.",
 		example: "" +
 			"  chezmoi cat-config",
 	},
 	"cd": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Launch a shell in the working tree (typically the source directory). chezmoi\n" +
 			"  will launch the command set by the cd.command configuration variable with\n" +
 			"  any extra arguments specified by cd.args. If this is not set, chezmoi will\n" +
@@ -166,7 +158,6 @@ var helps = map[string]*help{
 	},
 	"chattr": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Change the attributes and/or type of targets. modifier specifies what to\n" +
 			"  modify.\n" +
 			"\n" +
@@ -221,7 +212,6 @@ var helps = map[string]*help{
 	},
 	"completion": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Generate shell completion code for the specified shell (bash, fish,\n" +
 			"  powershell, or zsh).",
 		example: "" +
@@ -230,7 +220,6 @@ var helps = map[string]*help{
 	},
 	"data": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Write the computed template data to stdout.",
 		example: "" +
 			"  chezmoi data\n" +
@@ -244,15 +233,14 @@ var helps = map[string]*help{
 	},
 	"decrypt": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Decrypt files using chezmoi's configured encryption. If no files are given,\n" +
 			"  decrypt the standard input. The decrypted result is written to the standard\n" +
 			"  output or a file if the --output flag is set.",
 	},
 	"destroy": {
 		longHelp: "" +
-			"Description:\n" +
-			"",
+			"  Remove target from the source state, the destination directory, and the\n" +
+			"  state.",
 		longFlags: chezmoiset.New(
 			"force",
 			"recursive",
@@ -263,7 +251,6 @@ var helps = map[string]*help{
 	},
 	"diff": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the difference between the target state and the destination state for\n" +
 			"  targets. If no targets are specified, print the differences for all targets.\n" +
 			"\n" +
@@ -298,16 +285,12 @@ var helps = map[string]*help{
 		),
 	},
 	"docker": {
-		longHelp: "" +
-			"Description:\n" +
-			"",
 		example: "" +
 			"  chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME\n" +
 			"  chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME",
 	},
 	"doctor": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Check for potential problems.",
 		example: "" +
 			"  chezmoi doctor",
@@ -317,7 +300,6 @@ var helps = map[string]*help{
 	},
 	"dump": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Dump the target state of targets. If no targets are specified, then the\n" +
 			"  entire target state.",
 		example: "" +
@@ -341,7 +323,6 @@ var helps = map[string]*help{
 	},
 	"dump-config": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Dump the configuration.",
 		example: "" +
 			"  chezmoi dump-config",
@@ -354,7 +335,6 @@ var helps = map[string]*help{
 	},
 	"edit": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Edit the source state of targets, which must be files or symlinks. If no\n" +
 			"  targets are given then the working tree of the source directory is opened.\n" +
 			"\n" +
@@ -388,14 +368,12 @@ var helps = map[string]*help{
 	},
 	"edit-config": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Edit the configuration file.",
 		example: "" +
 			"  chezmoi edit-config",
 	},
 	"edit-config-template": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Edit the configuration file template. If no configuration file template\n" +
 			"  exists, then a new one is created with the contents of the current config\n" +
 			"  file.",
@@ -404,14 +382,12 @@ var helps = map[string]*help{
 	},
 	"encrypt": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Encrypt files using chezmoi's configured encryption. If no files are given,\n" +
 			"  encrypt the standard input. The encrypted result is written to the standard\n" +
 			"  output or a file if the --output flag is set.",
 	},
 	"execute-template": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Execute templates. This is useful for testing templates or for calling\n" +
 			"  chezmoi from other scripts. templates are interpreted as literal templates,\n" +
 			"  with no whitespace added to the output between arguments. If no templates\n" +
@@ -443,7 +419,6 @@ var helps = map[string]*help{
 	},
 	"forget": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Remove targets from the source state, i.e. stop managing them. targets must\n" +
 			"  have entries in the source state. They cannot be externals.",
 		example: "" +
@@ -451,7 +426,6 @@ var helps = map[string]*help{
 	},
 	"generate": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Generates output for use with chezmoi. The currently supported outputs are:\n" +
 			"\n" +
 			"   Output                | Description\n" +
@@ -469,7 +443,6 @@ var helps = map[string]*help{
 	},
 	"git": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Run git args in the working tree (typically the source directory).",
 		example: "" +
 			"  chezmoi git add .\n" +
@@ -478,13 +451,11 @@ var helps = map[string]*help{
 	},
 	"help": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the help associated with command, or general help if no command is\n" +
 			"  given.",
 	},
 	"ignored": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the list of entries ignored by chezmoi.",
 		example: "" +
 			"  chezmoi ignored",
@@ -499,7 +470,6 @@ var helps = map[string]*help{
 	},
 	"import": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Import the source state from an archive file in to a directory in the source\n" +
 			"  state. This is primarily used to make subdirectories of your home directory\n" +
 			"  exactly match the contents of a downloaded archive. You will generally\n" +
@@ -531,7 +501,6 @@ var helps = map[string]*help{
 	},
 	"init": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Setup the source directory, generate the config file, and optionally update\n" +
 			"  the destination directory to match the target state. This is done in the\n" +
 			"  following order:\n" +
@@ -610,24 +579,20 @@ var helps = map[string]*help{
 	},
 	"license": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print chezmoi's license.",
 		example: "" +
 			"  chezmoi license",
 	},
 	"list": {
 		longHelp: "" +
-			"Description:\n" +
 			"  list is an alias for managed.",
 	},
 	"manage": {
 		longHelp: "" +
-			"Description:\n" +
 			"  manage is an alias for add for symmetry with unmanage.",
 	},
 	"managed": {
 		longHelp: "" +
-			"Description:\n" +
 			"  List all managed entries in the destination directory under all paths in\n" +
 			"  alphabetical order. When no paths are supplied, list all managed entries in\n" +
 			"  the destination directory in alphabetical order.",
@@ -658,7 +623,6 @@ var helps = map[string]*help{
 	},
 	"merge": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Perform a three-way merge between the destination state, the target state,\n" +
 			"  and the source state for each target. The merge tool is defined by the\n" +
 			"  merge.command configuration variable, and defaults to vimdiff. If multiple\n" +
@@ -680,7 +644,6 @@ var helps = map[string]*help{
 	},
 	"merge-all": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Perform a three-way merge for file whose actual state does not match its\n" +
 			"  target state. The merge is performed with chezmoi merge.",
 		example: "" +
@@ -695,7 +658,6 @@ var helps = map[string]*help{
 	},
 	"purge": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Remove chezmoi's configuration, state, and source directory, but leave the\n" +
 			"  target state intact.",
 		example: "" +
@@ -711,7 +673,6 @@ var helps = map[string]*help{
 	},
 	"re-add": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Re-add modified files in the target state, preserving any encrypted_\n" +
 			"  attributes. chezmoi will not overwrite templates, and all entries that are\n" +
 			"  not files are ignored. Directories are recursed into by default.\n" +
@@ -735,19 +696,16 @@ var helps = map[string]*help{
 	},
 	"remove": {
 		longHelp: "" +
-			"Description:\n" +
 			"  The remove command has been removed. Use the forget command or the destroy\n" +
 			"  command instead.",
 	},
 	"rm": {
 		longHelp: "" +
-			"Description:\n" +
 			"  The rm command has been removed. Use the forget command or the destroy\n" +
 			"  command instead.",
 	},
 	"secret": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Run a secret manager's CLI, passing any extra arguments to the secret\n" +
 			"  manager's CLI. This is primarily for verifying chezmoi's integration with a\n" +
 			"  custom secret manager. Normally you would use chezmoi's existing template\n" +
@@ -759,7 +717,6 @@ var helps = map[string]*help{
 	},
 	"source-path": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the path to each target's source state. If no targets are specified\n" +
 			"  then print the source directory.",
 		example: "" +
@@ -768,8 +725,8 @@ var helps = map[string]*help{
 	},
 	"ssh": {
 		longHelp: "" +
-			"Description:\n" +
-			"",
+			"  SSH to host, install chezmoi, run chezmoi init --apply *init-args*, and\n" +
+			"  executes your shell.",
 		example: "" +
 			"  chezmoi ssh $HOSTNAME $GITHUB_USERNAME\n" +
 			"  chezmoi ssh $HOSTNAME -- --one-shot $GITHUB_USERNAME",
@@ -784,7 +741,6 @@ var helps = map[string]*help{
 	},
 	"state": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Manipulate the persistent state.",
 		example: "" +
 			"  chezmoi state data\n" +
@@ -798,7 +754,6 @@ var helps = map[string]*help{
 	},
 	"status": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the status of the files and scripts managed by chezmoi in a format\n" +
 			"  similar to git status.\n" +
 			"\n" +
@@ -834,7 +789,6 @@ var helps = map[string]*help{
 	},
 	"target-path": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Print the target path of each source path. If no source paths are specified\n" +
 			"  then print the target directory.",
 		example: "" +
@@ -843,12 +797,10 @@ var helps = map[string]*help{
 	},
 	"unmanage": {
 		longHelp: "" +
-			"Description:\n" +
 			"  unmanage is an alias for forget for symmetry with manage.",
 	},
 	"unmanaged": {
 		longHelp: "" +
-			"Description:\n" +
 			"  List all unmanaged files in paths. When no paths are supplied, list all\n" +
 			"  unmanaged files in the destination directory.\n" +
 			"\n" +
@@ -869,7 +821,6 @@ var helps = map[string]*help{
 	},
 	"update": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Pull changes from the source repo and apply any changes.\n" +
 			"\n" +
 			"  If update.command is set then chezmoi will run update.command with\n" +
@@ -897,7 +848,6 @@ var helps = map[string]*help{
 	},
 	"upgrade": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Upgrade chezmoi by downloading and installing the latest released version.\n" +
 			"  This will call the GitHub API to determine if there is a new version of\n" +
 			"  chezmoi available, and if so, download and attempt to install it in the same\n" +
@@ -916,7 +866,6 @@ var helps = map[string]*help{
 	},
 	"verify": {
 		longHelp: "" +
-			"Description:\n" +
 			"  Verify that all targets match their target state. chezmoi exits with code 0\n" +
 			"  (success) if all targets match their target state, or 1 (failure) otherwise.\n" +
 			"  If no targets are specified then all targets are checked.",

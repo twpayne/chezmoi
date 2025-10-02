@@ -1,5 +1,7 @@
 # `destroy` *target*...
 
+Remove *target* from the source state, the destination directory, and the state.
+
 !!! danger
 
     The `destroy` command permanently removes files both from your home
@@ -13,8 +15,6 @@
 
     If you want to remove all traces of chezmoi from your system use
     [`purge`][purge] instead.
-
-Remove *target* from the source state, the destination directory, and the state.
 
 ## Common flags
 
