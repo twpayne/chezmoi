@@ -236,7 +236,7 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 		return nil, err
 	}
 	return &help{
-		LongHelp:   "Description:\n" + longHelp,
+		LongHelp:   longHelp,
 		Example:    example,
 		LongFlags:  longFlags,
 		ShortFlags: shortFlags,

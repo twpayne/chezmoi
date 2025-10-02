@@ -1,11 +1,11 @@
 # `ssh` *host* *init-args*...
 
+SSH to *host*, install chezmoi, run `chezmoi init --apply *init-args*`, and
+executes your shell.
+
 !!! Warning
 
     `ssh` is an experimental, potentially destructive, command.
-
-SSH to *host*, install chezmoi, run `chezmoi init --apply *init-args*`, and
-executes your shell.
 
 ## Flags
 
