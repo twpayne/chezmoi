@@ -110,7 +110,7 @@ generate:
 
 .PHONY: capslock
 capslock:
-	go tool capslock -output json | go tool summarize-capslock --output=.capslock-summary.yaml
+	${GO} tool capslock -output json | ${GO} tool summarize-capslock --output=.capslock-summary.yaml
 
 .PHONY: lint
 lint: ensure-golangci-lint shellcheck
@@ -159,7 +159,7 @@ ensure-goreleaser:
 
 .PHONY: generate
 embed:
-	CHEZMOIDEV=ignoreflags=1,ignorehelp=1 go generate
+	CHEZMOIDEV=ignoreflags=1,ignorehelp=1 ${GO} generate
 
 .PHONY: release
 release: ensure-goreleaser
