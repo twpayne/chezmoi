@@ -127,6 +127,19 @@ func (c *Config) ensureLinePrefixTemplateFunc(args ...string) string {
 	return builder.String()
 }
 
+func (c *Config) execTemplateFunc(name string, args ...string) bool {
+	cmd := exec.Command(name, args...)
+	var exitError *exec.ExitError
+	switch err := chezmoilog.LogCmdRun(c.logger, cmd); {
+	case err == nil:
+		return true
+	case errors.As(err, &exitError):
+		return false
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
 	files := []string{file}
 	paths, err := anyToStringSlice(pathList)
