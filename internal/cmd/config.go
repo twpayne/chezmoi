@@ -2424,7 +2424,15 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	} {
 		for key, value := range group {
 			key := "CHEZMOI_" + groupKey + "_" + camelCaseToUpperSnakeCase(key)
-			valueStr := fmt.Sprintf("%s", value)
+			var valueStr string
+			switch value := value.(type) {
+			case string:
+				valueStr = value
+			case uint64:
+				valueStr = strconv.FormatUint(value, 10)
+			default:
+				panic(fmt.Errorf("%s has unexpected type %T", key, value))
+			}
 			os.Setenv(key, valueStr)
 		}
 	}
