@@ -1,0 +1,13 @@
+# test that chezmoi --override-data overrides data
+exec chezmoi execute-template '{{ .foo }}'
+stdout ^bar$
+exec chezmoi execute-template --override-data '{"foo":"baz"}' '{{ .foo }}'
+stdout ^baz$
+
+# test that chezmoi --override-data overrides even chezmoi's builtin data
+exec chezmoi execute-template --override-data '{"chezmoi":{"os":"test"}}' '{{ .chezmoi.os }}'
+stdout ^test$
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+    foo = "bar"
