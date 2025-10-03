@@ -1,3 +1,6 @@
+[!exec:true] skip 'true not found in $PATH'
+[!exec:false] skip 'false not found in $PATH'
+
 # test that the exec template function returns true if the command succeeds
 exec chezmoi execute-template '{{ exec "true" }}'
 stdout ^true$
