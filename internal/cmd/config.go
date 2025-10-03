@@ -241,6 +241,7 @@ type Config struct {
 
 	// Common configuration.
 	interactiveTemplateFuncs interactiveTemplateFuncsConfig
+	overrideData             string
 
 	// Version information.
 	version     semver.Version
@@ -1843,6 +1844,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
+	persistentFlags.StringVar(&c.overrideData, "override-data", c.overrideData, "Override data")
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
@@ -1984,6 +1986,15 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
+	priorityTemplateData := c.Data
+	if c.overrideData != "" {
+		var overrideData map[string]any
+		if err := json.Unmarshal([]byte(c.overrideData), &overrideData); err != nil {
+			return nil, err
+		}
+		chezmoi.RecursiveMerge(priorityTemplateData, overrideData)
+	}
+
 	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
@@ -1996,7 +2007,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithLogger(sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
-		chezmoi.WithPriorityTemplateData(c.Data),
+		chezmoi.WithPriorityTemplateData(priorityTemplateData),
 		chezmoi.WithScriptTempDir(c.ScriptTempDir),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),

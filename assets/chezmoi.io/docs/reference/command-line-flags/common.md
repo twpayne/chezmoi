@@ -36,6 +36,10 @@ Print help.
 
 --8<-- "common-flags/init.md"
 
+### `--override-data` *json-data*
+
+--8<-- "common-flags/override-data.md"
+
 ### `-P`, `--parent-dirs`
 
 --8<-- "common-flags/parent-dirs.md"
