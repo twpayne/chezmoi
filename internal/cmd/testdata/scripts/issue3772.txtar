@@ -1,0 +1,23 @@
+# test that chezmoi add adds a symlink to a file
+symlink $HOME/a -> test/a
+exec chezmoi add $HOME/a
+cmp $CHEZMOISOURCEDIR/symlink_a golden/symlink_a
+
+# test that chezmoi add --follow adds a file without the symlink
+symlink $HOME/b -> test/b
+exec chezmoi add --follow $HOME/b
+cmp $CHEZMOISOURCEDIR/b golden/b
+
+# test that chezmoi add --follow returns an error when adding a symlink to a directory
+symlink $HOME/abc -> test
+! exec chezmoi add --follow $HOME/abc
+stderr 'follow and recursive are mutually exclusive for directories'
+
+-- golden/b --
+# contents of test/b
+-- golden/symlink_a --
+test/a
+-- home/user/test/a --
+# contents of test/a
+-- home/user/test/b --
+# contents of test/b

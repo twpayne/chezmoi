@@ -1,9 +1,12 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
+	"maps"
 	"os"
+	"slices"
 
 	"github.com/spf13/cobra"
 
@@ -193,6 +196,14 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	})
 	if err != nil {
 		return err
+	}
+
+	if c.Add.follow && c.Add.recursive {
+		for _, absPath := range slices.Sorted(maps.Keys(destAbsPathInfos)) {
+			if destAbsPathInfo := destAbsPathInfos[absPath]; destAbsPathInfo.IsDir() {
+				return errors.New(absPath.String() + ": follow and recursive are mutually exclusive for directories")
+			}
+		}
 	}
 
 	persistentStateFileAbsPath, err := c.persistentStateFile()
