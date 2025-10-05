@@ -1,0 +1,27 @@
+[!exec:git] skip 'git not found in $PATH'
+
+# test that chezmoi init --use-builtin-git=true clones a repository correctly
+exec chezmoi init --use-builtin-git=true https://github.com/chezmoi/test-dotfiles.git
+exists $CHEZMOISOURCEDIR/dot_file
+
+# undo the last commit
+exec git -C $CHEZMOISOURCEDIR reset --hard HEAD^
+! exists $CHEZMOISOURCEDIR/dot_file
+
+# test that chezmoi update --use-builtin-git=true updates the source directory correctly
+exec chezmoi update --use-builtin-git=true
+exists $CHEZMOISOURCEDIR/dot_file
+
+# undo the last commit
+exec git -C $CHEZMOISOURCEDIR reset --hard HEAD^
+! exists $CHEZMOISOURCEDIR/dot_file
+
+# modify the source directory
+cp golden/dot_file2 $CHEZMOISOURCEDIR
+
+# test that chezmoi update --use-builtin-git=true updates the source directory correctly
+exec chezmoi update --use-builtin-git=true
+exists $CHEZMOISOURCEDIR/dot_file
+
+-- golden/dot_file2 --
+# contents of .file2
