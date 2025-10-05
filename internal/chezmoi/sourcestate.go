@@ -593,7 +593,7 @@ DEST_ABS_PATH:
 			update := sourceUpdate{
 				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
 				entryState: &EntryState{
-					Type: EntryStateTypeRemove,
+					Type: EntryStateTypeRemoveDir,
 				},
 				sourceRelPaths: []SourceRelPath{sourceRelPath},
 			}
@@ -878,6 +878,7 @@ func (s *SourceState) PostApply(
 	persistentState PersistentState,
 	targetDirAbsPath AbsPath,
 	targetRelPaths []RelPath,
+	applyOptions ApplyOptions,
 ) error {
 	// Remove empty directories with the remove_ attribute. This assumes that
 	// targetRelPaths is already sorted and iterates in reverse order so that
@@ -891,13 +892,30 @@ TARGET:
 
 		// Ensure that we are attempting to remove a directory, not any other entry type.
 		targetAbsPath := targetDirAbsPath.Join(targetRelPath)
-		switch fileInfo, err := targetSystem.Stat(targetAbsPath); {
+		fileInfo, err := targetSystem.Stat(targetAbsPath)
+		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			continue TARGET
 		case err != nil:
 			return err
 		case !fileInfo.IsDir():
 			return fmt.Errorf("%s: not a directory", targetAbsPath)
+		}
+
+		if applyOptions.PreApplyFunc != nil {
+			targetEntryState := &EntryState{
+				Type: EntryStateTypeRemoveDir,
+			}
+			actualEntryState := &EntryState{
+				Type: EntryStateTypeDir,
+				Mode: fileInfo.Mode(),
+			}
+			switch err := applyOptions.PreApplyFunc(targetRelPath, targetEntryState, actualEntryState, actualEntryState); {
+			case errors.Is(err, fs.SkipDir):
+				continue TARGET
+			case err != nil:
+				return err
+			}
 		}
 
 		// Attempt to remove the directory, but ignore any "not exist" or "not
@@ -913,7 +931,7 @@ TARGET:
 			return err
 		}
 		entryState := &EntryState{
-			Type: EntryStateTypeRemove,
+			Type: EntryStateTypeRemoveDir,
 		}
 		if err := PersistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), entryState); err != nil {
 			return err
@@ -1804,6 +1822,9 @@ func (s *SourceState) getExternalData(
 func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
 	targetStateDir := &TargetStateDir{
 		perm: dirAttr.perm() &^ s.umask,
+		sourceAttr: SourceAttr{
+			Remove: dirAttr.Remove,
+		},
 	}
 	return &SourceStateDir{
 		origin:           SourceStateOriginAbsPath(absPath),

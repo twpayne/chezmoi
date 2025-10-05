@@ -14,11 +14,12 @@ type EntryStateType string
 
 // Entry state types.
 const (
-	EntryStateTypeDir     EntryStateType = "dir"
-	EntryStateTypeFile    EntryStateType = "file"
-	EntryStateTypeSymlink EntryStateType = "symlink"
-	EntryStateTypeRemove  EntryStateType = "remove"
-	EntryStateTypeScript  EntryStateType = "script"
+	EntryStateTypeDir       EntryStateType = "dir"
+	EntryStateTypeFile      EntryStateType = "file"
+	EntryStateTypeSymlink   EntryStateType = "symlink"
+	EntryStateTypeRemove    EntryStateType = "remove"
+	EntryStateTypeRemoveDir EntryStateType = "remove-dir"
+	EntryStateTypeScript    EntryStateType = "script"
 )
 
 // An EntryState represents the state of an entry. A nil EntryState is
@@ -51,9 +52,9 @@ func (s *EntryState) Equal(other *EntryState) bool {
 func (s *EntryState) Equivalent(other *EntryState) bool {
 	switch {
 	case s == nil:
-		return other == nil || other.Type == EntryStateTypeRemove
+		return other == nil || other.Type == EntryStateTypeRemove || other.Type == EntryStateTypeRemoveDir
 	case other == nil:
-		return s.Type == EntryStateTypeRemove
+		return s.Type == EntryStateTypeRemove || s.Type == EntryStateTypeRemoveDir
 	default:
 		return s.Equal(other)
 	}

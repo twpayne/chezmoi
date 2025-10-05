@@ -172,8 +172,14 @@ func (t *TargetStateDir) Apply(
 
 // EntryState returns t's entry state.
 func (t *TargetStateDir) EntryState(umask fs.FileMode) (*EntryState, error) {
+	var entryStateType EntryStateType
+	if t.sourceAttr.Remove {
+		entryStateType = EntryStateTypeRemoveDir
+	} else {
+		entryStateType = EntryStateTypeDir
+	}
 	return &EntryState{
-		Type: EntryStateTypeDir,
+		Type: entryStateType,
 		Mode: fs.ModeDir | t.perm&^umask,
 	}, nil
 }

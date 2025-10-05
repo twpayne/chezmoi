@@ -13,6 +13,7 @@ type SourceAttr struct {
 	Condition ScriptCondition
 	Encrypted bool
 	External  bool
+	Remove    bool
 	Template  bool
 }
 

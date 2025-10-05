@@ -66,6 +66,8 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 		switch {
 		case targetEntryState.Type == chezmoi.EntryStateTypeScript:
 			y = 'R'
+		case actualEntryState.Type == chezmoi.EntryStateTypeDir && targetEntryState.Type == chezmoi.EntryStateTypeRemoveDir:
+			y = 'D'
 		case !targetEntryState.Equivalent(actualEntryState):
 			x = statusRune(lastWrittenEntryState, actualEntryState)
 			y = statusRune(actualEntryState, targetEntryState)
@@ -105,11 +107,11 @@ func statusRune(fromState, toState *chezmoi.EntryState) rune {
 		return ' '
 	}
 	switch toState.Type {
-	case chezmoi.EntryStateTypeRemove:
+	case chezmoi.EntryStateTypeRemove, chezmoi.EntryStateTypeRemoveDir:
 		return 'D'
 	case chezmoi.EntryStateTypeDir, chezmoi.EntryStateTypeFile, chezmoi.EntryStateTypeSymlink:
 		switch fromState.Type {
-		case chezmoi.EntryStateTypeRemove:
+		case chezmoi.EntryStateTypeRemove, chezmoi.EntryStateTypeRemoveDir:
 			return 'A'
 		default:
 			return 'M'
