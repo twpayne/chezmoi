@@ -17,10 +17,10 @@ elif [ -n "${USER}" ]; then
 	username="${USER}"
 elif [ -n "${USERNAME}" ]; then
 	username="${USERNAME}"
-elif is_command logname; then
-	username="$(logname)"
 elif is_command whoami; then
 	username="$(whoami)"
+elif is_command logname; then
+	username="$(logname)"
 else
 	printf "unable to determine username" 1>&2
 	exit 1
