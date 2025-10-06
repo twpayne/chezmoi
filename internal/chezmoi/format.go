@@ -64,6 +64,16 @@ var (
 	FormatExtensions = slices.Sorted(maps.Keys(FormatsByExtension))
 )
 
+// UnmarshalFileData unmarshals data in the format guessed from filenameAbsPath.
+func UnmarshalFileData(filenameAbsPath AbsPath, data []byte, value any) error {
+	extension := strings.TrimPrefix(filenameAbsPath.Ext(), ".")
+	format, ok := FormatsByExtension[extension]
+	if !ok {
+		return fmt.Errorf("%s: unknown format", filenameAbsPath)
+	}
+	return format.Unmarshal(data, value)
+}
+
 // Marshal implements Format.Marshal.
 func (formatJSONC) Marshal(value any) ([]byte, error) {
 	var builder strings.Builder
