@@ -243,6 +243,7 @@ type Config struct {
 	// Common configuration.
 	interactiveTemplateFuncs interactiveTemplateFuncsConfig
 	overrideData             string
+	overrideDataFileAbsPath  chezmoi.AbsPath
 
 	// Version information.
 	version     semver.Version
@@ -1864,6 +1865,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
 	persistentFlags.StringVar(&c.overrideData, "override-data", c.overrideData, "Override data")
+	persistentFlags.Var(&c.overrideDataFileAbsPath, "override-data-file", "Override data with file")
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
@@ -2006,6 +2008,17 @@ func (c *Config) newSourceState(
 	}
 
 	priorityTemplateData := c.Data
+	if !c.overrideDataFileAbsPath.IsEmpty() {
+		var overrideData map[string]any
+		data, err := c.baseSystem.ReadFile(c.overrideDataFileAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		if err := chezmoi.UnmarshalFileData(c.overrideDataFileAbsPath, data, &overrideData); err != nil {
+			return nil, err
+		}
+		chezmoi.RecursiveMerge(priorityTemplateData, overrideData)
+	}
 	if c.overrideData != "" {
 		var overrideData map[string]any
 		if err := json.Unmarshal([]byte(c.overrideData), &overrideData); err != nil {

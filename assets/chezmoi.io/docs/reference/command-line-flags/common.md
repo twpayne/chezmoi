@@ -40,6 +40,10 @@ Print help.
 
 --8<-- "common-flags/override-data.md"
 
+### `--override-data-file` *filename*
+
+--8<-- "common-flags/override-data-file.md"
+
 ### `-P`, `--parent-dirs`
 
 --8<-- "common-flags/parent-dirs.md"
