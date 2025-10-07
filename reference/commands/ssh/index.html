@@ -4704,6 +4704,8 @@
       
         
       
+        
+      
     
     
       
@@ -4916,6 +4918,28 @@
   
   <span class="md-ellipsis">
     eqFold
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/exec/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exec
     
   </span>
   
@@ -8956,12 +8980,12 @@
 
 
 <h1 id="ssh-host-init-args"><code>ssh</code> <em>host</em> <em>init-args</em>...</h1>
+<p>SSH to <em>host</em>, install chezmoi, run <code>chezmoi init --apply *init-args*</code>, and
+executes your shell.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p><code>ssh</code> is an experimental, potentially destructive, command.</p>
 </div>
-<p>SSH to <em>host</em>, install chezmoi, run <code>chezmoi init --apply *init-args*</code>, and
-executes your shell.</p>
 <h2 id="flags">Flags</h2>
 <h3 id="-p-package-manager-package-manager"><code>-p</code>, <code>--package-manager</code> <em>package-manager</em></h3>
 <p>Install chezmoi using <em>package-manager</em>, if possible. Valid values for
