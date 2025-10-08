@@ -49,6 +49,10 @@ A web UI for managing a list of apps to seed/feed a chezmoi setup.
 
 chezmoi plugin for asdf version manager.
 
+### [`github.com/mass8326/zsh-chezmoi`](https://github.com/mass8326/zsh-chezmoi) { id="mass8326/zsh-chezmoi" }
+
+Add completion and aliases for chezmoi to make managing dotfiles easier to zsh.
+
 ### [`github.com/matmaer/chezmoi-mousse`](https://github.com/matmaer/chezmoi-mousse) { id="matmaer/chezmoi-mousse" }
 
 Visual interface in the terminal for the chezmoi dotfile managar, with a wink to the mouse.
