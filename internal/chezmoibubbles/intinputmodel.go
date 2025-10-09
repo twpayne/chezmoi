@@ -15,7 +15,7 @@ type IntInputModel struct {
 
 func NewIntInputModel(prompt string, defaultValue *int64) IntInputModel {
 	textInput := textinput.New()
-	textInput.Prompt = prompt + "? "
+	textInput.Prompt = prompt
 	textInput.Placeholder = "int"
 	if defaultValue != nil {
 		textInput.Placeholder += ", default " + strconv.FormatInt(*defaultValue, 10)
