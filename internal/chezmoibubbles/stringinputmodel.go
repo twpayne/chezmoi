@@ -13,7 +13,7 @@ type StringInputModel struct {
 
 func NewStringInputModel(prompt string, defaultValue *string) StringInputModel {
 	textInput := textinput.New()
-	textInput.Prompt = prompt + "? "
+	textInput.Prompt = prompt
 	textInput.Placeholder = "string"
 	if defaultValue != nil {
 		textInput.Placeholder += ", default " + *defaultValue
