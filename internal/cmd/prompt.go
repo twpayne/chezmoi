@@ -36,7 +36,11 @@ func (c *Config) readBool(prompt string, defaultValue *bool) (bool, error) {
 			}
 		}
 	default:
-		initModel := chezmoibubbles.NewBoolInputModel(prompt, defaultValue)
+		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		if err != nil {
+			return false, err
+		}
+		initModel := chezmoibubbles.NewBoolInputModel("> ", defaultValue)
 		finalModel, err := runCancelableModel(initModel)
 		if err != nil {
 			return false, err
@@ -68,7 +72,11 @@ func (c *Config) readChoice(prompt string, choices []string, defaultValue *strin
 			}
 		}
 	default:
-		initModel := chezmoibubbles.NewChoiceInputModel(prompt, choices, defaultValue)
+		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		if err != nil {
+			return "", err
+		}
+		initModel := chezmoibubbles.NewChoiceInputModel("> ", choices, defaultValue)
 		finalModel, err := runCancelableModel(initModel)
 		if err != nil {
 			return "", err
@@ -99,7 +107,11 @@ func (c *Config) readInt(prompt string, defaultValue *int64) (int64, error) {
 			}
 		}
 	default:
-		initModel := chezmoibubbles.NewIntInputModel(prompt, defaultValue)
+		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		if err != nil {
+			return 0, err
+		}
+		initModel := chezmoibubbles.NewIntInputModel("> ", defaultValue)
 		finalModel, err := runCancelableModel(initModel)
 		if err != nil {
 			return 0, err
@@ -181,7 +193,11 @@ func (c *Config) readMultichoice(prompt string, choices []string, defaultValue *
 		return result, nil
 
 	default:
-		initModel := chezmoibubbles.NewMultichoiceInputModel(prompt, choices, defaultValue)
+		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		if err != nil {
+			return []string{}, err
+		}
+		initModel := chezmoibubbles.NewMultichoiceInputModel("> ", choices, defaultValue)
 		finalModel, err := tea.NewProgram(initModel, tea.WithOutput(os.Stderr)).Run()
 		if err != nil {
 			return []string{}, err
@@ -226,7 +242,11 @@ func (c *Config) readString(prompt string, defaultValue *string) (string, error)
 		}
 		return value, nil
 	default:
-		initModel := chezmoibubbles.NewStringInputModel(prompt, defaultValue)
+		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		if err != nil {
+			return "", err
+		}
+		initModel := chezmoibubbles.NewStringInputModel("> ", defaultValue)
 		finalModel, err := runCancelableModel(initModel)
 		if err != nil {
 			return "", err

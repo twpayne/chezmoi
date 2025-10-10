@@ -20,7 +20,7 @@ type ChoiceInputModel struct {
 
 func NewChoiceInputModel(prompt string, choices []string, defaultValue *string) ChoiceInputModel {
 	textInput := textinput.New()
-	textInput.Prompt = prompt + "? "
+	textInput.Prompt = prompt
 	textInput.Placeholder = strings.Join(choices, "/")
 	if defaultValue != nil {
 		textInput.Placeholder += ", default " + *defaultValue

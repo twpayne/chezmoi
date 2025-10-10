@@ -17,7 +17,7 @@ type BoolInputModel struct {
 
 func NewBoolInputModel(prompt string, defaultValue *bool) BoolInputModel {
 	textInput := textinput.New()
-	textInput.Prompt = prompt + "? "
+	textInput.Prompt = prompt
 	textInput.Placeholder = "bool"
 	if defaultValue != nil {
 		textInput.Placeholder += ", default " + strconv.FormatBool(*defaultValue)
