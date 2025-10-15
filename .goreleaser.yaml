@@ -8,6 +8,7 @@ before:
   hooks:
   - go tool generate-commit -o COMMIT
   - go mod download all
+  - make ensure-syft
 
 builds:
 - id: chezmoi-cgo-glibc
@@ -254,6 +255,11 @@ release:
     name_template: chezmoi-linux-amd64-musl
   - glob: ./dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
     name_template: chezmoi-windows-amd64.exe
+
+sboms:
+  - cmd: ../bin/syft
+    args: ["$artifact", "--output", "spdx-json=$document", "--enrich", "all"]
+    disable: false
 
 scoops:
 - repository:
