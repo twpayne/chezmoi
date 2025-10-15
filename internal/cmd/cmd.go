@@ -50,7 +50,7 @@ func (v VersionInfo) LogValue() slog.Value {
 
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
-	for _, pair := range strings.Split(os.Getenv("CHEZMOIDEV"), ",") {
+	for pair := range strings.SplitSeq(os.Getenv("CHEZMOIDEV"), ",") {
 		key, value, _ := strings.Cut(pair, "=")
 		chezmoiDev[key] = value
 	}

@@ -189,7 +189,7 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 		return false
 	}
 
-	for _, line := range strings.Split(string(data), "\n") {
+	for line := range strings.SplitSeq(string(data), "\n") {
 		switch state {
 		case stateReadTitle:
 			titleRx, err := regexp.Compile("# `" + command + "`")

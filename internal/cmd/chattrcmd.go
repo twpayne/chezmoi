@@ -335,7 +335,7 @@ func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetTy
 // parseModifier parses the modifier from s.
 func parseModifier(s string) (*modifier, error) {
 	m := &modifier{}
-	for _, modifierStr := range strings.Split(s, ",") {
+	for modifierStr := range strings.SplitSeq(s, ",") {
 		modifierStr = strings.TrimSpace(modifierStr)
 		if modifierStr == "" {
 			continue
