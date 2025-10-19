@@ -3,10 +3,8 @@
 !!! warning
 
     If you use an LLM (Large Language Model, like ChatGPT, Claude, Gemini,
-    GitHub Copilot, or Llama) to make a contribution then you must say so in
-    your contribution and you must carefully review your contribution for
-    correctness before sharing it. If you share un-reviewed LLM-generated
-    content then you will be immediately banned. See [`CODE_OF_CONDUCT.md`][coc]
+    GitHub Copilot, or Llama) to make any kind of contribution then you will
+    immediately be banned without recourse. See [`CODE_OF_CONDUCT.md`][coc]
     for more information.
 
 chezmoi is written in [Go][go] and development happens on [GitHub][github].
