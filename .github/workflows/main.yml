@@ -65,10 +65,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@80cb6b56b93de3e779c7d476d9100d06fb87c877
+    - uses: github/codeql-action/init@17783bfb99b07f70fae080b654aed0c514057477
       with:
         languages: go
-    - uses: github/codeql-action/analyze@80cb6b56b93de3e779c7d476d9100d06fb87c877
+    - uses: github/codeql-action/analyze@17783bfb99b07f70fae080b654aed0c514057477
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -279,7 +279,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@3259c6206f993105e3a61b142c2d97bf4b9ef83d
+    - uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -441,7 +441,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@d7543c93d881b35a8faa02e8e3605f69b7a1ce62
+    - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad
     - name: create-syso
       run: |
         make create-syso
@@ -470,7 +470,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@3259c6206f993105e3a61b142c2d97bf4b9ef83d
+    - uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
