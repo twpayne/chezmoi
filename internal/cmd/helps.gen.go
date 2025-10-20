@@ -438,7 +438,7 @@ var helps = map[string]*help{
 			"                         | init, and executes your shell",
 		example: "" +
 			"  chezmoi generate install.sh > install.sh\n" +
-			"  chezmoi git commit -m \"$(chezmoi generate git-commit-message)\"\n" +
+			"  chezmoi git -- commit -m \"$(chezmoi generate git-commit-message)\"\n" +
 			"  chezmoi generate install-init-shell.sh $GITHUB_USERNAME",
 	},
 	"git": {
