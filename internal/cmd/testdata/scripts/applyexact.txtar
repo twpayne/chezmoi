@@ -10,6 +10,13 @@ exists $HOME/.dir/file1
 ! exists $HOME/.dir/file2
 ! exists $HOME/.dir/subdir/file
 
+# test that chezmoi apply creates entries in exact directories
+cp golden/file3 $CHEZMOISOURCEDIR/exact_dot_dir
+exec chezmoi apply --force
+cmp $HOME/.dir/file3 golden/file3
+
+-- golden/file3 --
+# contents of .dir/file2
 -- home/user/.dir/file1 --
 # contents of .dir/file1
 -- home/user/.dir/file2 --
