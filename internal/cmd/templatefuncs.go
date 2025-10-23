@@ -173,7 +173,9 @@ func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
 }
 
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
-	return iniFileToMap(mustValue(ini.Load([]byte(s))))
+	return iniFileToMap(mustValue(ini.LoadSources(ini.LoadOptions{
+		UnescapeValueDoubleQuotes: true,
+	}, []byte(s))))
 }
 
 // fromJsonTemplateFunc parses s as JSON and returns the result. In contrast to
