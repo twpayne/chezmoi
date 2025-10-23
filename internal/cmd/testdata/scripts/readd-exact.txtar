@@ -1,0 +1,34 @@
+# test that chezmoi re-add adds new files in exact_ directories
+exec chezmoi add --exact $HOME${/}test-dir
+exists $CHEZMOISOURCEDIR/exact_test-dir/test1
+cmp $CHEZMOISOURCEDIR/exact_test-dir/test1 golden/test1
+
+# verify no diff after initial add
+exec chezmoi diff
+! stdout .
+
+# add a new file to the exact directory in target
+cp golden/test2 $HOME/test-dir/test2
+exec chezmoi re-add
+exists $CHEZMOISOURCEDIR/exact_test-dir/test2
+cmp $CHEZMOISOURCEDIR/exact_test-dir/test2 golden/test2
+
+# verify no diff after adding new file
+exec chezmoi diff
+! stdout .
+
+# test that chezmoi re-add removes deleted files from exact_ directories
+rm $HOME/test-dir/test1
+exec chezmoi re-add
+! exists $CHEZMOISOURCEDIR/exact_test-dir/test1
+
+# verify no diff after removing file
+exec chezmoi diff
+! stdout .
+
+-- golden/test1 --
+# contents of test1
+-- golden/test2 --
+# contents of test2
+-- home/user/test-dir/test1 --
+# contents of test1
