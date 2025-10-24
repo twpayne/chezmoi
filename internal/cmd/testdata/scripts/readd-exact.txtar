@@ -26,9 +26,21 @@ exec chezmoi re-add
 exec chezmoi diff
 ! stdout .
 
+# test that chezmoi re-add with explicit exact directory target works
+cp golden/test3 $HOME/test-dir/test3
+exec chezmoi re-add $HOME/test-dir
+exists $CHEZMOISOURCEDIR/exact_test-dir/test3
+cmp $CHEZMOISOURCEDIR/exact_test-dir/test3 golden/test3
+
+# verify no diff after adding file with explicit target
+exec chezmoi diff
+! stdout .
+
 -- golden/test1 --
 # contents of test1
 -- golden/test2 --
 # contents of test2
+-- golden/test3 --
+# contents of test3
 -- home/user/test-dir/test1 --
 # contents of test1
