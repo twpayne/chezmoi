@@ -73,23 +73,23 @@ cmp $CHEZMOISOURCEDIR/exact_exact-outer/exact_exact-inner/nested2 golden/nested2
 exec chezmoi diff
 ! stdout .
 
+-- golden/inner2 --
+# contents of inner2
+-- golden/nested2 --
+# contents of nested2
 -- golden/test1 --
 # contents of test1
 -- golden/test2 --
 # contents of test2
 -- golden/test3 --
 # contents of test3
--- golden/inner2 --
-# contents of inner2
--- golden/nested2 --
-# contents of nested2
--- home/user/test-dir/test1 --
-# contents of test1
--- home/user/outer-dir/file1 --
-# contents of outer file1
--- home/user/outer-dir/exact-inner/inner1 --
-# contents of inner1
--- home/user/exact-outer/outer1 --
-# contents of outer1
 -- home/user/exact-outer/exact-inner/nested1 --
 # contents of nested1
+-- home/user/exact-outer/outer1 --
+# contents of outer1
+-- home/user/outer-dir/exact-inner/inner1 --
+# contents of inner1
+-- home/user/outer-dir/file1 --
+# contents of outer file1
+-- home/user/test-dir/test1 --
+# contents of test1
