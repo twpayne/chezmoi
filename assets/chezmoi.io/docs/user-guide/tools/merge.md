@@ -67,7 +67,7 @@ To use [VSCode][vscode] as the merge tool, add the following to your config:
     command = "bash"
     args = [
         "-c",
-        "cp {{ .Target }} {{ .Target }}.base && code --new-window --wait --merge {{ .Destination }} {{ .Target }} {{ .Target }}.base {{ .Source }}",
+        "cp \"{{ .Target }}\" \"{{ .Target }}.base\" && code --new-window --wait --merge \"{{ .Destination }}\" \"{{ .Target }}\" \"{{ .Target }}.base\" \"{{ .Source }}\"",
     ]
     ```
 
@@ -78,7 +78,7 @@ To use [VSCode][vscode] as the merge tool, add the following to your config:
       command: "bash"
       args:
       - "-c"
-      - "cp {{ .Target }} {{ .Target }}.base && code --new-window --wait --merge {{ .Destination }} {{ .Target }} {{ .Target }}.base {{ .Source }}"
+      - "cp \"{{ .Target }}\" \"{{ .Target }}.base\" && code --new-window --wait --merge \"{{ .Destination }}\" \"{{ .Target }}\" \"{{ .Target }}.base\" \"{{ .Source }}\""
     ```
 
 [bcomp]: https://www.scootersoftware.com/
