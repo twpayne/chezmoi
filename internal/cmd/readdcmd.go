@@ -301,6 +301,15 @@ func (c *Config) processExactDirs(
 					continue
 				}
 
+				// Skip subdirectories that are themselves exact directories
+				// They will be processed separately in their own exact directory processing
+				if dirEntry.IsDir() {
+					childEntry := sourceState.Get(entryRelPath)
+					if childDir, ok := childEntry.(*chezmoi.SourceStateDir); ok && childDir.Attr.Exact {
+						continue
+					}
+				}
+
 				// This is a new file - add it
 				// Get full FileInfo (DirEntry only has partial info)
 				destAbsPath := targetDirAbsPath.JoinString(name)
