@@ -22,10 +22,12 @@ grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_file
 grep -count=2 '# edited' $CHEZMOISOURCEDIR/dot_dir/file
 grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
 
-# test that chezmoi re-add --recursive=false does not recurse into subdirectories
+# test that chezmoi re-add --recursive=false does not recurse into subdirectories AND still syncs exact directories
+# Even with --recursive=false, exact directory sync happens because subdir is exact
 exec chezmoi re-add --recursive=false ~/.dir/subdir
-grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
+grep -count=2 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
 
 # test that chezmoi re-add is recursive by default
+edit $HOME/.dir/subdir/file
 exec chezmoi re-add ~/.dir/subdir
-grep -count=2 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
+grep -count=3 '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
