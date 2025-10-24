@@ -36,11 +36,38 @@ cmp $CHEZMOISOURCEDIR/exact_test-dir/test3 golden/test3
 exec chezmoi diff
 ! stdout .
 
+# test nested exact directory with --recursive=false
+exec chezmoi add $HOME/outer-dir
+exec chezmoi add --exact $HOME/outer-dir/exact-inner
+exists $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner1
+
+# add a new file to the nested exact directory in target
+cp golden/inner2 $HOME/outer-dir/exact-inner/inner2
+
+# re-add with --recursive=false should NOT process nested exact directory, and thereforce should not add new file inner2.
+exec chezmoi re-add --recursive=false $HOME/outer-dir
+! exists $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner2
+
+# re-add with recursive (default) SHOULD process nested exact directory
+exec chezmoi re-add $HOME/outer-dir
+exists $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner2
+cmp $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner2 golden/inner2
+
+# verify no diff
+exec chezmoi diff
+! stdout .
+
 -- golden/test1 --
 # contents of test1
 -- golden/test2 --
 # contents of test2
 -- golden/test3 --
 # contents of test3
+-- golden/inner2 --
+# contents of inner2
 -- home/user/test-dir/test1 --
 # contents of test1
+-- home/user/outer-dir/file1 --
+# contents of outer file1
+-- home/user/outer-dir/exact-inner/inner1 --
+# contents of inner1
