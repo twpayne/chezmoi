@@ -206,16 +206,14 @@ TARGET_REL_PATH:
 	}
 
 	// Process exact directories - add new files and remove deleted files
-	if err := c.processExactDirs(sourceState, sourceStateEntries, processedFiles); err != nil {
-		return err
-	}
-
-	return nil
+	return c.processExactDirs(sourceState, sourceStateEntries, processedFiles)
 }
 
 // processExactDirs handles exact directory synchronization during re-add.
-// It adds new files found in exact target directories and removes files from source that no longer exist in exact target directories.
-// processedFiles contains files that were already re-added in the file loop, outside of the exact directory logic, to avoid double-processing them.
+// It adds new files found in exact target directories and removes files from
+// source that no longer exist in exact target directories.
+// processedFiles contains files that were already re-added in the file loop,
+// outside of the exact directory logic, to avoid double-processing them.
 func (c *Config) processExactDirs(
 	sourceState *chezmoi.SourceState,
 	sourceStateEntries map[chezmoi.RelPath]chezmoi.SourceStateEntry,
