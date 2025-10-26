@@ -49,6 +49,10 @@ A web UI for managing a list of apps to seed/feed a chezmoi setup.
 
 chezmoi plugin for asdf version manager.
 
+### [`github.com/main-branch/chezroot`](https://github.com/main-branch/chezroot) { id="main-branch/chezroot" }
+
+A `sudo` wrapper for chezmoi to manage root-owned files across your entire filesystem.
+
 ### [`github.com/mass8326/zsh-chezmoi`](https://github.com/mass8326/zsh-chezmoi) { id="mass8326/zsh-chezmoi" }
 
 Add completion and aliases for chezmoi to make managing dotfiles easier to zsh.
