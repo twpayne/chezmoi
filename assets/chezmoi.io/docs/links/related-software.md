@@ -59,7 +59,7 @@ Add completion and aliases for chezmoi to make managing dotfiles easier to zsh.
 
 ### [`github.com/matmaer/chezmoi-mousse`](https://github.com/matmaer/chezmoi-mousse) { id="matmaer/chezmoi-mousse" }
 
-Visual interface in the terminal for the chezmoi dotfile managar, with a wink to the mouse.
+Visual interface in the terminal for the chezmoi dotfile manager, with a wink to the mouse.
 
 ### [Chezetc](https://silverrainz.me/chezetc/) { id="silverrainz.me/chezetc" }
 
@@ -67,7 +67,7 @@ Extending chezmoi to manage files under /etc and other root-owned directories.
 
 ### [`github.com/tcaxle/drapeau`](https://github.com/tcaxle/drapeau) { id="tcaxle/drapeau" }
 
-An add-on to synchronize your colorschemes across systems and allow easy
+An add-on to synchronize your color schemes across systems and allow easy
 colorscheme switching using chezmoi templates.
 
 ### [`github.com/VorpalBlade/chezmoi_modify_manager`](https://github.com/VorpalBlade/chezmoi_modify_manager) { id="vorpalblade/chezmoi_modify_manager" }
