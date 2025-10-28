@@ -16,6 +16,7 @@ type destroyCmdConfig struct {
 
 func (c *Config) newDestroyCmd() *cobra.Command {
 	destroyCmd := &cobra.Command{
+		GroupID:           groupIDMigration,
 		Use:               "destroy target...",
 		Short:             "Permanently delete an entry from the source state, the destination directory, and the state",
 		Long:              mustLongHelp("destroy"),

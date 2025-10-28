@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-// A templateVariable is a template variable. It is used instead of a
+// A TemplateVariable is a template variable. It is used instead of a
 // map[string]string so that we can control order.
-type templateVariable struct {
-	components []string
-	value      string
+type TemplateVariable struct {
+	Components []string
+	Value      string
 }
 
 var templateMarkerRx = regexp.MustCompile(`\{{2,}|\}{2,}`)
@@ -38,17 +38,17 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	// matches at the same depth, chose the variable that comes first
 	// alphabetically.
 	variables := extractVariables(data)
-	slices.SortFunc(variables, func(a, b templateVariable) int {
+	slices.SortFunc(variables, func(a, b TemplateVariable) int {
 		// First sort by value length, longest first.
-		if compare := -cmp.Compare(len(a.value), len(b.value)); compare != 0 {
+		if compare := -cmp.Compare(len(a.Value), len(b.Value)); compare != 0 {
 			return compare
 		}
 		// Second sort by value name depth, shallowest first.
-		if compare := cmp.Compare(len(a.components), len(b.components)); compare != 0 {
+		if compare := cmp.Compare(len(a.Components), len(b.Components)); compare != 0 {
 			return compare
 		}
 		// Thirdly, sort by component names in alphabetical order.
-		return slices.Compare(a.components, b.components)
+		return slices.Compare(a.Components, b.Components)
 	})
 
 	// Replace variables in order.
@@ -57,17 +57,17 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	// names match variable values. The algorithm here is probably O(N^2), we
 	// can do better.
 	for _, variable := range variables {
-		if variable.value == "" {
+		if variable.Value == "" {
 			continue
 		}
 
-		index := strings.Index(contentsStr, variable.value)
+		index := strings.Index(contentsStr, variable.Value)
 		for index != -1 && index != len(contentsStr) {
-			if !inWord(contentsStr, index) && !inWord(contentsStr, index+len(variable.value)) {
+			if !inWord(contentsStr, index) && !inWord(contentsStr, index+len(variable.Value)) {
 				// Replace variable.value which is on word boundaries at both
 				// ends.
-				replacement := "{{ ." + strings.Join(variable.components, ".") + " }}"
-				contentsStr = contentsStr[:index] + replacement + contentsStr[index+len(variable.value):]
+				replacement := "{{ ." + strings.Join(variable.Components, ".") + " }}"
+				contentsStr = contentsStr[:index] + replacement + contentsStr[index+len(variable.Value):]
 				index += len(replacement)
 				replacements = true
 			} else {
@@ -77,7 +77,7 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 			}
 
 			// Look for the next occurrence of variable.value.
-			j := strings.Index(contentsStr[index:], variable.value)
+			j := strings.Index(contentsStr[index:], variable.Value)
 			if j == -1 {
 				// No more occurrences found, so terminate the loop.
 				break
@@ -92,13 +92,13 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 
 // appendVariables appends all template variables in data to variables
 // and returns variables. data is assumed to be rooted at parent.
-func appendVariables(variables []templateVariable, parent []string, data map[string]any) []templateVariable {
+func appendVariables(variables []TemplateVariable, parent []string, data map[string]any) []TemplateVariable {
 	for name, value := range data {
 		switch value := value.(type) {
 		case string:
-			variable := templateVariable{
-				components: append(slices.Clone(parent), name),
-				value:      value,
+			variable := TemplateVariable{
+				Components: append(slices.Clone(parent), name),
+				Value:      value,
 			}
 			variables = append(variables, variable)
 		case map[string]any:
@@ -109,7 +109,7 @@ func appendVariables(variables []templateVariable, parent []string, data map[str
 }
 
 // extractVariables extracts all template variables from data.
-func extractVariables(data map[string]any) []templateVariable {
+func extractVariables(data map[string]any) []TemplateVariable {
 	return appendVariables(nil, nil, data)
 }
 

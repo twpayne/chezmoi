@@ -22,7 +22,7 @@ func newPathListTreeFromPathsSlice(paths []string) *pathListTreeNode {
 	root := newPathListTreeNode("")
 	for _, path := range paths {
 		n := root
-		for _, component := range strings.Split(path, "/") {
+		for component := range strings.SplitSeq(path, "/") {
 			child, ok := n.children[component]
 			if !ok {
 				child = newPathListTreeNode(component)

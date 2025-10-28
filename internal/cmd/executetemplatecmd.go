@@ -28,6 +28,7 @@ type executeTemplateCmdConfig struct {
 
 func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	executeTemplateCmd := &cobra.Command{
+		GroupID: groupIDTemplate,
 		Use:     "execute-template [template]...",
 		Short:   "Execute the given template(s)",
 		Long:    mustLongHelp("execute-template"),

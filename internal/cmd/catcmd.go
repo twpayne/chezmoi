@@ -11,6 +11,7 @@ import (
 
 func (c *Config) newCatCmd() *cobra.Command {
 	catCmd := &cobra.Command{
+		GroupID:           groupIDTemplate,
 		Use:               "cat target...",
 		Short:             "Print the target contents of a file, script, or symlink",
 		Long:              mustLongHelp("cat"),

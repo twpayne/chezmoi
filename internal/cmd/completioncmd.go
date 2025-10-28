@@ -13,6 +13,7 @@ type completionCmdConfig struct {
 
 func (c *Config) newCompletionCmd() *cobra.Command {
 	completionCmd := &cobra.Command{
+		GroupID:   groupIDInternal,
 		Use:       "completion shell",
 		Short:     "Generate shell completion code",
 		Args:      cobra.ExactArgs(1),

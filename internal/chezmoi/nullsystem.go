@@ -1,6 +1,6 @@
 package chezmoi
 
 type NullSystem struct {
-	emptySystemMixin
-	noUpdateSystemMixin
+	EmptySystemMixin
+	NoUpdateSystemMixin
 }

@@ -8,37 +8,37 @@ import (
 	"slices"
 )
 
-// A sourceStateEntryTreeNode is a node in a tree of SourceStateEntries.
-type sourceStateEntryTreeNode struct {
-	sourceStateEntry SourceStateEntry
-	children         map[RelPath]*sourceStateEntryTreeNode
+// A SourceStateEntryTreeNode is a node in a tree of SourceStateEntries.
+type SourceStateEntryTreeNode struct {
+	SourceStateEntry SourceStateEntry
+	Children         map[RelPath]*SourceStateEntryTreeNode
 }
 
-// newSourceStateTreeNode returns a new sourceStateEntryTreeNode.
-func newSourceStateTreeNode() *sourceStateEntryTreeNode {
-	return &sourceStateEntryTreeNode{}
+// NewSourceStateEntryTreeNode returns a new sourceStateEntryTreeNode.
+func NewSourceStateEntryTreeNode() *SourceStateEntryTreeNode {
+	return &SourceStateEntryTreeNode{}
 }
 
-// get returns the SourceStateEntry at relPath.
-func (n *sourceStateEntryTreeNode) get(relPath RelPath) SourceStateEntry {
-	nodes := n.getNodes(relPath)
+// Get returns the SourceStateEntry at relPath.
+func (n *SourceStateEntryTreeNode) Get(relPath RelPath) SourceStateEntry {
+	nodes := n.GetNodes(relPath)
 	if nodes == nil {
 		return nil
 	}
-	return nodes[len(nodes)-1].sourceStateEntry
+	return nodes[len(nodes)-1].SourceStateEntry
 }
 
-// getNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
-func (n *sourceStateEntryTreeNode) getNodes(targetRelPath RelPath) []*sourceStateEntryTreeNode {
+// GetNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
+func (n *SourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*SourceStateEntryTreeNode {
 	if targetRelPath.Empty() {
-		return []*sourceStateEntryTreeNode{n}
+		return []*SourceStateEntryTreeNode{n}
 	}
 
 	targetRelPathComponents := targetRelPath.SplitAll()
-	nodes := make([]*sourceStateEntryTreeNode, 0, len(targetRelPathComponents))
+	nodes := make([]*SourceStateEntryTreeNode, 0, len(targetRelPathComponents))
 	nodes = append(nodes, n)
 	for _, childRelPath := range targetRelPathComponents {
-		childNode, ok := nodes[len(nodes)-1].children[childRelPath]
+		childNode, ok := nodes[len(nodes)-1].Children[childRelPath]
 		if !ok {
 			return nil
 		}
@@ -47,18 +47,18 @@ func (n *sourceStateEntryTreeNode) getNodes(targetRelPath RelPath) []*sourceStat
 	return nodes
 }
 
-// forEach calls f for each SourceStateEntry in the tree.
-func (n *sourceStateEntryTreeNode) forEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
-	return n.forEachNode(targetRelPath, func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
-		if node.sourceStateEntry == nil {
+// ForEach calls f for each SourceStateEntry in the tree.
+func (n *SourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
+	return n.ForEachNode(targetRelPath, func(targetRelPath RelPath, node *SourceStateEntryTreeNode) error {
+		if node.SourceStateEntry == nil {
 			return nil
 		}
-		return f(targetRelPath, node.sourceStateEntry)
+		return f(targetRelPath, node.SourceStateEntry)
 	})
 }
 
-// forEachNode calls f for each node in the tree.
-func (n *sourceStateEntryTreeNode) forEachNode(targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error) error {
+// ForEachNode calls f for each node in the tree.
+func (n *SourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(RelPath, *SourceStateEntryTreeNode) error) error {
 	switch err := f(targetRelPath, n); {
 	case errors.Is(err, fs.SkipDir):
 		return nil
@@ -66,11 +66,11 @@ func (n *sourceStateEntryTreeNode) forEachNode(targetRelPath RelPath, f func(Rel
 		return err
 	}
 
-	childrenByRelPath := slices.Collect(maps.Keys(n.children))
+	childrenByRelPath := slices.Collect(maps.Keys(n.Children))
 	slices.SortFunc(childrenByRelPath, CompareRelPaths)
 	for _, childRelPath := range childrenByRelPath {
-		child := n.children[childRelPath]
-		if err := child.forEachNode(targetRelPath.Join(childRelPath), f); err != nil {
+		child := n.Children[childRelPath]
+		if err := child.ForEachNode(targetRelPath.Join(childRelPath), f); err != nil {
 			return err
 		}
 	}
@@ -78,19 +78,19 @@ func (n *sourceStateEntryTreeNode) forEachNode(targetRelPath RelPath, f func(Rel
 	return nil
 }
 
-// getMap returns a map of relPaths to SourceStateEntries.
-func (n *sourceStateEntryTreeNode) getMap() map[RelPath]SourceStateEntry {
+// GetMap returns a map of relPaths to SourceStateEntries.
+func (n *SourceStateEntryTreeNode) GetMap() map[RelPath]SourceStateEntry {
 	m := make(map[RelPath]SourceStateEntry)
-	_ = n.forEach(EmptyRelPath, func(relPath RelPath, sourceStateEntry SourceStateEntry) error {
+	_ = n.ForEach(EmptyRelPath, func(relPath RelPath, sourceStateEntry SourceStateEntry) error {
 		m[relPath] = sourceStateEntry
 		return nil
 	})
 	return m
 }
 
-// mkdirAll creates SourceStateDirs for all components of targetRelPath if they
+// MkdirAll creates SourceStateDirs for all components of targetRelPath if they
 // do not already exist and returns the SourceStateDir of relPath.
-func (n *sourceStateEntryTreeNode) mkdirAll(
+func (n *SourceStateEntryTreeNode) MkdirAll(
 	targetRelPath RelPath,
 	origin SourceStateOrigin,
 	umask fs.FileMode,
@@ -104,18 +104,18 @@ func (n *sourceStateEntryTreeNode) mkdirAll(
 	componentRelPaths := targetRelPath.SplitAll()
 	var sourceStateDir *SourceStateDir
 	for i, componentRelPath := range componentRelPaths {
-		if node.children == nil {
-			node.children = make(map[RelPath]*sourceStateEntryTreeNode)
+		if node.Children == nil {
+			node.Children = make(map[RelPath]*SourceStateEntryTreeNode)
 		}
-		if child, ok := node.children[componentRelPath]; ok {
+		if child, ok := node.Children[componentRelPath]; ok {
 			node = child
 		} else {
-			child = newSourceStateTreeNode()
-			node.children[componentRelPath] = child
+			child = NewSourceStateEntryTreeNode()
+			node.Children[componentRelPath] = child
 			node = child
 		}
 
-		if node.sourceStateEntry == nil {
+		if node.SourceStateEntry == nil {
 			dirAttr := DirAttr{
 				TargetName: componentRelPath.String(),
 			}
@@ -129,10 +129,10 @@ func (n *sourceStateEntryTreeNode) mkdirAll(
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateDir,
 			}
-			node.sourceStateEntry = sourceStateDir
+			node.SourceStateEntry = sourceStateDir
 		} else {
 			var ok bool
-			sourceStateDir, ok = node.sourceStateEntry.(*SourceStateDir)
+			sourceStateDir, ok = node.SourceStateEntry.(*SourceStateDir)
 			if !ok {
 				return nil, fmt.Errorf("%s: not a directory", componentRelPaths[0].Join(componentRelPaths[1:i+1]...))
 			}
@@ -142,25 +142,25 @@ func (n *sourceStateEntryTreeNode) mkdirAll(
 	return sourceStateDir, nil
 }
 
-// set sets the SourceStateEntry at relPath to sourceStateEntry.
-func (n *sourceStateEntryTreeNode) set(targetRelPath RelPath, sourceStateEntry SourceStateEntry) {
+// Set sets the SourceStateEntry at relPath to sourceStateEntry.
+func (n *SourceStateEntryTreeNode) Set(targetRelPath RelPath, sourceStateEntry SourceStateEntry) {
 	if targetRelPath.Empty() {
-		n.sourceStateEntry = sourceStateEntry
+		n.SourceStateEntry = sourceStateEntry
 		return
 	}
 
 	node := n
 	for _, childRelPath := range targetRelPath.SplitAll() {
-		if node.children == nil {
-			node.children = make(map[RelPath]*sourceStateEntryTreeNode)
+		if node.Children == nil {
+			node.Children = make(map[RelPath]*SourceStateEntryTreeNode)
 		}
-		if child, ok := node.children[childRelPath]; ok {
+		if child, ok := node.Children[childRelPath]; ok {
 			node = child
 		} else {
-			child = newSourceStateTreeNode()
-			node.children[childRelPath] = child
+			child = NewSourceStateEntryTreeNode()
+			node.Children[childRelPath] = child
 			node = child
 		}
 	}
-	node.sourceStateEntry = sourceStateEntry
+	node.SourceStateEntry = sourceStateEntry
 }

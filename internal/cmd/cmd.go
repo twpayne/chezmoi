@@ -50,7 +50,7 @@ func (v VersionInfo) LogValue() slog.Value {
 
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
-	for _, pair := range strings.Split(os.Getenv("CHEZMOIDEV"), ",") {
+	for pair := range strings.SplitSeq(os.Getenv("CHEZMOIDEV"), ",") {
 		key, value, _ := strings.Cut(pair, "=")
 		chezmoiDev[key] = value
 	}
@@ -124,10 +124,18 @@ func mustValues[T1, T2 any](value1 T1, value2 T2, err error) (T1, T2) {
 // exists, unless ignorehelp=1 is set in the CHEZMOIDEV environment variable.
 func mustLongHelp(command string) string {
 	help, ok := helps[command]
-	if !ok && chezmoiDev["ignorehelp"] != "1" {
+	if chezmoiDev["ignorehelp"] != "1" && (!ok || strings.TrimSpace(help.longHelp) == "") {
 		panic(command + ": missing long help")
 	}
-	return help.longHelp
+	return "Description\n" + help.longHelp
+}
+
+// ensureHasGroupID ensures that cmd has a GroupID set, unless it has the
+// explicit "hidden" annotation.
+func ensureHasGroupID(cmd *cobra.Command) {
+	if cmd.GroupID == "" && !cmd.Hidden {
+		panic(cmd.Name() + ": missing group ID")
+	}
 }
 
 // ensureAllFlagsDocumented ensures that all flags are documented, unless

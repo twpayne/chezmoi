@@ -14,6 +14,7 @@ type dataCmdConfig struct {
 
 func (c *Config) newDataCmd() *cobra.Command {
 	dataCmd := &cobra.Command{
+		GroupID:           groupIDTemplate,
 		Use:               "data",
 		Short:             "Print the template data",
 		Long:              mustLongHelp("data"),

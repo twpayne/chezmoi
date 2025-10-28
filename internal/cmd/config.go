@@ -67,6 +67,28 @@ const (
 	logComponentValueSystem          = "system"
 )
 
+const (
+	groupIDAdvanced      = "advanced"
+	groupIDDaily         = "daily"
+	groupIDDocumentation = "documentation"
+	groupIDEncryption    = "encryption"
+	groupIDInternal      = "internal"
+	groupIDMigration     = "migration"
+	groupIDRemote        = "remote"
+	groupIDTemplate      = "template"
+)
+
+var groups = []*cobra.Group{
+	{ID: groupIDDocumentation, Title: "Documentation commands:"},
+	{ID: groupIDDaily, Title: "Daily commands:"},
+	{ID: groupIDTemplate, Title: "Template commands:"},
+	{ID: groupIDAdvanced, Title: "Advanced commands:"},
+	{ID: groupIDEncryption, Title: "Encryption commands:"},
+	{ID: groupIDRemote, Title: "Remote commands:"},
+	{ID: groupIDMigration, Title: "Migration commands:"},
+	{ID: groupIDInternal, Title: "Internal commands:"},
+}
+
 type doPurgeOptions struct {
 	binary          bool
 	cache           bool
@@ -108,6 +130,7 @@ type ConfigFile struct {
 	Hooks                  map[string]hookConfig          `json:"hooks"           mapstructure:"hooks"           yaml:"hooks"`
 	Interactive            bool                           `json:"interactive"     mapstructure:"interactive"     yaml:"interactive"`
 	Interpreters           map[string]chezmoi.Interpreter `json:"interpreters"    mapstructure:"interpreters"    yaml:"interpreters"`
+	LessInteractive        bool                           `json:"lessInteractive" mapstructure:"lessInteractive" yaml:"lessInteractive"`
 	Mode                   chezmoi.Mode                   `json:"mode"            mapstructure:"mode"            yaml:"mode"`
 	Pager                  string                         `json:"pager"           mapstructure:"pager"           yaml:"pager"`
 	PagerArgs              []string                       `json:"pagerArgs"       mapstructure:"pagerArgs"       yaml:"pagerArgs"`
@@ -219,6 +242,8 @@ type Config struct {
 
 	// Common configuration.
 	interactiveTemplateFuncs interactiveTemplateFuncsConfig
+	overrideData             string
+	overrideDataFileAbsPath  chezmoi.AbsPath
 
 	// Version information.
 	version     semver.Version
@@ -468,6 +493,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"encrypt":                     c.encryptTemplateFunc,
 		"ensureLinePrefix":            c.ensureLinePrefixTemplateFunc,
 		"eqFold":                      c.eqFoldTemplateFunc,
+		"exec":                        c.execTemplateFunc,
 		"findExecutable":              c.findExecutableTemplateFunc,
 		"findOneExecutable":           c.findOneExecutableTemplateFunc,
 		"fromIni":                     c.fromIniTemplateFunc,
@@ -1074,64 +1100,67 @@ func (c *Config) defaultPreApplyFunc(
 		return nil
 	}
 
-	if c.Interactive {
-		prompt := fmt.Sprintf("Apply %s", targetRelPath)
-		var choices []string
-		actualContents := actualEntryState.Contents()
-		targetContents := targetEntryState.Contents()
-		if actualContents != nil || targetContents != nil {
-			choices = append(choices, "diff")
-		}
-		choices = append(choices, choicesYesNoAllQuit...)
-		for {
-			switch choice, err := c.promptChoice(prompt, choices); {
-			case err != nil:
-				return err
-			case choice == "diff":
-				err := c.diffFile(
-					targetRelPath,
-					c.DestDirAbsPath.Join(targetRelPath), actualContents, actualEntryState.Mode,
-					chezmoi.EmptyAbsPath, targetContents, targetEntryState.Mode,
-				)
-				if err != nil {
-					return err
-				}
-			case choice == "yes":
-				return nil
-			case choice == "no":
-				return fs.SkipDir
-			case choice == "all":
-				c.Interactive = false
-				return nil
-			case choice == "quit":
-				return chezmoi.ExitCodeError(1)
-			default:
-				panic(choice + ": unexpected choice")
-			}
-		}
-	}
+	// Prepare decision for which kind of prompt we need (if any)
+	type promptMode int
+	const (
+		promptNone     promptMode = iota
+		promptYesNoAll            // yes/no/all/quit (just ask, don't indicate if there is a conflict)
+		promptConflict            // overwrite/all-overwrite/skip/quit (conflict-specific prompt)
+	)
+	mode := promptNone
 
+	targetDirty := lastWrittenEntryState != nil && !lastWrittenEntryState.Equivalent(actualEntryState)
+	targetPreExisting := lastWrittenEntryState == nil && actualEntryState.Type != chezmoi.EntryStateTypeRemove
+
+	// Select prompt mode based on command line flag
 	switch {
-	case targetEntryState.Overwrite():
-		return nil
-	case targetEntryState.Type == chezmoi.EntryStateTypeScript:
-		return nil
-	case lastWrittenEntryState == nil:
-		return nil
-	case lastWrittenEntryState.Equivalent(actualEntryState):
+	case c.Interactive: // Prompt no matter what
+		mode = promptYesNoAll
+	case c.LessInteractive: // Prompt if target is dirty or pre-existing (i.e., only overwrite what chezmoi has written)
+		if targetDirty || targetPreExisting {
+			mode = promptConflict
+		}
+	default: // Prompt in *some* cases of a dirty target:
+		switch {
+		case targetEntryState.Overwrite():
+			mode = promptNone
+		case targetEntryState.Type == chezmoi.EntryStateTypeScript:
+			mode = promptNone
+		case lastWrittenEntryState == nil:
+			mode = promptNone
+		case lastWrittenEntryState.Equivalent(actualEntryState):
+			mode = promptNone
+		case targetDirty:
+			mode = promptConflict
+		}
+	}
+
+	if mode == promptNone {
 		return nil
 	}
 
-	prompt := fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath)
-	var choices []string
+	// Now prompt based on choice made above
 	actualContents := actualEntryState.Contents()
 	targetContents := targetEntryState.Contents()
+	var choices []string
 	if actualContents != nil || targetContents != nil {
 		choices = append(choices, "diff")
 	}
-	choices = append(choices, "overwrite", "all-overwrite", "skip", "quit")
+	var promptText string
+	if mode == promptYesNoAll {
+		choices = append(choices, choicesYesNoAllQuit...)
+		promptText = fmt.Sprintf("Apply %s", targetRelPath)
+	} else {
+		choices = append(choices, choicesOverwrite...)
+		if targetDirty {
+			promptText = fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath)
+		} else {
+			promptText = fmt.Sprintf("%s already exists", targetRelPath)
+		}
+	}
+
 	for {
-		switch choice, err := c.promptChoice(prompt, choices); {
+		switch choice, err := c.promptChoice(promptText, choices); {
 		case err != nil:
 			return err
 		case choice == "diff":
@@ -1142,6 +1171,15 @@ func (c *Config) defaultPreApplyFunc(
 			); err != nil {
 				return err
 			}
+		case choice == "yes":
+			return nil
+		case choice == "no":
+			return fs.SkipDir
+		case choice == "all":
+			// Delicate difference to all-overwrite (mainly for backwards compatibility): Disabling --interactive means
+			// we still prompt for dirty files, whereas all-overwrite adds --force to really prompt no more.
+			c.Interactive = false
+			return nil
 		case choice == "overwrite":
 			return nil
 		case choice == "all-overwrite":
@@ -1791,6 +1829,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		SilenceErrors:      true,
 		SilenceUsage:       true,
 	}
+	rootCmd.AddGroup(groups...)
 
 	persistentFlags := rootCmd.PersistentFlags()
 
@@ -1800,6 +1839,12 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.BoolVar(&c.Interactive, "interactive", c.Interactive, "Prompt for all changes")
+	persistentFlags.BoolVar(
+		&c.LessInteractive,
+		"less-interactive",
+		c.LessInteractive,
+		"Prompt for changed or pre-existing targets",
+	)
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.PersistentStateAbsPath, "persistent-state", "Set persistent state file")
 	persistentFlags.Var(&c.Progress, "progress", "Display progress bars")
@@ -1819,6 +1864,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for prompts")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
+	persistentFlags.StringVar(&c.overrideData, "override-data", c.overrideData, "Override data")
+	persistentFlags.Var(&c.overrideDataFileAbsPath, "override-data-file", "Override data with file")
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
@@ -1894,6 +1941,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newVerifyCmd(),
 	} {
 		if cmd != nil {
+			ensureHasGroupID(cmd)
 			ensureAllFlagsDocumented(cmd, persistentFlags)
 			registerCommonFlagCompletionFuncs(cmd)
 			rootCmd.AddCommand(cmd)
@@ -1959,6 +2007,26 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
+	priorityTemplateData := c.Data
+	if !c.overrideDataFileAbsPath.IsEmpty() {
+		var overrideData map[string]any
+		data, err := c.baseSystem.ReadFile(c.overrideDataFileAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		if err := chezmoi.UnmarshalFileData(c.overrideDataFileAbsPath, data, &overrideData); err != nil {
+			return nil, err
+		}
+		chezmoi.RecursiveMerge(priorityTemplateData, overrideData)
+	}
+	if c.overrideData != "" {
+		var overrideData map[string]any
+		if err := json.Unmarshal([]byte(c.overrideData), &overrideData); err != nil {
+			return nil, err
+		}
+		chezmoi.RecursiveMerge(priorityTemplateData, overrideData)
+	}
+
 	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
@@ -1971,7 +2039,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithLogger(sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
-		chezmoi.WithPriorityTemplateData(c.Data),
+		chezmoi.WithPriorityTemplateData(priorityTemplateData),
 		chezmoi.WithScriptTempDir(c.ScriptTempDir),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
@@ -2400,7 +2468,15 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	} {
 		for key, value := range group {
 			key := "CHEZMOI_" + groupKey + "_" + camelCaseToUpperSnakeCase(key)
-			valueStr := fmt.Sprintf("%s", value)
+			var valueStr string
+			switch value := value.(type) {
+			case string:
+				valueStr = value
+			case uint64:
+				valueStr = strconv.FormatUint(value, 10)
+			default:
+				panic(fmt.Errorf("%s has unexpected type %T", key, value))
+			}
 			os.Setenv(key, valueStr)
 		}
 	}

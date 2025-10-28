@@ -121,7 +121,7 @@ func (p RelPath) String() string {
 // TrimDirPrefix trims prefix from p.
 func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 	if !p.HasDirPrefix(dirPrefix) {
-		return EmptyRelPath, &notInRelDirError{
+		return EmptyRelPath, &NotInRelDirError{
 			pathRelPath: p,
 			dirRelPath:  dirPrefix,
 		}

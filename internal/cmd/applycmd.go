@@ -15,6 +15,7 @@ type applyCmdConfig struct {
 
 func (c *Config) newApplyCmd() *cobra.Command {
 	applyCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "apply [target]...",
 		Short:             "Update the destination directory to match the target state",
 		Long:              mustLongHelp("apply"),

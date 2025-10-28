@@ -53,30 +53,29 @@ func TestDumpSystem(t *testing.T) {
 		})
 		assert.NoError(t, err)
 		expectedData := map[string]any{
-			".dir": &dirData{
-				Type: dataTypeDir,
+			".dir": &DumpSystemDirData{
+				Type: DumpSystemDataTypeDir,
 				Name: NewAbsPath(".dir"),
 				Perm: fs.ModePerm &^ chezmoitest.Umask,
 			},
-			".dir/file": &fileData{
-				Type:     dataTypeFile,
+			".dir/file": &DumpSystemFileData{
+				Type:     DumpSystemDataTypeFile,
 				Name:     NewAbsPath(".dir/file"),
 				Contents: "# contents of .dir/file\n",
 				Perm:     0o666 &^ chezmoitest.Umask,
 			},
-			"script": &scriptData{
-				Type:      dataTypeScript,
+			"script": &DumpSystemScriptData{
+				Type:      DumpSystemDataTypeScript,
 				Name:      NewAbsPath("script"),
 				Contents:  "# contents of script\n",
 				Condition: "always",
 			},
-			"symlink": &symlinkData{
-				Type:     dataTypeSymlink,
+			"symlink": &DumpSystemSymlinkData{
+				Type:     DumpSystemDataTypeSymlink,
 				Name:     NewAbsPath("symlink"),
 				Linkname: ".dir/subdir/file",
 			},
 		}
-		actualData := dumpSystem.Data()
-		assert.Equal(t, expectedData, actualData.(map[string]any))
+		assert.Equal(t, expectedData, dumpSystem.Data)
 	})
 }

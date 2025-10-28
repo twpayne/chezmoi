@@ -80,3 +80,7 @@ videos:
   version: 2.65.1
   title: How CHEZMOI manages dotfiles
   url: https://www.youtube.com/watch?v=xXemcEdoI9Y
+- date: '2025-10-12'
+  version: 2.66.0
+  title: Supercharge your development workflow with these CLI tools
+  url: https://www.youtube.com/watch?v=rqpiVgWZBOg&t=742s

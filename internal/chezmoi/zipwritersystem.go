@@ -11,8 +11,8 @@ import (
 
 // A ZIPWriterSystem is a System that writes to a ZIP archive.
 type ZIPWriterSystem struct {
-	emptySystemMixin
-	noUpdateSystemMixin
+	EmptySystemMixin
+	NoUpdateSystemMixin
 
 	zipWriter *zip.Writer
 	modified  time.Time

@@ -127,6 +127,19 @@ func (c *Config) ensureLinePrefixTemplateFunc(args ...string) string {
 	return builder.String()
 }
 
+func (c *Config) execTemplateFunc(name string, args ...string) bool {
+	cmd := exec.Command(name, args...)
+	var exitError *exec.ExitError
+	switch err := chezmoilog.LogCmdRun(c.logger, cmd); {
+	case err == nil:
+		return true
+	case errors.As(err, &exitError):
+		return false
+	default:
+		panic(err)
+	}
+}
+
 func (c *Config) findExecutableTemplateFunc(file string, pathList any) string {
 	files := []string{file}
 	paths, err := anyToStringSlice(pathList)
@@ -160,7 +173,9 @@ func (c *Config) findOneExecutableTemplateFunc(fileList, pathList any) string {
 }
 
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
-	return iniFileToMap(mustValue(ini.Load([]byte(s))))
+	return iniFileToMap(mustValue(ini.LoadSources(ini.LoadOptions{
+		UnescapeValueDoubleQuotes: true,
+	}, []byte(s))))
 }
 
 // fromJsonTemplateFunc parses s as JSON and returns the result. In contrast to

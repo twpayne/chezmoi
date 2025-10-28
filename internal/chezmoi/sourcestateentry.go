@@ -59,7 +59,7 @@ type SourceStateFile struct {
 	contentsSHA256Func   func() ([32]byte, error)
 	origin               SourceStateOrigin
 	sourceRelPath        SourceRelPath
-	targetStateEntryFunc targetStateEntryFunc
+	targetStateEntryFunc TargetStateEntryFunc
 	targetStateEntry     TargetStateEntry
 	targetStateEntryErr  error
 }

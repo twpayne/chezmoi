@@ -18,6 +18,7 @@ type dumpCmdConfig struct {
 
 func (c *Config) newDumpCmd() *cobra.Command {
 	dumpCmd := &cobra.Command{
+		GroupID:           groupIDInternal,
 		Use:               "dump [target]...",
 		Short:             "Generate a dump of the target state",
 		Long:              mustLongHelp("dump"),
@@ -53,5 +54,5 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.marshal(cmp.Or(c.dump.format.String(), c.Format.String()), dumpSystem.Data())
+	return c.marshal(cmp.Or(c.dump.format.String(), c.Format.String()), dumpSystem.Data)
 }

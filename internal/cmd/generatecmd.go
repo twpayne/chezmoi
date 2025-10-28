@@ -22,6 +22,7 @@ type generateInstallInitShellShCmdConfig struct {
 
 func (c *Config) newGenerateCmd() *cobra.Command {
 	generateCmd := &cobra.Command{
+		GroupID: groupIDAdvanced,
 		Use:     "generate file",
 		Short:   "Generate a file for use with chezmoi",
 		Long:    mustLongHelp("generate"),

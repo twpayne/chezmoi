@@ -13,6 +13,7 @@ type ignoredCmdConfig struct {
 
 func (c *Config) newIgnoredCmd() *cobra.Command {
 	ignoredCmd := &cobra.Command{
+		GroupID:           groupIDAdvanced,
 		Use:               "ignored",
 		Short:             "Print ignored targets",
 		Long:              mustLongHelp("ignored"),

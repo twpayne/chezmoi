@@ -3,6 +3,7 @@ GOOS=$(shell ${GO} env GOOS)
 GOARCH=$(shell ${GO} env GOARCH)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+SYFT_VERSION=$(shell awk '/SYFT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
@@ -104,13 +105,9 @@ coverage-html: coverage
 coverage:
 	${GO} test -coverprofile=coverage.out -coverpkg=chezmoi.io/chezmoi/... ./...
 
-.PHONY: generate
-generate:
-	${GO} generate
-
 .PHONY: capslock
 capslock:
-	go tool capslock -output json | go tool summarize-capslock --output=.capslock-summary.yaml
+	${GO} tool capslock -output json | ${GO} tool summarize-capslock --output=.capslock-summary.yaml
 
 .PHONY: lint
 lint: ensure-golangci-lint shellcheck
@@ -143,7 +140,8 @@ create-syso:
 .PHONY: ensure-tools
 ensure-tools: \
 	ensure-golangci-lint \
-	ensure-goreleaser
+	ensure-goreleaser \
+	ensure-syft
 
 .PHONY: ensure-golangci-lint
 ensure-golangci-lint:
@@ -157,9 +155,15 @@ ensure-goreleaser:
 		GOBIN=$(shell pwd)/bin ${GO} install "github.com/goreleaser/goreleaser/v2@v${GORELEASER_VERSION}" ; \
 	fi
 
+.PHONY: ensure-syft
+ensure-syft:
+	if [ ! -x bin/syft ] || ( ./bin/syft --version | grep -Fqv "${SYFT_VERSION}" ) ; then \
+		curl -fsLS https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_$(shell ${GO} env GOOS)_$(shell ${GO} env GOARCH).tar.gz | tar -C bin -xzf - syft ; \
+	fi
+
 .PHONY: generate
-embed:
-	CHEZMOIDEV=ignoreflags=1,ignorehelp=1 go generate
+generate:
+	CHEZMOIDEV=ignoreflags=1,ignorehelp=1 ${GO} generate
 
 .PHONY: release
 release: ensure-goreleaser

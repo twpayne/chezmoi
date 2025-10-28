@@ -1,0 +1,6 @@
+# test that fromIni | toIni does not mangle strings
+exec chezmoi execute-template '{{ "a = \"\\\"\"" | fromIni | toIni | fromIni | toIni }}'
+cmp stdout golden/stdout
+
+-- golden/stdout --
+a = "\""

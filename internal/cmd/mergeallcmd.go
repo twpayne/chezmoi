@@ -15,6 +15,7 @@ type mergeAllCmdConfig struct {
 
 func (c *Config) newMergeAllCmd() *cobra.Command {
 	mergeAllCmd := &cobra.Command{
+		GroupID: groupIDDaily,
 		Use:     "merge-all",
 		Short:   "Perform a three-way merge for each modified file",
 		Long:    mustLongHelp("merge-all"),

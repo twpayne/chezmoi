@@ -16,12 +16,14 @@ concurrency:
 env:
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.5.1 # https://github.com/chocolatey/choco/releases
-  GO_VERSION: 1.25.1 # https://go.dev/doc/devel/release
+  COSIGN_VERSION: 2.6.1 # https://github.com/sigstore/cosign/releases https://github.com/goreleaser/goreleaser/issues/6195
+  GO_VERSION: 1.25.3 # https://go.dev/doc/devel/release
   GOLANGCI_LINT_VERSION: 2.5.0 # https://github.com/golangci/golangci-lint/releases
-  GORELEASER_VERSION: 2.12.2 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.12.5 # https://github.com/goreleaser/goreleaser/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
-  UV_VERSION: 0.8.21 # https://github.com/astral-sh/uv/releases
+  SYFT_VERSION: 1.36.0 # https://github.com/anchore/syft/releases
+  UV_VERSION: 0.9.5 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
@@ -64,10 +66,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@16df4fbc19aea13d921737861d6c622bf3cefe23
+    - uses: github/codeql-action/init@17783bfb99b07f70fae080b654aed0c514057477
       with:
         languages: go
-    - uses: github/codeql-action/analyze@16df4fbc19aea13d921737861d6c622bf3cefe23
+    - uses: github/codeql-action/analyze@17783bfb99b07f70fae080b654aed0c514057477
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -85,7 +87,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: |
           ~/.go-alpine
@@ -106,7 +108,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-    - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: |
           ~/.go-archlinux
@@ -278,7 +280,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@b75a909f75acd358c2196fb9a5f1299a9a8868a4
+    - uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -440,7 +442,9 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@d7543c93d881b35a8faa02e8e3605f69b7a1ce62
+    - uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad
+      with:
+        cosign-release: v${{ env.COSIGN_VERSION }}
     - name: create-syso
       run: |
         make create-syso
@@ -469,7 +473,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@b75a909f75acd358c2196fb9a5f1299a9a8868a4
+    - uses: astral-sh/setup-uv@2ddd2b9cb38ad8efd50337e8ab201519a34c9f24
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -490,7 +494,7 @@ jobs:
         cp assets/scripts/install.ps1 assets/get.chezmoi.io/ps1
         cp LICENSE assets/get.chezmoi.io/LICENSE
     - name: push-get.chezmoi.io
-      uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900
+      uses: cpina/github-action-push-to-another-repository@55306faa4ed53b815ae49e564af8cfb359d32ae2
       env:
         SSH_DEPLOY_KEY: ${{ secrets.GET_CHEZMOI_IO_SSH_DEPLOY_KEY }}
       with:

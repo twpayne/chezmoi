@@ -9,6 +9,7 @@ import (
 
 func (c *Config) newSourcePathCmd() *cobra.Command {
 	sourcePathCmd := &cobra.Command{
+		GroupID:           groupIDInternal,
 		Use:               "source-path [target]...",
 		Short:             "Print the source path of a target",
 		Long:              mustLongHelp("source-path"),

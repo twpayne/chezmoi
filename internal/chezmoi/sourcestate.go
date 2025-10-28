@@ -60,11 +60,11 @@ var (
 	appleDoubleContentsPrefix = []byte{0x00, 0x05, 0x16, 0x07, 0x00, 0x02, 0x00, 0x00}
 )
 
-type externalArchive struct {
+type ExternalArchive struct {
 	ExtractAppleDoubleFiles bool `json:"extractAppleDoubleFiles" toml:"extractAppleDoubleFiles" yaml:"extractAppleDoubleFiles"`
 }
 
-type externalChecksum struct {
+type ExternalChecksum struct {
 	MD5       HexBytes `json:"md5"       toml:"md5"       yaml:"md5"`
 	RIPEMD160 HexBytes `json:"ripemd160" toml:"ripemd160" yaml:"ripemd160"`
 	SHA1      HexBytes `json:"sha1"      toml:"sha1"      yaml:"sha1"`
@@ -74,16 +74,16 @@ type externalChecksum struct {
 	Size      int      `json:"size"      toml:"size"      yaml:"size"`
 }
 
-type externalClone struct {
+type ExternalClone struct {
 	Args []string `json:"args" toml:"args" yaml:"args"`
 }
 
-type externalFilter struct {
+type ExternalFilter struct {
 	Command string   `json:"command" toml:"command" yaml:"command"`
 	Args    []string `json:"args"    toml:"args"    yaml:"args"`
 }
 
-type externalPull struct {
+type ExternalPull struct {
 	Args []string `json:"args" toml:"args" yaml:"args"`
 }
 
@@ -98,16 +98,16 @@ type External struct {
 	Executable      bool              `json:"executable"      toml:"executable"      yaml:"executable"`
 	Private         bool              `json:"private"         toml:"private"         yaml:"private"`
 	ReadOnly        bool              `json:"readonly"        toml:"readonly"        yaml:"readonly"`
-	Checksum        externalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
-	Clone           externalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
-	Decompress      compressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
+	Checksum        ExternalChecksum  `json:"checksum"        toml:"checksum"        yaml:"checksum"`
+	Clone           ExternalClone     `json:"clone"           toml:"clone"           yaml:"clone"`
+	Decompress      CompressionFormat `json:"decompress"      toml:"decompress"      yaml:"decompress"`
 	Exclude         []string          `json:"exclude"         toml:"exclude"         yaml:"exclude"`
-	Filter          externalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
+	Filter          ExternalFilter    `json:"filter"          toml:"filter"          yaml:"filter"`
 	Format          ArchiveFormat     `json:"format"          toml:"format"          yaml:"format"`
-	Archive         externalArchive   `json:"archive"         toml:"archive"         yaml:"archive"`
+	Archive         ExternalArchive   `json:"archive"         toml:"archive"         yaml:"archive"`
 	Include         []string          `json:"include"         toml:"include"         yaml:"include"`
 	ArchivePath     string            `json:"path"            toml:"path"            yaml:"path"`
-	Pull            externalPull      `json:"pull"            toml:"pull"            yaml:"pull"`
+	Pull            ExternalPull      `json:"pull"            toml:"pull"            yaml:"pull"`
 	RefreshPeriod   Duration          `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
 	StripComponents int               `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string            `json:"url"             toml:"url"             yaml:"url"`
@@ -118,7 +118,7 @@ type External struct {
 // A SourceState is a source state.
 type SourceState struct {
 	mutex                   sync.Mutex
-	root                    sourceStateEntryTreeNode
+	root                    SourceStateEntryTreeNode
 	removeDirs              chezmoiset.Set[RelPath]
 	baseSystem              System
 	system                  System
@@ -129,8 +129,8 @@ type SourceState struct {
 	scriptTempDirAbsPath    AbsPath
 	umask                   fs.FileMode
 	encryption              Encryption
-	ignore                  *patternSet
-	remove                  *patternSet
+	ignore                  *PatternSet
+	remove                  *PatternSet
 	interpreters            map[string]Interpreter
 	httpClient              *http.Client
 	logger                  *slog.Logger
@@ -302,9 +302,9 @@ func WithWarnFunc(warnFunc WarnFunc) SourceStateOption {
 	}
 }
 
-// A targetStateEntryFunc returns a TargetStateEntry based on reading an AbsPath
+// A TargetStateEntryFunc returns a TargetStateEntry based on reading an AbsPath
 // on a System.
-type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
+type TargetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
 
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
@@ -312,8 +312,8 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		removeDirs:           chezmoiset.New[RelPath](),
 		umask:                Umask,
 		encryption:           NoEncryption{},
-		ignore:               newPatternSet(),
-		remove:               newPatternSet(),
+		ignore:               NewPatternSet(),
+		remove:               NewPatternSet(),
 		httpClient:           http.DefaultClient,
 		logger:               slog.Default(),
 		readTemplateData:     true,
@@ -434,7 +434,7 @@ DEST_ABS_PATH:
 			parentSourceRelPath = SourceRelPath{}
 		} else if parentEntry, ok := newSourceStateEntriesByTargetRelPath[targetParentRelPath]; ok {
 			parentSourceRelPath = parentEntry.SourceRelPath()
-		} else if nodes := s.root.getNodes(targetParentRelPath); nodes != nil {
+		} else if nodes := s.root.GetNodes(targetParentRelPath); nodes != nil {
 			for i, node := range nodes {
 				if i == 0 {
 					// nodes[0].sourceStateEntry should always be nil because it
@@ -443,14 +443,14 @@ DEST_ABS_PATH:
 					// the destination directory itself. For example, chezmoi
 					// does not set the name or permissions of the user's home
 					// directory.
-					if node.sourceStateEntry != nil {
-						panic(fmt.Errorf("nodes[0]: expected nil, got %+v", node.sourceStateEntry))
+					if node.SourceStateEntry != nil {
+						panic(fmt.Errorf("nodes[0]: expected nil, got %+v", node.SourceStateEntry))
 					}
 					continue
 				}
-				switch sourceStateDir, ok := node.sourceStateEntry.(*SourceStateDir); {
+				switch sourceStateDir, ok := node.SourceStateEntry.(*SourceStateDir); {
 				case i != len(nodes)-1 && !ok:
-					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.sourceStateEntry))
+					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.SourceStateEntry))
 				case ok && sourceStateDir.Attr.External:
 					targetRelPathComponents := targetRelPath.SplitAll()
 					externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
@@ -461,7 +461,7 @@ DEST_ABS_PATH:
 					continue DEST_ABS_PATH
 				}
 			}
-			parentSourceRelPath = nodes[len(nodes)-1].sourceStateEntry.SourceRelPath()
+			parentSourceRelPath = nodes[len(nodes)-1].SourceStateEntry.SourceRelPath()
 		} else {
 			return fmt.Errorf("%s: parent directory not in source state", destAbsPath)
 		}
@@ -501,7 +501,7 @@ DEST_ABS_PATH:
 			sourceRelPaths: []SourceRelPath{sourceEntryRelPath},
 		}
 
-		if oldSourceStateEntry := s.root.get(targetRelPath); oldSourceStateEntry != nil {
+		if oldSourceStateEntry := s.root.Get(targetRelPath); oldSourceStateEntry != nil {
 			oldSourceEntryRelPath := oldSourceStateEntry.SourceRelPath()
 			if !oldSourceEntryRelPath.IsEmpty() && oldSourceEntryRelPath != sourceEntryRelPath {
 				if options.ReplaceFunc != nil {
@@ -569,16 +569,16 @@ DEST_ABS_PATH:
 		}
 	}
 
-	var sourceRoot sourceStateEntryTreeNode
+	var sourceRoot SourceStateEntryTreeNode
 	for sourceRelPath, sourceStateEntry := range newSourceStateEntries {
-		sourceRoot.set(sourceRelPath.RelPath(), sourceStateEntry)
+		sourceRoot.Set(sourceRelPath.RelPath(), sourceStateEntry)
 	}
 
 	// Simulate removing a directory by creating SourceStateRemove entries for
 	// all existing source state entries that are in options.RemoveDir and not
 	// in the new source state.
 	if options.RemoveDir != EmptyRelPath {
-		_ = s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+		_ = s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 			if !targetRelPath.HasDirPrefix(options.RemoveDir) {
 				return nil
 			}
@@ -586,7 +586,7 @@ DEST_ABS_PATH:
 				return nil
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
-			sourceRoot.set(sourceRelPath.RelPath(), &SourceStateRemove{
+			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
 				sourceRelPath: sourceRelPath,
 				targetRelPath: targetRelPath,
 			})
@@ -675,7 +675,7 @@ func (s *SourceState) AddDestAbsPathInfos(
 			return nil
 		}
 		parentRelPath := parentAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
-		if _, ok := s.root.get(parentRelPath).(*SourceStateDir); ok {
+		if _, ok := s.root.Get(parentRelPath).(*SourceStateDir); ok {
 			return nil
 		}
 
@@ -702,7 +702,7 @@ func (s *SourceState) Apply(
 	targetRelPath RelPath,
 	options ApplyOptions,
 ) error {
-	sourceStateEntry := s.root.get(targetRelPath)
+	sourceStateEntry := s.root.Get(targetRelPath)
 	if sourceStateEntry == nil {
 		return nil
 	}
@@ -834,21 +834,21 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 
 // ForEach calls f for each source state entry.
 func (s *SourceState) ForEach(f func(RelPath, SourceStateEntry) error) error {
-	return s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, entry SourceStateEntry) error {
+	return s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, entry SourceStateEntry) error {
 		return f(targetRelPath, entry)
 	})
 }
 
 // Get returns the source state entry for targetRelPath.
 func (s *SourceState) Get(targetRelPath RelPath) SourceStateEntry {
-	return s.root.get(targetRelPath)
+	return s.root.Get(targetRelPath)
 }
 
 // Ignore returns if targetRelPath should be ignored.
 func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	ignore := s.ignore.match(targetRelPath.String()) == patternSetMatchInclude
+	ignore := s.ignore.Match(targetRelPath.String()) == PatternSetMatchInclude
 	if ignore {
 		s.ignoredRelPaths.Add(targetRelPath)
 	}
@@ -865,7 +865,7 @@ func (s *SourceState) Ignored() []RelPath {
 // MustEntry returns the source state entry associated with targetRelPath, and
 // panics if it does not exist.
 func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
-	sourceStateEntry := s.root.get(targetRelPath)
+	sourceStateEntry := s.root.Get(targetRelPath)
 	if sourceStateEntry == nil {
 		panic(fmt.Sprintf("%s: not in source state", targetRelPath))
 	}
@@ -1067,7 +1067,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			addSourceStateEntries(targetRelPath, sourceStateEntry)
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: sourceAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1094,7 +1094,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		for _, external := range s.externals[externalRelPath] {
 			parentRelPath, _ := externalRelPath.Split()
 			var parentSourceRelPath SourceRelPath
-			switch parentSourceStateEntry, err := s.root.mkdirAll(parentRelPath, external, s.umask); {
+			switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external, s.umask); {
 			case err != nil:
 				return err
 			case parentSourceStateEntry != nil:
@@ -1121,7 +1121,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Generate SourceStateRemoves for existing targets.
-	matches, err := s.remove.glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
+	matches, err := s.remove.Glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
 	if err != nil {
 		return err
 	}
@@ -1284,7 +1284,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			origins[i] = sourceStateEntry.Origin().OriginString()
 		}
 		slices.Sort(origins)
-		errs = append(errs, &inconsistentStateError{
+		errs = append(errs, &InconsistentStateError{
 			targetRelPath: targetRelPath,
 			origins:       origins,
 		})
@@ -1295,7 +1295,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Populate s.Entries with the unique source entry for each target.
 	for targetRelPath, sourceEntries := range allSourceStateEntries {
-		s.root.set(targetRelPath, sourceEntries[0])
+		s.root.Set(targetRelPath, sourceEntries[0])
 	}
 
 	return nil
@@ -1303,7 +1303,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 // TargetRelPaths returns all of s's target relative paths in order.
 func (s *SourceState) TargetRelPaths() []RelPath {
-	entries := s.root.getMap()
+	entries := s.root.GetMap()
 	targetRelPaths := make([]RelPath, 0, len(entries))
 	for targetRelPath := range entries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
@@ -1409,7 +1409,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 		case fileInfo.IsDir():
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: externalAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1420,7 +1420,7 @@ func (s *SourceState) addExternalDir(ctx context.Context, externalsDirAbsPath Ab
 
 // addPatterns executes the template at sourceAbsPath, interprets the result as
 // a list of patterns, and adds all patterns found to patternSet.
-func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath, sourceRelPath SourceRelPath) error {
+func (s *SourceState) addPatterns(patternSet *PatternSet, sourceAbsPath AbsPath, sourceRelPath SourceRelPath) error {
 	data, err := s.executeTemplate(sourceAbsPath)
 	if err != nil {
 		return err
@@ -1438,13 +1438,13 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 		if len(line) == 0 {
 			continue
 		}
-		include := patternSetInclude
+		include := PatternSetInclude
 		line, ok := bytes.CutPrefix(line, []byte{'!'})
 		if ok {
-			include = patternSetExclude
+			include = PatternSetExclude
 		}
 		pattern := dir.JoinString(string(line)).String()
-		if err := patternSet.add(pattern, include); err != nil {
+		if err := patternSet.Add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
 		}
 	}
@@ -1499,7 +1499,7 @@ func (s *SourceState) addTemplateDataDir(sourceAbsPath AbsPath, fileInfo fs.File
 		case fileInfo.IsDir():
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: dataAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1549,7 +1549,7 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 		case fileInfo.IsDir():
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: templateAbsPath,
 				mode:    fileInfo.Mode(),
 			}
@@ -1820,7 +1820,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	sourceContentsFunc func() ([]byte, error),
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		var contentsFunc func() ([]byte, error)
 		switch contents, err := destSystem.ReadFile(destAbsPath); {
@@ -1866,7 +1866,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	sourceContentsFunc func() ([]byte, error),
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
 			switch contents, err := sourceContentsFunc(); {
@@ -1921,7 +1921,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 	fileAttr FileAttr,
 	contentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() (contents []byte, err error) {
 			// FIXME this should share code with RealSystem.RunScript
@@ -2029,7 +2029,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 // newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
 // target.
-func (s *SourceState) newRemoveTargetStateEntryFunc() targetStateEntryFunc {
+func (s *SourceState) newRemoveTargetStateEntryFunc() TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		return &TargetStateRemove{}, nil
 	}
@@ -2043,7 +2043,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 	targetRelPath RelPath,
 	sourceContentsFunc func() ([]byte, error),
 	interpreter *Interpreter,
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() ([]byte, error) {
 			contents, err := sourceContentsFunc()
@@ -2082,7 +2082,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	contentsFunc func() ([]byte, error),
-) targetStateEntryFunc {
+) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
 			linknameBytes, err := contentsFunc()
@@ -2130,7 +2130,7 @@ func (s *SourceState) newSourceStateFile(
 		return contents, nil
 	})
 
-	var targetStateEntryFunc targetStateEntryFunc
+	var targetStateEntryFunc TargetStateEntryFunc
 	switch fileAttr.Type {
 	case SourceFileTypeCreate:
 		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
@@ -2393,14 +2393,14 @@ func (s *SourceState) readExternalArchive(
 		externalRelPath: {sourceStateDir},
 	}
 
-	patternSet := newPatternSet()
+	patternSet := NewPatternSet()
 	for _, includePattern := range external.Include {
-		if err := patternSet.add(includePattern, patternSetInclude); err != nil {
+		if err := patternSet.Add(includePattern, PatternSetInclude); err != nil {
 			return nil, err
 		}
 	}
 	for _, excludePattern := range external.Exclude {
-		if err := patternSet.add(excludePattern, patternSetExclude); err != nil {
+		if err := patternSet.Add(excludePattern, PatternSetExclude); err != nil {
 			return nil, err
 		}
 	}
@@ -2410,11 +2410,11 @@ func (s *SourceState) readExternalArchive(
 		// Perform matching against the name before stripping any components,
 		// otherwise it is not possible to differentiate between
 		// identically-named files at the same level.
-		if patternSet.match(name) == patternSetMatchExclude {
+		if patternSet.Match(name) == PatternSetMatchExclude {
 			// In case that `name` is a directory which matched an explicit
 			// exclude pattern, return fs.SkipDir to exclude not just the
 			// directory itself but also everything it contains (recursively).
-			if fileInfo.IsDir() && len(patternSet.excludePatterns) > 0 {
+			if fileInfo.IsDir() && len(patternSet.ExcludePatterns) > 0 {
 				return fs.SkipDir
 			}
 			return nil
@@ -2878,7 +2878,7 @@ func (s *SourceState) readScriptsDir(ctx context.Context, scriptsDirAbsPath AbsP
 			addSourceStateEntry(targetRelPath, sourceStateEntry)
 			return nil
 		default:
-			return &unsupportedFileTypeError{
+			return &UnsupportedFileTypeError{
 				absPath: sourceAbsPath,
 				mode:    fileInfo.Mode(),
 			}

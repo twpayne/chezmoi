@@ -24,8 +24,9 @@ type dockerRunCmdConfig struct {
 
 func (c *Config) newDockerCmd() *cobra.Command {
 	commandCmd := &cobra.Command{
-		Use:   "docker",
-		Short: "Use your dotfiles in a Docker container",
+		GroupID: groupIDRemote,
+		Use:     "docker",
+		Short:   "Use your dotfiles in a Docker container",
 		Annotations: newAnnotations(
 			persistentStateModeNone,
 		),

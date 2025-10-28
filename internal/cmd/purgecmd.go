@@ -19,6 +19,7 @@ type purgeCmdConfig struct {
 
 func (c *Config) newPurgeCmd() *cobra.Command {
 	purgeCmd := &cobra.Command{
+		GroupID:           groupIDMigration,
 		Use:               "purge",
 		Short:             "Purge chezmoi's configuration and data",
 		Long:              mustLongHelp("purge"),

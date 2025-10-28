@@ -23,7 +23,7 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 	output := mustValue(c.passOutput(id))
 
 	result := make(map[string]string)
-	for _, line := range bytes.Split(output, []byte{'\n'}) {
+	for line := range bytes.SplitSeq(output, []byte{'\n'}) {
 		if key, value, ok := bytes.Cut(line, []byte{':'}); ok {
 			result[string(bytes.TrimSpace(key))] = string(bytes.TrimSpace(value))
 		}

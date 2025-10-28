@@ -167,7 +167,7 @@ func getPackageType(system chezmoi.System) (string, error) {
 		}
 	}
 	if idLikes, ok := osRelease["ID_LIKE"].(string); ok {
-		for _, id := range strings.Split(idLikes, " ") {
+		for id := range strings.SplitSeq(idLikes, " ") {
 			if packageType, ok := packageTypeByID[id]; ok {
 				return packageType, nil
 			}

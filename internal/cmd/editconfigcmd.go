@@ -6,6 +6,7 @@ import (
 
 func (c *Config) newEditConfigCmd() *cobra.Command {
 	editConfigCmd := &cobra.Command{
+		GroupID:           groupIDAdvanced,
 		Use:               "edit-config",
 		Short:             "Edit the configuration file",
 		Long:              mustLongHelp("edit-config"),

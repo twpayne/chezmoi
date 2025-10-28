@@ -1,0 +1,23 @@
+# test that chezmoi --override-data overrides data
+exec chezmoi execute-template '{{ .foo }}'
+stdout ^bar$
+exec chezmoi execute-template --override-data '{"foo":"baz"}' '{{ .foo }}'
+stdout ^baz$
+
+# test that chezmoi --override-data overrides even chezmoi's builtin data
+exec chezmoi execute-template --override-data '{"chezmoi":{"os":"test"}}' '{{ .chezmoi.os }}'
+stdout ^test$
+
+# test that chezmoi --override-data-file overrides data from a file
+exec chezmoi execute-template --override-data-file golden/override.yaml '{{ .foo }}'
+stdout ^bar$
+
+# that that if both --override-data and --override-data-file are passed then --override-data is preferred
+exec chezmoi execute-template --override-data '{"foo":"baz"}' --override-data-file golden/override.yaml '{{ .foo }}'
+stdout ^baz$
+
+-- golden/override.yaml --
+foo: bar
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+    foo = "bar"

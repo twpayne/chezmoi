@@ -208,6 +208,7 @@ nav:
       - encrypt: reference/templates/functions/encrypt.md
       - ensureLinePrefix: reference/templates/functions/ensureLinePrefix.md
       - eqFold: reference/templates/functions/eqFold.md
+      - exec: reference/templates/functions/exec.md
       - findExecutable: reference/templates/functions/findExecutable.md
       - findOneExecutable: reference/templates/functions/findOneExecutable.md
       - fromIni: reference/templates/functions/fromIni.md

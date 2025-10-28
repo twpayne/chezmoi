@@ -16,6 +16,7 @@ type verifyCmdConfig struct {
 
 func (c *Config) newVerifyCmd() *cobra.Command {
 	verifyCmd := &cobra.Command{
+		GroupID:           groupIDAdvanced,
 		Use:               "verify [target]...",
 		Short:             "Exit with success if the destination state matches the target state, fail otherwise",
 		Long:              mustLongHelp("verify"),

@@ -13,64 +13,64 @@ import (
 	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
-type patternSetIncludeType bool
+type PatternSetIncludeType bool
 
 const (
-	patternSetInclude patternSetIncludeType = true
-	patternSetExclude patternSetIncludeType = false
+	PatternSetInclude PatternSetIncludeType = true
+	PatternSetExclude PatternSetIncludeType = false
 )
 
-type patternSetMatchType int
+type PatternSetMatchType int
 
 const (
-	patternSetMatchInclude patternSetMatchType = 1
-	patternSetMatchUnknown patternSetMatchType = 0
-	patternSetMatchExclude patternSetMatchType = -1
+	PatternSetMatchInclude PatternSetMatchType = 1
+	PatternSetMatchUnknown PatternSetMatchType = 0
+	PatternSetMatchExclude PatternSetMatchType = -1
 )
 
-// An patternSet is a set of patterns.
-type patternSet struct {
-	includePatterns chezmoiset.Set[string]
-	excludePatterns chezmoiset.Set[string]
+// An PatternSet is a set of patterns.
+type PatternSet struct {
+	IncludePatterns chezmoiset.Set[string]
+	ExcludePatterns chezmoiset.Set[string]
 }
 
-// newPatternSet returns a new patternSet.
-func newPatternSet() *patternSet {
-	return &patternSet{
-		includePatterns: chezmoiset.New[string](),
-		excludePatterns: chezmoiset.New[string](),
+// NewPatternSet returns a new patternSet.
+func NewPatternSet() *PatternSet {
+	return &PatternSet{
+		IncludePatterns: chezmoiset.New[string](),
+		ExcludePatterns: chezmoiset.New[string](),
 	}
 }
 
 // LogValue implements log/slog.LogValuer.LogValue.
-func (ps *patternSet) LogValue() slog.Value {
+func (ps *PatternSet) LogValue() slog.Value {
 	if ps == nil {
 		return slog.Value{}
 	}
 	return slog.GroupValue(
-		slog.Any("includePatterns", ps.includePatterns.Elements()),
-		slog.Any("excludePatterns", ps.excludePatterns.Elements()),
+		slog.Any("includePatterns", ps.IncludePatterns.Elements()),
+		slog.Any("excludePatterns", ps.ExcludePatterns.Elements()),
 	)
 }
 
-// add adds a pattern to ps.
-func (ps *patternSet) add(pattern string, include patternSetIncludeType) error {
+// Add adds a pattern to ps.
+func (ps *PatternSet) Add(pattern string, include PatternSetIncludeType) error {
 	if ok := doublestar.ValidatePattern(pattern); !ok {
 		return fmt.Errorf("%s: invalid pattern", pattern)
 	}
 	switch include {
-	case patternSetInclude:
-		ps.includePatterns.Add(pattern)
-	case patternSetExclude:
-		ps.excludePatterns.Add(pattern)
+	case PatternSetInclude:
+		ps.IncludePatterns.Add(pattern)
+	case PatternSetExclude:
+		ps.ExcludePatterns.Add(pattern)
 	}
 	return nil
 }
 
-// glob returns all matches in fileSystem.
-func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
+// Glob returns all matches in fileSystem.
+func (ps *PatternSet) Glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	allMatches := chezmoiset.New[string]()
-	for includePattern := range ps.includePatterns {
+	for includePattern := range ps.IncludePatterns {
 		matches, err := Glob(fileSystem, filepath.ToSlash(prefix+includePattern))
 		if err != nil {
 			return nil, err
@@ -78,7 +78,7 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 		allMatches.Add(matches...)
 	}
 	for match := range allMatches {
-		for excludePattern := range ps.excludePatterns {
+		for excludePattern := range ps.ExcludePatterns {
 			exclude, err := doublestar.Match(path.Clean(prefix+excludePattern), match)
 			if err != nil {
 				return nil, err
@@ -96,32 +96,32 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	return matchesSlice, nil
 }
 
-// match returns if name matches ps.
-func (ps *patternSet) match(name string) patternSetMatchType {
+// Match returns if name matches ps.
+func (ps *PatternSet) Match(name string) PatternSetMatchType {
 	// If name is explicitly excluded, then return exclude.
-	for pattern := range ps.excludePatterns {
+	for pattern := range ps.ExcludePatterns {
 		if ok, _ := doublestar.Match(pattern, name); ok {
-			return patternSetMatchExclude
+			return PatternSetMatchExclude
 		}
 	}
 
 	// If name is explicitly included, then return include.
-	for pattern := range ps.includePatterns {
+	for pattern := range ps.IncludePatterns {
 		if ok, _ := doublestar.Match(pattern, name); ok {
-			return patternSetMatchInclude
+			return PatternSetMatchInclude
 		}
 	}
 
 	// If name did not match any include or exclude patterns...
 	switch {
-	case len(ps.includePatterns) > 0 && len(ps.excludePatterns) == 0:
+	case len(ps.IncludePatterns) > 0 && len(ps.ExcludePatterns) == 0:
 		// ...only include patterns were specified, so exclude by default.
-		return patternSetMatchExclude
-	case len(ps.includePatterns) == 0 && len(ps.excludePatterns) > 0:
+		return PatternSetMatchExclude
+	case len(ps.IncludePatterns) == 0 && len(ps.ExcludePatterns) > 0:
 		// ...only exclude patterns were specified, so include by default.
-		return patternSetMatchInclude
+		return PatternSetMatchInclude
 	default:
 		// ...both include and exclude were specified, so return unknown.
-		return patternSetMatchUnknown
+		return PatternSetMatchUnknown
 	}
 }

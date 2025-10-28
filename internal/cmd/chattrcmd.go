@@ -75,6 +75,7 @@ type modifier struct {
 
 func (c *Config) newChattrCmd() *cobra.Command {
 	chattrCmd := &cobra.Command{
+		GroupID:           groupIDDaily,
 		Use:               "chattr attributes target...",
 		Short:             "Change the attributes of a target in the source state",
 		Long:              mustLongHelp("chattr"),
@@ -334,7 +335,7 @@ func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetTy
 // parseModifier parses the modifier from s.
 func parseModifier(s string) (*modifier, error) {
 	m := &modifier{}
-	for _, modifierStr := range strings.Split(s, ",") {
+	for modifierStr := range strings.SplitSeq(s, ",") {
 		modifierStr = strings.TrimSpace(modifierStr)
 		if modifierStr == "" {
 			continue

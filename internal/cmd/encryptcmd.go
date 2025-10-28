@@ -6,6 +6,7 @@ import (
 
 func (c *Config) newEncryptCmd() *cobra.Command {
 	encryptCmd := &cobra.Command{
+		GroupID: groupIDEncryption,
 		Use:     "encrypt [file...]",
 		Short:   "Encrypt file or standard input",
 		Long:    mustLongHelp("encrypt"),

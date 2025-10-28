@@ -10,8 +10,8 @@ import (
 
 // A ArchiveReaderSystem a system constructed from reading an archive.
 type ArchiveReaderSystem struct {
-	emptySystemMixin
-	noUpdateSystemMixin
+	EmptySystemMixin
+	NoUpdateSystemMixin
 
 	fileInfos map[AbsPath]fs.FileInfo
 	contents  map[AbsPath][]byte

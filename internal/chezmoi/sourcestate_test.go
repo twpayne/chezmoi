@@ -1149,8 +1149,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withIgnore(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"README.md": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"README.md": PatternSetInclude,
 					}),
 				),
 			),
@@ -1165,8 +1165,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withIgnore(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"README.md": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"README.md": PatternSetInclude,
 					}),
 				),
 				withIgnoredRelPathStrs(
@@ -1184,8 +1184,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withIgnore(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"README.md#": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"README.md#": PatternSetInclude,
 					}),
 				),
 				withIgnoredRelPathStrs(
@@ -1243,8 +1243,8 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withIgnore(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"dir/file3": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"dir/file3": PatternSetInclude,
 					}),
 				),
 				withIgnoredRelPathStrs(
@@ -1269,8 +1269,8 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withRemove(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"file": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"file": PatternSetInclude,
 					}),
 				),
 			),
@@ -1296,16 +1296,16 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withIgnore(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"file2": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"file2": PatternSetInclude,
 					}),
 				),
 				withIgnoredRelPathStrs(
 					"file2",
 				),
 				withRemove(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"file*": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"file*": PatternSetInclude,
 					}),
 				),
 			),
@@ -1343,16 +1343,16 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withIgnore(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"dir/file2": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"dir/file2": PatternSetInclude,
 					}),
 				),
 				withIgnoredRelPathStrs(
 					"dir/file2",
 				),
 				withRemove(
-					mustNewPatternSet(t, map[string]patternSetIncludeType{
-						"dir/file*": patternSetInclude,
+					mustNewPatternSet(t, map[string]PatternSetIncludeType{
+						"dir/file*": PatternSetInclude,
 					}),
 				),
 			),
@@ -2136,7 +2136,7 @@ func (s *SourceState) applyAll(
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	err := s.root.forEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+	err := s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 		assert.NoError(t, sourceStateEntry.Evaluate())
 		if sourceStateFile, ok := sourceStateEntry.(*SourceStateFile); ok {
 			contents, err := sourceStateFile.Contents()
@@ -2170,14 +2170,14 @@ func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 
 func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 	return func(s *SourceState) {
-		s.root = sourceStateEntryTreeNode{}
+		s.root = SourceStateEntryTreeNode{}
 		for targetRelPath, sourceStateEntry := range sourceEntries {
-			s.root.set(targetRelPath, sourceStateEntry)
+			s.root.Set(targetRelPath, sourceStateEntry)
 		}
 	}
 }
 
-func withIgnore(ignore *patternSet) SourceStateOption {
+func withIgnore(ignore *PatternSet) SourceStateOption {
 	return func(s *SourceState) {
 		s.ignore = ignore
 	}
@@ -2191,7 +2191,7 @@ func withIgnoredRelPathStrs(relPathStrs ...string) SourceStateOption {
 	}
 }
 
-func withRemove(remove *patternSet) SourceStateOption {
+func withRemove(remove *PatternSet) SourceStateOption {
 	return func(s *SourceState) {
 		s.remove = remove
 	}
