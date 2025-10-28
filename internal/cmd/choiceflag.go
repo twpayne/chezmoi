@@ -124,7 +124,7 @@ func (f *choiceFlag) UnmarshalText(text []byte) error {
 // So, we have to return a choiceFlag that allows all values.
 func StringToChoiceFlagHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {
-		if to != reflect.TypeOf(choiceFlag{}) {
+		if to != reflect.TypeFor[choiceFlag]() {
 			return data, nil
 		}
 		var cf choiceFlag

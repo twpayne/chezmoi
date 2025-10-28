@@ -97,8 +97,8 @@ func englishListWithNoun(ss []string, singular, plural string) string {
 
 // pluralize returns the English plural form of singular.
 func pluralize(singular string) string {
-	if strings.HasSuffix(singular, "y") {
-		return strings.TrimSuffix(singular, "y") + "ies"
+	if prefix, found := strings.CutSuffix(singular, "y"); found {
+		return prefix + "ies"
 	}
 	return singular + "s"
 }
