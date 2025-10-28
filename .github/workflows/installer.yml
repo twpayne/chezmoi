@@ -40,7 +40,7 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
-    - uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4
+    - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962
       with:
         locale: US
   test-install-sh:
