@@ -165,7 +165,7 @@ func HomeDirAbsPath() (AbsPath, error) {
 // from a string.
 func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {
-		if to != reflect.TypeOf(EmptyAbsPath) {
+		if to != reflect.TypeFor[AbsPath]() {
 			return data, nil
 		}
 		s, ok := data.(string)

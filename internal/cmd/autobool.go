@@ -116,7 +116,7 @@ func (b *autoBool) Value(autoFunc func() bool) bool {
 // from a bool or string.
 func StringOrBoolToAutoBoolHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data any) (any, error) {
-		if to != reflect.TypeOf(autoBool{}) {
+		if to != reflect.TypeFor[autoBool]() {
 			return data, nil
 		}
 		var b autoBool
