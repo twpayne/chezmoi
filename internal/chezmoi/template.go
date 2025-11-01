@@ -119,6 +119,15 @@ func (t *Template) Execute(data any) ([]byte, error) {
 	return result, nil
 }
 
+// ExecuteString executes t with s.
+func (t *Template) ExecuteString(data any) (string, error) {
+	resultBytes, err := t.Execute(data)
+	if err != nil {
+		return "", err
+	}
+	return string(resultBytes), err
+}
+
 // parseAndRemoveDirectives updates o by parsing all template directives in data
 // and returns data with the lines containing directives removed. The lines are
 // removed so that any delimiters do not break template parsing.

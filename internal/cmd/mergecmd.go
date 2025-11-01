@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
-	"text/template"
 
 	"github.com/spf13/cobra"
 
@@ -146,19 +144,21 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	// not equal to the original arg.
 	anyTemplateArgs := false
 	for i, arg := range c.Merge.Args {
-		var tmpl *template.Template
-		if tmpl, err = template.New("merge.args[" + strconv.Itoa(i) + "]").Parse(arg); err != nil {
+		tmpl, err := chezmoi.ParseTemplate("merge.args["+strconv.Itoa(i)+"]", []byte(arg), chezmoi.TemplateOptions{
+			Funcs:   c.templateFuncs,
+			Options: c.Template.Options,
+		})
+		if err != nil {
 			return err
 		}
-
-		builder := strings.Builder{}
-		if err := tmpl.Execute(&builder, templateData); err != nil {
+		newArg, err := tmpl.ExecuteString(templateData)
+		if err != nil {
 			return err
 		}
-		args = append(args, builder.String())
+		args = append(args, newArg)
 
 		// Detect template arguments.
-		if arg != builder.String() {
+		if newArg != arg {
 			anyTemplateArgs = true
 		}
 	}

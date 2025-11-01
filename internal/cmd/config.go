@@ -1976,7 +1976,11 @@ func (c *Config) newExternalDiffSystem(s chezmoi.System) *chezmoi.ExternalDiffSy
 		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 		Reverse:        c.Diff.Reverse,
 		ScriptContents: c.Diff.ScriptContents,
-		TextConvFunc:   c.TextConv.convert,
+		TemplateOptions: chezmoi.TemplateOptions{
+			Funcs:   c.templateFuncs,
+			Options: c.Template.Options,
+		},
+		TextConvFunc: c.TextConv.convert,
 	}
 	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, c.getDiffPagerCmd, options)
 }

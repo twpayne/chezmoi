@@ -8,8 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
-	"strings"
-	"text/template"
 	"time"
 
 	vfs "github.com/twpayne/go-vfs/v5"
@@ -19,24 +17,26 @@ import (
 
 // An ExternalDiffSystem is a DiffSystem that uses an external diff tool.
 type ExternalDiffSystem struct {
-	system         System
-	command        string
-	args           []string
-	destDirAbsPath AbsPath
-	tempDirAbsPath AbsPath
-	filter         *EntryTypeFilter
-	pagerCmdFunc   func() (*exec.Cmd, error)
-	reverse        bool
-	scriptContents bool
-	textConvFunc   TextConvFunc
+	system          System
+	command         string
+	args            []string
+	destDirAbsPath  AbsPath
+	tempDirAbsPath  AbsPath
+	filter          *EntryTypeFilter
+	pagerCmdFunc    func() (*exec.Cmd, error)
+	reverse         bool
+	scriptContents  bool
+	templateOptions TemplateOptions
+	textConvFunc    TextConvFunc
 }
 
 // ExternalDiffSystemOptions are options for NewExternalDiffSystem.
 type ExternalDiffSystemOptions struct {
-	Filter         *EntryTypeFilter
-	Reverse        bool
-	ScriptContents bool
-	TextConvFunc   TextConvFunc
+	Filter          *EntryTypeFilter
+	Reverse         bool
+	ScriptContents  bool
+	TextConvFunc    TextConvFunc
+	TemplateOptions TemplateOptions
 }
 
 // NewExternalDiffSystem creates a new ExternalDiffSystem.
@@ -49,15 +49,16 @@ func NewExternalDiffSystem(
 	options *ExternalDiffSystemOptions,
 ) *ExternalDiffSystem {
 	return &ExternalDiffSystem{
-		system:         system,
-		command:        command,
-		args:           args,
-		destDirAbsPath: destDirAbsPath,
-		filter:         options.Filter,
-		pagerCmdFunc:   pagerCmdFunc,
-		reverse:        options.Reverse,
-		scriptContents: options.ScriptContents,
-		textConvFunc:   options.TextConvFunc,
+		system:          system,
+		command:         command,
+		args:            args,
+		destDirAbsPath:  destDirAbsPath,
+		filter:          options.Filter,
+		pagerCmdFunc:    pagerCmdFunc,
+		reverse:         options.Reverse,
+		scriptContents:  options.ScriptContents,
+		templateOptions: options.TemplateOptions,
+		textConvFunc:    options.TextConvFunc,
 	}
 }
 
@@ -213,19 +214,19 @@ func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	// to the original arg.
 	anyTemplateArgs := false
 	for i, arg := range s.args {
-		tmpl, err := template.New("diff.args[" + strconv.Itoa(i) + "]").Parse(arg)
+		tmpl, err := ParseTemplate("diff.args["+strconv.Itoa(i)+"]", []byte(arg), s.templateOptions)
 		if err != nil {
 			return err
 		}
 
-		builder := strings.Builder{}
-		if err := tmpl.Execute(&builder, templateData); err != nil {
+		newArg, err := tmpl.ExecuteString(templateData)
+		if err != nil {
 			return err
 		}
-		args = append(args, builder.String())
+		args = append(args, newArg)
 
 		// Detect template arguments.
-		if arg != builder.String() {
+		if arg != newArg {
 			anyTemplateArgs = true
 		}
 	}
