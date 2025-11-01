@@ -58,7 +58,9 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 			root: map[string]any{
 				"/etc/hosts": chezmoitest.JoinLines(
 					`127.0.0.1 localhost.localdomain`,
-					`127.0.0.2 host.example.com host`,
+					`127.0.0.2 service.local`,
+					`127.0.0.4 multi.part.domain.example`,
+					`127.0.0.4 host.example.com host`,
 				),
 			},
 			f:        etcHostsFQDNHostname,
