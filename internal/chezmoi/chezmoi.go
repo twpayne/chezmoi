@@ -120,6 +120,20 @@ var knownTargetFiles = chezmoiset.New(
 	"chezmoistate.boltdb",
 )
 
+// ignoredHostnameSuffixes is a list of suffixes that are ignored when
+// determining the hostname from /etc/hosts. See
+// https://en.wikipedia.org/wiki/Special-use_domain_name.
+var ignoredHostnameSuffixes = []string{
+	".alt",
+	".example",
+	".invalid",
+	".internal",
+	".local",
+	".localhost",
+	".onion",
+	".test",
+}
+
 var FileModeTypeNames = map[fs.FileMode]string{
 	0:                 "file",
 	fs.ModeDir:        "dir",
@@ -283,34 +297,26 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 	if err != nil {
 		return "", err
 	}
+LINE:
 	for line := range bytes.Lines(contents) {
 		line, _, _ = bytes.Cut(bytes.TrimSpace(line), []byte{'#'})
 		fields := whitespaceRx.Split(string(line), -1)
 		if len(fields) < 2 {
 			continue
 		}
-		if !net.ParseIP(fields[0]).IsLoopback() {
+		ipAddress, canonicalHostname := fields[0], fields[1]
+		if !net.ParseIP(ipAddress).IsLoopback() {
 			continue
 		}
-		hostname, domainname, found := strings.Cut(fields[1], ".")
-		if !found {
+		if hostname, _, found := strings.Cut(canonicalHostname, "."); !found || hostname == "localhost" {
 			continue
 		}
-		if hostname == "localhost" {
-			continue
+		for _, ignoredHostnameSuffix := range ignoredHostnameSuffixes {
+			if strings.HasSuffix(canonicalHostname, ignoredHostnameSuffix) {
+				continue LINE
+			}
 		}
-		if domainname == "localdomain" {
-			continue
-		}
-		// Docker Desktop breaks /etc/hosts. Filter out all docker.internal
-		// domain names. See https://github.com/twpayne/chezmoi/issues/3095.
-		if domainname == "docker.internal" {
-			continue
-		}
-		if runtime.GOOS == "darwin" && domainname == "local" {
-			continue
-		}
-		return fields[1], nil
+		return canonicalHostname, nil
 	}
 	return "", nil
 }
