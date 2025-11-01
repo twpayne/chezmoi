@@ -23,6 +23,13 @@ This implies the `--template` option.
 
 Add files that should exist, irrespective of their contents.
 
+Sets the `create_` source state attribute on the added file.
+
+A file will be created with the given contents if the file does not exist.
+If the file already exists, then its contents will not be changed.
+This allows for managing files with an initial state but should not be changed
+by chezmoi afterwards.
+
 ### `--encrypt`
 
 > Configuration: `add.encrypt`
