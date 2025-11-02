@@ -8879,15 +8879,27 @@ that:</p>
   running <code>make lint</code>.</p>
 </li>
 <li>
-<p>The commit messages follow the <a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits specification</a>.
-  chezmoi's release notes are generated directly from the commit messages. The
-  following criteria can be used to determine the commit type:</p>
+<p>The commit messages adhere to the <a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits specification</a>,
+  with the following additional requirements:</p>
 <ul>
-<li>Small changes, such as fixing a typo or correcting grammar: <code>chore</code></li>
-<li>Bug fixes: <code>fix</code></li>
-<li>Extending an existing feature, or adding a new feature: <code>feat</code></li>
-<li>Adding to, or updating, the documentation: <code>docs</code></li>
-<li>Anything not covered by the above: <code>chore</code></li>
+<li>
+<p>The first character of the commit message is uppercase, e.g:</p>
+<div class="highlight"><pre><span></span><code>chore: Fix typo in test
+</code></pre></div>
+<p>The purpose of this is to maintain consistency in chezmoi's release
+notes, which are generated directly from the commit messages.</p>
+</li>
+<li>
+<p>The commits do not have scopes (e.g. <code>chore(scope): Message</code> is invalid).</p>
+</li>
+</ul>
+<p>The following criteria can be used to determine the commit type:</p>
+<ul>
+<li><code>fix</code>: bug fixes in chezmoi code</li>
+<li><code>feat</code>: extending an existing feature or adding a new feature</li>
+<li><code>docs</code>: adding to or updating the documentation</li>
+<li><code>chore</code>: small changes, such as fixing a typo, correcting grammar
+    (including in documentation), or anything not covered by the above</li>
 </ul>
 <p>Examples can be found in the <a href="https://github.com/twpayne/chezmoi/commits/master/">commit history</a>.</p>
 </li>

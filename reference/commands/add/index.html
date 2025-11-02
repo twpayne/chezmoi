@@ -9261,6 +9261,11 @@ templates it generates.</p>
 </div>
 <h3 id="-create"><code>--create</code></h3>
 <p>Add files that should exist, irrespective of their contents.</p>
+<p>Sets the <code>create_</code> source state attribute on the added file.</p>
+<p>A file will be created with the given contents if the file does not exist.
+If the file already exists, then its contents will not be changed.
+This allows for managing files with an initial state but should not be changed
+by chezmoi afterwards.</p>
 <h3 id="-encrypt"><code>--encrypt</code></h3>
 <blockquote>
 <p>Configuration: <code>add.encrypt</code></p>
@@ -9268,6 +9273,12 @@ templates it generates.</p>
 <p>Encrypt files using the defined encryption method.</p>
 <h3 id="-exact"><code>--exact</code></h3>
 <p>Set the <code>exact</code> attribute on added directories.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Directories with the <code>exact</code> attributes are statefully synced between target and source directories.
+When running <code>re-add</code>, any files deleted from the <code>exact</code> target directory will be removed from the source directory.
+Likewise, any files added to the <code>exact</code> target directory, will be added to the source directory</p>
+</div>
 <h3 id="-follow"><code>--follow</code></h3>
 <p>If the last part of a target is a symlink, add the target of the symlink
 instead of the symlink itself.</p>
