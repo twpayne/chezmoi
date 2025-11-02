@@ -1,0 +1,95 @@
+# test that chezmoi re-add adds new files in exact_ directories
+exec chezmoi add --exact $HOME${/}test-dir
+exists $CHEZMOISOURCEDIR/exact_test-dir/test1
+cmp $CHEZMOISOURCEDIR/exact_test-dir/test1 golden/test1
+
+# verify no diff after initial add
+exec chezmoi diff
+! stdout .
+
+# add a new file to the exact directory in target
+cp golden/test2 $HOME/test-dir/test2
+exec chezmoi re-add
+exists $CHEZMOISOURCEDIR/exact_test-dir/test2
+cmp $CHEZMOISOURCEDIR/exact_test-dir/test2 golden/test2
+
+# verify no diff after adding new file
+exec chezmoi diff
+! stdout .
+
+# test that chezmoi re-add removes deleted files from exact_ directories
+rm $HOME/test-dir/test1
+exec chezmoi re-add
+! exists $CHEZMOISOURCEDIR/exact_test-dir/test1
+
+# verify no diff after removing file
+exec chezmoi diff
+! stdout .
+
+# test that chezmoi re-add with explicit exact directory target works
+cp golden/test3 $HOME/test-dir/test3
+exec chezmoi re-add $HOME/test-dir
+exists $CHEZMOISOURCEDIR/exact_test-dir/test3
+cmp $CHEZMOISOURCEDIR/exact_test-dir/test3 golden/test3
+
+# verify no diff after adding file with explicit target
+exec chezmoi diff
+! stdout .
+
+# test nested exact directory with --recursive=false
+exec chezmoi add $HOME/outer-dir
+exec chezmoi add --exact $HOME/outer-dir/exact-inner
+exists $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner1
+
+# add a new file to the nested exact directory in target
+cp golden/inner2 $HOME/outer-dir/exact-inner/inner2
+
+# re-add with --recursive=false should NOT process nested exact directory, and thereforce should not add new file inner2.
+exec chezmoi re-add --recursive=false $HOME/outer-dir
+! exists $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner2
+
+# re-add with recursive (default) SHOULD process nested exact directory
+exec chezmoi re-add $HOME/outer-dir
+exists $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner2
+cmp $CHEZMOISOURCEDIR/outer-dir/exact_exact-inner/inner2 golden/inner2
+
+# verify no diff
+exec chezmoi diff
+! stdout .
+
+# test nested exact directories (both parent and child are exact)
+exec chezmoi add --exact $HOME/exact-outer
+exists $CHEZMOISOURCEDIR/exact_exact-outer/exact_exact-inner/nested1
+
+# add a new file to the nested exact directory
+cp golden/nested2 $HOME/exact-outer/exact-inner/nested2
+
+# re-add should process both exact directories and add the new file
+exec chezmoi re-add
+exists $CHEZMOISOURCEDIR/exact_exact-outer/exact_exact-inner/nested2
+cmp $CHEZMOISOURCEDIR/exact_exact-outer/exact_exact-inner/nested2 golden/nested2
+
+# verify no diff
+exec chezmoi diff
+! stdout .
+
+-- golden/inner2 --
+# contents of inner2
+-- golden/nested2 --
+# contents of nested2
+-- golden/test1 --
+# contents of test1
+-- golden/test2 --
+# contents of test2
+-- golden/test3 --
+# contents of test3
+-- home/user/exact-outer/exact-inner/nested1 --
+# contents of nested1
+-- home/user/exact-outer/outer1 --
+# contents of outer1
+-- home/user/outer-dir/exact-inner/inner1 --
+# contents of inner1
+-- home/user/outer-dir/file1 --
+# contents of outer file1
+-- home/user/test-dir/test1 --
+# contents of test1

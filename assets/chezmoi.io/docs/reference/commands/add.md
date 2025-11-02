@@ -40,6 +40,12 @@ Encrypt files using the defined encryption method.
 
 Set the `exact` attribute on added directories.
 
+!!! warning
+
+    Directories with the `exact` attributes are statefully synced between target and source directories.
+    When running `re-add`, any files deleted from the `exact` target directory will be removed from the source directory.
+    Likewise, any files added to the `exact` target directory, will be added to the source directory
+
 ### `--follow`
 
 If the last part of a target is a symlink, add the target of the symlink
