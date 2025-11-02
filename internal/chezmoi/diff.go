@@ -4,18 +4,18 @@ import (
 	"io/fs"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	znkrdiff "znkr.io/diff"
+	znkrtextdiff "znkr.io/diff/textdiff"
 )
 
-var gitDiffOperation = map[diffmatchpatch.Operation]diff.Operation{
-	diffmatchpatch.DiffDelete: diff.Delete,
-	diffmatchpatch.DiffEqual:  diff.Equal,
-	diffmatchpatch.DiffInsert: diff.Add,
+var gitDiffOperation = [...]diff.Operation{
+	znkrdiff.Delete: diff.Delete,
+	znkrdiff.Match:  diff.Equal,
+	znkrdiff.Insert: diff.Add,
 }
 
 // A GitDiffChunk implements the
@@ -113,18 +113,36 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 // diffChunks returns the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Chunks required to transform
 // from into to.
+//
+// Nothing documents this, but go-git seems to depend on never encountering
+// consecutive edits of the same operation. This forces us to join the
+// individual edits into chunks.
 func diffChunks(from, to string) []diff.Chunk {
-	dmp := diffmatchpatch.New()
-	dmp.DiffTimeout = time.Second
-	fromRunes, toRunes, runesToLines := dmp.DiffLinesToRunes(from, to)
-	diffs := dmp.DiffCharsToLines(dmp.DiffMainRunes(fromRunes, toRunes, false), runesToLines)
-	chunks := make([]diff.Chunk, len(diffs))
-	for i, d := range diffs {
-		chunk := &GitDiffChunk{
-			content:   d.Text,
-			operation: gitDiffOperation[d.Type],
+	edits := znkrtextdiff.Edits(from, to, znkrdiff.Minimal())
+	if len(edits) == 0 {
+		return nil
+	}
+	var chunks []diff.Chunk
+	lastOp := edits[0].Op
+	var sb strings.Builder
+	for _, edit := range edits {
+		if edit.Op != lastOp {
+			if content := sb.String(); content != "" {
+				chunks = append(chunks, &GitDiffChunk{
+					content:   content,
+					operation: gitDiffOperation[lastOp],
+				})
+			}
+			lastOp = edit.Op
+			sb.Reset()
 		}
-		chunks[i] = chunk
+		sb.WriteString(edit.Line)
+	}
+	if content := sb.String(); content != "" {
+		chunks = append(chunks, &GitDiffChunk{
+			content:   content,
+			operation: gitDiffOperation[lastOp],
+		})
 	}
 	return chunks
 }
