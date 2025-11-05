@@ -605,6 +605,10 @@ articles:
   version: 2.65.2
   title: Testable Dotfiles Management With Chezmoi
   url: https://shunk031.me/post/testable-dotfiles-management-with-chezmoi/
+- date: '2025-10-07'
+  version: 2.65.2
+  title: Dotfiles with Chezmoi
+  url: https://aohorodnyk.com/post/2025-10-07-dotfiles-with-chezmoi/
 - date: '2025-11-02'
   version: 2.66.1
   title: Maintaining KDE dotfiles with Chezmoi Modify Manager
