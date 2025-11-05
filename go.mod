@@ -1,6 +1,6 @@
 module chezmoi.io/chezmoi
 
-go 1.25.1
+go 1.25.4
 
 tool (
 	chezmoi.io/chezmoi
