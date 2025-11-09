@@ -67,7 +67,7 @@ To use [VSCode][vscode] as the merge tool, add the following to your config:
     command = "bash"
     args = [
         "-c",
-        "cp {{ .Target | quote }} {{ printf "%s.base" .Target | quote }} && code --new-window --wait --merge {{ .Destination | quote }} {{ .Target | quote }} {{ printf "%s.base" .Target | quote }} {{ .Source | quote }}",
+        "cp {{ .Target | quote }} {{ printf \"%s.base\" .Target | quote }} && code --new-window --wait --merge {{ .Destination | quote }} {{ .Target | quote }} {{ printf \"%s.base\" .Target | quote }} {{ .Source | quote }}",
     ]
     ```
 
