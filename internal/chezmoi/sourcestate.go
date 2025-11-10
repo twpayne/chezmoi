@@ -28,6 +28,7 @@ import (
 	"syscall"
 	"text/template"
 	"time"
+	"unicode/utf8"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/mitchellh/copystructure"
@@ -2230,6 +2231,20 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 	contents, err := actualStateFile.Contents()
 	if err != nil {
 		return nil, err
+	}
+	if options.Template {
+		if !utf8.Valid(contents) {
+			s.warnFunc("%s: invalid UTF-8\n", fileInfo.Name())
+		}
+		for _, byteOrderMark := range byteOrderMarks {
+			if bytes.HasPrefix(contents, byteOrderMark.prefix) && byteOrderMark.name != "UTF-8" {
+				s.warnFunc(
+					"%s: detected %s byte order mark, ensure that template is in UTF-8\n",
+					fileInfo.Name(),
+					byteOrderMark.name,
+				)
+			}
+		}
 	}
 	if options.AutoTemplate {
 		var replacements bool
