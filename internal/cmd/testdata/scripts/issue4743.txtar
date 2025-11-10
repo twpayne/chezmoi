@@ -1,0 +1,15 @@
+ hexdecode home/user/invalid-utf-8.hex
+ hexdecode home/user/boms/utf-16-be.hex
+
+ # test that chezmoi add --template detects invalid UTF-8
+ exec chezmoi add --template $HOME${/}invalid-utf-8
+ stderr 'invalid UTF-8'
+
+ # test that chezmoi add --template detects byte order marks
+ exec chezmoi add --recursive --template ${HOME}${/}boms
+ stderr 'utf-16-be: detected UTF-16 \(BE\) byte order mark'
+
+-- home/user/boms/utf-16-be.hex --
+FE FF
+-- home/user/invalid-utf-8.hex --
+C3 28
