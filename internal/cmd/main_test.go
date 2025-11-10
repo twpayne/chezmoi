@@ -282,6 +282,7 @@ func cmdHexDecode(ts *testscript.TestScript, neg bool, args []string) {
 		if err := os.WriteFile(strings.TrimSuffix(filename, ".hex"), data, 0o666); err != nil {
 			ts.Fatalf("%s: %v", arg, err)
 		}
+		ts.Check(os.Remove(filename))
 	}
 }
 
