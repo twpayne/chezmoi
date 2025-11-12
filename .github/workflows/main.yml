@@ -280,7 +280,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41
+    - uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -397,7 +397,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@4afd733a84b1f43292c63897423277bb7f4313a9
+    - uses: golangci/golangci-lint-action@0a35821d5c230e903fcfe077583637dea1b27b47
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
@@ -473,7 +473,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41
+    - uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
