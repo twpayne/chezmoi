@@ -15,7 +15,7 @@ This can be achieved with the following process:
 First, change to chezmoi's root directory:
 
 ```sh
-chezmoi cd ~
+chezmoi cd
 ```
 
 Generate an age private key encrypted with a passphrase in the file
