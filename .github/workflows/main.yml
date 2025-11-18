@@ -32,7 +32,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - id: filter
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
       with:
@@ -59,23 +59,23 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
       with:
         fetch-depth: 1
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@17783bfb99b07f70fae080b654aed0c514057477
+    - uses: github/codeql-action/init@ba454b8ab46733eb6145342877cd148270bb77ab
       with:
         languages: go
-    - uses: github/codeql-action/analyze@17783bfb99b07f70fae080b654aed0c514057477
+    - uses: github/codeql-action/analyze@ba454b8ab46733eb6145342877cd148270bb77ab
   misspell:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962
       with:
         locale: US
@@ -86,7 +86,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: |
@@ -107,7 +107,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
       with:
         path: |
@@ -130,7 +130,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -164,7 +164,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
       with:
         fetch-depth: 0
     - uses: ./.github/actions/free-disk-space
@@ -234,7 +234,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         fetch-depth: 0
@@ -276,12 +276,12 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3
+    - uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
@@ -305,7 +305,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -334,7 +334,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
       with:
         fetch-depth: 0
     - uses: ./.github/actions/setup-go
@@ -377,7 +377,7 @@ jobs:
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
       if: false # FIXME
-      uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e
+      uses: DavidAnson/markdownlint-cli2-action@30a0e04f1870d58f8d717450cc6134995f993c63
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
@@ -393,12 +393,12 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@0a35821d5c230e903fcfe077583637dea1b27b47
+    - uses: golangci/golangci-lint-action@e7fa5ac41e1cf5b7d48e45e42232ce7ada589601
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
@@ -435,7 +435,7 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
       with:
         fetch-depth: 0
     - uses: ./.github/actions/free-disk-space
@@ -467,14 +467,14 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
       with:
         fetch-depth: 0
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@5a7eac68fb9809dea845d802897dc5c723910fa3
+    - uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244
       with:
         enable-cache: true
         version: ${{ env.UV_VERSION }}
