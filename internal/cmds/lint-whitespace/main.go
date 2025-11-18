@@ -18,6 +18,7 @@ var (
 		regexp.MustCompile(`\.svg\z`),
 		regexp.MustCompile(`\A\.git\z`),
 		regexp.MustCompile(`\A\.idea\z`),
+		regexp.MustCompile(`\A\.jj\z`),
 		regexp.MustCompile(`\A\.ruff_cache\z`),
 		regexp.MustCompile(`\A\.vagrant\z`),
 		regexp.MustCompile(`\A\.venv\z`),
