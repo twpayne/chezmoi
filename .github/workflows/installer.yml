@@ -20,9 +20,9 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
     - id: filter
-      uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+      uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
       with:
         filters: |
           shared: &shared
@@ -39,8 +39,8 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
-    - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+    - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962 # v1.27.0
       with:
         locale: US
   test-install-sh:
@@ -56,7 +56,7 @@ jobs:
     env:
       BINARY: ${{ matrix.os == 'windows-2022' && 'bin/chezmoi.exe' || 'bin/chezmoi' }}
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
     - name: test-${{ matrix.os }}-local
       shell: bash
       run: |
@@ -82,7 +82,7 @@ jobs:
     env:
       BINARY: ${{ matrix.os == 'windows-2022' && 'bin/chezmoi.exe' || 'bin/chezmoi' }}
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
     - name: test-${{ matrix.os }}-local-pwsh
       shell: pwsh
       run: |
