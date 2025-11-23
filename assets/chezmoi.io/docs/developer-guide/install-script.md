@@ -4,7 +4,7 @@ chezmoi generates the [install script][install] from a single source of truth.
 You must run
 
 ```sh
-go generate
+make generate
 ```
 
 if your change includes any of the following:

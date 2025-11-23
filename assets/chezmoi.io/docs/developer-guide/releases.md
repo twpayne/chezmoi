@@ -30,34 +30,34 @@ This triggers a [GitHub Action][gha] that builds and publishes archives,
 packages, and snaps, creates a new [GitHub Release][release], and deploys the
 [website][website].
 
-!!! note
+### Snaps
 
-    Publishing [Snaps][snaps] requires a `SNAPCRAFT_STORE_CREDENTIALS`
-    [repository secret][secret].
+Publishing [Snaps][snaps] requires a `SNAPCRAFT_STORE_CREDENTIALS` [repository
+secret][secret].
 
-    Snapcraft store credentials periodically expire. Create new snapcraft store
-    credentials by running:
+Snapcraft store credentials periodically expire. Create new snapcraft store
+credentials by running:
 
-    ```sh
-    snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
-    ```
+```sh
+snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
+```
 
-!!! note
+### Homebrew
 
-    [brew][brew] automation will automatically detect new releases of chezmoi
-    within a few hours and open a pull request in
-    [github.com/Homebrew/homebrew-core][homebrew-core] to bump the version.
+[Homebrew][homebrew] automation will automatically detect new releases of chezmoi within
+a few hours and open a pull request in
+[github.com/Homebrew/homebrew-core][homebrew-core] to bump the version.
 
-    If needed, the pull request can be created with:
+If needed, the pull request can be created with:
 
-    ```sh
-    brew bump-formula-pr --tag=v1.2.3 chezmoi
-    ```
+```sh
+brew bump-formula-pr --tag=v1.2.3 chezmoi
+```
 
-!!! note
+### Scoop
 
-    chezmoi is in [Scoop][scoop]'s Main bucket. Scoop's automation will
-    automatically detect new releases within a few hours.
+chezmoi is in [Scoop][scoop]'s Main bucket. Scoop's automation will
+automatically detect new releases within a few hours.
 
 ## Signing
 
@@ -92,7 +92,7 @@ Details:
 [website]: https://chezmoi.io
 [snaps]: https://snapcraft.io/
 [secret]: https://github.com/twpayne/chezmoi/settings/secrets/actions
-[brew]: https://brew.sh/
+[homebrew]: https://brew.sh/
 [homebrew-core]: https://github.com/Homebrew/homebrew-core
 [scoop]: https://scoop.sh/
 [signing]: https://goreleaser.com/customization/sign/
