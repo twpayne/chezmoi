@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         persist-credentials: false
     - name: go-version
@@ -30,7 +30,7 @@ jobs:
       with:
         go-version: ${{ steps.go-version.outputs.go-version }}
         upload-cache: false
-    - uses: golang/govulncheck-action@b625fbe08f3bccbe446d94fbf87fcc875a4f50ee
+    - uses: golang/govulncheck-action@b625fbe08f3bccbe446d94fbf87fcc875a4f50ee # v1.0.4
       with:
         cache: false
         go-version-input: ${{ steps.go-version.outputs.go-version }}
