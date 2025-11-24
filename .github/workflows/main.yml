@@ -124,8 +124,7 @@ jobs:
   test-macos:
     name: test-macos
     needs: changes
-    # if: github.event_name == 'push' || needs.changes.outputs.code == 'true' # FIXME re-enable macos
-    if: false
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-15
     permissions:
       contents: read
@@ -384,7 +383,7 @@ jobs:
       fail-fast: false
       matrix:
         runs-on:
-        # - macos-15 # FIXME re-enable macos
+        - macos-15
         - ubuntu-22.04
         - windows-2022
     needs: changes
