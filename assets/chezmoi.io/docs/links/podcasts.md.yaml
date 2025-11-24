@@ -45,3 +45,8 @@ podcasts:
   version: 2.52.4
   title: Releasing more BSDs
   url: https://www.bsdnow.tv/581?t=2064
+- date: '2025-11-24'
+  version: 2.67.0
+  lang: JP
+  title: EP326 10年モノのdotfilesを整理
+  url: https://yuru28.com/326#t=1081
