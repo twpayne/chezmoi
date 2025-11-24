@@ -65,10 +65,10 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R->>W: chezmoi init &lt;repo&gt;
+    R->>W: chezmoi init $REPO
     W-->>H: chezmoi diff
     W->>H: chezmoi apply
-    R->>H: chezmoi init --apply &lt;repo&gt;
+    R->>H: chezmoi init --apply $REPO
 ```
 
 ## Use a private repo to store your dotfiles
