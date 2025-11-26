@@ -3128,10 +3128,10 @@ checkout, and apply:</p>
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R-&gt;&gt;W: chezmoi init &lt;repo&gt;
+    R-&gt;&gt;W: chezmoi init $REPO
     W--&gt;&gt;H: chezmoi diff
     W-&gt;&gt;H: chezmoi apply
-    R-&gt;&gt;H: chezmoi init --apply &lt;repo&gt;
+    R-&gt;&gt;H: chezmoi init --apply $REPO
 </div>
 <h2 id="use-a-private-repo-to-store-your-dotfiles">Use a private repo to store your dotfiles</h2>
 <p>chezmoi supports storing your dotfiles in both public and private repos.</p>

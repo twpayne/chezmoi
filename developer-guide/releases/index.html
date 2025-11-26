@@ -8527,6 +8527,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Publishing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#snaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Snaps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#homebrew" class="md-nav__link">
+    <span class="md-ellipsis">
+      Homebrew
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scoop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scoop
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -8901,6 +8934,39 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Publishing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#snaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Snaps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#homebrew" class="md-nav__link">
+    <span class="md-ellipsis">
+      Homebrew
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scoop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scoop
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -8949,29 +9015,23 @@ git<span class="w"> </span>push<span class="w"> </span>--tags
 <p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a> that builds and publishes archives,
 packages, and snaps, creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub Release</a>, and deploys the
 <a href="https://chezmoi.io">website</a>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a <code>SNAPCRAFT_STORE_CREDENTIALS</code>
-<a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository secret</a>.</p>
+<h3 id="snaps">Snaps</h3>
+<p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a <code>SNAPCRAFT_STORE_CREDENTIALS</code> <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
+secret</a>.</p>
 <p>Snapcraft store credentials periodically expire. Create new snapcraft store
 credentials by running:</p>
 <div class="highlight"><pre><span></span><code>snapcraft<span class="w"> </span>export-login<span class="w"> </span>--snaps<span class="o">=</span>chezmoi<span class="w"> </span>--channels<span class="o">=</span>stable,candidate,beta,edge<span class="w"> </span>--acls<span class="o">=</span>package_upload<span class="w"> </span>-
 </code></pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a href="https://brew.sh/">brew</a> automation will automatically detect new releases of chezmoi
-within a few hours and open a pull request in
+<h3 id="homebrew">Homebrew</h3>
+<p><a href="https://brew.sh/">Homebrew</a> automation will automatically detect new releases of chezmoi within
+a few hours and open a pull request in
 <a href="https://github.com/Homebrew/homebrew-core">github.com/Homebrew/homebrew-core</a> to bump the version.</p>
 <p>If needed, the pull request can be created with:</p>
 <div class="highlight"><pre><span></span><code>brew<span class="w"> </span>bump-formula-pr<span class="w"> </span>--tag<span class="o">=</span>v1.2.3<span class="w"> </span>chezmoi
 </code></pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<h3 id="scoop">Scoop</h3>
 <p>chezmoi is in <a href="https://scoop.sh/">Scoop</a>'s Main bucket. Scoop's automation will
 automatically detect new releases within a few hours.</p>
-</div>
 <h2 id="signing">Signing</h2>
 <p>chezmoi uses <a href="https://goreleaser.com/customization/sign/">GoReleaser's support for signing</a> to sign the checksums
 of its release assets with <a href="https://github.com/sigstore/cosign">cosign</a>.</p>

@@ -1783,9 +1783,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes-on-running-elevated-scripts" class="md-nav__link">
+  <a href="#run-elevated-scripts" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes on running elevated scripts
+      Run elevated scripts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-symlinks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create symlinks
     </span>
   </a>
   
@@ -8922,9 +8931,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes-on-running-elevated-scripts" class="md-nav__link">
+  <a href="#run-elevated-scripts" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes on running elevated scripts
+      Run elevated scripts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-symlinks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create symlinks
     </span>
   </a>
   
@@ -8972,16 +8990,27 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>If you use <a href="https://gerardog.github.io/gsudo/docs/intro">gsudo</a>, it has tips on writing <a href="https://gerardog.github.io/gsudo/docs/tips/script-self-elevation#self-elevate-script">self-elevating scripts</a>.</p>
-<h2 id="notes-on-running-elevated-scripts">Notes on running elevated scripts</h2>
-<p>However you decide to run a script in an elevated prompt, as soon as the non-elevated script returns, chezmoi will move to the next step in its
-processing (running more scripts, creating files, etc.).
-Ensure that the elevated script completes <em>before the non-elevated script exits</em>, or subsequent steps may not run as expected.
-In the example above, this is accomplished by passing <code>-Wait</code> to PowerShell's <code>Start-Process</code> cmdlet.</p>
-<p>Note that by including <code>-NoExit</code> in <code>$CommandLine</code>, the new (elevated) PowerShell process/window will not exit automatically on completion.
-This means you'll need to close the new window by hand for chezmoi to continue its steps. If this manual intervention is desired, it would
-be convenient to print a message as the script's last command to indicate completion for you to safely close the elevated window.
-If you want no manual intervention, you can remove <code>-NoExit</code> from <code>$CommandLine</code>, but then you likely won’t see the output of the elevated
-script, which will make it more difficult to determine if something went wrong during its execution.</p>
+<h2 id="run-elevated-scripts">Run elevated scripts</h2>
+<p>However you decide to run a script in an elevated prompt, as soon as the
+non-elevated script returns, chezmoi will move to the next step in its
+processing (running more scripts, creating files, etc.). Ensure that the
+elevated script completes <em>before the non-elevated script exits</em>, or subsequent
+steps may not run as expected. In the example above, this is accomplished by
+passing <code>-Wait</code> to PowerShell's <code>Start-Process</code> cmdlet.</p>
+<p>Note that by including <code>-NoExit</code> in <code>$CommandLine</code>, the new (elevated)
+PowerShell process/window will not exit automatically on completion. This means
+you'll need to close the new window by hand for chezmoi to continue its steps.
+If this manual intervention is desired, it would be convenient to print a
+message as the script's last command to indicate completion for you to safely
+close the elevated window. If you want no manual intervention, you can remove
+<code>-NoExit</code> from <code>$CommandLine</code>, but then you likely won’t see the output of the
+elevated script, which will make it more difficult to determine if something
+went wrong during its execution.</p>
+<h2 id="create-symlinks">Create symlinks</h2>
+<p>For chezmoi to be able to create symlinks, the current user must have the
+appropriate permissions. This can be achieved by turning on <a href="https://learn.microsoft.com/en-us/windows/advanced-settings/developer-mode">developer
+mode</a> or setting the permission <code>SeCreateSymbolicLinkPrivilege</code>
+<a href="https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links">directly</a>.</p>
 
 
 

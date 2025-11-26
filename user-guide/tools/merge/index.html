@@ -9007,7 +9007,7 @@ contains the <code>{{</code> and <code>}}</code> you expect.</p>
 <span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bash&quot;</span>
 <span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;cp {{ .Target | quote }} {{ printf &quot;</span><span class="err">%s.base</span><span class="s2">&quot; .Target | quote }} &amp;&amp; code --new-window --wait --merge {{ .Destination | quote }} {{ .Target | quote }} {{ printf &quot;</span><span class="err">%s.base</span><span class="s2">&quot; .Target | quote }} {{ .Source | quote }}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;cp {{ .Target | quote }} {{ printf </span><span class="se">\&quot;</span><span class="s2">%s.base</span><span class="se">\&quot;</span><span class="s2"> .Target | quote }} &amp;&amp; code --new-window --wait --merge {{ .Destination | quote }} {{ .Target | quote }} {{ printf </span><span class="se">\&quot;</span><span class="s2">%s.base</span><span class="se">\&quot;</span><span class="s2"> .Target | quote }} {{ .Source | quote }}&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 </code></pre></div>
 </div>

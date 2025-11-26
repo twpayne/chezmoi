@@ -3153,8 +3153,8 @@ changes to your repo.</p>
     participant L as local repo
     participant R as remote repo
     H-&gt;&gt;L: chezmoi init
-    H-&gt;&gt;W: chezmoi add &lt;file&gt;
-    W-&gt;&gt;W: chezmoi edit &lt;file&gt;
+    H-&gt;&gt;W: chezmoi add $FILE
+    W-&gt;&gt;W: chezmoi edit $FILE
     W--&gt;&gt;H: chezmoi diff
     W-&gt;&gt;H: chezmoi apply
     H--&gt;&gt;W: chezmoi cd
@@ -3198,11 +3198,11 @@ contents of the file:</p>
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R-&gt;&gt;W: chezmoi init &lt;repo&gt;
+    R-&gt;&gt;W: chezmoi init $REPO
     W--&gt;&gt;H: chezmoi diff
     W-&gt;&gt;H: chezmoi apply
-    W-&gt;&gt;W: chezmoi edit &lt;file&gt;
-    W-&gt;&gt;W: chezmoi merge &lt;file&gt;
+    W-&gt;&gt;W: chezmoi edit $FILE
+    W-&gt;&gt;W: chezmoi merge $FILE
     R-&gt;&gt;H: chezmoi update
 </div>
 <h2 id="set-up-a-new-machine-with-a-single-command">Set up a new machine with a single command</h2>
@@ -3225,7 +3225,7 @@ shortened to:</p>
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R-&gt;&gt;H: chezmoi init --apply &lt;repo&gt;
+    R-&gt;&gt;H: chezmoi init --apply $REPO
 </div>
 <h2 id="next-steps">Next steps</h2>
 <p>For a full list of commands run:</p>
