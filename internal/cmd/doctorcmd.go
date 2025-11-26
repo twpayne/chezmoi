@@ -135,6 +135,9 @@ type suspiciousEntriesCheck struct {
 	encryptedSuffixes []string
 }
 
+// A symlinkCheck checks that symlinks can be created.
+type symlinkCheck struct{}
+
 // A upgradeMethodCheck checks the upgrade method.
 type upgradeMethodCheck struct{}
 
@@ -221,6 +224,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			dirname: c.DestDirAbsPath,
 		},
 		hardlinkCheck{},
+		symlinkCheck{},
 		umaskCheck{},
 		&binaryCheck{
 			name:       "cd-command",
@@ -728,6 +732,31 @@ func (c *suspiciousEntriesCheck) Run(config *Config) (checkResult, string) {
 		return checkResultWarning, englishList(suspiciousEntries)
 	}
 	return checkResultOK, "no suspicious entries"
+}
+
+func (symlinkCheck) Name() string {
+	return "symlink"
+}
+
+func (symlinkCheck) Run(config *Config) (checkResult, string) {
+	tempDirAbsPath, err := config.tempDir("chezmoi-doctor")
+	if err != nil {
+		return checkResultFailed, err.Error()
+	}
+
+	oldName := ".old-name"
+	newName := ".new-name"
+	newNameAbsPath := tempDirAbsPath.JoinString(newName)
+
+	if err := config.baseSystem.WriteSymlink(oldName, newNameAbsPath); err != nil {
+		return checkResultFailed, err.Error()
+	}
+
+	if err := config.baseSystem.Remove(newNameAbsPath); err != nil {
+		return checkResultFailed, err.Error()
+	}
+
+	return checkResultOK, fmt.Sprintf("created symlink from %s to %s", newName, oldName)
 }
 
 func (upgradeMethodCheck) Name() string {
