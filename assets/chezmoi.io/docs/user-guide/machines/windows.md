@@ -44,5 +44,11 @@ be convenient to print a message as the script's last command to indicate comple
 If you want no manual intervention, you can remove `-NoExit` from `$CommandLine`, but then you likely won’t see the output of the elevated
 script, which will make it more difficult to determine if something went wrong during its execution.
 
+## Notes on Symlinks
+For chemoiz to be able to create symlinks, the current user must have the apropriate permissions. This can be achieved by turning on [developer mode][devmode] or setting the permission `SeCreateSymbolicLinkPrivilege` [directly][symperm].
+
+
 [gsudo]: https://gerardog.github.io/gsudo/docs/intro
 [ses]: https://gerardog.github.io/gsudo/docs/tips/script-self-elevation#self-elevate-script
+[devmode]: https://learn.microsoft.com/en-us/windows/advanced-settings/developer-mode
+[symperm]: https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/create-symbolic-links
