@@ -30,7 +30,7 @@ func (n *SourceStateEntryTreeNode) Get(relPath RelPath) SourceStateEntry {
 
 // GetNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
 func (n *SourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*SourceStateEntryTreeNode {
-	if targetRelPath.Empty() {
+	if targetRelPath.IsEmpty() {
 		return []*SourceStateEntryTreeNode{n}
 	}
 
@@ -144,7 +144,7 @@ func (n *SourceStateEntryTreeNode) MkdirAll(
 
 // Set sets the SourceStateEntry at relPath to sourceStateEntry.
 func (n *SourceStateEntryTreeNode) Set(targetRelPath RelPath, sourceStateEntry SourceStateEntry) {
-	if targetRelPath.Empty() {
+	if targetRelPath.IsEmpty() {
 		n.SourceStateEntry = sourceStateEntry
 		return
 	}
