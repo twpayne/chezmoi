@@ -171,7 +171,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 		fileRelPath := fileSourceRelPath.RelPath()
 		switch sourceStateEntry := sourceStateEntry.(type) {
 		case *chezmoi.SourceStateDir:
-			relPath := m.modifyDirAttr(sourceStateEntry.Attr).SourceName()
+			relPath := m.modifyDirAttr(sourceStateEntry.Attr()).SourceName()
 			if newBaseNameRelPath := chezmoi.NewRelPath(relPath); newBaseNameRelPath != fileRelPath {
 				oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
 				newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
@@ -180,11 +180,11 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 				}
 			}
 		case *chezmoi.SourceStateFile:
-			newAttr := m.modifyFileAttr(sourceStateEntry.Attr)
+			newAttr := m.modifyFileAttr(sourceStateEntry.Attr())
 			newBaseNameRelPath := chezmoi.NewRelPath(newAttr.SourceName(encryptedSuffix))
 			oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
 			newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
-			switch encryptedBefore, encryptedAfter := sourceStateEntry.Attr.Encrypted, newAttr.Encrypted; {
+			switch encryptedBefore, encryptedAfter := sourceStateEntry.Attr().Encrypted, newAttr.Encrypted; {
 			case encryptedBefore && !encryptedAfter:
 				// Write the plaintext and then remove the ciphertext.
 				plaintext, err := sourceStateEntry.Contents()

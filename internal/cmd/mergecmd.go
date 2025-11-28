@@ -66,7 +66,7 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	// instead.
 	var plaintextAbsPath chezmoi.AbsPath
 	if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok {
-		if sourceStateFile.Attr.Encrypted {
+		if sourceStateFile.Attr().Encrypted {
 			var plaintextTempDirAbsPath chezmoi.AbsPath
 			if plaintextTempDirAbsPath, err = c.tempDir("chezmoi-merge-plaintext"); err != nil {
 				return err

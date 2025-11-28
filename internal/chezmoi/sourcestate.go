@@ -452,7 +452,7 @@ DEST_ABS_PATH:
 				switch sourceStateDir, ok := node.SourceStateEntry.(*SourceStateDir); {
 				case i != len(nodes)-1 && !ok:
 					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.SourceStateEntry))
-				case ok && sourceStateDir.Attr.External:
+				case ok && sourceStateDir.attr.External:
 					targetRelPathComponents := targetRelPath.SplitAll()
 					externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
 					externalDirRelPaths.Add(externalDirRelPath)
@@ -1051,7 +1051,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				allSourceStateEntriesMu.Unlock()
 				return fs.SkipDir
 			}
-			if sourceStateDir.Attr.Remove {
+			if sourceStateDir.attr.Remove {
 				s.mutex.Lock()
 				s.removeDirs.Add(targetRelPath)
 				s.mutex.Unlock()
@@ -1157,7 +1157,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		switch {
 		case !ok:
 			continue
-		case !sourceStateDir.Attr.Exact:
+		case !sourceStateDir.attr.Exact:
 			continue
 		}
 
@@ -1809,7 +1809,7 @@ func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRel
 	return &SourceStateDir{
 		origin:           SourceStateOriginAbsPath(absPath),
 		sourceRelPath:    sourceRelPath,
-		Attr:             dirAttr,
+		attr:             dirAttr,
 		targetStateEntry: targetStateDir,
 	}
 }
@@ -2175,7 +2175,7 @@ func (s *SourceState) newSourceStateFile(
 	return targetRelPath, &SourceStateFile{
 		origin:               SourceStateOriginAbsPath(absPath),
 		sourceRelPath:        sourceRelPath,
-		Attr:                 fileAttr,
+		attr:                 fileAttr,
 		contentsFunc:         contentsFunc,
 		contentsSHA256Func:   lazySHA256(contentsFunc),
 		targetStateEntryFunc: targetStateEntryFunc,
@@ -2198,7 +2198,7 @@ func (s *SourceState) newSourceStateDirEntry(
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
 	return &SourceStateDir{
-		Attr:          dirAttr,
+		attr:          dirAttr,
 		origin:        actualStateDir,
 		sourceRelPath: sourceRelPath,
 		targetStateEntry: &TargetStateDir{
@@ -2266,7 +2266,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 	contentsSHA256Func := lazySHA256(contentsFunc)
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
-		Attr:               fileAttr,
+		attr:               fileAttr,
 		origin:             actualStateFile,
 		sourceRelPath:      sourceRelPath,
 		contentsFunc:       contentsFunc,
@@ -2319,7 +2319,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
-		Attr:               fileAttr,
+		attr:               fileAttr,
 		sourceRelPath:      sourceRelPath,
 		contentsFunc:       contentsFunc,
 		contentsSHA256Func: contentsSHA256Func,
@@ -2394,7 +2394,7 @@ func (s *SourceState) readExternalArchive(
 		Exact:      external.Exact,
 	}
 	sourceStateDir := &SourceStateDir{
-		Attr:          dirAttr,
+		attr:          dirAttr,
 		origin:        external,
 		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
 		targetStateEntry: &TargetStateDir{
@@ -2473,7 +2473,7 @@ func (s *SourceState) readExternalArchive(
 				ReadOnly:   isReadOnly(fileInfo),
 			}
 			sourceStateEntry = &SourceStateDir{
-				Attr:             dirAttr,
+				attr:             dirAttr,
 				origin:           external,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
 				targetStateEntry: targetStateEntry,
@@ -2509,7 +2509,7 @@ func (s *SourceState) readExternalArchive(
 				},
 			}
 			sourceStateEntry = &SourceStateFile{
-				Attr:               fileAttr,
+				attr:               fileAttr,
 				contentsFunc:       contentsFunc,
 				contentsSHA256Func: contentsSHA256Func,
 				origin:             external,
@@ -2531,7 +2531,7 @@ func (s *SourceState) readExternalArchive(
 				},
 			}
 			sourceStateEntry = &SourceStateFile{
-				Attr:             fileAttr,
+				attr:             fileAttr,
 				origin:           external,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
@@ -2647,7 +2647,7 @@ func (s *SourceState) readExternalArchiveFile(
 				},
 			}
 			sourceStateEntry = &SourceStateFile{
-				Attr:               fileAttr,
+				attr:               fileAttr,
 				contentsFunc:       contentsFunc,
 				contentsSHA256Func: contentsSHA256Func,
 				origin:             external,
@@ -2670,7 +2670,7 @@ func (s *SourceState) readExternalArchiveFile(
 				},
 			}
 			sourceStateEntry = &SourceStateFile{
-				Attr:             fileAttr,
+				attr:             fileAttr,
 				origin:           external,
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
@@ -2730,7 +2730,7 @@ func (s *SourceState) readExternalDir(
 			contentsSHA256Func := lazySHA256(contentsFunc)
 			sourceStateEntry = &SourceStateFile{
 				origin:             SourceStateOriginAbsPath(absPath),
-				Attr:               fileAttr,
+				attr:               fileAttr,
 				contentsFunc:       contentsFunc,
 				contentsSHA256Func: contentsSHA256Func,
 				sourceRelPath:      rootSourceRelPath.Join(relPath.SourceRelPath()),
@@ -2751,7 +2751,7 @@ func (s *SourceState) readExternalDir(
 			sourceStateEntry = &SourceStateDir{
 				origin:        SourceStateOriginAbsPath(absPath),
 				sourceRelPath: rootSourceRelPath.Join(relPath.SourceRelDirPath()),
-				Attr:          dirAttr,
+				attr:          dirAttr,
 				targetStateEntry: &TargetStateDir{
 					perm: dirAttr.perm() &^ s.umask,
 				},
@@ -2773,7 +2773,7 @@ func (s *SourceState) readExternalDir(
 			})
 			sourceStateEntry = &SourceStateFile{
 				origin:             SourceStateOriginAbsPath(absPath),
-				Attr:               fileAttr,
+				attr:               fileAttr,
 				contentsFunc:       contentsFunc,
 				contentsSHA256Func: lazySHA256(contentsFunc),
 				sourceRelPath:      rootSourceRelPath.Join(relPath.SourceRelPath()),
@@ -2989,7 +2989,7 @@ func canonicalSourceStateEntry(sourceStateEntries []SourceStateEntry) (SourceSta
 		for _, sourceStateDir := range sourceStateDirs {
 			switch sourceStateDir := sourceStateDir.(type) {
 			case *SourceStateDir:
-				if sourceStateDir.Attr != firstSourceStateDir.Attr {
+				if sourceStateDir.attr != firstSourceStateDir.attr {
 					return nil, false
 				}
 			case *SourceStateImplicitDir:

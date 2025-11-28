@@ -144,7 +144,7 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 			return false
 		}
 	case *SourceStateFile:
-		switch sourceAttr := sourceStateEntry.Attr; {
+		switch sourceAttr := sourceStateEntry.Attr(); {
 		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:

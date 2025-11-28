@@ -46,7 +46,7 @@ type SourceStateCommand struct {
 
 // A SourceStateDir represents the state of a directory in the source state.
 type SourceStateDir struct {
-	Attr             DirAttr
+	attr             DirAttr
 	origin           SourceStateOrigin
 	sourceRelPath    SourceRelPath
 	targetStateEntry TargetStateEntry
@@ -54,7 +54,7 @@ type SourceStateDir struct {
 
 // A SourceStateFile represents the state of a file in the source state.
 type SourceStateFile struct {
-	Attr                 FileAttr
+	attr                 FileAttr
 	contentsFunc         func() ([]byte, error)
 	contentsSHA256Func   func() ([32]byte, error)
 	origin               SourceStateOrigin
@@ -126,6 +126,11 @@ func (s *SourceStateCommand) TargetStateEntry(destSystem System, destDirAbsPath 
 	}, nil
 }
 
+// Attr returns s's attributes.
+func (s *SourceStateDir) Attr() DirAttr {
+	return s.attr
+}
+
 // Evaluate evaluates s and returns any error.
 func (s *SourceStateDir) Evaluate() error {
 	return nil
@@ -135,7 +140,7 @@ func (s *SourceStateDir) Evaluate() error {
 func (s *SourceStateDir) LogValue() slog.Value {
 	return slog.GroupValue(
 		chezmoilog.Stringer("sourceRelPath", s.sourceRelPath),
-		slog.Any("attr", s.Attr),
+		slog.Any("attr", s.attr),
 	)
 }
 
@@ -157,6 +162,11 @@ func (s *SourceStateDir) SourceRelPath() SourceRelPath {
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateDir) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	return s.targetStateEntry, nil
+}
+
+// Attr returns s's attributes.
+func (s *SourceStateFile) Attr() FileAttr {
+	return s.attr
 }
 
 // Contents returns s's contents.
@@ -184,7 +194,7 @@ func (s *SourceStateFile) Evaluate() error {
 func (s *SourceStateFile) LogValue() slog.Value {
 	attrs := []slog.Attr{
 		chezmoilog.Stringer("sourceRelPath", s.sourceRelPath),
-		slog.Any("attr", s.Attr),
+		slog.Any("attr", s.attr),
 	}
 	contents, contentsErr := s.Contents()
 	attrs = append(attrs, chezmoilog.FirstFewBytes("contents", contents))
@@ -201,7 +211,7 @@ func (s *SourceStateFile) LogValue() slog.Value {
 
 // Order returns s's order.
 func (s *SourceStateFile) Order() ScriptOrder {
-	return s.Attr.Order
+	return s.attr.Order
 }
 
 // Origin returns s's origin.

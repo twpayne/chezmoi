@@ -97,7 +97,7 @@ TARGET_REL_PATH:
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
 		switch sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); {
-		case ok && sourceStateFile.Attr.Encrypted:
+		case ok && sourceStateFile.Attr().Encrypted:
 			// FIXME in the case that the file is an encrypted template then we
 			// should first decrypt the file to a temporary directory and
 			// secondly add a hardlink from the edit directory to the temporary
@@ -136,7 +136,7 @@ TARGET_REL_PATH:
 			// Compute the hard link path from the target path. If the file is a
 			// template then preserve the .tmpl suffix as a clue to the editor.
 			targetRelPath := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
-			if sourceStateFile.Attr.Template {
+			if sourceStateFile.Attr().Template {
 				targetRelPath = targetRelPath.AppendString(chezmoi.TemplateSuffix)
 			}
 			tempDirAbsPath, err := c.tempDir("chezmoi-edit")
