@@ -38,8 +38,8 @@ func (p RelPath) Dir() RelPath {
 	return NewRelPath(path.Dir(p.relPath))
 }
 
-// Empty returns if p is empty.
-func (p RelPath) Empty() bool {
+// IsEmpty returns if p is empty.
+func (p RelPath) IsEmpty() bool {
 	return p.relPath == ""
 }
 
