@@ -93,10 +93,10 @@ TARGET_REL_PATH:
 		if !ok {
 			continue
 		}
-		if sourceStateFile.Attr.Template {
+		if sourceStateFile.Attr().Template {
 			continue
 		}
-		if sourceStateFile.Attr.Type != chezmoi.SourceFileTypeFile {
+		if sourceStateFile.Attr().Type != chezmoi.SourceFileTypeFile {
 			continue
 		}
 
@@ -193,7 +193,7 @@ TARGET_REL_PATH:
 			destAbsPath: destAbsPathInfo,
 		}
 		if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-			Encrypt:         sourceStateFile.Attr.Encrypted,
+			Encrypt:         sourceStateFile.Attr().Encrypted,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
 			Errorf:          c.errorf,
 			Filter:          c.reAdd.filter,
@@ -227,7 +227,7 @@ func (c *Config) processExactDirs(
 
 	// First, collect exact directories that are directly in the entries
 	for targetRelPath, entry := range sourceStateEntries {
-		if sourceStateDir, ok := entry.(*chezmoi.SourceStateDir); ok && sourceStateDir.Attr.Exact {
+		if sourceStateDir, ok := entry.(*chezmoi.SourceStateDir); ok && sourceStateDir.Attr().Exact {
 			exactDirs[targetRelPath] = sourceStateDir
 		}
 	}
@@ -238,7 +238,7 @@ func (c *Config) processExactDirs(
 		for parentPath := targetRelPath.Dir(); parentPath != chezmoi.DotRelPath; parentPath = parentPath.Dir() {
 			// Check if this parent is an exact directory in source state
 			parentEntry := sourceState.Get(parentPath)
-			if sourceStateDir, ok := parentEntry.(*chezmoi.SourceStateDir); ok && sourceStateDir.Attr.Exact {
+			if sourceStateDir, ok := parentEntry.(*chezmoi.SourceStateDir); ok && sourceStateDir.Attr().Exact {
 				// Only add if not already present
 				if _, exists := exactDirs[parentPath]; !exists {
 					exactDirs[parentPath] = sourceStateDir
@@ -303,7 +303,7 @@ func (c *Config) processExactDirs(
 				// They will be processed separately in their own exact directory processing
 				if dirEntry.IsDir() {
 					childEntry := sourceState.Get(entryRelPath)
-					if childDir, ok := childEntry.(*chezmoi.SourceStateDir); ok && childDir.Attr.Exact {
+					if childDir, ok := childEntry.(*chezmoi.SourceStateDir); ok && childDir.Attr().Exact {
 						continue
 					}
 				}

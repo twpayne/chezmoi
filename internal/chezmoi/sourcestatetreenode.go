@@ -124,7 +124,7 @@ func (n *SourceStateEntryTreeNode) MkdirAll(
 			}
 			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName()))
 			sourceStateDir = &SourceStateDir{
-				Attr:             dirAttr,
+				attr:             dirAttr,
 				origin:           origin,
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateDir,
@@ -136,7 +136,7 @@ func (n *SourceStateEntryTreeNode) MkdirAll(
 			if !ok {
 				return nil, fmt.Errorf("%s: not a directory", componentRelPaths[0].Join(componentRelPaths[1:i+1]...))
 			}
-			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(sourceStateDir.Attr.SourceName()))
+			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(sourceStateDir.attr.SourceName()))
 		}
 	}
 	return sourceStateDir, nil

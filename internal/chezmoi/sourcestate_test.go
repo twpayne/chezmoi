@@ -909,7 +909,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir"): &SourceStateDir{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir")),
 						sourceRelPath: NewSourceRelDirPath("dir"),
-						Attr: DirAttr{
+						attr: DirAttr{
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
@@ -931,7 +931,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath(".file"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dot_file")),
 						sourceRelPath: NewSourceRelPath("dot_file"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: ".file",
 							Type:       SourceFileTypeFile,
 						},
@@ -993,7 +993,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath(".file"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/executable_dot_file")),
 						sourceRelPath: NewSourceRelPath("executable_dot_file"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: ".file",
 							Type:       SourceFileTypeFile,
 							Executable: true,
@@ -1022,7 +1022,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("script"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/run_script")),
 						sourceRelPath: NewSourceRelPath("run_script"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "script",
 							Type:       SourceFileTypeScript,
 							Condition:  ScriptConditionAlways,
@@ -1055,7 +1055,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("script"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/run_script")),
 						sourceRelPath: NewSourceRelPath("run_script"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "script",
 							Type:       SourceFileTypeScript,
 							Condition:  ScriptConditionAlways,
@@ -1088,7 +1088,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath(".symlink"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/symlink_dot_symlink")),
 						sourceRelPath: NewSourceRelPath("symlink_dot_symlink"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: ".symlink",
 							Type:       SourceFileTypeSymlink,
 						},
@@ -1115,7 +1115,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir"): &SourceStateDir{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir")),
 						sourceRelPath: NewSourceRelDirPath("dir"),
-						Attr: DirAttr{
+						attr: DirAttr{
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
@@ -1125,7 +1125,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir/file"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir/file")),
 						sourceRelPath: NewSourceRelPath("dir/file"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "file",
 							Type:       SourceFileTypeFile,
 						},
@@ -1213,7 +1213,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir"): &SourceStateDir{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/exact_dir")),
 						sourceRelPath: NewSourceRelDirPath("exact_dir"),
-						Attr: DirAttr{
+						attr: DirAttr{
 							TargetName: "dir",
 							Exact:      true,
 						},
@@ -1224,7 +1224,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir/file1"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/exact_dir/file1")),
 						sourceRelPath: NewSourceRelPath("exact_dir/file1"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "file1",
 							Type:       SourceFileTypeFile,
 						},
@@ -1329,7 +1329,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir"): &SourceStateDir{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir")),
 						sourceRelPath: NewSourceRelDirPath("dir"),
-						Attr: DirAttr{
+						attr: DirAttr{
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
@@ -1375,7 +1375,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir"): &SourceStateDir{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir")),
 						sourceRelPath: NewSourceRelDirPath("external_dir"),
-						Attr: DirAttr{
+						attr: DirAttr{
 							TargetName: "dir",
 							External:   true,
 						},
@@ -1386,7 +1386,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir/dot_file"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/dot_file")),
 						sourceRelPath: NewSourceRelPath("external_dir/dot_file"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "dot_file",
 							Type:       SourceFileTypeFile,
 							Empty:      true,
@@ -1403,7 +1403,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir/subdir"): &SourceStateDir{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/subdir")),
 						sourceRelPath: NewSourceRelDirPath("external_dir/subdir"),
-						Attr: DirAttr{
+						attr: DirAttr{
 							TargetName: "subdir",
 							Exact:      true,
 						},
@@ -1414,7 +1414,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir/subdir/empty_file"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/subdir/empty_file")),
 						sourceRelPath: NewSourceRelPath("external_dir/subdir/empty_file"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "empty_file",
 							Type:       SourceFileTypeFile,
 							Empty:      true,
@@ -1431,7 +1431,7 @@ func TestSourceStateRead(t *testing.T) {
 					NewRelPath("dir/symlink"): &SourceStateFile{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/external_dir/symlink")),
 						sourceRelPath: NewSourceRelPath("external_dir/symlink"),
-						Attr: FileAttr{
+						attr: FileAttr{
 							TargetName: "symlink",
 							Type:       SourceFileTypeFile,
 						},

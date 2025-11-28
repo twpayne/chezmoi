@@ -146,13 +146,13 @@ func (c *Config) defaultReplaceFunc(
 	}
 
 	var removedAttributes []string
-	if !newFile.Attr.Encrypted && oldFile.Attr.Encrypted {
+	if !newFile.Attr().Encrypted && oldFile.Attr().Encrypted {
 		removedAttributes = append(removedAttributes, "encrypted")
 	}
-	if !newFile.Attr.Private && oldFile.Attr.Private {
+	if !newFile.Attr().Private && oldFile.Attr().Private {
 		removedAttributes = append(removedAttributes, "private")
 	}
-	if !newFile.Attr.Template && oldFile.Attr.Template {
+	if !newFile.Attr().Template && oldFile.Attr().Template {
 		removedAttributes = append(removedAttributes, "template")
 	}
 	if len(removedAttributes) == 0 {
