@@ -1,0 +1,15 @@
+mkageconfig
+[windows] unix2dos golden/edited-plaintext
+[windows] unix2dos golden/plaintext
+
+# test that chezmoi edit-encrypted edits encrypted files
+exec chezmoi encrypt -o $HOME/ciphertext golden/plaintext
+exec chezmoi edit-encrypted $HOME/ciphertext
+exec chezmoi decrypt $HOME/ciphertext
+cmp stdout golden/edited-plaintext
+
+-- golden/edited-plaintext --
+# contents of plaintext
+# edited
+-- golden/plaintext --
+# contents of plaintext

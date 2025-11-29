@@ -380,6 +380,16 @@ var helps = map[string]*help{
 		example: "" +
 			"  chezmoi edit-config-template",
 	},
+	"edit-encrypted": {
+		longHelp: "" +
+			"  Edit the encrypted files filenames.\n" +
+			"\n" +
+			"  Each filename is decrypted to a temporary directory, the editor is invoked\n" +
+			"  on the decrypted files. After the editor returns, each the decrypted file is\n" +
+			"  re-encrypted.",
+		example: "" +
+			"  chezmoi edit-encrypted encrypted_file",
+	},
 	"encrypt": {
 		longHelp: "" +
 			"  Encrypt files using chezmoi's configured encryption. If no files are given,\n" +

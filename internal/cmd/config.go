@@ -1912,6 +1912,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newEditCmd(),
 		c.newEditConfigCmd(),
 		c.newEditConfigTemplateCmd(),
+		c.newEditEncryptedCmd(),
 		c.newEncryptCmd(),
 		c.newExecuteTemplateCmd(),
 		c.newForgetCmd(),
