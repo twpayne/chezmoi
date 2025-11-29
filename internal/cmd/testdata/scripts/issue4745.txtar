@@ -1,0 +1,18 @@
+mkdir www
+exec tar czf www/archive.tar.gz archive
+httpd www
+
+# test that chezmoi destroy skips externals and does not delete the source directory
+exec chezmoi apply
+exists $HOME/external/file
+exec chezmoi destroy --force $HOME${/}external
+stderr 'warning: skipping external external'
+exists $CHEZMOISOURCEDIR
+
+-- archive/file --
+# contents of file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+["external"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1

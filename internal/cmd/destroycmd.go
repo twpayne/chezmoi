@@ -62,8 +62,15 @@ func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *c
 		// that there is no actual source state entry to remove.
 		var sourceAbsPath chezmoi.AbsPath
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
+		if sourceStateEntry.Origin().IsExternal() {
+			c.errorf("warning: skipping external %s", targetRelPath)
+			continue
+		}
 		if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); !ok {
-			sourceAbsPath = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
+			relPath := sourceStateEntry.SourceRelPath().RelPath()
+			if !relPath.IsEmpty() {
+				sourceAbsPath = c.SourceDirAbsPath.Join(relPath)
+			}
 		}
 		if !c.force {
 			var prompt string
