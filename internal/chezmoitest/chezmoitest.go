@@ -2,39 +2,35 @@
 package chezmoitest
 
 import (
-	"fmt"
 	"io/fs"
 	"log/slog"
 	"os"
 	"os/exec"
-	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
 	"testing"
 
+	"filippo.io/age"
 	"github.com/alecthomas/assert/v2"
+	"github.com/google/renameio/v2/maybe"
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
 	"chezmoi.io/chezmoi/internal/chezmoilog"
 )
 
-var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
-
 // AgeGenerateKey generates an identity in identityFile and returns the
 // recipient.
-func AgeGenerateKey(command, identityFile string) (string, error) {
-	cmd := exec.Command(command+"-keygen", "--output", identityFile)
-	output, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
+func AgeGenerateKey(command, identityFile string) (*age.X25519Recipient, error) {
+	identity, err := age.GenerateX25519Identity()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	match := ageRecipientRx.FindSubmatch(output)
-	if match == nil {
-		return "", fmt.Errorf("recipient not found in %q", output)
+	if err := maybe.WriteFile(identityFile, []byte(identity.String()), 0o600); err != nil {
+		return nil, err
 	}
-	return string(match[1]), nil
+	return identity.Recipient(), nil
 }
 
 // GPGGenerateKey generates GPG key in homeDir and returns the key and the
