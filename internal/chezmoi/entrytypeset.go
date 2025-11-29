@@ -123,7 +123,7 @@ func (s *EntryTypeSet) ContainsFileInfo(fileInfo fs.FileInfo) bool {
 
 // ContainsSourceStateEntry returns true if sourceStateEntry is a member.
 func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntry) bool {
-	_, isExternal := sourceStateEntry.Origin().(*External)
+	isExternal := sourceStateEntry.Origin().IsExternal()
 	switch sourceStateEntry := sourceStateEntry.(type) {
 	case *SourceStateCommand:
 		switch {
