@@ -391,7 +391,7 @@ func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if symmetric {
 		lines = append(lines, `    symmetric = true`)
 	} else {
-		lines = append(lines, `    recipient = `+strconv.Quote(recipient))
+		lines = append(lines, `    recipient = `+strconv.Quote(recipient.String()))
 	}
 	ts.Check(writeNewFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }

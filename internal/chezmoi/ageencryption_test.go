@@ -27,7 +27,7 @@ func TestAgeEncryption(t *testing.T) {
 		testEncryption(t, &AgeEncryption{
 			Command:   command,
 			Identity:  NewAbsPath(identityFile),
-			Recipient: recipient,
+			Recipient: recipient.String(),
 		})
 	})
 }
@@ -179,8 +179,8 @@ func TestAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
 				NewAbsPath(identityFile2),
 			},
 			Recipients: []string{
-				recipient1,
-				recipient2,
+				recipient1.String(),
+				recipient2.String(),
 			},
 		})
 	})
@@ -199,7 +199,7 @@ func TestAgeRecipientsFile(t *testing.T) {
 		assert.NoError(t, err)
 
 		recipientsFile := filepath.Join(t.TempDir(), "chezmoi-test-age-recipients.txt")
-		assert.NoError(t, os.WriteFile(recipientsFile, []byte(recipient), 0o666))
+		assert.NoError(t, os.WriteFile(recipientsFile, []byte(recipient.String()), 0o666))
 
 		testEncryption(t, &AgeEncryption{
 			Command:        command,
