@@ -1,6 +1,3 @@
-mkhomedir
-mksourcedir
-
 # test that chezmoi destroy file destroys a file
 exec chezmoi apply --force
 exists $HOME/.file
@@ -10,11 +7,13 @@ exec chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
 ! stdout .
 
 # test that chezmoi destroy dir destroys a directory
+exists $CHEZMOISOURCEDIR/dot_dir
 exists $HOME/.dir
 exec chezmoi destroy --force $HOME${/}.dir
 ! exists $HOME/.dir
 
 # test that if any chezmoi destroy stops on any error
+exists $CHEZMOISOURCEDIR/executable_dot_executable
 exists $HOME/.executable
 ! exec chezmoi destroy --force $HOME${/}.newfile $HOME${/}.executable
 stderr 'not managed'
@@ -38,11 +37,15 @@ exec chezmoi apply --destination=$HOME/
 ! exists $HOME/.star-file
 ! exists $HOME/.star-dir
 
+-- home/user/.local/share/chezmoi/dot_dir/.keep --
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home/user/.local/share/chezmoi/executable_dot_executable --
+# contents of .executable
 -- home2/user/.dir/.keep --
 -- home2/user/.file --
 # contents of .file
 -- home2/user/.local/share/chezmoi/remove_dot_dir --
-
 -- home2/user/.local/share/chezmoi/remove_dot_file --
 -- home3/user/.local/share/chezmoi/.chezmoiremove --
 .*-dir/
