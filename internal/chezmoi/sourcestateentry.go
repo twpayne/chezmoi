@@ -18,6 +18,7 @@ type SourceAttr struct {
 
 // A SourceStateOrigin represents the origin of a source state.
 type SourceStateOrigin interface {
+	IsExternal() bool
 	Path() AbsPath
 	OriginString() string
 }
@@ -295,6 +296,11 @@ func (s *SourceStateRemove) TargetStateEntry(destSystem System, destDirAbsPath A
 	return &TargetStateRemove{}, nil
 }
 
+// IsExternal returns if s is an external.
+func (SourceStateOriginAbsPath) IsExternal() bool {
+	return false
+}
+
 // Path returns s's path.
 func (s SourceStateOriginAbsPath) Path() AbsPath {
 	return AbsPath(s)
@@ -313,4 +319,9 @@ func (s SourceStateOriginRemove) Path() AbsPath {
 // OriginString returns s's origin.
 func (s SourceStateOriginRemove) OriginString() string {
 	return "remove"
+}
+
+// IsExternal returns if s is an external.
+func (SourceStateOriginRemove) IsExternal() bool {
+	return false
 }

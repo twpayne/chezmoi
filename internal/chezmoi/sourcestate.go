@@ -561,6 +561,7 @@ DEST_ABS_PATH:
 		sourceUpdates = append(sourceUpdates, dotKeepFileSourceUpdate)
 
 		newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
+			origin: SourceStateOriginAbsPath(s.sourceDirAbsPath.Join(sourceEntryRelPath.RelPath())),
 			targetStateEntry: &TargetStateFile{
 				contentsFunc:       eagerNoErr[[]byte](nil),
 				contentsSHA256Func: eagerNoErr(sha256.Sum256(nil)),
@@ -588,6 +589,7 @@ DEST_ABS_PATH:
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
 			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
+				origin:        SourceStateOriginRemove{},
 				sourceRelPath: sourceRelPath,
 				targetRelPath: targetRelPath,
 			})
@@ -2323,6 +2325,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 		sourceRelPath:      sourceRelPath,
 		contentsFunc:       contentsFunc,
 		contentsSHA256Func: contentsSHA256Func,
+		origin:             SourceStateOriginAbsPath(s.sourceDirAbsPath.Join(sourceRelPath.RelPath())),
 		targetStateEntry: &TargetStateFile{
 			contentsFunc:       contentsFunc,
 			contentsSHA256Func: contentsSHA256Func,
@@ -2946,6 +2949,10 @@ func (s *SourceState) sourceStateEntry(
 	default:
 		panic(fmt.Sprintf("%T: unsupported type", actualStateEntry))
 	}
+}
+
+func (e *External) IsExternal() bool {
+	return true
 }
 
 func (e *External) Path() AbsPath {

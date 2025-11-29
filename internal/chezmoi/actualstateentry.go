@@ -11,6 +11,7 @@ import (
 // filesystem.
 type ActualStateEntry interface {
 	EntryState() (*EntryState, error)
+	IsExternal() bool
 	Path() AbsPath
 	Remove(system System) error
 	OriginString() string
@@ -94,6 +95,11 @@ func (s *ActualStateAbsent) EntryState() (*EntryState, error) {
 	}, nil
 }
 
+// IsExternal returns if s is an external.
+func (s *ActualStateAbsent) IsExternal() bool {
+	return false
+}
+
 // Path returns s's path.
 func (s *ActualStateAbsent) Path() AbsPath {
 	return s.absPath
@@ -115,6 +121,11 @@ func (s *ActualStateDir) EntryState() (*EntryState, error) {
 		Type: EntryStateTypeDir,
 		Mode: fs.ModeDir | s.perm,
 	}, nil
+}
+
+// IsExternal returns if s is an external.
+func (s *ActualStateDir) IsExternal() bool {
+	return false
 }
 
 // Path returns s's path.
@@ -152,6 +163,11 @@ func (s *ActualStateFile) EntryState() (*EntryState, error) {
 	}, nil
 }
 
+// IsExternal returns if s is an external.
+func (s *ActualStateFile) IsExternal() bool {
+	return false
+}
+
 // Path returns s's path.
 func (s *ActualStateFile) Path() AbsPath {
 	return s.absPath
@@ -184,6 +200,11 @@ func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 		ContentsSHA256: HexBytes(linknameSHA256[:]),
 		contents:       []byte(linkname),
 	}, nil
+}
+
+// IsExternal returns if s is an external.
+func (s *ActualStateSymlink) IsExternal() bool {
+	return false
 }
 
 // Linkname returns s's linkname.
