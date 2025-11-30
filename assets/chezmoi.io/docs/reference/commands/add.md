@@ -122,7 +122,7 @@ chezmoi add ~/.oh-my-zsh --exact --recursive
     precautions.
 
     If you have not previously added any files from `~/.config` to chezmoi and
-    run `chezmoi add --exact --recursive ~/.config/nvim`, chezmoi wlll consider
+    run `chezmoi add --exact --recursive ~/.config/nvim`, chezmoi will consider
     all files under `~/.config` to be managed, and any file *not* in
     `~/.config/nvim` will be removed on your next `chezmoi apply`. This is
     because `~/.config/nvim` is added as:

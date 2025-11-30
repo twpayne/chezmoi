@@ -439,7 +439,7 @@ DEST_ABS_PATH:
 			for i, node := range nodes {
 				if i == 0 {
 					// nodes[0].sourceStateEntry should always be nil because it
-					// refers to the destination directory, which is not manged.
+					// refers to the destination directory, which is not managed.
 					// chezmoi manages the destination directory's contents, not
 					// the destination directory itself. For example, chezmoi
 					// does not set the name or permissions of the user's home
