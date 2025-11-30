@@ -257,9 +257,14 @@ release:
     name_template: chezmoi-windows-amd64.exe
 
 sboms:
-  - cmd: ../bin/syft
-    args: ["$artifact", "--output", "spdx-json=$document", "--enrich", "all"]
-    disable: false
+- cmd: ../bin/syft
+  args:
+  - $artifact
+  - --output
+  - spdx-json=$document
+  - --enrich
+  - all
+  disable: false
 
 scoops:
 - repository:
@@ -276,10 +281,11 @@ scoops:
 signs:
 - cmd: cosign
   stdin: '{{ .Env.COSIGN_PWD }}'
+  signature: ${artifact}.sigstore.json
   args:
   - sign-blob
   - --key=assets/cosign/cosign.key
-  - --output-signature=${signature}
+  - --bundle=${signature}
   - --yes
   - ${artifact}
   artifacts: checksum
