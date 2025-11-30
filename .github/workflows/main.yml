@@ -33,6 +33,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - id: filter
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
       with:
@@ -62,6 +64,7 @@ jobs:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         fetch-depth: 1
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -76,6 +79,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962 # v1.27.0
       with:
         locale: US
@@ -87,6 +92,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: |
@@ -94,6 +101,7 @@ jobs:
         key: alpine-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           alpine-go-
+        lookup-only: true
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -108,6 +116,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: |
@@ -115,6 +125,7 @@ jobs:
         key: archlinux-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           archlinux-go-
+        lookup-only: true
     - name: test
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -130,6 +141,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -166,6 +179,7 @@ jobs:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         fetch-depth: 0
+        persist-credentials: false
     - uses: ./.github/actions/free-disk-space
     - uses: ./.github/actions/setup-go
       with:
@@ -237,6 +251,7 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         fetch-depth: 0
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
@@ -276,13 +291,15 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244 # v7.1.4
       with:
-        enable-cache: true
+        enable-cache: false
         version: ${{ env.UV_VERSION }}
     - name: install-website-dependencies
       run: |
@@ -305,6 +322,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -336,6 +355,7 @@ jobs:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         fetch-depth: 0
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -393,6 +413,8 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      with:
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         go-version: ${{ env.GO_VERSION }}
@@ -437,6 +459,7 @@ jobs:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         fetch-depth: 0
+        persist-credentials: false
     - uses: ./.github/actions/free-disk-space
     - uses: ./.github/actions/setup-go
       with:
@@ -469,13 +492,14 @@ jobs:
     - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         fetch-depth: 0
+        persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
     - uses: astral-sh/setup-uv@1e862dfacbd1d6d858c55d9b792c756523627244 # v7.1.4
       with:
-        enable-cache: true
+        enable-cache: false
         version: ${{ env.UV_VERSION }}
     - name: prepare-chezmoi.io
       run: |
