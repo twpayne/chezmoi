@@ -15,15 +15,15 @@ concurrency:
   cancel-in-progress: true
 env:
   AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
-  CHOCOLATEY_VERSION: 2.5.1 # https://github.com/chocolatey/choco/releases
-  COSIGN_VERSION: 2.6.1 # https://github.com/sigstore/cosign/releases https://github.com/goreleaser/goreleaser/issues/6195
-  GO_VERSION: 1.25.4 # https://go.dev/doc/devel/release
+  CHOCOLATEY_VERSION: 2.6.0 # https://github.com/chocolatey/choco/releases
+  COSIGN_VERSION: 3.0.2 # https://github.com/sigstore/cosign/releases
+  GO_VERSION: 1.25.5 # https://go.dev/doc/devel/release
   GOLANGCI_LINT_VERSION: 2.6.2 # https://github.com/golangci/golangci-lint/releases
-  GORELEASER_VERSION: 2.12.7 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.13.0 # https://github.com/goreleaser/goreleaser/releases
   PYTHON_VERSION: '3.10' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
   SYFT_VERSION: 1.38.0 # https://github.com/anchore/syft/releases
-  UV_VERSION: 0.9.13 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.9.14 # https://github.com/astral-sh/uv/releases
 jobs:
   changes:
     runs-on: ubuntu-22.04
