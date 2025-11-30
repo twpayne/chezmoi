@@ -34,7 +34,6 @@ func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return err
 	}
 
-TARGET_REL_PATH:
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 
@@ -45,15 +44,21 @@ TARGET_REL_PATH:
 			// OK, keep going.
 		case chezmoi.SourceStateOriginRemove:
 			c.errorf("warning: %s: cannot forget entry from remove\n", targetRelPath)
-			continue TARGET_REL_PATH
+			continue
 		case *chezmoi.External:
 			c.errorf("warning: %s: cannot forget entry from external %s\n", targetRelPath, sourceStateOrigin.OriginString())
-			continue TARGET_REL_PATH
+			continue
 		default:
 			panic(fmt.Sprintf("%s: %T: unknown source state origin type", targetRelPath, sourceStateOrigin))
 		}
 
-		sourceAbsPath := c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
+		relPath := sourceStateEntry.SourceRelPath().RelPath()
+		if relPath.IsEmpty() {
+			c.errorf("warning: %s: ignoring implicitly managed file\n", targetRelPath)
+			continue
+		}
+
+		sourceAbsPath := c.SourceDirAbsPath.Join(relPath)
 		if !c.force {
 			choice, err := c.promptChoice(fmt.Sprintf("Remove %s", sourceAbsPath), choicesYesNoAllQuit)
 			if err != nil {

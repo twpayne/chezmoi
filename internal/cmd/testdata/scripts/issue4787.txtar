@@ -1,0 +1,11 @@
+# test that chezmoi forget on a file in an exact_ directory does not delete the source directory
+exec chezmoi forget --debug --force $HOME${/}.dir${/}file2
+stderr 'warning: .dir/file2: ignoring implicitly managed file'
+exists $CHEZMOISOURCEDIR
+
+-- home/user/.dir/file1 --
+# contents of .dir/file1
+-- home/user/.dir/file2 --
+# contents of .dir/file2
+-- home/user/.local/share/chezmoi/exact_dot_dir/file1 --
+# contents of .dir/file1
