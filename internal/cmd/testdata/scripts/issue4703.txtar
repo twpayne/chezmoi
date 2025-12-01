@@ -1,0 +1,10 @@
+# test that chezmoi init --dry-run does not overwrite the config file
+exec chezmoi init --dry-run
+cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
+
+-- golden/chezmoi.toml --
+# current contents of .config/chezmoi/chezmoi.toml
+-- home/user/.config/chezmoi/chezmoi.toml --
+# current contents of .config/chezmoi/chezmoi.toml
+-- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+# new contents of .config/chezmoi/chezmoi.toml

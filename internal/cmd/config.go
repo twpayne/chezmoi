@@ -883,10 +883,10 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 			configPath = c.customConfigFileAbsPath
 		}
 	}
-	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), fs.ModePerm); err != nil {
+	if err := chezmoi.MkdirAll(c.destSystem, configPath.Dir(), fs.ModePerm); err != nil {
 		return err
 	}
-	if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
+	if err := c.destSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
 		return err
 	}
 
