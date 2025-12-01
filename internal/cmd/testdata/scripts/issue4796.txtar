@@ -1,0 +1,3 @@
+# test that chezmoi execute-template --override-data does not panic when there is no template data
+exec chezmoi execute-template --override-data '{"foo":"baz"}' '{{ .foo }}'
+stdout baz
