@@ -863,14 +863,14 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 		return c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey)
 	}
 
-	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents, cmd)
+	configFileContents, err := c.createConfigFileContents(configTemplate.targetRelPath, configTemplate.contents, cmd)
 	if err != nil {
 		return err
 	}
 
 	// Validate the config file.
 	var configFile ConfigFile
-	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &configFile); err != nil {
+	if err := c.decodeConfigContents(configTemplate.format, configFileContents, &configFile); err != nil {
 		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
 	}
 
@@ -901,7 +901,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	}
 
 	// Reload the config.
-	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &c.ConfigFile); err != nil {
+	if err := c.decodeConfigContents(configTemplate.format, configFileContents, &c.ConfigFile); err != nil {
 		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
 	}
 
@@ -912,9 +912,9 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	return c.setEnvironmentVariables()
 }
 
-// createConfigFile creates a config file using a template and returns its
-// contents.
-func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte, cmd *cobra.Command) ([]byte, error) {
+// createConfigFileContents creates a config file using a template and returns
+// its contents.
+func (c *Config) createConfigFileContents(filename chezmoi.RelPath, data []byte, cmd *cobra.Command) ([]byte, error) {
 	// Clone funcMap and restore it after creating the config.
 	// This ensures that the init template functions
 	// are removed before "normal" template parsing.
@@ -1011,10 +1011,10 @@ CONFIG_DIR:
 	return configHomeAbsPath.JoinString("chezmoi", "chezmoi.toml"), nil
 }
 
-// decodeConfigBytes decodes data in format into configFile.
-func (c *Config) decodeConfigBytes(format chezmoi.Format, data []byte, configFile *ConfigFile) error {
+// decodeConfigContents decodes data in format into configFile.
+func (c *Config) decodeConfigContents(format chezmoi.Format, contents []byte, configFile *ConfigFile) error {
 	var configMap map[string]any
-	if err := format.Unmarshal(data, &configMap); err != nil {
+	if err := format.Unmarshal(contents, &configMap); err != nil {
 		return err
 	}
 	return c.decodeConfigMap(configMap, configFile)
@@ -1046,7 +1046,7 @@ func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile 
 		return fmt.Errorf("%s: %w", configFileAbsPath, err)
 	}
 
-	if err := c.decodeConfigBytes(format, configFileContents, configFile); err != nil {
+	if err := c.decodeConfigContents(format, configFileContents, configFile); err != nil {
 		return fmt.Errorf("%s: %w", configFileAbsPath, err)
 	}
 
