@@ -54,5 +54,5 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.marshal(cmp.Or(c.dump.format.String(), c.Format.String()), dumpSystem.Data)
+	return c.marshal(cmp.Or(c.dump.format.String(), c.Format.String()), dumpSystem.Data())
 }

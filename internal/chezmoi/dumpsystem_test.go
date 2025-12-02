@@ -76,6 +76,6 @@ func TestDumpSystem(t *testing.T) {
 				Linkname: ".dir/subdir/file",
 			},
 		}
-		assert.Equal(t, expectedData, dumpSystem.Data)
+		assert.Equal(t, expectedData, dumpSystem.Data())
 	})
 }
