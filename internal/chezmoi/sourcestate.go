@@ -795,7 +795,7 @@ func (s *SourceState) Encryption() Encryption {
 
 // ExecuteTemplateDataOptions are options to SourceState.ExecuteTemplateData.
 type ExecuteTemplateDataOptions struct {
-	Name            string
+	NameRelPath     RelPath
 	Destination     string
 	Data            []byte
 	TemplateOptions TemplateOptions
@@ -808,7 +808,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 	templateOptions.Funcs = s.templateFuncs
 	templateOptions.Options = slices.Clone(s.templateOptions)
 
-	tmpl, err := ParseTemplate(options.Name, options.Data, templateOptions)
+	tmpl, err := ParseTemplate(options.NameRelPath.String(), options.Data, templateOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -823,7 +823,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 	// Set .chezmoi.sourceFile to the name of the template.
 	templateData := s.TemplateData()
 	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
-		chezmoiTemplateData["sourceFile"] = options.Name
+		chezmoiTemplateData["sourceFile"] = options.NameRelPath.String()
 		chezmoiTemplateData["targetFile"] = options.Destination
 	}
 	RecursiveMerge(templateData, options.ExtraData)
@@ -1568,8 +1568,8 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 		return nil, err
 	}
 	return s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-		Name: templateAbsPath.String(),
-		Data: data,
+		NameRelPath: templateAbsPath.MustTrimDirPrefix(s.sourceDirAbsPath),
+		Data:        data,
 	})
 }
 
@@ -1837,7 +1837,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 				}
 				if fileAttr.Template {
 					contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-						Name:        sourceRelPath.String(),
+						NameRelPath: sourceRelPath.RelPath(),
 						Data:        contents,
 						Destination: destAbsPath.String(),
 					})
@@ -1894,7 +1894,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name:        sourceRelPath.String(),
+					NameRelPath: sourceRelPath.RelPath(),
 					Data:        contents,
 					Destination: destAbsPath.String(),
 				})
@@ -1944,7 +1944,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name:        sourceRelPath.String(),
+					NameRelPath: sourceRelPath.RelPath(),
 					Data:        modifierContents,
 					Destination: destAbsPath.String(),
 				})
@@ -1977,7 +1977,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				templateData := s.TemplateData()
 				if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 					chezmoiTemplateData["stdin"] = string(currentContents)
-					chezmoiTemplateData["sourceFile"] = sourceFile
+					chezmoiTemplateData["sourceFile"] = sourceRelPath.RelPath()
 				}
 
 				return tmpl.Execute(templateData)
@@ -2055,7 +2055,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name:        sourceRelPath.String(),
+					NameRelPath: sourceRelPath.RelPath(),
 					Data:        contents,
 					Destination: destAbsPath.String(),
 				})
@@ -2094,7 +2094,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 			}
 			if fileAttr.Template {
 				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					Name:        sourceRelPath.String(),
+					NameRelPath: sourceRelPath.RelPath(),
 					Data:        linknameBytes,
 					Destination: destAbsPath.String(),
 				})

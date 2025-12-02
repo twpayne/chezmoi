@@ -266,7 +266,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		output, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
-			Name:            "stdin",
+			NameRelPath:     chezmoi.NewRelPath("stdin"),
 			Data:            data,
 			TemplateOptions: c.executeTemplate.templateOptions,
 		})
@@ -279,7 +279,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	output := strings.Builder{}
 	for i, arg := range args {
 		var data []byte
-		var name string
+		var nameRelPath chezmoi.RelPath
 		if c.executeTemplate.file {
 			// If the argument filename is in the source directory, then
 			// specify the template sourcePath as relative to sourceDir, just
@@ -293,9 +293,9 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				return err
 			}
 			if relPath, err := path.TrimDirPrefix(sourceDir); err == nil {
-				name = relPath.String()
+				nameRelPath = relPath
 			} else {
-				name = path.String()
+				nameRelPath = chezmoi.NewRelPath(path.String())
 			}
 
 			data, err = os.ReadFile(arg)
@@ -303,11 +303,11 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				return err
 			}
 		} else {
-			name = "arg" + strconv.Itoa(i+1)
+			nameRelPath = chezmoi.NewRelPath("arg" + strconv.Itoa(i+1))
 			data = []byte(arg)
 		}
 		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
-			Name:            name,
+			NameRelPath:     nameRelPath,
 			Data:            data,
 			TemplateOptions: c.executeTemplate.templateOptions,
 		})
