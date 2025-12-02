@@ -9,8 +9,8 @@ import (
 
 // A TarWriterSystem is a System that writes to a tar archive.
 type TarWriterSystem struct {
-	EmptySystemMixin
-	NoUpdateSystemMixin
+	emptySystemMixin
+	noUpdateSystemMixin
 
 	tarWriter      *tar.Writer
 	headerTemplate tar.Header
