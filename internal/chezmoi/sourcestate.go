@@ -796,7 +796,7 @@ func (s *SourceState) Encryption() Encryption {
 // ExecuteTemplateDataOptions are options to SourceState.ExecuteTemplateData.
 type ExecuteTemplateDataOptions struct {
 	NameRelPath     RelPath
-	Destination     string
+	DestAbsPath     AbsPath
 	Data            []byte
 	TemplateOptions TemplateOptions
 	ExtraData       map[string]any
@@ -824,7 +824,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 	templateData := s.TemplateData()
 	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 		chezmoiTemplateData["sourceFile"] = options.NameRelPath.String()
-		chezmoiTemplateData["targetFile"] = options.Destination
+		chezmoiTemplateData["targetFile"] = options.DestAbsPath.String()
 	}
 	RecursiveMerge(templateData, options.ExtraData)
 
@@ -1839,7 +1839,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 					contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
 						NameRelPath: sourceRelPath.RelPath(),
 						Data:        contents,
-						Destination: destAbsPath.String(),
+						DestAbsPath: destAbsPath,
 					})
 					if err != nil {
 						return nil, err
@@ -1896,7 +1896,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
 					NameRelPath: sourceRelPath.RelPath(),
 					Data:        contents,
-					Destination: destAbsPath.String(),
+					DestAbsPath: destAbsPath,
 				})
 				if err != nil {
 					return nil, err
@@ -1946,7 +1946,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
 					NameRelPath: sourceRelPath.RelPath(),
 					Data:        modifierContents,
-					Destination: destAbsPath.String(),
+					DestAbsPath: destAbsPath,
 				})
 				if err != nil {
 					return nil, err
@@ -2057,7 +2057,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
 					NameRelPath: sourceRelPath.RelPath(),
 					Data:        contents,
-					Destination: destAbsPath.String(),
+					DestAbsPath: destAbsPath,
 				})
 				if err != nil {
 					return nil, err
@@ -2096,7 +2096,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
 					NameRelPath: sourceRelPath.RelPath(),
 					Data:        linknameBytes,
-					Destination: destAbsPath.String(),
+					DestAbsPath: destAbsPath,
 				})
 				if err != nil {
 					return "", err
