@@ -102,8 +102,8 @@ func (c *Config) runGenerateInstallShCmd(cmd *cobra.Command, args []string) erro
 
 func (c *Config) runGenerateInstallInitShellShCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	script, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
-		Name: "install-init-shell.sh.tmpl",
-		Data: templates.InstallInitShellShTmpl,
+		NameRelPath: chezmoi.NewRelPath("install-init-shell.sh.tmpl"),
+		Data:        templates.InstallInitShellShTmpl,
 		ExtraData: map[string]any{
 			"args":           args,
 			"interactive":    c.generate.installInitShellSh.interactive,

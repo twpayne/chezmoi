@@ -2741,8 +2741,8 @@ func (c *Config) runInstallInitShellSh(
 	options runInstallInitShellOptions,
 ) error {
 	script, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
-		Name: "install-init-shell.sh.tmpl",
-		Data: templates.InstallInitShellShTmpl,
+		NameRelPath: chezmoi.NewRelPath("install-init-shell.sh.tmpl"),
+		Data:        templates.InstallInitShellShTmpl,
 		ExtraData: map[string]any{
 			"args":           options.args,
 			"interactive":    options.interactive,

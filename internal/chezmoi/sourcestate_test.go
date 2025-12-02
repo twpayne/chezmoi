@@ -872,8 +872,8 @@ func TestSourceStateExecuteTemplateData(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			s := NewSourceState()
 			actual, err := s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-				Name: tc.name,
-				Data: []byte(tc.dataStr),
+				NameRelPath: NewRelPath(tc.name),
+				Data:        []byte(tc.dataStr),
 			})
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expectedStr, string(actual))
