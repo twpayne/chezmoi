@@ -24,7 +24,7 @@ type DumpSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
 
-	Data map[string]any
+	data map[string]any
 }
 
 // A DumpSystemCommandData contains data about a command.
@@ -68,8 +68,13 @@ type DumpSystemSymlinkData struct {
 // NewDumpSystem returns a new DumpSystem that accumulates data.
 func NewDumpSystem() *DumpSystem {
 	return &DumpSystem{
-		Data: make(map[string]any),
+		data: make(map[string]any),
 	}
+}
+
+// Data returns s's data.
+func (s *DumpSystem) Data() map[string]any {
+	return s.data
 }
 
 // Mkdir implements System.Mkdir.
@@ -135,9 +140,9 @@ func (s *DumpSystem) WriteSymlink(oldName string, newName AbsPath) error {
 }
 
 func (s *DumpSystem) setData(key string, value any) error {
-	if _, ok := s.Data[key]; ok {
+	if _, ok := s.data[key]; ok {
 		return fs.ErrExist
 	}
-	s.Data[key] = value
+	s.data[key] = value
 	return nil
 }
