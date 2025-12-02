@@ -8,7 +8,7 @@ import (
 
 // A ReadOnlySystem is a system that may only be read from.
 type ReadOnlySystem struct {
-	NoUpdateSystemMixin
+	noUpdateSystemMixin
 
 	system System
 }
