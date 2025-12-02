@@ -230,15 +230,15 @@ func (s *GitDiffSystem) Rename(oldPath, newPath AbsPath) error {
 		if s.reverse {
 			fromPath, toPath = toPath, fromPath
 		}
-		if err := s.unifiedEncoder.Encode(&GitDiffPatch{
+		if err := s.unifiedEncoder.Encode(&gitDiffPatch{
 			filePatches: []diff.FilePatch{
-				&GitDiffFilePatch{
-					from: &GitDiffFile{
+				&gitDiffFilePatch{
+					from: &gitDiffFile{
 						fileMode: fileMode,
 						relPath:  fromPath,
 						hash:     hash,
 					},
-					to: &GitDiffFile{
+					to: &gitDiffFile{
 						fileMode: fileMode,
 						relPath:  toPath,
 						hash:     hash,
