@@ -15,6 +15,7 @@ import (
 
 type reAddCmdConfig struct {
 	filter    *chezmoi.EntryTypeFilter
+	reEncrypt bool
 	recursive bool
 }
 
@@ -54,6 +55,7 @@ func (c *Config) newReAddCmd() *cobra.Command {
 
 	reAddCmd.Flags().VarP(c.reAdd.filter.Exclude, "exclude", "x", "Exclude entry types")
 	reAddCmd.Flags().VarP(c.reAdd.filter.Include, "include", "i", "Include entry types")
+	reAddCmd.Flags().BoolVar(&c.reAdd.reEncrypt, "re-encrypt", c.reAdd.reEncrypt, "Re-encrypt encrypted files")
 	reAddCmd.Flags().BoolVarP(&c.reAdd.recursive, "recursive", "r", c.reAdd.recursive, "Recurse into subdirectories")
 
 	return reAddCmd
@@ -128,15 +130,17 @@ TARGET_REL_PATH:
 		if err != nil {
 			return err
 		}
-		if bytes.Equal(actualContents, targetContents) {
-			// On Windows, ignore permission changes as they are not preserved
-			// by the filesystem. On other systems, if there are no permission
-			// changes, continue.
-			//
-			// See https://github.com/twpayne/chezmoi/issues/3891.
-			if runtime.GOOS == "windows" || actualStateFile.Perm() == targetStateFile.Perm(c.Umask) {
-				continue
-			}
+
+		bytesEqual := bytes.Equal(actualContents, targetContents)
+		// On Windows, ignore permission changes as they are not preserved
+		// by the filesystem. On other systems, if there are no permission
+		// changes, continue.
+		//
+		// See https://github.com/twpayne/chezmoi/issues/3891.
+		permsEqual := runtime.GOOS == "windows" || actualStateFile.Perm() == targetStateFile.Perm(c.Umask)
+		reEncrypt := sourceStateFile.Attr().Encrypted && c.reAdd.reEncrypt
+		if bytesEqual && permsEqual && !reEncrypt {
+			continue
 		}
 
 		if c.Interactive {

@@ -696,6 +696,7 @@ var helps = map[string]*help{
 		longFlags: chezmoiset.New(
 			"exclude",
 			"include",
+			"re-encrypt",
 			"recursive",
 		),
 		shortFlags: chezmoiset.New(

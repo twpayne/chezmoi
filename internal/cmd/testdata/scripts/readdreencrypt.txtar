@@ -1,0 +1,17 @@
+mkageconfig
+mkdir golden
+
+exec chezmoi add --encrypt $HOME${/}.file
+exists $CHEZMOISOURCEDIR/encrypted_dot_file.age
+cp $CHEZMOISOURCEDIR/encrypted_dot_file.age golden
+
+# test that chezmoi re-add does not re-add unchanged encrypted files
+exec chezmoi re-add
+cmp $CHEZMOISOURCEDIR/encrypted_dot_file.age golden/encrypted_dot_file.age
+
+# test that chezmoi re-add --re-encrypt does re-encrypt unchanged encrypted files
+exec chezmoi re-add --force --re-encrypt
+! cmp $CHEZMOISOURCEDIR/encrypted_dot_file.age golden/encrypted_dot_file.age
+
+-- home/user/.file --
+# contents of .file

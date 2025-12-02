@@ -17,6 +17,10 @@ more *target*s are given then only those targets are re-added.
 
 --8<-- "common-flags/include.md"
 
+### `--re-encrypt`
+
+Re-encrypt encrypted files.
+
 ### `-r`, `--recursive`
 
 --8<-- "common-flags/recursive.md:default-true"
