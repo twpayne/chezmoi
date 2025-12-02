@@ -18,49 +18,49 @@ var gitDiffOperation = [...]diff.Operation{
 	znkrdiff.Insert: diff.Add,
 }
 
-// A GitDiffChunk implements the
+// A gitDiffChunk implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Chunk interface.
-type GitDiffChunk struct {
+type gitDiffChunk struct {
 	content   string
 	operation diff.Operation
 }
 
-func (c *GitDiffChunk) Content() string      { return c.content }
-func (c *GitDiffChunk) Type() diff.Operation { return c.operation }
+func (c *gitDiffChunk) Content() string      { return c.content }
+func (c *gitDiffChunk) Type() diff.Operation { return c.operation }
 
-// A GitDiffFile implements the
+// A gitDiffFile implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.File interface.
-type GitDiffFile struct {
+type gitDiffFile struct {
 	hash     plumbing.Hash
 	fileMode filemode.FileMode
 	relPath  RelPath
 }
 
-func (f *GitDiffFile) Hash() plumbing.Hash     { return f.hash }
-func (f *GitDiffFile) Mode() filemode.FileMode { return f.fileMode }
-func (f *GitDiffFile) Path() string            { return f.relPath.String() }
+func (f *gitDiffFile) Hash() plumbing.Hash     { return f.hash }
+func (f *gitDiffFile) Mode() filemode.FileMode { return f.fileMode }
+func (f *gitDiffFile) Path() string            { return f.relPath.String() }
 
-// A GitDiffFilePatch implements the
+// A gitDiffFilePatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.FilePatch interface.
-type GitDiffFilePatch struct {
+type gitDiffFilePatch struct {
 	binary   bool
 	from, to diff.File
 	chunks   []diff.Chunk
 }
 
-func (fp *GitDiffFilePatch) IsBinary() bool              { return fp.binary }
-func (fp *GitDiffFilePatch) Files() (from, to diff.File) { return fp.from, fp.to }
-func (fp *GitDiffFilePatch) Chunks() []diff.Chunk        { return fp.chunks }
+func (fp *gitDiffFilePatch) IsBinary() bool              { return fp.binary }
+func (fp *gitDiffFilePatch) Files() (from, to diff.File) { return fp.from, fp.to }
+func (fp *gitDiffFilePatch) Chunks() []diff.Chunk        { return fp.chunks }
 
-// A GitDiffPatch implements the
+// A gitDiffPatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.Patch interface.
-type GitDiffPatch struct {
+type gitDiffPatch struct {
 	filePatches []diff.FilePatch
 	message     string
 }
 
-func (p *GitDiffPatch) FilePatches() []diff.FilePatch { return p.filePatches }
-func (p *GitDiffPatch) Message() string               { return p.message }
+func (p *gitDiffPatch) FilePatches() []diff.FilePatch { return p.filePatches }
+func (p *gitDiffPatch) Message() string               { return p.message }
 
 // DiffPatch returns a github.com/go-git/go-git/plumbing/format/diff.Patch for
 // path from the given data and mode to the given data and mode.
@@ -73,7 +73,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 		if err != nil {
 			return nil, err
 		}
-		from = &GitDiffFile{
+		from = &gitDiffFile{
 			fileMode: fromFileMode,
 			relPath:  path,
 			hash:     plumbing.ComputeHash(plumbing.BlobObject, fromData),
@@ -86,7 +86,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 		if err != nil {
 			return nil, err
 		}
-		to = &GitDiffFile{
+		to = &gitDiffFile{
 			fileMode: toFileMode,
 			relPath:  path,
 			hash:     plumbing.ComputeHash(plumbing.BlobObject, toData),
@@ -98,9 +98,9 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 		chunks = diffChunks(string(fromData), string(toData))
 	}
 
-	return &GitDiffPatch{
+	return &gitDiffPatch{
 		filePatches: []diff.FilePatch{
-			&GitDiffFilePatch{
+			&gitDiffFilePatch{
 				binary: isBinary,
 				from:   from,
 				to:     to,
@@ -128,7 +128,7 @@ func diffChunks(from, to string) []diff.Chunk {
 	for _, edit := range edits {
 		if edit.Op != lastOp {
 			if content := sb.String(); content != "" {
-				chunks = append(chunks, &GitDiffChunk{
+				chunks = append(chunks, &gitDiffChunk{
 					content:   content,
 					operation: gitDiffOperation[lastOp],
 				})
@@ -139,7 +139,7 @@ func diffChunks(from, to string) []diff.Chunk {
 		sb.WriteString(edit.Line)
 	}
 	if content := sb.String(); content != "" {
-		chunks = append(chunks, &GitDiffChunk{
+		chunks = append(chunks, &gitDiffChunk{
 			content:   content,
 			operation: gitDiffOperation[lastOp],
 		})

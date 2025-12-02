@@ -6,8 +6,8 @@ import (
 
 var (
 	_ System         = &GitDiffSystem{}
-	_ diff.Chunk     = &GitDiffChunk{}
-	_ diff.File      = &GitDiffFile{}
-	_ diff.FilePatch = &GitDiffFilePatch{}
-	_ diff.Patch     = &GitDiffPatch{}
+	_ diff.Chunk     = &gitDiffChunk{}
+	_ diff.File      = &gitDiffFile{}
+	_ diff.FilePatch = &gitDiffFilePatch{}
+	_ diff.Patch     = &gitDiffPatch{}
 )
