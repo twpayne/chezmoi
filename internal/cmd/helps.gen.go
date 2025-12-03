@@ -34,6 +34,7 @@ var helps = map[string]*help{
 			"follow",
 			"force",
 			"include",
+			"new",
 			"prompt",
 			"quiet",
 			"recursive",

@@ -256,6 +256,38 @@ func TestAddCmd(t *testing.T) {
 				),
 			},
 		},
+		{
+			name: "new",
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".local/share/chezmoi": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
+				},
+			},
+			args: []string{"--new", "~/.file"},
+			tests: []any{
+				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_file",
+					vfst.TestModeIsRegular(),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
+					vfst.TestContents(nil),
+				),
+			},
+		},
+		{
+			name: "new_--recursive=false",
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".local/share/chezmoi": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
+				},
+			},
+			args: []string{"--new", "--recursive=false", "~/.file"},
+			tests: []any{
+				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_file",
+					vfst.TestModeIsRegular(),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
+					vfst.TestContents(nil),
+				),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.SkipUnlessGOOS(t, tc.name)

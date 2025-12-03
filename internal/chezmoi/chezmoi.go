@@ -258,6 +258,14 @@ func eagerNoErr[T any](value T) func() (T, error) {
 	}
 }
 
+// eagerZeroNoErr returns a function that returns a zero value and no error.
+func eagerZeroNoErr[T any]() func() (T, error) {
+	var zero T
+	return func() (T, error) {
+		return zero, nil
+	}
+}
+
 // etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
 func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	contents, err := fileSystem.ReadFile("/etc/hostname")
