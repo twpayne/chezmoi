@@ -88,10 +88,10 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 	}
 
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, addArgs, destAbsPathInfosOptions{
-		follow:         c.Add.follow,
-		ignoreNotExist: true,
-		onIgnoreFunc:   c.defaultOnIgnoreFunc,
-		recursive:      c.Add.recursive,
+		follow:       c.Add.follow,
+		onIgnoreFunc: c.defaultOnIgnoreFunc,
+		onNotExist:   onNotExistIgnore,
+		recursive:    c.Add.recursive,
 	})
 	if err != nil {
 		return err

@@ -51,6 +51,10 @@ Set the `exact` attribute on added directories.
 If the last part of a target is a symlink, add the target of the symlink
 instead of the symlink itself.
 
+### `--new`
+
+Create a new file if the target does not exist.
+
 ### `-p`, `--prompt`
 
 Interactively prompt before adding each file.

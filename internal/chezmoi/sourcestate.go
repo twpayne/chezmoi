@@ -369,8 +369,14 @@ func (s *SourceState) Add(
 	destAbsPaths := slices.Sorted(maps.Keys(destAbsPathInfos))
 	n := 0
 	for _, destAbsPath := range destAbsPaths {
-		destAbsPathInfo := destAbsPathInfos[destAbsPath]
-		if !options.Filter.IncludeFileInfo(destAbsPathInfo) {
+		switch destAbsPathInfo := destAbsPathInfos[destAbsPath]; {
+		case destAbsPathInfo == nil:
+			// If the destination does not exist then create a new, empty file,
+			// unless files are excluded.
+			if !options.Filter.IncludeEntryTypeBits(EntryTypeFiles) {
+				continue
+			}
+		case !options.Filter.IncludeFileInfo(destAbsPathInfo):
 			continue
 		}
 
@@ -469,19 +475,49 @@ DEST_ABS_PATH:
 		nonEmptyDirs.Add(parentSourceRelPath)
 
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
-		actualStateEntry, err := NewActualStateEntry(destSystem, destAbsPath, destAbsPathInfo, nil)
-		if err != nil {
-			return err
-		}
-		newSourceStateEntry, err := s.sourceStateEntry(actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options)
-		if err != nil {
-			return err
-		}
-		if newSourceStateEntry == nil {
-			continue
+		var actualStateEntry ActualStateEntry
+		var newSourceStateEntry SourceStateEntry
+		if destAbsPathInfo == nil {
+			// If the destination does not exist then create a new, empty file.
+			_, relPath := destAbsPath.Split()
+			actualStateEntry = &ActualStateAbsent{
+				absPath: destAbsPath,
+			}
+			fileAttr := FileAttr{
+				TargetName: relPath.String(),
+				Type:       SourceFileTypeFile,
+				Encrypted:  options.Encrypt,
+				Empty:      true,
+				Template:   options.Template,
+			}
+			sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
+			newSourceStateEntry = &SourceStateFile{
+				attr:          fileAttr,
+				origin:        actualStateEntry,
+				sourceRelPath: sourceRelPath,
+				targetStateEntry: &TargetStateFile{
+					contentsFunc:       eagerZeroNoErr[[]byte](),
+					contentsSHA256Func: eagerNoErr(sha256.Sum256(nil)),
+					empty:              true,
+					perm:               0o666 &^ s.umask,
+				},
+			}
+		} else {
+			var err error
+			actualStateEntry, err = NewActualStateEntry(destSystem, destAbsPath, destAbsPathInfo, nil)
+			if err != nil {
+				return err
+			}
+			newSourceStateEntry, err = s.sourceStateEntry(actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options)
+			if err != nil {
+				return err
+			}
+			if newSourceStateEntry == nil {
+				continue
+			}
 		}
 
-		if options.PreAddFunc != nil {
+		if options.PreAddFunc != nil && destAbsPathInfo != nil {
 			switch err := options.PreAddFunc(targetRelPath, destAbsPathInfo); {
 			case errors.Is(err, fs.SkipDir):
 				continue DEST_ABS_PATH

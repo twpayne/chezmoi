@@ -1,0 +1,7 @@
+# test that chezmoi add --new creates a new file
+exec chezmoi add --new $HOME/.file1
+exists $CHEZMOISOURCEDIR/empty_dot_file1
+
+# test that chezmoi add --new --recursive=false creates a new file
+exec chezmoi add --new --recursive=false $HOME/.file2
+exists $CHEZMOISOURCEDIR/empty_dot_file2

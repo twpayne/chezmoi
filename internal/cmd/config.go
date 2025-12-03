@@ -1217,11 +1217,19 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 	return dataHomeAbsPath.Join(chezmoiRelPath), nil
 }
 
+type onNotExist int
+
+const (
+	onNotExistError onNotExist = iota
+	onNotExistIgnore
+	onNotExistAdd
+)
+
 type destAbsPathInfosOptions struct {
-	follow         bool
-	ignoreNotExist bool
-	onIgnoreFunc   func(chezmoi.RelPath)
-	recursive      bool
+	follow       bool
+	onIgnoreFunc func(chezmoi.RelPath)
+	onNotExist   onNotExist
+	recursive    bool
 }
 
 // destAbsPathInfos returns the os/fs.FileInfos for each destination entry in
@@ -1250,7 +1258,16 @@ func (c *Config) destAbsPathInfos(
 		if options.recursive {
 			walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 				switch {
-				case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
+				case errors.Is(err, fs.ErrNotExist):
+					switch options.onNotExist {
+					case onNotExistError:
+						return err
+					case onNotExistIgnore:
+					case onNotExistAdd:
+						if _, ok := destAbsPathInfos[destAbsPath]; !ok {
+							destAbsPathInfos[destAbsPath] = nil
+						}
+					}
 					return nil
 				case err != nil:
 					return err
@@ -1288,7 +1305,16 @@ func (c *Config) destAbsPathInfos(
 				fileInfo, err = c.destSystem.Lstat(destAbsPath)
 			}
 			switch {
-			case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
+			case errors.Is(err, fs.ErrNotExist):
+				switch options.onNotExist {
+				case onNotExistError:
+					return nil, err
+				case onNotExistIgnore:
+				case onNotExistAdd:
+					if _, ok := destAbsPathInfos[destAbsPath]; !ok {
+						destAbsPathInfos[destAbsPath] = nil
+					}
+				}
 				continue
 			case err != nil:
 				return nil, err
