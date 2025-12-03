@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -64,6 +65,10 @@ type keepassEntry struct {
 }
 
 func TestKeepassxcTemplateFuncs(t *testing.T) {
+	if runtime.GOOS == "darwin" {
+		t.Skip("test does not work on darwin")
+	}
+
 	// Find the path to keepassxc-cli command.
 	command, err := exec.LookPath("keepassxc-cli")
 	if err != nil {
