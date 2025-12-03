@@ -145,6 +145,8 @@ linters:
         disabled: true
       - name: cyclomatic
         disabled: true
+      - name: deep-exit
+        disabled: true
       - name: empty-block
         disabled: true
       - name: enforce-switch-style
