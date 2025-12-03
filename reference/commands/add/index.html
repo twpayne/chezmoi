@@ -3199,6 +3199,8 @@
       
         
       
+        
+      
     
     
       
@@ -3350,6 +3352,15 @@
   <a href="#-follow" class="md-nav__link">
     <span class="md-ellipsis">
       --follow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      --new
     </span>
   </a>
   
@@ -3913,6 +3924,28 @@
   
   <span class="md-ellipsis">
     edit-config-template
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edit-encrypted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    edit-encrypted
     
   </span>
   
@@ -9106,6 +9139,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      --new
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-p-prompt" class="md-nav__link">
     <span class="md-ellipsis">
       -p, --prompt
@@ -9282,6 +9324,8 @@ Likewise, any files added to the <code>exact</code> target directory, will be ad
 <h3 id="-follow"><code>--follow</code></h3>
 <p>If the last part of a target is a symlink, add the target of the symlink
 instead of the symlink itself.</p>
+<h3 id="-new"><code>--new</code></h3>
+<p>Create a new file if the target does not exist.</p>
 <h3 id="-p-prompt"><code>-p</code>, <code>--prompt</code></h3>
 <p>Interactively prompt before adding each file.</p>
 <h3 id="-q-quiet"><code>-q</code>, <code>--quiet</code></h3>
@@ -9344,7 +9388,7 @@ for details.</p>
 ways and its use is not recommended for nested directories without taking
 precautions.</p>
 <p>If you have not previously added any files from <code>~/.config</code> to chezmoi and
-run <code>chezmoi add --exact --recursive ~/.config/nvim</code>, chezmoi wlll consider
+run <code>chezmoi add --exact --recursive ~/.config/nvim</code>, chezmoi will consider
 all files under <code>~/.config</code> to be managed, and any file <em>not</em> in
 <code>~/.config/nvim</code> will be removed on your next <code>chezmoi apply</code>. This is
 because <code>~/.config/nvim</code> is added as:</p>

@@ -3197,6 +3197,8 @@
       
         
       
+        
+      
     
     
       
@@ -3698,6 +3700,28 @@
   
   <span class="md-ellipsis">
     edit-config-template
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/edit-encrypted/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    edit-encrypted
     
   </span>
   
@@ -8312,6 +8336,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v2.68.0" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.68.0 (2025-12-03)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v2.67.1" class="md-nav__link">
     <span class="md-ellipsis">
       2.67.1 (2025-11-26)
@@ -11037,6 +11070,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v2.68.0" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.68.0 (2025-12-03)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v2.67.1" class="md-nav__link">
     <span class="md-ellipsis">
       2.67.1 (2025-11-26)
@@ -13216,7 +13258,23 @@
 
 
 <h1 id="release-history">Release history</h1>
-<p><a href="https://github.com/twpayne/chezmoi/compare/v2.67.1...master">Upcoming changes</a></p>
+<p><a href="https://github.com/twpayne/chezmoi/compare/v2.68.0...master">Upcoming changes</a></p>
+<h2 id="v2.68.0"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.68.0">2.68.0</a> (2025-12-03)</h2>
+<p>Features</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/def70db8df1699a08401fbd198b8d14f5264d037"><code>def70db</code></a> feat: Add --new flag to add command</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/7aa7a9b016b6bbc2eb2bb8d2c40a0396193d1ba0"><code>7aa7a9b</code></a> feat: Add --re-encrypt flag to re-add command</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/cc89b3c8c6cdb26e845b86d2424692bda649b1f4"><code>cc89b3c</code></a> feat: Add edit-encrypted command</li>
+</ul>
+<p>Fixes</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/1ceb35a27110a98684b89b8b38b743a8978bee45"><code>1ceb35a</code></a> fix: Ensure that .chezmoi.sourceFile template var is always a relative path</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/7c47d0bb565f2ad5792b714124184368e11e2ab4"><code>7c47d0b</code></a> fix: Don't overwrite config file in init --dry-run</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/40a630b73f7c156273be10a013684c59ea93db68"><code>40a630b</code></a> fix: Fix panic in execute-template --override-data with no template data</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/39d2d0d2550657828b5c5ee5112b9f66b45250ff"><code>39d2d0d</code></a> fix: Fix forget command on implicitly managed files</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/70353d81d69e53d5653edfdc4d2b1776b1903db9"><code>70353d8</code></a> fix: Ignore externals in destroy command</li>
+</ul>
+<p>Full changelog: <a href="https://github.com/twpayne/chezmoi/compare/v2.67.1...v2.68.0">v2.67.1...v2.68.0</a></p>
 <h2 id="v2.67.1"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.67.1">2.67.1</a> (2025-11-26)</h2>
 <p>Features</p>
 <ul>
