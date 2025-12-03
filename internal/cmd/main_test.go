@@ -38,7 +38,7 @@ var (
 	envVarRx         = regexp.MustCompile(`\$\w+`)
 	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 
-	filterRegex string
+	filterRegex = flag.String("filter", "", "regex to filter test scripts")
 
 	//go:embed mockcommand.tmpl
 	mockcommandTmplText string
@@ -48,10 +48,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	if strings.Contains(os.Args[0], "cmd.test") {
-		flag.StringVar(&filterRegex, "filter", "", "regex to filter test scripts")
-		flag.Parse()
-	}
 	testscript.Main(m, map[string]func(){
 		"chezmoi": func() {
 			//nolint:revive
@@ -73,10 +69,10 @@ func TestScript(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to glob files: %v", err)
 	}
-	if filterRegex != "" {
-		re, err := regexp.Compile(filterRegex)
+	if *filterRegex != "" {
+		re, err := regexp.Compile(*filterRegex)
 		if err != nil {
-			t.Fatalf("invalid regex %q: %v", filterRegex, err)
+			t.Fatalf("invalid regex %q: %v", *filterRegex, err)
 		}
 		var filteredFiles []string
 		for _, f := range files {
@@ -87,7 +83,7 @@ func TestScript(t *testing.T) {
 		}
 		files = filteredFiles
 		if len(files) == 0 {
-			t.Fatalf("no test scripts match regex %q", filterRegex)
+			t.Fatalf("no test scripts match regex %q", *filterRegex)
 		}
 	}
 	testscript.Run(t, testscript.Params{
@@ -606,8 +602,8 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 				value := r.RequireEnv[key]
 				fmt.Fprintf(&builder, "    IF NOT \"%%%s%%\" == \"%s\" (\n", key, value)
 				fmt.Fprintf(&builder, "        echo.%s=%%%s%%, expected %s\n", key, key, value)
-				fmt.Fprintf(&builder, "        exit /b 1\n") //nolint:revive
-				fmt.Fprintf(&builder, "    )\n")             //nolint:revive
+				fmt.Fprint(&builder, "        exit /b 1\n")
+				fmt.Fprint(&builder, "    )\n")
 			}
 			var redirect string
 			if r.Destination == "stderr" {
@@ -636,8 +632,8 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 				value := r.RequireEnv[key]
 				fmt.Fprintf(&builder, "    if [ \"${%s}\" != \"%s\" ]; then\n", key, value)
 				fmt.Fprintf(&builder, "        echo \"%s=${%s}, expected %s\"\n", key, key, value)
-				fmt.Fprintf(&builder, "        exit 1\n") //nolint:revive
-				fmt.Fprintf(&builder, "    fi\n")         //nolint:revive
+				fmt.Fprint(&builder, "        exit 1\n")
+				fmt.Fprint(&builder, "    fi\n")
 			}
 			var redirect string
 			if r.Destination == "stderr" {
