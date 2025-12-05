@@ -2013,7 +2013,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				templateData := s.TemplateData()
 				if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 					chezmoiTemplateData["stdin"] = string(currentContents)
-					chezmoiTemplateData["sourceFile"] = sourceRelPath.RelPath()
+					chezmoiTemplateData["sourceFile"] = sourceRelPath.RelPath().String()
 				}
 
 				return tmpl.Execute(templateData)
