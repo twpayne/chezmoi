@@ -53,10 +53,10 @@ require (
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/muesli/combinator v0.3.0
 	github.com/muesli/termenv v0.16.0
-	github.com/nwaples/rardecode/v2 v2.2.1
+	github.com/nwaples/rardecode/v2 v2.2.2
 	github.com/pelletier/go-toml/v2 v2.2.4
 	github.com/rogpeppe/go-internal v1.14.1
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/tailscale/hujson v0.0.0-20250605163823-992244df8c5a
 	github.com/tobischo/gokeepasslib/v3 v3.6.1
@@ -151,7 +151,7 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.9 // indirect
 	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
-	github.com/go-git/go-billy/v5 v5.6.2 // indirect
+	github.com/go-git/go-billy/v5 v5.7.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/godbus/dbus/v5 v5.2.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.0 // indirect
