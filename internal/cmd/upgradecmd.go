@@ -146,7 +146,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	case upgradeMethodWinGetUpgrade:
-		if err := c.winGetUpgrade(); err != nil { //nolint:nolintlint,staticcheck
+		if err := c.winGetUpgrade(); err != nil { //nolint:staticcheck
 			return err
 		}
 	default:
