@@ -461,13 +461,20 @@ func newConfig(options ...configOption) (*Config, error) {
 
 	// Override sprig template functions. Delete them from the template function
 	// map first to avoid a duplicate function panic.
-	delete(c.templateFuncs, "fromJson")
-	delete(c.templateFuncs, "quote")
-	delete(c.templateFuncs, "splitList")
-	delete(c.templateFuncs, "squote")
-	delete(c.templateFuncs, "toPrettyJson")
-	delete(c.templateFuncs, "toString")
-	delete(c.templateFuncs, "toStrings")
+	for _, templateFunc := range []string{
+		"fromJson",
+		"quote",
+		"splitList",
+		"squote",
+		"toPrettyJson",
+		"toString",
+		"toStrings",
+	} {
+		if _, ok := c.templateFuncs[templateFunc]; !ok {
+			panic(templateFunc + ": deleting non-existent template function")
+		}
+		delete(c.templateFuncs, templateFunc)
+	}
 
 	// The completion template function is added in persistentPreRunRootE as
 	// it needs a *cobra.Command, which we don't yet have.
