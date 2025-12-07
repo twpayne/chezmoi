@@ -19,7 +19,7 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v5"
-	"golang.org/x/crypto/ripemd160" //nolint:nolintlint,staticcheck
+	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
 
 	"chezmoi.io/chezmoi/internal/chezmoiset"
 )

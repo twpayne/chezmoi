@@ -45,7 +45,6 @@ linters:
   - modernize
   - nilerr
   - nilnesserr
-  - nolintlint
   - nosprintfhostport
   - perfsprint
   - prealloc
@@ -98,6 +97,7 @@ linters:
   - nilnil
   - nlreturn
   - noctx
+  - nolintlint
   - nonamedreturns
   - paralleltest
   - promlinter
