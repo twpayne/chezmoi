@@ -6,6 +6,6 @@
 
 | Date | Version | Language | Title |
 | ---- | ------- | -------- | ----- |
-{{- range mustReverse .articles }}
+{{- range reverse .articles }}
 | {{ .date }} | {{ .version }} | {{ index . "lang" | default "EN" }} | [{{ .title }}]({{ .url }}) |
 {{- end }}

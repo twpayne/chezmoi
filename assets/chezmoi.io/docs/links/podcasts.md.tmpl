@@ -6,6 +6,6 @@
 
 | Date | Version | Language | Title |
 | ---- | ------- | -------- | ----- |
-{{- range mustReverse .podcasts }}
+{{- range reverse .podcasts }}
 | {{ .date }} | {{ .version }} | {{ .lang | default "EN" }} | [{{ .title }}]({{ .url }}) |
 {{- end }}

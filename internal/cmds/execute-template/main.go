@@ -16,7 +16,16 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
+	"github.com/go-sprout/sprout"
+	sproutencoding "github.com/go-sprout/sprout/registry/encoding"
+	sproutmaps "github.com/go-sprout/sprout/registry/maps"
+	sproutnumeric "github.com/go-sprout/sprout/registry/numeric"
+	sproutregexp "github.com/go-sprout/sprout/registry/regexp"
+	sproutsemver "github.com/go-sprout/sprout/registry/semver"
+	sproutslices "github.com/go-sprout/sprout/registry/slices"
+	sproutstd "github.com/go-sprout/sprout/registry/std"
+	sproutstrings "github.com/go-sprout/sprout/registry/strings"
+	sprouttime "github.com/go-sprout/sprout/registry/time"
 	"github.com/goccy/go-yaml"
 	"github.com/google/go-github/v61/github"
 	"github.com/google/renameio/v2/maybe"
@@ -107,7 +116,19 @@ func run() error {
 
 	templateName := path.Base(flag.Arg(0))
 	buffer := &bytes.Buffer{}
-	funcMap := sprig.TxtFuncMap()
+	funcMap := sprout.New(
+		sprout.WithRegistries(
+			sproutencoding.NewRegistry(),
+			sproutmaps.NewRegistry(),
+			sproutnumeric.NewRegistry(),
+			sproutregexp.NewRegistry(),
+			sproutsemver.NewRegistry(),
+			sproutslices.NewRegistry(),
+			sproutstd.NewRegistry(),
+			sproutstrings.NewRegistry(),
+			sprouttime.NewRegistry(),
+		),
+	).Build()
 	gitHubClient := newGitHubClient(context.Background())
 	funcMap["exists"] = func(name string) bool {
 		switch _, err := os.Stat(name); {

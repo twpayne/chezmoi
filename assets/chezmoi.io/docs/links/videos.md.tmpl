@@ -6,6 +6,6 @@
 
 | Date | Version | Language | Title |
 | ---- | ------- | -------- | ----- |
-{{- range mustReverse .videos }}
+{{- range reverse .videos }}
 | {{ .date }} | {{ .version }} | {{ .lang | default "EN" }} | [{{ .title }}]({{ .url }}) |
 {{- end }}
