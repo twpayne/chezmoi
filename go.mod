@@ -13,7 +13,6 @@ tool (
 	chezmoi.io/chezmoi/internal/cmds/lint-commit-messages
 	chezmoi.io/chezmoi/internal/cmds/lint-txtar
 	chezmoi.io/chezmoi/internal/cmds/lint-whitespace
-	chezmoi.io/chezmoi/internal/cmds/summarize-capslock
 	github.com/editorconfig-checker/editorconfig-checker/v3/cmd/editorconfig-checker
 	github.com/google/capslock/cmd/capslock
 	github.com/josephspurrier/goversioninfo/cmd/goversioninfo
@@ -157,7 +156,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.0 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/google/btree v1.1.3 // indirect
-	github.com/google/capslock v0.2.8 // indirect
+	github.com/google/capslock v0.3.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -225,7 +224,7 @@ require (
 	golang.org/x/mod v0.30.0 // indirect
 	golang.org/x/net v0.47.0 // indirect
 	golang.org/x/tools v0.39.0 // indirect
-	google.golang.org/protobuf v1.36.7 // indirect
+	google.golang.org/protobuf v1.36.10 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
