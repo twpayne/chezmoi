@@ -5,8 +5,6 @@ mkdir $CHEZMOISOURCEDIR/.chezmoitemplates/dot_ssh
 
 # test that chezmoi edit-encrypted works on files in the source directory
 exec chezmoi encrypt -o $CHEZMOISOURCEDIR/.chezmoitemplates/dot_ssh/config.age golden/config
-# exec chezmoi decrypt $CHEZMOISOURCEDIR/.chezmoitemplates/dot_ssh/config.age
-# cmp stdout golden/config
 exec chezmoi edit-encrypted $CHEZMOISOURCEDIR/.chezmoitemplates/dot_ssh/config.age
 exec chezmoi decrypt $CHEZMOISOURCEDIR/.chezmoitemplates/dot_ssh/config.age
 cmp stdout golden/edited-config
