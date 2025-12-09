@@ -52,6 +52,9 @@ func (c *Config) runEditEncryptedCmd(cmd *cobra.Command, args []string) error {
 		}
 		relPath := ciphertextAbsPath.MustTrimDirPrefix(c.homeDirAbsPath)
 		plaintextAbsPath := tempDirAbsPath.Join(relPath)
+		if err := chezmoi.MkdirAll(c.baseSystem, plaintextAbsPath.Dir(), 0o700); err != nil {
+			return err
+		}
 		if err := c.encryption.DecryptToFile(plaintextAbsPath, ciphertext); err != nil {
 			return err
 		}
