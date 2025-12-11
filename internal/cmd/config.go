@@ -185,6 +185,7 @@ type ConfigFile struct {
 	Git        gitCmdConfig        `json:"git"        mapstructure:"git"        yaml:"git"`
 	Merge      mergeCmdConfig      `json:"merge"      mapstructure:"merge"      yaml:"merge"`
 	Status     statusCmdConfig     `json:"status"     mapstructure:"status"     yaml:"status"`
+	Unmanaged  unmanagedCmdConfig  `json:"unmanaged"  mapstructure:"unmanaged"  yaml:"unmanaged"`
 	Update     updateCmdConfig     `json:"update"     mapstructure:"update"     yaml:"update"`
 	Verify     verifyCmdConfig     `json:"verify"     mapstructure:"verify"     yaml:"verify"`
 }
@@ -237,7 +238,6 @@ type Config struct {
 	reAdd           reAddCmdConfig
 	secret          secretCmdConfig
 	state           stateCmdConfig
-	unmanaged       unmanagedCmdConfig
 	upgrade         upgradeCmdConfig
 
 	// Common configuration.
@@ -439,9 +439,6 @@ func newConfig(options ...configOption) (*Config, error) {
 			getBucket: stateGetBucketCmdConfig{
 				format: newChoiceFlag(formatJSON, writeDataFormatValues),
 			},
-		},
-		unmanaged: unmanagedCmdConfig{
-			pathStyle: newChoiceFlag(pathStyleRelative, targetPathStyleValues),
 		},
 
 		// Configuration.
@@ -3238,6 +3235,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			PathStyle: newChoiceFlag(pathStyleRelative, targetPathStyleValues),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
+		},
+		Unmanaged: unmanagedCmdConfig{
+			pathStyle: newChoiceFlag(pathStyleRelative, targetPathStyleValues),
 		},
 		Update: updateCmdConfig{
 			Apply:             true,

@@ -137,6 +137,9 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 				Merge: mergeCmdConfig{
 					Args: []string{},
 				},
+				Unmanaged: unmanagedCmdConfig{
+					Ignore: []string{},
+				},
 				Update: updateCmdConfig{
 					Args: []string{},
 				},

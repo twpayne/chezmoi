@@ -1,0 +1,16 @@
+# test that chezmoi unmanaged ignores paths in specified in unmanaged.ignore
+exec chezmoi unmanaged
+cmp stdout golden/unmanaged
+
+-- golden/unmanaged --
+.config
+-- home/user/.config/chezmoi/chezmoi.toml --
+[unmanaged]
+    ignore = [
+        ".file",
+        ".dir/**",
+    ]
+-- home/user/.dir/file --
+# contents of .dir/file
+-- home/user/.file --
+# contents of .file

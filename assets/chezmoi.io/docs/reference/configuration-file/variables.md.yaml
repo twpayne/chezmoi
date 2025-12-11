@@ -386,6 +386,10 @@ sections:
     command:
       default: '`vault`'
       description: Vault CLI command.
+  unmanaged:
+    ignore:
+      type: '[]string'
+      description: Patterns to ignore.
   update:
     apply:
       type: bool
