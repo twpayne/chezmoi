@@ -1,8 +1,0 @@
-# test that sprig template functions work as expected
-# see https://docs.atom.codes/sprout/migration-from-sprig
-exec chezmoi execute-template '{{ b64dec "." }}'
-stdout '^illegal base64 data at input byte 0$'
-exec chezmoi execute-template '{{ dict "a" (dict "b" 2 ) | dig "a" "b" }}'
-stdout '^map\[b:2]$'
-exec chezmoi execute-template '{{ upper "hello" }}'
-stdout '^HELLO$'
