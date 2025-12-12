@@ -63,17 +63,17 @@
   "github.com/charmbracelet/bubbletea": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
-  "github.com/dsnet/compress/bzip2": [
-    "CAPABILITY_UNANALYZED"
-  ],
-  "github.com/dsnet/compress/internal/prefix": [
-    "CAPABILITY_UNANALYZED"
-  ],
   "github.com/fatih/color": [
     "CAPABILITY_FILES"
   ],
   "github.com/fsnotify/fsnotify": [
     "CAPABILITY_READ_SYSTEM_STATE"
+  ],
+  "github.com/go-sprout/sprout/registry/strings": [
+    "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/go-sprout/sprout/sprigin": [
+    "CAPABILITY_UNANALYZED"
   ],
   "github.com/go-viper/mapstructure/v2": [
     "CAPABILITY_REFLECT"
@@ -106,8 +106,7 @@
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/spf13/cobra": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
@@ -133,16 +132,14 @@
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/zricethezav/gitleaks/v8/sources": [
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_RUNTIME"
   ],
   "go.etcd.io/bbolt": [
     "CAPABILITY_SYSTEM_CALLS"
