@@ -134,10 +134,7 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 	if p == dirPrefixAbsPath {
 		return EmptyRelPath, nil
 	}
-	dirAbsPath := dirPrefixAbsPath
-	if !strings.HasSuffix(string(dirAbsPath), "/") {
-		dirAbsPath += "/"
-	}
+	dirAbsPath := dirPrefixAbsPath.WithTrailingSlash()
 	if !strings.HasPrefix(string(p), string(dirAbsPath)) {
 		return EmptyRelPath, &NotInAbsDirError{
 			pathAbsPath: p,
@@ -155,6 +152,14 @@ func (p AbsPath) TrimSuffix(suffix string) AbsPath {
 // Type implements github.com/spf13/pflag.Value.Type.
 func (p AbsPath) Type() string {
 	return "path"
+}
+
+// WithTrailingSlash returns p with a trailing slash.
+func (p AbsPath) WithTrailingSlash() AbsPath {
+	if strings.HasSuffix(string(p), "/") {
+		return p
+	}
+	return p + "/"
 }
 
 // HomeDirAbsPath returns the user's home directory as an AbsPath.
