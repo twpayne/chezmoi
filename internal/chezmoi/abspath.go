@@ -54,6 +54,16 @@ func (p AbsPath) Ext() string {
 	return path.Ext(string(p))
 }
 
+// HasDirPrefix returns if p has the given prefix.
+func (p AbsPath) HasDirPrefix(prefix AbsPath) bool {
+	pWithTrailingSlash := p.WithTrailingSlash()
+	prefixWithTrailingSlash := prefix.WithTrailingSlash()
+	if pWithTrailingSlash == prefixWithTrailingSlash {
+		return true
+	}
+	return strings.HasPrefix(string(pWithTrailingSlash), string(prefixWithTrailingSlash))
+}
+
 // Join returns a new AbsPath with relPaths appended.
 func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
 	relPathStrs := make([]string, len(relPaths)+1)

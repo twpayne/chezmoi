@@ -402,10 +402,10 @@ func (s *SourceState) Add(
 	}
 	for _, destAbsPath := range destAbsPaths {
 		for _, protectedAbsPath := range options.ProtectedAbsPaths {
-			switch {
-			case protectedAbsPath.IsEmpty():
-				// Do nothing.
-			case strings.HasPrefix(destAbsPath.String(), protectedAbsPath.String()):
+			if protectedAbsPath.IsEmpty() {
+				continue
+			}
+			if destAbsPath.HasDirPrefix(protectedAbsPath) {
 				format := "%s: cannot add chezmoi file to chezmoi (%s is protected)"
 				return fmt.Errorf(format, destAbsPath, protectedAbsPath)
 			}

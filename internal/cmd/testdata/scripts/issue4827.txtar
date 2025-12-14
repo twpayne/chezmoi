@@ -1,0 +1,5 @@
+# test that chezmoi add will add some files with the prefix chezmoi
+exec chezmoi add $HOME/.local/share/chezmoi.age
+
+-- home/user/.local/share/chezmoi.age --
+# contents of .local/share/chezmoi.age
