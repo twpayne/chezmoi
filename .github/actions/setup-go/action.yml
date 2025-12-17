@@ -30,7 +30,7 @@ runs:
         echo "GOCACHE=/home/runner/go/pkg/mod" >> $GITHUB_ENV
         echo "GOMODCACHE=/home/runner/.cache/go-build" >> $GITHUB_ENV
       fi
-  - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+  - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
     if: ${{ inputs.upload-cache == 'true' }}
     with:
       path: |
@@ -39,7 +39,7 @@ runs:
       key: ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-${{ hashFiles('**/go.sum') }}
       restore-keys: |
         ${{ inputs.cache-prefix }}-${{ runner.os }}-${{ runner.arch }}-go-${{ inputs.go-version }}-
-  - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+  - uses: actions/cache/restore@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
     if: ${{ inputs.upload-cache != 'true' }}
     with:
       path: |
