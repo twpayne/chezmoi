@@ -9,10 +9,10 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/BurntSushi/toml"
 	"github.com/goccy/go-yaml"
 	"github.com/mattn/go-runewidth"
 	"github.com/mitchellh/copystructure"
-	"github.com/pelletier/go-toml/v2"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 )
@@ -57,7 +57,7 @@ func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template
 		funcs["toToml"] = func(data any) string {
 			var builder strings.Builder
 			encoder := toml.NewEncoder(&builder)
-			encoder.SetIndentSymbol(options.FormatIndent)
+			encoder.Indent = options.FormatIndent
 			if err := encoder.Encode(data); err != nil {
 				panic(err)
 			}
