@@ -13,6 +13,7 @@ chmod 755 bin/keeper
 chmod 755 bin/lpass
 chmod 755 bin/op
 chmod 755 bin/pass
+chmod 755 bin/pass-cli
 chmod 755 bin/ph
 chmod 755 bin/pinentry
 chmod 755 bin/rbw
@@ -58,6 +59,7 @@ stdout '^ok\s+keeper-command\s+'
 stdout '^ok\s+passhole-command\s+'
 stdout '^ok\s+lastpass-command\s+'
 stdout '^ok\s+pass-command\s+'
+stdout '^ok\s+protonpass-command\s+'
 stdout '^ok\s+rbw-command\s+'
 stdout '^ok\s+vault-command\s+'
 stdout '^ok\s+secret-command\s+'
@@ -165,6 +167,10 @@ echo "=               Jason@zx2c4.com            ="
 echo "=                                          ="
 echo "=      http://www.passwordstore.org/       ="
 echo "============================================"
+-- bin/pass-cli --
+#!/bin/sh
+
+echo "Proton Pass CLI 1.2.0 (0d71fde)"
 -- bin/ph --
 #!/bin/sh
 

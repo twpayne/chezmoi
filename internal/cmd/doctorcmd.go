@@ -403,6 +403,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			minVersion:  &passholeMinVersion,
 		},
 		&binaryCheck{
+			name:        "protonpass-command",
+			binaryName:  c.ProtonPass.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`^Proton Pass CLI (\d+\.\d+\.\d+)`),
+		},
+		&binaryCheck{
 			name:        "rbw-command",
 			binaryName:  c.RBW.Command,
 			ifNotSet:    checkResultWarning,

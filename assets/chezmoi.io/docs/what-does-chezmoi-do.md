@@ -44,11 +44,11 @@ format of your choice. chezmoi can retrieve secrets from [1Password][1p], [AWS
 Secrets Manager][aws-secrets-manager], [Azure Key Vault][azure-key-vault],
 [Bitwarden][bitwarden], [Dashlane][dashlane], [Doppler][doppler],
 [gopass][gopass], [KeePassXC][keepass], [Keeper][keeper], [LastPass][lastpass],
-[pass][pass], [passage][passage], [passhole][passhole], [Vault][vault], macOS
-Keychain, GNOME [Keyring][keyring], or any command-line utility of your choice.
-You can encrypt individual files with [GnuPG][gnupg] or [age][age]. You can
-checkout your dotfiles repo on as many machines as you want without revealing
-any secrets to anyone.
+[pass][pass], [passage][passage], [passhole][passhole], [Proton
+Pass][protonpass], [Vault][vault], macOS Keychain, GNOME [Keyring][keyring], or
+any command-line utility of your choice. You can encrypt individual files with
+[GnuPG][gnupg] or [age][age]. You can checkout your dotfiles repo on as many
+machines as you want without revealing any secrets to anyone.
 
 ### Transparent
 
@@ -91,5 +91,6 @@ single command, and automatically commit and push changes.
 [pass]: https://www.passwordstore.org/
 [passage]: https://github.com/FiloSottile/passage
 [passhole]: https://github.com/Evidlo/passhole
+[protonpass]: https://proton.me/pass
 [template]: https://pkg.go.dev/text/template
 [vault]: https://www.vaultproject.io/

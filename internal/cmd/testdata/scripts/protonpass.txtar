@@ -1,0 +1,43 @@
+mockcommand bin/pass-cli
+
+# test protonPass template function
+exec chezmoi execute-template '{{ protonPass "pass://FromCLI/My-Wifi/password" | trim }}'
+stdout ^MyPassword$
+
+# test protonPassJSON template function
+exec chezmoi execute-template '{{ (protonPassJSON "pass://MyVault/My-Wifi-Item").item.content.content.Wifi.password }}'
+stdout '^MyWifiPassword$'
+
+-- bin/pass-cli.yaml --
+responses:
+- args: 'item view pass://FromCLI/My-Wifi/password'
+  response: MyPassword
+- args: 'item view pass://MyVault/My-Wifi-Item --output=json'
+  response: |
+    {
+      "item": {
+        "id": "VnYGoUKBHpeDZH_xFEAQkPCGFLy6zYaGI8vnBaJD1fZPVzit724aiUMxIvvkawMjyvS7pEgia9bTX7A6-IBGwQ==",
+        "share_id": "UscrxQg8fVhiptQVc1Y6TIiG21AZwuU1jAIWGsFgv__2moOhwQdiTy4VTXQfYmMMrWPN2ANFZhKGKypRLq914g==",
+        "vault_id": "zE3QmUltEUQVCxSIeXNgu5E0SGBH4_Z3Be-sWj0XCH942FkbsS8aePXdmy_R9qzSBo3-yjDFz7gq9BazoZxdDA==",
+        "content": {
+          "title": "My Wifi",
+          "note": "",
+          "item_uuid": "461e9eb6-3c27-4b68-b8d1-8fdc2684e776",
+          "content": {
+            "Wifi": {
+              "ssid": "My Wifi SSID",
+              "password": "MyWifiPassword",
+              "security": "WPA2",
+              "sections": []
+            }
+          },
+          "extra_fields": []
+        },
+        "state": "Active",
+        "flags": [],
+        "create_time": "2025-10-27T11:11:22"
+      },
+      "attachments": []
+    }
+- args: '--version'
+  response: 'Proton Pass CLI 1.2.0 (0d71fde)'

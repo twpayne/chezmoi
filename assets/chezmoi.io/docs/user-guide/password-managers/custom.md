@@ -18,3 +18,4 @@ way:
 | Keeper          | `keeper`         | `{{ secretJSON "get" "--format=json" "$ID" }}`                   |
 | pass            | `pass`           | `{{ secret "show" "$ID" }}`                                      |
 | passhole        | `ph`             | `{{ secret "$ID" "password" }}`                                  |
+| Proton Pass     | `pass-cli`       | `{{ secretJSON "item" "view" "$ID" "--output=json" }}`           |
