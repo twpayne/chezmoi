@@ -1,6 +1,7 @@
 # Encryption
 
-chezmoi supports encrypting files with [age][age] and [gpg][gpg].
+chezmoi supports encrypting files with [age][age], [git-crypt][gitcrypt],
+[gpg][gpg], and [transcrypt][transcrypt].
 
 Encrypted files are stored in ASCII-armored format in the source directory with
 the `encrypted_` attribute and are automatically decrypted when needed.
@@ -15,4 +16,6 @@ chezmoi add --encrypt ~/.ssh/id_rsa
 re-encrypt it afterwards.
 
 [age]: https://age-encryption.org
+[gitcrypt]: https://github.com/AGWA/git-crypt
 [gpg]: https://www.gnupg.com/
+[transcrypt]: https://github.com/elasticdog/transcrypt
