@@ -112,9 +112,9 @@ type hookConfig struct {
 }
 
 type templateConfig struct {
-	Functions string   `json:"functions" mapstructure:"functions" yaml:"functions"`
-	Options   []string `json:"options" mapstructure:"options" yaml:"options"`
-	functions chezmoi.TemplateFunctions
+	FunctionsStr string   `json:"functions" mapstructure:"functions" yaml:"functions"`
+	Options      []string `json:"options"   mapstructure:"options"   yaml:"options"`
+	functions    chezmoi.TemplateFunctions
 }
 
 type warningsConfig struct {
@@ -3153,8 +3153,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Safe:    true,
 		TempDir: chezmoi.NewAbsPath(os.TempDir()),
 		Template: templateConfig{
-			Functions: "sprig",
-			Options:   chezmoi.DefaultTemplateOptions,
+			FunctionsStr: "sprig",
+			Options:      chezmoi.DefaultTemplateOptions,
 		},
 		Umask: chezmoi.Umask,
 		UseBuiltinAge: autoBool{
