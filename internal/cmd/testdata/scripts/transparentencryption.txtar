@@ -1,0 +1,14 @@
+# test that chezmoi add --encrypt with transparent encryption adds the encrypted_ attribute but does not encrypt the file
+exec chezmoi add --encrypt $HOME${/}.file
+cmp $CHEZMOISOURCEDIR/encrypted_dot_file golden/.file
+
+# test that chezmoi cat with transparent encryption returns the ciphertext
+exec chezmoi cat $HOME${/}.file
+cmp stdout golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.config/chezmoi/chezmoi.toml --
+encryption = "transparent"
+-- home/user/.file --
+# contents of .file

@@ -2823,6 +2823,8 @@ func (c *Config) setEncryption() error {
 		c.encryption = &c.Age
 	case "gpg":
 		c.encryption = &c.GPG
+	case "transparent":
+		c.encryption = chezmoi.TransparentEncryption{}
 	case "":
 		// Detect encryption if any non-default configuration is set, preferring
 		// gpg for backwards compatibility.

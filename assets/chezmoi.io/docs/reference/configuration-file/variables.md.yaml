@@ -13,7 +13,7 @@ sections:
       default: '`$HOME` / `%USERPROFILE%`'
       description: Destination directory.
     encryption:
-      description: Encryption type, either `age` or `gpg`.
+      description: Encryption type, either `age`, `gpg`, or `transparent`.
     env:
       type: object
       description: Extra environment variables for scripts and commands.
