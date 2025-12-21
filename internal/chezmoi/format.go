@@ -10,8 +10,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/BurntSushi/toml"
 	"github.com/goccy/go-yaml"
-	"github.com/pelletier/go-toml/v2"
 	"github.com/tailscale/hujson"
 )
 

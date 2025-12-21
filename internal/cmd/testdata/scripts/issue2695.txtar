@@ -16,7 +16,7 @@ stderr 'invalid config'
 
 # test that chezmoi doctor warns about invalid TOML config files
 ! exec chezmoi doctor
-stdout 'error\s+config-file\s+.*incomplete number'
+stdout 'error\s+config-file'
 
 chhome home3/user
 
@@ -34,7 +34,6 @@ stdout 'error\s+config-file\s+.*string was used where mapping is expected'
     "string": unquoted
 }
 -- home2/user/.config/chezmoi/chezmoi.toml --
-[example]
-    string = unquoted
+invalid file
 -- home3/user/.config/chezmoi/chezmoi.yaml --
 string

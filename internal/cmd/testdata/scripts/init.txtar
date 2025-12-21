@@ -73,7 +73,7 @@ chhome home8/user
 # test that chezmoi init fails if the generated config is not valid
 mkgitconfig
 ! exec chezmoi init
-stderr '\.chezmoi\.toml\.tmpl: toml: expected character ='
+stderr 'toml: line 2'
 ! exists .config/chezmoi
 
 chhome home/user
