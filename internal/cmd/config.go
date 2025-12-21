@@ -166,6 +166,7 @@ type ConfigFile struct {
 	Onepassword       onepasswordConfig       `json:"onepassword"       mapstructure:"onepassword"       yaml:"onepassword"`
 	Pass              passConfig              `json:"pass"              mapstructure:"pass"              yaml:"pass"`
 	Passhole          passholeConfig          `json:"passhole"          mapstructure:"passhole"          yaml:"passhole"`
+	ProtonPass        protonPassConfig        `json:"protonPass"        mapstructure:"protonPass"        yaml:"protonPass"`
 	RBW               rbwConfig               `json:"rbw"               mapstructure:"rbw"               yaml:"rbw"`
 	Secret            secretConfig            `json:"secret"            mapstructure:"secret"            yaml:"secret"`
 	Vault             vaultConfig             `json:"vault"             mapstructure:"vault"             yaml:"vault"`
@@ -553,6 +554,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"passFields":                  c.passFieldsTemplateFunc,
 		"passRaw":                     c.passRawTemplateFunc,
 		"passhole":                    c.passholeTemplateFunc,
+		"protonPass":                  c.protonPassTemplateFunc,
+		"protonPassJSON":              c.protonPassJSONTemplateFunc,
 		"pruneEmptyDicts":             c.pruneEmptyDictsTemplateFunc,
 		"quote":                       c.quoteTemplateFunc,
 		"quoteList":                   c.quoteListTemplateFunc,
@@ -3189,6 +3192,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Passhole: passholeConfig{
 			Command: "ph",
 			Prompt:  true,
+		},
+		ProtonPass: protonPassConfig{
+			Command: "pass-cli",
 		},
 		RBW: rbwConfig{
 			Command: "rbw",

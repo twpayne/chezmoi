@@ -345,6 +345,10 @@ sections:
       type: bool
       default: '`true`'
       description: Prompt for password.
+  protonPass:
+    command:
+      default: '`pass-cli`'
+      description: Proton Pass CLI command.
   pinentry:
     args:
       type: '[]string'
