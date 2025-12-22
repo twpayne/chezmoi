@@ -2399,7 +2399,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.destSystem = c.newDiffSystem(c.destSystem, writer, c.DestDirAbsPath)
 	}
 
-	if err := c.setEncryption(); err != nil {
+	if err := c.setEncryption(); err != nil && !annotations.hasTag(doesNotRequireValidConfig) {
 		return err
 	}
 
