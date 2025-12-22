@@ -1,3 +1,7 @@
+<!-- markdownlint-disable first-line-heading-->
+<!-- markdownlint-disable table-column-count-->
+<!-- markdownlint-disable table-pipe-style-->
+
 --8<-- [start:all]
 --8<-- [start:no-source-tree]
 Print paths in the given style. The default is `relative`.

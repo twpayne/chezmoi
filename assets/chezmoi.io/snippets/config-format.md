@@ -1,6 +1,8 @@
+<!-- markdownlint-disable first-line-heading -->
+
 !!! info
 
-    Chezmoi supports multiple file `$FORMAT`s for configuration and data:
+    chezmoi supports multiple file `$FORMAT`s for configuration and data:
     [JSON][json], JSONC, [TOML][toml], and [YAML][yaml].
 
 [json]: https://www.json.org/json-en.html

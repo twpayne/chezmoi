@@ -11,4 +11,3 @@ Pass][protonpass] using the [Proton Pass CLI][protonpass-cli].
 
 [protonpass]: https://proton.me/pass
 [protonpass-cli]: https://protonpass.github.io/pass-cli/
-

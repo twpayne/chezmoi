@@ -1,3 +1,5 @@
+<!-- markdownlint-disable commands-show-output -->
+
 # Transparent
 
 chezmoi supports encrypting files with transparent git encryption tools like
@@ -45,7 +47,7 @@ cleartext form of the file.
 Use `transcrypt --display` to show instructions for how to setup transcrypt
 after cloning the repository elsewhere. It will involve running a command like:
 
-```
+```console
 $ transcrypt -c aes-256-cbc -p $PASSWORD
 ```
 

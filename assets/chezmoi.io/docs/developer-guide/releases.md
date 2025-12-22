@@ -85,7 +85,6 @@ Details:
   probably has equivalent security to [chezmoi's GitHub Releases page][release],
   which is also managed by GitHub.
 
-
 [goreleaser]: https://goreleaser.com/
 [gha]: https://github.com/twpayne/chezmoi/actions
 [release]: https://github.com/twpayne/chezmoi/releases

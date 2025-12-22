@@ -1,3 +1,5 @@
+<!-- markdownlint-disable no-duplicate-heading -->
+
 # `secret`
 
 Run a secret manager's CLI, passing any extra arguments to the secret manager's
