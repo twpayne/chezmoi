@@ -42,8 +42,8 @@ apply --force` on each change.
 
 To shutdown the Watchman server, run:
 
-    ```sh
-    watchman shutdown-server
-    ```
+```sh
+watchman shutdown-server
+```
 
 [watchman]: https://facebook.github.io/watchman

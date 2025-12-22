@@ -121,7 +121,7 @@ lint: ensure-golangci-lint shellcheck
 
 .PHONY: lint-markdown
 lint-markdown:
-	markdownlint-cli2 --config .markdownlint-cli2.yaml
+	markdownlint-cli2 --strict-config
 
 .PHONY: format
 format: ensure-golangci-lint

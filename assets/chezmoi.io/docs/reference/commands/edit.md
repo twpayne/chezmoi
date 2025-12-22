@@ -35,7 +35,6 @@ Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
 
-
 !!! hint
 
     Creating hardlinks is not possible between different filesystems. Hence,

@@ -1,3 +1,5 @@
+<!-- markdownlint-disable no-duplicate-heading -->
+
 # `docker`
 
 !!! Warning

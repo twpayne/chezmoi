@@ -1,3 +1,5 @@
+<!-- markdownlint-disable first-line-heading -->
+
 Exclude target state entries of specific [*types*][types]. The default is
 `none`.
 

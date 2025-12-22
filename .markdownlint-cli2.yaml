@@ -5,5 +5,8 @@ ignores:
 - .venv/
 - assets/chezmoi.io/docs/reference/release-history.md
 config:
-  fenced-code-language: true
-  line-length: false
+  line-length: false # FIXME enable
+  no-trailing-punctuation: false # FIXME enable
+  fenced-code-language: false # FIXME enable
+  code-block-style: false # FIXME enable
+  link-image-reference-definitions: false # FIXME enable

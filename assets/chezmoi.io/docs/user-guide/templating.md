@@ -393,7 +393,6 @@ it with a dictionary, for example `~/.local/share/chezmoi/small-font.yml.tmpl`:
 {{- template "alacritty" dict "fontsize" 12 "font" "DejaVu Sans Mono" -}}
 ```
 
-
 [go-template]: https://pkg.go.dev/text/template
 [sprig]: http://masterminds.github.io/sprig/
 [reference]: /reference/templates/functions/index.md

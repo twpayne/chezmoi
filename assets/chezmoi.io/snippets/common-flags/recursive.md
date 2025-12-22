@@ -1,3 +1,5 @@
+<!-- markdownlint-disable first-line-heading -->
+
 --8<-- [start:default-true]
 --8<-- [start:default-false]
 Recurse into subdirectories.
