@@ -148,7 +148,7 @@ chezmoi add ~/.oh-my-zsh --exact --recursive
     chezmoi add --recursive --exact ~/.config/nvim
     ```
 
-    See [issure #4223][issue-4223] for details.
+    See [issue #4223][issue-4223] for details.
 
 [external]: /reference/special-files/chezmoiexternal-format.md
 [issue-1574]: https://github.com/twpayne/chezmoi/issues/1574
