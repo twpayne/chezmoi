@@ -1,6 +1,6 @@
-<!-- markdownlint-disable no-duplicate-heading -->
-
 # `secret`
+
+<!-- markdownlint-disable no-duplicate-heading -->
 
 Run a secret manager's CLI, passing any extra arguments to the secret manager's
 CLI. This is primarily for verifying chezmoi's integration with a custom secret

@@ -1,6 +1,6 @@
-<!-- markdownlint-disable no-duplicate-heading -->
-
 # `age`
+
+<!-- markdownlint-disable no-duplicate-heading -->
 
 Interact with age's passphrase-based encryption.
 
