@@ -318,8 +318,8 @@ github.com/google/btree v0.0.0-20180813153112-4030bb1f1f0c/go.mod h1:lNA+9X1NB3Z
 github.com/google/btree v1.0.0/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ5JPQ=
 github.com/google/btree v1.1.3 h1:CVpQJjYgC4VbzxeGVHfvZrv1ctoYCAI8vbl07Fcxlyg=
 github.com/google/btree v1.1.3/go.mod h1:qOPhT0dTNdNzV6Z/lhRX0YXUafgPLFUh+gZMl761Gm4=
-github.com/google/capslock v0.3.0 h1:btfIrg9bgobU/yrBnzUzWUCCh3pWdZJ3BdQ6vw5NNpk=
-github.com/google/capslock v0.3.0/go.mod h1:e0cdDqEwe0o5AAO/kCNk+ip/c/3+iEpu6QX+gGCH92g=
+github.com/google/capslock v0.3.1 h1:MdYuvca7uAH2iSgkDtNRm9+Qb7/4xRJgzHoL/LAOhVA=
+github.com/google/capslock v0.3.1/go.mod h1:7K6wQ78xV0QcIXsk0O1wSEExGgCmquxwNAleZT4GrA4=
 github.com/google/go-cmdtest v0.4.0 h1:ToXh6W5spLp3npJV92tk6d5hIpUPYEzHLkD+rncbyhI=
 github.com/google/go-cmdtest v0.4.0/go.mod h1:apVn/GCasLZUVpAJ6oWAuyP7Ne7CEsQbTnc0plM3m+o=
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
