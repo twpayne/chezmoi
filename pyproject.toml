@@ -4,6 +4,15 @@ version = "2.59.1"
 classifiers = ["Private :: Do Not Upload"]
 requires-python = ">=3.10"
 license = { text = "MIT" }
+dependencies = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.1",
+    "mkdocs-mermaid2-plugin>=1.2.3",
+    "pymdown-extensions>=10.19.1",
+    "ruamel-yaml>=0.18.17",
+    "ruff>=0.14.10",
+    "taskipy>=1.14.1",
+]
 
 [tool.taskipy.tasks]
 build-docs = { cmd = "mkdocs build -f assets/chezmoi.io/mkdocs.yml" }
