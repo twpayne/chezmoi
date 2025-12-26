@@ -202,7 +202,7 @@ linters:
       text: do not define dynamic errors, use wrapped static errors instead
     - linters:
       - forbidigo
-      path: ^internal/cmds/
+      path: internal/cmds/
     - linters:
       - forcetypeassert
       path: _test\.go$
