@@ -74,7 +74,7 @@ func run() error {
 	flag.Parse()
 
 	// Read goreleaser config.
-	data, err := os.ReadFile(".goreleaser.yaml")
+	data, err := os.ReadFile(".config/goreleaser.yaml")
 	if err != nil {
 		return err
 	}
