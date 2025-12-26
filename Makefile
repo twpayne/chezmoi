@@ -107,7 +107,7 @@ coverage:
 
 .PHONY: capslock
 capslock:
-	${GO} tool capslock -output package > .capslock-summary.json
+	${GO} tool capslock -output=package > .config/capslock-summary.json
 
 .PHONY: lint
 lint: ensure-golangci-lint shellcheck
