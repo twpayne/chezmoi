@@ -112,7 +112,7 @@ capslock:
 .PHONY: lint
 lint: ensure-golangci-lint shellcheck
 	${GO} tool actionlint
-	${GO} tool editorconfig-checker
+	${GO} tool editorconfig-checker -config=.config/editorconfig-checker.json
 	./bin/golangci-lint run --config=.config/golangci.yml
 	${GO} tool lint-whitespace
 	find . -name \*.txtar | xargs ${GO} tool lint-txtar
