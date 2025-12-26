@@ -113,7 +113,7 @@ capslock:
 lint: ensure-golangci-lint shellcheck
 	${GO} tool actionlint
 	${GO} tool editorconfig-checker
-	./bin/golangci-lint run
+	./bin/golangci-lint run --config=.config/golangci.yml
 	${GO} tool lint-whitespace
 	find . -name \*.txtar | xargs ${GO} tool lint-txtar
 	${GO} tool find-typos chezmoi .

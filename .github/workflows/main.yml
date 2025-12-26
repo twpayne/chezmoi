@@ -421,7 +421,7 @@ jobs:
     - uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9.2.0
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
-        args: --timeout=5m
+        args: --config=.config/golangci.yml --timeout=5m
     - name: format # FIXME add make format-yaml
       run: |
         make format
