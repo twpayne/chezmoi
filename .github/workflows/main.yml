@@ -376,7 +376,7 @@ jobs:
         ignore_paths: completions
     - name: editorconfig-checker
       run: |
-        go tool editorconfig-checker
+        go tool editorconfig-checker -config=.config/editorconfig-checker.json
     - name: lint-whitespace
       run: |
         go tool lint-whitespace
