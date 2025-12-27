@@ -18,6 +18,7 @@ modifiers and their abbreviations are:
 | `executable`       | `x`          |
 | `external`         | *none*       |
 | `once`             | `o`          |
+| `onchange`         | *none*       |
 | `private`          | `p`          |
 | `readonly`         | `r`          |
 | `remove`           | *none*       |
