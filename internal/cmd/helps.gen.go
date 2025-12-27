@@ -177,6 +177,7 @@ var helps = map[string]*help{
 			"   executable                          | x\n" +
 			"   external                            | none\n" +
 			"   once                                | o\n" +
+			"   onchange                            | none\n" +
 			"   private                             | p\n" +
 			"   readonly                            | r\n" +
 			"   remove                              | none\n" +
