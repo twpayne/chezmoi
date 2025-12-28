@@ -69,6 +69,7 @@ var helps = map[string]*help{
 			"  chezmoi age-keygen -y identity.txt",
 		longFlags: chezmoiset.New(
 			"convert",
+			"pq",
 		),
 		shortFlags: chezmoiset.New(
 			"y",

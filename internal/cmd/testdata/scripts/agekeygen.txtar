@@ -2,6 +2,10 @@
 exec chezmoi age-keygen
 stdout AGE-SECRET-KEY
 
+# test that age-keygen generates post-quantum age identities on stdout
+exec chezmoi age-keygen --pq
+stdout AGE-SECRET-KEY-PQ
+
 # test that age-keygen generates an age identity and writes it to a file
 exec chezmoi age-keygen --output=identity.txt
 grep AGE-SECRET-KEY identity.txt
