@@ -145,7 +145,8 @@ type SourceState struct {
 	userTemplateData        map[string]any
 	priorityTemplateData    map[string]any
 	templateData            map[string]any
-	templateFuncs           template.FuncMap
+	sprigTemplateFuncs      template.FuncMap
+	sproutTemplateFuncs     template.FuncMap
 	templateOptions         []string
 	templates               map[string]*Template
 	externals               map[RelPath][]*External
@@ -268,10 +269,17 @@ func WithTemplateDataOnly(templateDataOnly bool) SourceStateOption {
 	}
 }
 
-// WithTemplateFuncs sets the template functions.
-func WithTemplateFuncs(templateFuncs template.FuncMap) SourceStateOption {
+// WithSprigTemplateFuncs sets the Sprig template functions.
+func WithSprigTemplateFuncs(sprigTemplateFuncs template.FuncMap) SourceStateOption {
 	return func(s *SourceState) {
-		s.templateFuncs = templateFuncs
+		s.sprigTemplateFuncs = sprigTemplateFuncs
+	}
+}
+
+// WithSproutTemplateFuncs sets the Sprout template functions.
+func WithSproutTemplateFuncs(sproutTemplateFuncs template.FuncMap) SourceStateOption {
+	return func(s *SourceState) {
+		s.sproutTemplateFuncs = sproutTemplateFuncs
 	}
 }
 
@@ -841,7 +849,8 @@ type ExecuteTemplateDataOptions struct {
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([]byte, error) {
 	templateOptions := options.TemplateOptions
-	templateOptions.Funcs = s.templateFuncs
+	templateOptions.SprigFuncs = s.sprigTemplateFuncs
+	templateOptions.SproutFuncs = s.sproutTemplateFuncs
 	templateOptions.Options = slices.Clone(s.templateOptions)
 
 	tmpl, err := ParseTemplate(options.NameRelPath.String(), options.Data, templateOptions)
@@ -1575,8 +1584,9 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			name := templateRelPath.String()
 
 			tmpl, err := ParseTemplate(name, contents, TemplateOptions{
-				Funcs:   s.templateFuncs,
-				Options: slices.Clone(s.templateOptions),
+				SprigFuncs:  s.sprigTemplateFuncs,
+				SproutFuncs: s.sproutTemplateFuncs,
+				Options:     slices.Clone(s.templateOptions),
 			})
 			if err != nil {
 				return err
@@ -2001,8 +2011,9 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				templateContents := removeMatches(modifierContents, matches)
 				var tmpl *Template
 				tmpl, err = ParseTemplate(sourceFile, templateContents, TemplateOptions{
-					Funcs:   s.templateFuncs,
-					Options: slices.Clone(s.templateOptions),
+					SprigFuncs:  s.sprigTemplateFuncs,
+					SproutFuncs: s.sproutTemplateFuncs,
+					Options:     slices.Clone(s.templateOptions),
 				})
 				if err != nil {
 					return nil, err
