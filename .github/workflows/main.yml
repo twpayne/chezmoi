@@ -14,7 +14,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 env:
-  AGE_VERSION: 1.2.1 # https://github.com/FiloSottile/age/releases
+  AGE_VERSION: 1.3.1 # https://github.com/FiloSottile/age/releases
   CHOCOLATEY_VERSION: 2.6.0 # https://github.com/chocolatey/choco/releases
   COSIGN_VERSION: 3.0.3 # https://github.com/sigstore/cosign/releases
   GO_VERSION: 1.25.5 # https://go.dev/doc/devel/release
