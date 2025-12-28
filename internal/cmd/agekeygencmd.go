@@ -16,7 +16,8 @@ import (
 )
 
 type ageKeygenCmdConfig struct {
-	convert bool
+	convert     bool
+	postQuantum bool
 }
 
 func (c *Config) newAgeKeygenCmd() *cobra.Command {
@@ -34,15 +35,21 @@ func (c *Config) newAgeKeygenCmd() *cobra.Command {
 	}
 	ageKeygenCommand.Flags().
 		BoolVarP(&c.ageKeygen.convert, "convert", "y", c.ageKeygen.convert, "convert identities to recipients")
+	ageKeygenCommand.Flags().
+		BoolVar(&c.ageKeygen.postQuantum, "pq", c.ageKeygen.postQuantum, "generate a post-quantum key pair")
 
 	return ageKeygenCommand
 }
 
 func (c *Config) runAgeKeygenCmd(cmd *cobra.Command, args []string) error {
-	if c.ageKeygen.convert {
+	switch {
+	case c.ageKeygen.convert && c.ageKeygen.postQuantum:
+		return errors.New("--pq cannot be used with --convert")
+	case c.ageKeygen.convert:
 		return c.runAgeKeygenConvertCmd(args)
+	default:
+		return c.runAgeKeygenGenerateCmd(cmd, args)
 	}
-	return c.runAgeKeygenGenerateCmd(cmd, args)
 }
 
 func (c *Config) runAgeKeygenConvertCmd(args []string) error {
@@ -81,13 +88,26 @@ func (c *Config) runAgeKeygenGenerateCmd(cmd *cobra.Command, args []string) erro
 		return fmt.Errorf("unknown command %q for %q", args[0], cmd.CommandPath())
 	}
 
-	identity, err := age.GenerateX25519Identity()
-	if err != nil {
-		return err
+	var identity age.Identity
+	var recipient age.Recipient
+	if c.ageKeygen.postQuantum {
+		key, err := age.GenerateHybridIdentity()
+		if err != nil {
+			return err
+		}
+		identity = key
+		recipient = key.Recipient()
+	} else {
+		key, err := age.GenerateX25519Identity()
+		if err != nil {
+			return err
+		}
+		identity = key
+		recipient = key.Recipient()
 	}
 
 	if stdout, ok := c.stdout.(*os.File); ok && term.IsTerminal(int(stdout.Fd())) {
-		fmt.Fprintf(c.stderr, "Public key: %s\n", identity.Recipient())
+		fmt.Fprintf(c.stderr, "Public key: %s\n", recipient)
 	}
 
 	if !c.outputAbsPath.IsEmpty() && c.outputAbsPath != chezmoi.NewAbsPath("-") {
@@ -103,7 +123,7 @@ func (c *Config) runAgeKeygenGenerateCmd(cmd *cobra.Command, args []string) erro
 
 	var builder strings.Builder
 	fmt.Fprintf(&builder, "# created: %s\n", time.Now().Format(time.RFC3339))
-	fmt.Fprintf(&builder, "# public key: %s\n", identity.Recipient())
+	fmt.Fprintf(&builder, "# public key: %s\n", recipient)
 	fmt.Fprintf(&builder, "%s\n", identity)
 	return c.writeOutputString(builder.String(), 0o660)
 }
