@@ -1772,7 +1772,7 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status)
 		"promptMultichoice": c.promptMultichoiceInteractiveTemplateFunc,
 		"promptString":      c.promptStringInteractiveTemplateFunc,
 		"targetRelPath": func(source string) string {
-			return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
+			return mustValue(chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix())).String()
 		},
 	})
 	var name string

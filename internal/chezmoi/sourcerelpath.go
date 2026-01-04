@@ -77,21 +77,35 @@ func (p SourceRelPath) String() string {
 }
 
 // TargetRelPath returns the relative path of p's target.
-func (p SourceRelPath) TargetRelPath(encryptedSuffix string) RelPath {
+func (p SourceRelPath) TargetRelPath(encryptedSuffix string) (RelPath, error) {
 	sourceNames := strings.Split(p.relPath.String(), "/")
 	relPathStrs := make([]string, 0, len(sourceNames))
 	if p.isDir {
-		for _, sourceName := range sourceNames {
-			dirAttr := parseDirAttr(sourceName)
+		for i, sourceName := range sourceNames {
+			if i == 0 && sourceName == "" {
+				// Special case: we allow the first element to be empty.
+				relPathStrs = append(relPathStrs, "")
+				continue
+			}
+			dirAttr, err := parseDirAttr(sourceName)
+			if err != nil {
+				return RelPath{}, err
+			}
 			relPathStrs = append(relPathStrs, dirAttr.TargetName)
 		}
 	} else {
 		for _, sourceName := range sourceNames[:len(sourceNames)-1] {
-			dirAttr := parseDirAttr(sourceName)
+			dirAttr, err := parseDirAttr(sourceName)
+			if err != nil {
+				return RelPath{}, err
+			}
 			relPathStrs = append(relPathStrs, dirAttr.TargetName)
 		}
-		fileAttr := parseFileAttr(sourceNames[len(sourceNames)-1], encryptedSuffix)
+		fileAttr, err := parseFileAttr(sourceNames[len(sourceNames)-1], encryptedSuffix)
+		if err != nil {
+			return RelPath{}, err
+		}
 		relPathStrs = append(relPathStrs, fileAttr.TargetName)
 	}
-	return NewRelPath(path.Join(relPathStrs...))
+	return NewRelPath(path.Join(relPathStrs...)), nil
 }

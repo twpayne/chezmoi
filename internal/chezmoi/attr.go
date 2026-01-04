@@ -1,9 +1,15 @@
 package chezmoi
 
 import (
+	"errors"
 	"io/fs"
 	"log/slog"
 	"strings"
+)
+
+var (
+	errEmptyDirName  = errors.New("empty directory name")
+	errEmptyFilename = errors.New("empty filename")
 )
 
 // A SourceFileTargetType is a the type of a target represented by a file in the
@@ -75,27 +81,48 @@ type FileAttr struct {
 	Template   bool
 }
 
+type invalidDirNameError string
+
+func (e invalidDirNameError) Error() string {
+	return string(e) + ": invalid directory name"
+}
+
+type invalidFileNameError string
+
+func (e invalidFileNameError) Error() string {
+	return string(e) + ": invalid filename"
+}
+
 // parseDirAttr parses a single directory name in the source state.
-func parseDirAttr(name string) DirAttr {
+func parseDirAttr(name string) (DirAttr, error) {
+	if name == "" {
+		return DirAttr{}, errEmptyDirName
+	}
+	originalName := name
 	name, remove := strings.CutPrefix(name, removePrefix)
 	name, external := strings.CutPrefix(name, externalPrefix)
 	name, exact := strings.CutPrefix(name, exactPrefix)
 	name, private := strings.CutPrefix(name, privatePrefix)
 	name, readOnly := strings.CutPrefix(name, readOnlyPrefix)
+	var namePrefix string
 	switch {
 	case strings.HasPrefix(name, dotPrefix):
-		name = "." + name[len(dotPrefix):]
+		namePrefix = "."
+		name = name[len(dotPrefix):]
 	case strings.HasPrefix(name, literalPrefix):
 		name = name[len(literalPrefix):]
 	}
+	if name == "" {
+		return DirAttr{}, invalidDirNameError(originalName)
+	}
 	return DirAttr{
-		TargetName: name,
+		TargetName: namePrefix + name,
 		Exact:      exact,
 		External:   external,
 		Private:    private,
 		ReadOnly:   readOnly,
 		Remove:     remove,
-	}
+	}, nil
 }
 
 // LogValue implements log/slog.LogValuer.LogValue.
@@ -152,10 +179,13 @@ func (da DirAttr) perm() fs.FileMode {
 }
 
 // parseFileAttr parses a source file name in the source state.
-func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
+func parseFileAttr(name, encryptedSuffix string) (FileAttr, error) {
+	if name == "" {
+		return FileAttr{}, errEmptyFilename
+	}
+	originalName := name
 	var (
 		sourceFileType = SourceFileTypeFile
-		name           = sourceName
 		condition      = ScriptConditionNone
 		empty          = false
 		encrypted      = false
@@ -215,9 +245,11 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		name, empty = strings.CutPrefix(name, emptyPrefix)
 		name, executable = strings.CutPrefix(name, executablePrefix)
 	}
+	var namePrefix string
 	switch {
 	case strings.HasPrefix(name, dotPrefix):
-		name = "." + name[len(dotPrefix):]
+		namePrefix = "."
+		name = name[len(dotPrefix):]
 	case strings.HasPrefix(name, literalPrefix):
 		name = name[len(literalPrefix):]
 	}
@@ -232,8 +264,11 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		template = true
 		name, _ = strings.CutSuffix(name, literalSuffix)
 	}
+	if name == "" {
+		return FileAttr{}, invalidFileNameError(originalName)
+	}
 	return FileAttr{
-		TargetName: name,
+		TargetName: namePrefix + name,
 		Type:       sourceFileType,
 		Condition:  condition,
 		Empty:      empty,
@@ -243,7 +278,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		Private:    private,
 		ReadOnly:   readOnly,
 		Template:   template,
-	}
+	}, nil
 }
 
 // LogValue implements log/slog.LogValuer.LogValue.

@@ -40,7 +40,8 @@ func TestDirAttr(t *testing.T) {
 	}))
 	for _, dirAttr := range dirAttrs {
 		actualSourceName := dirAttr.SourceName()
-		actualDirAttr := parseDirAttr(actualSourceName)
+		actualDirAttr, err := parseDirAttr(actualSourceName)
+		assert.NoError(t, err)
 		assert.Equal(t, dirAttr, actualDirAttr)
 		assert.Equal(t, actualSourceName, actualDirAttr.SourceName())
 	}
@@ -73,7 +74,9 @@ func TestDirAttrLiteral(t *testing.T) {
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
 			assert.Equal(t, tc.sourceName, tc.dirAttr.SourceName())
-			assert.Equal(t, tc.dirAttr, parseDirAttr(tc.sourceName))
+			actualDirAttr, err := parseDirAttr(tc.sourceName)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.dirAttr, actualDirAttr)
 		})
 	}
 }
@@ -106,7 +109,7 @@ func TestFileAttr(t *testing.T) {
 		Template   []bool
 	}{
 		Type:       SourceFileTypeCreate,
-		TargetName: []string{},
+		TargetName: targetNames,
 		Empty:      []bool{false, true},
 		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
@@ -181,9 +184,12 @@ func TestFileAttr(t *testing.T) {
 	}))
 	for _, fileAttr := range fileAttrs {
 		actualSourceName := fileAttr.SourceName("")
-		actualFileAttr := parseFileAttr(actualSourceName, "")
-		assert.Equal(t, fileAttr, actualFileAttr)
-		assert.Equal(t, actualSourceName, actualFileAttr.SourceName(""))
+		t.Run(actualSourceName, func(t *testing.T) {
+			actualFileAttr, err := parseFileAttr(actualSourceName, "")
+			assert.NoError(t, err)
+			assert.Equal(t, fileAttr, actualFileAttr)
+			assert.Equal(t, actualSourceName, actualFileAttr.SourceName(""))
+		})
 	}
 }
 
@@ -205,8 +211,9 @@ func TestFileAttrEncryptedSuffix(t *testing.T) {
 			expectedTargetName: "file.asc",
 		},
 	} {
-		fa := parseFileAttr(tc.sourceName, ".asc")
-		assert.Equal(t, tc.expectedTargetName, fa.TargetName)
+		actualFileAttr, err := parseFileAttr(tc.sourceName, ".asc")
+		assert.NoError(t, err)
+		assert.Equal(t, tc.expectedTargetName, actualFileAttr.TargetName)
 	}
 }
 
@@ -294,7 +301,9 @@ func TestFileAttrLiteral(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
-			assert.Equal(t, tc.fileAttr, parseFileAttr(tc.sourceName, tc.encryptedSuffix))
+			actualFileAttr, err := parseFileAttr(tc.sourceName, tc.encryptedSuffix)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.fileAttr, actualFileAttr)
 			if !tc.nonCanonical {
 				assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryptedSuffix))
 			}
@@ -360,5 +369,31 @@ func TestFileAttrPerm(t *testing.T) {
 		},
 	} {
 		assert.Equal(t, tc.expected, tc.fileAttr.perm())
+	}
+}
+
+func TestInvalidDirAttr(t *testing.T) {
+	for _, tc := range []string{
+		"dot_",
+		"literal_",
+	} {
+		t.Run(tc, func(t *testing.T) {
+			_, err := parseDirAttr(tc)
+			assert.IsError(t, err, invalidDirNameError(tc))
+		})
+	}
+}
+
+func TestInvalidFileAttr(t *testing.T) {
+	for _, tc := range []string{
+		"dot_",
+		"literal_",
+		".tmpl",
+		"encrypted_.age",
+	} {
+		t.Run(tc, func(t *testing.T) {
+			_, err := parseFileAttr(tc, ".age")
+			assert.IsError(t, err, invalidFileNameError(tc))
+		})
 	}
 }

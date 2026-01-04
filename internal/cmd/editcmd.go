@@ -108,7 +108,11 @@ TARGET_REL_PATH:
 				return err
 			}
 			// FIXME use RawContents and DecryptFile
-			decryptedAbsPath := tempDirAbsPath.Join(sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix()))
+			decryptedRelPath, err := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
+			decryptedAbsPath := tempDirAbsPath.Join(decryptedRelPath)
 			contents, err := sourceStateFile.Contents()
 			if err != nil {
 				return err
@@ -135,7 +139,10 @@ TARGET_REL_PATH:
 
 			// Compute the hard link path from the target path. If the file is a
 			// template then preserve the .tmpl suffix as a clue to the editor.
-			targetRelPath := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
+			targetRelPath, err := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
 			if sourceStateFile.Attr().Template {
 				targetRelPath = targetRelPath.AppendString(chezmoi.TemplateSuffix)
 			}

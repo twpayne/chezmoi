@@ -213,7 +213,10 @@ func IsSuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuff
 			return true
 		}
 		for _, encryptedSuffix := range encryptedSuffixes {
-			fileAttr := parseFileAttr(fileInfo.Name(), encryptedSuffix)
+			fileAttr, err := parseFileAttr(fileInfo.Name(), encryptedSuffix)
+			if err != nil {
+				return true
+			}
 			if knownTargetFiles.Contains(fileAttr.TargetName) {
 				return true
 			}
