@@ -1423,22 +1423,23 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	}
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	for path, external := range externals {
-		switch {
-		case path == "":
+	for key, external := range externals {
+		if key == "" {
 			return fmt.Errorf("%s: empty path", sourceAbsPath)
-		case strings.HasPrefix(path, "/") || filepath.IsAbs(path):
-			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
 		}
-		switch relPath, err := filepath.Rel(".", path); {
+		externalPath := path.Clean(key)
+		if strings.HasPrefix(externalPath, "/") || filepath.IsAbs(externalPath) {
+			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, key)
+		}
+		switch relPath, err := filepath.Rel(".", externalPath); {
 		case err != nil:
-			return fmt.Errorf("%s: %s: %w", sourceAbsPath, path, err)
+			return fmt.Errorf("%s: %s: %w", sourceAbsPath, key, err)
 		case relPath == ".":
-			return fmt.Errorf("%s: %s: empty relative path", sourceAbsPath, path)
+			return fmt.Errorf("%s: %s: empty relative path", sourceAbsPath, key)
 		case relPath == "..", strings.HasPrefix(relPath, "../"):
-			return fmt.Errorf("%s: %s: relative path in parent", sourceAbsPath, path)
+			return fmt.Errorf("%s: %s: relative path in parent", sourceAbsPath, key)
 		}
-		targetRelPath := parentTargetSourceRelPath.JoinString(path)
+		targetRelPath := parentTargetSourceRelPath.JoinString(externalPath)
 		external.sourceAbsPath = sourceAbsPath
 		s.externals[targetRelPath] = append(s.externals[targetRelPath], &external)
 	}
