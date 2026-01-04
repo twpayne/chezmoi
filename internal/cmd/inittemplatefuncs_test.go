@@ -335,7 +335,11 @@ func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
 					config.promptMultichoiceInteractiveTemplateFunc(tc.prompt, tc.multichoices, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptMultichoiceInteractiveTemplateFunc(tc.prompt, tc.multichoices, tc.args...))
+				assert.Equal(
+					t,
+					tc.expected,
+					config.promptMultichoiceInteractiveTemplateFunc(tc.prompt, tc.multichoices, tc.args...),
+				)
 
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
