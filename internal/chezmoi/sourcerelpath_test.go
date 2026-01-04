@@ -14,10 +14,6 @@ func TestSourceRelPath(t *testing.T) {
 		expectedTargetRelPath RelPath
 	}{
 		{
-			name:            "empty",
-			expectedDirPath: NewSourceRelDirPath("."),
-		},
-		{
 			name:                  "dir",
 			sourceStatePath:       NewSourceRelDirPath("dir"),
 			expectedDirPath:       NewSourceRelDirPath("."),
@@ -56,7 +52,9 @@ func TestSourceRelPath(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			assert.Equal(t, tc.expectedDirPath, tc.sourceStatePath.Dir())
-			assert.Equal(t, tc.expectedTargetRelPath, tc.sourceStatePath.TargetRelPath(""))
+			targetRelPath, err := tc.sourceStatePath.TargetRelPath("")
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedTargetRelPath, targetRelPath)
 		})
 	}
 }

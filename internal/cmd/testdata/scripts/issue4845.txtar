@@ -1,0 +1,12 @@
+# test that chezmoi apply with a file called dot_ in the source directory returns an error
+! exec chezmoi apply
+stderr 'dot_: invalid filename'
+
+chhome home2/user
+
+# test that chezmoi apply with a directory called literal_ in the source directory returns an error
+! exec chezmoi apply
+stderr 'literal_: invalid directory name'
+
+-- home/user/.local/share/chezmoi/dot_ --
+-- home2/user/.local/share/chezmoi/literal_/file --

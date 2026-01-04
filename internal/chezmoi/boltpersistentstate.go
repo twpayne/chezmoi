@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path/filepath"
 	"slices"
 	"syscall"
 	"time"
@@ -50,6 +51,10 @@ func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStat
 		OpenFile: func(name string, flag int, perm fs.FileMode) (*os.File, error) {
 			rawPath, err := system.RawPath(NewAbsPath(name))
 			if err != nil {
+				return nil, err
+			}
+			dir, _ := filepath.Split(rawPath.String())
+			if err := os.MkdirAll(dir, 0o777); err != nil {
 				return nil, err
 			}
 			return os.OpenFile(rawPath.String(), flag, perm)

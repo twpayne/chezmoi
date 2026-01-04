@@ -1070,8 +1070,15 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return nil
 		case fileInfo.IsDir():
-			da := parseDirAttr(sourceName.String())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
+			da, err := parseDirAttr(sourceName.String())
+			if err != nil {
+				return err
+			}
+			targetRelPath, err := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
+			targetRelPath = targetRelPath.JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
 				return fs.SkipDir
 			}
@@ -1096,8 +1103,15 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
-			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
+			fa, err := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
+			targetRelPath, err := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
+			targetRelPath = targetRelPath.JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}
@@ -1385,7 +1399,10 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 		return err
 	}
 	parentSourceRelPath := NewSourceRelDirPath(parentRelPath.String())
-	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
+	parentTargetSourceRelPath, err := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
+	if err != nil {
+		return err
+	}
 
 	format, err := FormatFromAbsPath(sourceAbsPath.TrimSuffix(TemplateSuffix))
 	if err != nil {
@@ -1468,7 +1485,10 @@ func (s *SourceState) addPatterns(patternSet *PatternSet, sourceAbsPath AbsPath,
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	dir := sourceRelPath.Dir().TargetRelPath("")
+	dir, err := sourceRelPath.Dir().TargetRelPath("")
+	if err != nil {
+		return err
+	}
 	lineNumber := 0
 	for line := range bytes.Lines(data) {
 		lineNumber++
@@ -2919,11 +2939,18 @@ func (s *SourceState) readScriptsDir(ctx context.Context, scriptsDirAbsPath AbsP
 		case fileInfo.IsDir():
 			return nil
 		case fileInfo.Mode().IsRegular():
-			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
+			fa, err := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
 			if fa.Type != SourceFileTypeScript {
 				return fmt.Errorf("%s: not a script", sourceAbsPath)
 			}
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
+			targetRelPath, err := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix())
+			if err != nil {
+				return err
+			}
+			targetRelPath = targetRelPath.JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}
