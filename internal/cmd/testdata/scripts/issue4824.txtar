@@ -1,0 +1,17 @@
+# test that chezmoi re-add does not affect templates
+exec chezmoi apply
+edit $HOME/dir/a
+edit $HOME/dir/b
+exec chezmoi re-add
+cmp $CHEZMOISOURCEDIR/exact_dir/a golden/edited-a
+cmp $CHEZMOISOURCEDIR/exact_dir/b.tmpl golden/b.tmpl
+
+-- golden/b.tmpl --
+# contents of b
+-- golden/edited-a --
+# contents of a
+# edited
+-- home/user/.local/share/chezmoi/exact_dir/a --
+# contents of a
+-- home/user/.local/share/chezmoi/exact_dir/b.tmpl --
+# contents of b

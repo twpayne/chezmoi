@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/fs"
 	"runtime"
@@ -11,6 +12,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 type reAddCmdConfig struct {
@@ -257,13 +259,17 @@ func (c *Config) processExactDirs(
 
 		// Read the target directory contents
 		dirEntries, err := c.destSystem.ReadDir(targetDirAbsPath)
-		if err != nil {
+		switch {
+		case errors.Is(err, fs.ErrNotExist):
 			// If directory doesn't exist in target, skip it
 			continue
+		case err != nil:
+			return err
 		}
 
 		// Build sets of files in source and target
 		sourceFiles := make(map[string]chezmoi.SourceStateEntry)
+		ignoredFiles := chezmoiset.New[chezmoi.RelPath]()
 		targetFiles := make(map[string]fs.DirEntry)
 
 		// Collect files from source state that are in this exact directory
@@ -271,9 +277,13 @@ func (c *Config) processExactDirs(
 		for entryRelPath, entry := range sourceStateEntries {
 			// Check if this entry is a direct child of the exact directory
 			if entryRelPath.Dir() == targetRelPath {
-				// Only count actual files in source, not remove entries
-				if _, ok := entry.(*chezmoi.SourceStateFile); ok {
-					sourceFiles[entryRelPath.Base()] = entry
+				// Only count actual files in source, not remove entries or templates
+				if sourceStateFile, ok := entry.(*chezmoi.SourceStateFile); ok {
+					if sourceStateFile.Attr().Template {
+						ignoredFiles.Add(entryRelPath)
+					} else {
+						sourceFiles[entryRelPath.Base()] = entry
+					}
 				}
 			}
 		}
@@ -292,8 +302,9 @@ func (c *Config) processExactDirs(
 		for name, dirEntry := range targetFiles {
 			entryRelPath := targetRelPath.JoinString(name)
 
-			// Skip files that were already processed in the file re-add loop
-			if processedFiles[entryRelPath] {
+			// Skip files that were already processed in the file re-add loop or
+			// are ignored
+			if processedFiles[entryRelPath] || ignoredFiles.Contains(entryRelPath) {
 				continue
 			}
 
