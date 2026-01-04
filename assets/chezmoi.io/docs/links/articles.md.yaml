@@ -613,3 +613,8 @@ articles:
   version: 2.66.1
   title: Maintaining KDE dotfiles with Chezmoi Modify Manager
   url: https://www.lorenzobettini.it/2025/11/maintaining-kde-dotfiles-with-chezmoi-modify-manager/
+- date: '2025-12-31'
+  version: 2.68.1
+  lang: CN
+  title: 换新电脑不再折腾：用 chezmoi × Nix 一键复刻开发环境
+  url: https://zhuanlan.zhihu.com/p/1989720652035424585
