@@ -14,6 +14,12 @@ chhome home2/user
 ! exec chezmoi apply
 stderr 'inconsistent state'
 
+chhome home3/user
+
+# test that chezmoi externals do not allow multiple conflicting archives with different, equivalent, paths
+! exec chezmoi apply
+stderr 'inconsistent state'
+
 -- archive1/file1 --
 # contents of file1
 -- archive2/file2 --
@@ -35,6 +41,16 @@ stderr 'inconsistent state'
     stripComponents = 1
 -- home2/user/.local/share/chezmoi/.chezmoiexternals/archive2.toml.tmpl --
 [".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
+    stripComponents = 1
+-- home3/user/.local/share/chezmoi/.chezmoiexternals/archive1.toml.tmpl --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
+    stripComponents = 1
+-- home3/user/.local/share/chezmoi/.chezmoiexternals/archive2.toml.tmpl --
+[".dir/"]
     type = "archive"
     url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
     stripComponents = 1
