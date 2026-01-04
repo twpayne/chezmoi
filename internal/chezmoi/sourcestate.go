@@ -683,7 +683,7 @@ DEST_ABS_PATH:
 	return nil
 }
 
-// AddDestAbsPathInfos adds an fs.FileInfo to destAbsPathInfos for destAbsPath
+// AddDestAbsPathInfos adds an [fs.FileInfo] to destAbsPathInfos for destAbsPath
 // and any of its parents which are not already known.
 func (s *SourceState) AddDestAbsPathInfos(
 	destAbsPathInfos map[AbsPath]fs.FileInfo,

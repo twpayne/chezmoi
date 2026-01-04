@@ -71,7 +71,7 @@ func JoinLines(lines ...string) string {
 	return strings.Join(lines, "\n") + "\n"
 }
 
-// SkipUnlessGOOS calls t.Skip() if name does not match runtime.GOOS.
+// SkipUnlessGOOS calls t.Skip() if name does not match [runtime.GOOS].
 func SkipUnlessGOOS(t *testing.T, name string) {
 	t.Helper()
 	switch {
@@ -91,7 +91,7 @@ func WithTestFS(t *testing.T, root any, f func(vfs.FS)) {
 	f(fileSystem)
 }
 
-// mustParseFileMode parses s as a fs.FileMode and panics on any error.
+// mustParseFileMode parses s as a [fs.FileMode] and panics on any error.
 func mustParseFileMode(s string) fs.FileMode {
 	u, err := strconv.ParseUint(s, 0, 32)
 	if err != nil {

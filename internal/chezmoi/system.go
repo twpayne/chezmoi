@@ -103,7 +103,7 @@ func (noUpdateSystemMixin) WriteSymlink(oldName string, newName AbsPath) error {
 	panic("update to no update system")
 }
 
-// MkdirAll is the equivalent of os.MkdirAll but operates on system.
+// MkdirAll is the equivalent of [os.MkdirAll] but operates on system.
 func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 	switch err := system.Mkdir(absPath, perm); {
 	case err == nil:

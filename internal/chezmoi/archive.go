@@ -140,7 +140,7 @@ func implicitTarDirHeader(dir string, modTime time.Time) *tar.Header {
 }
 
 // A RARFileInfo wraps a *rardecode.FileHeader so that it implements
-// fs.FileInfo.
+// [fs.FileInfo].
 type RARFileInfo struct {
 	*rardecode.FileHeader
 }

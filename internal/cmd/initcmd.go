@@ -81,7 +81,7 @@ var repoGuesses = []struct {
 }
 
 // A gitCloneOptionsLogValuer is a git.CloneOptions that implements
-// log/slog.LogValuer.
+// [log/slog.LogValuer].
 type gitCloneOptionsLogValuer git.CloneOptions
 
 func (c *Config) newInitCmd() *cobra.Command {

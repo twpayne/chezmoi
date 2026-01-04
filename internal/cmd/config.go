@@ -1589,11 +1589,11 @@ func (c *Config) getGitleaksDetector() (*detect.Detector, error) {
 	return c.gitleaksDetector, c.gitleaksDetectorErr
 }
 
-// A modifyHTTPRequestFunc is a function that modifies a net/http.Request before
-// it is sent.
+// A modifyHTTPRequestFunc is a function that modifies a [net/http.Request]
+// before it is sent.
 type modifyHTTPRequestFunc func(*http.Request) (*http.Request, error)
 
-// A modifyHTTPRequestRoundTripper is a net/http.Transport that modifies the
+// A modifyHTTPRequestRoundTripper is a [net/http.Transport] that modifies the
 // request before it is sent.
 type modifyHTTPRequestRoundTripper struct {
 	modifyHTTPRequestFunc modifyHTTPRequestFunc
@@ -1607,7 +1607,7 @@ func newModifyHTTPRequestRoundTripper(f modifyHTTPRequestFunc, t http.RoundTripp
 	}
 }
 
-// RoundTrip implements net/http.Transport.RoundTrip.
+// RoundTrip implements [net/http.Transport.RoundTrip].
 func (m modifyHTTPRequestRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	modifiedRequest, err := m.modifyHTTPRequestFunc(req)
 	if err != nil {

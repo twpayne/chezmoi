@@ -114,7 +114,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	return c.writeOutputString(gzippedArchive.String(), 0o666)
 }
 
-// tarHeaderTemplate returns a tar.Header template populated with the current
+// tarHeaderTemplate returns a [tar.Header] template populated with the current
 // user and time.
 func tarHeaderTemplate() tar.Header {
 	// Attempt to lookup the current user. Ignore errors because the default
