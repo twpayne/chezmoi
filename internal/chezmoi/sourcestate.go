@@ -663,7 +663,12 @@ DEST_ABS_PATH:
 			}
 		}
 		if !sourceUpdate.destAbsPath.IsEmpty() {
-			if err := PersistentStateSet(persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState); err != nil {
+			if err := PersistentStateSet(
+				persistentState,
+				EntryStateBucket,
+				sourceUpdate.destAbsPath.Bytes(),
+				sourceUpdate.entryState,
+			); err != nil {
 				return err
 			}
 		}

@@ -167,10 +167,15 @@ func (c *Config) gitHubRelease(ownerRepo, version string) (*github.RepositoryRel
 		return nil, err
 	}
 
-	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubVersionReleaseStateBucket, gitHubVersionReleaseKey, &gitHubLatestReleaseState{
-		RequestedAt: now,
-		Release:     release,
-	}); err != nil {
+	if err := chezmoi.PersistentStateSet(
+		c.persistentState,
+		gitHubVersionReleaseStateBucket,
+		gitHubVersionReleaseKey,
+		&gitHubLatestReleaseState{
+			RequestedAt: now,
+			Release:     release,
+		},
+	); err != nil {
 		return nil, err
 	}
 
@@ -214,10 +219,15 @@ func (c *Config) gitHubLatestRelease(ownerRepo string) (*github.RepositoryReleas
 		return nil, err
 	}
 
-	if err := chezmoi.PersistentStateSet(c.persistentState, gitHubLatestReleaseStateBucket, gitHubLatestReleaseKey, &gitHubLatestReleaseState{
-		RequestedAt: now,
-		Release:     release,
-	}); err != nil {
+	if err := chezmoi.PersistentStateSet(
+		c.persistentState,
+		gitHubLatestReleaseStateBucket,
+		gitHubLatestReleaseKey,
+		&gitHubLatestReleaseState{
+			RequestedAt: now,
+			Release:     release,
+		},
+	); err != nil {
 		return nil, err
 	}
 

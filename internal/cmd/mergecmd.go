@@ -94,7 +94,10 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	// two-way merge if the source state's contents cannot be decrypted or
 	// are an invalid template
 	var targetStateEntry chezmoi.TargetStateEntry
-	if targetStateEntry, err = sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath)); err != nil {
+	if targetStateEntry, err = sourceStateEntry.TargetStateEntry(
+		c.destSystem,
+		c.DestDirAbsPath.Join(targetRelPath),
+	); err != nil {
 		return fmt.Errorf("%s: %w", targetRelPath, err)
 	}
 	targetStateFile, ok := targetStateEntry.(*chezmoi.TargetStateFile)
@@ -184,7 +187,11 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 		if encryptedContents, err = c.encryption.EncryptFile(plaintextAbsPath); err != nil {
 			return err
 		}
-		if err := c.baseSystem.WriteFile(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()), encryptedContents, 0o644); err != nil {
+		if err := c.baseSystem.WriteFile(
+			c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()),
+			encryptedContents,
+			0o644,
+		); err != nil {
 			return err
 		}
 	}
