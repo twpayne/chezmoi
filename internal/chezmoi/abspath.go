@@ -124,7 +124,7 @@ func (p AbsPath) String() string {
 	return string(p)
 }
 
-// ToSlash calls filepath.ToSlash on p.
+// ToSlash calls [filepath.ToSlash] on p.
 func (p AbsPath) ToSlash() AbsPath {
 	return NewAbsPath(filepath.ToSlash(string(p)))
 }

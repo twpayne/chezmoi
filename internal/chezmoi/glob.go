@@ -7,7 +7,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 )
 
-// A LstatFS implements io/fs.StatFS but uses Lstat instead of Stat.
+// A LstatFS implements [io/fs.StatFS] but uses Lstat instead of Stat.
 type LstatFS struct {
 	Wrapped interface {
 		fs.FS

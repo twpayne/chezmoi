@@ -27,7 +27,7 @@ func IsExecutable(fileInfo fs.FileInfo) bool {
 	return fileInfo.Mode().Perm()&0o111 != 0
 }
 
-// UserHomeDir on UNIX returns the value of os.UserHomeDir.
+// UserHomeDir on UNIX returns the value of [os.UserHomeDir].
 func UserHomeDir() (string, error) {
 	return os.UserHomeDir()
 }

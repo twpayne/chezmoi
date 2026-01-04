@@ -7,7 +7,7 @@ import "errors"
 // Combine combines all non-nil errors in errs into one. If there are no non-nil
 // errors, it returns nil. If there is exactly one non-nil error then it returns
 // that error. Otherwise, it returns the non-nil errors combined with
-// errors.Join.
+// [errors.Join].
 func Combine(errs ...error) error {
 	nonNilErrs := make([]error, 0, len(errs))
 	for _, err := range errs {

@@ -17,7 +17,7 @@ import (
 	"golang.org/x/text/encoding/unicode"
 )
 
-// A Template extends text/template.Template with support for directives.
+// A Template extends [text/template.Template] with support for directives.
 type Template struct {
 	name     string
 	template *template.Template

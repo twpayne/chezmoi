@@ -15,20 +15,20 @@ import (
 
 const few = 64
 
-// An OSExecCmdLogValuer wraps an *os/exec.Cmd and adds log/slog.LogValuer
+// An OSExecCmdLogValuer wraps an [*os/exec.Cmd] and adds [log/slog.LogValuer]
 // functionality.
 type OSExecCmdLogValuer struct {
 	*exec.Cmd
 }
 
-// An OSExecExitLogValuerError wraps an *os/exec.ExitError and adds
-// log/slog.LogValuer.
+// An OSExecExitLogValuerError wraps an [*os/exec.ExitError] and adds
+// [log/slog.LogValuer].
 type OSExecExitLogValuerError struct {
 	*exec.ExitError
 }
 
-// An OSProcessStateLogValuer wraps an *os.ProcessState and adds
-// log/slog.LogValuer functionality.
+// An OSProcessStateLogValuer wraps an [*os.ProcessState] and adds
+// [log/slog.LogValuer] functionality.
 type OSProcessStateLogValuer struct {
 	*os.ProcessState
 }
@@ -106,12 +106,12 @@ func AppendExitErrorAttrs(attrs []slog.Attr, err error) []slog.Attr {
 	return attrs
 }
 
-// Bytes returns an slog.Attr with the value data.
+// Bytes returns an [slog.Attr] with the value data.
 func Bytes(key string, data []byte) slog.Attr {
 	return slog.String(key, string(data))
 }
 
-// FirstFewBytes returns an slog.Attr with the value of the first few bytes of
+// FirstFewBytes returns an [slog.Attr] with the value of the first few bytes of
 // data.
 func FirstFewBytes(key string, data []byte) slog.Attr {
 	return slog.String(key, string(firstFewBytesHelper(data)))
@@ -230,7 +230,7 @@ func InfoOrErrorContext(ctx context.Context, logger *slog.Logger, msg string, er
 	logger.Log(ctx, level, msg, args...)
 }
 
-// Stringer returns an slog.Attr with value.
+// Stringer returns an [slog.Attr] with value.
 func Stringer(key string, value fmt.Stringer) slog.Attr {
 	return slog.String(key, value.String())
 }

@@ -2,7 +2,7 @@ package chezmoi
 
 import "time"
 
-// A Duration is a time.Duration that implements encoding.TextUnmarshaler.
+// A Duration is a [time.Duration] that implements [encoding.TextUnmarshaler].
 type Duration time.Duration
 
 func (d *Duration) UnmarshalText(data []byte) error {

@@ -147,7 +147,7 @@ func diffChunks(from, to string) []diff.Chunk {
 	return chunks
 }
 
-// diffFileMode converts an io/fs.FileMode into a
+// diffFileMode converts an [io/fs.FileMode] into a
 // github.com/go-git/go-git/v5/plumbing/format/diff.FileMode.
 func diffFileMode(mode fs.FileMode) (filemode.FileMode, error) {
 	fileMode, err := filemode.NewFromOSFileMode(mode)

@@ -5,7 +5,7 @@ import (
 	"log/slog"
 )
 
-// A NullHandler implements log/slog.Handler and drops all output.
+// A NullHandler implements [log/slog.Handler] and drops all output.
 type NullHandler struct{}
 
 func (NullHandler) Enabled(context.Context, slog.Level) bool  { return false }

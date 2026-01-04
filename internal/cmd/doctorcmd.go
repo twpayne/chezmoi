@@ -122,7 +122,7 @@ type latestVersionCheck struct {
 	version       semver.Version
 }
 
-// An osArchCheck checks that runtime.GOOS and runtime.GOARCH are supported.
+// An osArchCheck checks that [runtime.GOOS] and [runtime.GOARCH] are supported.
 type osArchCheck struct{}
 
 // A omittedCheck is a check that is omitted.

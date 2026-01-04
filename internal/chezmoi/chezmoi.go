@@ -192,8 +192,8 @@ func FlagCompletionFunc(allCompletions []string) func(*cobra.Command, []string, 
 	}
 }
 
-// ParseBool is like strconv.ParseBool but also accepts on, ON, y, Y, yes, YES,
-// n, N, no, NO, off, and OFF.
+// ParseBool is like [strconv.ParseBool] but also accepts on, ON, y, Y, yes,
+// YES, n, N, no, NO, off, and OFF.
 func ParseBool(str string) (bool, error) {
 	switch strings.ToLower(strings.TrimSpace(str)) {
 	case "n", "no", "off":

@@ -11,7 +11,7 @@ type Interpreter struct {
 	Args    []string `json:"args"    mapstructure:"args"    yaml:"args"`
 }
 
-// ExecCommand returns the *exec.Cmd to interpret name.
+// ExecCommand returns the [*exec.Cmd] to interpret name.
 func (i *Interpreter) ExecCommand(name string) *exec.Cmd {
 	if i.None() {
 		return exec.Command(name)

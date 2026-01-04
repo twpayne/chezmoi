@@ -10,7 +10,7 @@ var (
 	lookPathCache      = make(map[string]string)
 )
 
-// LookPath is like os/exec.LookPath except that the first positive result is
+// LookPath is like [os/exec.LookPath] except that the first positive result is
 // cached.
 func LookPath(file string) (string, error) {
 	lookPathCacheMutex.Lock()

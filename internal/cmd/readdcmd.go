@@ -19,7 +19,7 @@ type reAddCmdConfig struct {
 	recursive bool
 }
 
-// A fileInfo is a simple struct that implements the io/fs.FileInfo interface
+// A fileInfo is a simple struct that implements the [io/fs.FileInfo] interface
 // for the purpose of overriding the mode on Windows.
 type fileInfo struct {
 	name    string
