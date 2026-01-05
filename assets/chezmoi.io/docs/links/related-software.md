@@ -19,6 +19,10 @@ Convenience functions for interacting with chezmoi in Emacs.
 
 A plugin for VIM to apply the dotfile you are editing on `:w`.
 
+### [`github.com/Lindydancer/tmpl-mode`](https://github.com/Lindydancer/tmpl-mode) { id="Lindydancer/tmpl-mode" }
+
+Emacs minor mode for "tmpl" template files.
+
 ### [`github.com/xvzc/chezmoi.nvim`](https://github.com/xvzc/chezmoi.nvim) { id="xvzc/chezmoi.nvim" }
 
 Edit your chezmoi-managed files and automatically apply.
