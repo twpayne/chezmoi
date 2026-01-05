@@ -6,7 +6,7 @@ Pass][protonpass] using the [Proton Pass CLI][protonpass-cli].
 !!! example
 
     ```
-    {{ (protonPass "pass://$SHARE_ID/$ITEM_ID").item.content.content.key.password }}
+    {{ (protonPassJSON "pass://$SHARE_ID/$ITEM_ID").item.content.content.key.password }}
     ```
 
 [protonpass]: https://proton.me/pass
