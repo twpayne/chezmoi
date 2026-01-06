@@ -1771,9 +1771,10 @@ func (s *SourceState) getExternalData(
 
 	var errs []error
 
-	if external.Checksum.Size != 0 && external.Checksum.SHA256 == nil && external.Checksum.SHA384 == nil &&
-		external.Checksum.SHA512 == nil {
-		s.warnFunc("%s: warning: insecure size check without secure hash will be removed\n", externalRelPath)
+	if external.Checksum.Size != 0 {
+		if external.Checksum.SHA256 == nil && external.Checksum.SHA384 == nil && external.Checksum.SHA512 == nil {
+			s.warnFunc("%s: warning: insecure size check without secure hash will be removed\n", externalRelPath)
+		}
 		if len(data) != external.Checksum.Size {
 			err := fmt.Errorf("size mismatch: expected %d, got %d", external.Checksum.Size, len(data))
 			errs = append(errs, err)
