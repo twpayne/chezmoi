@@ -4,7 +4,7 @@ var license = "" +
 	"\n" +
 	"  The MIT License (MIT)\n" +
 	"\n" +
-	"  Copyright (c) 2018-2026 Tom Payne\n" +
+	"  Copyright (c) 2018 Tom Payne\n" +
 	"\n" +
 	"  Permission is hereby granted, free of charge, to any person obtaining a copy\n" +
 	"  of this software and associated documentation files (the \"Software\"), to\n" +

@@ -2,7 +2,7 @@ site_name: chezmoi
 site_url: https://chezmoi.io
 site_description: Manage your dotfiles across multiple machines, securely.
 site_author: Tom Payne
-copyright: Copyright © Tom Payne 2018-2026
+copyright: Copyright © Tom Payne 2018
 repo_name: twpayne/chezmoi
 repo_url: https://github.com/twpayne/chezmoi
 edit_uri: edit/master/assets/chezmoi.io/docs/
