@@ -28,10 +28,10 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
-	"github.com/go-sprout/sprout/sprigin"
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
@@ -373,7 +373,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		// Global configuration.
 		configFormat:  newChoiceFlag("", readDataFormatValues),
 		homeDir:       userHomeDir,
-		templateFuncs: sprigin.TxtFuncMap(),
+		templateFuncs: sprig.TxtFuncMap(),
 
 		// Command configurations.
 		apply: applyCmdConfig{
@@ -464,14 +464,12 @@ func newConfig(options ...configOption) (*Config, error) {
 	// map first to avoid a duplicate function panic.
 	for _, templateFunc := range []string{
 		"fromJson",
-		"fromYaml",
 		"quote",
 		"splitList",
 		"squote",
 		"toPrettyJson",
 		"toString",
 		"toStrings",
-		"toYaml",
 	} {
 		if _, ok := c.templateFuncs[templateFunc]; !ok {
 			panic(templateFunc + ": deleting non-existent template function")
