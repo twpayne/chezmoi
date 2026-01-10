@@ -295,8 +295,12 @@ func (c *Config) ioregTemplateFunc() map[string]any {
 	return value
 }
 
-func (c *Config) joinPathTemplateFunc(elem ...string) string {
-	return filepath.Join(elem...)
+func (c *Config) joinPathTemplateFunc(elems ...any) string {
+	args, err := anyToStringSlice(elems)
+	if err != nil {
+		panic(err)
+	}
+	return filepath.Join(args...)
 }
 
 func (c *Config) jqTemplateFunc(source string, input any) any {
