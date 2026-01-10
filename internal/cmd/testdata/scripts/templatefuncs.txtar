@@ -80,6 +80,8 @@ stdout ^data$
 # test joinPath template function
 exec chezmoi execute-template '{{ joinPath "a" "b" }}'
 stdout a${/}b
+exec chezmoi execute-template '{{ joinPath .chezmoi.destDir "string" }}'
+stdout home${/@R}user${/@R}string
 
 # test jq template function
 exec chezmoi execute-template '{{ dict "key" "value" | jq ".key" | first }}'
