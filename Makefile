@@ -182,3 +182,14 @@ test-release: ensure-goreleaser
 		--skip=chocolatey,sign \
 		--snapshot \
 		${GORELEASER_FLAGS}
+
+# FIXME parse go.mod instead of hardcoding tools here
+.PHONY: update-go-tools
+update-go-tools:
+	go get \
+		github.com/editorconfig-checker/editorconfig-checker/v3@latest \
+		github.com/google/capslock@latest \
+		github.com/josephspurrier/goversioninfo@latest \
+		github.com/rhysd/actionlint@latest \
+		github.com/twpayne/find-typos@latest \
+		github.com/twpayne/go-jsonstruct/v3@latest
