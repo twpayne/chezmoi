@@ -823,14 +823,18 @@ var helps = map[string]*help{
 			"  chezmoi unmanaged\n" +
 			"  chezmoi unmanaged ~/.config/chezmoi ~/.ssh",
 		longFlags: chezmoiset.New(
+			"exclude",
+			"include",
 			"nul-path-separator",
 			"path-style",
 			"tree",
 		),
 		shortFlags: chezmoiset.New(
 			"0",
+			"i",
 			"p",
 			"t",
+			"x",
 		),
 	},
 	"update": {

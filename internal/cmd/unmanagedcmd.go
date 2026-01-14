@@ -12,6 +12,7 @@ import (
 )
 
 type unmanagedCmdConfig struct {
+	filter           *chezmoi.EntryTypeFilter
 	nulPathSeparator bool
 	pathStyle        *choiceFlag
 	tree             bool
@@ -31,6 +32,8 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 		),
 	}
 
+	unmanagedCmd.Flags().VarP(c.unmanaged.filter.Exclude, "exclude", "x", "Exclude entry types")
+	unmanagedCmd.Flags().VarP(c.unmanaged.filter.Include, "include", "i", "Include entry types")
 	unmanagedCmd.Flags().
 		BoolVarP(&c.unmanaged.nulPathSeparator, "nul-path-separator", "0", c.unmanaged.nulPathSeparator, "Use the NUL character as a path separator")
 	unmanagedCmd.Flags().VarP(c.unmanaged.pathStyle, "path-style", "p", "Path style")
@@ -76,7 +79,8 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		sourceStateEntry := sourceState.Get(targetRelPath)
 		managed := sourceStateEntry != nil
 		ignored := sourceState.Ignore(targetRelPath)
-		if !managed && !ignored {
+		included := c.unmanaged.filter.IncludeFileInfo(fileInfo)
+		if !managed && !ignored && included {
 			unmanagedRelPaths.Add(targetRelPath)
 		}
 		if fileInfo.IsDir() {

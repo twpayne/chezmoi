@@ -7,6 +7,14 @@ It is an error to supply *path*s that are not found on the file system.
 
 ## Common flags
 
+### `-x`, `--exclude` *types*
+
+--8<-- "common-flags/exclude.md"
+
+### `-i`, `--include` *types*
+
+--8<-- "common-flags/include.md"
+
 ### `-0`, `--nul-path-separator`
 
 --8<-- "common-flags/nul-path-separator.md"

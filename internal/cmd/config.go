@@ -442,6 +442,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			},
 		},
 		unmanaged: unmanagedCmdConfig{
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			pathStyle: newChoiceFlag(pathStyleRelative, targetPathStyleValues),
 		},
 

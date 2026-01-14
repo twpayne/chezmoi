@@ -31,6 +31,14 @@ cmp stdout golden/unmanaged-with-some-managed
 [unix] exec chezmoi unmanaged --path-style=absolute
 [unix] cmpenv stdout golden/unmanaged-absolute
 
+# test chezmoi unmanaged --exclude=dirs
+exec chezmoi unmanaged --exclude=dirs
+cmpenv stdout golden/unmanaged-exclude-dirs
+
+# test chezmoi unmanaged --include=dirs
+exec chezmoi unmanaged --include=dirs
+cmpenv stdout golden/unmanaged-include-dirs
+
 # test chezmoi unmanaged --path-style=source-absolute
 ! exec chezmoi unmanaged --path-style=source-absolute
 stderr 'flag: invalid value'
@@ -47,6 +55,11 @@ $WORK/home/user/.local
 -- golden/unmanaged-dir-file --
 .dir
 .file
+.local
+-- golden/unmanaged-exclude-dirs --
+.file
+-- golden/unmanaged-include-dirs --
+.dir
 .local
 -- golden/unmanaged-inside-unmanaged --
 .dir/subdir
