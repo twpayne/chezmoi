@@ -618,3 +618,7 @@ articles:
   lang: CN
   title: 换新电脑不再折腾：用 chezmoi × Nix 一键复刻开发环境
   url: https://zhuanlan.zhihu.com/p/1989720652035424585
+- date: '2026-01-13'
+  version: 2.69.1
+  title: Taking Control of My Dotfiles with chezmoi
+  url: https://blog.cmmx.de/2026/01/13/taking-control-of-my-dotfiles-with-chezmoi/
