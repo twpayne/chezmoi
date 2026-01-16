@@ -35,11 +35,28 @@ packages, and snaps, creates a new [GitHub Release][release], and deploys the
 Publishing [Snaps][snaps] requires a `SNAPCRAFT_STORE_CREDENTIALS` [repository
 secret][secret].
 
-Snapcraft store credentials periodically expire. Create new snapcraft store
-credentials by running:
+Snapcraft store credentials periodically expire. This is visible in the release
+GitHub Action reporting:
+
+```
+Run snapcraft whoami
+Store operation failed:
+- macaroon-authorization-required: The request is missing an Authorization header field containing a valid macaroon
+```
+
+Create new snapcraft store credentials by running:
 
 ```sh
 snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
+```
+
+This command requires a Ubuntu machine with snapcraft installed and a keyring,
+which is typically not available over SSH connections. Login to a GNOME session
+on a Ubuntu machine and run:
+
+```sh
+sudo snap install --classic snapcraft
+snapcraft login
 ```
 
 ### Homebrew
