@@ -5331,6 +5331,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#-x-exclude-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -x, --exclude types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-i-include-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -i, --include types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-0-nul-path-separator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11059,6 +11081,28 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#-x-exclude-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -x, --exclude types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-i-include-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        -i, --include types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-0-nul-path-separator" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11132,6 +11176,26 @@
 unmanaged files in the destination directory.</p>
 <p>It is an error to supply <em>path</em>s that are not found on the file system.</p>
 <h2 id="common-flags">Common flags</h2>
+<h3 id="-x-exclude-types"><code>-x</code>, <code>--exclude</code> <em>types</em></h3>
+<!-- markdownlint-disable first-line-heading -->
+
+<p>Exclude target state entries of specific <a href="../../command-line-flags/common/#available-entry-types"><em>types</em></a>. The default is
+<code>none</code>.</p>
+<p>Types can be explicitly included with the <code>--include</code> flag.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><code>--exclude=scripts</code> will cause the command to not run scripts and
+<code>--exclude=encrypted</code> will exclude encrypted files.</p>
+</div>
+<h3 id="-i-include-types"><code>-i</code>, <code>--include</code> <em>types</em></h3>
+<!-- markdownlint-disable first-line-heading -->
+
+<p>Include target state entries of specific <a href="../../command-line-flags/common/#available-entry-types"><em>types</em></a>. The default is <code>all</code>.</p>
+<p>Types can be explicitly excluded with the <code>--exclude</code> flag.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><code>--include=files</code> specifies all files.</p>
+</div>
 <h3 id="-0-nul-path-separator"><code>-0</code>, <code>--nul-path-separator</code></h3>
 <!-- markdownlint-disable first-line-heading -->
 
