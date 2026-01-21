@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 )
 
 const (
@@ -228,22 +229,42 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
+	// Build exact target paths set from the original args when --exact is used.
+	// This ensures only explicitly specified paths (and their descendants) get
+	// the exact_ prefix, not implicitly-added parent directories.
+	var exactTargetRelPaths chezmoiset.Set[chezmoi.RelPath]
+	if c.Add.exact {
+		exactTargetRelPaths = chezmoiset.New[chezmoi.RelPath]()
+		for _, arg := range args {
+			destAbsPath, err := chezmoi.NormalizePath(arg)
+			if err != nil {
+				return err
+			}
+			targetRelPath, err := destAbsPath.TrimDirPrefix(c.DestDirAbsPath)
+			if err != nil {
+				return err
+			}
+			exactTargetRelPaths.Add(targetRelPath)
+		}
+	}
+
 	return sourceState.Add(
 		c.sourceSystem,
 		c.persistentState,
 		c.destSystem,
 		destAbsPathInfos,
 		&chezmoi.AddOptions{
-			AutoTemplate:      c.Add.autoTemplate,
-			Create:            c.Add.create,
-			Encrypt:           c.Add.Encrypt,
-			EncryptedSuffix:   c.encryption.EncryptedSuffix(),
-			Exact:             c.Add.exact,
-			Errorf:            c.errorf,
-			Filter:            c.Add.filter,
-			OnIgnoreFunc:      c.defaultOnIgnoreFunc,
-			PreAddFunc:        c.defaultPreAddFunc,
-			ConfigFileAbsPath: configFileAbsPath,
+			AutoTemplate:        c.Add.autoTemplate,
+			Create:              c.Add.create,
+			Encrypt:             c.Add.Encrypt,
+			EncryptedSuffix:     c.encryption.EncryptedSuffix(),
+			Exact:               c.Add.exact,
+			ExactTargetRelPaths: exactTargetRelPaths,
+			Errorf:              c.errorf,
+			Filter:              c.Add.filter,
+			OnIgnoreFunc:        c.defaultOnIgnoreFunc,
+			PreAddFunc:          c.defaultPreAddFunc,
+			ConfigFileAbsPath:   configFileAbsPath,
 			ProtectedAbsPaths: []chezmoi.AbsPath{
 				c.CacheDirAbsPath,
 				c.WorkingTreeAbsPath,
