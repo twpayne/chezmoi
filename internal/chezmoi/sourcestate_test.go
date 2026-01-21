@@ -19,6 +19,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 	"chezmoi.io/chezmoi/internal/chezmoitest"
 )
 
@@ -480,6 +481,33 @@ func TestSourceStateAdd(t *testing.T) {
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/exact_subdir/file",
 					vfst.TestModeIsRegular(),
 					vfst.TestContentsString("# contents of .dir/subdir/file\n"),
+				),
+			},
+		},
+		{
+			name: "exact_subdir_not_exact_parent",
+			destAbsPaths: []AbsPath{
+				NewAbsPath("/home/user/.dir/subdir"),
+			},
+			addOptions: AddOptions{
+				Exact:               true,
+				ExactTargetRelPaths: chezmoiset.New(NewRelPath(".dir/subdir")),
+				Filter:              NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+			},
+			tests: []any{
+				// Parent directory should NOT have exact_ prefix
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
+					vfst.TestIsDir(),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
+				),
+				// Target directory should have exact_ prefix
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/exact_subdir",
+					vfst.TestIsDir(),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
+				),
+				// Verify that exact_dot_dir does NOT exist (parent should not be exact)
+				vfst.TestPath("/home/user/.local/share/chezmoi/exact_dot_dir",
+					vfst.TestDoesNotExist(),
 				),
 			},
 		},
