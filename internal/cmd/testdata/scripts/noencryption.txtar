@@ -2,11 +2,11 @@ mkhomedir
 
 # test that chezmoi add --encrypt without encryption fails
 ! exec chezmoi add --encrypt $HOME${/}.encrypted
-stderr 'no encryption'
+stderr 'encryption not configured'
 
 # test that chezmoi apply without encryption fails
 ! exec chezmoi apply --force
-stderr \.encrypted:\sno\sencryption$
+stderr '\.encrypted: encryption not configured$'
 
 -- home/user/.encrypted --
 # contents of .encrypted
