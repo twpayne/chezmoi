@@ -622,3 +622,13 @@ articles:
   version: 2.69.1
   title: Taking Control of My Dotfiles with chezmoi
   url: https://blog.cmmx.de/2026/01/13/taking-control-of-my-dotfiles-with-chezmoi/
+- date: '2026-01-22'
+  version: 2.69.3
+  lang: JP
+  title: 【chezmoi】AIエージェントの指示ファイルと権限管理を共通化してラクしよう【Hooks】
+  url: https://zenn.dev/waki285/articles/chezmoi-dotfiles
+- date: '2026-01-24'
+  version: 2.69.3
+  lang: CN
+  title: Chezmoi 管理和同步多平台 dotfiles
+  url: https://v3n0.top/post/2026/chezmoi/
