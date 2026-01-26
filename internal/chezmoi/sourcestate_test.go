@@ -19,6 +19,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 	"chezmoi.io/chezmoi/internal/chezmoitest"
 )
 
@@ -489,8 +490,9 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/subdir"),
 			},
 			addOptions: AddOptions{
-				Exact:  true,
-				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+				Exact:               true,
+				ExactTargetRelPaths: chezmoiset.New(NewRelPath(".dir/subdir")),
+				Filter:              NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				// Parent directory should NOT have exact_ prefix
