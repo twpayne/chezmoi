@@ -340,27 +340,28 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate        bool                      // Automatically create templates, if possible.
-	Create              bool                      // Add create_ entries instead of normal entries.
-	Encrypt             bool                      // Encrypt files.
-	EncryptedSuffix     string                    // Suffix for encrypted files.
-	Errorf              func(string, ...any)      // Function to print errors.
-	Exact               bool                      // Add the exact_ attribute to added directories.
-	ExactTargetRelPaths chezmoiset.Set[RelPath]   // Paths that should be marked exact (if nil and Exact is true, all dirs are exact).
-	Filter              *EntryTypeFilter          // Entry type filter.
-	OnIgnoreFunc        func(RelPath)             // Function to call when a target is ignored.
-	PreAddFunc          PreAddFunc                // Function to be called before a source entry is added.
-	ConfigFileAbsPath   AbsPath                   // Path to config file.
-	ProtectedAbsPaths   []AbsPath                 // Paths that must not be added.
-	RemoveDir           RelPath                   // Directory to remove before adding.
-	ReplaceFunc         ReplaceFunc               // Function to be called before a source entry is replaced.
-	Template            bool                      // Add the .tmpl attribute to added files.
-	TemplateSymlinks    bool                      // Add symlinks with targets in the source or home directories as templates.
+	AutoTemplate        bool                    // Automatically create templates, if possible.
+	Create              bool                    // Add create_ entries instead of normal entries.
+	Encrypt             bool                    // Encrypt files.
+	EncryptedSuffix     string                  // Suffix for encrypted files.
+	Errorf              func(string, ...any)    // Function to print errors.
+	Exact               bool                    // Add the exact_ attribute to added directories.
+	ExactTargetRelPaths chezmoiset.Set[RelPath] // Paths that should be marked exact (if nil and Exact is true, all dirs are exact).
+	Filter              *EntryTypeFilter        // Entry type filter.
+	OnIgnoreFunc        func(RelPath)           // Function to call when a target is ignored.
+	PreAddFunc          PreAddFunc              // Function to be called before a source entry is added.
+	ConfigFileAbsPath   AbsPath                 // Path to config file.
+	ProtectedAbsPaths   []AbsPath               // Paths that must not be added.
+	RemoveDir           RelPath                 // Directory to remove before adding.
+	ReplaceFunc         ReplaceFunc             // Function to be called before a source entry is replaced.
+	Template            bool                    // Add the .tmpl attribute to added files.
+	TemplateSymlinks    bool                    // Add symlinks with targets in the source or home directories as templates.
 }
 
 // shouldBeExact returns true if targetRelPath should have the exact attribute.
-// A path is exact if Exact is true AND either ExactTargetRelPaths is nil (legacy behavior)
-// or the path equals or is a descendant of an explicit exact target.
+// A path is exact if Exact is true AND either ExactTargetRelPaths is nil
+// (legacy behavior) or the path equals or is a descendant of an explicit
+// exact target.
 func (o *AddOptions) shouldBeExact(targetRelPath RelPath) bool {
 	if !o.Exact {
 		return false
