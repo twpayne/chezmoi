@@ -369,6 +369,9 @@ sections:
       description: Extra args to secret CLI command.
     command:
       description: Generic secret CLI command.
+  ssh:
+    identity:
+      description: SSH public key identity.
   status:
     exclude:
       type: '[]string'

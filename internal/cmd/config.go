@@ -175,6 +175,7 @@ type ConfigFile struct {
 	Encryption string                `json:"encryption" mapstructure:"encryption" yaml:"encryption"`
 	Age        chezmoi.AgeEncryption `json:"age"        mapstructure:"age"        yaml:"age"`
 	GPG        chezmoi.GPGEncryption `json:"gpg"        mapstructure:"gpg"        yaml:"gpg"`
+	SSH        chezmoi.SSHEncryption `json:"ssh"        mapstructure:"ssh"        yaml:"ssh"`
 
 	// Command configurations.
 	Add        addCmdConfig        `json:"add"        mapstructure:"add"        yaml:"add"`
@@ -2822,6 +2823,8 @@ func (c *Config) setEncryption() error {
 		c.encryption = &c.Age
 	case "gpg":
 		c.encryption = &c.GPG
+	case "ssh":
+		c.encryption = &c.SSH
 	case "transparent":
 		c.encryption = chezmoi.TransparentEncryption{}
 	case "":
