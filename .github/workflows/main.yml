@@ -69,10 +69,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@f6a16bef8e5c39e398e4da16862d381f76824ac6   # codeql-bundle-v2.23.9
+    - uses: github/codeql-action/init@25a224b8085c21d4d61b7fc051468805fc3ac490   # codeql-bundle-v2.24.0
       with:
         languages: go
-    - uses: github/codeql-action/analyze@f6a16bef8e5c39e398e4da16862d381f76824ac6   # codeql-bundle-v2.23.9
+    - uses: github/codeql-action/analyze@25a224b8085c21d4d61b7fc051468805fc3ac490   # codeql-bundle-v2.24.0
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -94,7 +94,7 @@ jobs:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
       with:
         persist-credentials: false
-    - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7   # v5.0.2
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
       with:
         path: |
           ~/.go-alpine
@@ -118,7 +118,7 @@ jobs:
     - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
       with:
         persist-credentials: false
-    - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7   # v5.0.2
+    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
       with:
         path: |
           ~/.go-archlinux
