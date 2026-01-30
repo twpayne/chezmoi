@@ -340,21 +340,43 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate      bool                 // Automatically create templates, if possible.
-	Create            bool                 // Add create_ entries instead of normal entries.
-	Encrypt           bool                 // Encrypt files.
-	EncryptedSuffix   string               // Suffix for encrypted files.
-	Errorf            func(string, ...any) // Function to print errors.
-	Exact             bool                 // Add the exact_ attribute to added directories.
-	Filter            *EntryTypeFilter     // Entry type filter.
-	OnIgnoreFunc      func(RelPath)        // Function to call when a target is ignored.
-	PreAddFunc        PreAddFunc           // Function to be called before a source entry is added.
-	ConfigFileAbsPath AbsPath              // Path to config file.
-	ProtectedAbsPaths []AbsPath            // Paths that must not be added.
-	RemoveDir         RelPath              // Directory to remove before adding.
-	ReplaceFunc       ReplaceFunc          // Function to be called before a source entry is replaced.
-	Template          bool                 // Add the .tmpl attribute to added files.
-	TemplateSymlinks  bool                 // Add symlinks with targets in the source or home directories as templates.
+	AutoTemplate        bool                    // Automatically create templates, if possible.
+	Create              bool                    // Add create_ entries instead of normal entries.
+	Encrypt             bool                    // Encrypt files.
+	EncryptedSuffix     string                  // Suffix for encrypted files.
+	Errorf              func(string, ...any)    // Function to print errors.
+	Exact               bool                    // Add the exact_ attribute to added directories.
+	ExactTargetRelPaths chezmoiset.Set[RelPath] // Paths that should be marked exact (if nil and Exact is true, all dirs are exact).
+	Filter              *EntryTypeFilter        // Entry type filter.
+	OnIgnoreFunc        func(RelPath)           // Function to call when a target is ignored.
+	PreAddFunc          PreAddFunc              // Function to be called before a source entry is added.
+	ConfigFileAbsPath   AbsPath                 // Path to config file.
+	ProtectedAbsPaths   []AbsPath               // Paths that must not be added.
+	RemoveDir           RelPath                 // Directory to remove before adding.
+	ReplaceFunc         ReplaceFunc             // Function to be called before a source entry is replaced.
+	Template            bool                    // Add the .tmpl attribute to added files.
+	TemplateSymlinks    bool                    // Add symlinks with targets in the source or home directories as templates.
+}
+
+// shouldBeExact returns true if targetRelPath should have the exact attribute.
+// A path is exact if Exact is true AND either ExactTargetRelPaths is nil
+// (legacy behavior) or the path equals or is a descendant of an explicit
+// exact target.
+func (o *AddOptions) shouldBeExact(targetRelPath RelPath) bool {
+	if !o.Exact {
+		return false
+	}
+	// If ExactTargetRelPaths is nil, use legacy behavior (all dirs are exact)
+	if o.ExactTargetRelPaths == nil {
+		return true
+	}
+	// Check if targetRelPath equals or is a descendant of any exact target
+	for exactTarget := range o.ExactTargetRelPaths {
+		if targetRelPath == exactTarget || targetRelPath.HasDirPrefix(exactTarget) {
+			return true
+		}
+	}
+	return false
 }
 
 // Add adds destAbsPathInfos to s.
@@ -508,7 +530,7 @@ DEST_ABS_PATH:
 			if err != nil {
 				return err
 			}
-			newSourceStateEntry, err = s.sourceStateEntry(actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options)
+			newSourceStateEntry, err = s.sourceStateEntry(actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, targetRelPath, options)
 			if err != nil {
 				return err
 			}
@@ -2253,11 +2275,12 @@ func (s *SourceState) newSourceStateDirEntry(
 	actualStateDir *ActualStateDir,
 	fileInfo fs.FileInfo,
 	parentSourceRelPath SourceRelPath,
+	targetRelPath RelPath,
 	options *AddOptions,
 ) *SourceStateDir {
 	dirAttr := DirAttr{
 		TargetName: fileInfo.Name(),
-		Exact:      options.Exact,
+		Exact:      options.shouldBeExact(targetRelPath),
 		Private:    isPrivate(fileInfo),
 		ReadOnly:   isReadOnly(fileInfo),
 	}
@@ -3005,13 +3028,14 @@ func (s *SourceState) sourceStateEntry(
 	destAbsPath AbsPath,
 	fileInfo fs.FileInfo,
 	parentSourceRelPath SourceRelPath,
+	targetRelPath RelPath,
 	options *AddOptions,
 ) (SourceStateEntry, error) {
 	switch actualStateEntry := actualStateEntry.(type) {
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)
 	case *ActualStateDir:
-		return s.newSourceStateDirEntry(actualStateEntry, fileInfo, parentSourceRelPath, options), nil
+		return s.newSourceStateDirEntry(actualStateEntry, fileInfo, parentSourceRelPath, targetRelPath, options), nil
 	case *ActualStateFile:
 		return s.newSourceStateFileEntryFromFile(actualStateEntry, fileInfo, parentSourceRelPath, options)
 	case *ActualStateSymlink:
