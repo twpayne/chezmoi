@@ -214,8 +214,8 @@ github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkp
 github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
 github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad h1:Qk76DOWdOp+GlyDKBAG3Klr9cn7N+LcYc82AZ2S7+cA=
 github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad/go.mod h1:mPKfmRa823oBIgl2r20LeMSpTAteW5j7FLkc0vjmzyQ=
-github.com/editorconfig-checker/editorconfig-checker/v3 v3.6.0 h1:UgWWhwMJiEtWcQa6YCLMQqA1jagXKdwX8hXLeEwcjkk=
-github.com/editorconfig-checker/editorconfig-checker/v3 v3.6.0/go.mod h1:tYCa8OCiqqWu0JOIonCFmQJTVe/R/iGvAVLdh4u3/Ug=
+github.com/editorconfig-checker/editorconfig-checker/v3 v3.6.1 h1:jdfYul8o1YpAb0tjNBcfJsVFwTn1s4qis4ec5Feuhhs=
+github.com/editorconfig-checker/editorconfig-checker/v3 v3.6.1/go.mod h1:3M/pJVyyr63yWjRWOFpPqKNAzj6JaE/I/+dNDfgN+3I=
 github.com/editorconfig/editorconfig-core-go/v2 v2.6.4 h1:CHwUbBVVyKWRX9kt5A/OtwhYUJB32DrFp9xzmjR6cac=
 github.com/editorconfig/editorconfig-core-go/v2 v2.6.4/go.mod h1:JWRVKHdVW+dkv6F8p+xGCa6a+TyMrqsFbFkSs/aQkrQ=
 github.com/elazarl/goproxy v1.7.2 h1:Y2o6urb7Eule09PjlhQRGNsqRfPmYI3KKQLFpCAV3+o=
@@ -256,8 +256,8 @@ github.com/gitleaks/go-gitdiff v0.9.1 h1:ni6z6/3i9ODT685OLCTf+s/ERlWUNWQF4x1pvoN
 github.com/gitleaks/go-gitdiff v0.9.1/go.mod h1:pKz0X4YzCKZs30BL+weqBIG7mx0jl4tF1uXV9ZyNvrA=
 github.com/gkampitakis/ciinfo v0.3.2 h1:JcuOPk8ZU7nZQjdUhctuhQofk7BGHuIy0c9Ez8BNhXs=
 github.com/gkampitakis/ciinfo v0.3.2/go.mod h1:1NIwaOcFChN4fa/B0hEBdAb6npDlFL8Bwx4dfRLRqAo=
-github.com/gkampitakis/go-snaps v0.5.16 h1:tihmwY3YMe+kv0hohos2AB4yM1SiRUE9VFleGEnKt1Q=
-github.com/gkampitakis/go-snaps v0.5.16/go.mod h1:gC3YqxQTPyIXvQrw/Vpt3a8VqR1MO8sVpZFWN4DGwNs=
+github.com/gkampitakis/go-snaps v0.5.19 h1:hUJlCQOpTt1M+kSisMwioDWZDWpDtdAvUhvWCx1YGW0=
+github.com/gkampitakis/go-snaps v0.5.19/go.mod h1:gC3YqxQTPyIXvQrw/Vpt3a8VqR1MO8sVpZFWN4DGwNs=
 github.com/gliderlabs/ssh v0.3.8 h1:a4YXD1V7xMF9g5nTkdfnja3Sxy1PVDCj1Zg4Wb8vY6c=
 github.com/gliderlabs/ssh v0.3.8/go.mod h1:xYoytBv1sV0aL3CavoDuJIQNURXkkfPA/wxQ1pL1fAU=
 github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 h1:+zs/tPmkDkHx3U66DAb0lQFJrpS6731Oaa12ikc+DiI=
