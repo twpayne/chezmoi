@@ -86,6 +86,45 @@ func TestScript(t *testing.T) {
 			t.Fatalf("no test scripts match regex %q", *filterRegex)
 		}
 	}
+
+	// Use dependency injection for interpreter selection.
+	findExecutableMock := func(files, paths []string) (string, error) {
+		home := os.Getenv("HOME")
+		if strings.Contains(home, "home_none") {
+			return "", nil
+		}
+		if strings.Contains(home, "home_pwsh") {
+			if slices.Contains(files, "pwsh.exe") || slices.Contains(files, "pwsh") {
+				return "/usr/bin/pwsh", nil
+			}
+		}
+		if strings.Contains(home, "home_powershell") {
+			if slices.Contains(files, "powershell.exe") || slices.Contains(files, "powershell") {
+				return "/usr/bin/powershell", nil
+			}
+		}
+		switch os.Getenv("CHEZMOI_TEST_INTERPRETER") {
+		case "pwsh":
+			if slices.Contains(files, "pwsh.exe") || slices.Contains(files, "pwsh") {
+				return "C:\\Program Files\\PowerShell\\7\\pwsh.exe", nil
+			}
+		case "powershell":
+			if slices.Contains(files, "powershell.exe") || slices.Contains(files, "powershell") {
+				return "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", nil
+			}
+		case "none":
+			return "", nil
+		}
+		// fallback to the real implementation
+		return chezmoi.FindExecutable(files, paths)
+	}
+
+	// Override defaultInterpreters for the test.
+	cmd.DefaultInterpreters = cmd.NewDefaultInterpreters(findExecutableMock)
+	if strings.Contains(os.Getenv("HOME"), "home_none") {
+		cmd.DefaultInterpreters["ps1"] = chezmoi.Interpreter{}
+	}
+
 	testscript.Run(t, testscript.Params{
 		Files: files,
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){

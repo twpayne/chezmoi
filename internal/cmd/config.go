@@ -3127,7 +3127,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			auto: true,
 		},
 		Data:         make(map[string]any),
-		Interpreters: defaultInterpreters,
+		Interpreters: DefaultInterpreters,
 		Mode:         chezmoi.ModeFile,
 		Pager:        os.Getenv("PAGER"),
 		Progress: autoBool{

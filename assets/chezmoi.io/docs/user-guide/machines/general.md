@@ -16,7 +16,7 @@ The following template sets the `$chassisType` variable to `"desktop"` or
 {{- else if eq .chezmoi.os "linux" }}
 {{-   $chassisType = (output "hostnamectl" "--json=short" | mustFromJson).Chassis }}
 {{- else if eq .chezmoi.os "windows" }}
-{{-   $chassisType = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "if ((Get-CimInstance -Class Win32_Battery | Measure-Object).Count -gt 0) { Write-Output 'laptop' } else { Write-Output 'desktop' }") | trim }}
+{{-   $chassisType = (output "pwsh.exe" "-NoProfile" "-NonInteractive" "-Command" "if ((Get-CimInstance -Class Win32_Battery | Measure-Object).Count -gt 0) { Write-Output 'laptop' } else { Write-Output 'desktop' }") | trim }}
 {{- end }}
 ```
 
@@ -36,10 +36,16 @@ macOS, Linux and Windows.
 {{-   $cpuCores = (output "sh" "-c" "lscpu --online --parse | grep --invert-match '^#' | sort --field-separator=',' --key='2,4' --unique | wc --lines") | trim | atoi }}
 {{-   $cpuThreads = (output "sh" "-c" "lscpu --online --parse | grep --invert-match '^#' | wc --lines") | trim | atoi }}
 {{- else if eq .chezmoi.os "windows" }}
-{{-   $cpuCores = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "(Get-CimInstance -ClassName 'Win32_Processor').NumberOfCores") | trim | atoi }}
-{{-   $cpuThreads = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "(Get-CimInstance -ClassName 'Win32_Processor').NumberOfLogicalProcessors") | trim | atoi }}
+{{-   $cpuCores = (output "pwsh.exe" "-NoProfile" "-NonInteractive" "-Command" "(Get-CimInstance -ClassName 'Win32_Processor').NumberOfCores") | trim | atoi }}
+{{-   $cpuThreads = (output "pwsh.exe" "-NoProfile" "-NonInteractive" "-Command" "(Get-CimInstance -ClassName 'Win32_Processor').NumberOfLogicalProcessors") | trim | atoi }}
 {{- end }}
 ```
+
+!!! note
+
+    The Windows examples above use `pwsh.exe` (PowerShell Core). If you don't have
+    PowerShell Core installed, you can use `powershell.exe` instead (the built-in
+    Windows PowerShell).
 
 !!! example
 

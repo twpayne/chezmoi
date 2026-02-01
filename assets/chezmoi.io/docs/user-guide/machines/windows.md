@@ -23,11 +23,17 @@ Put the following at the top of your script:
 if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
   if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) {
     $CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
-    Start-Process -Wait -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+    Start-Process -Wait -FilePath pwsh.exe -Verb Runas -ArgumentList $CommandLine
     Exit
   }
 }
 ```
+
+!!! tip
+
+    The example above uses `pwsh.exe` (PowerShell Core). If you don't have
+    PowerShell Core installed or prefer Windows PowerShell, change `pwsh.exe`
+    to `PowerShell.exe` in the `Start-Process` command.
 
 If you use [gsudo][gsudo], it has tips on writing [self-elevating scripts][ses].
 
