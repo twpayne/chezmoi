@@ -32,7 +32,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - id: filter
@@ -61,7 +61,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 1
         persist-credentials: false
@@ -78,7 +78,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962   # v1.27.0
@@ -91,7 +91,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
@@ -115,7 +115,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
@@ -140,7 +140,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -176,7 +176,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -247,7 +247,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         fetch-depth: 0
@@ -290,7 +290,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -321,7 +321,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -352,7 +352,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -411,7 +411,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -455,7 +455,7 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -488,7 +488,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: true
