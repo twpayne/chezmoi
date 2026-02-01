@@ -9,7 +9,8 @@ chhome home2/user
 
 # test that chezmoi apply runs PowerShell scripts
 exec chezmoi apply
-cmp stdout golden/stdout2 # PowerShell already uses UNIX line endings
+unix2dos golden/stdout2 # normalize line endings before comparison
+cmp stdout golden/stdout2
 
 chhome home3/user
 
@@ -27,6 +28,15 @@ Hello from Batch (.cmd)
 Hello from PowerShell
 -- golden/stdout3 --
 Hello from fake Python
+-- golden/stdout_override --
+Hello from overridden PowerShell interpreter
+
+-- golden/stdout_powershell --
+Hello from Windows PowerShell
+
+-- golden/stdout_pwsh --
+Hello from PowerShell Core (pwsh)
+
 -- home/user/.local/share/chezmoi/run_batch_script.bat --
 @echo Hello from Batch (.bat)
 -- home/user/.local/share/chezmoi/run_cmd_script.cmd --
@@ -42,3 +52,34 @@ Write-Host 'Hello from PowerShell'
 # this should never be executed as the interpreter is overridden with
 # fake-python3.bat in the config file
 fail()
+
+# test: pwsh available, should use pwsh
+# (mock FindExecutable to return pwsh.exe path)
+chhome home_pwsh/user
+exec chezmoi apply
+cmp stdout golden/stdout_pwsh
+
+# test: powershell available, pwsh not, should use powershell
+# (mock FindExecutable to return powershell.exe path)
+chhome home_powershell/user
+exec chezmoi apply
+cmp stdout golden/stdout_powershell
+
+# test: interpreters.ps1 config overrides default selection
+chhome home_override/user
+exec chezmoi apply
+cmp stdout golden/stdout_override
+
+-- home_override/user/.config/chezmoi/chezmoi.toml --
+[interpreters.ps1]
+    command = "custom-powershell"
+    args = ["-CustomArg"]
+
+-- home_override/user/.local/share/chezmoi/run_powershell_script.ps1 --
+Write-Host 'Hello from overridden PowerShell interpreter'
+-- home_powershell/user/.local/share/chezmoi/run_powershell_script.ps1 --
+Write-Host 'Hello from Windows PowerShell'
+
+-- home_pwsh/user/.local/share/chezmoi/run_powershell_script.ps1 --
+Write-Host 'Hello from PowerShell Core (pwsh)'
+

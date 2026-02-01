@@ -9,13 +9,13 @@ extensions. Other extensions require an interpreter, which must be in your
 
 The default script interpreters are:
 
-| Extension | Command      | Arguments |
-| --------- | ------------ | --------- |
-| `.nu`     | `nu`         | *none*    |
-| `.pl`     | `perl`       | *none*    |
-| `.py`     | `python3`    | *none*    |
-| `.ps1`    | `powershell` | `-NoLogo` |
-| `.rb`     | `ruby`       | *none*    |
+| Extension | Command      | Arguments       |
+| --------- | ------------ | --------------- |
+| `.nu`     | `nu`         | *none*          |
+| `.pl`     | `perl`       | *none*          |
+| `.py`     | `python3`    | *none*          |
+| `.ps1`    | `pwsh`       | `-NoLogo -File` |
+| `.rb`     | `ruby`       | *none*          |
 
 Script interpreters can be added or overridden by adding the corresponding
 extension (without the leading dot) as a key under the `interpreters`
@@ -60,14 +60,28 @@ section of the configuration file.
     tcl = { command = "tclsh" }
     ```
 
+!!! info "PowerShell Core Installation"
+
+    PowerShell Core (`pwsh`) must be installed separately on most systems.
+    If you don't have it installed:
+
+    - **Windows**: Download from [PowerShell releases](https://github.com/PowerShell/PowerShell/releases)
+      or install via `winget install Microsoft.PowerShell`
+    - **Linux/macOS**: Follow instructions at [Installing PowerShell](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
+
 !!! note
 
-    If you intend to use PowerShell Core (`pwsh.exe`) as the `.ps1`
-    interpreter, include the following in your config file:
+    chezmoi defaults to PowerShell Core (`pwsh`) for `.ps1` scripts as it
+    provides better UTF-8 support and cross-platform compatibility. On Windows,
+    if `pwsh` is not available, chezmoi will automatically fall back to Windows
+    PowerShell (`powershell`).
+
+    To explicitly use Windows PowerShell instead of the automatic selection,
+    include the following in your config file:
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [interpreters.ps1]
-        command = "pwsh"
+        command = "powershell"
         args = ["-NoLogo"]
     ```
 

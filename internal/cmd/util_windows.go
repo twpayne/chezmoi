@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"golang.org/x/sys/windows/registry"
@@ -11,27 +12,28 @@ import (
 
 const defaultEditor = "notepad.exe"
 
-var defaultInterpreters = map[string]chezmoi.Interpreter{
-	"bat": {},
-	"cmd": {},
-	"com": {},
-	"exe": {},
-	"nu": {
-		Command: "nu",
-	},
-	"pl": {
-		Command: "perl",
-	},
-	"ps1": {
-		Command: "powershell",
-		Args:    []string{"-NoLogo"},
-	},
-	"py": {
-		Command: "python3",
-	},
-	"rb": {
-		Command: "ruby",
-	},
+// getPS1Interpreter returns the appropriate Interpreter for PowerShell
+// scripts (.ps1) on Windows systems. It uses the provided findExecutable
+// function to check for the presence of 'pwsh'. If 'pwsh' is not found, it
+// returns an empty Interpreter, indicating no suitable interpreter is
+// available.
+func getPS1Interpreter(findExecutable func([]string, []string) (string, error)) chezmoi.Interpreter {
+	paths := strings.Split(os.Getenv("PATH"), string(os.PathListSeparator))
+	var interpreter chezmoi.Interpreter
+
+	if pwshPath, _ := findExecutable([]string{"pwsh.exe", "pwsh"}, paths); pwshPath != "" {
+		interpreter = chezmoi.Interpreter{
+			Command: "pwsh",
+			Args:    []string{"-NoLogo", "-File"},
+		}
+	} else if powershellPath, _ := findExecutable([]string{"powershell.exe", "powershell"}, paths); powershellPath != "" {
+		interpreter = chezmoi.Interpreter{
+			Command: "powershell",
+			Args:    []string{"-NoLogo", "-File"},
+		}
+	}
+
+	return interpreter
 }
 
 func windowsVersion() (map[string]any, error) {

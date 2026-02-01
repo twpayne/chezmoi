@@ -1,0 +1,12 @@
+[windows] skip 'Unix only'
+[!exec:pwsh] skip 'pwsh not found in $PATH'
+
+# test: pwsh available, should use pwsh
+chhome home_pwsh/user
+exec chezmoi apply
+cmp stdout golden/stdout_pwsh
+
+-- golden/stdout_pwsh --
+Hello from PowerShell Core (pwsh)
+-- home_pwsh/user/.local/share/chezmoi/run_powershell_script.ps1 --
+Write-Host 'Hello from PowerShell Core (pwsh)'
