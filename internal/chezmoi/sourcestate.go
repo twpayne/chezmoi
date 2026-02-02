@@ -901,9 +901,7 @@ func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 
 // Ignored returns all ignored RelPaths.
 func (s *SourceState) Ignored() []RelPath {
-	relPaths := s.ignoredRelPaths.Elements()
-	slices.SortFunc(relPaths, CompareRelPaths)
-	return relPaths
+	return slices.SortedFunc(s.ignoredRelPaths.Elements(), CompareRelPaths)
 }
 
 // MustEntry returns the source state entry associated with targetRelPath, and

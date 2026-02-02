@@ -56,8 +56,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 			}
 			argsAbsPaths.Add(argAbsPath)
 		}
-		absPaths = argsAbsPaths.Elements()
-		slices.Sort(absPaths)
+		absPaths = slices.Sorted(argsAbsPaths.Elements())
 	}
 
 	unmanagedRelPaths := chezmoiset.New[chezmoi.RelPath]()
@@ -105,7 +104,8 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		}
 	}
 
-	paths := make([]fmt.Stringer, 0, len(unmanagedRelPaths.Elements()))
+	elements := slices.Collect(unmanagedRelPaths.Elements())
+	paths := make([]fmt.Stringer, 0, len(elements))
 	for relPath := range unmanagedRelPaths {
 		var path fmt.Stringer
 		switch pathStyle := c.unmanaged.pathStyle.String(); pathStyle {

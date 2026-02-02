@@ -48,8 +48,8 @@ func (ps *PatternSet) LogValue() slog.Value {
 		return slog.Value{}
 	}
 	return slog.GroupValue(
-		slog.Any("includePatterns", ps.IncludePatterns.Elements()),
-		slog.Any("excludePatterns", ps.ExcludePatterns.Elements()),
+		slog.Any("includePatterns", slices.Sorted(ps.IncludePatterns.Elements())),
+		slog.Any("excludePatterns", slices.Sorted(ps.ExcludePatterns.Elements())),
 	)
 }
 
@@ -88,12 +88,11 @@ func (ps *PatternSet) Glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 			}
 		}
 	}
-	matchesSlice := allMatches.Elements()
-	for i, match := range matchesSlice {
-		matchesSlice[i] = filepath.ToSlash(match)[len(prefix):]
+	sortedMatches := slices.Sorted(allMatches.Elements())
+	for i, match := range sortedMatches {
+		sortedMatches[i] = filepath.ToSlash(match)[len(prefix):]
 	}
-	slices.Sort(matchesSlice)
-	return matchesSlice, nil
+	return sortedMatches, nil
 }
 
 // Match returns if name matches ps.

@@ -83,10 +83,8 @@ func TestPatternSetGlob(t *testing.T) {
 		expectedMatches []string
 	}{
 		{
-			name:            "empty",
-			ps:              NewPatternSet(),
-			root:            nil,
-			expectedMatches: []string{},
+			name: "empty",
+			ps:   NewPatternSet(),
 		},
 		{
 			name: "simple",
