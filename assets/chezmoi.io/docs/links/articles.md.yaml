@@ -632,3 +632,7 @@ articles:
   lang: CN
   title: Chezmoi 管理和同步多平台 dotfiles
   url: https://v3n0.top/post/2026/chezmoi/
+- date: '2026-01-31'
+  version: 2.69.3
+  title: Dotfiles Secrets in Chezmoi, Without Password Headaches
+  url: https://www.mikekasberg.com/blog/2026/01/31/dotfiles-secrets-in-chezmoi.html
