@@ -30,13 +30,10 @@ Hello from PowerShell
 Hello from fake Python
 -- golden/stdout_override --
 Hello from overridden PowerShell interpreter
-
 -- golden/stdout_powershell --
 Hello from Windows PowerShell
-
 -- golden/stdout_pwsh --
 Hello from PowerShell Core (pwsh)
-
 -- home/user/.local/share/chezmoi/run_batch_script.bat --
 @echo Hello from Batch (.bat)
 -- home/user/.local/share/chezmoi/run_cmd_script.cmd --
@@ -79,7 +76,5 @@ cmp stdout golden/stdout_override
 Write-Host 'Hello from overridden PowerShell interpreter'
 -- home_powershell/user/.local/share/chezmoi/run_powershell_script.ps1 --
 Write-Host 'Hello from Windows PowerShell'
-
 -- home_pwsh/user/.local/share/chezmoi/run_powershell_script.ps1 --
 Write-Host 'Hello from PowerShell Core (pwsh)'
-
