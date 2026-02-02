@@ -8,52 +8,32 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"slices"
 	"strconv"
-	"strings"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
-	vfs "github.com/twpayne/go-vfs/v5"
-	xdg "github.com/twpayne/go-xdg/v6"
+	"github.com/twpayne/go-vfs/v5"
+	"github.com/twpayne/go-xdg/v6"
 
 	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/internal/chezmoiset"
 	"chezmoi.io/chezmoi/internal/chezmoitest"
 )
 
-func TestTagFieldNamesMatch(t *testing.T) {
-	fields := reflect.VisibleFields(reflect.TypeFor[ConfigFile]())
-	expectedTags := []string{"json", "yaml", "mapstructure"}
-
-	for _, f := range fields {
-		ts := f.Tag
-		tagValueGroups := make(map[string][]string)
-
-		for _, tagName := range expectedTags {
-			tagValue, tagPresent := ts.Lookup(tagName)
-
-			if !tagPresent {
-				t.Errorf("ConfigFile field %s is missing a %s tag", f.Name, tagName)
+func TestConfigFileFieldTagNamesMatch(t *testing.T) {
+	expectedTags := []string{"json", "mapstructure", "yaml"}
+	for _, field := range reflect.VisibleFields(reflect.TypeFor[ConfigFile]()) {
+		t.Run(field.Name, func(t *testing.T) {
+			tagValues := chezmoiset.New[string]()
+			for _, tagName := range expectedTags {
+				tagValue, ok := field.Tag.Lookup(tagName)
+				assert.True(t, ok, "missing %s tag", tagName)
+				tagValues.Add(tagValue)
 			}
-
-			matchingTags, notFirstOccurrence := tagValueGroups[tagValue]
-			if notFirstOccurrence {
-				tagValueGroups[tagValue] = append(matchingTags, tagName)
-			} else {
-				tagValueGroups[tagValue] = []string{tagName}
-			}
-		}
-
-		if len(tagValueGroups) > 1 {
-			valueMsgs := []string{}
-			for value, tagsMatching := range tagValueGroups {
-				if len(tagsMatching) == 1 {
-					valueMsgs = append(valueMsgs, fmt.Sprintf("%s says %q", tagsMatching[0], value))
-				} else {
-					valueMsgs = append(valueMsgs, fmt.Sprintf("(%s) each say %q", strings.Join(tagsMatching, ", "), value))
-				}
-			}
-			t.Errorf("ConfigFile field %s has non-matching tag names:\n    %s", f.Name, strings.Join(valueMsgs, "\n    "))
-		}
+			elements := slices.Sorted(tagValues.Elements())
+			assert.Equal(t, []string{elements[0]}, elements, "inconsistent tag values")
+		})
 	}
 }
 
