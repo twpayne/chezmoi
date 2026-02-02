@@ -115,8 +115,7 @@ func run() error {
 	}
 
 	// Sort platforms.
-	sortedPlatforms := allPlatforms.Elements()
-	slices.SortFunc(sortedPlatforms, func(a, b platform) int {
+	sortedPlatforms := slices.SortedFunc(allPlatforms.Elements(), func(a, b platform) int {
 		return cmp.Compare(a.String(), b.String())
 	})
 

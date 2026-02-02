@@ -1,6 +1,11 @@
 // Package chezmoiset implements a generic set type.
 package chezmoiset
 
+import (
+	"iter"
+	"maps"
+)
+
 // A Set is a set of elements.
 type Set[T comparable] map[T]struct{}
 
@@ -47,12 +52,8 @@ func (s Set[T]) Contains(element T) bool {
 }
 
 // Elements returns all the elements of s.
-func (s Set[T]) Elements() []T {
-	elements := make([]T, 0, len(s))
-	for element := range s {
-		elements = append(elements, element)
-	}
-	return elements
+func (s Set[T]) Elements() iter.Seq[T] {
+	return maps.Keys(s)
 }
 
 // IsEmpty returns if s is empty.

@@ -9,7 +9,7 @@ import (
 	"go/format"
 	"os"
 	"regexp"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 	"text/template"
@@ -96,8 +96,7 @@ func run() error {
 			if s.IsEmpty() {
 				return ""
 			}
-			elements := s.Elements()
-			sort.Strings(elements)
+			elements := slices.Sorted(s.Elements())
 			quotedElementLines := make([]string, len(elements))
 			for i, element := range elements {
 				quotedElementLines[i] = "\n" + strconv.Quote(element) + ","
