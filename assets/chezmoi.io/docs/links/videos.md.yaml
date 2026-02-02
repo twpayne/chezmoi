@@ -84,3 +84,8 @@ videos:
   version: 2.66.0
   title: Supercharge your development workflow with these CLI tools
   url: https://www.youtube.com/watch?v=rqpiVgWZBOg&t=742s
+- date: '2026-01-01'
+  version: 2.69.3
+  lang: FR
+  title: Nouveau laptop ? Configurez TOUT en 5 min avec Chezmoi
+  url: https://www.youtube.com/watch?v=6nqhBjvVVqE
