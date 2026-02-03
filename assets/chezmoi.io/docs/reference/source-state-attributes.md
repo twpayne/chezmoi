@@ -6,7 +6,10 @@ by default). This location can be overridden with the `-S` flag or by giving a
 value for `sourceDir` in the configuration file. Directory targets are
 represented as directories in the source state. All other target types are
 represented as files in the source state. Some state is encoded in the source
-names.
+file names.
+
+Attributes can be changed by renaming the file in the source state or with the
+[chattr][chattr] command.
 
 The following prefixes and suffixes are special, and are collectively referred
 to as "attributes":
@@ -62,3 +65,5 @@ variables.
 chezmoi ignores all files and directories in the source directory that begin
 with a `.` with the exception of files and directories that begin with
 `.chezmoi`.
+
+[chattr]: /reference/commands/chattr.md
