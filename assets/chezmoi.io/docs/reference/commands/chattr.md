@@ -3,6 +3,8 @@
 Change the attributes and/or type of *target*s. *modifier* specifies what to
 modify.
 
+See [attributes][attributes] for a description of each attribute.
+
 Add attributes by specifying them or their abbreviations directly, optionally
 prefixed with a plus sign (`+`). Remove attributes by prefixing them or their
 attributes with the string `no` or a minus sign (`-`). The available attribute
@@ -55,3 +57,5 @@ chezmoi chattr private,template ~/.netrc
 chezmoi chattr -- -x ~/.zshrc
 chezmoi chattr +create,+private ~/.kube/config
 ```
+
+[attributes]: /reference/source-state-attributes.md

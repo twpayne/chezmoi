@@ -163,6 +163,8 @@ var helps = map[string]*help{
 			"  Change the attributes and/or type of targets. modifier specifies what to\n" +
 			"  modify.\n" +
 			"\n" +
+			"  See attributes for a description of each attribute.\n" +
+			"\n" +
 			"  Add attributes by specifying them or their abbreviations directly,\n" +
 			"  optionally prefixed with a plus sign (+). Remove attributes by prefixing\n" +
 			"  them or their attributes with the string no or a minus sign (-). The\n" +
