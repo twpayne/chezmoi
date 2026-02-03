@@ -1,5 +1,12 @@
 # Contributing changes
 
+!!! warning
+
+    If you use an LLM (Large Language Model, like ChatGPT, Claude, Gemini,
+    GitHub Copilot, or Llama) to make any kind of contribution then you will
+    immediately be banned without recourse. See [`CODE_OF_CONDUCT.md`][coc]
+    for more information.
+
 Bug reports, bug fixes, and documentation improvements are always welcome.
 Please [open an issue][issue] or [create a pull request][pr] with your report,
 fix, or improvement.
