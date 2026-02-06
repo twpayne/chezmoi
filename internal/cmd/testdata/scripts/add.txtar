@@ -74,6 +74,23 @@ cmp $CHEZMOISOURCEDIR/dot_file golden/dot_file
 exec chezmoi add --force $HOME/.file
 cmp $CHEZMOISOURCEDIR/dot_file golden/edited_dot_file
 
+chhome home5/user
+
+# test that chezmoi add --exact only applies exact_ to the target, not parent directories
+# This is a regression test for the bug where adding a child with --exact would also
+# mark parent directories as exact
+exec chezmoi add --exact $HOME${/}.parent/child
+# child directory should have exact_ prefix
+exists $CHEZMOISOURCEDIR/dot_parent/exact_child
+cmp $CHEZMOISOURCEDIR/dot_parent/exact_child/file golden/dot_parent/exact_child/file
+# parent directory should NOT have exact_ prefix (bug fix verification)
+exists $CHEZMOISOURCEDIR/dot_parent
+! exists $CHEZMOISOURCEDIR/exact_dot_parent
+# parent's other files should NOT be tracked (parent is not exact)
+! exists $CHEZMOISOURCEDIR/dot_parent/other_file
+
+-- golden/dot_parent/exact_child/file --
+# contents of child file
 -- golden/edited_dot_file --
 # contents of .file
 # edited
@@ -87,3 +104,7 @@ cmp $CHEZMOISOURCEDIR/dot_file golden/edited_dot_file
 **/ignore
 -- home4/user/.file --
 # contents of .file
+-- home5/user/.parent/child/file --
+# contents of child file
+-- home5/user/.parent/other_file --
+# this file should not be tracked when only child is added with --exact
