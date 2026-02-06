@@ -32,7 +32,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - id: filter
@@ -61,7 +61,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 1
         persist-credentials: false
@@ -69,16 +69,16 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@25a224b8085c21d4d61b7fc051468805fc3ac490   # codeql-bundle-v2.24.0
+    - uses: github/codeql-action/init@77591e2c4a43bf190ac768983419eb058187e62f   # codeql-bundle-v2.24.1
       with:
         languages: go
-    - uses: github/codeql-action/analyze@25a224b8085c21d4d61b7fc051468805fc3ac490   # codeql-bundle-v2.24.0
+    - uses: github/codeql-action/analyze@77591e2c4a43bf190ac768983419eb058187e62f   # codeql-bundle-v2.24.1
   misspell:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962   # v1.27.0
@@ -91,7 +91,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
@@ -115,7 +115,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
@@ -140,7 +140,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -176,7 +176,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -247,7 +247,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         fetch-depth: 0
@@ -290,14 +290,14 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b   # v7.2.0
+    - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b   # v7.3.0
       with:
         enable-cache: false
         version: ${{ env.UV_VERSION }}
@@ -321,7 +321,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -352,7 +352,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -411,7 +411,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
     - uses: ./.github/actions/setup-go
@@ -455,7 +455,7 @@ jobs:
       run: snapcraft whoami
       env:
         SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: false
@@ -488,7 +488,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8   # v6.0.1
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         fetch-depth: 0
         persist-credentials: true
@@ -496,7 +496,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b   # v7.2.0
+    - uses: astral-sh/setup-uv@eac588ad8def6316056a12d4907a9d4d84ff7a3b   # v7.3.0
       with:
         enable-cache: false
         version: ${{ env.UV_VERSION }}
