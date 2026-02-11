@@ -53,15 +53,15 @@
   "filippo.io/age/plugin": [
     "CAPABILITY_OPERATING_SYSTEM"
   ],
+  "github.com/Masterminds/sprig/v3": [
+    "CAPABILITY_REFLECT"
+  ],
   "github.com/bodgit/sevenzip": [
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
-  ],
-  "github.com/charmbracelet/bubbletea": [
-    "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
   "github.com/dsnet/compress/bzip2": [
     "CAPABILITY_UNANALYZED"
@@ -108,12 +108,6 @@
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME",
     "CAPABILITY_UNANALYZED"
-  ],
-  "github.com/spf13/cobra": [
-    "CAPABILITY_MODIFY_SYSTEM_STATE"
-  ],
-  "github.com/tobischo/gokeepasslib/v3": [
-    "CAPABILITY_REFLECT"
   ],
   "github.com/twpayne/go-shell": [
     "CAPABILITY_ARBITRARY_EXECUTION",
