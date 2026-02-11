@@ -11152,9 +11152,20 @@ packages, and snaps, creates a new <a href="https://github.com/twpayne/chezmoi/r
 <h3 id="snaps">Snaps</h3>
 <p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a <code>SNAPCRAFT_STORE_CREDENTIALS</code> <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
 secret</a>.</p>
-<p>Snapcraft store credentials periodically expire. Create new snapcraft store
-credentials by running:</p>
+<p>Snapcraft store credentials periodically expire. This is visible in the release
+GitHub Action reporting:</p>
+<div class="highlight"><pre><span></span><code>Run snapcraft whoami
+Store operation failed:
+- macaroon-authorization-required: The request is missing an Authorization header field containing a valid macaroon
+</code></pre></div>
+<p>Create new snapcraft store credentials by running:</p>
 <div class="highlight"><pre><span></span><code>snapcraft<span class="w"> </span>export-login<span class="w"> </span>--snaps<span class="o">=</span>chezmoi<span class="w"> </span>--channels<span class="o">=</span>stable,candidate,beta,edge<span class="w"> </span>--acls<span class="o">=</span>package_upload<span class="w"> </span>-
+</code></pre></div>
+<p>This command requires a Ubuntu machine with snapcraft installed and a keyring,
+which is typically not available over SSH connections. Login to a GNOME session
+on a Ubuntu machine and run:</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>snap<span class="w"> </span>install<span class="w"> </span>--classic<span class="w"> </span>snapcraft
+snapcraft<span class="w"> </span>login
 </code></pre></div>
 <h3 id="homebrew">Homebrew</h3>
 <p><a href="https://brew.sh/">Homebrew</a> automation will automatically detect new releases of chezmoi within

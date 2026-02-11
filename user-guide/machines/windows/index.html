@@ -11110,11 +11110,17 @@
 <span class="k">if</span> <span class="p">(</span><span class="o">-Not</span> <span class="p">(</span><span class="no">[Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]</span><span class="p">::</span><span class="n">GetCurrent</span><span class="p">()).</span><span class="n">IsInRole</span><span class="p">(</span><span class="no">[Security.Principal.WindowsBuiltInRole]</span> <span class="s1">&#39;Administrator&#39;</span><span class="p">))</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="no">[int]</span><span class="p">(</span><span class="nb">Get-CimInstance</span> <span class="n">-Class</span> <span class="n">Win32_OperatingSystem</span> <span class="p">|</span> <span class="nb">Select-Object</span> <span class="n">-ExpandProperty</span> <span class="n">BuildNumber</span><span class="p">)</span> <span class="o">-ge</span> <span class="n">6000</span><span class="p">)</span> <span class="p">{</span>
     <span class="nv">$CommandLine</span> <span class="p">=</span> <span class="s2">&quot;-NoExit -File </span><span class="se">`&quot;</span><span class="s2">&quot;</span> <span class="p">+</span> <span class="nv">$MyInvocation</span><span class="p">.</span><span class="n">MyCommand</span><span class="p">.</span><span class="n">Path</span> <span class="p">+</span> <span class="s2">&quot;</span><span class="se">`&quot;</span><span class="s2"> &quot;</span> <span class="p">+</span> <span class="nv">$MyInvocation</span><span class="p">.</span><span class="n">UnboundArguments</span>
-    <span class="nb">Start-Process</span> <span class="n">-Wait</span> <span class="n">-FilePath</span> <span class="n">PowerShell</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Verb</span> <span class="n">Runas</span> <span class="n">-ArgumentList</span> <span class="nv">$CommandLine</span>
+    <span class="nb">Start-Process</span> <span class="n">-Wait</span> <span class="n">-FilePath</span> <span class="n">pwsh</span><span class="p">.</span><span class="n">exe</span> <span class="n">-Verb</span> <span class="n">Runas</span> <span class="n">-ArgumentList</span> <span class="nv">$CommandLine</span>
     <span class="n">Exit</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The example above uses <code>pwsh.exe</code> (PowerShell Core). If you don't have
+PowerShell Core installed or prefer Windows PowerShell, change <code>pwsh.exe</code>
+to <code>PowerShell.exe</code> in the <code>Start-Process</code> command.</p>
+</div>
 <p>If you use <a href="https://gerardog.github.io/gsudo/docs/intro">gsudo</a>, it has tips on writing <a href="https://gerardog.github.io/gsudo/docs/tips/script-self-elevation#self-elevate-script">self-elevating scripts</a>.</p>
 <h2 id="run-elevated-scripts">Run elevated scripts</h2>
 <p>However you decide to run a script in an elevated prompt, as soon as the

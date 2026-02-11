@@ -10994,8 +10994,8 @@ extensions. Other extensions require an interpreter, which must be in your
 </tr>
 <tr>
 <td><code>.ps1</code></td>
-<td><code>powershell</code></td>
-<td><code>-NoLogo</code></td>
+<td><code>pwsh</code></td>
+<td><code>-NoLogo -File</code></td>
 </tr>
 <tr>
 <td><code>.rb</code></td>
@@ -11038,12 +11038,26 @@ for each file extension should not have a leading <code>.</code>:</p>
 <span class="n">tcl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;tclsh&quot;</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 </div>
+<div class="admonition info">
+<p class="admonition-title">PowerShell Core Installation</p>
+<p>PowerShell Core (<code>pwsh</code>) must be installed separately on most systems.
+If you don't have it installed:</p>
+<ul>
+<li><strong>Windows</strong>: Download from <a href="https://github.com/PowerShell/PowerShell/releases">PowerShell releases</a>
+  or install via <code>winget install Microsoft.PowerShell</code></li>
+<li><strong>Linux/macOS</strong>: Follow instructions at <a href="https://learn.microsoft.com/powershell/scripting/install/installing-powershell">Installing PowerShell</a></li>
+</ul>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you intend to use PowerShell Core (<code>pwsh.exe</code>) as the <code>.ps1</code>
-interpreter, include the following in your config file:</p>
+<p>chezmoi defaults to PowerShell Core (<code>pwsh</code>) for <code>.ps1</code> scripts as it
+provides better UTF-8 support and cross-platform compatibility. On Windows,
+if <code>pwsh</code> is not available, chezmoi will automatically fall back to Windows
+PowerShell (<code>powershell</code>).</p>
+<p>To explicitly use Windows PowerShell instead of the automatic selection,
+include the following in your config file:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[interpreters.ps1]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;pwsh&quot;</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;powershell&quot;</span>
 <span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-NoLogo&quot;</span><span class="p">]</span>
 </code></pre></div>
 </div>

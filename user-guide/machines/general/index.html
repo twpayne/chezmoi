@@ -11063,7 +11063,7 @@
 {{- else if eq .chezmoi.os &quot;linux&quot; }}
 {{-   $chassisType = (output &quot;hostnamectl&quot; &quot;--json=short&quot; | mustFromJson).Chassis }}
 {{- else if eq .chezmoi.os &quot;windows&quot; }}
-{{-   $chassisType = (output &quot;powershell.exe&quot; &quot;-NoProfile&quot; &quot;-NonInteractive&quot; &quot;-Command&quot; &quot;if ((Get-CimInstance -Class Win32_Battery | Measure-Object).Count -gt 0) { Write-Output &#39;laptop&#39; } else { Write-Output &#39;desktop&#39; }&quot;) | trim }}
+{{-   $chassisType = (output &quot;pwsh.exe&quot; &quot;-NoProfile&quot; &quot;-NonInteractive&quot; &quot;-Command&quot; &quot;if ((Get-CimInstance -Class Win32_Battery | Measure-Object).Count -gt 0) { Write-Output &#39;laptop&#39; } else { Write-Output &#39;desktop&#39; }&quot;) | trim }}
 {{- end }}
 </code></pre></div>
 <h2 id="determine-how-many-cpu-cores-and-threads-the-current-machine-has">Determine how many CPU cores and threads the current machine has</h2>
@@ -11079,10 +11079,16 @@ macOS, Linux and Windows.</p>
 {{-   $cpuCores = (output &quot;sh&quot; &quot;-c&quot; &quot;lscpu --online --parse | grep --invert-match &#39;^#&#39; | sort --field-separator=&#39;,&#39; --key=&#39;2,4&#39; --unique | wc --lines&quot;) | trim | atoi }}
 {{-   $cpuThreads = (output &quot;sh&quot; &quot;-c&quot; &quot;lscpu --online --parse | grep --invert-match &#39;^#&#39; | wc --lines&quot;) | trim | atoi }}
 {{- else if eq .chezmoi.os &quot;windows&quot; }}
-{{-   $cpuCores = (output &quot;powershell.exe&quot; &quot;-NoProfile&quot; &quot;-NonInteractive&quot; &quot;-Command&quot; &quot;(Get-CimInstance -ClassName &#39;Win32_Processor&#39;).NumberOfCores&quot;) | trim | atoi }}
-{{-   $cpuThreads = (output &quot;powershell.exe&quot; &quot;-NoProfile&quot; &quot;-NonInteractive&quot; &quot;-Command&quot; &quot;(Get-CimInstance -ClassName &#39;Win32_Processor&#39;).NumberOfLogicalProcessors&quot;) | trim | atoi }}
+{{-   $cpuCores = (output &quot;pwsh.exe&quot; &quot;-NoProfile&quot; &quot;-NonInteractive&quot; &quot;-Command&quot; &quot;(Get-CimInstance -ClassName &#39;Win32_Processor&#39;).NumberOfCores&quot;) | trim | atoi }}
+{{-   $cpuThreads = (output &quot;pwsh.exe&quot; &quot;-NoProfile&quot; &quot;-NonInteractive&quot; &quot;-Command&quot; &quot;(Get-CimInstance -ClassName &#39;Win32_Processor&#39;).NumberOfLogicalProcessors&quot;) | trim | atoi }}
 {{- end }}
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Windows examples above use <code>pwsh.exe</code> (PowerShell Core). If you don't have
+PowerShell Core installed, you can use <code>powershell.exe</code> instead (the built-in
+Windows PowerShell).</p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.toml.tmpl</span><pre><span></span><code>[data.cpu]
