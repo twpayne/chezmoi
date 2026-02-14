@@ -636,3 +636,16 @@ articles:
   version: 2.69.3
   title: Dotfiles Secrets in Chezmoi, Without Password Headaches
   url: https://www.mikekasberg.com/blog/2026/01/31/dotfiles-secrets-in-chezmoi.html
+- date: '2026-02-09'
+  version: 2.69.3
+  lang: JP
+  title: dotfiles管理でchezmoiを使う
+  url: https://blog.freks.jp/chezmoi/
+- date: '2026-02-12'
+  version: 2.69.4
+  title: How chezmoi Transformed My Dotfile Management Across Multiple Systems
+  url: https://medium.com/@tiomothybryant3/how-chezmoi-transformed-my-dotfile-management-across-multiple-systems-0db4029b518e
+- date: '2026-02-13'
+  version: 2.69.4
+  title: I Deprecated Dotfiles and Oh My Zsh, and Moved to Chezmoi
+  url: https://samwize.com/2026/02/13/i-deprecated-dotfiles-and-oh-my-zsh-and-moved-to-chezmoi/
