@@ -310,11 +310,7 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
   test-windows:
-    name: test-windows-${{ matrix.test-index }}
-    strategy:
-      fail-fast: false
-      matrix:
-        test-index: [0, 1, 2, 3]
+    name: test-windows
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2022
@@ -337,16 +333,7 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        if (${{ matrix.test-index }} -eq 0) {
-          go test ./... -short -race
-          go test ./internal/cmd -run=TestScript -filter='^[0-9a-cA-C]' -race
-        } elseif (${{ matrix.test-index }} -eq 1) {
-          go test ./internal/cmd -run=TestScript -filter='^[d-fD-F]' -race
-        } elseif (${{ matrix.test-index }} -eq 2) {
-          go test ./internal/cmd -run=TestScript -filter='^[g-lG-L]' -race
-        } else {
-          go test ./internal/cmd -run=TestScript -filter='^[m-zM-Z]' -race
-        }
+        go test ./... -race
   check:
     runs-on: ubuntu-22.04
     permissions:
