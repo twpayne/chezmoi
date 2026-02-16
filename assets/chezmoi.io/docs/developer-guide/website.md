@@ -4,7 +4,7 @@ The [website][website] is generated with [Material for MkDocs][material] from
 the contents of the `assets/chezmoi.io/docs/` directory. It is hosted by
 [GitHub pages][pages] from the [`gh-pages` branch][branch].
 
-To build the website locally, Go 1.24 (or later) and [uv][uv] 0.5.0 (or later)
+To build the website locally, Go 1.25 (or later) and [uv][uv] 0.5.0 (or later)
 must be installed. Python 3.10 (or later) is required, but may be installed with
 `uv`:
 
