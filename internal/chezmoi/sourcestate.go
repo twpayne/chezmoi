@@ -757,7 +757,31 @@ type PreApplyFunc func(targetRelPath RelPath, targetEntryState, lastWrittenEntry
 type ApplyOptions struct {
 	Filter       *EntryTypeFilter
 	PreApplyFunc PreApplyFunc
+	TextConvFunc TextConvFunc
 	Umask        fs.FileMode
+}
+
+// textConvFilterEntryState replaces the ContentsSHA256 and contents of an
+// EntryState with their textconv-filtered equivalents, if textconv applies.
+func textConvFilterEntryState(entryState *EntryState, textConvFunc TextConvFunc, path string) error {
+	if entryState == nil || entryState.Type != EntryStateTypeFile || textConvFunc == nil {
+		return nil
+	}
+	contents := entryState.Contents()
+	if len(contents) == 0 {
+		return nil
+	}
+	filteredContents, converted, err := textConvFunc(path, contents)
+	if err != nil {
+		return err
+	}
+	if !converted {
+		return nil
+	}
+	filteredSHA256 := sha256.Sum256(filteredContents)
+	entryState.ContentsSHA256 = HexBytes(filteredSHA256[:])
+	entryState.contents = filteredContents
+	return nil
 }
 
 // Apply updates targetRelPath in targetDirAbsPath in destSystem to match s.
@@ -783,6 +807,12 @@ func (s *SourceState) Apply(
 		return err
 	}
 
+	if options.TextConvFunc != nil {
+		if tf, ok := targetStateEntry.(*TargetStateFile); ok {
+			tf.textConvFunc = options.TextConvFunc
+		}
+	}
+
 	if !options.Filter.IncludeTargetStateEntry(targetStateEntry) {
 		return nil
 	}
@@ -791,6 +821,10 @@ func (s *SourceState) Apply(
 
 	targetEntryState, err := targetStateEntry.EntryState(options.Umask)
 	if err != nil {
+		return err
+	}
+
+	if err := textConvFilterEntryState(targetEntryState, options.TextConvFunc, targetAbsPath.String()); err != nil {
 		return err
 	}
 
@@ -819,6 +853,10 @@ func (s *SourceState) Apply(
 
 		actualEntryState, err := actualStateEntry.EntryState()
 		if err != nil {
+			return err
+		}
+
+		if err := textConvFilterEntryState(actualEntryState, options.TextConvFunc, targetAbsPath.String()); err != nil {
 			return err
 		}
 

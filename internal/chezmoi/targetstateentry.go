@@ -47,6 +47,7 @@ type TargetStateFile struct {
 	overwrite          bool
 	perm               fs.FileMode
 	sourceAttr         SourceAttr
+	textConvFunc       TextConvFunc
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -217,12 +218,37 @@ func (t *TargetStateFile) Apply(
 		if err != nil {
 			return false, err
 		}
-		actualContentsSHA256 := sha256.Sum256(actualContents)
-		contentsSHA256, err := t.ContentsSHA256()
-		if err != nil {
-			return false, err
+
+		contentsMatch := false
+
+		// If textconv is configured and matches this file, compare
+		// textconv-filtered contents instead of raw contents.
+		if t.textConvFunc != nil {
+			path := actualStateFile.Path().String()
+			filteredActual, converted, err := t.textConvFunc(path, actualContents)
+			if err != nil {
+				return false, err
+			}
+			if converted {
+				filteredTarget, _, err := t.textConvFunc(path, contents)
+				if err != nil {
+					return false, err
+				}
+				contentsMatch = sha256.Sum256(filteredActual) == sha256.Sum256(filteredTarget)
+			}
 		}
-		if actualContentsSHA256 == contentsSHA256 {
+
+		// Fall back to raw SHA256 comparison if textconv didn't apply.
+		if !contentsMatch {
+			actualContentsSHA256 := sha256.Sum256(actualContents)
+			contentsSHA256, err := t.ContentsSHA256()
+			if err != nil {
+				return false, err
+			}
+			contentsMatch = actualContentsSHA256 == contentsSHA256
+		}
+
+		if contentsMatch {
 			if runtime.GOOS == "windows" || actualStateFile.perm == t.perm {
 				return false, nil
 			}
@@ -231,6 +257,7 @@ func (t *TargetStateFile) Apply(
 	} else if err := actualStateEntry.Remove(system); err != nil {
 		return false, err
 	}
+	// Write raw (unfiltered) target contents.
 	return true, system.WriteFile(actualStateEntry.Path(), contents, t.perm)
 }
 

@@ -19,6 +19,34 @@ exec chezmoi apply --no-tty
 stdout '^ # CONTENTS OF FILE.TXT'
 stdout '^-# EDITED'
 
+# test that chezmoi status reports no changes when textconv-filtered contents match
+# Source: "# contents of file.txt" -> textconv -> "# CONTENTS OF FILE.TXT"
+# Dest:   "# CONTENTS OF FILE.TXT" -> textconv -> "# CONTENTS OF FILE.TXT"
+# After textconv, both produce the same output, so status should be empty.
+cp golden/file-uppercased.txt $HOME/file.txt
+exec chezmoi status
+! stdout .
+
+# test that chezmoi verify succeeds when textconv-filtered contents match
+exec chezmoi verify
+
+# test that chezmoi apply does not overwrite when textconv-filtered contents match
+exec chezmoi apply --force
+cmp $HOME/file.txt golden/file-uppercased.txt
+
+# test that chezmoi diff shows no output when textconv-filtered contents match
+exec chezmoi diff
+! stdout .
+
+# test that chezmoi apply writes raw contents when textconv-filtered contents differ
+cp golden/source-different.txt $CHEZMOISOURCEDIR/file.txt
+exec chezmoi apply --force
+cmp $HOME/file.txt golden/source-different.txt
+
+-- golden/file-uppercased.txt --
+# CONTENTS OF FILE.TXT
+-- golden/source-different.txt --
+# different contents of file.txt
 -- golden/diff-overwrite --
 diff
 overwrite

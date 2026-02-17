@@ -731,6 +731,7 @@ func (c *Config) applyArgs(
 	applyOptions := chezmoi.ApplyOptions{
 		Filter:       options.filter,
 		PreApplyFunc: options.preApplyFunc,
+		TextConvFunc: c.TextConv.convert,
 		Umask:        options.umask,
 	}
 
