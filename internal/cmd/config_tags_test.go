@@ -56,7 +56,7 @@ func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errMsg 
 			tagValue, tagPresent := ts.Lookup(tagName)
 
 			if !tagPresent {
-				errs.WriteString(fmt.Sprintf("\n%s field %s is missing a `%s:` tag", name, f.Name, tagName))
+				fmt.Fprintf(&errs, "\n%s field %s is missing a `%s:` tag", name, f.Name, tagName)
 				failed = true
 			}
 
@@ -69,13 +69,13 @@ func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errMsg 
 		}
 
 		if len(tagValueGroups) > 1 {
-			errs.WriteString(fmt.Sprintf("\n%s field %s has non-matching tag names:", name, f.Name))
+			fmt.Fprintf(&errs, "\n%s field %s has non-matching tag names:", name, f.Name)
 
 			for value, tagsMatching := range tagValueGroups {
 				if len(tagsMatching) == 1 {
-					errs.WriteString(fmt.Sprintf("\n    %s says %q", tagsMatching[0], value))
+					fmt.Fprintf(&errs, "\n    %s says %q", tagsMatching[0], value)
 				} else {
-					errs.WriteString(fmt.Sprintf("\n    (%s) each say %q", strings.Join(tagsMatching, ", "), value))
+					fmt.Fprintf(&errs, "\n    (%s) each say %q", strings.Join(tagsMatching, ", "), value)
 				}
 			}
 			failed = true
@@ -85,7 +85,7 @@ func verifyTagsArePresentAndMatch(structType reflect.Type) (failed bool, errMsg 
 		for _, ft := range verifyTypes {
 			subFailed, subErrs := verifyTagsArePresentAndMatch(ft)
 			if subFailed {
-				errs.WriteString(fmt.Sprintf("\n In %s.%s:", name, f.Name))
+				fmt.Fprintf(&errs, "\n In %s.%s:", name, f.Name)
 				errs.WriteString(strings.ReplaceAll(subErrs, "\n", "\n    "))
 				failed = true
 			}
