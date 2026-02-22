@@ -69,10 +69,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@77591e2c4a43bf190ac768983419eb058187e62f   # codeql-bundle-v2.24.1
+    - uses: github/codeql-action/init@5e7a52feb2a3dfb87f88be2af33b9e2275f48de6   # codeql-bundle-v2.24.2
       with:
         languages: go
-    - uses: github/codeql-action/analyze@77591e2c4a43bf190ac768983419eb058187e62f   # codeql-bundle-v2.24.1
+    - uses: github/codeql-action/analyze@5e7a52feb2a3dfb87f88be2af33b9e2275f48de6   # codeql-bundle-v2.24.2
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -200,7 +200,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a   # v6.4.0
+      uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29   # v7.0.0
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --skip=sign --snapshot --timeout=1h
@@ -457,7 +457,7 @@ jobs:
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a   # v6.4.0
+    - uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29   # v7.0.0
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --timeout=1h
