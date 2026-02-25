@@ -1,0 +1,17 @@
+httpd www
+
+# test that chezmoi apply checks checksums of external files
+exec chezmoi apply
+cmp $HOME/.file www/file
+edit www/file
+! exec chezmoi apply --refresh-externals=always
+cmp $HOME/.file www/file
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml.tmpl --
+".file":
+  type: file
+  url: "{{ env "HTTPD_URL" }}/file"
+  checksum:
+    sha256: "989b88bea77292cfdbbb0ae73f66192ed6e4318bd7f3ec5edd809d359be6af43"
+-- www/file --
+# contents of file
