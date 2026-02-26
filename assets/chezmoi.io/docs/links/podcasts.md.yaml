@@ -1,4 +1,9 @@
 podcasts:
+- date: '2026-02-24'
+  version: 2.69.4
+  lang: DE
+  title: Hyper, Meh und Linux Laptops
+  url: https://www.youtube.com/watch?v=jMNh8u0W274&t=6133s
 - date: '2019-11-20'
   version: 1.7.2
   title: 'FLOSS weekly episode 556: chezmoi'
