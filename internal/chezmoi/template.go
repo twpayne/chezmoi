@@ -17,6 +17,15 @@ import (
 	"golang.org/x/text/encoding/unicode"
 )
 
+// A TemplateFunctions indicates a set of template functions.
+type TemplateFunctions int
+
+// Template functions.
+const (
+	TemplateFunctionsSprig TemplateFunctions = iota
+	TemplateFunctionsSprout
+)
+
 // A Template extends [text/template.Template] with support for directives.
 type Template struct {
 	name     string
@@ -27,52 +36,60 @@ type Template struct {
 // TemplateOptions are template options that can be set with directives.
 type TemplateOptions struct {
 	Encoding       encoding.Encoding
-	Funcs          template.FuncMap
+	Functions      TemplateFunctions
 	FormatIndent   string
 	LeftDelimiter  string
 	LineEnding     string
 	RightDelimiter string
+	SprigFuncs     template.FuncMap
+	SproutFuncs    template.FuncMap
 	Options        []string
 }
 
-// ParseTemplate parses a template named name from data with the given funcs and
-// templateOptions.
+// ParseTemplate parses a template named name from data with the given options.
 func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template, error) {
 	contents, err := options.parseAndRemoveDirectives(data)
 	if err != nil {
 		return nil, err
 	}
-	funcs := options.Funcs
-	if options.FormatIndent != "" {
-		funcs = maps.Clone(funcs)
-		funcs["toJson"] = func(data any) string {
-			var builder strings.Builder
-			encoder := json.NewEncoder(&builder)
-			encoder.SetIndent("", options.FormatIndent)
-			if err := encoder.Encode(data); err != nil {
-				panic(err)
+	var funcs template.FuncMap
+	switch options.Functions {
+	case TemplateFunctionsSprig:
+		funcs = options.SprigFuncs
+		if options.FormatIndent != "" {
+			funcs = maps.Clone(funcs)
+			funcs["toJson"] = func(data any) string {
+				var builder strings.Builder
+				encoder := json.NewEncoder(&builder)
+				encoder.SetIndent("", options.FormatIndent)
+				if err := encoder.Encode(data); err != nil {
+					panic(err)
+				}
+				return builder.String()
 			}
-			return builder.String()
-		}
-		funcs["toToml"] = func(data any) string {
-			var builder strings.Builder
-			encoder := toml.NewEncoder(&builder)
-			encoder.Indent = options.FormatIndent
-			if err := encoder.Encode(data); err != nil {
-				panic(err)
+			funcs["toToml"] = func(data any) string {
+				var builder strings.Builder
+				encoder := toml.NewEncoder(&builder)
+				encoder.Indent = options.FormatIndent
+				if err := encoder.Encode(data); err != nil {
+					panic(err)
+				}
+				return builder.String()
 			}
-			return builder.String()
-		}
-		funcs["toYaml"] = func(data any) string {
-			var builder strings.Builder
-			encoder := yaml.NewEncoder(&builder,
-				yaml.Indent(runewidth.StringWidth(options.FormatIndent)),
-			)
-			if err := encoder.Encode(data); err != nil {
-				panic(err)
+			funcs["toYaml"] = func(data any) string {
+				var builder strings.Builder
+				encoder := yaml.NewEncoder(&builder,
+					yaml.Indent(runewidth.StringWidth(options.FormatIndent)),
+				)
+				if err := encoder.Encode(data); err != nil {
+					panic(err)
+				}
+				return builder.String()
 			}
-			return builder.String()
 		}
+	case TemplateFunctionsSprout:
+		funcs = options.SproutFuncs
+		// FIXME handle FormatIndent
 	}
 	tmpl, err := template.New(name).
 		Option(options.Options...).
@@ -169,6 +186,15 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) ([]byte, error) 
 					return nil, err
 				}
 				o.FormatIndent = strings.Repeat(" ", width)
+			case "functions":
+				switch value {
+				case "sprig":
+					o.Functions = TemplateFunctionsSprig
+				case "sprout":
+					o.Functions = TemplateFunctionsSprout
+				default:
+					return nil, fmt.Errorf("%s: unknown functions", value)
+				}
 			case "left-delimiter":
 				o.LeftDelimiter = value
 			case "line-ending", "line-endings":

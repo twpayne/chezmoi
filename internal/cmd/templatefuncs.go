@@ -264,8 +264,10 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 	contents := mustValue(c.readFile(filename, searchDirAbsPaths))
 
 	tmpl := mustValue(chezmoi.ParseTemplate(filename, contents, chezmoi.TemplateOptions{
-		Funcs:   c.templateFuncs,
-		Options: slices.Clone(c.Template.Options),
+		Functions:   c.Template.functions,
+		SprigFuncs:  c.sprigTemplateFuncs,
+		SproutFuncs: c.sproutTemplateFuncs,
+		Options:     slices.Clone(c.Template.Options),
 	}))
 
 	return string(mustValue(tmpl.Execute(data)))

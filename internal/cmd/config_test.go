@@ -68,7 +68,8 @@ func TestConfigFileFormatRoundTrip(t *testing.T) {
 				},
 				ScriptEnv: map[string]string{},
 				Template: templateConfig{
-					Options: []string{},
+					FunctionsStr: defaultSentinel,
+					Options:      []string{},
 				},
 				TextConv:      []*textConvElement{},
 				UseBuiltinAge: autoBool{value: false},

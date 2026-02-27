@@ -1,5 +1,7 @@
 package cmd
 
+// FIXME add getTemplateOptions function similar to getDiffCmd? need to know how to handle template.functions config var
+
 import (
 	"bufio"
 	"bytes"
@@ -110,7 +112,9 @@ type hookConfig struct {
 }
 
 type templateConfig struct {
-	Options []string `json:"options" mapstructure:"options" yaml:"options"`
+	FunctionsStr string   `json:"functions" mapstructure:"functions" yaml:"functions"`
+	Options      []string `json:"options"   mapstructure:"options"   yaml:"options"`
+	functions    chezmoi.TemplateFunctions
 }
 
 type warningsConfig struct {
@@ -195,21 +199,22 @@ type Config struct {
 	ConfigFile
 
 	// Global configuration.
-	ageRecipient     string
-	ageRecipientFile string
-	configFormat     *choiceFlag
-	debug            bool
-	dryRun           bool
-	force            bool
-	homeDir          string
-	keepGoing        bool
-	noPager          bool
-	noTTY            bool
-	outputAbsPath    chezmoi.AbsPath
-	refreshExternals chezmoi.RefreshExternals
-	sourcePath       bool
-	templateFuncs    template.FuncMap
-	useBuiltinDiff   bool
+	ageRecipient        string
+	ageRecipientFile    string
+	configFormat        *choiceFlag
+	debug               bool
+	dryRun              bool
+	force               bool
+	homeDir             string
+	keepGoing           bool
+	noPager             bool
+	noTTY               bool
+	outputAbsPath       chezmoi.AbsPath
+	refreshExternals    chezmoi.RefreshExternals
+	sourcePath          bool
+	sprigTemplateFuncs  template.FuncMap
+	sproutTemplateFuncs template.FuncMap
+	useBuiltinDiff      bool
 
 	// Password manager data.
 	gitHub  gitHubData
@@ -371,9 +376,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		ConfigFile: newConfigFile(bds),
 
 		// Global configuration.
-		configFormat:  newChoiceFlag("", readDataFormatValues),
-		homeDir:       userHomeDir,
-		templateFuncs: sprig.TxtFuncMap(),
+		configFormat:       newChoiceFlag("", readDataFormatValues),
+		homeDir:            userHomeDir,
+		sprigTemplateFuncs: sprig.TxtFuncMap(),
 
 		// Command configurations.
 		apply: applyCmdConfig{
@@ -472,10 +477,10 @@ func newConfig(options ...configOption) (*Config, error) {
 		"toString",
 		"toStrings",
 	} {
-		if _, ok := c.templateFuncs[templateFunc]; !ok {
+		if _, ok := c.sprigTemplateFuncs[templateFunc]; !ok {
 			panic(templateFunc + ": deleting non-existent template function")
 		}
-		delete(c.templateFuncs, templateFunc)
+		delete(c.sprigTemplateFuncs, templateFunc)
 	}
 
 	// The completion template function is added in persistentPreRunRootE as
@@ -625,10 +630,10 @@ func (c *Config) Close() error {
 // to c. It panics if there is already an existing template function with the
 // same key.
 func (c *Config) addTemplateFunc(key string, value any) {
-	if _, ok := c.templateFuncs[key]; ok {
+	if _, ok := c.sprigTemplateFuncs[key]; ok {
 		panic(key + ": already defined")
 	}
-	c.templateFuncs[key] = value
+	c.sprigTemplateFuncs[key] = value
 }
 
 type applyArgsOptions struct {
@@ -930,9 +935,9 @@ func (c *Config) createConfigFileContents(filename chezmoi.RelPath, data []byte,
 	// This ensures that the init template functions
 	// are removed before "normal" template parsing.
 	funcMap := make(template.FuncMap)
-	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
+	chezmoi.RecursiveMerge(funcMap, c.sprigTemplateFuncs)
 	defer func() {
-		c.templateFuncs = funcMap
+		c.sprigTemplateFuncs = funcMap
 	}()
 
 	initTemplateFuncs := map[string]any{
@@ -950,11 +955,13 @@ func (c *Config) createConfigFileContents(filename chezmoi.RelPath, data []byte,
 		"stdinIsATTY":           c.stdinIsATTYInitTemplateFunc,
 		"writeToStdout":         c.writeToStdout,
 	}
-	chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
+	chezmoi.RecursiveMerge(c.sprigTemplateFuncs, initTemplateFuncs)
 
 	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, chezmoi.TemplateOptions{
-		Funcs:   c.templateFuncs,
-		Options: slices.Clone(c.Template.Options),
+		Functions:   c.Template.functions,
+		SprigFuncs:  c.sprigTemplateFuncs,
+		SproutFuncs: c.sproutTemplateFuncs,
+		Options:     slices.Clone(c.Template.Options),
 	})
 	if err != nil {
 		return nil, err
@@ -1763,8 +1770,8 @@ func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
 
 // gitCommitMessage returns the git commit message for the given status.
 func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status) ([]byte, error) {
-	templateFuncs := maps.Clone(c.templateFuncs)
-	maps.Copy(templateFuncs, map[string]any{
+	sprigTemplateFuncs := maps.Clone(c.sprigTemplateFuncs)
+	maps.Copy(sprigTemplateFuncs, map[string]any{
 		"promptBool":        c.promptBoolInteractiveTemplateFunc,
 		"promptChoice":      c.promptChoiceInteractiveTemplateFunc,
 		"promptInt":         c.promptIntInteractiveTemplateFunc,
@@ -1774,6 +1781,8 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status)
 			return mustValue(chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix())).String()
 		},
 	})
+	sproutTemplateFuncs := maps.Clone(c.sproutTemplateFuncs)
+	// FIXME add prompt* and targetRelPath functions
 	var name string
 	var commitMessageTemplateData []byte
 	switch {
@@ -1796,8 +1805,10 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status)
 		commitMessageTemplateData = []byte(templates.CommitMessageTmpl)
 	}
 	commitMessageTmpl, err := chezmoi.ParseTemplate(name, commitMessageTemplateData, chezmoi.TemplateOptions{
-		Funcs:   templateFuncs,
-		Options: slices.Clone(c.Template.Options),
+		Functions:   c.Template.functions,
+		SprigFuncs:  sprigTemplateFuncs,
+		SproutFuncs: sproutTemplateFuncs,
+		Options:     slices.Clone(c.Template.Options),
 	})
 	if err != nil {
 		return nil, err
@@ -2015,8 +2026,10 @@ func (c *Config) newExternalDiffSystem(s chezmoi.System) *chezmoi.ExternalDiffSy
 		Reverse:        c.Diff.Reverse,
 		ScriptContents: c.Diff.ScriptContents,
 		TemplateOptions: chezmoi.TemplateOptions{
-			Funcs:   c.templateFuncs,
-			Options: c.Template.Options,
+			Functions:   c.Template.functions,
+			SprigFuncs:  c.sprigTemplateFuncs,
+			SproutFuncs: c.sproutTemplateFuncs,
+			Options:     c.Template.Options,
 		},
 		TextConvFunc: c.TextConv.convert,
 	}
@@ -2084,8 +2097,8 @@ func (c *Config) newSourceState(
 		chezmoi.WithPriorityTemplateData(priorityTemplateData),
 		chezmoi.WithScriptTempDir(c.ScriptTempDir),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
+		chezmoi.WithSprigTemplateFuncs(c.sprigTemplateFuncs),
 		chezmoi.WithSystem(c.sourceSystem),
-		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),
 		chezmoi.WithUmask(c.Umask),
 		chezmoi.WithVersion(c.version),
@@ -3139,7 +3152,8 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Safe:    true,
 		TempDir: chezmoi.NewAbsPath(os.TempDir()),
 		Template: templateConfig{
-			Options: chezmoi.DefaultTemplateOptions,
+			FunctionsStr: "sprig",
+			Options:      chezmoi.DefaultTemplateOptions,
 		},
 		Umask: chezmoi.Umask,
 		UseBuiltinAge: autoBool{

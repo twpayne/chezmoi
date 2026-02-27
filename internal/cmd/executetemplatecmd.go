@@ -257,7 +257,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			"writeToStdout":         c.writeToStdout,
 		}
 
-		chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
+		chezmoi.RecursiveMerge(c.sprigTemplateFuncs, initTemplateFuncs)
 	}
 
 	if len(args) == 0 {

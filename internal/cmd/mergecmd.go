@@ -148,8 +148,10 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	anyTemplateArgs := false
 	for i, arg := range c.Merge.Args {
 		tmpl, err := chezmoi.ParseTemplate("merge.args["+strconv.Itoa(i)+"]", []byte(arg), chezmoi.TemplateOptions{
-			Funcs:   c.templateFuncs,
-			Options: c.Template.Options,
+			Functions:   c.Template.functions,
+			SprigFuncs:  c.sprigTemplateFuncs,
+			SproutFuncs: c.sproutTemplateFuncs,
+			Options:     c.Template.Options,
 		})
 		if err != nil {
 			return err
