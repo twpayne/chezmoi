@@ -41,6 +41,10 @@ Sync, search and backup shell history.
 
 A shell script which checks your $HOME for unwanted files and directories.
 
+### [`github.com/daptify14/chezit`](https://github.com/daptify14/chezit) { id="chezit"}
+
+Terminal UI for chezmoi dotfile management.
+
 ### [`github.com/hussainweb/ansible-role-chezmoi`](https://github.com/hussainweb/ansible-role-chezmoi) { id="hussainweb/ansible-role-chezmoi" }
 
 Installs chezmoi on Ubuntu and Debian servers.
