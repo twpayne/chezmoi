@@ -654,3 +654,11 @@ articles:
   version: 2.69.4
   title: I Deprecated Dotfiles and Oh My Zsh, and Moved to Chezmoi
   url: https://samwize.com/2026/02/13/i-deprecated-dotfiles-and-oh-my-zsh-and-moved-to-chezmoi/
+- date: '2026-02-22'
+  version: 2.69.4
+  title: Dotfiles (series)
+  url: https://knuth.info/posts/the-solo-stack/dotfiles/
+- date: '2026-02-27'
+  version: 2.69.4
+  title: Syncing Dotfiles Across Machines with Chezmoi
+  url: https://rifqimfahmi.dev/blog/chezmoi-to-backup-dotfiles
