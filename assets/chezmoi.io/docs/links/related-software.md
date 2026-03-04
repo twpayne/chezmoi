@@ -1,5 +1,6 @@
 # Related software
 
+
 ## Editor integration
 
 ### [`github.com/andre-kotake/nvim-chezmoi`](https://github.com/andre-kotake/nvim-chezmoi) { id="andre-kotake/nvim-chezmoi" }
@@ -31,27 +32,35 @@ Edit your chezmoi-managed files and automatically apply.
 
 Custom Telescope Picker for Chez Moi Managed Dot files.
 
+
+## Frontends
+
+### [`github.com/daptify14/chezit`](https://github.com/daptify14/chezit) { id="daptify14/chezit"}
+
+Terminal UI for chezmoi dotfile management.
+
+### [`github.com/johan-weitner/chezmoi-ui`](https://github.com/johan-weitner/chezmoi-ui) { id="johan-weitner/chezmoi-ui" }
+
+A web UI for managing a list of apps to seed/feed a chezmoi setup.
+
+### [`github.com/matmaer/chezmoi-mousse`](https://github.com/matmaer/chezmoi-mousse) { id="matmaer/chezmoi-mousse" }
+
+Visual interface in the terminal for the chezmoi dotfile manager, with a wink to the mouse.
+
+
 ## Other
 
 ### [`atuin.sh`](https://atuin.sh/) { id="atuin" }
 
 Sync, search and backup shell history.
 
-### [`github.com/b3nj5m1n/xdg-ninja`](https://github.com/b3nj5m1n/xdg-ninja) { id="xdg-ninja" }
+### [`github.com/b3nj5m1n/xdg-ninja`](https://github.com/b3nj5m1n/xdg-ninja) { id="b3nj5m1n/xdg-ninja" }
 
 A shell script which checks your $HOME for unwanted files and directories.
-
-### [`github.com/daptify14/chezit`](https://github.com/daptify14/chezit) { id="chezit"}
-
-Terminal UI for chezmoi dotfile management.
 
 ### [`github.com/hussainweb/ansible-role-chezmoi`](https://github.com/hussainweb/ansible-role-chezmoi) { id="hussainweb/ansible-role-chezmoi" }
 
 Installs chezmoi on Ubuntu and Debian servers.
-
-### [`github.com/johan-weitner/chezmoi-ui`](https://github.com/johan-weitner/chezmoi-ui) { id="johan-weitner/chezmoi-ui" }
-
-A web UI for managing a list of apps to seed/feed a chezmoi setup.
 
 ### [`github.com/joke/asdf-chezmoi`](https://github.com/joke/asdf-chezmoi) { id="joke/asdf-chezmoi" }
 
@@ -64,10 +73,6 @@ A `sudo` wrapper for chezmoi to manage root-owned files across your entire files
 ### [`github.com/mass8326/zsh-chezmoi`](https://github.com/mass8326/zsh-chezmoi) { id="mass8326/zsh-chezmoi" }
 
 Add completion and aliases for chezmoi to make managing dotfiles easier to zsh.
-
-### [`github.com/matmaer/chezmoi-mousse`](https://github.com/matmaer/chezmoi-mousse) { id="matmaer/chezmoi-mousse" }
-
-Visual interface in the terminal for the chezmoi dotfile manager, with a wink to the mouse.
 
 ### [Chezetc](https://silverrainz.me/chezetc/) { id="silverrainz.me/chezetc" }
 
