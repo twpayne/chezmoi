@@ -26,6 +26,7 @@ func (c *Config) newDockerCmd() *cobra.Command {
 	commandCmd := &cobra.Command{
 		GroupID: groupIDRemote,
 		Use:     "docker",
+		Aliases: []string{"podman"},
 		Short:   "Use your dotfiles in a Docker container",
 		Annotations: newAnnotations(
 			persistentStateModeNone,

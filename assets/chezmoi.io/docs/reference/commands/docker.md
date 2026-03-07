@@ -9,7 +9,9 @@
 !!! Hint
 
     To use [podman](https://podman.io/) instead of Docker, set the
-    `docker.command` configuration variable to `podman`.
+    `docker.command` configuration variable to `podman`. You can also
+    use the [`chezmoi podman` command][chezmoi-podman] instead of
+    `chezmoi docker`.
 
 Install chezmoi, run `chezmoi init --apply`, and optionally execute your shell
 in [Docker](https://docker.com/) containers.
@@ -61,3 +63,5 @@ then install them with *package-manager*.
 chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME
 chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME
 ```
+
+[chezmoi-podman]: /reference/commands/podman.md
