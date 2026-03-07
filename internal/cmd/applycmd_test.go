@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
@@ -323,6 +325,94 @@ func TestIssue3703(t *testing.T) {
 			),
 			vfst.TestPath("/home/user/.local/bin/unmanaged",
 				vfst.TestDoesNotExist(),
+			),
+		)
+	})
+}
+
+func TestIssue4927(t *testing.T) {
+	// httpServer returns a different file contents every time.
+	var count atomic.Int64
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := fmt.Fprintf(w, "contents of file, count %d\n", count.Add(1))
+		assert.NoError(t, err)
+	}))
+	defer httpServer.Close()
+
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local/share/chezmoi": map[string]any{
+				".chezmoiexternal.toml.tmpl": chezmoitest.JoinLines(
+					`[".file"]`,
+					`    type = "file"`,
+					`    url = "`+httpServer.URL+`/file"`,
+					`    checksum.sha256 = "b48186336296270875649bac2e973968ec1f252154da32a4e906a462eb5f6c0a"`,
+				),
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		// Apply an external.
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+		vfst.RunTests(t, fileSystem, ".file",
+			vfst.TestPath("/home/user/.file",
+				vfst.TestContentsString("contents of file, count 1\n"),
+			),
+		)
+
+		// Clear the cache.
+		assert.NoError(t, fileSystem.RemoveAll("/home/user/.cache/chezmoi"))
+
+		// Apply the external again. As the cache has been cleared, apply should
+		// download a new file with a new checksum.
+		assert.NoError(t, fileSystem.WriteFile("/home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl", []byte(chezmoitest.JoinLines(
+			`[".file"]`,
+			`    type = "file"`,
+			`    url = "`+httpServer.URL+`/file"`,
+			`    checksum.sha256 = "5ecfe762ad9a450cbc2317d8fd114d226ad97209ba1e11dc30ab26423a335fed"`,
+		)), 0o666))
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
+		vfst.RunTests(t, fileSystem, ".file",
+			vfst.TestPath("/home/user/.file",
+				vfst.TestContentsString("contents of file, count 2\n"),
+			),
+		)
+
+		// Clear the cache again.
+		assert.NoError(t, fileSystem.RemoveAll("/home/user/.cache/chezmoi"))
+
+		// Apply the external again. As the cache has been cleared, the apply
+		// should download the external again, with a new SHA256 sum.
+		assert.EqualError(t,
+			newTestConfig(t, fileSystem).execute([]string{"apply"}),
+			".file: .file: SHA256 mismatch: expected 5ecfe762ad9a450cbc2317d8fd114d226ad97209ba1e11dc30ab26423a335fed, got f1517c117381f6ac8c0b07e96152fe296891d9b56fb1ebc44ed0f8da2ab72688",
+		)
+		vfst.RunTests(t, fileSystem, ".file",
+			vfst.TestPath("/home/user/.file",
+				vfst.TestContentsString("contents of file, count 2\n"),
+			),
+		)
+
+		// Apply the external again. As the cache has not be cleared, the apply
+		// should have the same SHA256 sum as in the cache.
+		assert.EqualError(t,
+			newTestConfig(t, fileSystem).execute([]string{"apply"}),
+			".file: .file: SHA256 mismatch: expected 5ecfe762ad9a450cbc2317d8fd114d226ad97209ba1e11dc30ab26423a335fed, got f1517c117381f6ac8c0b07e96152fe296891d9b56fb1ebc44ed0f8da2ab72688",
+		)
+		vfst.RunTests(t, fileSystem, ".file",
+			vfst.TestPath("/home/user/.file",
+				vfst.TestContentsString("contents of file, count 2\n"),
+			),
+		)
+
+		// Apply the external again, this time with --refresh-externals=always.
+		// Due to the refresh, the SHA256 sum should have changed again.
+		assert.EqualError(t,
+			newTestConfig(t, fileSystem).execute([]string{"apply", "--refresh-externals=always"}),
+			".file: .file: SHA256 mismatch: expected 5ecfe762ad9a450cbc2317d8fd114d226ad97209ba1e11dc30ab26423a335fed, got 32da3f52b369ad56a60d0f9707268b5a8d0aba1839dde3fcfe6e3bf092777f97",
+		)
+		vfst.RunTests(t, fileSystem, ".file",
+			vfst.TestPath("/home/user/.file",
+				vfst.TestContentsString("contents of file, count 2\n"),
 			),
 		)
 	})

@@ -2,11 +2,13 @@ httpd www
 
 # test that chezmoi apply checks checksums of external files
 exec chezmoi apply
-cmp $HOME/.file www/file
+cmp $HOME/.file golden/.file
 edit www/file
-! exec chezmoi apply --refresh-externals=always
-cmp $HOME/.file www/file
+exec chezmoi apply --refresh-externals=always
+cmp $HOME/.file golden/.file
 
+-- golden/.file --
+# contents of file
 -- home/user/.local/share/chezmoi/.chezmoiexternal.yaml.tmpl --
 ".file":
   type: file
