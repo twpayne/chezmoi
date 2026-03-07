@@ -662,3 +662,11 @@ articles:
   version: 2.69.4
   title: Syncing Dotfiles Across Machines with Chezmoi
   url: https://rifqimfahmi.dev/blog/chezmoi-to-backup-dotfiles
+- date: '2026-03-07'
+  version: 2.69.4
+  title: One Skills Brain for Codex, Claude, Cursor, and Copilot with chezmoi
+  url: https://dev.to/dotwee/one-skills-brain-for-codex-claude-cursor-and-copilot-with-chezmoi-2p3k
+- date: '2026-03-07'
+  version: 2.69.4
+  title: One MCP Configuration for Codex, Claude, Cursor, and Copilot with chezmoi
+  url: https://dev.to/dotwee/one-mcp-configuration-for-codex-claude-cursor-and-copilot-with-chezmoi-925
