@@ -671,6 +671,10 @@ var helps = map[string]*help{
 			"r",
 		),
 	},
+	"podman": {
+		longHelp: "" +
+			"  podman is an alias for docker.",
+	},
 	"purge": {
 		longHelp: "" +
 			"  Remove chezmoi's configuration, state, and source directory, but leave the\n" +
