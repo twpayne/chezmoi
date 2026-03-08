@@ -113,6 +113,7 @@ type External struct {
 	StripComponents int               `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string            `json:"url"             toml:"url"             yaml:"url"`
 	URLs            []string          `json:"urls"            toml:"urls"            yaml:"urls"`
+	TargetPath      string            `json:"targetPath"      toml:"targetPath"      yaml:"targetPath"`
 	sourceAbsPath   AbsPath
 }
 
@@ -1443,21 +1444,25 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 	}
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	for key, external := range externals {
-		if key == "" {
+	for targetPath, external := range externals {
+		if external.TargetPath != "" {
+			targetPath = external.TargetPath
+		}
+		if targetPath == "" {
 			return fmt.Errorf("%s: empty path", sourceAbsPath)
 		}
-		externalPath := path.Clean(key)
+
+		externalPath := path.Clean(targetPath)
 		if strings.HasPrefix(externalPath, "/") || filepath.IsAbs(externalPath) {
-			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, key)
+			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, targetPath)
 		}
 		switch relPath, err := filepath.Rel(".", externalPath); {
 		case err != nil:
-			return fmt.Errorf("%s: %s: %w", sourceAbsPath, key, err)
+			return fmt.Errorf("%s: %s: %w", sourceAbsPath, targetPath, err)
 		case relPath == ".":
-			return fmt.Errorf("%s: %s: empty relative path", sourceAbsPath, key)
+			return fmt.Errorf("%s: %s: empty relative path", sourceAbsPath, targetPath)
 		case relPath == "..", strings.HasPrefix(relPath, "../"):
-			return fmt.Errorf("%s: %s: relative path in parent", sourceAbsPath, key)
+			return fmt.Errorf("%s: %s: relative path in parent", sourceAbsPath, targetPath)
 		}
 		targetRelPath := parentTargetSourceRelPath.JoinString(externalPath)
 		external.sourceAbsPath = sourceAbsPath

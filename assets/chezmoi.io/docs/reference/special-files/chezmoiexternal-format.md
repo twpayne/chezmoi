@@ -52,6 +52,7 @@ Entries may have the following fields:
 | `filter.args`                | []string | *none*        | Extra args to command to filter contents                         |
 | `pull.args`                  | []string | *none*        | Extra args to `git pull`                                         |
 | `archive.extractAppleDouble` | bool     | `false`       | If `true`, AppleDouble files are extracted                       |
+| `targetPath`                 | string   | *none*        | Target path, overriding the key of the entry                           |
 
 `url` must be an `https://`, `http://`, or `file://` URL. If `urls` is specified
 then they are tried in order and the first URL that succeeds is used.
@@ -193,6 +194,29 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
     ```
 
     Some more examples can be found in the [user guide][elsewhere].
+
+The optional `targetPath` field is a way to specify the target path of the fetched external(s), instead of using the entry key. This allows fetching multiple externals into one target directory in one chezmoiexternal file.
+
+!!! example
+
+    ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+    [p10k_fonts]
+        type = "archive"
+        url = "https://github.com/romkatv/powerlevel10k-media/archive/master.tar.gz"
+        exact = false
+        stripComponents = 1
+        refreshPeriod = "168h"
+        include = ["*/*.ttf"]
+        targetPath = "Library/Fonts"
+    [source_code_pro]
+        type = "archive"
+        url = "https://github.com/adobe-fonts/source-code-pro/archive/master.tar.gz"
+        exact = false
+        stripComponents = 2
+        refreshPeriod = "168h"
+        include = ["**/*.ttf"]
+        targetPath = "Library/Fonts"
+    ```
 
 !!! info
 
