@@ -1,0 +1,53 @@
+exec tar czf www/archive1.tar.gz archive1
+exec tar czf www/archive2.tar.gz archive2
+exec tar czf www/archive3.tar.gz archive3
+exec tar czf www/archive4.tar.gz archive4
+
+httpd www
+
+# test that chezmoi externals allow multiple entries targeting the same directory in a single file
+exec chezmoi apply
+cmp $HOME/.local/bin/uv archive1/uv
+cmp $HOME/.local/bin/uvx archive1/uvx
+cmp $HOME/.local/bin/ya archive2/ya
+cmp $HOME/.local/bin/yazi archive2/yazi
+cmp $HOME/.local/bin/todo.sh archive3/todo.sh
+cmp $HOME/.local/bin/print.sh archive4/print.sh
+
+-- archive1/uv --
+# contents of uv binary
+-- archive1/uvx --
+# contents of uvx binary
+-- archive2/ya --
+# contents of ya binary
+-- archive2/yazi --
+# contents of yazi binary
+-- archive3/todo.sh --
+# contents of todo.sh
+-- archive4/print.sh --
+# contents of print.sh
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[uv_binaries]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive1.tar.gz"
+    stripComponents = 1
+    include = ["**/uv", "**/uvx"]
+    targetPath = ".local/bin"
+[ya_binaries]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive2.tar.gz"
+    stripComponents = 1
+    include = ["**/ya", "**/yazi"]
+    targetPath = ".local/bin"
+[".local/bin/todo.sh"]
+    type = "archive-file"
+    url = "{{ env "HTTPD_URL" }}/archive3.tar.gz"
+    stripComponents = 1
+    path = "todo.sh"
+[print_script]
+    type = "archive-file"
+    url = "{{ env "HTTPD_URL" }}/archive4.tar.gz"
+    stripComponents = 1
+    path = "print.sh"
+    targetPath = ".local/bin/print.sh"
+-- www/.keep --
