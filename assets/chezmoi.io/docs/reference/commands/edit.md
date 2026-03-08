@@ -25,7 +25,8 @@ extension so editors can highlight them as templates.
 
 > Configuration: `edit.apply`
 
-Apply target immediately after editing. Ignored if there are no targets.
+Apply the target immediately after editing. This is ignored if there are no
+targets, and does not apply scripts.
 
 ### `--hardlink` *bool*
 
