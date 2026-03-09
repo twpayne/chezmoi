@@ -145,10 +145,13 @@ func TestScript(t *testing.T) {
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
 			"mockcommand":    cmdMockCommand,
+			"modifyfile":     cmdModifyFile,
 			"prependline":    cmdPrependLine,
 			"readlink":       cmdReadLink,
 			"removeline":     cmdRemoveLine,
+			"rmdir":          cmdRmDir,
 			"rmfinalnewline": cmdRmFinalNewline,
+			"sleep":          cmdSleep,
 			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
@@ -719,6 +722,25 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
+// cmdModifyFile modifies a file.
+func cmdModifyFile(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! modifyfile")
+	}
+	if len(args) < 3 {
+		ts.Fatalf("usage: modifyfile regexp replacement path...")
+	}
+	r, err := regexp.Compile(args[0])
+	ts.Check(err)
+	replacement := []byte(args[1])
+	for _, path := range args[2:] {
+		filename := ts.MkAbs(path)
+		data, err := os.ReadFile(filename)
+		ts.Check(err)
+		ts.Check(os.WriteFile(filename, r.ReplaceAll(data, replacement), 0o666))
+	}
+}
+
 // cmdPrependLine prepends lines to a file.
 func cmdPrependLine(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
@@ -778,6 +800,19 @@ func cmdRemoveLine(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(os.WriteFile(filename, data, 0o666))
 }
 
+// cmdRmDir removes directories.
+func cmdRmDir(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! rmdir")
+	}
+	if len(args) < 1 {
+		ts.Fatalf("usage: rmdir paths...")
+	}
+	for _, path := range args {
+		ts.Check(os.RemoveAll(ts.MkAbs(path)))
+	}
+}
+
 // cmdRmFinalNewline removes final newlines.
 func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
@@ -799,6 +834,19 @@ func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
+}
+
+// cmdSleep sleeps.
+func cmdSleep(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! sleep")
+	}
+	if len(args) < 1 {
+		ts.Fatalf("usage: sleep duration")
+	}
+	duration, err := time.ParseDuration(args[0])
+	ts.Check(err)
+	time.Sleep(duration)
 }
 
 // cmdUNIX2DOS converts files from UNIX line endings to DOS line endings.
