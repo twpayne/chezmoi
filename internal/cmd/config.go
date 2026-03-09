@@ -3292,11 +3292,11 @@ func parseCommand(command string, args []string) (string, []string, error) {
 	// Otherwise, if the command contains spaces, parse it as a shell command.
 	if whitespaceRx.MatchString(command) {
 		var words []*syntax.Word
-		if err := syntax.NewParser().Words(strings.NewReader(command), func(word *syntax.Word) bool {
+		for word, err := range syntax.NewParser().WordsSeq(strings.NewReader(command)) {
+			if err != nil {
+				return "", nil, err
+			}
 			words = append(words, word)
-			return true
-		}); err != nil {
-			return "", nil, err
 		}
 		switch fields, err := expand.Fields(&expand.Config{
 			Env: expand.FuncEnviron(os.Getenv),
