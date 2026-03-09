@@ -1,0 +1,38 @@
+httpd www
+
+# test that chezmoi only downloads externals once if refreshPeriod is zero
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+# sleep is needed to ensure that www/file has a different mtime after being edited
+# HTTP's Last-Modified headers have only single second resolution
+sleep 1s
+edit www/file
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+
+# test that chezmoi apply re-downloads the file if the cache is cleared
+rmdir $CHEZMOICACHEDIR
+modifyfile '[0-9a-f]{64}' '7fd151a85844480c7d5dde3fb06f359ccaa5964871ea63d4e19048f983905124' $CHEZMOISOURCEDIR/.chezmoiexternal.yaml.tmpl
+exec chezmoi apply
+cmp $HOME/.file golden/.file-edited
+exists $CHEZMOICACHEDIR
+
+# test that chezmoi apply --refresh-externals=always checks the checksum
+modifyfile '[0-9a-f]{64}' 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef' $CHEZMOISOURCEDIR/.chezmoiexternal.yaml.tmpl
+! exec chezmoi apply --refresh-externals=always
+stderr 'chezmoi: .file: SHA256 mismatch: expected deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef, got 7fd151a85844480c7d5dde3fb06f359ccaa5964871ea63d4e19048f983905124'
+cmp $HOME/.file golden/.file-edited
+
+-- golden/.file --
+# contents of file
+-- golden/.file-edited --
+# contents of file
+# edited
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml.tmpl --
+".file":
+  type: file
+  url: "{{ env "HTTPD_URL" }}/file"
+  checksum:
+    sha256: "989b88bea77292cfdbbb0ae73f66192ed6e4318bd7f3ec5edd809d359be6af43"
+-- www/file --
+# contents of file
