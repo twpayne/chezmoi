@@ -3859,6 +3859,8 @@
       
         
       
+        
+      
     
     
     
@@ -4941,6 +4943,34 @@
     
   
     merge-all
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/podman/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    podman
   
 
     
@@ -11140,6 +11170,12 @@ state then chezmoi will create them as regular directories.</p>
 <td><code>false</code></td>
 <td>If <code>true</code>, AppleDouble files are extracted</td>
 </tr>
+<tr>
+<td><code>targetPath</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Target path, overriding the key of the entry</td>
+</tr>
 </tbody>
 </table>
 <p><code>url</code> must be an <code>https://</code>, <code>http://</code>, or <code>file://</code> URL. If <code>urls</code> is specified
@@ -11263,6 +11299,27 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
 <span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*/plugins/**&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Some more examples can be found in the <a href="../../../user-guide/include-files-from-elsewhere/">user guide</a>.</p>
+</div>
+<p>The optional <code>targetPath</code> field is a way to specify the target path of the fetched external(s), instead of using the entry key. This allows fetching multiple externals into one target directory in one chezmoiexternal file.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[p10k_fonts]</span>
+<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/romkatv/powerlevel10k-media/archive/master.tar.gz&quot;</span>
+<span class="w">    </span><span class="n">exact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="n">stripComponents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
+<span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*/*.ttf&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">targetPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Library/Fonts&quot;</span>
+<span class="k">[source_code_pro]</span>
+<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span>
+<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/adobe-fonts/source-code-pro/archive/master.tar.gz&quot;</span>
+<span class="w">    </span><span class="n">exact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="n">stripComponents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
+<span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;**/*.ttf&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">targetPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Library/Fonts&quot;</span>
+</code></pre></div>
 </div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
