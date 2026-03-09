@@ -20,61 +20,66 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 	}
 
 	internalTestPromptBoolCmd := &cobra.Command{
-		Use:   "prompt-bool",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "prompt-bool prompt [default]",
+		Args:  cobra.RangeArgs(1, 2),
 		Short: "Run promptBool",
 		RunE:  c.runInternalTestPromptBoolCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,
 		),
+		Example: "  chezmoi internal-test prompt-bool overwrite false",
 	}
 	internalTestCmd.AddCommand(internalTestPromptBoolCmd)
 
 	internalTestPromptChoiceCmd := &cobra.Command{
-		Use:   "prompt-choice",
-		Args:  cobra.MinimumNArgs(2),
+		Use:   "prompt-choice prompt choices [default]",
+		Args:  cobra.RangeArgs(2, 3),
 		Short: "Run promptChoice",
 		RunE:  c.runInternalTestPromptChoiceCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,
 		),
+		Example: "  chezmoi internal-test prompt-choice color red,green,blue red",
 	}
 	internalTestCmd.AddCommand(internalTestPromptChoiceCmd)
 	internalTestPromptIntCmd := &cobra.Command{
-		Use:   "prompt-int",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "prompt-int prompt [default]",
+		Args:  cobra.RangeArgs(1, 2),
 		Short: "Run promptInt",
 		RunE:  c.runInternalTestPromptIntCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,
 		),
+		Example: "  chezmoi internal-test prompt-int count 1",
 	}
 	internalTestCmd.AddCommand(internalTestPromptIntCmd)
 
 	internalTestPromptMultichoiceCmd := &cobra.Command{
-		Use:   "prompt-multichoice",
-		Args:  cobra.MinimumNArgs(2),
+		Use:   "prompt-multichoice prompt choices [defaults]",
+		Args:  cobra.RangeArgs(2, 3),
 		Short: "Run promptMultichoice",
 		RunE:  c.runInternalTestPromptMultichoiceCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,
 		),
+		Example: "  chezmoi internal-test prompt-multichoice days mon,tue,wed,thu,fri,sat,sun sat,sun",
 	}
 	internalTestCmd.AddCommand(internalTestPromptMultichoiceCmd)
 
 	internalTestPromptStringCmd := &cobra.Command{
-		Use:   "prompt-string",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "prompt-string prompt [default]",
+		Args:  cobra.RangeArgs(1, 2),
 		Short: "Run promptString",
 		RunE:  c.runInternalTestPromptStringCmd,
 		Annotations: newAnnotations(
 			doesNotRequireValidConfig,
 			persistentStateModeNone,
 		),
+		Example: "  chezmoi internal-test prompt-string username root",
 	}
 	internalTestCmd.AddCommand(internalTestPromptStringCmd)
 
@@ -87,6 +92,7 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 			doesNotRequireValidConfig,
 			persistentStateModeNone,
 		),
+		Example: "  chezmoi internal-test read-password",
 	}
 	internalTestCmd.AddCommand(internalTestReadPasswordCmd)
 
@@ -94,13 +100,13 @@ func (c *Config) newInternalTestCmd() *cobra.Command {
 }
 
 func (c *Config) runInternalTestPromptBoolCmd(cmd *cobra.Command, args []string) error {
-	boolArgs := make([]bool, 0, len(args)-1)
-	for _, arg := range args[1:] {
+	boolArgs := make([]bool, len(args)-1)
+	for i, arg := range args[1:] {
 		boolArg, err := chezmoi.ParseBool(arg)
 		if err != nil {
 			return err
 		}
-		boolArgs = append(boolArgs, boolArg)
+		boolArgs[i] = boolArg
 	}
 	value, err := c.promptBool(args[0], boolArgs...)
 	if err != nil {
@@ -119,7 +125,6 @@ func (c *Config) runInternalTestPromptChoiceCmd(cmd *cobra.Command, args []strin
 
 func (c *Config) runInternalTestPromptMultichoiceCmd(cmd *cobra.Command, args []string) error {
 	var defaults *[]string
-
 	if len(args) > 2 {
 		values := strings.Split(args[2], ",")
 		defaults = &values
@@ -140,13 +145,13 @@ func (c *Config) runInternalTestPromptMultichoiceCmd(cmd *cobra.Command, args []
 }
 
 func (c *Config) runInternalTestPromptIntCmd(cmd *cobra.Command, args []string) error {
-	int64Args := make([]int64, 0, len(args)-1)
-	for _, arg := range args[1:] {
+	int64Args := make([]int64, len(args)-1)
+	for i, arg := range args[1:] {
 		int64Arg, err := strconv.ParseInt(arg, 10, 64)
 		if err != nil {
 			return err
 		}
-		int64Args = append(int64Args, int64Arg)
+		int64Args[i] = int64Arg
 	}
 	value, err := c.promptInt(args[0], int64Args...)
 	if err != nil {
