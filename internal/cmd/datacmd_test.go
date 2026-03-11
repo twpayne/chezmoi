@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
+	"github.com/goccy/go-yaml"
 	"github.com/twpayne/go-vfs/v5"
 
 	"chezmoi.io/chezmoi/internal/chezmoi"
@@ -13,13 +15,15 @@ import (
 
 func TestDataCmd(t *testing.T) {
 	for _, tc := range []struct {
-		format chezmoi.Format
-		root   map[string]any
+		format    string
+		unmarshal func([]byte, any) error
+		root      map[string]any
 	}{
 		{
-			format: chezmoi.FormatJSON,
+			format:    "json",
+			unmarshal: json.Unmarshal,
 			root: map[string]any{
-				"/home/user/.config/chezmoi/chezmoi.json": chezmoitest.JoinLines(
+				"home/user/.config/chezmoi/chezmoi.json": chezmoitest.JoinLines(
 					`{`,
 					`  "mode": "symlink",`,
 					`  "sourceDir": "/tmp/source",`,
@@ -38,9 +42,10 @@ func TestDataCmd(t *testing.T) {
 			},
 		},
 		{
-			format: chezmoi.FormatYAML,
+			format:    "yaml",
+			unmarshal: yaml.Unmarshal,
 			root: map[string]any{
-				"/home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
+				"home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
 					`mode: symlink`,
 					`sourceDir: /tmp/source`,
 					`encryption: age`,
@@ -54,11 +59,11 @@ func TestDataCmd(t *testing.T) {
 			},
 		},
 	} {
-		t.Run(tc.format.Name(), func(t *testing.T) {
+		t.Run(tc.format, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				args := []string{
 					"data",
-					"--format", tc.format.Name(),
+					"--format", tc.format,
 				}
 				stdout := strings.Builder{}
 				config := newTestConfig(t, fileSystem, withStdout(&stdout))
@@ -77,7 +82,7 @@ func TestDataCmd(t *testing.T) {
 					} `json:"chezmoi" yaml:"chezmoi"`
 					Test bool `json:"test"    yaml:"test"`
 				}
-				assert.NoError(t, tc.format.Unmarshal([]byte(stdout.String()), &data))
+				assert.NoError(t, tc.unmarshal([]byte(stdout.String()), &data))
 				assert.Equal(t, []string{"arg"}, data.Chezmoi.Config.Age.Args)
 				normalizedAgeIdentity, err := chezmoi.NormalizePath("/my-age-identity")
 				assert.NoError(t, err)

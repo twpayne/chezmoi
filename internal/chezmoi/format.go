@@ -10,8 +10,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/BurntSushi/toml"
 	"github.com/goccy/go-yaml"
+	"github.com/pelletier/go-toml/v2"
 	"github.com/tailscale/hujson"
 )
 
@@ -118,28 +118,33 @@ func (formatJSON) Name() string {
 
 // Unmarshal implements Format.Unmarshal.
 func (formatJSON) Unmarshal(data []byte, value any) error {
-	switch value := value.(type) {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+
+	// When unmarshaling into a generic type, use json.Number to preserve as
+	// much type information as possible.
+	switch value.(type) {
 	case *any, *[]any, *map[string]any:
-		decoder := json.NewDecoder(bytes.NewReader(data))
 		decoder.UseNumber()
-		if err := decoder.Decode(value); err != nil {
-			return err
-		}
-		if _, err := decoder.Token(); !errors.Is(err, io.EOF) {
-			return errExpectedEOF
-		}
-		switch value := value.(type) {
-		case *any:
-			*value = replaceJSONNumbersWithNumericValues(*value)
-		case *[]any:
-			*value = replaceJSONNumbersWithNumericValuesSlice(*value)
-		case *map[string]any:
-			*value = replaceJSONNumbersWithNumericValuesMap(*value)
-		}
-		return nil
-	default:
-		return json.Unmarshal(data, value)
 	}
+
+	if err := decoder.Decode(value); err != nil {
+		return err
+	}
+	if _, err := decoder.Token(); !errors.Is(err, io.EOF) {
+		return errExpectedEOF
+	}
+
+	switch value := value.(type) {
+	case *any:
+		*value = replaceJSONNumbersWithNumericValues(*value)
+	case *[]any:
+		*value = replaceJSONNumbersWithNumericValuesSlice(*value)
+	case *map[string]any:
+		*value = replaceJSONNumbersWithNumericValuesMap(*value)
+	}
+
+	return nil
 }
 
 // Marshal implements Format.Marshal.
@@ -148,13 +153,20 @@ func (formatTOML) Marshal(value any) ([]byte, error) {
 }
 
 // Name implements Format.Name.
-func (formatYAML) Name() string {
-	return "yaml"
+func (formatTOML) Name() string {
+	return "toml"
 }
 
 // Unmarshal implements Format.Unmarshal.
 func (formatTOML) Unmarshal(data []byte, value any) error {
-	return toml.Unmarshal(data, value)
+	decoder := toml.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	return decoder.Decode(value)
+}
+
+// Name implements Format.Name.
+func (formatYAML) Name() string {
+	return "yaml"
 }
 
 // Marshal implements Format.Marshal.
@@ -162,14 +174,20 @@ func (formatYAML) Marshal(value any) ([]byte, error) {
 	return yaml.Marshal(value)
 }
 
-// Name implements Format.Name.
-func (formatTOML) Name() string {
-	return "toml"
-}
-
 // Unmarshal implements Format.Unmarshal.
 func (formatYAML) Unmarshal(data []byte, value any) error {
-	return yaml.Unmarshal(data, value)
+	decoder := yaml.NewDecoder(
+		bytes.NewReader(data),
+		yaml.DisallowUnknownField(),
+	)
+	switch err := decoder.Decode(value); {
+	case errors.Is(err, io.EOF):
+		return nil // Empty input is OK.
+	case err != nil:
+		return err
+	default:
+		return nil
+	}
 }
 
 // FormatFromAbsPath returns the expected format of absPath.
