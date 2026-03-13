@@ -2,15 +2,15 @@
 name = "chezmoi"
 version = "2.59.1"
 classifiers = ["Private :: Do Not Upload"]
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 license = { text = "MIT" }
 dependencies = [
     "mkdocs>=1.6.1",
-    "mkdocs-material>=9.7.1",
+    "mkdocs-material>=9.7.5",
     "mkdocs-mermaid2-plugin>=1.2.3",
-    "pymdown-extensions>=10.19.1",
-    "ruamel-yaml>=0.18.17",
-    "ruff>=0.14.10",
+    "pymdown-extensions>=10.21",
+    "ruamel.yaml>=0.19.1",
+    "ruff>=0.15.6",
     "taskipy>=1.14.1",
 ]
 
@@ -31,7 +31,7 @@ include = [
   "assets/chezmoi.io/docs/shortcodes.py",
   "assets/scripts/format-yaml.py",
 ]
-target-version = "py310"
+target-version = "py314"
 
 [tool.ruff.lint]
 extend-select = [
@@ -53,17 +53,6 @@ ignore = ["ANN003", "COM812"]
 
 [tool.ruff.format]
 quote-style = "single"
-
-[dependency-groups]
-dev = [
-    "mkdocs>=1.6.1",
-    "mkdocs-material>=9.6.9",
-    "mkdocs-mermaid2-plugin>=1.2.1",
-    "pymdown-extensions>=10.14.3",
-    "ruamel-yaml>=0.18.10",
-    "ruff>=0.11.2",
-    "taskipy>=1.14.1",
-]
 
 [tool.uv.workspace]
 members = ["chezmoi"]
