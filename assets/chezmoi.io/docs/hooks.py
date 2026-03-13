@@ -26,7 +26,6 @@ templates = [
 
 
 def on_pre_build(config: MkDocsConfig, **kwargs) -> None:
-    config_dir = Path(config.config_file_path).parent
     docs_dir = PurePosixPath(config.docs_dir)
     for src_path in templates:
         output_path = docs_dir.joinpath(src_path)
