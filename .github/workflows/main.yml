@@ -305,6 +305,8 @@ jobs:
       run: |
         uv python install ${{ env.PYTHON_VERSION }}
         uv sync --locked
+    - name: check-hooks
+      run: uv run -v task pycheck
     - name: build-website
       run: uv run -v task build-docs
       env:
