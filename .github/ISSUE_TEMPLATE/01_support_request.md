@@ -6,6 +6,15 @@ labels: support
 assignees: ''
 ---
 
+<!--
+
+chezmoi has a strict zero-tolerance policy on LLM contributions. If you use an
+LLM (Large Language Model, like ChatGPT, Claude, Gemini, GitHub Copilot, or
+Llama) to make any kind of contribution then you will immediately be banned
+without recourse.
+
+-->
+
 ## What exactly are you trying to do?
 
 Describe in as much detail as possible.
