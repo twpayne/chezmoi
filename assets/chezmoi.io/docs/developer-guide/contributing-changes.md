@@ -2,10 +2,11 @@
 
 !!! warning
 
-    If you use an LLM (Large Language Model, like ChatGPT, Claude, Gemini,
-    GitHub Copilot, or Llama) to make any kind of contribution then you will
-    immediately be banned without recourse. See [`CODE_OF_CONDUCT.md`][coc]
-    for more information.
+    chezmoi has a strict zero-tolerance policy on LLM contributions. If you use
+    an LLM (Large Language Model, like ChatGPT, Claude, Gemini, GitHub Copilot,
+    or Llama) to make any kind of contribution then you will immediately be
+    banned without recourse. See [`CODE_OF_CONDUCT.md`][coc] for more
+    information.
 
 Bug reports, bug fixes, and documentation improvements are always welcome.
 Please [open an issue][issue] or [create a pull request][pr] with your report,
@@ -25,13 +26,13 @@ that:
 
 * The documentation is updated, if necessary. For new features you should add an
   entry in `assets/chezmoi.io/docs/user-guide/` and a complete description in
-  `assets/chezmoi.io/docs/reference/`. See the [website developer
-  guide][website] for instructions on how to build and view a local version of
-  the documentation. By default, chezmoi will panic if a flag is undocumented or
-  a long help is missing for a command. You can disable this panic during
-  development by setting the environment variable `CHEZMOIDEV` to
-  `ignoreflags=1,ignorehelp=1`. Once you have documented the command and its
-  flags, run `make generate` to generate the embedded documentation.
+  `assets/chezmoi.io/docs/reference/`. See the [website developer guide][website]
+  for instructions on how to build and view a local version of the documentation.
+  By default, chezmoi will panic if a flag is undocumented or a long help is
+  missing for a command. You can disable this panic during development by
+  setting the environment variable `CHEZMOIDEV` to `ignoreflags=1,ignorehelp=1`.
+  Once you have documented the command and its flags, run `make generate` to
+  generate the embedded documentation.
 
 * All generated files are up to date. You can ensure this by running `make
   generate` and including any modified files in your commit.
@@ -76,3 +77,4 @@ that:
 [commits]: https://www.conventionalcommits.org/en/v1.0.0/
 [history]: https://github.com/twpayne/chezmoi/commits/master/
 [website]: /developer-guide/website.md
+[coc]: https://github.com/twpayne/chezmoi/blob/master/.github/CODE_OF_CONDUCT.md
