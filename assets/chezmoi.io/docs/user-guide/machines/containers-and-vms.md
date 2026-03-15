@@ -19,21 +19,58 @@ The workflow is different to using chezmoi on a new machine, notably:
 
 First, if you are using a chezmoi configuration file template, ensure that it
 is non-interactive when running in Codespaces, for example,
-`.chezmoi.toml.tmpl` might contain:
+`.chezmoi.$FORMAT.tmpl` might contain:
 
-```text
-{{- $codespaces:= env "CODESPACES" | not | not -}}
-sourceDir = {{ .chezmoi.sourceDir | quote }}
+=== "TOML"
 
-[data]
-    name = "Your name"
-    codespaces = {{ $codespaces }}
-{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
-    email = "your@email.com"
-{{- else }}{{/* Interactive setup, so prompt for an email address */}}
-    email = {{ promptString "email" | quote }}
-{{- end }}
-```
+    ```text title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
+    {{- $codespaces:= env "CODESPACES" | not | not -}}
+    sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+    [data]
+        name = "Your name"
+        codespaces = {{ $codespaces }}
+    {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+        email = "your@email.com"
+    {{- else }}{{/* Interactive setup, so prompt for an email address */}}
+        email = {{ promptString "email" | quote }}
+    {{- end }}
+    ```
+
+=== "YAML"
+
+    ```text title="~/.local/share/chezmoi/.chezmoi.yaml.tmpl"
+    {{- $codespaces:= env "CODESPACES" | not | not -}}
+    sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+    data:
+      name: Your name
+      codespaces: {{ $codespaces }}
+    {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+      email: your@email.com
+    {{- else }}{{/* Interactive setup, so prompt for an email address */}}
+      email: {{ promptString "email" }}
+    {{- end }}
+    ```
+
+=== "JSON"
+
+    ```text title="~/.local/share/chezmoi/.chezmoi.json.tmpl"
+    {{- $codespaces:= env "CODESPACES" | not | not -}}
+    sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+    {
+        "data": {
+            "name": "Your name",
+            "codespaces": {{ $codespaces | quote }},
+    {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+            "email": "your@email.com"
+    {{- else }}{{/* Interactive setup, so prompt for an email address */}}
+            "email": {{ promptString "email" | quote }}
+    {{- end }}
+        }
+    }
+    ```
 
 !!! info
 

@@ -39,9 +39,11 @@ which instructs `less` to display "raw" control characters via the `-R` /
 You can also set the `pager` configuration variable in your config file, for
 example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 pager = "less -R"
 ```
+<!-- /example-formats -->
 
 If you have set a different pager (via the `pager` configuration variable or
 `PAGER` environment variable) then you must ensure that it passes through raw
@@ -109,9 +111,11 @@ that files and directories are group writeable by default.
 You can override this for chezmoi by setting the `umask` configuration variable
 in your configuration file, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 umask = 0o022
 ```
+<!-- /example-formats -->
 
 !!! note
 
@@ -180,9 +184,11 @@ You can change the temporary directory into which chezmoi writes and executes
 scripts with the `scriptTempDir` configuration variable. For example, to use a
 subdirectory of your home directory you can use:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 scriptTempDir = "~/tmp"
 ```
+<!-- /example-formats -->
 
 ## chezmoi reports `chezmoi: mkdir xxxxx: no such file or directory` when trying to manage file or directory
 
@@ -193,9 +199,10 @@ A workaround can be applied in a such case via manually creating import
 directory in chezmoi source directory (typically `~/.local/share/chezmoi`) and
 create `.keep` file.
 
-For example, if `.chezmoiexternal.toml` has the configuration:
+For example, if `.chezmoiexternal.$FORMAT` has the configuration:
 
-```toml
+<!-- example-formats -->
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".config/nvim"]
     type = "git-repo"
     url = "https://github.com/NvChad/NvChad.git"
@@ -203,6 +210,7 @@ For example, if `.chezmoiexternal.toml` has the configuration:
     [".config/nvim".pull]
         args = ["--ff-only"]
 ```
+<!-- /example-formats -->
 
 Now `chezmoi add ~/.config/direnv/direnvrc` will raise the error:
 

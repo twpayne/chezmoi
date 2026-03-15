@@ -15,10 +15,12 @@ extra options to be set. The default `pinentry.options` is
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [pinentry]
         command = "pinentry"
     ```
+    <!-- /example-formats -->
 
 [assuan]: https://www.gnupg.org/documentation/manuals/assuan.pdf
 [pinentry]: https://www.gnupg.org/related_software/pinentry/index.html

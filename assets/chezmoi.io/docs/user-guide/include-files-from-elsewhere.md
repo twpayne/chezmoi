@@ -1,6 +1,6 @@
 # Include dotfiles from elsewhere
 
-The sections below contain examples of how to use `.chezmoiexternal.toml` to
+The sections below contain examples of how to use `.chezmoiexternal.$FORMAT` to
 include files from external sources. For more details, check the [reference
 manual][external].
 
@@ -14,8 +14,9 @@ external source.
 
 For example, to import Oh My Zsh, the [zsh-syntax-highlighting plugin][hlplug],
 and [powerlevel10k][p10k], put the following in
-`~/.local/share/chezmoi/.chezmoiexternal.toml`:
+`~/.local/share/chezmoi/.chezmoiexternal.$FORMAT`:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".oh-my-zsh"]
     type = "archive"
@@ -35,6 +36,7 @@ and [powerlevel10k][p10k], put the following in
     exact = true
     stripComponents = 1
 ```
+<!-- /example-formats -->
 
 To apply the changes, run:
 
@@ -98,6 +100,7 @@ For example, to import just the required source files of the
 [zsh-syntax-highlighting plugin][hlplug] in the example above, add in
 `include` filter to the `zsh-syntax-highlighting` section as shown below:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "archive"
@@ -107,6 +110,7 @@ For example, to import just the required source files of the
     refreshPeriod = "168h"
     include = ["*/*.zsh", "*/.version", "*/.revision-hash", "*/highlighters/**"]
 ```
+<!-- /example-formats -->
 
 ## Include a single file from a URL
 
@@ -114,26 +118,53 @@ Including single files uses the same mechanism as including a subdirectory
 above, except with the external type `file` instead of `archive`. For example,
 to include [`plug.vim`][plug.vim] from
 [`github.com/junegunn/vim-plug`][vim-plug] in `~/.vim/autoload/plug.vim` put the
-following in `~/.local/share/chezmoi/.chezmoiexternal.toml`:
+following in `~/.local/share/chezmoi/.chezmoiexternal.$FORMAT`:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".vim/autoload/plug.vim"]
     type = "file"
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     refreshPeriod = "168h"
 ```
+<!-- /example-formats -->
 
 ## Extract a single file from an archive
 
 You can extract a single file from an archive using the `archive-file` type in
 `.chezmoiexternal.$FORMAT`, for example:
 
-```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+=== "TOML"
+
+```text title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 {{ $ageVersion := "1.1.1" -}}
 [".local/bin/age"]
     type = "archive-file"
     url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
     path = "age/age"
+```
+
+=== "YAML"
+
+```text title="~/.local/share/chezmoi/.chezmoiexternal.yaml"
+{{ $ageVersion := "1.1.1" -}}
+.local/bin/age":
+  type: archive-file
+  url: https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz
+  path: age/age
+```
+
+=== "JSON"
+
+```text title="~/.local/share/chezmoi/.chezmoiexternal.json"
+{{ $ageVersion := "1.1.1" -}}
+{
+    ".local/bin/age": {
+        "type": "archive-file",
+        "url": "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz",
+        "path": "age/age"
+    }
+}
 ```
 
 This will extract the single archive member `age/age` from the given URL (which
@@ -172,6 +203,7 @@ a filter to decompress it. For example, before chezmoi natively supported the
 zstd compression format, you could handle `.tar.zst` external archives with, for
 example:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".Software/anki/2.1.54-qt6"]
     type = "archive"
@@ -180,6 +212,7 @@ example:
     filter.args = ["-d"]
     format = "tar"
 ```
+<!-- /example-formats -->
 
 Here `filter.command` and `filter.args` together tell chezmoi to filter the
 downloaded data through `zstd -d`. The `format = "tar"` line tells chezmoi that
@@ -190,12 +223,14 @@ output of the filter is an uncompressed tar archive.
 You can configure chezmoi to keep a git repository up to date in a subdirectory
 by using the external type `git-repo`, for example:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".vim/pack/alker0/chezmoi.vim"]
     type = "git-repo"
     url = "https://github.com/alker0/chezmoi.vim.git"
     refreshPeriod = "168h"
 ```
+<!-- /example-formats -->
 
 If the directory does not exist then chezmoi will run `git clone` to clone it.
 If the directory does exist then chezmoi will run `git pull` to pull the latest
@@ -226,6 +261,7 @@ You can customize the arguments to `git clone` and `git pull` by setting the
 `$DIR.clone.args` and `$DIR.pull.args` variables in `.chezmoiexternal.$FORMAT`,
 for example:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".vim/pack/alker0/chezmoi.vim"]
     type = "git-repo"
@@ -234,6 +270,7 @@ for example:
     [".vim/pack/alker0/chezmoi.vim".pull]
         args = ["--ff-only"]
 ```
+<!-- /example-formats -->
 
 ## Use git submodules in your source directory
 

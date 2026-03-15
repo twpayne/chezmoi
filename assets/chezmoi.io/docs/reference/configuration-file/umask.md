@@ -10,6 +10,8 @@ chezmoi's configuration file.
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     umask = 0o22
     ```
+    <!-- /example-formats -->

@@ -27,10 +27,12 @@ overridden by setting a list of options in the configuration file.
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [template]
         options = ["missingkey=zero"]
     ```
+    <!-- /example-formats -->
 
 [go-template]: https://pkg.go.dev/text/template
 [option]: https://pkg.go.dev/text/template?tab=doc#Template.Option

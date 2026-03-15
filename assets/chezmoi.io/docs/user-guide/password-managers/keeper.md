@@ -27,10 +27,12 @@ examplePassword = {{ index (keeperDataFields "$UID").password 0 }}
 Extra arguments can be passed to the Keeper CLI command by setting the
 `keeper.args` variable in chezmoi's config file, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [keeper]
     args = ["--config", "/path/to/config.json"]
 ```
+<!-- /example-formats -->
 
 [keeper]: https://www.keepersecurity.com/
 [commander]: https://docs.keeper.io/secrets-manager/commander-cli

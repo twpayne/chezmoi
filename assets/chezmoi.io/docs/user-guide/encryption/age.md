@@ -12,21 +12,25 @@ Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
 Specify age encryption in your configuration file, being sure to specify at
 least the identity and one recipient:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "age"
 [age]
     identity = "/home/user/key.txt"
     recipient = "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
 ```
+<!-- /example-formats -->
 
 chezmoi supports multiple identities and multiple recipients:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "age"
 [age]
     identities = ["/home/user/key1.txt", "/home/user/key2.txt"]
     recipients = ["recipient1", "recipient2"]
 ```
+<!-- /example-formats -->
 
 !!! note
 
@@ -38,23 +42,27 @@ encryption = "age"
 To use age's symmetric encryption, specify a single identity and enable
 symmetric encryption in your config file, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "age"
 [age]
     identity = "~/.ssh/id_rsa"
     symmetric = true
 ```
+<!-- /example-formats -->
 
 ## Symmetric encryption with a passphrase
 
 To use age's symmetric encryption with a passphrase, set `age.passphrase` to
 `true` in your config file, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "age"
 [age]
     passphrase = true
 ```
+<!-- /example-formats -->
 
 You will be prompted for the passphrase whenever you run `chezmoi add
 --encrypt` and whenever chezmoi needs to decrypt the file, for example when you

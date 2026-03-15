@@ -9,7 +9,9 @@ these warnings can be suppressed by setting values in configuration file.
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [warnings]
         configFileTemplateHasChanged = false
     ```
+    <!-- /example-formats -->

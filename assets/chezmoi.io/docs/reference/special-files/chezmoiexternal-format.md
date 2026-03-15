@@ -52,7 +52,7 @@ Entries may have the following fields:
 | `filter.args`                | []string | *none*        | Extra args to command to filter contents                         |
 | `pull.args`                  | []string | *none*        | Extra args to `git pull`                                         |
 | `archive.extractAppleDouble` | bool     | `false`       | If `true`, AppleDouble files are extracted                       |
-| `targetPath`                 | string   | *none*        | Target path, overriding the key of the entry                           |
+| `targetPath`                 | string   | *none*        | Target path, overriding the key of the entry                     |
 
 `url` must be an `https://`, `http://`, or `file://` URL. If `urls` is specified
 then they are tried in order and the first URL that succeeds is used.
@@ -132,18 +132,53 @@ bits on the target file, even if they are not set in the archive.
 
     Notice how `path = "zellij"` in the configuration does not include a leading `./`.
 
-    ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
-    [".local/bin/zellij"]
-        type = "archive-file"
-        url = {{ gitHubLatestReleaseAssetURL "zellij-org/zellij" "zellij-x86_64-unknown-linux-musl.tar.gz" | quote }}
-        executable = true
-        path = "zellij"
-    [".local/bin/eza"]
-        type = "archive-file"
-        url = {{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" | quote }}
-        executable = true
-        path = "./eza"
-    ```
+    === "TOML"
+
+        ```text title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+        [".local/bin/zellij"]
+            type = "archive-file"
+            url = {{ gitHubLatestReleaseAssetURL "zellij-org/zellij" "zellij-x86_64-unknown-linux-musl.tar.gz" | quote }}
+            executable = true
+            path = "zellij"
+        [".local/bin/eza"]
+            type = "archive-file"
+            url = {{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" | quote }}
+            executable = true
+            path = "./eza"
+        ```
+
+    === "YAML"
+
+        ```text title="~/.local/share/chezmoi/.chezmoiexternal.yaml"
+        .local/bin/zellij":
+          type: archive-file
+          url: {{ gitHubLatestReleaseAssetURL "zellij-org/zellij" "zellij-x86_64-unknown-linux-musl.tar.gz" | quote }}
+          executable: true
+          path: zellij
+        .local/bin/eza:
+          type: archive-file
+          url: {{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" | quote }}
+          executable: true
+          path: ./eza
+        ```
+
+    === "JSON"
+
+        ```text title="~/.local/share/chezmoi/.chezmoiexternal.json"
+        {
+            ".local/bin/zellij": {
+                "type": {{ gitHubLatestReleaseAssetURL "zellij-org/zellij" "zellij-x86_64-unknown-linux-musl.tar.gz" | quote }},
+                "executable": true,
+                "path": "zellij"
+            },
+            ".local/bin/eza": {
+                "type": "archive-file",
+                "url": {{ gitHubLatestReleaseAssetURL "eza-community/eza" "eza_x86_64-unknown-linux-gnu.tar.gz" | quote }},
+                "executable": true,
+                "path": "./eza"
+            }
+        }
+        ```
 
 If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME` with
 the optional `clone.args` if the target does not exist. If the target exists,
@@ -159,6 +194,7 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
     [".vim/autoload/plug.vim"]
         type = "file"
@@ -192,6 +228,7 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         stripComponents = 2
         include = ["*/plugins/**"]
     ```
+    <!-- /example-formats -->
 
     Some more examples can be found in the [user guide][elsewhere].
 
@@ -199,6 +236,7 @@ The optional `targetPath` field is a way to specify the target path of the fetch
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
     [p10k_fonts]
         type = "archive"
@@ -217,6 +255,7 @@ The optional `targetPath` field is a way to specify the target path of the fetch
         include = ["**/*.ttf"]
         targetPath = "Library/Fonts"
     ```
+    <!-- /example-formats -->
 
 !!! info
 
@@ -224,13 +263,39 @@ The optional `targetPath` field is a way to specify the target path of the fetch
     with an SSH URL. The SSH key should be configured in a `before_` script;
     and possible errors can be avoided by using [`stat`][stat]:
 
-    ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
-    {{ if stat (joinPath .chezmoi.homeDir ".ssh" "id_rsa") }}
-    [".path/to/private/repo"]
-    type = "git-repo"
-    url = "git@private.com:org/repo.git"
-    {{ end }}
-    ```
+    === "TOML"
+
+        ```text title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+        {{ if stat (joinPath .chezmoi.homeDir ".ssh" "id_rsa") }}
+        [".path/to/private/repo"]
+        type = "git-repo"
+        url = "git@private.com:org/repo.git"
+        {{ end }}
+        ```
+
+    === "YAML"
+
+        ```text title="~/.local/share/chezmoi/.chezmoiexternal.yaml"
+        {{ if stat (joinPath .chezmoi.homeDir ".ssh" "id_rsa") }}
+        .path/to/private/repo:
+          type: git-repo
+          url: git@private.com:org/repo.git
+        {{ end }}
+        ```
+
+
+    === "JSON"
+
+        ```text title="~/.local/share/chezmoi/.chezmoiexternal.json"
+        {{ if stat (joinPath .chezmoi.homeDir ".ssh" "id_rsa") }}
+        {
+            ".path/to/private/repo": {
+                "type": "git-repo",
+                "url": "git@private.com:org/repo.git"
+            }
+        }
+        {{ end }}
+        ```
 
 [ignore]: /reference/special-files/chezmoiignore.md
 [external-dir]: /reference/special-directories/chezmoiexternals.md

@@ -6,11 +6,13 @@ templates. See also [`.chezmoidata/`][data-dir].
 
 !!! example
 
-    If `.chezmoidata.toml` contains the following:
+    If `.chezmoidata.$FORMAT` contains the following:
 
+    <!-- example-formats -->
     ```toml title="~/.local/share/chezmoi/.chezmoidata.toml"
     fontSize = 12
     ```
+    <!-- /example-formats -->
 
     Then the `.fontSize` variable is available in templates, e.g.
 
@@ -36,30 +38,22 @@ templates. See also [`.chezmoidata/`][data-dir].
     `dot_config` source directory, they will be merged according to the sort
     order of the files:
 
-    === "JSON"
+    ```json title="dot_config/.chezmoidata.json"
+    { "z": { "z": 3 } }
+    ```
 
-        ```json title="dot_config/.chezmoidata.json"
-        { "z": { "z": 3 } }
-        ```
+    ```jsonc title="dot_config/.chezmoidata.jsonc"
+    { "z": { "z": 4 } }
+    ```
 
-    === "JSONC"
+    ```toml title="dot_config/.chezmoidata.toml"
+    z.x = 1
+    ```
 
-        ```jsonc title="dot_config/.chezmoidata.jsonc"
-        { "z": { "z": 4 } }
-        ```
-
-    === "TOML"
-
-        ```toml title="dot_config/.chezmoidata.toml"
-        z.x = 1
-        ```
-
-    === "YAML"
-
-        ```toml title="dot_config/.chezmoidata.yaml"
-        z:
-          y: 2
-        ```
+    ```yaml title="dot_config/.chezmoidata.yaml"
+    z:
+      y: 2
+    ```
 
     The output of `chezmoi data` will include the following merged `z`
     dictionary. Note that the value in `.chezmoidata.jsonc` overwrote the value

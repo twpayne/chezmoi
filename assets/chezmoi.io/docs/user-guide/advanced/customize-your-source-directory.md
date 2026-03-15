@@ -70,11 +70,13 @@ chezmoi init --apply
 For updates, you can set the `update.command` and `update.args` configuration
 variables and `chezmoi update` will use these instead of `git pull`, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [update]
     command = "fossil"
     args = ["update"]
 ```
+<!-- /example-formats -->
 
 Currently, it is not possible to override the auto add, commit, and push
 behavior for non-git VCSs, so you will have to commit changes manually, for
