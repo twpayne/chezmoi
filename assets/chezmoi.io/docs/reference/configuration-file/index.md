@@ -16,6 +16,22 @@ the extension of the config file name, but can be overridden with the
 
 ## Examples
 
+=== "TOML"
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    sourceDir = "/home/user/.dotfiles"
+    [git]
+        autoPush = true
+    ```
+
+=== "YAML"
+
+    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
+    sourceDir: /home/user/.dotfiles
+    git:
+        autoPush: true
+    ```
+
 === "JSON"
 
     ```json title="~/.config/chezmoi/chezmoi.json"
@@ -37,22 +53,6 @@ the extension of the config file name, but can be overridden with the
             "autoPush": true
         }
     }
-    ```
-
-=== "TOML"
-
-    ```toml title="~/.config/chezmoi/chezmoi.toml"
-    sourceDir = "/home/user/.dotfiles"
-    [git]
-        autoPush = true
-    ```
-
-=== "YAML"
-
-    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
-    sourceDir: /home/user/.dotfiles
-    git:
-        autoPush: true
     ```
 
 [xdg]: https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html

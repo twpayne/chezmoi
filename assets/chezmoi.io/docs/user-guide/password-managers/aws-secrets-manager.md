@@ -22,10 +22,12 @@ with `awsSecretsManager.profile` and `awsSecretsManager.region` respectively. By
 default, these values will be picked up from the standard environment variables
 and config files used by the standard AWS tooling.
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [awsSecretsManager]
-    profile = myWorkProfile
-    region = us-east-2
+    profile = "myWorkProfile"
+    region = "us-east-2"
 ```
+<!-- /example-formats -->
 
 [awssm]: https://aws.amazon.com/secrets-manager/

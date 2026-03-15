@@ -49,7 +49,9 @@ esac
 Finally, tell chezmoi to run your password manager install hook before reading
 the source state:
 
+<!-- example-formats -->
 ```toml title=".config/chezmoi/chezmoi.toml"
 [hooks.read-source-state.pre]
     command = ".local/share/chezmoi/.install-password-manager.sh"
 ```
+<!-- /example-formats -->

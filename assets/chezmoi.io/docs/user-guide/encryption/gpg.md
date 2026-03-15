@@ -6,14 +6,16 @@ or editing a file contents with `chezmoi edit`.
 
 ## Asymmetric (private/public-key) encryption
 
-Specify the encryption key to use in your configuration file (`chezmoi.toml`)
+Specify the encryption key to use in your configuration file (`chezmoi.$FORMAT`)
 with the `gpg.recipient` key:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "gpg"
 [gpg]
     recipient = "..."
 ```
+<!-- /example-formats -->
 
 chezmoi will encrypt files:
 
@@ -33,11 +35,13 @@ be decrypted when generating the target state.
 
 Specify symmetric encryption in your configuration file:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "gpg"
 [gpg]
     symmetric = true
 ```
+<!-- /example-formats -->
 
 chezmoi will encrypt files:
 
@@ -51,7 +55,9 @@ If you want to encrypt your files with a passphrase, but don't mind the
 passphrase being stored in plaintext on your machines, then you can use the
 following configuration:
 
-``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
+=== "TOML"
+
+```text title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
 {{ $passphrase := promptStringOnce . "passphrase" "passphrase" -}}
 
 encryption = "gpg"
@@ -60,6 +66,40 @@ encryption = "gpg"
 [gpg]
     symmetric = true
     args = ["--batch", "--passphrase", {{ $passphrase | quote }}, "--no-symkey-cache"]
+```
+
+=== "YAML"
+
+```text title="~/.local/share/chezmoi/.chezmoi.yaml.tmpl"
+{{ $passphrase := promptStringOnce . "passphrase" "passphrase" -}}
+
+encryption: gpg
+data:
+  passphrase: {{ $passphrase | quote }}
+gpg:
+  symmetric: true
+  args:
+  - --batch
+  - --passphrase
+  - {{ $passphrase | quote }}
+  - --no-symkey-cache
+```
+
+=== "JSON"
+
+```text title="~/.local/share/chezmoi/.chezmoi.json.tmpl"
+{{ $passphrase := promptStringOnce . "passphrase" "passphrase" -}}
+
+{
+    "encryption": "gpg",
+    "data": {
+        "passphrase": {{ $passphrase | quote }}
+    },
+    "gpg": {
+        "symmetric": true
+        "args": ["--batch", "--passphrase", {{ $passphrase | quote }}, "--no-symkey-cache"]
+    }
+}
 ```
 
 This will prompt you for the passphrase the first time you run `chezmoi init` on
@@ -73,9 +113,11 @@ some output even if you redirect stdout to `/dev/null`.
 You can mute this by adding `--quiet` to the `gpg.args` key in your
 configuration:
 
+<!-- example-formats -->
 ```toml title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
 [gpg]
     args = ["--quiet"]
 ```
+<!-- /example-formats -->
 
 [gpg]: https://www.gnupg.org/

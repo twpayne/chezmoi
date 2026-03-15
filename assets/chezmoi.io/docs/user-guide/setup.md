@@ -101,7 +101,7 @@ initial config file.
 
 Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
-``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
+```text title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
 {{- $email := promptStringOnce . "email" "Email address" -}}
 
 [data]
@@ -133,7 +133,7 @@ If you are using any `prompt*` template functions in your config file template
 you will be prompted again. However, you can avoid this with the following
 example template logic:
 
-```text
+```text title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
 {{- $email := promptStringOnce . "email" "Email address" -}}
 
 [data]

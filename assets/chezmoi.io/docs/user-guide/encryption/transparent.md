@@ -9,9 +9,11 @@ chezmoi supports encrypting files with transparent git encryption tools like
 
 In your configuration file, set `encryption` to `transparent`:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "transparent"
 ```
+<!-- /example-formats -->
 
 Initialize transcrypt:
 

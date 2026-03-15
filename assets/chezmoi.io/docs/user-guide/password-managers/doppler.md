@@ -34,11 +34,13 @@ used in the following way:
 Additionally one can set the default values for the project and config (aka
 environment) in your config file, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [doppler]
     project = "my-project"
     config = "dev"
 ```
+<!-- /example-formats -->
 
 With these default values, you can omit them in the call to both `doppler` and
 `dopplerProjectJson`, for example:

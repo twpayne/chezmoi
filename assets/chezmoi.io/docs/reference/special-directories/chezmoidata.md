@@ -17,30 +17,22 @@ can then be used in templates. See also [`.chezmoidata.$FORMAT`][data-format].
     source directory, the files within will be merged according to the sort
     order of the files:
 
-    === "JSON"
+    ```json title="dot_config/.chezmoidata/zed.json"
+    { "z": { "z": 3 } }
+    ```
 
-        ```json title="dot_config/.chezmoidata/zed.json"
-        { "z": { "z": 3 } }
-        ```
+    ```jsonc title="dot_config/.chezmoidata/alpha.jsonc"
+    { "z": { "z": 4 } }
+    ```
 
-    === "JSONC"
+    ```toml title="dot_config/.chezmoidata/beta.toml"
+    z.x = 1
+    ```
 
-        ```jsonc title="dot_config/.chezmoidata/alpha.jsonc"
-        { "z": { "z": 4 } }
-        ```
-
-    === "TOML"
-
-        ```toml title="dot_config/.chezmoidata/beta.toml"
-        z.x = 1
-        ```
-
-    === "YAML"
-
-        ```toml title="dot_config/.chezmoidata/gamma.yaml"
-        z:
-          y: 2
-        ```
+    ```yaml title="dot_config/.chezmoidata/gamma.yaml"
+    z:
+      y: 2
+    ```
 
     The output of `chezmoi data` will include the following merged `z`
     dictionary. Note that the value in `.chezmoidata/zed.json` overwrote the

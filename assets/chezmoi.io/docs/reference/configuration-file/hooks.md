@@ -24,6 +24,7 @@ interpreters][interpreters].
 
 !!! example
 
+    <!-- example-formats -->
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [hooks.read-source-state.pre]
     command = "echo"
@@ -34,8 +35,9 @@ interpreters][interpreters].
     args = ["post-apply-hook"]
 
     [hooks.add.post]
-    script = "post-add-hook.ps1'
+    script = "post-add-hook.ps1"
     ```
+    <!-- /example-formats -->
 
 When running hooks, the `CHEZMOI=1` and `CHEZMOI_*` environment variables will
 be set. `CHEZMOI_COMMAND` is set to the chezmoi command being run,

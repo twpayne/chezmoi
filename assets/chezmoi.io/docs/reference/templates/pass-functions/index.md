@@ -9,10 +9,12 @@ pass CLI (`pass`).
     `pass.command` to the name of the binary and use chezmoi's `pass*` template
     functions as if you were using pass.
 
+    <!-- example-formats -->
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [pass]
         command = "passage"
     ```
+    <!-- /example-formats -->
 
 [pass]: https://www.passwordstore.org/
 [passage]: https://github.com/FiloSottile/passage,

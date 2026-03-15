@@ -139,10 +139,12 @@ In the past chezmoi used to exit with an error when no valid session was
 available. If you'd like to restore this behavior, set the `onepassword.prompt`
 configuration variable to `false`, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
     prompt = false
 ```
+<!-- /example-formats -->
 
 !!! danger
 
@@ -162,10 +164,12 @@ chezmoi requires explicit configuration for either connect or service account
 modes using the `onepassword.mode` configuration option. The default, if not
 specified, is `account`:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
     mode = "account"
 ```
+<!-- /example-formats -->
 
 In `account` mode, chezmoi will stop with an error if the environment variable
 `OP_SERVICE_ACCOUNT_TOKEN` is set, or if both environment variables
@@ -182,10 +186,12 @@ In `account` mode, chezmoi will stop with an error if the environment variable
 Once 1Password Connect is [configured][configured], and `OP_CONNECT_HOST` and
 `OP_CONNECT_TOKEN` are properly set, set `onepassword.mode` to `connect`.
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
     mode = "connect"
 ```
+<!-- /example-formats -->
 
 In `connect` mode:
 
@@ -199,10 +205,12 @@ In `connect` mode:
 Once a 1Password service account has been [created][created] and
 `OP_SERVICE_ACCOUNT_TOKEN` is properly set, set `onepassword.mode` to `service`.
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
     mode = "service"
 ```
+<!-- /example-formats -->
 
 In `service` mode:
 

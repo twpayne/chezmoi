@@ -5,10 +5,12 @@ chezmoi includes support for [KeePassXC][keepassxc] using the KeePassXC CLI
 
 Provide the path to your KeePassXC database in your configuration file:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [keepassxc]
     database = "/home/user/Passwords.kdbx"
 ```
+<!-- /example-formats -->
 
 The structured data from `keepassxc-cli show $database` is available as the
 `keepassxc` template function in your config files, for example:
@@ -31,12 +33,14 @@ called `private-key`, its value is available as:
 If your database is not password protected, add `--no-password` to
 `keepassxc.args` and `keepassxc.prompt = false`:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [keepassxc]
     database = "/home/user/Passwords.kdbx"
     args = ["--no-password"]
     prompt = false
 ```
+<!-- /example-formats -->
 
 ## YubiKey support
 
@@ -44,11 +48,13 @@ chezmoi includes an experimental mode to support using KeePassXC with YubiKeys.
 Set `keepassxc.mode` to `open` and `keepassxc.args` to the arguments required to
 set your YubiKey, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [keepassxc]
     database = "/home/user/Passwords.kdbx"
     args = ["--no-password", "--yubikey", "2:7370001"]
     mode = "open"
 ```
+<!-- /example-formats -->
 
 [keepassxc]: https://keepassxc.org

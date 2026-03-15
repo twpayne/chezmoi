@@ -355,8 +355,9 @@ arguments to the template, you can do it in two ways.
 
 This method is useful if you want to use the same template arguments multiple
 times, because you don't specify the arguments every time. Instead you specify
-them in the file `~/.config/chezmoi/chezmoi.toml`:
+them in the file `~/.config/chezmoi/chezmoi.$FORMAT`:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [data.alacritty.big]
     fontsize = 18
@@ -365,6 +366,7 @@ them in the file `~/.config/chezmoi/chezmoi.toml`:
     fontsize = 12
     font = "DejaVu Sans Mono"
 ```
+<!-- /example-formats -->
 
 Use the variables in `~/.local/share/chezmoi/.chezmoitemplates/alacritty`:
 

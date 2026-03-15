@@ -55,10 +55,12 @@ You can set extra environment variables for your scripts, hooks, and commands in
 the `scriptEnv` section of your config file. For example, to set the `MY_VAR`
 environment variable to `my_value`, specify:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [scriptEnv]
     MY_VAR = "my_value"
 ```
+<!-- /example-formats -->
 
 chezmoi sets a number of environment variables when running scripts, including
 `CHEZMOI=1` and common template data like `CHEZMOI_OS` and `CHEZMOI_ARCH`.
@@ -69,10 +71,12 @@ By default, `chezmoi diff` will print the contents of scripts that would be run
 by `chezmoi apply`. To exclude scripts from the output of `chezmoi diff`, set
 `diff.exclude` in your configuration file, for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
     exclude = ["scripts"]
 ```
+<!-- /example-formats -->
 
 Similarly, `chezmoi status` will print the names of the scripts that it will
 execute with the status `R`. This can similarly disabled by setting

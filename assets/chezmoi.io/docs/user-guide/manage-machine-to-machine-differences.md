@@ -24,16 +24,18 @@ Whereas at work it might be:
 ```
 
 To handle this, on each machine create a configuration file called
-`~/.config/chezmoi/chezmoi.toml` defining variables that might vary from
+`~/.config/chezmoi/chezmoi.$FORMAT` defining variables that might vary from
 machine to machine. For example, for your home machine:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [data]
     email = "me@home.org"
 ```
+<!-- /example-formats -->
 
 If you intend to store private data (e.g. access tokens) in
-`~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.
+`~/.config/chezmoi/chezmoi.$FORMAT`, make sure it has permissions `0600`.
 
 If you prefer, you can use JSON, JSONC, or YAML for your configuration file.
 Variable names must start with a letter and be followed by zero or more letters

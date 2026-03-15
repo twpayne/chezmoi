@@ -8,11 +8,13 @@ the `diff.command` and `diff.args` configuration variables. The elements of
 `.Target` containing filenames of the file in the destination state and the
 target state respectively. For example, to use [meld][meld], specify:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
     command = "meld"
     args = ["--diff", "{{ .Destination }}", "{{ .Target }}"]
 ```
+<!-- /example-formats -->
 
 !!! hint
 
@@ -24,42 +26,25 @@ target state respectively. For example, to use [meld][meld], specify:
 
 To use [VSCode][vscode] as the diff tool, add the following to your config:
 
-=== "TOML"
-
-    ```toml title="~/.config/chezmoi/chezmoi.toml"
-    [diff]
+<!-- example-formats -->
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[diff]
     command = "code"
     args = ["--wait", "--diff"]
-    ```
-
-=== "YAML"
-
-    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
-    diff:
-      command: "code"
-      args:
-      - "--wait"
-      - "--diff"
-    ```
+```
+<!-- /example-formats -->
 
 ## Use delta as the diff tool
 
 To use [delta][delta] as the diff tool you must set `diff.pager` to delta, for
 example:
 
-=== "TOML"
-
-    ```toml title="~/.config/chezmoi/chezmoi.toml"
-    [diff]
-        pager = "delta"
-    ```
-
-=== "YAML"
-
-    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
-    diff:
-      pager: "delta"
-    ```
+<!-- example-formats -->
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[diff]
+    pager = "delta"
+```
+<!-- /example-formats -->
 
 ## Don't show scripts in the diff output
 
@@ -68,10 +53,12 @@ scripts that will be run. You can exclude scripts from the diff output by
 setting the `diff.exclude` configuration variable in your configuration file,
 for example:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
     exclude = ["scripts"]
 ```
+<!-- /example-formats -->
 
 ## Don't show externals in the diff output
 
@@ -84,10 +71,12 @@ You can change the diff format, and/or pipe the output into a pager of your
 choice by setting `diff.pager` configuration variable. For example, to use
 [`diff-so-fancy`][fancy] specify:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
     pager = "diff-so-fancy"
 ```
+<!-- /example-formats -->
 
 The pager can be disabled using the `--no-pager` flag or by setting `diff.pager`
 to an empty string.
@@ -101,46 +90,14 @@ generating human-readable diffs of binary files.
 For example, to show diffs of macOS `.plist` files, add the following to your
 configuration file:
 
-=== "JSON"
-
-    ```json title="~/.config/chezmoi/chezmoi.json"
-    {
-        "textconv": [
-            "pattern": "**/*.plist",
-            "command": "plutil",
-            "args": [
-                "-convert",
-                "xml1",
-                "-o",
-                "-",
-                "-"
-            ]
-        ]
-    }
-    ```
-
-=== "TOML"
-
-    ```toml title="~/.config/chezmoi/chezmoi.toml"
-    [[textconv]]
+<!-- example-formats -->
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[[textconv]]
     pattern = "**/*.plist"
     command = "plutil"
     args = ["-convert", "xml1", "-o", "-", "-"]
-    ```
-
-=== "YAML"
-
-    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
-    textconv:
-    - pattern: "**/*.plist"
-      command: "plutil"
-      args:
-      - "-convert"
-      - "xml1"
-      - "-o"
-      - "-",
-      - "-"
-    ```
+```
+<!-- /example-formats -->
 
 This will pipe all `.plist` files through `plutil -convert xml1 -o - -` before
 showing differences.

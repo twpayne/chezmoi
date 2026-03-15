@@ -239,11 +239,13 @@ correct arguments.
 For example, to use VSCodium installed with Flatpak as your diff command, add
 the following to your config file:
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
     command = "flatpak"
     args = ["run", "com.vscodium.codium", "--wait", "--diff"]
 ```
+<!-- /example-formats -->
 
 Note that the command is `flatpak`, the first two arguments are `run` and the
 name of app, and any further arguments are passed to the app.

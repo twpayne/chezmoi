@@ -78,10 +78,12 @@ Generate an [access token][token] for a specific [service account][account].
 Either set the `BWS_ACCESS_TOKEN` environment variable or store the access token
 in a template variable, e.g.
 
+<!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [data]
     accessToken = "0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow=="
 ```
+<!-- /example-formats -->
 
 You can then retrieve secrets using the `bitwardenSecrets` template function, for
 example:
