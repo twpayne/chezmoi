@@ -80,6 +80,7 @@ nav:
     - LastPass: user-guide/password-managers/lastpass.md
     - pass: user-guide/password-managers/pass.md
     - passhole: user-guide/password-managers/passhole.md
+    - Proton Pass: user-guide/password-managers/proton-pass.md
     - Vault: user-guide/password-managers/vault.md
     - Custom: user-guide/password-managers/custom.md
   - Encryption:
