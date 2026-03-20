@@ -18,6 +18,7 @@
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
+    "CAPABILITY_FILES",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_NETWORK",
     "CAPABILITY_OPERATING_SYSTEM",
@@ -69,9 +70,6 @@
   "github.com/dsnet/compress/internal/prefix": [
     "CAPABILITY_UNANALYZED"
   ],
-  "github.com/fatih/color": [
-    "CAPABILITY_FILES"
-  ],
   "github.com/fsnotify/fsnotify": [
     "CAPABILITY_READ_SYSTEM_STATE"
   ],
@@ -85,12 +83,6 @@
   "github.com/gopasspw/gopass/internal/backend/crypto/age": [
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM"
-  ],
-  "github.com/gopasspw/gopass/internal/store/root": [
-    "CAPABILITY_FILES"
-  ],
-  "github.com/gopasspw/gopass/pkg/gopass/api": [
-    "CAPABILITY_FILES"
   ],
   "github.com/klauspost/compress/internal/cpuinfo": [
     "CAPABILITY_ARBITRARY_EXECUTION"
