@@ -36,7 +36,7 @@ jobs:
       with:
         persist-credentials: false
     - id: filter
-      uses: dorny/paths-filter@9d7afb8d214ad99e78fbd4247752c4caed2b6e4c   # v4.0.0
+      uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d   # v4.0.1
       with:
         filters: |
           code:
@@ -69,10 +69,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@0c0c5dc2f136b98cb0537075ccfa21f94cd9a63e   # codeql-bundle-v2.24.3
+    - uses: github/codeql-action/init@3d8036cf7fe7433e4a725cf513a6ea56c7fd0f14   # codeql-bundle-v2.25.0
       with:
         languages: go
-    - uses: github/codeql-action/analyze@0c0c5dc2f136b98cb0537075ccfa21f94cd9a63e   # codeql-bundle-v2.24.3
+    - uses: github/codeql-action/analyze@3d8036cf7fe7433e4a725cf513a6ea56c7fd0f14   # codeql-bundle-v2.25.0
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -94,7 +94,7 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
-    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
+    - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7   # v5.0.4
       with:
         path: |
           ~/.go-alpine
@@ -118,7 +118,7 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
         persist-credentials: false
-    - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306   # v5.0.3
+    - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7   # v5.0.4
       with:
         path: |
           ~/.go-archlinux
@@ -297,7 +297,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@e06108dd0aef18192324c70427afc47652e63a82   # v7.5.0
+    - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78   # v7.6.0
       with:
         enable-cache: false
         version: ${{ env.UV_VERSION }}
@@ -384,7 +384,7 @@ jobs:
       run: |
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
-      uses: DavidAnson/markdownlint-cli2-action@07035fd053f7be764496c0f8d8f9f41f98305101   # v22.0.0
+      uses: DavidAnson/markdownlint-cli2-action@ce4853d43830c74c1753b39f3cf40f71c2031eb9   # v23.0.0
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
@@ -453,7 +453,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22   # v4.1.0
+    - uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003   # v4.1.1
       with:
         cosign-release: v${{ env.COSIGN_VERSION }}
     - name: create-syso
@@ -485,7 +485,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@e06108dd0aef18192324c70427afc47652e63a82   # v7.5.0
+    - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78   # v7.6.0
       with:
         enable-cache: false
         version: ${{ env.UV_VERSION }}
