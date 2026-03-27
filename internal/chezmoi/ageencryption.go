@@ -17,18 +17,20 @@ import (
 // An AgeEncryption uses age for encryption and decryption. See
 // https://age-encryption.org.
 type AgeEncryption struct {
-	UseBuiltin      bool      `json:"useBuiltin"      mapstructure:"useBuiltin"      yaml:"useBuiltin"`
-	Command         string    `json:"command"         mapstructure:"command"         yaml:"command"`
-	Args            []string  `json:"args"            mapstructure:"args"            yaml:"args"`
-	Identity        AbsPath   `json:"identity"        mapstructure:"identity"        yaml:"identity"`
-	Identities      []AbsPath `json:"identities"      mapstructure:"identities"      yaml:"identities"`
-	Passphrase      bool      `json:"passphrase"      mapstructure:"passphrase"      yaml:"passphrase"`
-	Recipient       string    `json:"recipient"       mapstructure:"recipient"       yaml:"recipient"`
-	Recipients      []string  `json:"recipients"      mapstructure:"recipients"      yaml:"recipients"`
-	RecipientsFile  AbsPath   `json:"recipientsFile"  mapstructure:"recipientsFile"  yaml:"recipientsFile"`
-	RecipientsFiles []AbsPath `json:"recipientsFiles" mapstructure:"recipientsFiles" yaml:"recipientsFiles"`
-	Suffix          string    `json:"suffix"          mapstructure:"suffix"          yaml:"suffix"`
-	Symmetric       bool      `json:"symmetric"       mapstructure:"symmetric"       yaml:"symmetric"`
+	UseBuiltin                 bool      `json:"useBuiltin"                 mapstructure:"useBuiltin"                 yaml:"useBuiltin"`
+	Command                    string    `json:"command"                    mapstructure:"command"                    yaml:"command"`
+	Args                       []string  `json:"args"                       mapstructure:"args"                       yaml:"args"`
+	Identity                   AbsPath   `json:"identity"                   mapstructure:"identity"                   yaml:"identity"`
+	Identities                 []AbsPath `json:"identities"                 mapstructure:"identities"                 yaml:"identities"`
+	Passphrase                 bool      `json:"passphrase"                 mapstructure:"passphrase"                 yaml:"passphrase"`
+	Recipient                  string    `json:"recipient"                  mapstructure:"recipient"                  yaml:"recipient"`
+	Recipients                 []string  `json:"recipients"                 mapstructure:"recipients"                 yaml:"recipients"`
+	RecipientsFile             AbsPath   `json:"recipientsFile"             mapstructure:"recipientsFile"             yaml:"recipientsFile"`
+	RecipientsFiles            []AbsPath `json:"recipientsFiles"            mapstructure:"recipientsFiles"            yaml:"recipientsFiles"`
+	Suffix                     string    `json:"suffix"                     mapstructure:"suffix"                     yaml:"suffix"`
+	UseIdentitiesForEncryption bool      `json:"useIdentitiesForEncryption" mapstructure:"useIdentitiesForEncryption" yaml:"useIdentitiesForEncryption"`
+	// Deprecated but maintained for backwards compatibility.
+	Symmetric                  bool      `json:"symmetric"                  mapstructure:"symmetric"                  yaml:"symmetric"`
 }
 
 // Decrypt implements Encryption.Decrypt.
@@ -215,7 +217,11 @@ func (e *AgeEncryption) encryptArgs() []string {
 	case e.Passphrase:
 		args = append(args, "--passphrase")
 	case e.Symmetric:
+		// Deprecated.
 		args = append(args, e.identityArgs()...)
+	case e.UseIdentitiesForEncryption:
+		args = append(args, e.identityArgs()...)
+		fallthrough
 	default:
 		if e.Recipient != "" {
 			args = append(args, "--recipient", e.Recipient)
@@ -236,10 +242,17 @@ func (e *AgeEncryption) encryptArgs() []string {
 // identityArgs returns the arguments for identity.
 func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
-	if !e.Identity.IsEmpty() {
+	exists := func(e AbsPath) bool {
+		_, err := os.Stats(e)
+		return err != nil
+	}
+	if !e.Identity.IsEmpty() && exists(e.Identity){
 		args = append(args, "--identity", e.Identity.String())
 	}
 	for _, identity := range e.Identities {
+		if !exists(identity) {
+			continue
+		}
 		args = append(args, "--identity", identity.String())
 	}
 	return args

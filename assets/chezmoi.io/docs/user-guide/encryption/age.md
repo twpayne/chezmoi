@@ -33,16 +33,40 @@ encryption = "age"
     Make sure `encryption` is added to the top level section at the beginning of
     the config, before any other sections.
 
+## Using identities without a recipient
+
+If you have an identity file without a recipient, e.g. when you generate a Yubikey FIDO2 backed age identity with `age-plugin-fido2prf` like
+
+```shell
+age-plugin-fido2prf -generate test > fido.txt`
+```
+
+you can set
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+encryption = "age"
+[age]
+    identities = ["identity.txt", "fido.txt"]
+    recipients = ["recipient1"]
+    useIdentitiesForEncryption = true
+```
+
+to use all identities which exist on disk when **encrypting**.
+
+!!! note
+
+    All identities are used when decrypting.
+
 ## Symmetric encryption
 
-To use age's symmetric encryption, specify a single identity and enable
-symmetric encryption in your config file, for example:
+To use age's symmetric encryption, you do the same as described in the above section
+[above section](#using-identities-with-not-recipient).
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 encryption = "age"
 [age]
     identity = "~/.ssh/id_rsa"
-    symmetric = true
+    useIdentitiesForEncryption = true
 ```
 
 ## Symmetric encryption with a passphrase
