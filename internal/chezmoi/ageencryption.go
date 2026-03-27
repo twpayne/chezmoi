@@ -30,7 +30,7 @@ type AgeEncryption struct {
 	Suffix                     string    `json:"suffix"                     mapstructure:"suffix"                     yaml:"suffix"`
 	UseIdentitiesForEncryption bool      `json:"useIdentitiesForEncryption" mapstructure:"useIdentitiesForEncryption" yaml:"useIdentitiesForEncryption"`
 	// Deprecated but maintained for backwards compatibility.
-	Symmetric                  bool      `json:"symmetric"                  mapstructure:"symmetric"                  yaml:"symmetric"`
+	Symmetric bool `json:"symmetric"                  mapstructure:"symmetric"                  yaml:"symmetric"`
 }
 
 // Decrypt implements Encryption.Decrypt.
@@ -242,11 +242,11 @@ func (e *AgeEncryption) encryptArgs() []string {
 // identityArgs returns the arguments for identity.
 func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
-	exists := func(e AbsPath) bool {
-		_, err := os.Stats(e)
-		return err != nil
+	exists := func(f AbsPath) bool {
+		_, err := os.Stat(f.String())
+		return err == nil
 	}
-	if !e.Identity.IsEmpty() && exists(e.Identity){
+	if !e.Identity.IsEmpty() && exists(e.Identity) {
 		args = append(args, "--identity", e.Identity.String())
 	}
 	for _, identity := range e.Identities {
