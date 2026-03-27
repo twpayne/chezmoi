@@ -91,8 +91,8 @@ the `age` command is not found in `$PATH`.
 
 !!! info
 
-    The builtin age encryption does not support passphrases, symmetric
-    encryption, or SSH keys.
+    The builtin age encryption does not support `passphrase = true`,
+    `useIdentitiesForEncryption = true` or SSH keys.
 
     Passphrases are not supported because chezmoi needs to decrypt files
     regularly, e.g. when running a `chezmoi diff` or a `chezmoi status`
