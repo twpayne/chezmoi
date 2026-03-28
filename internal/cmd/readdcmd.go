@@ -203,7 +203,7 @@ TARGET_REL_PATH:
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
 			Errorf:          c.errorf,
 			Filter:          c.reAdd.filter,
-			PreAddFunc:      c.defaultPreAddFunc,
+			PreAddFunc:      c.preAddFunc(sourceStateFile.Attr().Encrypted),
 		}); err != nil {
 			return err
 		}
