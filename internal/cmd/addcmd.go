@@ -93,7 +93,7 @@ func (c *Config) defaultPreAddFunc(
 	sourceStateEntry chezmoi.SourceStateEntry,
 ) error {
 	// Scan unencrypted files for secrets, if configured.
-	encrypted := c.Add.Encrypt
+	encrypted := false
 	if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok {
 		encrypted = sourceStateFile.Attr().Encrypted
 	}
