@@ -34,7 +34,7 @@ func TestConfigGetPackageFilename(t *testing.T) {
 		{
 			packageType: packageTypeDEB,
 			arch:        "arm",
-			expected:    "chezmoi_2.0.0_linux_armel.deb",
+			expected:    "chezmoi_2.0.0_linux_armhf.deb",
 		},
 		{
 			packageType: packageTypeDEB,
