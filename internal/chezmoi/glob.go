@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"io/fs"
+	"slices"
 
 	"github.com/bmatcuk/doublestar/v4"
 	vfs "github.com/twpayne/go-vfs/v5"
@@ -27,11 +28,11 @@ func (s LstatFS) Stat(name string) (fs.FileInfo, error) {
 
 // Glob is like github.com/bmatcuk/doublestar/v4.Glob except that it does not
 // follow symlinks.
-func Glob(fileSystem vfs.FS, prefix string) ([]string, error) {
+func Glob(fileSystem vfs.FS, prefix string, options ...doublestar.GlobOption) ([]string, error) {
 	fsys := LstatFS{Wrapped: fileSystem}
-	opts := []doublestar.GlobOption{
+	opts := slices.Concat([]doublestar.GlobOption{
 		doublestar.WithFailOnIOErrors(),
 		doublestar.WithNoFollow(),
-	}
+	}, options)
 	return doublestar.Glob(fsys, prefix, opts...)
 }

@@ -49,6 +49,10 @@ stdout '{"key":1}'
 exec chezmoi execute-template '{{ glob "*.txt" | join "\n" }}{{ "\n" }}'
 cmp stdout golden/glob
 
+# test globCaseInsensitive template function
+exec chezmoi execute-template '{{ globCaseInsensitive "*.TXT" | join "\n" }}{{ "\n" }}'
+cmp stdout golden/glob
+
 # test hexDecode template function
 exec chezmoi execute-template '{{ "6578616d706c65" | hexDecode }}'
 stdout '^example$'

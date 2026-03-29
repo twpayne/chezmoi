@@ -520,6 +520,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"gitHubReleases":              c.gitHubReleasesTemplateFunc,
 		"gitHubTags":                  c.gitHubTagsTemplateFunc,
 		"glob":                        c.globTemplateFunc,
+		"globCaseInsensitive":         c.globCaseInsensitiveTemplateFunc,
 		"gopass":                      c.gopassTemplateFunc,
 		"gopassRaw":                   c.gopassRawTemplateFunc,
 		"hexDecode":                   c.hexDecodeTemplateFunc,
