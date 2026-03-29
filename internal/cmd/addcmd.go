@@ -87,9 +87,17 @@ func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
 	}
 }
 
-func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, fileInfo fs.FileInfo) error {
+func (c *Config) defaultPreAddFunc(
+	targetRelPath chezmoi.RelPath,
+	fileInfo fs.FileInfo,
+	sourceStateEntry chezmoi.SourceStateEntry,
+) error {
 	// Scan unencrypted files for secrets, if configured.
-	if c.Add.Secrets.String() != severityIgnore && fileInfo.Mode().Type() == 0 && !c.Add.Encrypt {
+	encrypted := c.Add.Encrypt
+	if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok {
+		encrypted = sourceStateFile.Attr().Encrypted
+	}
+	if c.Add.Secrets.String() != severityIgnore && fileInfo.Mode().Type() == 0 && !encrypted {
 		absPath := c.DestDirAbsPath.Join(targetRelPath)
 		content, err := c.destSystem.ReadFile(absPath)
 		if err != nil {
