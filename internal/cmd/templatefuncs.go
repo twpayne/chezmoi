@@ -19,6 +19,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
 	"gopkg.in/ini.v1"
@@ -216,7 +217,15 @@ func (c *Config) getRedirectedURLTemplateFunc(requestURL string) string {
 	return resp.Request.URL.String()
 }
 
+func (c *Config) globCaseInsensitiveTemplateFunc(pattern string) []string {
+	return c.globTemplateFuncHelper(pattern, doublestar.WithCaseInsensitive())
+}
+
 func (c *Config) globTemplateFunc(pattern string) []string {
+	return c.globTemplateFuncHelper(pattern)
+}
+
+func (c *Config) globTemplateFuncHelper(pattern string, options ...doublestar.GlobOption) []string {
 	defer func() {
 		value := recover()
 		err := os.Chdir(c.commandDirAbsPath.String())
@@ -230,7 +239,7 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 
 	must(os.Chdir(c.DestDirAbsPath.String()))
 
-	return mustValue(chezmoi.Glob(c.fileSystem, filepath.ToSlash(pattern)))
+	return mustValue(chezmoi.Glob(c.fileSystem, filepath.ToSlash(pattern), options...))
 }
 
 func (c *Config) hexDecodeTemplateFunc(s string) string {

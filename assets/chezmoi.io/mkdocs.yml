@@ -222,6 +222,7 @@ nav:
       - fromYaml: reference/templates/functions/fromYaml.md
       - getRedirectedURL: reference/templates/functions/getRedirectedURL.md
       - glob: reference/templates/functions/glob.md
+      - globCaseInsensitive: reference/templates/functions/globCaseInsensitive.md
       - hexDecode: reference/templates/functions/hexDecode.md
       - hexEncode: reference/templates/functions/hexEncode.md
       - include: reference/templates/functions/include.md
