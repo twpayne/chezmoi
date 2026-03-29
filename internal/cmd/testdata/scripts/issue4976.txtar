@@ -1,0 +1,13 @@
+mkageconfig
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '[add]'
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '    secrets = "error"'
+
+# test that chezmoi re-add --re-encrypt allows secrets in encrypted files
+exec chezmoi add --encrypt $HOME${/}.file
+! stderr .
+edit $HOME${/}.file
+exec chezmoi re-add --re-encrypt
+! stderr .
+
+-- home/user/.file --
+SUMO_ACCESS_KEY: gxq3rJQkS6qovOg9UY2Q70iH1jFZx0WBrrsiAYv4XHodogAwTKyLzvFK4neRN8Dk
