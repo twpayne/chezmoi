@@ -65,7 +65,8 @@ builds:
   - riscv64
   - s390x
   goarm:
-  - ''
+  - '5'
+  - '6'
   ldflags:
   - -s
   - -w
@@ -104,7 +105,7 @@ archives:
     {{- if eq .Arch "386" }}i386
     {{- else if eq .Arch "mips64" }}mips64_hardfloat
     {{- else if eq .Arch "mips64le" }}mips64le_hardfloat
-    {{- else }}{{ .Arch }}{{ end -}}
+    {{- else }}{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ end -}}
   format_overrides:
   - goos: windows
     formats:
@@ -177,7 +178,8 @@ nfpms:
         {{- .Version }}_
         {{- .Os }}_
         {{- if eq .Arch "386" }}i386
-        {{- else if eq .Arch "arm" }}armel
+        {{- else if and (eq .Arch "arm") (eq .Arm "5") }}armel
+        {{- else if eq .Arch "arm" }}armhf
         {{- else }}{{ .Arch }}{{ end -}}
       contents:
       - src: completions/chezmoi-completion.bash
@@ -192,6 +194,7 @@ nfpms:
         {{- .Version }}-
         {{- if eq .Arch "amd64" }}x86_64
         {{- else if eq .Arch "386" }}i686
+        {{- else if and (eq .Arch "arm") (eq .Arm "5") }}armv5l
         {{- else if eq .Arch "arm" }}armhfp
         {{- else if eq .Arch "arm64" }}aarch64
         {{- else }}{{ .Arch }}{{ end -}}

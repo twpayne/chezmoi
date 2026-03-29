@@ -43,7 +43,7 @@ var (
 	archReplacements = map[string]map[string]string{
 		packageTypeDEB: {
 			"386": "i386",
-			"arm": "armel",
+			"arm": "armhf", // FIXME detect GOARM=5 (armel)
 		},
 		packageTypeRPM: {
 			"amd64": "x86_64",
