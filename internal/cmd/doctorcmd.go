@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -86,6 +87,9 @@ type binaryCheck struct {
 	versionRx   *regexp.Regexp
 	minVersion  *semver.Version
 }
+
+// A buildInfoCheck checks the values of [runtime/debug.BuildInfo].
+type buildInfoCheck struct{}
 
 // A configFileCheck checks that only one config file exists and that is
 // readable.
@@ -195,6 +199,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			version:       c.version,
 		},
 		osArchCheck{},
+		buildInfoCheck{},
 		unameCheck{},
 		systeminfoCheck{},
 		goVersionCheck{},
@@ -520,6 +525,41 @@ func (c *binaryCheck) Run(config *Config) (checkResult, string) {
 	}
 
 	return checkResultOK, fmt.Sprintf("found %s, version %s", pathAbsPath, version)
+}
+
+func (c buildInfoCheck) Name() string {
+	return "build-info"
+}
+
+func (c buildInfoCheck) Run(config *Config) (checkResult, string) {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return checkResultError, "debug.ReadBuildInfo() failed"
+	}
+	ignoredKeys := map[string]struct{}{
+		"-buildmode":     {}, // Always "exe".
+		"-compiler":      {}, // Checked by goVersionCheck.
+		"DefaultGODEBUG": {}, // Implicit in Go version.
+		"GOOS":           {}, // Checked by osArchCheck.
+		"GOARCH":         {}, // Checked by osArchCheck.
+		"vcs":            {}, // Checked by versionCheck.
+		"vcs.revision":   {}, // Checked by versionCheck.
+		"vcs.time":       {}, // Checked by versionCheck.
+		"vcs.modified":   {}, // Checked by versionCheck.
+	}
+	checkResult := checkResultOK
+	pairs := make([]string, 0, len(info.Settings))
+	for _, setting := range info.Settings {
+		if _, ok := ignoredKeys[setting.Key]; ok || setting.Value == "" {
+			continue
+		}
+		if setting.Key == "CGO_ENABLED" && setting.Value == "0" {
+			// No cgo is not necessarily a problem, but also isn't always OK.
+			checkResult = checkResultInfo
+		}
+		pairs = append(pairs, setting.Key+"="+setting.Value)
+	}
+	return checkResult, strings.Join(pairs, ", ")
 }
 
 func (c *configFileCheck) Name() string {
