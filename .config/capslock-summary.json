@@ -22,7 +22,6 @@
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_NETWORK",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
     "CAPABILITY_SYSTEM_CALLS"
   ],
   "chezmoi.io/chezmoi/internal/cmd": [
@@ -41,18 +40,10 @@
     "CAPABILITY_UNSAFE_POINTER"
   ],
   "filippo.io/age": [
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME"
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
   "filippo.io/age/agessh": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
-  ],
-  "filippo.io/age/internal/format": [
-    "CAPABILITY_RUNTIME"
-  ],
-  "filippo.io/age/plugin": [
-    "CAPABILITY_OPERATING_SYSTEM"
   ],
   "github.com/Masterminds/sprig/v3": [
     "CAPABILITY_REFLECT"
@@ -73,6 +64,15 @@
   "github.com/fsnotify/fsnotify": [
     "CAPABILITY_READ_SYSTEM_STATE"
   ],
+  "github.com/go-git/go-git/v5/plumbing/transport/file": [
+    "CAPABILITY_OPERATING_SYSTEM"
+  ],
+  "github.com/go-git/go-git/v5/plumbing/transport/internal/common": [
+    "CAPABILITY_OPERATING_SYSTEM"
+  ],
+  "github.com/go-git/go-git/v5/utils/ioutil": [
+    "CAPABILITY_OPERATING_SYSTEM"
+  ],
   "github.com/go-viper/mapstructure/v2": [
     "CAPABILITY_REFLECT"
   ],
@@ -81,8 +81,7 @@
     "CAPABILITY_UNSAFE_POINTER"
   ],
   "github.com/gopasspw/gopass/internal/backend/crypto/age": [
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_OPERATING_SYSTEM"
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
   "github.com/klauspost/compress/internal/cpuinfo": [
     "CAPABILITY_ARBITRARY_EXECUTION"
@@ -100,6 +99,13 @@
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME",
     "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/rs/zerolog": [
+    "CAPABILITY_CGO",
+    "CAPABILITY_EXEC",
+    "CAPABILITY_MODIFY_SYSTEM_STATE",
+    "CAPABILITY_OPERATING_SYSTEM",
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/twpayne/go-shell": [
     "CAPABILITY_ARBITRARY_EXECUTION",
