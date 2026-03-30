@@ -30,6 +30,7 @@ exec chezmoi doctor
 stdout '^ok\s+version\s+'
 stdout '^\w+\s+latest-version\s+'
 stdout '^ok\s+os-arch\s+'
+stdout '\s+build-info\s+'
 ! stdout '^\S+\s+systeminfo\s+'
 stdout '^ok\s+uname\s+'
 stdout '^ok\s+config-file\s+'
