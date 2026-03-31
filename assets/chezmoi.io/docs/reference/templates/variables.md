@@ -14,13 +14,14 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.fqdnHostname`      | string   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                                            |
 | `.chezmoi.gid`               | string   | The primary group ID                                                                                                                                     |
 | `.chezmoi.group`             | string   | The group of the user running chezmoi                                                                                                                    |
-| `.chezmoi.homeDir`           | string   | The home directory of the user running chezmoi                                                                                                           |
+| `.chezmoi.homeDir`           | string   | The home directory of the user running chezmoi (with forward slashes as the path separator)                                                              |
 | `.chezmoi.hostname`          | string   | The hostname of the machine chezmoi is running on, up to the first `.`                                                                                   |
 | `.chezmoi.kernel`            | object   | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (e.g. Microsoft's WSL kernel)                            |
 | `.chezmoi.os`                | string   | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS][constants]                                                                  |
 | `.chezmoi.osRelease`         | object   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output                                                                 |
 | `.chezmoi.pathListSeparator` | string   | The path list separator, typically `;` on Windows and `:` on other systems. Used to separate paths in environment variables. i.e., `/bin:/sbin:/usr/bin` |
 | `.chezmoi.pathSeparator`     | string   | The path separator, typically `\` on windows and `/` on unix. Used to separate files and directories in a path. i.e., `c:\see\dos\run`                   |
+| `.chezmoi.rawHomeDir`        | string   | The home directory of the user running chezmoi (with backslashes as the path separator on Windows)                                                       |
 | `.chezmoi.sourceDir`         | string   | The source directory                                                                                                                                     |
 | `.chezmoi.sourceFile`        | string   | The path of the template relative to the source directory                                                                                                |
 | `.chezmoi.targetFile`        | string   | The absolute path of the target file for the template                                                                                                    |
