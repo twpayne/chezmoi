@@ -310,6 +310,7 @@ type templateData struct {
 	osRelease         map[string]any
 	pathListSeparator string
 	pathSeparator     string
+	rawHomeDir        string
 	sourceDir         chezmoi.AbsPath
 	uid               string
 	username          string
@@ -1707,6 +1708,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"osRelease":         templateData.osRelease,
 			"pathListSeparator": templateData.pathListSeparator,
 			"pathSeparator":     templateData.pathSeparator,
+			"rawHomeDir":        templateData.rawHomeDir,
 			"sourceDir":         templateData.sourceDir.String(),
 			"uid":               templateData.uid,
 			"username":          templateData.username,
@@ -2493,6 +2495,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		"HOME_DIR":      templateData.homeDir.String(),
 		"HOSTNAME":      templateData.hostname,
 		"OS":            templateData.os,
+		"RAW_HOME_DIR":  templateData.rawHomeDir,
 		"SOURCE_DIR":    templateData.sourceDir.String(),
 		"UID":           templateData.uid,
 		"USERNAME":      templateData.username,
@@ -2631,6 +2634,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		}
 	}
 
+	rawHomeDir, _ := os.UserHomeDir()
 	configFileAbsPath, _ := c.getConfigFileAbsPath()
 	executable, _ := os.Executable()
 	windowsVersion, _ := windowsVersion()
@@ -2656,6 +2660,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		osRelease:         osRelease,
 		pathListSeparator: string(os.PathListSeparator),
 		pathSeparator:     string(os.PathSeparator),
+		rawHomeDir:        rawHomeDir,
 		sourceDir:         sourceDirAbsPath,
 		uid:               uid,
 		username:          username,
