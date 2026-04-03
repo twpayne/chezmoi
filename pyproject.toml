@@ -54,5 +54,8 @@ ignore = ["ANN003", "COM812"]
 [tool.ruff.format]
 quote-style = "single"
 
+[tool.uv]
+exclude-newer = "5 days"
+
 [tool.uv.workspace]
 members = ["chezmoi"]
