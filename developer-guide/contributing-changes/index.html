@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1186,6 +1186,8 @@
       
         
       
+        
+      
     
     
     
@@ -1621,6 +1623,34 @@
     
   
     passhole
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-guide/password-managers/proton-pass/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proton Pass
   
 
     
@@ -5652,6 +5682,8 @@
       
         
       
+        
+      
     
     
     
@@ -6199,6 +6231,34 @@
     
   
     glob
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templates/functions/globCaseInsensitive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    globCaseInsensitive
   
 
     
@@ -10975,10 +11035,11 @@
 <h1 id="contributing-changes">Contributing changes</h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>If you use an LLM (Large Language Model, like ChatGPT, Claude, Gemini,
-GitHub Copilot, or Llama) to make any kind of contribution then you will
-immediately be banned without recourse. See [<code>CODE_OF_CONDUCT.md</code>][coc]
-for more information.</p>
+<p>chezmoi has a strict zero-tolerance policy on LLM contributions. If you use
+an LLM (Large Language Model, like ChatGPT, Claude, Gemini, GitHub Copilot,
+or Llama) to make any kind of contribution then you will immediately be
+banned without recourse. See <a href="https://github.com/twpayne/chezmoi/blob/master/.github/CODE_OF_CONDUCT.md"><code>CODE_OF_CONDUCT.md</code></a> for more
+information.</p>
 </div>
 <p>Bug reports, bug fixes, and documentation improvements are always welcome.
 Please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue</a> or <a href="https://help.github.com/en/articles/creating-a-pull-request">create a pull request</a> with your report,
@@ -10999,13 +11060,13 @@ that:</p>
 <li>
 <p>The documentation is updated, if necessary. For new features you should add an
   entry in <code>assets/chezmoi.io/docs/user-guide/</code> and a complete description in
-  <code>assets/chezmoi.io/docs/reference/</code>. See the <a href="../website/">website developer
-  guide</a> for instructions on how to build and view a local version of
-  the documentation. By default, chezmoi will panic if a flag is undocumented or
-  a long help is missing for a command. You can disable this panic during
-  development by setting the environment variable <code>CHEZMOIDEV</code> to
-  <code>ignoreflags=1,ignorehelp=1</code>. Once you have documented the command and its
-  flags, run <code>make generate</code> to generate the embedded documentation.</p>
+  <code>assets/chezmoi.io/docs/reference/</code>. See the <a href="../website/">website developer guide</a>
+  for instructions on how to build and view a local version of the documentation.
+  By default, chezmoi will panic if a flag is undocumented or a long help is
+  missing for a command. You can disable this panic during development by
+  setting the environment variable <code>CHEZMOIDEV</code> to <code>ignoreflags=1,ignorehelp=1</code>.
+  Once you have documented the command and its flags, run <code>make generate</code> to
+  generate the embedded documentation.</p>
 </li>
 <li>
 <p>All generated files are up to date. You can ensure this by running <code>make
