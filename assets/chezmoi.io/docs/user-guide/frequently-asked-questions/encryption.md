@@ -12,7 +12,7 @@ This can be achieved with the following process:
 4. Configure chezmoi to use the private key.
 5. Add encrypted files.
 
-First, change to chezmoi's root directory:
+First, change to chezmoi's source directory:
 
 ```sh
 chezmoi cd
