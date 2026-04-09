@@ -10,8 +10,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/BurntSushi/toml"
 	"github.com/goccy/go-yaml"
-	"github.com/pelletier/go-toml/v2"
 	"github.com/tailscale/hujson"
 )
 
@@ -159,9 +159,8 @@ func (formatTOML) Name() string {
 
 // Unmarshal implements Format.Unmarshal.
 func (formatTOML) Unmarshal(data []byte, value any) error {
-	decoder := toml.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	return decoder.Decode(value)
+	_, err := toml.Decode(string(data), value)
+	return err
 }
 
 // Name implements Format.Name.

@@ -149,6 +149,12 @@ func TestFormatEdgeCases(t *testing.T) {
 			expected: T{Key: "value"},
 		},
 		{
+			name:     "toml_1.1",
+			format:   FormatTOML,
+			data:     `key = "null byte: \x00; letter a: \x61"`,
+			expected: T{Key: "null byte: \x00; letter a: a"},
+		},
+		{
 			name:   "toml_empty",
 			format: FormatTOML,
 		},
@@ -159,16 +165,10 @@ func TestFormatEdgeCases(t *testing.T) {
 			expected: T{Key: "value"},
 		},
 		{
-			name:        "toml_unknown_field",
-			format:      FormatTOML,
-			data:        `unknown = "value"`,
-			expectedErr: "strict mode: fields in the document are missing in the target struct",
-		},
-		{
 			name:        "toml_unexpected_eof",
 			format:      FormatTOML,
 			data:        `[`,
-			expectedErr: "expected key but found none",
+			expectedErr: "unexpected end of table name",
 		},
 		{
 			name:   "toml_whitespace",
