@@ -726,10 +726,7 @@ var helps = map[string]*help{
 	},
 	"secret": {
 		longHelp: "" +
-			"  Run a secret manager's CLI, passing any extra arguments to the secret\n" +
-			"  manager's CLI. This is primarily for verifying chezmoi's integration with a\n" +
-			"  custom secret manager. Normally you would use chezmoi's existing template\n" +
-			"  functions to retrieve secrets.",
+			"  Verify chezmoi's integration with the system's keyring.",
 		example: "" +
 			"  chezmoi secret keyring set --service=service --user=user --value=password\n" +
 			"  chezmoi secret keyring get --service=service --user=user\n" +
