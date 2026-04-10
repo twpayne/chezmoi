@@ -103,11 +103,11 @@ func (c *Config) defaultPreAddFunc(
 		if err != nil {
 			return err
 		}
-		gitleaksDetector, err := c.getGitleaksDetector()
+		betterleaksDetector, err := c.getBetterleaksDetector()
 		if err != nil {
 			return err
 		}
-		findings := gitleaksDetector.DetectBytes(content)
+		findings := betterleaksDetector.DetectString(string(content))
 		for _, finding := range findings {
 			c.errorf("%s:%d: %s\n", absPath, finding.StartLine+1, finding.Description)
 		}

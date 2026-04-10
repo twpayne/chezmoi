@@ -319,7 +319,7 @@ func TestAddCmdChmod(t *testing.T) {
 func TestAddCmdSecretsError(t *testing.T) {
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user": map[string]any{
-			".secret": "AWS_ACCESS_KEY_ID=AKIALALEMEL33243OLIA\n",
+			".secret": "SUMO_ACCESS_KEY: gxq3rJQkS6qovOg9UY2Q70iH1jFZx0WBrrsiAYv4XHodogAwTKyLzvFK4neRN8Dk",
 		},
 	}, func(fileSystem vfs.FS) {
 		assert.Error(t, newTestConfig(t, fileSystem).execute([]string{"add", "--secrets=error", "/home/user/.secret"}))
@@ -328,13 +328,13 @@ func TestAddCmdSecretsError(t *testing.T) {
 
 func TestIssue4107(t *testing.T) {
 	if runtime.GOOS == "windows" && os.Getenv("GITHUB_RUN_ID") != "" {
-		// FIXME fix this test. It may be  failing because the home directory on
+		// FIXME fix this test. It may be failing because the home directory on
 		// GitHub Actions is on the D: drive
 		t.Skip("skipping failing test on Windows on GitHub Actions")
 	}
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user": map[string]any{
-			".secret": "AWS_ACCESS_KEY_ID=AKIALALEMEL33243OLIA\n",
+			".secret": "SUMO_ACCESS_KEY: gxq3rJQkS6qovOg9UY2Q70iH1jFZx0WBrrsiAYv4XHodogAwTKyLzvFK4neRN8Dk",
 			".config/chezmoi": map[string]any{
 				"chezmoi.toml": chezmoitest.JoinLines(
 					`[add]`,
