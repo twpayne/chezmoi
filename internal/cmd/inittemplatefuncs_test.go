@@ -21,7 +21,7 @@ func TestPromptBoolInteractiveTemplateFunc(t *testing.T) {
 			name:              "response_without_default",
 			prompt:            "bool",
 			stdinStr:          "false\n",
-			expectedStdoutStr: "bool? ",
+			expectedStdoutStr: "bool ? ",
 			expected:          false,
 		},
 		{
@@ -29,7 +29,7 @@ func TestPromptBoolInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "bool",
 			args:              []bool{true},
 			stdinStr:          "no\n",
-			expectedStdoutStr: "bool (default true)? ",
+			expectedStdoutStr: "bool (default true) ? ",
 			expected:          false,
 		},
 		{
@@ -37,7 +37,7 @@ func TestPromptBoolInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "bool",
 			args:              []bool{true},
 			stdinStr:          "\n",
-			expectedStdoutStr: "bool (default true)? ",
+			expectedStdoutStr: "bool (default true) ? ",
 			expected:          true,
 		},
 		{
@@ -96,7 +96,7 @@ func TestPromptChoiceInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "choice",
 			choices:           []any{"one", "two", "three"},
 			stdinStr:          "one\n",
-			expectedStdoutStr: "choice (one/two/three)? ",
+			expectedStdoutStr: "choice (one/two/three) ? ",
 			expected:          "one",
 		},
 		{
@@ -105,7 +105,7 @@ func TestPromptChoiceInteractiveTemplateFunc(t *testing.T) {
 			choices:           []any{"one", "two", "three"},
 			args:              []string{"one"},
 			stdinStr:          "two\n",
-			expectedStdoutStr: "choice (one/two/three, default one)? ",
+			expectedStdoutStr: "choice (one/two/three, default one) ? ",
 			expected:          "two",
 		},
 		{
@@ -114,7 +114,7 @@ func TestPromptChoiceInteractiveTemplateFunc(t *testing.T) {
 			choices:           []any{"one", "two", "three"},
 			args:              []string{"three"},
 			stdinStr:          "\n",
-			expectedStdoutStr: "choice (one/two/three, default three)? ",
+			expectedStdoutStr: "choice (one/two/three, default three) ? ",
 			expected:          "three",
 		},
 		{
@@ -184,7 +184,7 @@ func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 			name:              "response_without_default",
 			prompt:            "int",
 			stdinStr:          "1\n",
-			expectedStdoutStr: "int? ",
+			expectedStdoutStr: "int ? ",
 			expected:          1,
 		},
 		{
@@ -192,7 +192,7 @@ func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "int",
 			args:              []int64{1},
 			stdinStr:          "2\n",
-			expectedStdoutStr: "int (default 1)? ",
+			expectedStdoutStr: "int (default 1) ? ",
 			expected:          2,
 		},
 		{
@@ -200,7 +200,7 @@ func TestPromptIntInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "int",
 			args:              []int64{1},
 			stdinStr:          "\n",
-			expectedStdoutStr: "int (default 1)? ",
+			expectedStdoutStr: "int (default 1) ? ",
 			expected:          1,
 		},
 		{
@@ -259,7 +259,7 @@ func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "multichoice",
 			multichoices:      []any{"one", "two", "three"},
 			stdinStr:          "one\n\n",
-			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nChoice (ENTER to stop)> Choice (ENTER to stop)> ",
+			expectedStdoutStr: "multichoice ?\nChoices (one/two/three)\nChoice (ENTER to stop)> Choice (ENTER to stop)> ",
 			expected:          []string{"one"},
 		},
 		{
@@ -268,7 +268,7 @@ func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
 			multichoices:      []any{"one", "two", "three"},
 			args:              []any{[]string{"one"}},
 			stdinStr:          "two\n\n",
-			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nDefault [one]\nChoice (ENTER to stop)> Choice (ENTER to stop)> ",
+			expectedStdoutStr: "multichoice ?\nChoices (one/two/three)\nDefault [one]\nChoice (ENTER to stop)> Choice (ENTER to stop)> ",
 			expected:          []string{"two"},
 		},
 		{
@@ -277,7 +277,7 @@ func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
 			multichoices:      []any{"one", "two", "three"},
 			args:              []any{[]string{"three", "two"}},
 			stdinStr:          "\n",
-			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nDefault [three, two]\nChoice (ENTER to stop)> ",
+			expectedStdoutStr: "multichoice ?\nChoices (one/two/three)\nDefault [three, two]\nChoice (ENTER to stop)> ",
 			expected:          []string{"three", "two"},
 		},
 		{
@@ -285,7 +285,7 @@ func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "multichoice",
 			multichoices:      []any{"one", "two", "three"},
 			stdinStr:          "[]\n",
-			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nChoice (ENTER to stop)> ",
+			expectedStdoutStr: "multichoice ?\nChoices (one/two/three)\nChoice (ENTER to stop)> ",
 			expected:          []string{},
 		},
 		{
@@ -294,7 +294,7 @@ func TestPromptMultichoiceInteractiveTemplateFunc(t *testing.T) {
 			multichoices:      []any{"one", "two", "three"},
 			args:              []any{[]string{"three", "two"}},
 			stdinStr:          "[]\n",
-			expectedStdoutStr: "multichoice?\nChoices (one/two/three)\nDefault [three, two]\nChoice (ENTER to stop)> ",
+			expectedStdoutStr: "multichoice ?\nChoices (one/two/three)\nDefault [three, two]\nChoice (ENTER to stop)> ",
 			expected:          []string{},
 		},
 		{
@@ -361,7 +361,7 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 			name:              "response_without_default",
 			prompt:            "string",
 			stdinStr:          "one\n",
-			expectedStdoutStr: "string? ",
+			expectedStdoutStr: "string ? ",
 			expected:          "one",
 		},
 		{
@@ -369,7 +369,7 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "string",
 			args:              []string{"one"},
 			stdinStr:          "two\n",
-			expectedStdoutStr: `string (default "one")? `,
+			expectedStdoutStr: `string (default "one") ? `,
 			expected:          "two",
 		},
 		{
@@ -377,7 +377,7 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "string",
 			args:              []string{"one"},
 			stdinStr:          " two \n",
-			expectedStdoutStr: `string (default "one")? `,
+			expectedStdoutStr: `string (default "one") ? `,
 			expected:          "two",
 		},
 		{
@@ -385,7 +385,7 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "string",
 			args:              []string{" one "},
 			stdinStr:          "\n",
-			expectedStdoutStr: `string (default "one")? `,
+			expectedStdoutStr: `string (default "one") ? `,
 			expected:          "one",
 		},
 		{
@@ -393,7 +393,7 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "string",
 			args:              []string{"one"},
 			stdinStr:          "\n",
-			expectedStdoutStr: `string (default "one")? `,
+			expectedStdoutStr: `string (default "one") ? `,
 			expected:          "one",
 		},
 		{
@@ -401,7 +401,7 @@ func TestPromptStringInteractiveTemplateFunc(t *testing.T) {
 			prompt:            "string",
 			args:              []string{"one"},
 			stdinStr:          " \r\n",
-			expectedStdoutStr: `string (default "one")? `,
+			expectedStdoutStr: `string (default "one") ? `,
 			expected:          "one",
 		},
 		{

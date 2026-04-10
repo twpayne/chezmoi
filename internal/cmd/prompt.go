@@ -22,7 +22,7 @@ func (c *Config) readBool(prompt string, defaultValue *bool) (bool, error) {
 		if defaultValue != nil {
 			fullPrompt += " (default " + strconv.FormatBool(*defaultValue) + ")"
 		}
-		fullPrompt += "? "
+		fullPrompt += " ? "
 		for {
 			valueStr, err := c.readLineRaw(fullPrompt)
 			if err != nil {
@@ -36,7 +36,7 @@ func (c *Config) readBool(prompt string, defaultValue *bool) (bool, error) {
 			}
 		}
 	default:
-		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		_, err := c.stdout.Write([]byte(prompt + " ?\n"))
 		if err != nil {
 			return false, err
 		}
@@ -57,7 +57,7 @@ func (c *Config) readChoice(prompt string, choices []string, defaultValue *strin
 		if defaultValue != nil {
 			fullPrompt += ", default " + *defaultValue
 		}
-		fullPrompt += ")? "
+		fullPrompt += ") ? "
 		abbreviations := chezmoi.UniqueAbbreviations(choices)
 		for {
 			value, err := c.readLineRaw(fullPrompt)
@@ -72,7 +72,7 @@ func (c *Config) readChoice(prompt string, choices []string, defaultValue *strin
 			}
 		}
 	default:
-		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		_, err := c.stdout.Write([]byte(prompt + " ?\n"))
 		if err != nil {
 			return "", err
 		}
@@ -93,7 +93,7 @@ func (c *Config) readInt(prompt string, defaultValue *int64) (int64, error) {
 		if defaultValue != nil {
 			fullPrompt += " (default " + strconv.FormatInt(*defaultValue, 10) + ")"
 		}
-		fullPrompt += "? "
+		fullPrompt += " ? "
 		for {
 			valueStr, err := c.readLineRaw(fullPrompt)
 			if err != nil {
@@ -107,7 +107,7 @@ func (c *Config) readInt(prompt string, defaultValue *int64) (int64, error) {
 			}
 		}
 	default:
-		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		_, err := c.stdout.Write([]byte(prompt + " ?\n"))
 		if err != nil {
 			return 0, err
 		}
@@ -142,7 +142,7 @@ func (c *Config) readMultichoice(prompt string, choices []string, defaultValue *
 	case c.noTTY:
 		shortPrompt := "Choice (ENTER to stop)> "
 
-		fullPrompt := prompt + "?\nChoices (" + strings.Join(choices, "/") + ")"
+		fullPrompt := prompt + " ?\nChoices (" + strings.Join(choices, "/") + ")"
 		if defaultValue != nil {
 			fullPrompt += "\nDefault [" + strings.Join(*defaultValue, ", ") + "]"
 		}
@@ -193,7 +193,7 @@ func (c *Config) readMultichoice(prompt string, choices []string, defaultValue *
 		return result, nil
 
 	default:
-		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		_, err := c.stdout.Write([]byte(prompt + " ?\n"))
 		if err != nil {
 			return []string{}, err
 		}
@@ -232,7 +232,7 @@ func (c *Config) readString(prompt string, defaultValue *string) (string, error)
 		if defaultValue != nil {
 			fullPrompt += " (default " + strconv.Quote(*defaultValue) + ")"
 		}
-		fullPrompt += "? "
+		fullPrompt += " ? "
 		value, err := c.readLineRaw(fullPrompt)
 		if err != nil {
 			return "", err
@@ -242,7 +242,7 @@ func (c *Config) readString(prompt string, defaultValue *string) (string, error)
 		}
 		return value, nil
 	default:
-		_, err := c.stdout.Write([]byte(prompt + "?\n"))
+		_, err := c.stdout.Write([]byte(prompt + " ?\n"))
 		if err != nil {
 			return "", err
 		}
@@ -279,7 +279,6 @@ func (c *Config) promptChoice(prompt string, choices []string, args ...string) (
 	case 0:
 		// Do nothing.
 	case 1:
-
 		if !slices.Contains(choices, args[0]) {
 			return "", fmt.Errorf("%s: invalid default value", args[0])
 		}
