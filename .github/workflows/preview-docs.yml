@@ -1,0 +1,77 @@
+name: preview-docs
+on:
+  workflow_run:
+    workflows:
+    - build-docs
+    types:
+    - completed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+jobs:
+  deploy-preview:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: read
+      pull-requests: write
+    steps:
+    - name: download-docs-site
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c   # v8.0.1
+      with:
+        name: docs-site-preview
+        path: artifact
+        run-id: ${{ github.event.workflow_run.id }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: find-pr-number
+      id: pr
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      run: |
+        PR_NUMBER=$(gh api "repos/${GH_REPO}/commits/${HEAD_SHA}/pulls" --jq '.[0].number')
+        if [ -z "${PR_NUMBER}" ]; then
+          echo "error: could not determine PR number for commit ${HEAD_SHA}"
+          exit 1
+        fi
+        echo "number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
+    - name: deploy-to-cloudflare-pages
+      id: deploy
+      uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65   # v3.14.1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        command: pages deploy artifact --project-name=chezmoi-preview --branch=pr-${{ steps.pr.outputs.number }}
+    - name: comment-on-pr
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_REPO: ${{ github.repository }}
+        PR_NUMBER: ${{ steps.pr.outputs.number }}
+        PREVIEW_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+        HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      run: |
+        MARKER="<!-- chezmoi-docs-preview -->"
+        SHORT_SHA="${HEAD_SHA:0:7}"
+        BODY=$(cat <<EOF
+        ${MARKER}
+        📖 **Docs preview is ready:** ${PREVIEW_URL}
+
+        Built from ${SHORT_SHA}
+        EOF
+        )
+        EXISTING_COMMENT_ID=$(gh api \
+          "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
+          --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" \
+          | head -1)
+        if [ -n "${EXISTING_COMMENT_ID}" ]; then
+          gh api --method PATCH \
+            "repos/${GH_REPO}/issues/comments/${EXISTING_COMMENT_ID}" \
+            -f body="${BODY}"
+        else
+          gh api --method POST \
+            "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
+            -f body="${BODY}"
+        fi
