@@ -311,6 +311,7 @@ jobs:
       run: uv run -v task build-docs
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test-windows:
     name: test-windows
     needs: changes
