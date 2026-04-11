@@ -18,7 +18,6 @@
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
-    "CAPABILITY_FILES",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_NETWORK",
     "CAPABILITY_OPERATING_SYSTEM",
@@ -48,18 +47,34 @@
   "github.com/Masterminds/sprig/v3": [
     "CAPABILITY_REFLECT"
   ],
-  "github.com/bodgit/sevenzip": [
+  "github.com/betterleaks/betterleaks/color": [
+    "CAPABILITY_FILES"
+  ],
+  "github.com/betterleaks/betterleaks/detect": [
+    "CAPABILITY_CGO",
+    "CAPABILITY_EXEC",
+    "CAPABILITY_FILES",
+    "CAPABILITY_MODIFY_SYSTEM_STATE",
+    "CAPABILITY_OPERATING_SYSTEM",
+    "CAPABILITY_RUNTIME",
+    "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/betterleaks/betterleaks/report": [
+    "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/betterleaks/betterleaks/sources": [
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
   ],
-  "github.com/dsnet/compress/bzip2": [
-    "CAPABILITY_UNANALYZED"
-  ],
-  "github.com/dsnet/compress/internal/prefix": [
-    "CAPABILITY_UNANALYZED"
+  "github.com/bodgit/sevenzip": [
+    "CAPABILITY_CGO",
+    "CAPABILITY_EXEC",
+    "CAPABILITY_MODIFY_SYSTEM_STATE",
+    "CAPABILITY_OPERATING_SYSTEM",
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/fsnotify/fsnotify": [
     "CAPABILITY_READ_SYSTEM_STATE"
@@ -72,6 +87,12 @@
   ],
   "github.com/go-git/go-git/v5/utils/ioutil": [
     "CAPABILITY_OPERATING_SYSTEM"
+  ],
+  "github.com/go-sprout/sprout/registry/strings": [
+    "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/go-sprout/sprout/sprigin": [
+    "CAPABILITY_UNANALYZED"
   ],
   "github.com/go-viper/mapstructure/v2": [
     "CAPABILITY_REFLECT"
@@ -97,8 +118,7 @@
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/rs/zerolog": [
     "CAPABILITY_CGO",
@@ -119,22 +139,6 @@
   ],
   "github.com/zalando/go-keyring/secret_service": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
-  ],
-  "github.com/zricethezav/gitleaks/v8/detect": [
-    "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
-  ],
-  "github.com/zricethezav/gitleaks/v8/sources": [
-    "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
   ],
   "go.etcd.io/bbolt": [
     "CAPABILITY_SYSTEM_CALLS"

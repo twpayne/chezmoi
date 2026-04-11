@@ -29,6 +29,7 @@ import (
 	"time"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/betterleaks/betterleaks/detect"
 	"github.com/coreos/go-semver/semver"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
@@ -41,7 +42,6 @@ import (
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-xdg/v6"
-	"github.com/zricethezav/gitleaks/v8/detect"
 	"golang.org/x/term"
 	"mvdan.cc/sh/v3/expand"
 	"mvdan.cc/sh/v3/syntax"
@@ -265,16 +265,16 @@ type Config struct {
 	logger                      *slog.Logger
 
 	// Computed configuration.
-	commandDirAbsPath   chezmoi.AbsPath
-	homeDirAbsPath      chezmoi.AbsPath
-	encryption          chezmoi.Encryption
-	sourceDirAbsPath    chezmoi.AbsPath
-	sourceDirAbsPathErr error
-	sourceState         *chezmoi.SourceState
-	sourceStateErr      error
-	templateData        *templateData
-	gitleaksDetector    *detect.Detector
-	gitleaksDetectorErr error
+	commandDirAbsPath      chezmoi.AbsPath
+	homeDirAbsPath         chezmoi.AbsPath
+	encryption             chezmoi.Encryption
+	sourceDirAbsPath       chezmoi.AbsPath
+	sourceDirAbsPathErr    error
+	sourceState            *chezmoi.SourceState
+	sourceStateErr         error
+	templateData           *templateData
+	betterleaksDetector    *detect.Detector
+	betterleaksDetectorErr error
 
 	stdin             io.Reader
 	stdout            io.Writer
@@ -1583,11 +1583,11 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 	return pagerCmd, nil
 }
 
-func (c *Config) getGitleaksDetector() (*detect.Detector, error) {
-	if c.gitleaksDetector == nil && c.gitleaksDetectorErr == nil {
-		c.gitleaksDetector, c.gitleaksDetectorErr = detect.NewDetectorDefaultConfig()
+func (c *Config) getBetterleaksDetector() (*detect.Detector, error) {
+	if c.betterleaksDetector == nil && c.betterleaksDetectorErr == nil {
+		c.betterleaksDetector, c.betterleaksDetectorErr = detect.NewDetectorDefaultConfig()
 	}
-	return c.gitleaksDetector, c.gitleaksDetectorErr
+	return c.betterleaksDetector, c.betterleaksDetectorErr
 }
 
 // A modifyHTTPRequestFunc is a function that modifies a [net/http.Request]
