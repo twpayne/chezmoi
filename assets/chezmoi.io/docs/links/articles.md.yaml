@@ -670,3 +670,7 @@ articles:
   version: 2.69.4
   title: One MCP Configuration for Codex, Claude, Cursor, and Copilot with chezmoi
   url: https://dev.to/dotwee/one-mcp-configuration-for-codex-claude-cursor-and-copilot-with-chezmoi-925
+- date: '2026-03-15'
+  version: 2.70.0
+  title: How I manage my dotfiles
+  url: https://boranuzun.ch/blog/dotfiles-setup/
