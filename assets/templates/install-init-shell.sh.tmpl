@@ -48,7 +48,7 @@ elif is_command apt-get; then
 		${sudo}apt-get update
 		${sudo}apt-get install --yes curl
 	fi
-	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	sh -c "$(curl -fsSL https://get.chezmoi.io/lb)"
 	chezmoi="$HOME/.local/bin/chezmoi"
 {{- else if eq .packageManager "brew" }}
 elif is_command brew; then
@@ -58,7 +58,7 @@ elif is_command dnf; then
 	if ! (is_command curl); then
 		${sudo}dnf install curl
 	fi
-	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	sh -c "$(curl -fsSL https://get.chezmoi.io/lb)"
 	chezmoi="$HOME/.local/bin/chezmoi"
 {{- else if eq .packageManager "nix-env" }}
 elif is_command nix-env; then
@@ -77,7 +77,7 @@ elif is_command dnf; then
 	if ! (is_command curl); then
 		${sudo}rpm --install curl
 	fi
-	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	sh -c "$(curl -fsSL https://get.chezmoi.io/lb)"
 	chezmoi="$HOME/.local/bin/chezmoi"
 {{- else if eq .packageManager "snap" }}
 elif is_command snap; then
@@ -90,10 +90,10 @@ elif is_command zypper; then
 	${sudo}zypper install chezmoi
 {{- end }}
 elif is_command curl; then
-	sh -c "$(curl -fsSL get.chezmoi.io/lb)"
+	sh -c "$(curl -fsSL https://get.chezmoi.io/lb)"
 	chezmoi="$HOME/.local/bin/chezmoi"
 elif is_command wget; then
-	sh -c "$(wget -qO- get.chezmoi.io/lb)"
+	sh -c "$(wget -qO- https://get.chezmoi.io/lb)"
 	chezmoi="$HOME/.local/bin/chezmoi"
 else
 	echo "unable to install chezmoi" 1>&2

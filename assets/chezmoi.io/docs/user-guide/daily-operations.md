@@ -159,7 +159,7 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 shell:
 
 ```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 ```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
@@ -172,7 +172,7 @@ chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
 ```sh
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --one-shot $GITHUB_USERNAME
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --one-shot $GITHUB_USERNAME
 ```
 
 ```mermaid
