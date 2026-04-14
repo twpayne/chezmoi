@@ -178,6 +178,10 @@ exec chezmoi execute-template '{{ dict | setValueAtPath "key1.key2" "value2" | t
 rmfinalnewline golden/setValueAtPath
 cmp stdout golden/setValueAtPath
 
+# test stdinIsATTY template function
+exec chezmoi execute-template '{{ stdinIsATTY }}'
+stdout false
+
 # test toIni template function
 exec chezmoi execute-template '{{ dict "key" "value" "section" (dict "subkey" "subvalue") | toIni }}'
 cmp stdout golden/toIni
