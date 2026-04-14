@@ -22,6 +22,7 @@ import (
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
 	"github.com/itchyny/gojq"
+	"golang.org/x/term"
 	"gopkg.in/ini.v1"
 	"howett.net/plist"
 
@@ -496,6 +497,17 @@ func (c *Config) statTemplateFunc(name string) any {
 	default:
 		panic(err)
 	}
+}
+
+func (c *Config) stdinIsATTYTemplateFunc() bool {
+	if c.noTTY {
+		return false
+	}
+	file, ok := c.stdin.(*os.File)
+	if !ok {
+		return false
+	}
+	return term.IsTerminal(int(file.Fd()))
 }
 
 func (c *Config) toIniTemplateFunc(data map[string]any) string {

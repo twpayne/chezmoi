@@ -237,10 +237,6 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return promptStringInitTemplateFunc(prompt, args...)
 		}
 
-		stdinIsATTYInitTemplateFunc := func() bool {
-			return c.executeTemplate.stdinIsATTY
-		}
-
 		initTemplateFuncs := map[string]any{
 			"exit":                  c.exitInitTemplateFunc,
 			"promptBool":            promptBoolInitTemplateFunc,
@@ -253,7 +249,6 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			"promptMultichoiceOnce": promptMultichoiceOnceInitTemplateFunc,
 			"promptString":          promptStringInitTemplateFunc,
 			"promptStringOnce":      promptStringOnceInitTemplateFunc,
-			"stdinIsATTY":           stdinIsATTYInitTemplateFunc,
 			"writeToStdout":         c.writeToStdout,
 		}
 

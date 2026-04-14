@@ -569,6 +569,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"splitList":                   c.splitListTemplateFunc,
 		"squote":                      c.squoteTemplateFunc,
 		"stat":                        c.statTemplateFunc,
+		"stdinIsATTY":                 c.stdinIsATTYTemplateFunc,
 		"toIni":                       c.toIniTemplateFunc,
 		"toPrettyJson":                c.toPrettyJsonTemplateFunc,
 		"toString":                    c.toStringTemplateFunc,
@@ -949,7 +950,6 @@ func (c *Config) createConfigFileContents(filename chezmoi.RelPath, data []byte,
 		"promptMultichoiceOnce": c.promptMultichoiceOnceInteractiveTemplateFunc,
 		"promptString":          c.promptStringInteractiveTemplateFunc,
 		"promptStringOnce":      c.promptStringOnceInteractiveTemplateFunc,
-		"stdinIsATTY":           c.stdinIsATTYInitTemplateFunc,
 		"writeToStdout":         c.writeToStdout,
 	}
 	chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)

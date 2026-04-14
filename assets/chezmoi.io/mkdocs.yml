@@ -242,6 +242,7 @@ nav:
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md
       - setValueAtPath: reference/templates/functions/setValueAtPath.md
       - stat: reference/templates/functions/stat.md
+      - stdinIsATTY: reference/templates/functions/stdinIsATTY.md
       - toIni: reference/templates/functions/toIni.md
       - toPrettyJson: reference/templates/functions/toPrettyJson.md
       - toString: reference/templates/functions/toString.md
@@ -272,7 +273,6 @@ nav:
       - promptMultichoiceOnce: reference/templates/init-functions/promptMultichoiceOnce.md
       - promptString: reference/templates/init-functions/promptString.md
       - promptStringOnce: reference/templates/init-functions/promptStringOnce.md
-      - stdinIsATTY: reference/templates/init-functions/stdinIsATTY.md
       - writeToStdout: reference/templates/init-functions/writeToStdout.md
     - 1Password functions:
       - reference/templates/1password-functions/index.md
