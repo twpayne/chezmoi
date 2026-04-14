@@ -30,11 +30,13 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_REPO: ${{ github.repository }}
-        HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
       run: |
-        PR_NUMBER=$(gh api "repos/${GH_REPO}/commits/${HEAD_SHA}/pulls" --jq '.[0].number')
+        PR_NUMBER=$(gh api "repos/${GH_REPO}/pulls" --paginate \
+          --jq ".[] | select(.head.ref == \"${HEAD_BRANCH}\" and .head.repo.full_name == \"${HEAD_REPO}\") | .number")
         if [ -z "${PR_NUMBER}" ]; then
-          echo "error: could not determine PR number for commit ${HEAD_SHA}"
+          echo "error: could not find PR for ${HEAD_REPO}:${HEAD_BRANCH}"
           exit 1
         fi
         echo "number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
@@ -64,7 +66,7 @@ jobs:
         )
         EXISTING_COMMENT_ID=$(gh api \
           "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
-          --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" \
+          --paginate --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" \
           | head -1)
         if [ -n "${EXISTING_COMMENT_ID}" ]; then
           gh api --method PATCH \
