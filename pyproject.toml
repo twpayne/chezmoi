@@ -15,9 +15,9 @@ dependencies = [
 ]
 
 [tool.taskipy.tasks]
-build-docs = { cmd = "mkdocs build -f assets/chezmoi.io/mkdocs.yml" }
-serve-docs = { cmd = "mkdocs serve -f assets/chezmoi.io/mkdocs.yml" }
-deploy-docs = { cmd = "cd assets/chezmoi.io && mkdocs gh-deploy" }
+build-docs = { cmd = "NO_MKDOCS_2_WARNING=1 mkdocs build -f assets/chezmoi.io/mkdocs.yml" }
+serve-docs = { cmd = "NO_MKDOCS_2_WARNING=1 mkdocs serve -f assets/chezmoi.io/mkdocs.yml" }
+deploy-docs = { cmd = "cd assets/chezmoi.io && NO_MKDOCS_2_WARNING=1 mkdocs gh-deploy" }
 lint = { cmd = "ruff check" }
 format = { cmd = "ruff format" }
 pycheck = { cmd = "task lint && task format --diff" }
