@@ -24,6 +24,7 @@ env:
   RAGE_VERSION: 0.11.1 # https://github.com/str4d/rage/releases
   SYFT_VERSION: 1.42.4 # https://github.com/anchore/syft/releases
   UV_VERSION: 0.11.6 # https://github.com/astral-sh/uv/releases
+  NO_MKDOCS_2_WARNING: 1
 jobs:
   changes:
     runs-on: ubuntu-22.04
