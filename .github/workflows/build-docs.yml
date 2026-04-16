@@ -16,6 +16,7 @@ env:
   GO_VERSION: 1.26.2 # https://go.dev/doc/devel/release
   PYTHON_VERSION: '3.14' # https://www.python.org/downloads/
   UV_VERSION: 0.11.6 # https://github.com/astral-sh/uv/releases
+  NO_MKDOCS_2_WARNING: 1
 jobs:
   build-docs:
     runs-on: ubuntu-22.04
