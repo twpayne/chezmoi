@@ -11,6 +11,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.configFile`        | string   | The path to the configuration file used by chezmoi                                                                                                       |
 | `.chezmoi.destDir`           | string   | The destination directory                                                                                                                                |
 | `.chezmoi.executable`        | string   | The path to the `chezmoi` executable, if available                                                                                                       |
+| `.chezmoi.flags`             | object   | Selected flags passed to the `chezmoi` command                                                                                                           |
 | `.chezmoi.fqdnHostname`      | string   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                                            |
 | `.chezmoi.gid`               | string   | The primary group ID                                                                                                                                     |
 | `.chezmoi.group`             | string   | The group of the user running chezmoi                                                                                                                    |

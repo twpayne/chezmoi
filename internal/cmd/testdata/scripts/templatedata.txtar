@@ -10,6 +10,12 @@ stdout dot_file.tmpl
 [linux] exec chezmoi execute-template '{{ .chezmoi.kernel.ostype }}'
 [linux] stdout Linux
 
+# test thta .chezmoi.flags.force is set
+exec chezmoi execute-template '{{ .chezmoi.flags.force }}'
+stdout '^false$'
+exec chezmoi execute-template --force '{{ .chezmoi.flags.force }}'
+stdout '^true$'
+
 chhome home2/user
 
 # test that .chezmoidata.<format> and .chezmoitemplates are available in .chezmoiignore

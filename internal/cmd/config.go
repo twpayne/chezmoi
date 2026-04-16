@@ -290,6 +290,14 @@ type Config struct {
 	restoreWindowsConsole func() error
 }
 
+type templateDataFlags struct {
+	dryRun    bool
+	force     bool
+	keepGoing bool
+	noPager   bool
+	noTTY     bool
+}
+
 type templateData struct {
 	arch              string
 	args              []string
@@ -300,6 +308,7 @@ type templateData struct {
 	configFile        chezmoi.AbsPath
 	destDir           chezmoi.AbsPath
 	executable        chezmoi.AbsPath
+	flags             templateDataFlags
 	fqdnHostname      string
 	gid               string
 	group             string
@@ -1689,15 +1698,22 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 
 	return map[string]any{
 		"chezmoi": map[string]any{
-			"arch":              templateData.arch,
-			"args":              templateData.args,
-			"cacheDir":          templateData.cacheDir.String(),
-			"command":           templateData.command,
-			"commandDir":        templateData.commandDir.String(),
-			"config":            templateData.config,
-			"configFile":        templateData.configFile.String(),
-			"destDir":           templateData.destDir,
-			"executable":        templateData.executable.String(),
+			"arch":       templateData.arch,
+			"args":       templateData.args,
+			"cacheDir":   templateData.cacheDir.String(),
+			"command":    templateData.command,
+			"commandDir": templateData.commandDir.String(),
+			"config":     templateData.config,
+			"configFile": templateData.configFile.String(),
+			"destDir":    templateData.destDir,
+			"executable": templateData.executable.String(),
+			"flags": map[string]any{
+				"dryRun":    templateData.flags.dryRun,
+				"force":     templateData.flags.force,
+				"keepGoing": templateData.flags.keepGoing,
+				"noPager":   templateData.flags.noPager,
+				"noTTY":     templateData.flags.noTTY,
+			},
 			"fqdnHostname":      templateData.fqdnHostname,
 			"gid":               templateData.gid,
 			"group":             templateData.group,
@@ -2641,15 +2657,22 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
 
 	return &templateData{
-		arch:              runtime.GOARCH,
-		args:              os.Args,
-		cacheDir:          c.CacheDirAbsPath,
-		command:           cmd.Name(),
-		commandDir:        c.commandDirAbsPath,
-		config:            c.toMap(),
-		configFile:        configFileAbsPath,
-		destDir:           c.DestDirAbsPath,
-		executable:        chezmoi.NewAbsPath(executable),
+		arch:       runtime.GOARCH,
+		args:       os.Args,
+		cacheDir:   c.CacheDirAbsPath,
+		command:    cmd.Name(),
+		commandDir: c.commandDirAbsPath,
+		config:     c.toMap(),
+		configFile: configFileAbsPath,
+		destDir:    c.DestDirAbsPath,
+		executable: chezmoi.NewAbsPath(executable),
+		flags: templateDataFlags{
+			dryRun:    c.dryRun,
+			force:     c.force,
+			keepGoing: c.keepGoing,
+			noPager:   c.noPager,
+			noTTY:     c.noTTY,
+		},
 		fqdnHostname:      fqdnHostname,
 		gid:               gid,
 		group:             group,
