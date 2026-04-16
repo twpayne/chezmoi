@@ -4,11 +4,11 @@ on:
     branches:
     - master
     paths:
-    - 'assets/chezmoi.io/**'
-    - 'pyproject.toml'
-    - 'uv.lock'
-    - '.github/workflows/build-docs.yml'
-    - '.github/workflows/preview-docs.yml'
+    - assets/chezmoi.io/**
+    - pyproject.toml
+    - uv.lock
+    - .github/workflows/build-docs.yml
+    - .github/workflows/preview-docs.yml
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
