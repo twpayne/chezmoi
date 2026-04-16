@@ -674,3 +674,15 @@ articles:
   version: 2.70.0
   title: How I manage my dotfiles
   url: https://boranuzun.ch/blog/dotfiles-setup/
+- date: '2026-04-13'
+  version: 2.70.1
+  title: 'chezmoi: One Dotfiles Repo Across macOS, Linux, and Windows'
+  url: https://recca0120.github.io/en/2026/04/13/chezmoi-dotfiles-management/
+- date: '2026-04-14'
+  version: 2.70.1
+  title: 'Year of the Linux Desktop #6: Managing Linux Configs Like a Pro'
+  url: https://datalabtechtv.com/posts/yotld-part-6-managing-linux-configs/
+- date: '2026-04-16'
+  version: 2.70.1
+  title: How I use chezmoi to manage dotfiles across Macs
+  url: https://sayzlim.net/manage-dotfiles-across-macs-chezmoi/

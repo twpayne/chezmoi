@@ -89,3 +89,7 @@ videos:
   lang: FR
   title: Nouveau laptop ? Configurez TOUT en 5 min avec Chezmoi
   url: https://www.youtube.com/watch?v=6nqhBjvVVqE
+- date: '2026-04-14'
+  version: 2.70.1
+  title: 'YotLD #6: Managing Linux Configs Like a Pro'
+  url: https://www.youtube.com/watch?v=_m7sJrsZfUs
