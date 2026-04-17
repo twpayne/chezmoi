@@ -5705,6 +5705,8 @@
       
         
       
+        
+      
     
     
     
@@ -6804,6 +6806,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7355,8 +7385,6 @@
       
         
       
-        
-      
     
     
     
@@ -7708,34 +7736,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -10386,6 +10386,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v2.70.2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.70.2 (2026-04-17)
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#v2.70.1" class="md-nav__link">
@@ -13815,6 +13826,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v2.70.2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.70.2 (2026-04-17)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v2.70.1" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -16574,7 +16596,26 @@
 
 
 <h1 id="release-history">Release history</h1>
-<p><a href="https://github.com/twpayne/chezmoi/compare/v2.70.1...master">Upcoming changes</a></p>
+<p><a href="https://github.com/twpayne/chezmoi/compare/v2.70.2...master">Upcoming changes</a></p>
+<h2 id="v2.70.2"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.70.2">2.70.2</a> (2026-04-17)</h2>
+<p>Features</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/0e3ba0588222996ac707465e5d92f67b0f5a93ed"><code>0e3ba05</code></a> feat: Add .chezmoi.flags template variable</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/0f3969ddda7b60ff06c92d35b19554c44d17dccb"><code>0f3969d</code></a> feat: Make stdinIsATTY template func available in all templates</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/135c0430dcc0b6f201394932f6f310ea93ba2929"><code>135c043</code></a> feat: Switch to betterleaks for secret detection</li>
+</ul>
+<p>Fixes</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/9627c29abbfa318c355a096065350f0a4973ac0c"><code>9627c29</code></a> fix: Re-enable support for TOML 1.1</li>
+</ul>
+<p>Documentation</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/b1aacd726df533ffd1f2fec7ded8e2ecfdb26e0e"><code>b1aacd7</code></a> docs: Add links to articles and video</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/c4f940fefedb19cabfcd9ad0ec843955e65309fc"><code>c4f940f</code></a> docs: Always use https to get install script</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/c8a0fa4a259069bc65aacc8ee42df9440fbe127a"><code>c8a0fa4</code></a> docs: Add link to article</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/7b84c612c6e633cac9ab39dfe9de816641860e42"><code>7b84c61</code></a> docs: Improve documentation of secret command</li>
+</ul>
+<p>Full changelog: <a href="https://github.com/twpayne/chezmoi/compare/v2.70.1...v2.70.2">v2.70.1...v2.70.2</a></p>
 <h2 id="v2.70.1"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.70.1">2.70.1</a> (2026-04-08)</h2>
 <p>Features</p>
 <ul>
@@ -20720,6 +20761,8 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -20762,7 +20805,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

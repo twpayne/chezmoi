@@ -5802,6 +5802,8 @@
       
         
       
+        
+      
     
     
     
@@ -6901,6 +6903,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7452,8 +7482,6 @@
       
         
       
-        
-      
     
     
     
@@ -7805,34 +7833,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11301,9 +11301,28 @@ prompted to sign-in again.</p>
 <p>In the past chezmoi used to exit with an error when no valid session was
 available. If you'd like to restore this behavior, set the <code>onepassword.prompt</code>
 configuration variable to <code>false</code>, for example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
 <span class="w">    </span><span class="n">prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">onepassword</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">prompt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;onepassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;prompt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
 <p>Do not use <code>prompt</code> on shared machines. A session token verified or acquired
@@ -11319,9 +11338,28 @@ on restricted machines where you cannot or do not wish to install a full
 chezmoi requires explicit configuration for either connect or service account
 modes using the <code>onepassword.mode</code> configuration option. The default, if not
 specified, is <code>account</code>:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label><label for="__tabbed_2_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
 <span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;account&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">onepassword</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">account</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;onepassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;account&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>In <code>account</code> mode, chezmoi will stop with an error if the environment variable
 <code>OP_SERVICE_ACCOUNT_TOKEN</code> is set, or if both environment variables
 <code>OP_CONNECT_HOST</code> and <code>OP_CONNECT_TOKEN</code> are set.</p>
@@ -11334,9 +11372,28 @@ with multiple accounts. If you need access to secrets from more than one
 <h3 id="1password-connect">1Password Connect</h3>
 <p>Once 1Password Connect is <a href="https://developer.1password.com/docs/connect/connect-cli#requirements">configured</a>, and <code>OP_CONNECT_HOST</code> and
 <code>OP_CONNECT_TOKEN</code> are properly set, set <code>onepassword.mode</code> to <code>connect</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">TOML</label><label for="__tabbed_3_2">YAML</label><label for="__tabbed_3_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
 <span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;connect&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">onepassword</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">connect</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;onepassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;connect&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>In <code>connect</code> mode:</p>
 <ul>
 <li>the <code>onepasswordDocument</code> template function is not available,</li>
@@ -11347,9 +11404,28 @@ with multiple accounts. If you need access to secrets from more than one
 <h3 id="1password-service-accounts">1Password Service Accounts</h3>
 <p>Once a 1Password service account has been <a href="https://developer.1password.com/docs/service-accounts/use-with-1password-cli/#requirements">created</a> and
 <code>OP_SERVICE_ACCOUNT_TOKEN</code> is properly set, set <code>onepassword.mode</code> to <code>service</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">TOML</label><label for="__tabbed_4_2">YAML</label><label for="__tabbed_4_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[onepassword]</span>
 <span class="w">    </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;service&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">onepassword</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">service</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;onepassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>In <code>service</code> mode:</p>
 <ul>
 <li><code>account</code> parameters are not allowed in 1Password template functions,</li>
@@ -11373,6 +11449,8 @@ with multiple accounts. If you need access to secrets from more than one
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11415,7 +11493,7 @@ with multiple accounts. If you need access to secrets from more than one
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -5829,6 +5829,8 @@
       
         
       
+        
+      
     
     
     
@@ -6928,6 +6930,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7479,8 +7509,6 @@
       
         
       
-        
-      
     
     
     
@@ -7832,34 +7860,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11256,10 +11256,38 @@ the <code>diff.command</code> and <code>diff.args</code> configuration variables
 <code>diff.args</code> are interpreted as templates with the variables <code>.Destination</code> and
 <code>.Target</code> containing filenames of the file in the destination state and the
 target state respectively. For example, to use <a href="https://meldmerge.org/">meld</a>, specify:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;meld&quot;</span>
 <span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--diff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="p">]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">diff</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">meld</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--diff</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{{</span><span class="nv"> </span><span class="s">.Destination</span><span class="nv"> </span><span class="s">}}&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;{{</span><span class="nv"> </span><span class="s">.Target</span><span class="nv"> </span><span class="s">}}&#39;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;diff&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;meld&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;--diff&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Target }}&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>If you generate your config file from a config file template, then you'll
@@ -11268,20 +11296,32 @@ your generated config file contains the <code>{{</code> and <code>}}</code> you 
 </div>
 <h2 id="use-vscode-as-the-diff-tool">Use VSCode as the diff tool</h2>
 <p>To use <a href="https://code.visualstudio.com/">VSCode</a> as the diff tool, add the following to your config:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label><label for="__tabbed_2_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
-<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;code&quot;</span>
-<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--wait&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--diff&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;code&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--wait&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--diff&quot;</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">diff</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;code&quot;</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code</span>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;--wait&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;--diff&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--wait</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--diff</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;diff&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;code&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;--wait&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;--diff&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
 </div>
@@ -11289,7 +11329,7 @@ your generated config file contains the <code>{{</code> and <code>}}</code> you 
 <h2 id="use-delta-as-the-diff-tool">Use delta as the diff tool</h2>
 <p>To use <a href="https://dandavison.github.io/delta/">delta</a> as the diff tool you must set <code>diff.pager</code> to delta, for
 example:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">TOML</label><label for="__tabbed_3_2">YAML</label><label for="__tabbed_3_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
@@ -11298,7 +11338,15 @@ example:</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">diff</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">pager</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;delta&quot;</span>
+<span class="w">  </span><span class="nt">pager</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">delta</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;diff&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;pager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;delta&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
 </div>
@@ -11308,9 +11356,31 @@ example:</p>
 scripts that will be run. You can exclude scripts from the diff output by
 setting the <code>diff.exclude</code> configuration variable in your configuration file,
 for example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">TOML</label><label for="__tabbed_4_2">YAML</label><label for="__tabbed_4_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
 <span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;scripts&quot;</span><span class="p">]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">diff</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">exclude</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">scripts</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;diff&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;exclude&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;scripts&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="dont-show-externals-in-the-diff-output">Don't show externals in the diff output</h2>
 <p>To exclude diffs from externals, either pass the <code>--exclude=externals</code> flag or
 set <code>diff.exclude</code> to <code>["externals"]</code> in your config file.</p>
@@ -11318,9 +11388,28 @@ set <code>diff.exclude</code> to <code>["externals"]</code> in your config file.
 <p>You can change the diff format, and/or pipe the output into a pager of your
 choice by setting <code>diff.pager</code> configuration variable. For example, to use
 <a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:3"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><input id="__tabbed_5_3" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">TOML</label><label for="__tabbed_5_2">YAML</label><label for="__tabbed_5_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span>
 <span class="w">    </span><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;diff-so-fancy&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">diff</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pager</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diff-so-fancy</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;diff&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;pager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diff-so-fancy&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>The pager can be disabled using the <code>--no-pager</code> flag or by setting <code>diff.pager</code>
 to an empty string.</p>
 <h2 id="show-human-friendly-diffs-for-binary-files">Show human-friendly diffs for binary files</h2>
@@ -11329,41 +11418,43 @@ contents before passing them to the diff program. This is primarily useful for
 generating human-readable diffs of binary files.</p>
 <p>For example, to show diffs of macOS <code>.plist</code> files, add the following to your
 configuration file:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">JSON</label><label for="__tabbed_3_2">TOML</label><label for="__tabbed_3_3">YAML</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">TOML</label><label for="__tabbed_6_2">YAML</label><label for="__tabbed_6_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;textconv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s2">&quot;-&quot;</span>
-<span class="w">        </span><span class="p">]</span>
-<span class="w">    </span><span class="p">]</span>
-<span class="p">}</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[[textconv]]</span>
-<span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span>
-<span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span>
-<span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span>
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-&quot;</span><span class="p">]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">textconv</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;**/*.plist&quot;</span>
-<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;plutil&quot;</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pattern</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;**/*.plist&#39;</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">plutil</span>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-convert&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;xml1&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-o&quot;</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-&quot;</span><span class="err">,</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-convert</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">xml1</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-o</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;-&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;-&#39;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;textconv&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;**/*.plist&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;plutil&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;-convert&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;xml1&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;-o&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;-&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
 </div>
@@ -11387,6 +11478,8 @@ showing differences.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11429,7 +11522,7 @@ showing differences.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -5796,6 +5796,8 @@
       
         
       
+        
+      
     
     
     
@@ -6895,6 +6897,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7446,8 +7476,6 @@
       
         
       
-        
-      
     
     
     
@@ -7799,34 +7827,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11188,12 +11188,33 @@
 the source state and automatically be decrypted when generating the target state
 or editing a file contents with <code>chezmoi edit</code>.</p>
 <h2 id="asymmetric-privatepublic-key-encryption">Asymmetric (private/public-key) encryption</h2>
-<p>Specify the encryption key to use in your configuration file (<code>chezmoi.toml</code>)
+<p>Specify the encryption key to use in your configuration file (<code>chezmoi.$FORMAT</code>)
 with the <code>gpg.recipient</code> key:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gpg&quot;</span>
 <span class="k">[gpg]</span>
 <span class="w">    </span><span class="n">recipient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">encryption</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpg</span>
+<span class="nt">gpg</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">recipient</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;...&#39;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;encryption&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gpg&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;gpg&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;recipient&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>chezmoi will encrypt files:</p>
 <div class="highlight"><pre><span></span><code>gpg<span class="w"> </span>--armor<span class="w"> </span>--recipient<span class="w"> </span><span class="nv">$RECIPIENT</span><span class="w"> </span>--encrypt
 </code></pre></div>
@@ -11206,10 +11227,31 @@ the config, before any other sections.</p>
 </div>
 <h2 id="symmetric-encryption">Symmetric encryption</h2>
 <p>Specify symmetric encryption in your configuration file:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label><label for="__tabbed_2_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">encryption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gpg&quot;</span>
 <span class="k">[gpg]</span>
 <span class="w">    </span><span class="n">symmetric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">encryption</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpg</span>
+<span class="nt">gpg</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">symmetric</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;encryption&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gpg&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;gpg&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;symmetric&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>chezmoi will encrypt files:</p>
 <div class="highlight"><pre><span></span><code>gpg<span class="w"> </span>--armor<span class="w"> </span>--symmetric
 </code></pre></div>
@@ -11217,6 +11259,11 @@ the config, before any other sections.</p>
 <p>If you want to encrypt your files with a passphrase, but don't mind the
 passphrase being stored in plaintext on your machines, then you can use the
 following configuration:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">TOML</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.toml.tmpl</span><pre><span></span><code>{{ $passphrase := promptStringOnce . &quot;passphrase&quot; &quot;passphrase&quot; -}}
 
 encryption = &quot;gpg&quot;
@@ -11226,6 +11273,42 @@ encryption = &quot;gpg&quot;
     symmetric = true
     args = [&quot;--batch&quot;, &quot;--passphrase&quot;, {{ $passphrase | quote }}, &quot;--no-symkey-cache&quot;]
 </code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">YAML</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.yaml.tmpl</span><pre><span></span><code>{{ $passphrase := promptStringOnce . &quot;passphrase&quot; &quot;passphrase&quot; -}}
+
+encryption: gpg
+data:
+  passphrase: {{ $passphrase | quote }}
+gpg:
+  symmetric: true
+  args:
+  - --batch
+  - --passphrase
+  - {{ $passphrase | quote }}
+  - --no-symkey-cache
+</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.json.tmpl</span><pre><span></span><code>{{ $passphrase := promptStringOnce . &quot;passphrase&quot; &quot;passphrase&quot; -}}
+
+{
+    &quot;encryption&quot;: &quot;gpg&quot;,
+    &quot;data&quot;: {
+        &quot;passphrase&quot;: {{ $passphrase | quote }}
+    },
+    &quot;gpg&quot;: {
+        &quot;symmetric&quot;: true
+        &quot;args&quot;: [&quot;--batch&quot;, &quot;--passphrase&quot;, {{ $passphrase | quote }}, &quot;--no-symkey-cache&quot;]
+    }
+}
+</code></pre></div>
 <p>This will prompt you for the passphrase the first time you run <code>chezmoi init</code> on
 a new machine, and then remember the passphrase in your configuration file.</p>
 <h2 id="muting-gpg-output">Muting gpg output</h2>
@@ -11233,9 +11316,31 @@ a new machine, and then remember the passphrase in your configuration file.</p>
 some output even if you redirect stdout to <code>/dev/null</code>.</p>
 <p>You can mute this by adding <code>--quiet</code> to the <code>gpg.args</code> key in your
 configuration:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">TOML</label><label for="__tabbed_6_2">YAML</label><label for="__tabbed_6_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.toml.tmpl</span><pre><span></span><code><span class="k">[gpg]</span>
 <span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--quiet&quot;</span><span class="p">]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.yaml.tmpl</span><pre><span></span><code><span class="nt">gpg</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--quiet</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.json.tmpl</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;gpg&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;--quiet&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 
 
 
@@ -11253,6 +11358,8 @@ configuration:</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11295,7 +11402,7 @@ configuration:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

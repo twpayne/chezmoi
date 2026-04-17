@@ -5840,6 +5840,8 @@
       
         
       
+        
+      
     
     
     
@@ -6939,6 +6941,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7490,8 +7520,6 @@
       
         
       
-        
-      
     
     
     
@@ -7843,34 +7871,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11272,7 +11272,7 @@
 
 
 <h1 id="include-dotfiles-from-elsewhere">Include dotfiles from elsewhere</h1>
-<p>The sections below contain examples of how to use <code>.chezmoiexternal.toml</code> to
+<p>The sections below contain examples of how to use <code>.chezmoiexternal.$FORMAT</code> to
 include files from external sources. For more details, check the <a href="../../reference/special-files/chezmoiexternal-format/">reference
 manual</a>.</p>
 <h2 id="include-a-subdirectory-from-a-url">Include a subdirectory from a URL</h2>
@@ -11283,7 +11283,10 @@ state and Oh My Zsh is not distributed in this format. Instead, you can use the
 external source.</p>
 <p>For example, to import Oh My Zsh, the <a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting plugin</a>,
 and <a href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a>, put the following in
-<code>~/.local/share/chezmoi/.chezmoiexternal.toml</code>:</p>
+<code>~/.local/share/chezmoi/.chezmoiexternal.$FORMAT</code>:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.oh-my-zsh&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&quot;</span>
@@ -11302,6 +11305,54 @@ and <a href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a>, put th
 <span class="w">    </span><span class="n">exact</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">    </span><span class="n">stripComponents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.oh-my-zsh</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">archive</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz</span>
+<span class="w">  </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stripComponents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+<span class="nt">.oh-my-zsh/custom/plugins/zsh-syntax-highlighting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">archive</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz</span>
+<span class="w">  </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stripComponents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+<span class="nt">.oh-my-zsh/custom/themes/powerlevel10k</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">archive</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz</span>
+<span class="w">  </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stripComponents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.oh-my-zsh&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;exact&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;stripComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;exact&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;stripComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;.oh-my-zsh/custom/themes/powerlevel10k&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;exact&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;stripComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>To apply the changes, run:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>apply
 </code></pre></div>
@@ -11348,6 +11399,9 @@ URL.</p>
 <p>For example, to import just the required source files of the
 <a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting plugin</a> in the example above, add in
 <code>include</code> filter to the <code>zsh-syntax-highlighting</code> section as shown below:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label><label for="__tabbed_2_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&quot;</span>
@@ -11356,25 +11410,113 @@ URL.</p>
 <span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
 <span class="w">    </span><span class="n">include</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*/*.zsh&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;*/.version&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;*/.revision-hash&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;*/highlighters/**&quot;</span><span class="p">]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.oh-my-zsh/custom/plugins/zsh-syntax-highlighting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">archive</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz</span>
+<span class="w">  </span><span class="nt">exact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">stripComponents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+<span class="w">  </span><span class="nt">include</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*/*.zsh&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*/.version&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*/.revision-hash&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;*/highlighters/**&#39;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;exact&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;stripComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;include&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;*/*.zsh&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;*/.version&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;*/.revision-hash&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;*/highlighters/**&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="include-a-single-file-from-a-url">Include a single file from a URL</h2>
 <p>Including single files uses the same mechanism as including a subdirectory
 above, except with the external type <code>file</code> instead of <code>archive</code>. For example,
 to include <a href="https://github.com/junegunn/vim-plug/blob/master/plug.vim"><code>plug.vim</code></a> from
 <a href="https://github.com/junegunn/vim-plug"><code>github.com/junegunn/vim-plug</code></a> in <code>~/.vim/autoload/plug.vim</code> put the
-following in <code>~/.local/share/chezmoi/.chezmoiexternal.toml</code>:</p>
+following in <code>~/.local/share/chezmoi/.chezmoiexternal.$FORMAT</code>:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">TOML</label><label for="__tabbed_3_2">YAML</label><label for="__tabbed_3_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.vim/autoload/plug.vim&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;file&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&quot;</span>
 <span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.vim/autoload/plug.vim</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">file</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.vim/autoload/plug.vim&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="extract-a-single-file-from-an-archive">Extract a single file from an archive</h2>
 <p>You can extract a single file from an archive using the <code>archive-file</code> type in
 <code>.chezmoiexternal.$FORMAT</code>, for example:</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="err">{{</span><span class="w"> </span><span class="err">$</span><span class="n">ageVersion</span><span class="w"> </span><span class="err">:</span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.1.1&quot;</span><span class="w"> </span><span class="n">-</span><span class="err">}}</span>
-<span class="k">[</span><span class="s2">&quot;.local/bin/age&quot;</span><span class="k">]</span>
-<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;archive-file&quot;</span>
-<span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz&quot;</span>
-<span class="w">    </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;age/age&quot;</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">TOML</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code>{{ $ageVersion := &quot;1.1.1&quot; -}}
+[&quot;.local/bin/age&quot;]
+    type = &quot;archive-file&quot;
+    url = &quot;https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz&quot;
+    path = &quot;age/age&quot;
+</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">YAML</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code>{{ $ageVersion := &quot;1.1.1&quot; -}}
+.local/bin/age&quot;:
+  type: archive-file
+  url: https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz
+  path: age/age
+</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code>{{ $ageVersion := &quot;1.1.1&quot; -}}
+{
+    &quot;.local/bin/age&quot;: {
+        &quot;type&quot;: &quot;archive-file&quot;,
+        &quot;url&quot;: &quot;https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz&quot;,
+        &quot;path&quot;: &quot;age/age&quot;
+    }
+}
 </code></pre></div>
 <p>This will extract the single archive member <code>age/age</code> from the given URL (which
 is computed for the current OS and architecture) to the target
@@ -11401,6 +11543,9 @@ compressed in the bzip2, gzip, xz, or zstd formats.</p>
 a filter to decompress it. For example, before chezmoi natively supported the
 zstd compression format, you could handle <code>.tar.zst</code> external archives with, for
 example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:3"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><input id="__tabbed_7_3" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">TOML</label><label for="__tabbed_7_2">YAML</label><label for="__tabbed_7_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.Software/anki/2.1.54-qt6&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/ankitects/anki/releases/download/2.1.54/anki-2.1.54-linux-qt6.tar.zst&quot;</span>
@@ -11408,17 +11553,70 @@ example:</p>
 <span class="w">    </span><span class="n">filter</span><span class="p">.</span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">]</span>
 <span class="w">    </span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;tar&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.Software/anki/2.1.54-qt6</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">archive</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/ankitects/anki/releases/download/2.1.54/anki-2.1.54-linux-qt6.tar.zst</span>
+<span class="w">  </span><span class="nt">filter</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">zstd</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-d</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tar</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.Software/anki/2.1.54-qt6&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;archive&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/ankitects/anki/releases/download/2.1.54/anki-2.1.54-linux-qt6.tar.zst&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;filter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;zstd&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;-d&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tar&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Here <code>filter.command</code> and <code>filter.args</code> together tell chezmoi to filter the
 downloaded data through <code>zstd -d</code>. The <code>format = "tar"</code> line tells chezmoi that
 output of the filter is an uncompressed tar archive.</p>
 <h2 id="include-a-subdirectory-from-a-git-repository">Include a subdirectory from a git repository</h2>
 <p>You can configure chezmoi to keep a git repository up to date in a subdirectory
 by using the external type <code>git-repo</code>, for example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:3"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><input id="__tabbed_8_3" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">TOML</label><label for="__tabbed_8_2">YAML</label><label for="__tabbed_8_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.vim/pack/alker0/chezmoi.vim&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span>
 <span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.vim/pack/alker0/chezmoi.vim</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git-repo</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/alker0/chezmoi.vim.git</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.vim/pack/alker0/chezmoi.vim&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>If the directory does not exist then chezmoi will run <code>git clone</code> to clone it.
 If the directory does exist then chezmoi will run <code>git pull</code> to pull the latest
 changes, but not more often than every <code>refreshPeriod</code>. In the above example the
@@ -11444,6 +11642,9 @@ external instead with the URL pointing to an archive of the git repo's
 <p>You can customize the arguments to <code>git clone</code> and <code>git pull</code> by setting the
 <code>$DIR.clone.args</code> and <code>$DIR.pull.args</code> variables in <code>.chezmoiexternal.$FORMAT</code>,
 for example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:3"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><input id="__tabbed_9_3" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">TOML</label><label for="__tabbed_9_2">YAML</label><label for="__tabbed_9_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.vim/pack/alker0/chezmoi.vim&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span>
@@ -11451,6 +11652,34 @@ for example:</p>
 <span class="w">    </span><span class="k">[</span><span class="s2">&quot;.vim/pack/alker0/chezmoi.vim&quot;</span><span class="k">.pull]</span>
 <span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--ff-only&quot;</span><span class="p">]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.vim/pack/alker0/chezmoi.vim</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git-repo</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/alker0/chezmoi.vim.git</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+<span class="w">  </span><span class="nt">pull</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--ff-only</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.vim/pack/alker0/chezmoi.vim&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/alker0/chezmoi.vim.git&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;pull&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;--ff-only&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="use-git-submodules-in-your-source-directory">Use git submodules in your source directory</h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -11486,6 +11715,8 @@ configuration variable to <code>false</code>.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11528,7 +11759,7 @@ configuration variable to <code>false</code>.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>

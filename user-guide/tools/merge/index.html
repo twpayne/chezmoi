@@ -5785,6 +5785,8 @@
       
         
       
+        
+      
     
     
     
@@ -6884,6 +6886,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7435,8 +7465,6 @@
       
         
       
-        
-      
     
     
     
@@ -7788,34 +7816,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11169,33 +11169,108 @@
 <code>.Source</code>, and <code>.Target</code> containing filenames of the file in the destination
 state, source state, and target state respectively. For example, to use
 <a href="https://neovim.io/doc/user/diff.html">neovim's diff mode</a>, specify:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[merge]</span>
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nvim&quot;</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Target }}&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">YAML</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">merge</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvim</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-d</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">.Destination</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">.Source</span><span class="nv"> </span><span class="s">}}&quot;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">.Target</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block"></div>
+</div>
+</div>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;merge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nvim&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Target }}&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>If you generate your config file from a config file template, then you'll
 need to escape the <code>{{</code> and <code>}}</code>. That way your generated config file
 contains the <code>{{</code> and <code>}}</code> you expect.</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/chezmoi.toml.tmpl</span><pre><span></span><code><span class="k">[merge]</span>
-<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nvim&quot;</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="n">printf</span><span class="w"> </span><span class="s2">&quot;%q&quot;</span><span class="w"> </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="w"> </span><span class="p">}</span><span class="err">},</span>
-<span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">printf</span><span class="w"> </span><span class="s2">&quot;%q&quot;</span><span class="w"> </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="w"> </span><span class="err">}},</span>
-<span class="w">        </span><span class="err">{{</span><span class="w"> </span><span class="n">printf</span><span class="w"> </span><span class="s2">&quot;%q&quot;</span><span class="w"> </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="w"> </span><span class="err">}},</span>
-<span class="w">    </span><span class="err">]</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">TOML</label><label for="__tabbed_4_2">YAML</label><label for="__tabbed_4_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/chezmoi.toml.tmpl</span><pre><span></span><code>[merge]
+    command = &quot;nvim&quot;
+    args = [
+        &quot;-d&quot;,
+        {{ printf &quot;%q&quot; &quot;{{ .Destination }}&quot; }},
+        {{ printf &quot;%q&quot; &quot;{{ .Source }}&quot; }},
+        {{ printf &quot;%q&quot; &quot;{{ .Target }}&quot; }},
+    ]
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/chezmoi.yaml.tmpl</span><pre><span></span><code>merge:
+  command: nvim
+  args:
+  - -d
+  - {{ printf &quot;%q&quot; &quot;{{ .Destination }}&quot; }}
+  - {{ printf &quot;%q&quot; &quot;{{ .Source }}&quot; }}
+  - {{ printf &quot;%q&quot; &quot;{{ .Target }}&quot; }}
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/chezmoi.json.tmpl</span><pre><span></span><code>{
+    &quot;merge&quot;: {
+        &quot;command&quot;: &quot;nvim&quot;,
+        &quot;args&quot;: [
+            &quot;-d&quot;,
+            {{ printf &quot;%q&quot; &quot;{{ .Destination }}&quot; }},
+            {{ printf &quot;%q&quot; &quot;{{ .Source }}&quot; }},
+            {{ printf &quot;%q&quot; &quot;{{ .Target }}&quot; }}
+        ]
+    }
+}
+</code></pre></div>
+</div>
+</div>
+</div>
 </div>
 <h2 id="use-beyond-compare-as-the-merge-tool">Use Beyond Compare as the merge tool</h2>
 <p>To use <a href="https://www.scootersoftware.com/">Beyond Compare</a> as the merge tool, add the following to your config:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:3"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><input id="__tabbed_5_3" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">TOML</label><label for="__tabbed_5_2">YAML</label><label for="__tabbed_5_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[merge]</span>
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bcomp&quot;</span>
-<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;{{ .Source }}&quot;</span>
+<span class="w">    </span><span class="p">]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -11208,11 +11283,25 @@ contains the <code>{{</code> and <code>}}</code> you expect.</p>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;{{</span><span class="nv"> </span><span class="s">.Source</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </code></pre></div>
 </div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;merge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bcomp&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Destination }}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Source }}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Target }}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;{{ .Source }}&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
 </div>
 </div>
 <h2 id="use-vscode-as-the-merge-tool">Use VSCode as the merge tool</h2>
 <p>To use <a href="https://code.visualstudio.com/">VSCode</a> as the merge tool, add the following to your config:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">TOML</label><label for="__tabbed_6_2">YAML</label><label for="__tabbed_6_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[merge]</span>
@@ -11229,6 +11318,18 @@ contains the <code>{{</code> and <code>}}</code> you expect.</p>
 <span class="w">  </span><span class="nt">args</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;-c&quot;</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;cp</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">.Target</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">quote</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">printf</span><span class="nv"> </span><span class="s">\&quot;%s.base\&quot;</span><span class="nv"> </span><span class="s">.Target</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">quote</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">&amp;&amp;</span><span class="nv"> </span><span class="s">code</span><span class="nv"> </span><span class="s">--new-window</span><span class="nv"> </span><span class="s">--wait</span><span class="nv"> </span><span class="s">--merge</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">.Destination</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">quote</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">.Target</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">quote</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">printf</span><span class="nv"> </span><span class="s">\&quot;%s.base\&quot;</span><span class="nv"> </span><span class="s">.Target</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">quote</span><span class="nv"> </span><span class="s">}}</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">.Source</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">quote</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi.chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;merge&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bash&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;cp {{ .Target | quote }} {{ printf \&quot;%s.base\&quot; .Target | quote }} &amp;&amp; code --new-window --wait --merge {{ .Destination | quote }} {{ .Target | quote }} {{ printf \&quot;%s.base\&quot; .Target | quote }} {{ .Source | quote }}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
 </div>
@@ -11250,6 +11351,8 @@ contains the <code>{{</code> and <code>}}</code> you expect.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11292,7 +11395,7 @@ contains the <code>{{</code> and <code>}}</code> you expect.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -5884,6 +5884,8 @@
       
         
       
+        
+      
     
     
     
@@ -6983,6 +6985,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7534,8 +7564,6 @@
       
         
       
-        
-      
     
     
     
@@ -7887,34 +7915,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11384,8 +11384,24 @@ escape sequences.</p>
 <code>--RAW-CONTROL-CHARS</code> option.</p>
 <p>You can also set the <code>pager</code> configuration variable in your config file, for
 example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">pager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;less -R&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">pager</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">less -R</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;less -R&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>If you have set a different pager (via the <code>pager</code> configuration variable or
 <code>PAGER</code> environment variable) then you must ensure that it passes through raw
 control characters. Alternatively, you can use the <code>--color=false</code> option to
@@ -11405,7 +11421,7 @@ process opens a now non-existent file.</p>
 <p>To fix this you have to configure your editor command to remain in the
 foreground until you have finished editing the file, so chezmoi knows when to
 remove the temporary directory.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">VIM</label><label for="__tabbed_1_2">VSCode</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">VIM</label><label for="__tabbed_2_2">VSCode</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>Pass the <code>-f</code> flag, e.g. by setting the <code>edit.args</code> configuration variable
@@ -11448,8 +11464,24 @@ systems the default umask is <code>022</code> but some systems use <code>002</co
 that files and directories are group writeable by default.</p>
 <p>You can override this for chezmoi by setting the <code>umask</code> configuration variable
 in your configuration file, for example:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">TOML</label><label for="__tabbed_3_2">YAML</label><label for="__tabbed_3_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">umask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0o022</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">umask</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">18</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;umask&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This will apply to all files and directories that chezmoi manages and will
@@ -11496,22 +11528,69 @@ operating system. By default, chezmoi will use <code>$TMPDIR</code> for this.</p
 <p>You can change the temporary directory into which chezmoi writes and executes
 scripts with the <code>scriptTempDir</code> configuration variable. For example, to use a
 subdirectory of your home directory you can use:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:3"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><input id="__tabbed_4_3" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">TOML</label><label for="__tabbed_4_2">YAML</label><label for="__tabbed_4_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">scriptTempDir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;~/tmp&quot;</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.yaml</span><pre><span></span><code><span class="nt">scriptTempDir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/tmp</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;scriptTempDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;~/tmp&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="chezmoi-reports-chezmoi-mkdir-xxxxx-no-such-file-or-directory-when-trying-to-manage-file-or-directory">chezmoi reports <code>chezmoi: mkdir xxxxx: no such file or directory</code> when trying to manage file or directory</h2>
 <p>This error occurs when you try to add directory/file to be managed via chezmoi
 but the same directory is only listed in <code>.chezmoiexternal.$FORMAT</code>.</p>
 <p>A workaround can be applied in a such case via manually creating import
 directory in chezmoi source directory (typically <code>~/.local/share/chezmoi</code>) and
 create <code>.keep</code> file.</p>
-<p>For example, if <code>.chezmoiexternal.toml</code> has the configuration:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.config/nvim&quot;</span><span class="k">]</span>
+<p>For example, if <code>.chezmoiexternal.$FORMAT</code> has the configuration:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:3"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><input id="__tabbed_5_3" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">TOML</label><label for="__tabbed_5_2">YAML</label><label for="__tabbed_5_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[</span><span class="s2">&quot;.config/nvim&quot;</span><span class="k">]</span>
 <span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span>
 <span class="w">    </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/NvChad/NvChad.git&quot;</span>
 <span class="w">    </span><span class="n">refreshPeriod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span>
 <span class="w">    </span><span class="k">[</span><span class="s2">&quot;.config/nvim&quot;</span><span class="k">.pull]</span>
 <span class="w">        </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;--ff-only&quot;</span><span class="p">]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.yaml</span><pre><span></span><code><span class="nt">.config/nvim</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">git-repo</span>
+<span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/NvChad/NvChad.git</span>
+<span class="w">  </span><span class="nt">refreshPeriod</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">168h</span>
+<span class="w">  </span><span class="nt">pull</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--ff-only</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;.config/nvim&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;git-repo&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/NvChad/NvChad.git&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;refreshPeriod&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;168h&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;pull&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;--ff-only&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Now <code>chezmoi add ~/.config/direnv/direnvrc</code> will raise the error:</p>
 <div class="highlight"><pre><span></span><code>chezmoi: mkdir /home/&lt;user&gt;/.local/share/chezmoi/dot_config/direnv: no such file or directory
 </code></pre></div>
@@ -11550,7 +11629,7 @@ template and use the <code>lookPath</code> template function, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!{{ lookPath &quot;bash&quot; }}</span>
 </code></pre></div>
 <p>Alternatively, you can use the actual path to <code>bash</code> on your system, for example:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Nix</label><label for="__tabbed_2_2">Termux</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Nix</label><label for="__tabbed_6_2">Termux</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="ch">#!/usr/bin/env bash</span>
@@ -11579,6 +11658,8 @@ template and use the <code>lookPath</code> template function, for example:</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11621,7 +11702,7 @@ template and use the <code>lookPath</code> template function, for example:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

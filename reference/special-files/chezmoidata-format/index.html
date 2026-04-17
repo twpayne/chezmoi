@@ -5715,6 +5715,8 @@
       
         
       
+        
+      
     
     
     
@@ -6814,6 +6816,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7365,8 +7395,6 @@
       
         
       
-        
-      
     
     
     
@@ -7718,34 +7746,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11056,9 +11056,25 @@ as structured static data in the given format. This data can then be used in
 templates. See also <a href="../../special-directories/chezmoidata/"><code>.chezmoidata/</code></a>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<p>If <code>.chezmoidata.toml</code> contains the following:</p>
+<p>If <code>.chezmoidata.$FORMAT</code> contains the following:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoidata.toml</span><pre><span></span><code><span class="n">fontSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoidata.yaml</span><pre><span></span><code><span class="nt">fontSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoidata.json</span><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;fontSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Then the <code>.fontSize</code> variable is available in templates, e.g.</p>
 <div class="highlight"><pre><span></span><code>FONT_SIZE={{ .fontSize }}
 </code></pre></div>
@@ -11081,27 +11097,15 @@ all <em>merge</em> to the root of the data dictionary and they are read in lexic
 <p>As an example, if I have four <code>.chezmoidata.$FORMAT</code> files in my
 <code>dot_config</code> source directory, they will be merged according to the sort
 order of the files:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">JSON</label><label for="__tabbed_1_2">JSONC</label><label for="__tabbed_1_3">TOML</label><label for="__tabbed_1_4">YAML</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
 <div class="highlight"><span class="filename">dot_config/.chezmoidata.json</span><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
-</div>
-<div class="tabbed-block">
 <div class="highlight"><span class="filename">dot_config/.chezmoidata.jsonc</span><pre><span></span><code>{ &quot;z&quot;: { &quot;z&quot;: 4 } }
 </code></pre></div>
-</div>
-<div class="tabbed-block">
 <div class="highlight"><span class="filename">dot_config/.chezmoidata.toml</span><pre><span></span><code><span class="n">z</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 </code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><span class="filename">dot_config/.chezmoidata.yaml</span><pre><span></span><code><span class="n">z</span><span class="err">:</span>
-<span class="w">  </span><span class="n">y</span><span class="err">:</span><span class="w"> </span><span class="n">2</span>
+<div class="highlight"><span class="filename">dot_config/.chezmoidata.yaml</span><pre><span></span><code><span class="nt">z</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">y</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 </code></pre></div>
-</div>
-</div>
-</div>
 <p>The output of <code>chezmoi data</code> will include the following merged <code>z</code>
 dictionary. Note that the value in <code>.chezmoidata.jsonc</code> overwrote the value
 in <code>.chezmoidata.json</code> because of the lexical file sorting.</p>
@@ -11142,6 +11146,8 @@ similar functions.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11184,7 +11190,7 @@ similar functions.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

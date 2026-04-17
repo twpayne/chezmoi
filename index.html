@@ -5685,6 +5685,8 @@
       
         
       
+        
+      
     
     
     
@@ -6784,6 +6786,34 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/templates/functions/stdinIsATTY/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    stdinIsATTY
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/templates/functions/toIni/" class="md-nav__link">
         
   
@@ -7335,8 +7365,6 @@
       
         
       
-        
-      
     
     
     
@@ -7688,34 +7716,6 @@
     
   
     promptStringOnce
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/templates/init-functions/stdinIsATTY/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    stdinIsATTY
   
 
     
@@ -11085,7 +11085,7 @@
 
 <h1 id="chezmoi">chezmoi</h1>
 <p>Manage your dotfiles across multiple diverse machines, securely.</p>
-<p>The latest version of chezmoi is 2.70.1 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.70.1">release notes</a>,
+<p>The latest version of chezmoi is 2.70.2 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.70.2">release notes</a>,
 <a href="reference/release-history/">release history</a>).</p>
 <h2 id="what-does-chezmoi-do">What does chezmoi do?</h2>
 <p>chezmoi helps you manage your personal configuration files (dotfiles, like
@@ -11102,7 +11102,7 @@ including:</p>
 <p>With chezmoi, pronounced /ʃeɪ mwa/ (shay-mwa) (listen <a href="voice_30-04-2025_09-20-13.ogx">1</a> <a href="voice_30-04-2025_09-20-48.ogx">2</a>
 <a href="voice_30-04-2025_09-20-56.ogx">3</a>), you can install chezmoi and your dotfiles from your GitHub
 dotfiles repo on a new, empty machine with a single command:</p>
-<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
 </code></pre></div>
 <p>As well as the <code>curl | sh</code> installation, you can <a href="install/">install chezmoi with your
 favorite package manager</a>.</p>
@@ -11154,6 +11154,8 @@ to a charity or cause of your choice.</p>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
@@ -11196,7 +11198,7 @@ to a charity or cause of your choice.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["content.tabs.link", "navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
