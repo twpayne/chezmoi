@@ -85,6 +85,7 @@ jobs:
     - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962   # v1.27.0
       with:
         locale: US
+        ignore: importas,Produktive
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
