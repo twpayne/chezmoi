@@ -43,9 +43,14 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PYTHONDONTWRITEBYTECODE: 1
+    - name: compute-docs-digest
+      run: echo "${{ hashFiles('assets/chezmoi.io/site/**') }}" > assets/chezmoi.io/digest.txt
     - name: upload-docs-preview
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7.0.1
       with:
         name: docs-site-preview
-        path: assets/chezmoi.io/site/
+        path: |
+          assets/chezmoi.io/site/
+          assets/chezmoi.io/digest.txt
         retention-days: 1

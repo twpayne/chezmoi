@@ -8,6 +8,11 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_REPO: ${{ github.repository }}
+  HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+  COMMENT_MARKER: <!-- chezmoi-docs-preview -->
 jobs:
   deploy-preview:
     if: >-
@@ -25,55 +30,88 @@ jobs:
         path: artifact
         run-id: ${{ github.event.workflow_run.id }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
-    - name: find-pr-number
+    - name: find-pr
       id: pr
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_REPO: ${{ github.repository }}
         HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
       run: |
-        PR_NUMBER=$(gh api "repos/${GH_REPO}/pulls" --paginate \
-          --jq ".[] | select(.head.ref == \"${HEAD_BRANCH}\" and .head.repo.full_name == \"${HEAD_REPO}\") | .number")
-        if [ -z "${PR_NUMBER}" ]; then
+        PR=$(gh api "repos/${GH_REPO}/pulls" --paginate \
+          --jq ".[] | select(.head.ref == \"${HEAD_BRANCH}\" and .head.repo.full_name == \"${HEAD_REPO}\") | {number, base_sha: .base.sha}")
+        if [ -z "${PR}" ]; then
           echo "error: could not find PR for ${HEAD_REPO}:${HEAD_BRANCH}"
           exit 1
         fi
-        echo "number=${PR_NUMBER}" >> "${GITHUB_OUTPUT}"
+        echo "number=$(echo "${PR}" | jq -r .number)" >> "${GITHUB_OUTPUT}"
+        echo "base_sha=$(echo "${PR}" | jq -r .base_sha)" >> "${GITHUB_OUTPUT}"
+    - name: find-digest-run
+      id: digest-run
+      env:
+        BASE_SHA: ${{ steps.pr.outputs.base_sha }}
+      run: |
+        RUN_ID=$(gh api "repos/${GH_REPO}/actions/workflows/main.yml/runs?branch=master&head_sha=${BASE_SHA}&status=success" \
+          --jq '.workflow_runs[0].id')
+        if [ -z "${RUN_ID}" ]; then
+          RUN_ID=$(gh api "repos/${GH_REPO}/actions/workflows/main.yml/runs?branch=master&event=push&status=success&per_page=1" \
+            --jq '.workflow_runs[0].id')
+        fi
+        echo "run_id=${RUN_ID}" >> "${GITHUB_OUTPUT}"
+    - name: download-base-digest
+      if: steps.digest-run.outputs.run_id != ''
+      continue-on-error: true
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c   # v8.0.1
+      with:
+        name: docs-site-digest
+        path: base-digest
+        run-id: ${{ steps.digest-run.outputs.run_id }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: compare-digests
+      id: compare
+      run: |
+        if diff -q artifact/digest.txt base-digest/digest.txt; then
+          echo "skip=true" >> "${GITHUB_OUTPUT}"
+        fi
     - name: deploy-to-cloudflare-pages
+      if: steps.compare.outputs.skip != 'true'
       id: deploy
       uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd   # v3.15.0
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        command: pages deploy artifact --project-name=chezmoi-preview --branch=pr-${{ steps.pr.outputs.number }}
+        command: pages deploy artifact/site --project-name=chezmoi-preview --branch=pr-${{ steps.pr.outputs.number }}
+    - name: short-sha
+      if: always()
+      id: sha
+      run: echo "short=${HEAD_SHA:0:7}" >> "${GITHUB_OUTPUT}"
     - name: comment-on-pr
+      if: steps.compare.outputs.skip != 'true'
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_REPO: ${{ github.repository }}
         PR_NUMBER: ${{ steps.pr.outputs.number }}
-        PREVIEW_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
-        HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-      run: |
-        MARKER="<!-- chezmoi-docs-preview -->"
-        SHORT_SHA="${HEAD_SHA:0:7}"
-        BODY=$(cat <<EOF
-        ${MARKER}
-        📖 **Docs preview is ready:** ${PREVIEW_URL}
+        BODY: |
+          ${{ env.COMMENT_MARKER }}
+          📖 **Docs preview is ready:** ${{ steps.deploy.outputs.pages-deployment-alias-url }}
 
-        Built from ${SHORT_SHA}
-        EOF
-        )
-        EXISTING_COMMENT_ID=$(gh api \
-          "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
-          --paginate --jq ".[] | select(.body | startswith(\"${MARKER}\")) | .id" \
-          | head -1)
+          Built from ${{ steps.sha.outputs.short }}
+      run: |
+        EXISTING_COMMENT_ID=$(gh api "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
+          --paginate --jq ".[] | select(.body | startswith(\"${COMMENT_MARKER}\")) | .id" | head -1)
         if [ -n "${EXISTING_COMMENT_ID}" ]; then
-          gh api --method PATCH \
-            "repos/${GH_REPO}/issues/comments/${EXISTING_COMMENT_ID}" \
-            -f body="${BODY}"
+          gh api --method PATCH "repos/${GH_REPO}/issues/comments/${EXISTING_COMMENT_ID}" -f body="${BODY}"
         else
-          gh api --method POST \
-            "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
-            -f body="${BODY}"
+          gh api --method POST "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" -f body="${BODY}"
+        fi
+    - name: comment-on-failure
+      if: failure() && steps.pr.outputs.number != ''
+      env:
+        PR_NUMBER: ${{ steps.pr.outputs.number }}
+        BODY: |
+          ${{ env.COMMENT_MARKER }}
+          ⚠️ **Docs preview failed** for ${{ steps.sha.outputs.short }}. See [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+      run: |
+        EXISTING_COMMENT_ID=$(gh api "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" \
+          --paginate --jq ".[] | select(.body | startswith(\"${COMMENT_MARKER}\")) | .id" | head -1)
+        if [ -n "${EXISTING_COMMENT_ID}" ]; then
+          gh api --method PATCH "repos/${GH_REPO}/issues/comments/${EXISTING_COMMENT_ID}" -f body="${BODY}"
+        else
+          gh api --method POST "repos/${GH_REPO}/issues/${PR_NUMBER}/comments" -f body="${BODY}"
         fi

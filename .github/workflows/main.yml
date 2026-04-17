@@ -313,6 +313,17 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PYTHONDONTWRITEBYTECODE: 1
+    - name: compute-docs-digest
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      run: echo "${{ hashFiles('assets/chezmoi.io/site/**') }}" > assets/chezmoi.io/digest.txt
+    - name: upload-docs-digest
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7.0.1
+      with:
+        name: docs-site-digest
+        path: assets/chezmoi.io/digest.txt
+        retention-days: 90
   test-windows:
     name: test-windows
     needs: changes
@@ -478,6 +489,8 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       contents: write
+    env:
+      PYTHONDONTWRITEBYTECODE: 1
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd   # v6.0.2
       with:
