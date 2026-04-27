@@ -155,6 +155,17 @@ func TestOSRelease(t *testing.T) {
 				"UBUNTU_CODENAME":    "bionic",
 			},
 		},
+		{
+			name: "gentoo",
+			root: map[string]any{
+				"/etc/os-release": chezmoitest.JoinLines(
+					`ID='gentoo'`,
+				),
+			},
+			expected: map[string]any{
+				"ID": "gentoo",
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
@@ -236,6 +247,81 @@ func TestParseOSRelease(t *testing.T) {
 			actual, err := parseOSRelease([]byte(tc.s))
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expected, actual)
+		})
+	}
+}
+
+func TestUnquote(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		s           string
+		expected    string
+		expectedErr bool
+	}{
+		{
+			name:        "empty",
+			s:           "",
+			expectedErr: true,
+		},
+		{
+			name:        "single_double",
+			s:           `"`,
+			expectedErr: true,
+		},
+		{
+			name:        "single_single",
+			s:           `"`,
+			expectedErr: true,
+		},
+		{
+			name:        "mismatched",
+			s:           `"'`,
+			expectedErr: true,
+		},
+		{
+			name:     "empty_double",
+			s:        `""`,
+			expected: "",
+		},
+		{
+			name:     "empty_single",
+			s:        "''",
+			expected: "",
+		},
+		{
+			name:     "no_escape",
+			s:        `"foo"`,
+			expected: "foo",
+		},
+		{
+			name:     "escaped_quote",
+			s:        `"foo\"bar"`,
+			expected: `foo"bar`,
+		},
+		{
+			name:     "escaped_chars",
+			s:        `"\n\r\t\v"`,
+			expected: "\n\r\t\v",
+		},
+		{
+			name:        "invalid_escape",
+			s:           `"\'"`,
+			expectedErr: true,
+		},
+		{
+			name:        "incomplete_escape",
+			s:           "'\\'",
+			expectedErr: true,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actual, err := unquote(tc.s)
+			if tc.expectedErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expected, actual)
+			}
 		})
 	}
 }
