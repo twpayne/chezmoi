@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/twpayne/go-vfs/v5"
 )
@@ -70,11 +71,9 @@ func OSRelease(fileSystem vfs.FS) (map[string]any, error) {
 
 // maybeUnquote removes quotation marks around s.
 func maybeUnquote(s string) string {
-	// Try to unquote.
-	if s, err := strconv.Unquote(s); err == nil {
-		return s
+	if unquotedS, err := unquote(s); err == nil {
+		return unquotedS
 	}
-	// Otherwise return s, unchanged.
 	return s
 }
 
@@ -94,4 +93,46 @@ func parseOSRelease(data []byte) (map[string]any, error) {
 		result[string(key)] = maybeUnquote(string(value))
 	}
 	return result, nil
+}
+
+func unquote(s string) (string, error) {
+	switch {
+	case len(s) < 2:
+		fallthrough
+	case s[0] != '"' && s[0] != '\'':
+		fallthrough
+	case s[0] != s[len(s)-1]:
+		return "", strconv.ErrSyntax
+	case strings.IndexByte(s, '\\') == -1:
+		return s[1 : len(s)-1], nil
+	}
+	bs := []byte(s[1 : len(s)-1])
+	result := make([]byte, 0, len(bs))
+	for i := 0; i < len(bs); i++ {
+		if bs[i] == '\\' {
+			i++
+			if i == len(bs) {
+				return "", strconv.ErrSyntax
+			}
+			var c byte
+			switch bs[i] {
+			case '\\', s[0]:
+				c = bs[i]
+			case 'n':
+				c = '\n'
+			case 'r':
+				c = '\r'
+			case 't':
+				c = '\t'
+			case 'v':
+				c = '\v'
+			default:
+				return "", strconv.ErrSyntax
+			}
+			result = append(result, c)
+		} else {
+			result = append(result, bs[i])
+		}
+	}
+	return string(result), nil
 }
