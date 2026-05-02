@@ -948,8 +948,7 @@ func (s *SourceState) PostApply(
 	// targetRelPaths is already sorted and iterates in reverse order so that
 	// children are removed before their parents.
 TARGET:
-	for i := len(targetRelPaths) - 1; i >= 0; i-- {
-		targetRelPath := targetRelPaths[i]
+	for _, targetRelPath := range slices.Backward(targetRelPaths) {
 		if !s.removeDirs.Contains(targetRelPath) {
 			continue
 		}

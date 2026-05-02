@@ -7,6 +7,7 @@ linters:
   - bidichk
   - bodyclose
   - canonicalheader
+  - clickhouselint
   - containedctx
   - copyloopvar
   - decorder
@@ -28,7 +29,7 @@ linters:
   - gocritic
   - godoclint
   - godot
-  - gomodguard
+  - gomodguard_v2
   - goprintffuncname
   - gosmopolitan
   - grouper

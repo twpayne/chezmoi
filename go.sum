@@ -302,8 +302,8 @@ github.com/golang/protobuf v1.5.4 h1:i7eJL8qZTpSEXOPTxNKhASYpMn+8e5Q6AdndVa1dWek
 github.com/golang/protobuf v1.5.4/go.mod h1:lnTiLA8Wa4RWRcIUkrtSVa5nRhsEGBg48fD6rSs7xps=
 github.com/google/btree v1.1.3 h1:CVpQJjYgC4VbzxeGVHfvZrv1ctoYCAI8vbl07Fcxlyg=
 github.com/google/btree v1.1.3/go.mod h1:qOPhT0dTNdNzV6Z/lhRX0YXUafgPLFUh+gZMl761Gm4=
-github.com/google/capslock v0.3.1 h1:MdYuvca7uAH2iSgkDtNRm9+Qb7/4xRJgzHoL/LAOhVA=
-github.com/google/capslock v0.3.1/go.mod h1:7K6wQ78xV0QcIXsk0O1wSEExGgCmquxwNAleZT4GrA4=
+github.com/google/capslock v0.3.2 h1:0ZQa9YR8s9ewFu1g5w6Rgd/lW/4dga7qJew3K6Ql7aM=
+github.com/google/capslock v0.3.2/go.mod h1:dDCLHjNLY0m1zzi8+sxcxpwxcVicWMB0Ez9shA2mMEc=
 github.com/google/cel-go v0.28.0 h1:KjSWstCpz/MN5t4a8gnGJNIYUsJRpdi/r97xWDphIQc=
 github.com/google/cel-go v0.28.0/go.mod h1:X0bD6iVNR8pkROSOoHVdgTkzmRcosof7WQqCD6wcMc8=
 github.com/google/go-cmdtest v0.4.0 h1:ToXh6W5spLp3npJV92tk6d5hIpUPYEzHLkD+rncbyhI=
