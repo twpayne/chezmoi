@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@65216971a11ded447a6b76263d5a144519e5eee1   # codeql-bundle-v2.25.2
+    - uses: github/codeql-action/init@7851e55dc3be31ec4bcc3ef98453de2cb306e698   # codeql-bundle-v2.25.3
       with:
         languages: go
-    - uses: github/codeql-action/analyze@65216971a11ded447a6b76263d5a144519e5eee1   # codeql-bundle-v2.25.2
+    - uses: github/codeql-action/analyze@7851e55dc3be31ec4bcc3ef98453de2cb306e698   # codeql-bundle-v2.25.3
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -398,7 +398,7 @@ jobs:
       run: |
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
-      uses: DavidAnson/markdownlint-cli2-action@ce4853d43830c74c1753b39f3cf40f71c2031eb9   # v23.0.0
+      uses: DavidAnson/markdownlint-cli2-action@6b51ade7a9e4a75a7ad929842dd298a3804ebe8b   # v23.1.0
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
