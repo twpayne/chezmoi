@@ -252,7 +252,7 @@ func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 		if err != nil {
 			return err
 		}
-		defer writer.Close()
+		defer func() { _ = writer.Close() }()
 		diffPagerCmd.Stdin = reader
 		if err := chezmoilog.LogCmdStart(slog.Default(), diffPagerCmd); err != nil {
 			return err

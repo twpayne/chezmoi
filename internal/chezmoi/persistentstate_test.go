@@ -18,7 +18,9 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 	)
 
 	s1 := constructor()
-	defer s1.Close()
+	defer func() {
+		assert.NoError(t, s1.Close())
+	}()
 
 	assert.NoError(t, s1.Delete(bucket1, value))
 
@@ -43,7 +45,9 @@ func testPersistentState(t *testing.T, constructor func() PersistentState) {
 	}))
 
 	s2 := constructor()
-	defer s2.Close()
+	defer func() {
+		assert.NoError(t, s2.Close())
+	}()
 
 	assert.NoError(t, s1.CopyTo(s2))
 	actualValue, err = s2.Get(bucket1, key)

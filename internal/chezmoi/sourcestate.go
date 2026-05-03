@@ -1729,7 +1729,7 @@ func (s *SourceState) getExternalDataRaw(
 	} else {
 		data, err = options.ReadHTTPResponse(urlStr, resp)
 	}
-	resp.Body.Close()
+	_ = resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
