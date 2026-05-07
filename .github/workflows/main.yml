@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@7851e55dc3be31ec4bcc3ef98453de2cb306e698   # codeql-bundle-v2.25.3
+    - uses: github/codeql-action/init@bc0b696b4103f5fe60f15749af68a046868d511a   # codeql-bundle-v2.25.4
       with:
         languages: go
-    - uses: github/codeql-action/analyze@7851e55dc3be31ec4bcc3ef98453de2cb306e698   # codeql-bundle-v2.25.3
+    - uses: github/codeql-action/analyze@bc0b696b4103f5fe60f15749af68a046868d511a   # codeql-bundle-v2.25.4
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -398,7 +398,7 @@ jobs:
       run: |
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
-      uses: DavidAnson/markdownlint-cli2-action@6b51ade7a9e4a75a7ad929842dd298a3804ebe8b   # v23.1.0
+      uses: DavidAnson/markdownlint-cli2-action@ded1f9488f68a970bc66ea5619e13e9b52e601cd   # v23.2.0
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
@@ -467,7 +467,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003   # v4.1.1
+    - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6   # v4.1.2
       with:
         cosign-release: v${{ env.COSIGN_VERSION }}
     - name: create-syso
