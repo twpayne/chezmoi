@@ -7,8 +7,10 @@ You can generate Go documentation for chezmoi's source code with `go doc`, for
 example:
 
 ```sh
-go doc -all -u github.com/twpayne/chezmoi/internal/chezmoi
+go doc -all -http -u chezmoi.io/chezmoi/v2
 ```
+
+and then visit `http://localhost:$PORT/chezmoi.io/chezmoi/v2` in your browser.
 
 You can also [browse chezmoi's generated documentation online][go-docs].
 
@@ -174,7 +176,7 @@ Tests should, if at all possible, run unmodified on all operating systems tested
 in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
 handling due to its path separator and lack of POSIX-style file permissions.
 
-[go-docs]: https://pkg.go.dev/github.com/twpayne/chezmoi
+[go-docs]: https://pkg.go.dev/chezmoi.io/chezmoi/v2
 [website]: https://chezmoi.io
 [testscript]: https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript
 [ref]: /reference/concepts.md
