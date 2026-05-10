@@ -12,8 +12,8 @@ import (
 	"github.com/alecthomas/assert/v2"
 	"github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestKeepassxcParseOutput(t *testing.T) {

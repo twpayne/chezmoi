@@ -3,7 +3,7 @@
 package cmd
 
 import (
-	"chezmoi.io/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
 type help struct {

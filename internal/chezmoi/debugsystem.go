@@ -8,7 +8,7 @@ import (
 
 	"github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 // A DebugSystem logs all calls to a System.

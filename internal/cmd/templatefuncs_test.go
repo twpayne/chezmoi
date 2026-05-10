@@ -10,8 +10,8 @@ import (
 	"github.com/alecthomas/assert/v2"
 	"github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoiassert"
-	"chezmoi.io/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiassert"
+	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestCommentTemplateFunc(t *testing.T) {

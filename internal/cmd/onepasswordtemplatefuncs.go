@@ -11,7 +11,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type onepasswordMode string

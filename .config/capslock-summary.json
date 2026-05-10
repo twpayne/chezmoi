@@ -1,5 +1,5 @@
 {
-  "chezmoi.io/chezmoi": [
+  "chezmoi.io/chezmoi/v2": [
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
@@ -14,7 +14,7 @@
     "CAPABILITY_UNANALYZED",
     "CAPABILITY_UNSAFE_POINTER"
   ],
-  "chezmoi.io/chezmoi/internal/chezmoi": [
+  "chezmoi.io/chezmoi/v2/internal/chezmoi": [
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
@@ -23,7 +23,7 @@
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_SYSTEM_CALLS"
   ],
-  "chezmoi.io/chezmoi/internal/cmd": [
+  "chezmoi.io/chezmoi/v2/internal/cmd": [
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",

@@ -30,7 +30,7 @@ import (
 	"github.com/google/go-github/v61/github"
 	"github.com/google/renameio/v2/maybe"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 var (

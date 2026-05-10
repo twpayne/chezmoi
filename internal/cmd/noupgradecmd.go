@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type upgradeCmdConfig struct {

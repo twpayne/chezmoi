@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strings"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type dopplerConfig struct {

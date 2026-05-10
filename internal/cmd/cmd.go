@@ -16,9 +16,9 @@ import (
 	"github.com/spf13/pflag"
 	bbolterrors "go.etcd.io/bbolt/errors"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoierrors"
-	"chezmoi.io/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
 const readSourceStateHookName = "read-source-state"

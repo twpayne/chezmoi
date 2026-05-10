@@ -15,7 +15,7 @@ import (
 
 	"github.com/goccy/go-yaml"
 
-	"chezmoi.io/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
 var (

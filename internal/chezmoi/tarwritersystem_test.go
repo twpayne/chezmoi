@@ -11,7 +11,7 @@ import (
 	"github.com/coreos/go-semver/semver"
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
 var _ System = &TarWriterSystem{}

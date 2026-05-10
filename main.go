@@ -13,7 +13,7 @@ package main
 import (
 	"os"
 
-	"chezmoi.io/chezmoi/internal/cmd"
+	"chezmoi.io/chezmoi/v2/internal/cmd"
 )
 
 var (

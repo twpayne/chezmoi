@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type vaultConfig struct {

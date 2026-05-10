@@ -13,7 +13,7 @@ import (
 	"github.com/google/go-github/v61/github"
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type InstallBehavior struct {

@@ -16,9 +16,9 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-xdg/v6"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoiset"
-	"chezmoi.io/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
+	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestConfigFileFieldTagNamesMatch(t *testing.T) {
