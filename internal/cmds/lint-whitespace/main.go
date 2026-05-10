@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	"chezmoi.io/chezmoi/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/v2/internal/chezmoierrors"
 )
 
 var (

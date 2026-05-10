@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type cdCmdConfig struct {

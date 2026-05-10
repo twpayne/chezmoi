@@ -16,8 +16,8 @@ import (
 	"github.com/tobischo/gokeepasslib/v3"
 	"github.com/twpayne/go-expect"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type keepassxcMode string

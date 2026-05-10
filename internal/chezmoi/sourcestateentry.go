@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os/exec"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 // A SourceAttr contains attributes of the source.

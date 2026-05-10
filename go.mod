@@ -1,18 +1,18 @@
-module chezmoi.io/chezmoi
+module chezmoi.io/chezmoi/v2
 
 go 1.25.7
 
 tool (
-	chezmoi.io/chezmoi
-	chezmoi.io/chezmoi/internal/cmds/execute-template
-	chezmoi.io/chezmoi/internal/cmds/generate-commit
-	chezmoi.io/chezmoi/internal/cmds/generate-helps
-	chezmoi.io/chezmoi/internal/cmds/generate-install.sh
-	chezmoi.io/chezmoi/internal/cmds/generate-license
-	chezmoi.io/chezmoi/internal/cmds/hexencode
-	chezmoi.io/chezmoi/internal/cmds/lint-commit-messages
-	chezmoi.io/chezmoi/internal/cmds/lint-txtar
-	chezmoi.io/chezmoi/internal/cmds/lint-whitespace
+	chezmoi.io/chezmoi/v2
+	chezmoi.io/chezmoi/v2/internal/cmds/execute-template
+	chezmoi.io/chezmoi/v2/internal/cmds/generate-commit
+	chezmoi.io/chezmoi/v2/internal/cmds/generate-helps
+	chezmoi.io/chezmoi/v2/internal/cmds/generate-install.sh
+	chezmoi.io/chezmoi/v2/internal/cmds/generate-license
+	chezmoi.io/chezmoi/v2/internal/cmds/hexencode
+	chezmoi.io/chezmoi/v2/internal/cmds/lint-commit-messages
+	chezmoi.io/chezmoi/v2/internal/cmds/lint-txtar
+	chezmoi.io/chezmoi/v2/internal/cmds/lint-whitespace
 	github.com/editorconfig-checker/editorconfig-checker/v3/cmd/editorconfig-checker
 	github.com/google/capslock/cmd/capslock
 	github.com/josephspurrier/goversioninfo/cmd/goversioninfo

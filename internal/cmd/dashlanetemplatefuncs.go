@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"slices"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type dashlaneConfig struct {

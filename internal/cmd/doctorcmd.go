@@ -25,9 +25,9 @@ import (
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-xdg/v6"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoigit"
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoigit"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 // A checkResult is the result of a check.

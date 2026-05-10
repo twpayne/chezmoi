@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type interactiveTemplateFuncsConfig struct {

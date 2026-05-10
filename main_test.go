@@ -5,7 +5,7 @@ import (
 
 	"github.com/alecthomas/assert/v2"
 
-	"chezmoi.io/chezmoi/internal/cmd"
+	"chezmoi.io/chezmoi/v2/internal/cmd"
 )
 
 func TestMain(t *testing.T) {

@@ -23,8 +23,8 @@ import (
 	"github.com/google/go-github/v61/github"
 	"github.com/spf13/cobra"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 const (

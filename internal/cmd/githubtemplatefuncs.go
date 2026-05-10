@@ -9,7 +9,7 @@ import (
 
 	"github.com/google/go-github/v61/github"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type gitHubConfig struct {

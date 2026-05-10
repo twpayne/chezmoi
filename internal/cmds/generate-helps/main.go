@@ -17,8 +17,8 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/glamour/styles"
 
-	"chezmoi.io/chezmoi/assets/chezmoi.io/docs/reference/commands"
-	"chezmoi.io/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
 //go:embed helps.go.tmpl

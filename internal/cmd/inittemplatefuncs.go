@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 func (c *Config) exitInitTemplateFunc(code int) string {

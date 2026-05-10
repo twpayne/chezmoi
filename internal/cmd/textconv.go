@@ -8,7 +8,7 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type textConvElement struct {

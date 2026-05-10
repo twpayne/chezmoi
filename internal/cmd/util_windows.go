@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/sys/windows/registry"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 const defaultEditor = "notepad.exe"

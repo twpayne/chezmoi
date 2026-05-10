@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoierrors"
 )
 
 type mergeCmdConfig struct {

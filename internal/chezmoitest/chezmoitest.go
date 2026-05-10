@@ -17,7 +17,7 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 // AgeGenerateKey generates an identity in identityFile and returns the

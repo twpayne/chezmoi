@@ -7,8 +7,8 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"chezmoi.io/chezmoi/internal/chezmoi"
-	"chezmoi.io/chezmoi/internal/chezmoiset"
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
 type ChoiceInputModel struct {

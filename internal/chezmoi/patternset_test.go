@@ -6,7 +6,7 @@ import (
 	"github.com/alecthomas/assert/v2"
 	vfs "github.com/twpayne/go-vfs/v5"
 
-	"chezmoi.io/chezmoi/internal/chezmoitest"
+	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestPatternSet(t *testing.T) {

@@ -1,6 +1,6 @@
 package cmd
 
-import "chezmoi.io/chezmoi/internal/chezmoi"
+import "chezmoi.io/chezmoi/v2/internal/chezmoi"
 
 // NewDefaultInterpreters returns the default interpreters map, using the
 // provided findExecutable function.

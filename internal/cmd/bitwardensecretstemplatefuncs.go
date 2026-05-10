@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"chezmoi.io/chezmoi/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
 type bitwardenSecretsConfig struct {
