@@ -686,3 +686,12 @@ articles:
   version: 2.70.1
   title: How I use chezmoi to manage dotfiles across Macs
   url: https://sayzlim.net/manage-dotfiles-across-macs-chezmoi/
+- date: '2026-05-08'
+  version: 2.70.3
+  title: Bootstrapping chezmoi from HTTPS to SSH After First Apply
+  url: https://www.lorenzobettini.it/2026/05/bootstrapping-chezmoi-from-https-to-ssh-after-first-apply/
+- date: '2026-05-12'
+  lang: CN
+  version: 2.70.3
+  title: Dotfiles 系统重构：从 Homesick 迁移到 Chezmoi，顺带清理 Git 历史里的敏感信息
+  url: https://joydig.com/dotfiles-homesick-to-chezmoi/
