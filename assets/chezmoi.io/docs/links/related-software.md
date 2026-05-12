@@ -39,6 +39,10 @@ Custom Telescope Picker for Chez Moi Managed Dot files.
 
 Terminal UI for chezmoi dotfile management.
 
+### [`github.com/djetelina/cheznav`](https://github.com/djetelina/cheznav) { id="djetelina/cheznav" }
+
+TUI for chezmoi.
+
 ### [`github.com/johan-weitner/chezmoi-ui`](https://github.com/johan-weitner/chezmoi-ui) { id="johan-weitner/chezmoi-ui" }
 
 A web UI for managing a list of apps to seed/feed a chezmoi setup.
