@@ -539,6 +539,7 @@ func (c buildInfoCheck) Run(config *Config) (checkResult, string) {
 	ignoredKeys := map[string]struct{}{
 		"-buildmode":     {}, // Always "exe".
 		"-compiler":      {}, // Checked by goVersionCheck.
+		"-ldflags":       {}, // Long and unlikely to be relevant.
 		"DefaultGODEBUG": {}, // Implicit in Go version.
 		"GOOS":           {}, // Checked by osArchCheck.
 		"GOARCH":         {}, // Checked by osArchCheck.
