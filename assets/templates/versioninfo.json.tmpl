@@ -26,10 +26,10 @@
       "StringFileInfo" (dict
         "Comments" $comments
         "FileDescription" "Manage your dotfiles across multiple diverse machines, securely."
-        "FileVersion" $versionStr
+        "FileVersion" ($versionStr | trimPrefix "v")
         "InternalName" $filename
         "LegalCopyright" (printf "Copyright (c) 2018-%s Tom Payne" (now | date "2006"))
         "OriginalFilename" $filename
         "ProductName" $name
-        "ProductVersion" $versionStr)
+        "ProductVersion" ($versionStr | trimPrefix "v"))
       | toPrettyJSON }}
