@@ -301,18 +301,18 @@ type templateDataFlags struct {
 type templateData struct {
 	arch              string
 	args              []string
-	cacheDir          chezmoi.AbsPath
+	cacheDir          string
 	command           string
-	commandDir        chezmoi.AbsPath
+	commandDir        string
 	config            map[string]any
-	configFile        chezmoi.AbsPath
-	destDir           chezmoi.AbsPath
-	executable        chezmoi.AbsPath
+	configFile        string
+	destDir           string
+	executable        string
 	flags             templateDataFlags
 	fqdnHostname      string
 	gid               string
 	group             string
-	homeDir           chezmoi.AbsPath
+	homeDir           string
 	hostname          string
 	kernel            map[string]any
 	os                string
@@ -320,12 +320,12 @@ type templateData struct {
 	pathListSeparator string
 	pathSeparator     string
 	rawHomeDir        string
-	sourceDir         chezmoi.AbsPath
+	sourceDir         string
 	uid               string
 	username          string
 	version           map[string]any
 	windowsVersion    map[string]any
-	workingTree       chezmoi.AbsPath
+	workingTree       string
 }
 
 // A configOption sets and option on a Config.
@@ -873,7 +873,7 @@ func (c *Config) createAndReloadConfigFile(cmd *cobra.Command) error {
 	if err != nil {
 		return err
 	}
-	c.templateData.sourceDir = sourceDirAbsPath
+	c.templateData.sourceDir = sourceDirAbsPath.String()
 	os.Setenv("CHEZMOI_SOURCE_DIR", sourceDirAbsPath.String())
 
 	// Find config template, execute it, and create config file.
@@ -1700,13 +1700,13 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 		"chezmoi": map[string]any{
 			"arch":       templateData.arch,
 			"args":       templateData.args,
-			"cacheDir":   templateData.cacheDir.String(),
+			"cacheDir":   templateData.cacheDir,
 			"command":    templateData.command,
-			"commandDir": templateData.commandDir.String(),
+			"commandDir": templateData.commandDir,
 			"config":     templateData.config,
-			"configFile": templateData.configFile.String(),
+			"configFile": templateData.configFile,
 			"destDir":    templateData.destDir,
-			"executable": templateData.executable.String(),
+			"executable": templateData.executable,
 			"flags": map[string]any{
 				"dryRun":    templateData.flags.dryRun,
 				"force":     templateData.flags.force,
@@ -1717,7 +1717,7 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"fqdnHostname":      templateData.fqdnHostname,
 			"gid":               templateData.gid,
 			"group":             templateData.group,
-			"homeDir":           templateData.homeDir.String(),
+			"homeDir":           templateData.homeDir,
 			"hostname":          templateData.hostname,
 			"kernel":            templateData.kernel,
 			"os":                templateData.os,
@@ -1725,12 +1725,12 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 			"pathListSeparator": templateData.pathListSeparator,
 			"pathSeparator":     templateData.pathSeparator,
 			"rawHomeDir":        templateData.rawHomeDir,
-			"sourceDir":         templateData.sourceDir.String(),
+			"sourceDir":         templateData.sourceDir,
 			"uid":               templateData.uid,
 			"username":          templateData.username,
 			"version":           templateData.version,
 			"windowsVersion":    templateData.windowsVersion,
-			"workingTree":       templateData.workingTree.String(),
+			"workingTree":       templateData.workingTree,
 		},
 	}
 }
@@ -2499,23 +2499,23 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	for key, value := range map[string]string{
 		"ARCH":          templateData.arch,
 		"ARGS":          strings.Join(templateData.args, " "),
-		"CACHE_DIR":     templateData.cacheDir.String(),
+		"CACHE_DIR":     templateData.cacheDir,
 		"COMMAND":       templateData.command,
-		"COMMAND_DIR":   templateData.commandDir.String(),
-		"CONFIG_FILE":   templateData.configFile.String(),
-		"DEST_DIR":      templateData.destDir.String(),
-		"EXECUTABLE":    templateData.executable.String(),
+		"COMMAND_DIR":   templateData.commandDir,
+		"CONFIG_FILE":   templateData.configFile,
+		"DEST_DIR":      templateData.destDir,
+		"EXECUTABLE":    templateData.executable,
 		"FQDN_HOSTNAME": templateData.fqdnHostname,
 		"GID":           templateData.gid,
 		"GROUP":         templateData.group,
-		"HOME_DIR":      templateData.homeDir.String(),
+		"HOME_DIR":      templateData.homeDir,
 		"HOSTNAME":      templateData.hostname,
 		"OS":            templateData.os,
 		"RAW_HOME_DIR":  templateData.rawHomeDir,
-		"SOURCE_DIR":    templateData.sourceDir.String(),
+		"SOURCE_DIR":    templateData.sourceDir,
 		"UID":           templateData.uid,
 		"USERNAME":      templateData.username,
-		"WORKING_TREE":  templateData.workingTree.String(),
+		"WORKING_TREE":  templateData.workingTree,
 	} {
 		os.Setenv("CHEZMOI_"+key, value)
 	}
@@ -2659,13 +2659,13 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 	return &templateData{
 		arch:       runtime.GOARCH,
 		args:       os.Args,
-		cacheDir:   c.CacheDirAbsPath,
+		cacheDir:   c.CacheDirAbsPath.String(),
 		command:    cmd.Name(),
-		commandDir: c.commandDirAbsPath,
+		commandDir: c.commandDirAbsPath.String(),
 		config:     c.toMap(),
-		configFile: configFileAbsPath,
-		destDir:    c.DestDirAbsPath,
-		executable: chezmoi.NewAbsPath(executable),
+		configFile: configFileAbsPath.String(),
+		destDir:    c.DestDirAbsPath.String(),
+		executable: executable,
 		flags: templateDataFlags{
 			dryRun:    c.dryRun,
 			force:     c.force,
@@ -2676,7 +2676,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		fqdnHostname:      fqdnHostname,
 		gid:               gid,
 		group:             group,
-		homeDir:           c.homeDirAbsPath,
+		homeDir:           c.homeDirAbsPath.String(),
 		hostname:          hostname,
 		kernel:            kernel,
 		os:                runtime.GOOS,
@@ -2684,7 +2684,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 		pathListSeparator: string(os.PathListSeparator),
 		pathSeparator:     string(os.PathSeparator),
 		rawHomeDir:        rawHomeDir,
-		sourceDir:         sourceDirAbsPath,
+		sourceDir:         sourceDirAbsPath.String(),
 		uid:               uid,
 		username:          username,
 		version: map[string]any{
@@ -2694,7 +2694,7 @@ func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
 			"version": c.versionInfo.Version,
 		},
 		windowsVersion: windowsVersion,
-		workingTree:    c.WorkingTreeAbsPath,
+		workingTree:    c.WorkingTreeAbsPath.String(),
 	}
 }
 
