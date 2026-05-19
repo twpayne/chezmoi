@@ -133,15 +133,15 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	useBuiltinGit := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc)
 
-	gitDirAbsPath := c.WorkingTreeAbsPath.JoinString(git.GitDirName)
-	workingTreeRawPath, err := c.baseSystem.RawPath(c.WorkingTreeAbsPath)
-	if err != nil {
-		return err
-	}
-
 	// If we're not in a working tree then init it or clone it.
+	gitDirAbsPath := c.WorkingTreeAbsPath.JoinString(git.GitDirName)
 	switch _, err := c.baseSystem.Stat(gitDirAbsPath); {
 	case errors.Is(err, fs.ErrNotExist):
+		workingTreeRawPath, err := c.baseSystem.RawPath(c.WorkingTreeAbsPath)
+		if err != nil {
+			return err
+		}
+
 		if len(args) == 0 {
 			if useBuiltinGit {
 				if err := c.builtinGitInit(workingTreeRawPath); err != nil {
@@ -200,7 +200,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	if c.Git.LFS && !useBuiltinGit {
 		args := []string{"lfs", "pull"}
-		if err := c.run(workingTreeRawPath, c.Git.Command, args); err != nil {
+		if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, args); err != nil {
 			return err
 		}
 	}
