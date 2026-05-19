@@ -137,7 +137,9 @@ get_goarch() {
 	arch="$(uname -m)"
 	case "${arch}" in
 	aarch64) goarch="arm64" ;;
-	armv*) goarch="arm" ;;
+	arm64) goarch="arm64" ;;
+	armv5*) goarch="armv5" ;;
+	arm*) goarch="armv6" ;;
 	i386) goarch="386" ;;
 	i686) goarch="386" ;;
 	i86pc) goarch="amd64" ;;
@@ -159,7 +161,8 @@ check_goos_goarch() {
 	freebsd/arm64) return 0 ;;
 	linux/386) return 0 ;;
 	linux/amd64) return 0 ;;
-	linux/arm) return 0 ;;
+	linux/armv5) return 0 ;;
+	linux/armv6) return 0 ;;
 	linux/arm64) return 0 ;;
 	linux/loong64) return 0 ;;
 	linux/mips64) return 0 ;;
