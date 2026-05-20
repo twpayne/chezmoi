@@ -13,12 +13,60 @@ func TestFormatJSONSingleValue(t *testing.T) {
 	assert.Error(t, FormatJSON.Unmarshal([]byte(`{} 1`), &value))
 }
 
-func TestFormats(t *testing.T) {
-	assert.NotZero(t, FormatsByName["json"])
-	assert.NotZero(t, FormatsByName["jsonc"])
-	assert.NotZero(t, FormatsByName["toml"])
-	assert.NotZero(t, FormatsByName["yaml"])
-	assert.Zero(t, FormatsByName["yml"])
+func TestFormatsByName(t *testing.T) {
+	for _, tc := range []struct {
+		name         string
+		expectedZero bool
+	}{
+		{name: "empty", expectedZero: true},
+		{name: "json", expectedZero: false},
+		{name: "JSON", expectedZero: true},
+		{name: "jsonc", expectedZero: false},
+		{name: "toml", expectedZero: false},
+		{name: "yaml", expectedZero: false},
+		{name: "yml", expectedZero: true},
+		{name: "unknown", expectedZero: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.expectedZero {
+				assert.Zero(t, FormatsByName[tc.name])
+			} else {
+				assert.NotZero(t, FormatsByName[tc.name])
+			}
+		})
+	}
+}
+
+func TestFormatFromAbsPath(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		absPath     AbsPath
+		expected    Format
+		expectedErr string
+	}{
+		{name: "empty", absPath: NewAbsPath(""), expectedErr: "unknown format"},
+		{name: "no_extension", absPath: NewAbsPath("config"), expectedErr: "unknown format"},
+		{name: "unknown_extension", absPath: NewAbsPath("config.unknown"), expectedErr: "unknown format"},
+		{name: "json_uppercase", absPath: NewAbsPath("config.JSON"), expectedErr: "unknown format"},
+		{name: "yaml_uppercase", absPath: NewAbsPath("config.YAML"), expectedErr: "unknown format"},
+		{name: "yml_uppercase", absPath: NewAbsPath("config.YML"), expectedErr: "unknown format"},
+		{name: "json", absPath: NewAbsPath("config.json"), expected: FormatJSON},
+		{name: "jsonc", absPath: NewAbsPath("config.jsonc"), expected: FormatJSONC},
+		{name: "toml", absPath: NewAbsPath("config.toml"), expected: FormatTOML},
+		{name: "yaml", absPath: NewAbsPath("config.yaml"), expected: FormatYAML},
+		{name: "yml", absPath: NewAbsPath("config.yml"), expected: FormatYAML},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actual, err := FormatFromAbsPath(tc.absPath)
+			if tc.expectedErr != "" {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), tc.expectedErr)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expected, actual)
+			}
+		})
+	}
 }
 
 func TestFormatRoundTrip(t *testing.T) {
