@@ -36,13 +36,13 @@ To use [VSCode][vscode] as the diff tool, add the following to your config:
 
 ## Use delta as the diff tool
 
-To use [delta][delta] as the diff tool you must set `diff.pager` to delta, for
+To use [delta][delta] as the diff tool you must set `diff.command` to delta, for
 example:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [diff]
-    pager = "delta"
+    command = "delta"
 ```
 <!-- /example-formats -->
 
@@ -64,22 +64,6 @@ for example:
 
 To exclude diffs from externals, either pass the `--exclude=externals` flag or
 set `diff.exclude` to `["externals"]` in your config file.
-
-## Customize the diff pager
-
-You can change the diff format, and/or pipe the output into a pager of your
-choice by setting `diff.pager` configuration variable. For example, to use
-[`diff-so-fancy`][fancy] specify:
-
-<!-- example-formats -->
-```toml title="~/.config/chezmoi/chezmoi.toml"
-[diff]
-    pager = "diff-so-fancy"
-```
-<!-- /example-formats -->
-
-The pager can be disabled using the `--no-pager` flag or by setting `diff.pager`
-to an empty string.
 
 ## Show human-friendly diffs for binary files
 
