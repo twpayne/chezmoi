@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@bc0b696b4103f5fe60f15749af68a046868d511a   # codeql-bundle-v2.25.4
+    - uses: github/codeql-action/init@84498526a009a99c875e83ef4821a8ba52de7c22   # codeql-bundle-v2.25.5
       with:
         languages: go
-    - uses: github/codeql-action/analyze@bc0b696b4103f5fe60f15749af68a046868d511a   # codeql-bundle-v2.25.4
+    - uses: github/codeql-action/analyze@84498526a009a99c875e83ef4821a8ba52de7c22   # codeql-bundle-v2.25.5
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -421,7 +421,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20   # v9.2.0
+    - uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee   # v9.2.1
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --config=.config/golangci.yml --timeout=5m
