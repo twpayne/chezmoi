@@ -1,0 +1,25 @@
+mkageconfig
+
+exec chezmoi add --encrypt $HOME${/}.encrypted
+cp $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age golden
+
+# test that chezmoi add warns when the encrypted_ attribute would be removed
+stdin golden/no
+exec chezmoi add --no-tty $HOME${/}.encrypted
+stdout 'adding .encrypted would remove encrypted attribute'
+cmp $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age golden/encrypted_dot_encrypted.age
+
+# test that chezmoi add allows the encrypted_ attribute to be removed
+stdin golden/yes
+exec chezmoi add --no-tty $HOME${/}.encrypted
+stdout 'adding .encrypted would remove encrypted attribute'
+cmp $CHEZMOISOURCEDIR/dot_encrypted golden/dot_encrypted
+
+-- golden/dot_encrypted --
+plaintext
+-- golden/no --
+no
+-- golden/yes --
+yes
+-- home/user/.encrypted --
+plaintext
