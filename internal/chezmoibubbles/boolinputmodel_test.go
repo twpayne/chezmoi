@@ -16,7 +16,7 @@ func TestBoolInputModel(t *testing.T) {
 	}{
 		{
 			name:          "empty_with_default",
-			defaultValue:  newValue(true),
+			defaultValue:  new(true),
 			input:         "\r",
 			expectedValue: true,
 		},
