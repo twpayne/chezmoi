@@ -46,7 +46,3 @@ func testRunModelWithInput[M tea.Model](t *testing.T, model M, input string) M {
 	}
 	return model
 }
-
-func newValue[T any](value T) *T {
-	return &value
-}

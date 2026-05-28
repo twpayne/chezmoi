@@ -16,7 +16,7 @@ func TestIntInputModel(t *testing.T) {
 	}{
 		{
 			name:          "empty_with_default",
-			defaultValue:  newValue(int64(1)),
+			defaultValue:  new(int64(1)),
 			input:         "\r",
 			expectedValue: 1,
 		},
