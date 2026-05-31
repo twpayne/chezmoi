@@ -703,3 +703,7 @@ articles:
   version: 2.70.3
   title: Dotfiles 系统重构：从 Homesick 迁移到 Chezmoi，顺带清理 Git 历史里的敏感信息
   url: https://joydig.com/dotfiles-homesick-to-chezmoi/
+- date: '2026-05-19'
+  version: 2.70.4
+  title: 'Dotfiles, Part 2: Managing Cross-Machine Config and Secrets with Chezmoi'
+  url: https://blog.blahaj.uk/posts/dotfiles-advanced-chezmoi/
