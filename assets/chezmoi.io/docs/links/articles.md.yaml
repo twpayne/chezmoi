@@ -707,3 +707,11 @@ articles:
   version: 2.70.4
   title: 'Dotfiles, Part 2: Managing Cross-Machine Config and Secrets with Chezmoi'
   url: https://blog.blahaj.uk/posts/dotfiles-advanced-chezmoi/
+- date: '2026-05-30'
+  version: 2.70.4
+  title: 'Dotfiles Without .zshrc: ZDOTDIR and chezmoi'
+  url: https://www.shiinayane.com/posts/dotfiles/
+- date: '2026-05-30'
+  version: 2.70.4
+  title: 'The Brewfile Compromise: Eventual Consistency for Mac Apps'
+  url: https://www.shiinayane.com/posts/apps/
