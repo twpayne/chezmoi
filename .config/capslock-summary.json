@@ -47,9 +47,6 @@
   "github.com/Masterminds/sprig/v3": [
     "CAPABILITY_REFLECT"
   ],
-  "github.com/betterleaks/betterleaks/color": [
-    "CAPABILITY_FILES"
-  ],
   "github.com/betterleaks/betterleaks/detect": [
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
@@ -59,7 +56,11 @@
     "CAPABILITY_RUNTIME",
     "CAPABILITY_UNANALYZED"
   ],
+  "github.com/betterleaks/betterleaks/internal/color": [
+    "CAPABILITY_FILES"
+  ],
   "github.com/betterleaks/betterleaks/report": [
+    "CAPABILITY_FILES",
     "CAPABILITY_UNANALYZED"
   ],
   "github.com/betterleaks/betterleaks/sources": [
