@@ -16,6 +16,7 @@ validation:
 
 theme:
   name: material
+  custom_dir: overrides
   logo: logo.svg
   language: en
   palette:
