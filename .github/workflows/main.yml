@@ -22,8 +22,8 @@ env:
   GORELEASER_VERSION: 2.16.0 # https://github.com/goreleaser/goreleaser/releases
   PYTHON_VERSION: '3.14' # https://www.python.org/downloads/
   RAGE_VERSION: 0.11.2 # https://github.com/str4d/rage/releases
-  SYFT_VERSION: 1.45.0 # https://github.com/anchore/syft/releases
-  UV_VERSION: 0.11.18 # https://github.com/astral-sh/uv/releases
+  SYFT_VERSION: 1.45.1 # https://github.com/anchore/syft/releases
+  UV_VERSION: 0.11.19 # https://github.com/astral-sh/uv/releases
   NO_MKDOCS_2_WARNING: 1
 jobs:
   changes:
