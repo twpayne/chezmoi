@@ -30,7 +30,9 @@ type initCmdConfig struct {
 	purge             bool
 	purgeBinary       bool
 	recurseSubmodules bool
+	revision          string
 	ssh               bool
+	tag               string
 }
 
 var repoGuesses = []struct {
@@ -92,6 +94,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 		Short:   "Setup the source directory and update the destination directory to match the target state",
 		Long:    mustLongHelp("init"),
 		Example: example("init"),
+		PreRunE: c.preRunInitCmd,
 		RunE:    c.runInitCmd,
 		Annotations: newAnnotations(
 			createSourceDirectoryIfNeeded,
@@ -115,11 +118,31 @@ func (c *Config) newInitCmd() *cobra.Command {
 	initCmd.Flags().BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
 	initCmd.Flags().BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	initCmd.Flags().BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
+	initCmd.Flags().StringVar(&c.init.revision, "revision", c.init.revision, "Set initial revision to checkout")
+	initCmd.Flags().StringVar(&c.init.tag, "tag", c.init.tag, "Set initial tag to checkout")
 	initCmd.Flags().
 		BoolVar(&c.init.recurseSubmodules, "recurse-submodules", c.init.recurseSubmodules, "Checkout submodules recursively")
 	initCmd.Flags().BoolVar(&c.init.ssh, "ssh", c.init.ssh, "Use ssh instead of https when guessing repo URL")
 
 	return initCmd
+}
+
+func (c *Config) preRunInitCmd(cmd *cobra.Command, args []string) error {
+	revCount := 0
+	if c.init.branch != "" {
+		revCount++
+	}
+	if c.init.revision != "" {
+		revCount++
+	}
+	if c.init.tag != "" {
+		revCount++
+	}
+	if revCount > 1 {
+		return errors.New("the --branch, --revision, and --tag flags are mutally exclusive")
+	}
+
+	return nil
 }
 
 func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
@@ -170,10 +193,13 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						"--recurse-submodules",
 					)
 				}
-				if c.init.branch != "" {
-					args = append(args,
-						"--branch", c.init.branch,
-					)
+				switch {
+				case c.init.branch != "":
+					args = append(args, "--branch", c.init.branch)
+				case c.init.revision != "":
+					args = append(args, "--revision", c.init.revision)
+				case c.init.tag != "":
+					args = append(args, "--tag", c.init.tag)
 				}
 				if c.init.depth != 0 {
 					args = append(args,
@@ -254,8 +280,13 @@ func (c *Config) builtinGitClone(repoURLStr string, workingTreeRawPath chezmoi.A
 
 	isBare := false
 	var referenceName plumbing.ReferenceName
-	if c.init.branch != "" {
+	switch {
+	case c.init.branch != "":
 		referenceName = plumbing.NewBranchReferenceName(c.init.branch)
+	case c.init.revision != "":
+		referenceName = plumbing.ReferenceName(c.init.revision)
+	case c.init.tag != "":
+		referenceName = plumbing.NewTagReferenceName(c.init.tag)
 	}
 	cloneOptions := git.CloneOptions{
 		URL:               repoURLStr,
