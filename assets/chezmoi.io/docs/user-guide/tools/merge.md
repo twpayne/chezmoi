@@ -1,5 +1,15 @@
 # Merge
 
+## What is the merge command
+
+When running `chezmoi apply --interactive`, chezmoi computes the desired state (the target) from your source. If applying would change a file on disk - i.e. the destination differs from the target, usually because you edited the live file directly - a prompt appears to either overwrite, diff, skip, or merge.
+
+Choosing merge is chezmoi's analog of resolving a git conflict by hand - except it reconciles **three** states, not two:
+
+1. **.Destination** - the file on your system
+2. **.Source** - the file in your chezmoi repo (the source of truth)
+3. **.Target** - the desired state, computed by rendering the source (templates applied, etc.)
+
 ## Use a custom merge command
 
 By default, chezmoi uses `vimdiff`. You can use a custom command by setting the
