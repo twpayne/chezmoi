@@ -2,7 +2,7 @@
 
 ## What is the merge command
 
-When running `chezmoi apply --interactive`, chezmoi computes the desired state (the target) from your source. If applying would change a file on disk - i.e. the destination differs from the target, usually because you edited the live file directly - a prompt appears to either overwrite, diff, skip, or merge.
+When running `chezmoi apply --interactive`, chezmoi computes the desired state (the target) from your source. If applying would change a file on disk - i.e. the destination differs from the target, usually because you edited the live file directly - a prompt appears to either overwrite, diff, skip.
 
 Choosing merge is chezmoi's analog of resolving a git conflict by hand - except it reconciles **three** states, not two:
 
