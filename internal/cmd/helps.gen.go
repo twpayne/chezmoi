@@ -579,7 +579,9 @@ var helps = map[string]*help{
 			"purge",
 			"purge-binary",
 			"recurse-submodules",
+			"revision",
 			"ssh",
+			"tag",
 		),
 		shortFlags: chezmoiset.New(
 			"C",

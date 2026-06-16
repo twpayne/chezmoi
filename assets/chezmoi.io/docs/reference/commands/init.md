@@ -142,9 +142,17 @@ Attempt to remove the chezmoi binary after applying.
 
 Recursively clone submodules. This defaults to `true`.
 
+### `--revision` *revision*
+
+Check out the repo at *revision*.
+
 ### `--ssh`
 
 Guess an SSH repo URL instead of an HTTPS repo.
+
+### `--tag` *tag*
+
+Check out the repo at *tag*.
 
 ## Common flags
 
