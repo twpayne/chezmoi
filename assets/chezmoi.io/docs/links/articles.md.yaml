@@ -715,6 +715,10 @@ articles:
   version: 2.70.4
   title: 'The Brewfile Compromise: Eventual Consistency for Mac Apps'
   url: https://www.shiinayane.com/posts/apps/
+- date: '2026-06-12'
+  version: 2.70.5
+  title: Migrating from GNU stow to chezmoi
+  url: https://rednafi.com/misc/chezmoi/
 - date: '2026-06-16'
   version: 2.70.5
   title: Foolproof chezmoi changing
