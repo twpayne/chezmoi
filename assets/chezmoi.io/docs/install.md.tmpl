@@ -299,14 +299,14 @@ Download the [checksum
 file](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
 }}/chezmoi_{{ $version }}_checksums.txt), [checksum file
 signature](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
-}}/chezmoi_{{ $version }}_checksums.txt.sig), and [public signing
+}}/chezmoi_{{ $version }}_checksums.txt.sigstore.json), and [public signing
 key](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
 }}/chezmoi_cosign.pub).
 
    ```sh
    curl --location --remote-name-all \
           https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt \
-          https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt.sig \
+          https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt.sigstore.json \
           https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_cosign.pub
    ```
 
@@ -314,7 +314,7 @@ Verify the signature of the checksum file with cosign.
 
    ```sh
    cosign verify-blob --key=chezmoi_cosign.pub \
-                        --signature=chezmoi_{{ $version }}_checksums.txt.sig \
+                        --bundle=chezmoi_{{ $version }}_checksums.txt.sigstore.json \
                         chezmoi_{{ $version }}_checksums.txt
    ```
 

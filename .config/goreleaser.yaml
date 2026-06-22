@@ -292,10 +292,11 @@ scoops:
 signs:
 - cmd: cosign
   stdin: '{{ .Env.COSIGN_PWD }}'
+  signature: '${artifact}.sigstore.json'
   args:
   - sign-blob
   - --key=assets/cosign/cosign.key
-  - --output-signature=${signature}
+  - --bundle=${signature}
   - --yes
   - ${artifact}
   artifacts: checksum
