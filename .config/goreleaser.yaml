@@ -314,6 +314,51 @@ source:
   files:
   - COMMIT
 
+srpm:
+  enabled: true
+  package_name: chezmoi
+  spec_file: assets/templates/chezmoi.spec.tmpl
+
+  # Template for the source RPM file name.
+  #
+  # Default: '{{ .PackageName }}-{{ .Version }}.src.rpm'.
+  # Templates: allowed.
+  #file_name_template: "{{ .ConventionalFileName }}.src.rpm"
+
+  # Import path for the Go package (used in Fedora-style spec templates).
+  import_path: github.com/twpayne/chezmoi
+
+  # One-line summary of the package.
+  #summary: Manage your dotfiles across multiple machines, securely.
+
+  # License identifier.
+  license: MIT
+
+  # Name of the license file to include.
+  license_file_name: LICENSE
+
+  # URL of the project homepage.
+  url: https://chezmoi.io
+
+  # The person or organization that built this package.
+  packager: Tom Payne <twpayne@gmail.com>
+
+  # List of documentation files to include.
+  #docs:
+    #- README.md
+    #- CHANGELOG.md
+
+  # RPM-specific fields, shared with nfpms[].rpm.
+  #group: Applications/Internet
+  #compression: lzma
+
+  # Signature configuration.
+  #
+  # If the key is password-protected, you'll need to set the `%SRPM_PASSPHRASE`
+  # environment variable when calling GoReleaser.
+  #signature:
+    #key_file: "{{ .Env.GPG_KEY_FILE }}"
+
 winget:
 - name: chezmoi
   publisher: twpayne
