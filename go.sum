@@ -220,8 +220,8 @@ github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkp
 github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
 github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad h1:Qk76DOWdOp+GlyDKBAG3Klr9cn7N+LcYc82AZ2S7+cA=
 github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad/go.mod h1:mPKfmRa823oBIgl2r20LeMSpTAteW5j7FLkc0vjmzyQ=
-github.com/editorconfig-checker/editorconfig-checker/v3 v3.7.0 h1:BH41FYDp7TRUOZ5NKxuYrRjGCwKjwx2MT/bpWwSaOzM=
-github.com/editorconfig-checker/editorconfig-checker/v3 v3.7.0/go.mod h1:+BlssL9Fk2UYc0TlD3e2UHvb+p7CIz3b1UUfeCiOjDA=
+github.com/editorconfig-checker/editorconfig-checker/v3 v3.8.0 h1:7zETocPghEnG7gZQFObyH/sxLB9Ri1qt6CdC3bTs/BU=
+github.com/editorconfig-checker/editorconfig-checker/v3 v3.8.0/go.mod h1:64Zz3pBmj2a3dR2tYd0/PY5M/wwY/2jaKNbYtD+pRTE=
 github.com/editorconfig/editorconfig-core-go/v2 v2.6.4 h1:CHwUbBVVyKWRX9kt5A/OtwhYUJB32DrFp9xzmjR6cac=
 github.com/editorconfig/editorconfig-core-go/v2 v2.6.4/go.mod h1:JWRVKHdVW+dkv6F8p+xGCa6a+TyMrqsFbFkSs/aQkrQ=
 github.com/elazarl/goproxy v1.7.2 h1:Y2o6urb7Eule09PjlhQRGNsqRfPmYI3KKQLFpCAV3+o=
