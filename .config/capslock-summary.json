@@ -59,6 +59,10 @@
   "github.com/betterleaks/betterleaks/internal/color": [
     "CAPABILITY_FILES"
   ],
+  "github.com/betterleaks/betterleaks/internal/exprruntime": [
+    "CAPABILITY_MODIFY_SYSTEM_STATE",
+    "CAPABILITY_REFLECT"
+  ],
   "github.com/betterleaks/betterleaks/report": [
     "CAPABILITY_FILES",
     "CAPABILITY_UNANALYZED"
@@ -77,6 +81,12 @@
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
   ],
+  "github.com/expr-lang/expr": [
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
+  ],
+  "github.com/expr-lang/expr/vm": [
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
+  ],
   "github.com/fsnotify/fsnotify": [
     "CAPABILITY_READ_SYSTEM_STATE"
   ],
@@ -94,9 +104,6 @@
   ],
   "github.com/go-sprout/sprout/sprigin": [
     "CAPABILITY_UNANALYZED"
-  ],
-  "github.com/go-viper/mapstructure/v2": [
-    "CAPABILITY_REFLECT"
   ],
   "github.com/godbus/dbus/v5": [
     "CAPABILITY_MODIFY_SYSTEM_STATE",
@@ -127,6 +134,9 @@
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
+  ],
+  "github.com/spf13/cobra": [
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
   "github.com/twpayne/go-shell": [
     "CAPABILITY_ARBITRARY_EXECUTION",
