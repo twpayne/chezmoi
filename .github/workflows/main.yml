@@ -37,7 +37,7 @@ jobs:
       with:
         persist-credentials: false
     - id: filter
-      uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d   # v4.0.1
+      uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706   # v4.0.2
       with:
         filters: |
           code:
@@ -202,7 +202,7 @@ jobs:
         make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@5daf1e915a5f0af01ddbcd89a43b8061ff4f1a89   # v7.2.2
+      uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94   # v7.2.3
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --skip=sign --snapshot --timeout=1h
@@ -421,7 +421,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee   # v9.2.1
+    - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a   # v9.3.0
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --config=.config/golangci.yml --timeout=5m
@@ -473,7 +473,7 @@ jobs:
     - name: create-syso
       run: |
         make create-syso
-    - uses: goreleaser/goreleaser-action@5daf1e915a5f0af01ddbcd89a43b8061ff4f1a89   # v7.2.2
+    - uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94   # v7.2.3
       with:
         version: ${{ env.GORELEASER_VERSION }}
         args: release --timeout=1h
