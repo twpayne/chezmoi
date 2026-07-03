@@ -14,7 +14,7 @@ import (
 var commitRx = regexp.MustCompile(`\A([0-9a-f]{40}) (chore(?:\([\w\-]+\))?|docs|feat|fix): ([A-Z]|bump)`)
 
 func run() error {
-	args := append([]string{"log", "--format=oneline"}, os.Args[1:]...)
+	args := append([]string{"-c", "log.abbrevcommit=false", "log", "--format=oneline"}, os.Args[1:]...)
 	cmd := exec.Command("git", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
