@@ -21,7 +21,6 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"slices"
 	"strings"
 	"sync"
@@ -2014,8 +2013,6 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() (contents []byte, err error) {
-			// FIXME this should share code with RealSystem.RunScript
-
 			// Read the current contents of the target.
 			var currentContents []byte
 			currentContents, err = destSystem.ReadFile(destAbsPath)
@@ -2070,43 +2067,28 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				return tmpl.Execute(templateData)
 			}
 
-			// Create the script temporary directory, if needed.
-			s.createScriptTempDirOnce.Do(func() {
-				if !s.scriptTempDirAbsPath.IsEmpty() {
-					err = os.MkdirAll(s.scriptTempDirAbsPath.String(), 0o700)
-				}
-			})
+			scriptArgs := runScriptArgs{
+				scriptName:    fileAttr.TargetName,
+				data:          modifierContents,
+				interpreter:   interpreter,
+				sourceRelPath: sourceRelPath,
+			}
+
+			scriptState := runScriptState{
+				createScriptTempDirOnce: &s.createScriptTempDirOnce,
+				scriptTempDir:           s.scriptTempDirAbsPath,
+				system:                  s.system,
+			}
+
+			preparedScript, err := prepareScriptCmd(scriptArgs, scriptState)
 			if err != nil {
 				return nil, err
 			}
+			defer chezmoierrors.CombineFunc(&err, preparedScript.cleanup)
 
-			// Write the modifier to a temporary file.
-			var tempFile *os.File
-			if tempFile, err = os.CreateTemp(s.scriptTempDirAbsPath.String(), "*."+fileAttr.TargetName); err != nil {
-				return nil, err
-			}
-			defer chezmoierrors.CombineFunc(&err, func() error {
-				return os.RemoveAll(tempFile.Name())
-			})
-			if runtime.GOOS != "windows" {
-				if err := tempFile.Chmod(0o700); err != nil {
-					return nil, err
-				}
-			}
-			_, err = tempFile.Write(modifierContents)
-			err = chezmoierrors.Combine(err, tempFile.Close())
-			if err != nil {
-				return nil, err
-			}
-
-			// Run the modifier on the current contents.
-			cmd := interpreter.ExecCommand(tempFile.Name())
-			cmd.Env = append(os.Environ(),
-				"CHEZMOI_SOURCE_FILE="+sourceRelPath.String(),
-			)
-			cmd.Stdin = bytes.NewReader(currentContents)
-			cmd.Stderr = os.Stderr
-			return chezmoilog.LogCmdOutput(s.logger, cmd)
+			preparedScript.cmd.Stdin = bytes.NewReader(currentContents)
+			preparedScript.cmd.Stderr = os.Stderr
+			return chezmoilog.LogCmdOutput(s.logger, preparedScript.cmd)
 		})
 		return &TargetStateFile{
 			contentsFunc:       contentsFunc,

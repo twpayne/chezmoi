@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"sync"
 	"time"
 
 	vfs "github.com/twpayne/go-vfs/v5"
@@ -83,55 +84,117 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 	return chezmoilog.LogCmdRun(slog.Default(), cmd)
 }
 
-// RunScript implements System.RunScript.
-func (s *RealSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) (err error) {
+type runScriptArgs struct {
+	scriptName    string
+	workingDir    AbsPath
+	setWorkingDir bool
+	data          []byte
+	interpreter   *Interpreter
+	sourceRelPath SourceRelPath
+}
+
+type runScriptState struct {
+	createScriptTempDirOnce *sync.Once
+	scriptTempDir           AbsPath
+	system                  System
+}
+
+type preparedScriptCmd struct {
+	cmd     *exec.Cmd
+	cleanup func() error
+}
+
+func prepareScriptCmd(args runScriptArgs, state runScriptState) (_ preparedScriptCmd, err error) {
 	// Create the script temporary directory, if needed.
-	s.createScriptTempDirOnce.Do(func() {
-		if !s.scriptTempDir.IsEmpty() {
-			err = os.MkdirAll(s.scriptTempDir.String(), 0o700)
+	state.createScriptTempDirOnce.Do(func() {
+		if !state.scriptTempDir.IsEmpty() {
+			err = os.MkdirAll(state.scriptTempDir.String(), 0o700)
 		}
 	})
 	if err != nil {
-		return err
+		return preparedScriptCmd{}, err
 	}
 
 	// Write the temporary script file. Put the randomness at the front of the
 	// filename to preserve any file extension for Windows scripts.
 	var f *os.File
-	f, err = os.CreateTemp(s.scriptTempDir.String(), "*."+scriptName.Base())
+	f, err = os.CreateTemp(state.scriptTempDir.String(), "*."+args.scriptName)
 	if err != nil {
-		return err
+		return preparedScriptCmd{}, err
 	}
-	defer chezmoierrors.CombineFunc(&err, func() error {
+
+	// Remove the temporary script file when we are done using it.
+	cleanup := func() error {
 		return os.RemoveAll(f.Name())
-	})
+	}
+	// If preparing the command fails after creating the temp file, clean it up here.
+	// On success, cleanup is returned to the caller to run after the command exits.
+	defer func() {
+		if err != nil {
+			chezmoierrors.CombineFunc(&err, cleanup)
+		}
+	}()
 
 	// Make the script private before writing it in case it contains any
 	// secrets.
 	if runtime.GOOS != "windows" {
 		if err := f.Chmod(0o700); err != nil {
-			return err
+			return preparedScriptCmd{}, err
 		}
 	}
-	_, err = f.Write(data)
+	_, err = f.Write(args.data)
 	err = chezmoierrors.Combine(err, f.Close())
 	if err != nil {
-		return err
+		return preparedScriptCmd{}, err
 	}
 
-	cmd := options.Interpreter.ExecCommand(f.Name())
-	cmd.Dir, err = s.getScriptWorkingDir(dir)
+	cmd := args.interpreter.ExecCommand(f.Name())
+
+	if args.setWorkingDir {
+		cmd.Dir, err = getScriptWorkingDir(state.system, args.workingDir)
+		if err != nil {
+			return preparedScriptCmd{}, err
+		}
+	}
+
+	cmd.Env = append(os.Environ(),
+		"CHEZMOI_SOURCE_FILE="+args.sourceRelPath.String(),
+	)
+
+	return preparedScriptCmd{
+		cmd:     cmd,
+		cleanup: cleanup,
+	}, nil
+}
+
+// RunScript implements System.RunScript.
+func (s *RealSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) (err error) {
+	args := runScriptArgs{
+		scriptName:    scriptName.Base(),
+		workingDir:    dir,
+		setWorkingDir: true,
+		data:          data,
+		interpreter:   options.Interpreter,
+		sourceRelPath: options.SourceRelPath,
+	}
+
+	state := runScriptState{
+		createScriptTempDirOnce: &s.createScriptTempDirOnce,
+		scriptTempDir:           s.scriptTempDir,
+		system:                  s,
+	}
+
+	preparedScript, err := prepareScriptCmd(args, state)
 	if err != nil {
 		return err
 	}
-	cmd.Env = append(os.Environ(),
-		"CHEZMOI_SOURCE_FILE="+options.SourceRelPath.String(),
-	)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	defer chezmoierrors.CombineFunc(&err, preparedScript.cleanup)
 
-	return s.RunCmd(cmd)
+	preparedScript.cmd.Stdin = os.Stdin
+	preparedScript.cmd.Stdout = os.Stdout
+	preparedScript.cmd.Stderr = os.Stderr
+
+	return s.RunCmd(preparedScript.cmd)
 }
 
 // Stat implements System.Stat.
@@ -149,7 +212,7 @@ func (s *RealSystem) UnderlyingFS() vfs.FS {
 // If this is a before_ script then the requested working directory may not
 // actually exist yet, so search through the parent directory hierarchy until
 // we find a suitable working directory.
-func (s *RealSystem) getScriptWorkingDir(dir AbsPath) (string, error) {
+func getScriptWorkingDir(s System, dir AbsPath) (string, error) {
 	// This should always terminate because dir will eventually become ".", i.e.
 	// the current directory.
 	for {
