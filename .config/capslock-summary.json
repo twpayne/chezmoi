@@ -20,7 +20,6 @@
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_NETWORK",
-    "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_SYSTEM_CALLS"
   ],
   "chezmoi.io/chezmoi/v2/internal/cmd": [
@@ -81,6 +80,9 @@
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
   ],
+  "github.com/charmbracelet/x/xpty": [
+    "CAPABILITY_OPERATING_SYSTEM"
+  ],
   "github.com/expr-lang/expr": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
@@ -127,6 +129,9 @@
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
+  ],
+  "github.com/pete-woods/go-expect": [
+    "CAPABILITY_OPERATING_SYSTEM"
   ],
   "github.com/rs/zerolog": [
     "CAPABILITY_CGO",
