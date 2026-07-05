@@ -1902,13 +1902,13 @@ func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRel
 	}
 }
 
-func (s *SourceState) readSourceFileAndApplyTemplate(
-	readFunc ContentsFunc,
+func (s *SourceState) readContentsAndExecuteTemplate(
+	contentsFunc ContentsFunc,
 	fileAttr FileAttr,
 	sourceRelPath SourceRelPath,
 	destAbsPath AbsPath,
 ) ([]byte, error) {
-	fileContents, err := readFunc()
+	fileContents, err := contentsFunc()
 	if err != nil {
 		return nil, err
 	}
@@ -1940,8 +1940,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 			contentsFunc = eagerNoErr(contents)
 		case errors.Is(err, fs.ErrNotExist):
 			contentsFunc = sync.OnceValues(func() ([]byte, error) {
-				contents, err = s.readSourceFileAndApplyTemplate(
-					sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
+				contents, err = s.readContentsAndExecuteTemplate(sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
 				if err != nil {
 					return nil, err
 				}
@@ -1988,8 +1987,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			}
 		}
 		executedContentsFunc := sync.OnceValues(func() ([]byte, error) {
-			contents, err := s.readSourceFileAndApplyTemplate(
-				sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
+			contents, err := s.readContentsAndExecuteTemplate(sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return nil, err
 			}
@@ -2026,8 +2024,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			}
 
 			// Compute the contents of the modifier.
-			modifierContents, err := s.readSourceFileAndApplyTemplate(
-				contentsFunc, fileAttr, sourceRelPath, destAbsPath)
+			modifierContents, err := s.readContentsAndExecuteTemplate(contentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return nil, err
 			}
@@ -2113,8 +2110,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() ([]byte, error) {
-			contents, err := s.readSourceFileAndApplyTemplate(
-				sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
+			contents, err := s.readContentsAndExecuteTemplate(sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return nil, err
 			}
@@ -2143,8 +2139,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
-			linknameBytes, err := s.readSourceFileAndApplyTemplate(
-				contentsFunc, fileAttr, sourceRelPath, destAbsPath)
+			linknameBytes, err := s.readContentsAndExecuteTemplate(contentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return "", err
 			}

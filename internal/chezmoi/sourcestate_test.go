@@ -957,7 +957,7 @@ func TestReadSourceFileAndApplyTemplate(t *testing.T) {
 			s := NewSourceState(withUserTemplateData(map[string]any{
 				"chezmoi": map[string]any{},
 			}))
-			actual, err := s.readSourceFileAndApplyTemplate(
+			actual, err := s.readContentsAndExecuteTemplate(
 				func() ([]byte, error) {
 					return []byte(tc.contents), tc.readErr
 				},
