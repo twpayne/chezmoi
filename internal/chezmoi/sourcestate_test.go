@@ -909,6 +909,73 @@ func TestSourceStateExecuteTemplateData(t *testing.T) {
 	}
 }
 
+func TestReadSourceFileAndApplyTemplate(t *testing.T) {
+	readErr := errors.New("read error")
+
+	for _, tc := range []struct {
+		name              string
+		fileSourceRelPath string
+		fileAttr          FileAttr
+		contents          string
+		readErr           error
+		expectedStr       string
+		expectErr         bool
+	}{
+		{
+			name:              "not_template",
+			fileSourceRelPath: "dot_file",
+			contents:          "hello {{ /* this is not a template file */ }} world\n",
+			expectedStr:       "hello {{ /* this is not a template file */ }} world\n",
+		},
+		{
+			name:              "template",
+			fileSourceRelPath: "dot_file.tmpl",
+			fileAttr:          FileAttr{Template: true},
+			contents: "" +
+				"templated file\n" +
+				"source: {{ .chezmoi.sourceFile }}\n" +
+				"target: {{ .chezmoi.targetFile }}\n",
+			expectedStr: "" +
+				"templated file\n" +
+				"source: dot_file.tmpl\n" +
+				"target: /home/user/.file\n",
+		},
+		{
+			name:      "read_error",
+			readErr:   readErr,
+			expectErr: true,
+		},
+		{
+			name:              "template_error",
+			fileSourceRelPath: "dot_file.tmpl",
+			fileAttr:          FileAttr{Template: true},
+			contents:          "{{",
+			expectErr:         true,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewSourceState(withUserTemplateData(map[string]any{
+				"chezmoi": map[string]any{},
+			}))
+			actual, err := s.readSourceFileAndApplyTemplate(
+				func() ([]byte, error) {
+					return []byte(tc.contents), tc.readErr
+				},
+				tc.fileAttr,
+				NewSourceRelPath(tc.fileSourceRelPath),
+				NewAbsPath("/home/user/.file"),
+			)
+
+			if tc.expectErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedStr, string(actual))
+		})
+	}
+}
+
 func TestSourceStateRead(t *testing.T) {
 	for _, tc := range []struct {
 		name                string

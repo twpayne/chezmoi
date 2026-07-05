@@ -56,8 +56,8 @@ type SourceStateDir struct {
 // A SourceStateFile represents the state of a file in the source state.
 type SourceStateFile struct {
 	attr                 FileAttr
-	contentsFunc         func() ([]byte, error)
-	contentsSHA256Func   func() ([32]byte, error)
+	contentsFunc         ContentsFunc
+	contentsSHA256Func   ContentsSHA256Func
 	origin               SourceStateOrigin
 	sourceRelPath        SourceRelPath
 	targetStateEntryFunc TargetStateEntryFunc

@@ -32,7 +32,7 @@ type ActualStateDir struct {
 type ActualStateFile struct {
 	absPath      AbsPath
 	perm         fs.FileMode
-	contentsFunc func() ([]byte, error)
+	contentsFunc ContentsFunc
 }
 
 // A ActualStateSymlink represents the state of a symlink in the filesystem.
