@@ -65,8 +65,8 @@ builds:
   - riscv64
   - s390x
   goarm:
-  - '5'
-  - '6'
+  - '5,softfloat'
+  - '6,hardfloat'
   ldflags:
   - -s
   - -w
