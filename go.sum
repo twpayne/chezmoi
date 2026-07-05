@@ -127,6 +127,8 @@ github.com/aymanbagabas/go-udiff v0.2.0 h1:TK0fH4MteXUDspT88n8CKzvK0X9O2xu9yQjWp
 github.com/aymanbagabas/go-udiff v0.2.0/go.mod h1:RE4Ex0qsGkTAJoQdQQCA0uG+nAzJO/pI/QwceO5fgrA=
 github.com/aymerick/douceur v0.2.0 h1:Mv+mAeH1Q+n9Fr+oyamOlAkUNPWPlA8PPGR0QAaYuPk=
 github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd30/FjWUq4=
+github.com/bartventer/httpcache v0.13.0 h1:gk/fqa87lHgmi3IXEtM6tHs+j7OR/c3Scb7b8pWF8yE=
+github.com/bartventer/httpcache v0.13.0/go.mod h1:AXVAaiITDQ83wjpI8TzzLior8A9VFq0cl3chDtQRpgU=
 github.com/betterleaks/betterleaks v1.6.1 h1:ZSnqAMwvIudpeHxzbBu8LlAwV/T8Ty2ygrJDtC4IBiQ=
 github.com/betterleaks/betterleaks v1.6.1/go.mod h1:VxY1tDWcVg0+WNrzM+Qng8zJq7Np5zXAkxOc0/LxCAE=
 github.com/betterleaks/go-re2 v1.11.0-betterleaks.3 h1:89efHsGJOOCl1KH6GxBtixZNBkNzYIlKPtmQJizCBXU=
@@ -310,8 +312,6 @@ github.com/golang/mock v1.6.0 h1:ErTB+efbowRARo13NNdxyJji2egdxLGQhRaY+DUumQc=
 github.com/golang/mock v1.6.0/go.mod h1:p6yTPP+5HYm5mzsMV8JkE6ZKdX+/wYM6Hr+LicevLPs=
 github.com/golang/protobuf v1.5.4 h1:i7eJL8qZTpSEXOPTxNKhASYpMn+8e5Q6AdndVa1dWek=
 github.com/golang/protobuf v1.5.4/go.mod h1:lnTiLA8Wa4RWRcIUkrtSVa5nRhsEGBg48fD6rSs7xps=
-github.com/google/btree v1.1.3 h1:CVpQJjYgC4VbzxeGVHfvZrv1ctoYCAI8vbl07Fcxlyg=
-github.com/google/btree v1.1.3/go.mod h1:qOPhT0dTNdNzV6Z/lhRX0YXUafgPLFUh+gZMl761Gm4=
 github.com/google/capslock v0.3.2 h1:0ZQa9YR8s9ewFu1g5w6Rgd/lW/4dga7qJew3K6Ql7aM=
 github.com/google/capslock v0.3.2/go.mod h1:dDCLHjNLY0m1zzi8+sxcxpwxcVicWMB0Ez9shA2mMEc=
 github.com/google/go-cmdtest v0.4.0 h1:ToXh6W5spLp3npJV92tk6d5hIpUPYEzHLkD+rncbyhI=
@@ -353,8 +353,6 @@ github.com/gopherjs/gopherjs v1.17.2 h1:fQnZVsXk8uxXIStYb0N4bGk7jeyTalG/wsZjQ25d
 github.com/gopherjs/gopherjs v1.17.2/go.mod h1:pRRIvn/QzFLrKfvEz3qUuEhtE/zLCWfreZ6J5gM2i+k=
 github.com/gorilla/css v1.0.1 h1:ntNaBIghp6JmvWnxbZKANoLyuXTPZ4cAMlo6RyhlbO8=
 github.com/gorilla/css v1.0.1/go.mod h1:BvnYkspnSzMmwRK+b8/xgNPLiIuNZr6vbZBTPQ2A3b0=
-github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 h1:+ngKgrYPPJrOjhax5N+uePQ0Fh1Z7PheYoUI/0nzkPA=
-github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79/go.mod h1:FecbI9+v66THATjSRHfNgh1IVFe/9kFxbXtjV0ctIMA=
 github.com/h2non/filetype v1.1.3 h1:FKkx9QbD7HR/zjK1Ia5XiBsq9zdLi5Kf3zGyFTAFkGg=
 github.com/h2non/filetype v1.1.3/go.mod h1:319b3zT68BvV+WRj7cwy856M2ehB3HqNOt6sy1HndBY=
 github.com/hashicorp/go-version v1.9.0 h1:CeOIz6k+LoN3qX9Z0tyQrPtiB1DFYRPfCIBtaXPSCnA=
@@ -485,8 +483,6 @@ github.com/pelletier/go-toml/v2 v2.4.2 h1:M2fKKbmyvI+hGId/D0W64qDBMVhJnNR10O5gIb
 github.com/pelletier/go-toml/v2 v2.4.2/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/pete-woods/go-expect v0.1.4 h1:8QHAAyq44i6o9XbqjUgVaamCD7Gtf5zCdXzYNFtlkRg=
 github.com/pete-woods/go-expect v0.1.4/go.mod h1:SuLVVtsOBMqVrA2lUvmPiS2v/MrQFRmrsqkxFoFDKuI=
-github.com/peterbourgon/diskv v2.0.1+incompatible h1:UBdAOUP5p4RWqPBg048CAvpKN+vxiaj6gdUUzhl4XmI=
-github.com/peterbourgon/diskv v2.0.1+incompatible/go.mod h1:uqqh8zWWbv1HBMNONnaR/tNboyR3/BZd58JJSHlUSCU=
 github.com/pierrec/lz4/v4 v4.1.27 h1:+PhzhWDrjRj89TH2sw43nE3+4+W8lSxIuQadEHZyjUk=
 github.com/pierrec/lz4/v4 v4.1.27/go.mod h1:EoQMVJgeeEOMsCqCzqFm2O0cJvljX2nGZjcRIPL34O4=
 github.com/pjbgf/sha1cd v0.6.0 h1:3WJ8Wz8gvDz29quX1OcEmkAlUg9diU4GxJHqs0/XiwU=

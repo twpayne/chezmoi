@@ -32,6 +32,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.42.1
 	github.com/aws/aws-sdk-go-v2/config v1.32.27
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.42.5
+	github.com/bartventer/httpcache v0.13.0
 	github.com/betterleaks/betterleaks v1.6.1
 	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/bradenhilton/mozillainstallhash v1.0.1
@@ -47,7 +48,6 @@ require (
 	github.com/google/go-github/v61 v61.0.0
 	github.com/google/renameio/v2 v2.0.2
 	github.com/gopasspw/gopass v1.16.1
-	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/itchyny/gojq v0.12.19
 	github.com/klauspost/compress v1.19.0
 	github.com/mattn/go-runewidth v0.0.24
@@ -158,7 +158,6 @@ require (
 	github.com/godbus/dbus/v5 v5.2.2 // indirect
 	github.com/golang-jwt/jwt/v5 v5.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
-	github.com/google/btree v1.1.3 // indirect
 	github.com/google/capslock v0.3.2 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-github/v72 v72.0.0 // indirect
@@ -193,7 +192,6 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.2 // indirect
-	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pierrec/lz4/v4 v4.1.27 // indirect
 	github.com/pjbgf/sha1cd v0.6.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
