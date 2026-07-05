@@ -93,3 +93,8 @@ videos:
   version: 2.70.1
   title: 'YotLD #6: Managing Linux Configs Like a Pro'
   url: https://www.youtube.com/watch?v=_m7sJrsZfUs
+- date: '2026-06-04'
+  version: 2.70.5
+  lang: DE
+  title: 'chezmoi: Deine Linux Dotfiles einfach und sicher verwalten'
+  url: https://www.youtube.com/watch?v=FZ9Mt17B0T4
