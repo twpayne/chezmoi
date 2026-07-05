@@ -169,8 +169,16 @@ nfpms:
   formats:
   - archlinux
   - deb
+  - msix
   - rpm
   bindir: /usr/bin
+  msix:
+    publisher: 'CN=chezmoi.io'
+    properties:
+      logo: ./assets/images/logo-256px-square.png
+    applications:
+      - id: chezmoi
+        executable: chezmoi.exe
   overrides:
     deb:
       file_name_template: >-
