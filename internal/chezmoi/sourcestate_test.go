@@ -909,6 +909,49 @@ func TestSourceStateExecuteTemplateData(t *testing.T) {
 	}
 }
 
+func TestAttemptToParseScriptExtension(t *testing.T) {
+	shInterpreter := Interpreter{
+		Command: "bash",
+	}
+	for _, tc := range []struct {
+		name                  string
+		targetRelPath         string
+		expectedTargetRelPath string
+		expectedInterpreter   *Interpreter
+	}{
+		{
+			name:                  "no_extension",
+			targetRelPath:         "scripts/file.unrecognized",
+			expectedTargetRelPath: "scripts/file.unrecognized",
+		},
+		{
+			name:                  "has_extension",
+			targetRelPath:         "scripts/file.sh",
+			expectedTargetRelPath: "scripts/file",
+			expectedInterpreter:   &shInterpreter,
+		},
+		{
+			name:                  "case_insensitive_extension",
+			targetRelPath:         "scripts/file.SH",
+			expectedTargetRelPath: "scripts/file",
+			expectedInterpreter:   &shInterpreter,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewSourceState(WithInterpreters(map[string]Interpreter{
+				"sh": shInterpreter,
+			}))
+
+			parsedScript := s.attemptToParseScriptExtension(RelPath{relPath: tc.targetRelPath})
+
+			assert.Equal(t,
+				RelPath{relPath: tc.expectedTargetRelPath},
+				parsedScript.targetRelPathWithoutInterpreterExtension)
+			assert.Equal(t, tc.expectedInterpreter, parsedScript.interpreter)
+		})
+	}
+}
+
 func TestReadSourceFileAndApplyTemplate(t *testing.T) {
 	readErr := errors.New("read error")
 

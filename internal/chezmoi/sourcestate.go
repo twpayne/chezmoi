@@ -2152,6 +2152,34 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 	}
 }
 
+type parsedScriptExtensionResult struct {
+	targetRelPathWithoutInterpreterExtension RelPath
+	interpreter                              *Interpreter
+}
+
+// Attempts to match the extension of the target to an interpreter
+// known to chezmoi. If the extension is recognized as an interpreter,
+// return the target file name without the extension and the interpreter.
+// Otherwise, return the target file as is and a nil Interpreter.
+// Callers that want the extension-stripped target name must use the returned
+// path because targetRelPath is passed by value.
+func (s *SourceState) attemptToParseScriptExtension(targetRelPath RelPath,
+) parsedScriptExtensionResult {
+	extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
+	interpreter, ok := s.interpreters[extension]
+
+	var interpreterPtr *Interpreter
+	if ok {
+		targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(extension)-1)
+		interpreterPtr = &interpreter
+	}
+
+	return parsedScriptExtensionResult{
+		targetRelPathWithoutInterpreterExtension: targetRelPath,
+		interpreter:                              interpreterPtr,
+	}
+}
+
 // newSourceStateFile returns a possibly new target RalPath and a new
 // SourceStateFile.
 func (s *SourceState) newSourceStateFile(
@@ -2181,34 +2209,18 @@ func (s *SourceState) newSourceStateFile(
 	case SourceFileTypeFile:
 		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
 	case SourceFileTypeModify:
-		// If the target has an extension, determine if it indicates an
-		// interpreter to use.
-		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
-		if interpreter, ok := s.interpreters[extension]; ok {
-			// For modify scripts, the script extension is not considered part
-			// of the target name, so remove it.
-			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(extension)-1)
-			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc, &interpreter)
-		} else {
-			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc, nil)
-		}
+		// For modify scripts, an interpreter extension *is not* considered part of the target name.
+		parsedScript := s.attemptToParseScriptExtension(targetRelPath)
+		targetRelPath = parsedScript.targetRelPathWithoutInterpreterExtension
+		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(
+			sourceRelPath, fileAttr, contentsFunc, parsedScript.interpreter)
 	case SourceFileTypeRemove:
 		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc()
 	case SourceFileTypeScript:
-		// If the script has an extension, determine if it indicates an
-		// interpreter to use.
-		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
-		if interpreter, ok := s.interpreters[extension]; ok {
-			targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
-				sourceRelPath,
-				fileAttr,
-				targetRelPath,
-				contentsFunc,
-				&interpreter,
-			)
-		} else {
-			targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, contentsFunc, nil)
-		}
+		// For run scripts, an interpreter extension *is* considered part of the target name.
+		parsedScript := s.attemptToParseScriptExtension(targetRelPath)
+		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
+			sourceRelPath, fileAttr, targetRelPath, contentsFunc, parsedScript.interpreter)
 	case SourceFileTypeSymlink:
 		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc)
 	default:
