@@ -207,6 +207,7 @@ type Config struct {
 	outputAbsPath    chezmoi.AbsPath
 	refreshExternals chezmoi.RefreshExternals
 	sourcePath       bool
+	errorOnConflict  bool
 	templateFuncs    template.FuncMap
 	useBuiltinDiff   bool
 
@@ -1155,8 +1156,11 @@ func (c *Config) defaultPreApplyFunc(
 		}
 	}
 
-	if mode == promptNone {
+	switch {
+	case mode == promptNone:
 		return nil
+	case mode == promptConflict && c.errorOnConflict:
+		return chezmoi.ExitCodeError(1)
 	}
 
 	// Now prompt based on choice made above
@@ -1926,6 +1930,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
+	persistentFlags.BoolVar(&c.errorOnConflict, "error-on-conflict", c.errorOnConflict, "Error on conflict")
 	persistentFlags.BoolVarP(&c.useBuiltinDiff, "use-builtin-diff", "", c.useBuiltinDiff, "Use builtin diff")
 
 	if err := chezmoierrors.Combine(

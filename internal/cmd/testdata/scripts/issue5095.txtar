@@ -1,0 +1,18 @@
+# test chezmoi apply --error-on-conflict does nothing when there are no conflicts
+exec chezmoi apply
+edit $CHEZMOISOURCEDIR/dot_file
+exec chezmoi apply --error-on-conflict
+
+# test chezmoi apply --error-on-conflict exits with an error when there is a conflict
+edit $HOME/.file
+! exec chezmoi apply --error-on-conflict
+! stdout .
+! stderr .
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+# contents of .file
+# edited
+# edited
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
