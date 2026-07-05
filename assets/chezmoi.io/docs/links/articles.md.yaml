@@ -723,3 +723,7 @@ articles:
   version: 2.70.5
   title: Foolproof chezmoi changing
   url: https://quietism.art/posts/foolproof-chezmoi-changing/
+- date: '2026-06-16'
+  version: 2.70.5
+  title: 'AI-Aware Dotfiles in 2026: Building a Secure, Reproducible Developer Workstation for MCP, SLSA, and Multi-Shell Parity'
+  url: https://sebastienrousseau.com/2026-06-16-ai-aware-dotfiles-secure-reproducible-workstation-2026/
