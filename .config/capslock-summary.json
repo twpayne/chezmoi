@@ -47,6 +47,9 @@
   "github.com/Masterminds/sprig/v3": [
     "CAPABILITY_REFLECT"
   ],
+  "github.com/bartventer/httpcache/internal": [
+    "CAPABILITY_NETWORK"
+  ],
   "github.com/betterleaks/betterleaks/detect": [
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
