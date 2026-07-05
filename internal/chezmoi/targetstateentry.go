@@ -39,10 +39,14 @@ type TargetStateDir struct {
 	sourceAttr SourceAttr
 }
 
+type ContentsFunc func() ([]byte, error)
+
+type ContentsSHA256Func func() ([32]byte, error)
+
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
-	contentsFunc       func() ([]byte, error)
-	contentsSHA256Func func() ([32]byte, error)
+	contentsFunc       ContentsFunc
+	contentsSHA256Func ContentsSHA256Func
 	empty              bool
 	overwrite          bool
 	perm               fs.FileMode
@@ -55,8 +59,8 @@ type TargetStateRemove struct{}
 // A TargetStateScript represents the state of a script.
 type TargetStateScript struct {
 	name               RelPath
-	contentsFunc       func() ([]byte, error)
-	contentsSHA256Func func() ([32]byte, error)
+	contentsFunc       ContentsFunc
+	contentsSHA256Func ContentsSHA256Func
 	interpreter        *Interpreter
 	condition          ScriptCondition
 	sourceAttr         SourceAttr

@@ -1902,34 +1902,48 @@ func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRel
 	}
 }
 
+func (s *SourceState) readSourceFileAndApplyTemplate(
+	readFunc ContentsFunc,
+	fileAttr FileAttr,
+	sourceRelPath SourceRelPath,
+	destAbsPath AbsPath,
+) ([]byte, error) {
+	fileContents, err := readFunc()
+	if err != nil {
+		return nil, err
+	}
+	if fileAttr.Template {
+		fileContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
+			NameRelPath: sourceRelPath.RelPath(),
+			Data:        fileContents,
+			DestAbsPath: destAbsPath,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return fileContents, nil
+}
+
 // newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with the value of sourceContentsFunc if the file does not already exist,
 // or returns the actual file's contents unchanged if the file already exists.
 func (s *SourceState) newCreateTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	sourceContentsFunc func() ([]byte, error),
+	sourceContentsFunc ContentsFunc,
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		var contentsFunc func() ([]byte, error)
+		var contentsFunc ContentsFunc
 		switch contents, err := destSystem.ReadFile(destAbsPath); {
 		case err == nil:
 			contentsFunc = eagerNoErr(contents)
 		case errors.Is(err, fs.ErrNotExist):
 			contentsFunc = sync.OnceValues(func() ([]byte, error) {
-				contents, err = sourceContentsFunc()
+				contents, err = s.readSourceFileAndApplyTemplate(
+					sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
 				if err != nil {
 					return nil, err
-				}
-				if fileAttr.Template {
-					contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-						NameRelPath: sourceRelPath.RelPath(),
-						Data:        contents,
-						DestAbsPath: destAbsPath,
-					})
-					if err != nil {
-						return nil, err
-					}
 				}
 				return contents, nil
 			})
@@ -1954,7 +1968,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 func (s *SourceState) newFileTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	sourceContentsFunc func() ([]byte, error),
+	sourceContentsFunc ContentsFunc,
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
@@ -1974,19 +1988,10 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			}
 		}
 		executedContentsFunc := sync.OnceValues(func() ([]byte, error) {
-			contents, err := sourceContentsFunc()
+			contents, err := s.readSourceFileAndApplyTemplate(
+				sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return nil, err
-			}
-			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					NameRelPath: sourceRelPath.RelPath(),
-					Data:        contents,
-					DestAbsPath: destAbsPath,
-				})
-				if err != nil {
-					return nil, err
-				}
 			}
 			return contents, nil
 		})
@@ -2008,7 +2013,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 func (s *SourceState) newModifyTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	contentsFunc func() ([]byte, error),
+	contentsFunc ContentsFunc,
 	interpreter *Interpreter,
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
@@ -2021,20 +2026,10 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			}
 
 			// Compute the contents of the modifier.
-			var modifierContents []byte
-			modifierContents, err = contentsFunc()
+			modifierContents, err := s.readSourceFileAndApplyTemplate(
+				contentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return nil, err
-			}
-			if fileAttr.Template {
-				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					NameRelPath: sourceRelPath.RelPath(),
-					Data:        modifierContents,
-					DestAbsPath: destAbsPath,
-				})
-				if err != nil {
-					return nil, err
-				}
 			}
 
 			// If the modifier is empty then return the current contents unchanged.
@@ -2113,24 +2108,15 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
 	targetRelPath RelPath,
-	sourceContentsFunc func() ([]byte, error),
+	sourceContentsFunc ContentsFunc,
 	interpreter *Interpreter,
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := sync.OnceValues(func() ([]byte, error) {
-			contents, err := sourceContentsFunc()
+			contents, err := s.readSourceFileAndApplyTemplate(
+				sourceContentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return nil, err
-			}
-			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					NameRelPath: sourceRelPath.RelPath(),
-					Data:        contents,
-					DestAbsPath: destAbsPath,
-				})
-				if err != nil {
-					return nil, err
-				}
 			}
 			return contents, nil
 		})
@@ -2153,23 +2139,14 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 func (s *SourceState) newSymlinkTargetStateEntryFunc(
 	sourceRelPath SourceRelPath,
 	fileAttr FileAttr,
-	contentsFunc func() ([]byte, error),
+	contentsFunc ContentsFunc,
 ) TargetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
-			linknameBytes, err := contentsFunc()
+			linknameBytes, err := s.readSourceFileAndApplyTemplate(
+				contentsFunc, fileAttr, sourceRelPath, destAbsPath)
 			if err != nil {
 				return "", err
-			}
-			if fileAttr.Template {
-				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-					NameRelPath: sourceRelPath.RelPath(),
-					Data:        linknameBytes,
-					DestAbsPath: destAbsPath,
-				})
-				if err != nil {
-					return "", err
-				}
 			}
 			linkname := normalizeLinkname(string(bytes.TrimSpace(linknameBytes)))
 			return linkname, nil

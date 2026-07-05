@@ -355,7 +355,7 @@ func md5Sum(data []byte) []byte {
 }
 
 // lazySHA256 returns a function that returns a SHA256 computed lazily.
-func lazySHA256(contentsFunc func() ([]byte, error)) func() ([32]byte, error) {
+func lazySHA256(contentsFunc ContentsFunc) func() ([32]byte, error) {
 	return sync.OnceValues(func() ([32]byte, error) {
 		contents, err := contentsFunc()
 		if err != nil {
