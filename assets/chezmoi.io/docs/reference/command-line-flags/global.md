@@ -112,6 +112,10 @@ Use *directory* as the source directory.
 Interpret *targets* passed to the command as paths in the source directory
 rather than the destination directory.
 
+### `--error-on-conflict` [*bool*]
+
+Exit with an error, rather than prompting, if there are any conflicts.
+
 ### `--use-builtin-age` [*bool*]
 
 > Configuration: `useBuiltinAge`
