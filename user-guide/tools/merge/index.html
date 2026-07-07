@@ -61,6 +61,9 @@
 
     
     
+  
+  <meta name="go-import" content="chezmoi.io/chezmoi git https://github.com/twpayne/chezmoi.git">
+
   </head>
   
   
@@ -1148,6 +1151,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-merge-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is the merge command
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#use-a-custom-merge-command" class="md-nav__link">
@@ -11109,6 +11123,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-is-the-merge-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is the merge command
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-a-custom-merge-command" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11162,6 +11187,14 @@
 
 
 <h1 id="merge">Merge</h1>
+<h2 id="what-is-the-merge-command">What is the merge command</h2>
+<p>When running <code>chezmoi apply --interactive</code>, chezmoi computes the desired state (the target) from your source. If applying would change a file on disk - i.e. the destination differs from the target, usually because you edited the live file directly - a prompt appears to either overwrite, diff, skip.</p>
+<p>Choosing merge is chezmoi's analog of resolving a git conflict by hand - except it reconciles <strong>three</strong> states, not two:</p>
+<ol>
+<li><strong>.Destination</strong> - the file on your system</li>
+<li><strong>.Source</strong> - the file in your chezmoi repo (the source of truth)</li>
+<li><strong>.Target</strong> - the desired state, computed by rendering the source (templates applied, etc.)</li>
+</ol>
 <h2 id="use-a-custom-merge-command">Use a custom merge command</h2>
 <p>By default, chezmoi uses <code>vimdiff</code>. You can use a custom command by setting the
 <code>merge.command</code> and <code>merge.args</code> configuration variables. The elements of

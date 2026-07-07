@@ -61,6 +61,9 @@
 
     
     
+  
+  <meta name="go-import" content="chezmoi.io/chezmoi git https://github.com/twpayne/chezmoi.git">
+
   </head>
   
   
@@ -3951,6 +3954,17 @@
     <span class="md-ellipsis">
       
         --source-path
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-error-on-conflict-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --error-on-conflict [bool]
       
     </span>
   </a>
@@ -11589,6 +11603,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#-error-on-conflict-bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        --error-on-conflict [bool]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#-use-builtin-age-bool" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11754,6 +11779,8 @@ if no cached external is available.</p>
 <h3 id="-source-path"><code>--source-path</code></h3>
 <p>Interpret <em>targets</em> passed to the command as paths in the source directory
 rather than the destination directory.</p>
+<h3 id="-error-on-conflict-bool"><code>--error-on-conflict</code> [<em>bool</em>]</h3>
+<p>Exit with an error, rather than prompting, if there are any conflicts.</p>
 <h3 id="-use-builtin-age-bool"><code>--use-builtin-age</code> [<em>bool</em>]</h3>
 <blockquote>
 <p>Configuration: <code>useBuiltinAge</code></p>
