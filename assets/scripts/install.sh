@@ -5,6 +5,10 @@
 # https://github.com/client9/shlib
 # https://github.com/goreleaser/godownloader
 
+# Copyright (C) 2017 Nick Galbreath
+# Copyright (C) 2018 Tom Payne
+# SPDX-License-Identifier: MIT
+
 set -e
 
 BINDIR="${BINDIR:-bin}"
