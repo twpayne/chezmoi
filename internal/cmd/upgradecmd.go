@@ -121,12 +121,6 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	}
 	c.logger.Info("upgradeMethod", slog.String("executable", c.upgrade.executable), slog.String("method", method))
 
-	// get old chezmoi version for logging later
-	oldChezmoiVersion, err := getChezmoiVersion(executableAbsPath.String())
-	if err != nil {
-		return err
-	}
-
 	// Replace the executable with the updated version.
 	switch method {
 	case upgradeMethodBrewUpgrade:
@@ -170,9 +164,16 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Execute the new version.
-	chezmoiVersion, err := getChezmoiVersion(path)
-	fmt.Fprintf(c.stdout, "Upgraded from %s to %s\n", oldChezmoiVersion, chezmoiVersion)
-	return err
+	chezmoiVersionCmd := exec.Command(path, "--version")
+	chezmoiVersionCmd.Stdin = os.Stdin
+	chezmoiVersionCmd.Stdout = os.Stdout
+	chezmoiVersionCmd.Stderr = os.Stderr
+	chezmoiVersion, err := chezmoilog.LogCmdOutput(c.logger, chezmoiVersionCmd)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintf(c.stdout, "Upgraded from %s to %s\n", c.versionInfo, string(chezmoiVersion))
+	return nil
 }
 
 func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
@@ -327,16 +328,4 @@ func getReleaseAssetByName(rr *github.RepositoryRelease, name string) *github.Re
 		}
 	}
 	return nil
-}
-
-func getChezmoiVersion(executablePath string) (string, error) {
-	buf := new(bytes.Buffer)
-	versionCmd := exec.Command(executablePath, "--version")
-	versionCmd.Stdin = os.Stdin
-	versionCmd.Stdout = buf
-	versionCmd.Stderr = os.Stderr
-	if err := chezmoilog.LogCmdRun(nil, versionCmd); err != nil {
-		return "", err
-	}
-	return buf.String(), nil
 }
