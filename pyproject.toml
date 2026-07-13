@@ -12,6 +12,7 @@ dependencies = [
     "pymdown-extensions>=10.21.3",
     "ruamel.yaml>=0.19.1",
     "ruff>=0.15.6",
+    "soupsieve>2.8.3",
     "taskipy>=1.14.1",
     "urllib3>=2.7.0",
 ]
