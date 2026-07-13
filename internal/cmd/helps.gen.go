@@ -885,6 +885,10 @@ var helps = map[string]*help{
 		longFlags: chezmoiset.New(
 			"executable",
 			"method",
+			"verbose",
+		),
+		shortFlags: chezmoiset.New(
+			"v",
 		),
 	},
 	"verify": {

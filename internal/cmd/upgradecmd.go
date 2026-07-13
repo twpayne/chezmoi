@@ -164,6 +164,9 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Execute the new version.
+	if c.Verbose {
+		fmt.Fprintf(c.stdout, "before: %s\nafter: ", c.versionStr)
+	}
 	chezmoiVersionCmd := exec.Command(path, "--version")
 	chezmoiVersionCmd.Stdin = os.Stdin
 	chezmoiVersionCmd.Stdout = os.Stdout
