@@ -39,3 +39,7 @@ Override the upgrade method that was automatically detected by chezmoi.
 | `upgrade-package`      | Download and install `.apk`, `.deb` or `.rpm` package. Run `pacman` on Arch Linux. |
 
 [rate]: https://developer.github.com/v3/#rate-limiting
+
+### `-v`, `--verbose`
+
+Print the version numbers before and after the upgrade.
