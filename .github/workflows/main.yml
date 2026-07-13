@@ -21,9 +21,9 @@ env:
   GOLANGCI_LINT_VERSION: 2.12.2 # https://github.com/golangci/golangci-lint/releases
   GORELEASER_VERSION: 2.17.0 # https://github.com/goreleaser/goreleaser/releases
   PYTHON_VERSION: '3.14' # https://www.python.org/downloads/
-  RAGE_VERSION: 0.11.2 # https://github.com/str4d/rage/releases
+  RAGE_VERSION: 0.12.0 # https://github.com/str4d/rage/releases
   SYFT_VERSION: 1.46.0 # https://github.com/anchore/syft/releases
-  UV_VERSION: 0.11.27 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.11.28 # https://github.com/astral-sh/uv/releases
   NO_MKDOCS_2_WARNING: 1
 jobs:
   changes:
