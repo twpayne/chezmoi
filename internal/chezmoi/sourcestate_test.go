@@ -2152,7 +2152,7 @@ func TestSourceStateExternalErrors(t *testing.T) {
 					`    url = "http://example.com/"`,
 				),
 			},
-			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ..: relative path in parent",
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ..: relative path outside target directory",
 		},
 		{
 			name: "relative_parent_root_rel_path",
@@ -2163,7 +2163,7 @@ func TestSourceStateExternalErrors(t *testing.T) {
 					`    url = "http://example.com/"`,
 				),
 			},
-			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ./..: relative path in parent",
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ./..: relative path outside target directory",
 		},
 		{
 			name: "relative_empty",
@@ -2185,7 +2185,18 @@ func TestSourceStateExternalErrors(t *testing.T) {
 					`    url = "http://example.com/"`,
 				),
 			},
-			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: a/../b/../..: relative path in parent",
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: a/../b/../..: relative path outside target directory",
+		},
+		{
+			name: "relative_outside_parent",
+			shareDir: map[string]any{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`["../bin"]`,
+					`    type = "file"`,
+					`    url = "http://example.com/"`,
+				),
+			},
+			expectedErr: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml: ../bin: relative path outside target directory",
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
