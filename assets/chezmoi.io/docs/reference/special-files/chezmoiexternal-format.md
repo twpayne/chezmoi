@@ -232,7 +232,10 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
 
     Some more examples can be found in the [user guide][elsewhere].
 
-The optional `targetPath` field is a way to specify the target path of the fetched external(s), instead of using the entry key. This allows fetching multiple externals into one target directory in one chezmoiexternal file.
+The optional `targetPath` field is a way to specify the target path of the
+fetched external(s), instead of using the entry key. This allows fetching
+multiple externals into one target directory in one chezmoiexternal file.
+`targetPath` must be a path in the target directory.
 
 !!! example
 

@@ -21,6 +21,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"slices"
 	"strings"
 	"sync"
@@ -1459,8 +1460,9 @@ func (s *SourceState) addExternal(sourceAbsPath, parentAbsPath AbsPath) error {
 			return fmt.Errorf("%s: %s: %w", sourceAbsPath, targetPath, err)
 		case relPath == ".":
 			return fmt.Errorf("%s: %s: empty relative path", sourceAbsPath, targetPath)
-		case relPath == "..", strings.HasPrefix(relPath, "../"):
-			return fmt.Errorf("%s: %s: relative path in parent", sourceAbsPath, targetPath)
+		case relPath == "..", strings.HasPrefix(relPath, "../"),
+			runtime.GOOS == "windows" && strings.HasPrefix(relPath, ".."+string(filepath.Separator)):
+			return fmt.Errorf("%s: %s: relative path outside target directory", sourceAbsPath, targetPath)
 		}
 		targetRelPath := parentTargetSourceRelPath.JoinString(externalPath)
 		external.sourceAbsPath = sourceAbsPath
