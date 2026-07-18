@@ -26,7 +26,7 @@ type azureKeyVaultConfig struct {
 	cred         *azidentity.DefaultAzureCredential
 }
 
-func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {
+func (a *azureKeyVaultConfig) getSecret(secretName, vaultName string) string {
 	if a.vaults == nil {
 		a.vaults = make(map[string]*azureKeyVault)
 	}
@@ -75,5 +75,5 @@ func (c *Config) azureKeyVaultTemplateFunc(args ...string) string {
 		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
 	}
 
-	return c.AzureKeyVault.GetSecret(secretName, vaultName)
+	return c.AzureKeyVault.getSecret(secretName, vaultName)
 }
