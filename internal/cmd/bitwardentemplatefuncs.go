@@ -21,14 +21,19 @@ type bitwardenConfig struct {
 
 func (c *Config) bitwardenAttachmentTemplateFunc(name, itemID string) string {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	must(c.bitwardenMaybeUnlock())
+
 	return string(mustValue(c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemID, "--raw"})))
 }
 
 func (c *Config) bitwardenAttachmentByRefTemplateFunc(name string, args ...string) string {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	must(c.bitwardenMaybeUnlock())
+
 	output := mustValue(c.bitwardenOutput(append([]string{"get"}, args...)))
+
 	var data struct {
 		ID string `json:"id"`
 	}
@@ -38,12 +43,16 @@ func (c *Config) bitwardenAttachmentByRefTemplateFunc(name string, args ...strin
 
 func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]any {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	must(c.bitwardenMaybeUnlock())
+
 	output := mustValue(c.bitwardenOutput(append([]string{"get"}, args...)))
+
 	var data struct {
 		Fields []map[string]any `json:"fields"`
 	}
 	must(json.Unmarshal(output, &data))
+
 	result := make(map[string]any)
 	for _, field := range data.Fields {
 		if name, ok := field["name"].(string); ok {
@@ -55,8 +64,11 @@ func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]any {
 
 func (c *Config) bitwardenTemplateFunc(args ...string) map[string]any {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	must(c.bitwardenMaybeUnlock())
+
 	output := mustValue(c.bitwardenOutput(append([]string{"get"}, args...)))
+
 	var data map[string]any
 	must(json.Unmarshal(output, &data))
 	return data

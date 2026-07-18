@@ -23,7 +23,9 @@ func (c *Config) passTemplateFunc(id string) string {
 
 func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	output := mustValue(c.passOutput(id))
+
 	result := make(map[string]string)
 	for line := range bytes.SplitSeq(output, []byte{'\n'}) {
 		if key, value, ok := bytes.Cut(line, []byte{':'}); ok {
