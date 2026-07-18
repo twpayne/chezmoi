@@ -76,7 +76,7 @@ func TestScript(t *testing.T) {
 		}
 		var filteredFiles []string
 		for _, f := range files {
-			baseName := strings.Split(filepath.Base(f), ".")[0]
+			baseName, _, _ := strings.Cut(filepath.Base(f), ".")
 			if re.MatchString(baseName) {
 				filteredFiles = append(filteredFiles, f)
 			}
