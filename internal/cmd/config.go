@@ -978,61 +978,6 @@ func (c *Config) createConfigFileContents(filename chezmoi.RelPath, data []byte,
 	return tmpl.Execute(templateData)
 }
 
-// defaultConfigFile returns the default config file according to the XDG Base
-// Directory Specification.
-func (c *Config) defaultConfigFile(fileSystem vfs.FS, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
-	// Search XDG Base Directory Specification config directories first.
-CONFIG_DIR:
-	for _, configDir := range bds.ConfigDirs {
-		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
-		if err != nil {
-			return chezmoi.EmptyAbsPath, err
-		}
-
-		dirEntries, err := fileSystem.ReadDir(configDirAbsPath.JoinString("chezmoi").String())
-		switch {
-		case errors.Is(err, fs.ErrNotExist):
-			continue CONFIG_DIR
-		case err != nil:
-			return chezmoi.EmptyAbsPath, err
-		}
-
-		dirEntryNames := chezmoiset.NewWithCapacity[string](len(dirEntries))
-		for _, dirEntry := range dirEntries {
-			dirEntryNames.Add(dirEntry.Name())
-		}
-
-		var names []string
-		for _, extension := range chezmoi.FormatExtensions {
-			name := "chezmoi." + extension
-			if dirEntryNames.Contains(name) {
-				names = append(names, name)
-			}
-		}
-
-		switch len(names) {
-		case 0:
-			// Do nothing.
-		case 1:
-			return configDirAbsPath.JoinString("chezmoi", names[0]), nil
-		default:
-			configFileAbsPathStrs := make([]string, 0, len(names))
-			for _, name := range names {
-				configFileAbsPathStr := configDirAbsPath.JoinString("chezmoi", name)
-				configFileAbsPathStrs = append(configFileAbsPathStrs, configFileAbsPathStr.String())
-			}
-			return chezmoi.EmptyAbsPath, fmt.Errorf("multiple config files: %s", englishList(configFileAbsPathStrs))
-		}
-	}
-
-	// Fallback to XDG Base Directory Specification default.
-	configHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.ConfigHome, c.homeDirAbsPath)
-	if err != nil {
-		return chezmoi.EmptyAbsPath, err
-	}
-	return configHomeAbsPath.JoinString("chezmoi", "chezmoi.toml"), nil
-}
-
 // decodeConfigContents decodes data in format into configFile.
 func (c *Config) decodeConfigContents(format chezmoi.Format, contents []byte, configFile *ConfigFile) error {
 	var configMap map[string]any
@@ -1099,6 +1044,61 @@ func (c *Config) decodeConfigMap(configMap map[string]any, configFile *ConfigFil
 		return err
 	}
 	return decoder.Decode(configMap)
+}
+
+// defaultConfigFile returns the default config file according to the XDG Base
+// Directory Specification.
+func (c *Config) defaultConfigFile(fileSystem vfs.FS, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+	// Search XDG Base Directory Specification config directories first.
+CONFIG_DIR:
+	for _, configDir := range bds.ConfigDirs {
+		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
+		if err != nil {
+			return chezmoi.EmptyAbsPath, err
+		}
+
+		dirEntries, err := fileSystem.ReadDir(configDirAbsPath.JoinString("chezmoi").String())
+		switch {
+		case errors.Is(err, fs.ErrNotExist):
+			continue CONFIG_DIR
+		case err != nil:
+			return chezmoi.EmptyAbsPath, err
+		}
+
+		dirEntryNames := chezmoiset.NewWithCapacity[string](len(dirEntries))
+		for _, dirEntry := range dirEntries {
+			dirEntryNames.Add(dirEntry.Name())
+		}
+
+		var names []string
+		for _, extension := range chezmoi.FormatExtensions {
+			name := "chezmoi." + extension
+			if dirEntryNames.Contains(name) {
+				names = append(names, name)
+			}
+		}
+
+		switch len(names) {
+		case 0:
+			// Do nothing.
+		case 1:
+			return configDirAbsPath.JoinString("chezmoi", names[0]), nil
+		default:
+			configFileAbsPathStrs := make([]string, 0, len(names))
+			for _, name := range names {
+				configFileAbsPathStr := configDirAbsPath.JoinString("chezmoi", name)
+				configFileAbsPathStrs = append(configFileAbsPathStrs, configFileAbsPathStr.String())
+			}
+			return chezmoi.EmptyAbsPath, fmt.Errorf("multiple config files: %s", englishList(configFileAbsPathStrs))
+		}
+	}
+
+	// Fallback to XDG Base Directory Specification default.
+	configHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.ConfigHome, c.homeDirAbsPath)
+	if err != nil {
+		return chezmoi.EmptyAbsPath, err
+	}
+	return configHomeAbsPath.JoinString("chezmoi", "chezmoi.toml"), nil
 }
 
 // defaultPreApplyFunc is the default pre-apply function. If the target entry
@@ -1476,6 +1476,43 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 	return nil
 }
 
+// finalize cleans up.
+func (c *Config) finalize() {
+	if c.persistentState != nil {
+		if err := c.persistentState.Close(); err != nil {
+			c.errorf("error: failed to close persistent state: %v\n", err)
+		}
+	}
+
+	// Wait for any diff pager process to terminate.
+	if c.diffPagerCmd != nil {
+		if err := c.diffPagerCmdStdin.Close(); err != nil {
+			c.errorf("error: failed to close diff pager stdin: %v\n", err)
+		}
+		if c.diffPagerCmd.Process != nil {
+			if err := chezmoilog.LogCmdWait(c.logger, c.diffPagerCmd); err != nil {
+				c.errorf("error: failed to wait for diff pager to close: %v\n", err)
+			}
+		}
+	}
+
+	if c.restoreWindowsConsole != nil {
+		if err := c.restoreWindowsConsole(); err != nil {
+			c.errorf("error: failed to restore console: %v\n", err)
+		}
+	}
+
+	// Lock Bitwarden CLI.
+	if err := c.bitwardenLock(); err != nil {
+		c.errorf("error: failed to lock bitwarden-cli: %v\n", err)
+	}
+
+	// Close any connection to keepassxc-cli.
+	if err := c.keepassxcClose(); err != nil {
+		c.errorf("error: failed to close connection to keepassxc-cli: %v\n", err)
+	}
+}
+
 type configTemplate struct {
 	sourceAbsPath chezmoi.AbsPath
 	format        chezmoi.Format
@@ -1540,6 +1577,13 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 	}
 }
 
+func (c *Config) getBetterleaksDetector() (*detect.Detector, error) {
+	if c.betterleaksDetector == nil && c.betterleaksDetectorErr == nil {
+		c.betterleaksDetector, c.betterleaksDetectorErr = detect.NewDetectorDefaultConfig()
+	}
+	return c.betterleaksDetector, c.betterleaksDetectorErr
+}
+
 func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
 	if c.customConfigFileAbsPath.IsEmpty() {
 		return c.defaultConfigFileAbsPath, c.defaultConfigFileAbsPathErr
@@ -1593,13 +1637,6 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 		pagerCmd.Env = append(pagerCmd.Environ(), "LV=-c")
 	}
 	return pagerCmd, nil
-}
-
-func (c *Config) getBetterleaksDetector() (*detect.Detector, error) {
-	if c.betterleaksDetector == nil && c.betterleaksDetectorErr == nil {
-		c.betterleaksDetector, c.betterleaksDetectorErr = detect.NewDetectorDefaultConfig()
-	}
-	return c.betterleaksDetector, c.betterleaksDetectorErr
 }
 
 // A modifyHTTPRequestFunc is a function that modifies a [net/http.Request]
@@ -1880,6 +1917,30 @@ func (c *Config) newBuiltinDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath 
 	return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
 }
 
+// newDiffSystem returns a system that logs all changes to s to w using
+// diff.command if set or the builtin git diff otherwise.
+func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
+	if c.useBuiltinDiff || c.Diff.Command == "" {
+		return c.newBuiltinDiffSystem(s, w, dirAbsPath)
+	}
+	return c.newExternalDiffSystem(s)
+}
+
+// newExternalDiffSystem returns a new external diff system.
+func (c *Config) newExternalDiffSystem(s chezmoi.System) *chezmoi.ExternalDiffSystem {
+	options := &chezmoi.ExternalDiffSystemOptions{
+		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
+		Reverse:        c.Diff.Reverse,
+		ScriptContents: c.Diff.ScriptContents,
+		TemplateOptions: chezmoi.TemplateOptions{
+			Funcs:   c.templateFuncs,
+			Options: c.Template.Options,
+		},
+		TextConvFunc: c.TextConv.convert,
+	}
+	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, c.getDiffPagerCmd, options)
+}
+
 // newRootCmd returns a new root github.com/spf13/cobra.Command.
 func (c *Config) newRootCmd() (*cobra.Command, error) {
 	rootCmd := &cobra.Command{
@@ -2026,30 +2087,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	return rootCmd, nil
 }
 
-// newDiffSystem returns a system that logs all changes to s to w using
-// diff.command if set or the builtin git diff otherwise.
-func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
-	if c.useBuiltinDiff || c.Diff.Command == "" {
-		return c.newBuiltinDiffSystem(s, w, dirAbsPath)
-	}
-	return c.newExternalDiffSystem(s)
-}
-
-// newExternalDiffSystem returns a new external diff system.
-func (c *Config) newExternalDiffSystem(s chezmoi.System) *chezmoi.ExternalDiffSystem {
-	options := &chezmoi.ExternalDiffSystemOptions{
-		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
-		Reverse:        c.Diff.Reverse,
-		ScriptContents: c.Diff.ScriptContents,
-		TemplateOptions: chezmoi.TemplateOptions{
-			Funcs:   c.templateFuncs,
-			Options: c.Template.Options,
-		},
-		TextConvFunc: c.TextConv.convert,
-	}
-	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, c.getDiffPagerCmd, options)
-}
-
 // newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(
 	ctx context.Context,
@@ -2133,6 +2170,145 @@ func (c *Config) newSourceState(
 	return sourceState, nil
 }
 
+func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
+	// Determine the user's username and group, if possible.
+	//
+	// os/user.Current and os/user.LookupGroupId in Go's standard library are
+	// generally unreliable, so work around errors if possible, or ignore them.
+	//
+	// On Android, user.Current always fails. Instead, use $LOGNAME (as this is
+	// set by Termux), or $USER if $LOGNAME is not set.
+	//
+	// If CGO is disabled, then the Go standard library falls back to parsing
+	// /etc/passwd and /etc/group, which will return incorrect results without
+	// error if the system uses an alternative password database such as NIS or
+	// LDAP.
+	//
+	// If CGO is enabled then os/user.Current and os/user.LookupGroupId will use
+	// the underlying libc functions, namely getpwuid_r and getgrnam_r. If
+	// linked with glibc this will return the correct result. If linked with
+	// musl then they will use musl's implementation which, like Go's non-CGO
+	// implementation, also only parses /etc/passwd and /etc/group and so also
+	// returns incorrect results without error if NIS or LDAP are being used.
+	//
+	// On Windows, the user's group ID returned by os/user.Current() is an SID
+	// and no further useful lookup is possible with Go's standard library.
+	//
+	// If os/user.Current fails, then fallback to $USER.
+	//
+	// Since neither the username nor the group are likely widely used in
+	// templates, leave these variables unset if their values cannot be
+	// determined. Unset variables will trigger template errors if used,
+	// alerting the user to the problem and allowing them to find alternative
+	// solutions.
+	var gid, group, uid, username string
+	if runtime.GOOS == "android" {
+		username = cmp.Or(os.Getenv("LOGNAME"), os.Getenv("USER"))
+	} else if currentUser, err := user.Current(); err == nil {
+		gid = currentUser.Gid
+		uid = currentUser.Uid
+		username = currentUser.Username
+		if runtime.GOOS != "windows" {
+			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
+				group = rawGroup.Name
+			} else {
+				c.logger.Info("user.LookupGroupId", slog.Any("err", err), slog.String("gid", currentUser.Gid))
+			}
+		}
+	} else {
+		c.logger.Error("user.Current", slog.Any("err", err))
+		var ok bool
+		username, ok = os.LookupEnv("USER")
+		if !ok {
+			c.logger.Info("os.LookupEnv", slog.String("key", "USER"), slog.Bool("ok", ok))
+		}
+	}
+
+	fqdnHostname, err := chezmoi.FQDNHostname(c.fileSystem)
+	if err != nil {
+		c.logger.Info("chezmoi.FQDNHostname", slog.Any("err", err))
+	}
+	hostname, _, _ := strings.Cut(fqdnHostname, ".")
+
+	kernel, err := chezmoi.Kernel(c.fileSystem)
+	if err != nil {
+		c.logger.Info("chezmoi.Kernel", slog.Any("err", err))
+	}
+
+	var osRelease map[string]any
+	switch runtime.GOOS {
+	case "openbsd", "windows":
+		// Don't populate osRelease on OSes where /etc/os-release does not
+		// exist.
+	default:
+		if rawOSRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
+			osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
+		} else {
+			c.logger.Info("chezmoi.OSRelease", slog.Any("err", err))
+		}
+	}
+
+	rawHomeDir, _ := os.UserHomeDir()
+	configFileAbsPath, _ := c.getConfigFileAbsPath()
+	executable, _ := os.Executable()
+	windowsVersion, _ := windowsVersion()
+	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
+
+	return &templateData{
+		arch:       runtime.GOARCH,
+		args:       os.Args,
+		cacheDir:   c.CacheDirAbsPath.String(),
+		command:    cmd.Name(),
+		commandDir: c.commandDirAbsPath.String(),
+		config:     c.toMap(),
+		configFile: configFileAbsPath.String(),
+		destDir:    c.DestDirAbsPath.String(),
+		executable: executable,
+		flags: templateDataFlags{
+			dryRun:    c.dryRun,
+			force:     c.force,
+			keepGoing: c.keepGoing,
+			noPager:   c.noPager,
+			noTTY:     c.noTTY,
+		},
+		fqdnHostname:      fqdnHostname,
+		gid:               gid,
+		group:             group,
+		homeDir:           c.homeDirAbsPath.String(),
+		hostname:          hostname,
+		kernel:            kernel,
+		os:                runtime.GOOS,
+		osRelease:         osRelease,
+		pathListSeparator: string(os.PathListSeparator),
+		pathSeparator:     string(os.PathSeparator),
+		rawHomeDir:        rawHomeDir,
+		sourceDir:         sourceDirAbsPath.String(),
+		uid:               uid,
+		username:          username,
+		version: map[string]any{
+			"builtBy": c.versionInfo.BuiltBy,
+			"commit":  c.versionInfo.Commit,
+			"date":    c.versionInfo.Date,
+			"version": c.versionInfo.Version,
+		},
+		windowsVersion: windowsVersion,
+		workingTree:    c.WorkingTreeAbsPath.String(),
+	}
+}
+
+// pageDiffOutput pages the diff output to stdout.
+func (c *Config) pageDiffOutput(output string) error {
+	switch pagerCmd, err := c.getDiffPagerCmd(); {
+	case err != nil:
+		return err
+	case pagerCmd == nil:
+		return c.writeOutputString(output, 0o666)
+	default:
+		pagerCmd.Stdin = bytes.NewBufferString(output)
+		return chezmoilog.LogCmdRun(c.logger, pagerCmd)
+	}
+}
+
 // persistentPostRunRootE performs post-run actions for the root command.
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
 	annotations := getAnnotations(cmd)
@@ -2188,56 +2364,6 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	}
 
 	return c.runHookPost(cmd.Name())
-}
-
-// finalize cleans up.
-func (c *Config) finalize() {
-	if c.persistentState != nil {
-		if err := c.persistentState.Close(); err != nil {
-			c.errorf("error: failed to close persistent state: %v\n", err)
-		}
-	}
-
-	// Wait for any diff pager process to terminate.
-	if c.diffPagerCmd != nil {
-		if err := c.diffPagerCmdStdin.Close(); err != nil {
-			c.errorf("error: failed to close diff pager stdin: %v\n", err)
-		}
-		if c.diffPagerCmd.Process != nil {
-			if err := chezmoilog.LogCmdWait(c.logger, c.diffPagerCmd); err != nil {
-				c.errorf("error: failed to wait for diff pager to close: %v\n", err)
-			}
-		}
-	}
-
-	if c.restoreWindowsConsole != nil {
-		if err := c.restoreWindowsConsole(); err != nil {
-			c.errorf("error: failed to restore console: %v\n", err)
-		}
-	}
-
-	// Lock Bitwarden CLI.
-	if err := c.bitwardenLock(); err != nil {
-		c.errorf("error: failed to lock bitwarden-cli: %v\n", err)
-	}
-
-	// Close any connection to keepassxc-cli.
-	if err := c.keepassxcClose(); err != nil {
-		c.errorf("error: failed to close connection to keepassxc-cli: %v\n", err)
-	}
-}
-
-// pageDiffOutput pages the diff output to stdout.
-func (c *Config) pageDiffOutput(output string) error {
-	switch pagerCmd, err := c.getDiffPagerCmd(); {
-	case err != nil:
-		return err
-	case pagerCmd == nil:
-		return c.writeOutputString(output, 0o666)
-	default:
-		pagerCmd.Stdin = bytes.NewBufferString(output)
-		return chezmoilog.LogCmdRun(c.logger, pagerCmd)
-	}
 }
 
 // persistentPreRunRootE performs pre-run actions for the root command.
@@ -2578,132 +2704,6 @@ func (c *Config) progressAutoFunc() bool {
 		return term.IsTerminal(int(stdout.Fd()))
 	}
 	return false
-}
-
-func (c *Config) newTemplateData(cmd *cobra.Command) *templateData {
-	// Determine the user's username and group, if possible.
-	//
-	// os/user.Current and os/user.LookupGroupId in Go's standard library are
-	// generally unreliable, so work around errors if possible, or ignore them.
-	//
-	// On Android, user.Current always fails. Instead, use $LOGNAME (as this is
-	// set by Termux), or $USER if $LOGNAME is not set.
-	//
-	// If CGO is disabled, then the Go standard library falls back to parsing
-	// /etc/passwd and /etc/group, which will return incorrect results without
-	// error if the system uses an alternative password database such as NIS or
-	// LDAP.
-	//
-	// If CGO is enabled then os/user.Current and os/user.LookupGroupId will use
-	// the underlying libc functions, namely getpwuid_r and getgrnam_r. If
-	// linked with glibc this will return the correct result. If linked with
-	// musl then they will use musl's implementation which, like Go's non-CGO
-	// implementation, also only parses /etc/passwd and /etc/group and so also
-	// returns incorrect results without error if NIS or LDAP are being used.
-	//
-	// On Windows, the user's group ID returned by os/user.Current() is an SID
-	// and no further useful lookup is possible with Go's standard library.
-	//
-	// If os/user.Current fails, then fallback to $USER.
-	//
-	// Since neither the username nor the group are likely widely used in
-	// templates, leave these variables unset if their values cannot be
-	// determined. Unset variables will trigger template errors if used,
-	// alerting the user to the problem and allowing them to find alternative
-	// solutions.
-	var gid, group, uid, username string
-	if runtime.GOOS == "android" {
-		username = cmp.Or(os.Getenv("LOGNAME"), os.Getenv("USER"))
-	} else if currentUser, err := user.Current(); err == nil {
-		gid = currentUser.Gid
-		uid = currentUser.Uid
-		username = currentUser.Username
-		if runtime.GOOS != "windows" {
-			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
-				group = rawGroup.Name
-			} else {
-				c.logger.Info("user.LookupGroupId", slog.Any("err", err), slog.String("gid", currentUser.Gid))
-			}
-		}
-	} else {
-		c.logger.Error("user.Current", slog.Any("err", err))
-		var ok bool
-		username, ok = os.LookupEnv("USER")
-		if !ok {
-			c.logger.Info("os.LookupEnv", slog.String("key", "USER"), slog.Bool("ok", ok))
-		}
-	}
-
-	fqdnHostname, err := chezmoi.FQDNHostname(c.fileSystem)
-	if err != nil {
-		c.logger.Info("chezmoi.FQDNHostname", slog.Any("err", err))
-	}
-	hostname, _, _ := strings.Cut(fqdnHostname, ".")
-
-	kernel, err := chezmoi.Kernel(c.fileSystem)
-	if err != nil {
-		c.logger.Info("chezmoi.Kernel", slog.Any("err", err))
-	}
-
-	var osRelease map[string]any
-	switch runtime.GOOS {
-	case "openbsd", "windows":
-		// Don't populate osRelease on OSes where /etc/os-release does not
-		// exist.
-	default:
-		if rawOSRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
-			osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
-		} else {
-			c.logger.Info("chezmoi.OSRelease", slog.Any("err", err))
-		}
-	}
-
-	rawHomeDir, _ := os.UserHomeDir()
-	configFileAbsPath, _ := c.getConfigFileAbsPath()
-	executable, _ := os.Executable()
-	windowsVersion, _ := windowsVersion()
-	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
-
-	return &templateData{
-		arch:       runtime.GOARCH,
-		args:       os.Args,
-		cacheDir:   c.CacheDirAbsPath.String(),
-		command:    cmd.Name(),
-		commandDir: c.commandDirAbsPath.String(),
-		config:     c.toMap(),
-		configFile: configFileAbsPath.String(),
-		destDir:    c.DestDirAbsPath.String(),
-		executable: executable,
-		flags: templateDataFlags{
-			dryRun:    c.dryRun,
-			force:     c.force,
-			keepGoing: c.keepGoing,
-			noPager:   c.noPager,
-			noTTY:     c.noTTY,
-		},
-		fqdnHostname:      fqdnHostname,
-		gid:               gid,
-		group:             group,
-		homeDir:           c.homeDirAbsPath.String(),
-		hostname:          hostname,
-		kernel:            kernel,
-		os:                runtime.GOOS,
-		osRelease:         osRelease,
-		pathListSeparator: string(os.PathListSeparator),
-		pathSeparator:     string(os.PathSeparator),
-		rawHomeDir:        rawHomeDir,
-		sourceDir:         sourceDirAbsPath.String(),
-		uid:               uid,
-		username:          username,
-		version: map[string]any{
-			"builtBy": c.versionInfo.BuiltBy,
-			"commit":  c.versionInfo.Commit,
-			"date":    c.versionInfo.Date,
-			"version": c.versionInfo.Version,
-		},
-		windowsVersion: windowsVersion,
-		workingTree:    c.WorkingTreeAbsPath.String(),
-	}
 }
 
 // readConfig reads the config file, if it exists.
@@ -3128,6 +3128,11 @@ func (c *Config) writeOutput(data []byte, perm fs.FileMode) error {
 	return os.WriteFile(c.outputAbsPath.String(), data, perm)
 }
 
+// writeOutputString writes data to the configured output.
+func (c *Config) writeOutputString(data string, perm fs.FileMode) error {
+	return c.writeOutput([]byte(data), perm)
+}
+
 type writePathsOptions struct {
 	nulPathSeparator bool
 	tree             bool
@@ -3149,11 +3154,6 @@ func (c *Config) writePaths(paths []string, options writePathsOptions) error {
 		}
 	}
 	return c.writeOutputString(builder.String(), 0o666)
-}
-
-// writeOutputString writes data to the configured output.
-func (c *Config) writeOutputString(data string, perm fs.FileMode) error {
-	return c.writeOutput([]byte(data), perm)
 }
 
 func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {

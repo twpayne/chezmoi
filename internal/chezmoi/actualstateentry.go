@@ -100,6 +100,11 @@ func (s *ActualStateAbsent) IsExternal() bool {
 	return false
 }
 
+// OriginString returns s's origin.
+func (s *ActualStateAbsent) OriginString() string {
+	return s.absPath.String()
+}
+
 // Path returns s's path.
 func (s *ActualStateAbsent) Path() AbsPath {
 	return s.absPath
@@ -108,11 +113,6 @@ func (s *ActualStateAbsent) Path() AbsPath {
 // Remove removes s.
 func (s *ActualStateAbsent) Remove(system System) error {
 	return nil
-}
-
-// OriginString returns s's origin.
-func (s *ActualStateAbsent) OriginString() string {
-	return s.absPath.String()
 }
 
 // EntryState returns s's entry state.
@@ -128,6 +128,11 @@ func (s *ActualStateDir) IsExternal() bool {
 	return false
 }
 
+// OriginString returns s's origin.
+func (s *ActualStateDir) OriginString() string {
+	return s.absPath.String()
+}
+
 // Path returns s's path.
 func (s *ActualStateDir) Path() AbsPath {
 	return s.absPath
@@ -136,11 +141,6 @@ func (s *ActualStateDir) Path() AbsPath {
 // Remove removes s.
 func (s *ActualStateDir) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
-}
-
-// OriginString returns s's origin.
-func (s *ActualStateDir) OriginString() string {
-	return s.absPath.String()
 }
 
 // Contents returns s's contents.
@@ -168,6 +168,11 @@ func (s *ActualStateFile) IsExternal() bool {
 	return false
 }
 
+// OriginString returns s's origin.
+func (s *ActualStateFile) OriginString() string {
+	return s.absPath.String()
+}
+
 // Path returns s's path.
 func (s *ActualStateFile) Path() AbsPath {
 	return s.absPath
@@ -181,11 +186,6 @@ func (s *ActualStateFile) Perm() fs.FileMode {
 // Remove removes s.
 func (s *ActualStateFile) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
-}
-
-// OriginString returns s's origin.
-func (s *ActualStateFile) OriginString() string {
-	return s.absPath.String()
 }
 
 // EntryState returns s's entry state.
@@ -212,6 +212,11 @@ func (s *ActualStateSymlink) Linkname() (string, error) {
 	return s.linknameFunc()
 }
 
+// OriginString returns s's origin.
+func (s *ActualStateSymlink) OriginString() string {
+	return s.absPath.String()
+}
+
 // Path returns s's path.
 func (s *ActualStateSymlink) Path() AbsPath {
 	return s.absPath
@@ -220,9 +225,4 @@ func (s *ActualStateSymlink) Path() AbsPath {
 // Remove removes s.
 func (s *ActualStateSymlink) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
-}
-
-// OriginString returns s's origin.
-func (s *ActualStateSymlink) OriginString() string {
-	return s.absPath.String()
 }

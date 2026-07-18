@@ -1663,127 +1663,6 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 	})
 }
 
-// getExternalDataRaw returns the raw data for external at externalRelPath,
-// possibly from the external cache.
-func (s *SourceState) getExternalDataRaw(
-	ctx context.Context,
-	externalRelPath RelPath,
-	urlStr string,
-	refreshPeriod Duration,
-	options *ReadOptions,
-) ([]byte, error) {
-	// Handle file:// URLs by always reading from disk.
-	switch urlStruct, err := url.Parse(urlStr); {
-	case err != nil:
-		return nil, err
-	case urlStruct.Scheme == "file":
-		data, err := s.system.ReadFile(NewAbsPath(urlStruct.Path))
-		if err != nil {
-			return nil, err
-		}
-		return data, nil
-	}
-
-	var now time.Time
-	if options != nil && options.TimeNow != nil {
-		now = options.TimeNow()
-	} else {
-		now = time.Now()
-	}
-	now = now.UTC()
-
-	refreshExternals := RefreshExternalsAuto
-	if options != nil {
-		refreshExternals = options.RefreshExternals
-	}
-	urlSHA256 := sha256.Sum256([]byte(urlStr))
-	cacheKey := hex.EncodeToString(urlSHA256[:])
-	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey)
-	switch refreshExternals {
-	case RefreshExternalsAlways:
-		// Never use the cache.
-	case RefreshExternalsAuto:
-		// Use the cache, if available and within the refresh period.
-		if fileInfo, err := s.baseSystem.Stat(cachedDataAbsPath); err == nil {
-			if refreshPeriod == 0 || fileInfo.ModTime().Add(time.Duration(refreshPeriod)).After(now) {
-				if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
-					return data, nil
-				}
-			}
-		}
-	case RefreshExternalsNever:
-		// Always use the cache, if available, irrespective of the refresh
-		// period.
-		if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
-			return data, nil
-		}
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, urlStr, http.NoBody)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := chezmoilog.LogHTTPRequest(ctx, s.logger, s.httpClient, req)
-	if err != nil {
-		return nil, err
-	}
-	var data []byte
-	if options == nil || options.ReadHTTPResponse == nil {
-		data, err = io.ReadAll(resp.Body)
-	} else {
-		data, err = options.ReadHTTPResponse(urlStr, resp)
-	}
-	_ = resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode < http.StatusOK || http.StatusMultipleChoices <= resp.StatusCode {
-		return nil, fmt.Errorf("%s: %s: %s", externalRelPath, urlStr, resp.Status)
-	}
-
-	if err := MkdirAll(s.baseSystem, cachedDataAbsPath.Dir(), 0o700); err != nil {
-		return nil, err
-	}
-	if err := s.baseSystem.WriteFile(cachedDataAbsPath, data, 0o600); err != nil {
-		return nil, err
-	}
-	if err := s.baseSystem.Chtimes(cachedDataAbsPath, now, now); err != nil {
-		return nil, err
-	}
-
-	return data, nil
-}
-
-// getExternalDataAndURL iterates over external.URL and external.URLs, returning
-// the first data that is downloaded successfully and the URL it was downloaded
-// from.
-func (s *SourceState) getExternalDataAndURL(
-	ctx context.Context,
-	externalRelPath RelPath,
-	external *External,
-	options *ReadOptions,
-) ([]byte, string, error) {
-	var firstURLStr string
-	var firstErr error
-	for _, urlStr := range append([]string{external.URL}, external.URLs...) {
-		if urlStr == "" {
-			continue
-		}
-		data, err := s.getExternalDataRaw(ctx, externalRelPath, urlStr, external.RefreshPeriod, options)
-		if err == nil {
-			return data, urlStr, nil
-		}
-		if firstURLStr == "" {
-			firstURLStr = urlStr
-			firstErr = err
-		}
-	}
-	if firstURLStr == "" {
-		return nil, "", fmt.Errorf("%s: no URL", externalRelPath)
-	}
-	return nil, firstURLStr, firstErr
-}
-
 // getExternalData reads the external data for externalRelPath from
 // external.URL or external.URLs, returning the data and URL.
 func (s *SourceState) getExternalData(
@@ -1894,40 +1773,125 @@ func (s *SourceState) getExternalData(
 	return data, urlStr, nil
 }
 
-// newSourceStateDir returns a new SourceStateDir.
-func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
-	targetStateDir := &TargetStateDir{
-		perm: dirAttr.perm() &^ s.umask,
+// getExternalDataAndURL iterates over external.URL and external.URLs, returning
+// the first data that is downloaded successfully and the URL it was downloaded
+// from.
+func (s *SourceState) getExternalDataAndURL(
+	ctx context.Context,
+	externalRelPath RelPath,
+	external *External,
+	options *ReadOptions,
+) ([]byte, string, error) {
+	var firstURLStr string
+	var firstErr error
+	for _, urlStr := range append([]string{external.URL}, external.URLs...) {
+		if urlStr == "" {
+			continue
+		}
+		data, err := s.getExternalDataRaw(ctx, externalRelPath, urlStr, external.RefreshPeriod, options)
+		if err == nil {
+			return data, urlStr, nil
+		}
+		if firstURLStr == "" {
+			firstURLStr = urlStr
+			firstErr = err
+		}
 	}
-	return &SourceStateDir{
-		origin:           SourceStateOriginAbsPath(absPath),
-		sourceRelPath:    sourceRelPath,
-		attr:             dirAttr,
-		targetStateEntry: targetStateDir,
+	if firstURLStr == "" {
+		return nil, "", fmt.Errorf("%s: no URL", externalRelPath)
 	}
+	return nil, firstURLStr, firstErr
 }
 
-func (s *SourceState) readContentsAndExecuteTemplate(
-	contentsFunc ContentsFunc,
-	fileAttr FileAttr,
-	sourceRelPath SourceRelPath,
-	destAbsPath AbsPath,
+// getExternalDataRaw returns the raw data for external at externalRelPath,
+// possibly from the external cache.
+func (s *SourceState) getExternalDataRaw(
+	ctx context.Context,
+	externalRelPath RelPath,
+	urlStr string,
+	refreshPeriod Duration,
+	options *ReadOptions,
 ) ([]byte, error) {
-	fileContents, err := contentsFunc()
-	if err != nil {
+	// Handle file:// URLs by always reading from disk.
+	switch urlStruct, err := url.Parse(urlStr); {
+	case err != nil:
 		return nil, err
-	}
-	if fileAttr.Template {
-		fileContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
-			NameRelPath: sourceRelPath.RelPath(),
-			Data:        fileContents,
-			DestAbsPath: destAbsPath,
-		})
+	case urlStruct.Scheme == "file":
+		data, err := s.system.ReadFile(NewAbsPath(urlStruct.Path))
 		if err != nil {
 			return nil, err
 		}
+		return data, nil
 	}
-	return fileContents, nil
+
+	var now time.Time
+	if options != nil && options.TimeNow != nil {
+		now = options.TimeNow()
+	} else {
+		now = time.Now()
+	}
+	now = now.UTC()
+
+	refreshExternals := RefreshExternalsAuto
+	if options != nil {
+		refreshExternals = options.RefreshExternals
+	}
+	urlSHA256 := sha256.Sum256([]byte(urlStr))
+	cacheKey := hex.EncodeToString(urlSHA256[:])
+	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey)
+	switch refreshExternals {
+	case RefreshExternalsAlways:
+		// Never use the cache.
+	case RefreshExternalsAuto:
+		// Use the cache, if available and within the refresh period.
+		if fileInfo, err := s.baseSystem.Stat(cachedDataAbsPath); err == nil {
+			if refreshPeriod == 0 || fileInfo.ModTime().Add(time.Duration(refreshPeriod)).After(now) {
+				if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
+					return data, nil
+				}
+			}
+		}
+	case RefreshExternalsNever:
+		// Always use the cache, if available, irrespective of the refresh
+		// period.
+		if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
+			return data, nil
+		}
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, urlStr, http.NoBody)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := chezmoilog.LogHTTPRequest(ctx, s.logger, s.httpClient, req)
+	if err != nil {
+		return nil, err
+	}
+	var data []byte
+	if options == nil || options.ReadHTTPResponse == nil {
+		data, err = io.ReadAll(resp.Body)
+	} else {
+		data, err = options.ReadHTTPResponse(urlStr, resp)
+	}
+	_ = resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode < http.StatusOK || http.StatusMultipleChoices <= resp.StatusCode {
+		return nil, fmt.Errorf("%s: %s: %s", externalRelPath, urlStr, resp.Status)
+	}
+
+	if err := MkdirAll(s.baseSystem, cachedDataAbsPath.Dir(), 0o700); err != nil {
+		return nil, err
+	}
+	if err := s.baseSystem.WriteFile(cachedDataAbsPath, data, 0o600); err != nil {
+		return nil, err
+	}
+	if err := s.baseSystem.Chtimes(cachedDataAbsPath, now, now); err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 // newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
@@ -2135,25 +2099,42 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 	}
 }
 
-// newSymlinkTargetStateEntryFunc returns a targetStateEntryFunc that returns a
-// symlink with the linkname sourceLazyContents.
-func (s *SourceState) newSymlinkTargetStateEntryFunc(
-	sourceRelPath SourceRelPath,
-	fileAttr FileAttr,
-	contentsFunc ContentsFunc,
-) TargetStateEntryFunc {
-	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		linknameFunc := func() (string, error) {
-			linknameBytes, err := s.readContentsAndExecuteTemplate(contentsFunc, fileAttr, sourceRelPath, destAbsPath)
-			if err != nil {
-				return "", err
-			}
-			linkname := normalizeLinkname(string(bytes.TrimSpace(linknameBytes)))
-			return linkname, nil
-		}
-		return &TargetStateSymlink{
-			linknameFunc: linknameFunc,
-		}, nil
+// newSourceStateDir returns a new SourceStateDir.
+func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
+	targetStateDir := &TargetStateDir{
+		perm: dirAttr.perm() &^ s.umask,
+	}
+	return &SourceStateDir{
+		origin:           SourceStateOriginAbsPath(absPath),
+		sourceRelPath:    sourceRelPath,
+		attr:             dirAttr,
+		targetStateEntry: targetStateDir,
+	}
+}
+
+// newSourceStateDirEntry returns a SourceStateEntry constructed from a
+// directory in s.
+func (s *SourceState) newSourceStateDirEntry(
+	actualStateDir *ActualStateDir,
+	fileInfo fs.FileInfo,
+	parentSourceRelPath SourceRelPath,
+	targetRelPath RelPath,
+	options *AddOptions,
+) *SourceStateDir {
+	dirAttr := DirAttr{
+		TargetName: fileInfo.Name(),
+		Exact:      options.shouldBeExact(targetRelPath),
+		Private:    isPrivate(fileInfo),
+		ReadOnly:   isReadOnly(fileInfo),
+	}
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
+	return &SourceStateDir{
+		attr:          dirAttr,
+		origin:        actualStateDir,
+		sourceRelPath: sourceRelPath,
+		targetStateEntry: &TargetStateDir{
+			perm: fs.ModePerm &^ s.umask,
+		},
 	}
 }
 
@@ -2227,32 +2208,6 @@ func (s *SourceState) newSourceStateFile(
 		contentsFunc:         contentsFunc,
 		contentsSHA256Func:   lazySHA256(contentsFunc),
 		targetStateEntryFunc: targetStateEntryFunc,
-	}
-}
-
-// newSourceStateDirEntry returns a SourceStateEntry constructed from a
-// directory in s.
-func (s *SourceState) newSourceStateDirEntry(
-	actualStateDir *ActualStateDir,
-	fileInfo fs.FileInfo,
-	parentSourceRelPath SourceRelPath,
-	targetRelPath RelPath,
-	options *AddOptions,
-) *SourceStateDir {
-	dirAttr := DirAttr{
-		TargetName: fileInfo.Name(),
-		Exact:      options.shouldBeExact(targetRelPath),
-		Private:    isPrivate(fileInfo),
-		ReadOnly:   isReadOnly(fileInfo),
-	}
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
-	return &SourceStateDir{
-		attr:          dirAttr,
-		origin:        actualStateDir,
-		sourceRelPath: sourceRelPath,
-		targetStateEntry: &TargetStateDir{
-			perm: fs.ModePerm &^ s.umask,
-		},
 	}
 }
 
@@ -2381,6 +2336,28 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 	}, nil
 }
 
+// newSymlinkTargetStateEntryFunc returns a targetStateEntryFunc that returns a
+// symlink with the linkname sourceLazyContents.
+func (s *SourceState) newSymlinkTargetStateEntryFunc(
+	sourceRelPath SourceRelPath,
+	fileAttr FileAttr,
+	contentsFunc ContentsFunc,
+) TargetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		linknameFunc := func() (string, error) {
+			linknameBytes, err := s.readContentsAndExecuteTemplate(contentsFunc, fileAttr, sourceRelPath, destAbsPath)
+			if err != nil {
+				return "", err
+			}
+			linkname := normalizeLinkname(string(bytes.TrimSpace(linknameBytes)))
+			return linkname, nil
+		}
+		return &TargetStateSymlink{
+			linknameFunc: linknameFunc,
+		}, nil
+	}
+}
+
 // populateImplicitParentDirs creates implicit parent directories for
 // externalRelPath.
 func (s *SourceState) populateImplicitParentDirs(
@@ -2399,6 +2376,29 @@ func (s *SourceState) populateImplicitParentDirs(
 		)
 	}
 	return sourceStateEntries
+}
+
+func (s *SourceState) readContentsAndExecuteTemplate(
+	contentsFunc ContentsFunc,
+	fileAttr FileAttr,
+	sourceRelPath SourceRelPath,
+	destAbsPath AbsPath,
+) ([]byte, error) {
+	fileContents, err := contentsFunc()
+	if err != nil {
+		return nil, err
+	}
+	if fileAttr.Template {
+		fileContents, err = s.ExecuteTemplateData(ExecuteTemplateDataOptions{
+			NameRelPath: sourceRelPath.RelPath(),
+			Data:        fileContents,
+			DestAbsPath: destAbsPath,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return fileContents, nil
 }
 
 // readExternal reads an external and returns its SourceStateEntries.
@@ -3010,13 +3010,13 @@ func (e *External) IsExternal() bool {
 	return true
 }
 
-func (e *External) Path() AbsPath {
-	return e.sourceAbsPath
-}
-
 func (e *External) OriginString() string {
 	urlStr := cmp.Or(append([]string{e.URL}, e.URLs...)...)
 	return urlStr + " defined in " + e.sourceAbsPath.String()
+}
+
+func (e *External) Path() AbsPath {
+	return e.sourceAbsPath
 }
 
 // canonicalSourceStateEntry returns the canonical SourceStateEntry for the

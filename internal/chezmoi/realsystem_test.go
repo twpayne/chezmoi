@@ -66,14 +66,6 @@ func TestRealSystemGlob(t *testing.T) {
 	})
 }
 
-func pathsToSlashes(paths []string) []string {
-	result := make([]string, 0, len(paths))
-	for _, path := range paths {
-		result = append(result, filepath.ToSlash(path))
-	}
-	return result
-}
-
 func TestPrepareScriptCmd(t *testing.T) {
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/work": map[string]any{},
@@ -203,6 +195,14 @@ func TestPrepareScriptCmdCleansUpOnError(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, 0, len(dirEntries))
 	})
+}
+
+func pathsToSlashes(paths []string) []string {
+	result := make([]string, 0, len(paths))
+	for _, path := range paths {
+		result = append(result, filepath.ToSlash(path))
+	}
+	return result
 }
 
 type rawPathErrorSystem struct {

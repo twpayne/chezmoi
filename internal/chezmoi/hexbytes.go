@@ -32,6 +32,10 @@ func (h HexBytes) MarshalYAML() ([]byte, error) {
 	return data, nil
 }
 
+func (h HexBytes) String() string {
+	return hex.EncodeToString(h)
+}
+
 // UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
 func (h *HexBytes) UnmarshalText(text []byte) error {
 	if len(text) == 0 {
@@ -63,8 +67,4 @@ func (h *HexBytes) UnmarshalYAML(data []byte) error {
 	}
 	*h = hexBytes
 	return nil
-}
-
-func (h HexBytes) String() string {
-	return hex.EncodeToString(h)
 }

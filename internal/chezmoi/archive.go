@@ -145,11 +145,11 @@ type RARFileInfo struct {
 	*rardecode.FileHeader
 }
 
+func (i RARFileInfo) IsDir() bool        { return i.FileHeader.IsDir }
+func (i RARFileInfo) ModTime() time.Time { return i.ModificationTime }
+func (i RARFileInfo) Mode() fs.FileMode  { return i.FileHeader.Mode() }
 func (i RARFileInfo) Name() string       { return i.FileHeader.Name }
 func (i RARFileInfo) Size() int64        { return i.UnPackedSize }
-func (i RARFileInfo) Mode() fs.FileMode  { return i.FileHeader.Mode() }
-func (i RARFileInfo) ModTime() time.Time { return i.ModificationTime }
-func (i RARFileInfo) IsDir() bool        { return i.FileHeader.IsDir }
 func (i RARFileInfo) Sys() any           { return nil }
 
 // walkArchiveRar walks over all the entries in a rar archive.

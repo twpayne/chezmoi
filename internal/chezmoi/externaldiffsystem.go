@@ -62,17 +62,6 @@ func NewExternalDiffSystem(
 	}
 }
 
-// Close frees all resources held by s.
-func (s *ExternalDiffSystem) Close() error {
-	if !s.tempDirAbsPath.IsEmpty() {
-		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
-			return err
-		}
-		s.tempDirAbsPath = EmptyAbsPath
-	}
-	return nil
-}
-
 // Chmod implements System.Chmod.
 func (s *ExternalDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 	// FIXME generate suitable inputs for s.command
@@ -82,6 +71,17 @@ func (s *ExternalDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 // Chtimes implements System.Chtimes.
 func (s *ExternalDiffSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	return s.system.Chtimes(name, atime, mtime)
+}
+
+// Close frees all resources held by s.
+func (s *ExternalDiffSystem) Close() error {
+	if !s.tempDirAbsPath.IsEmpty() {
+		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
+		s.tempDirAbsPath = EmptyAbsPath
+	}
+	return nil
 }
 
 // Glob implements System.Glob.
@@ -398,19 +398,6 @@ func (s *ExternalDiffSystem) WriteSymlink(oldName string, newName AbsPath) error
 	return s.system.WriteSymlink(oldName, newName)
 }
 
-// tempDir creates a temporary directory for s if it does not already exist and
-// returns its path.
-func (s *ExternalDiffSystem) tempDir() (AbsPath, error) {
-	if s.tempDirAbsPath.IsEmpty() {
-		tempDir, err := os.MkdirTemp("", "chezmoi-diff")
-		if err != nil {
-			return EmptyAbsPath, err
-		}
-		s.tempDirAbsPath = NewAbsPath(tempDir)
-	}
-	return s.tempDirAbsPath, nil
-}
-
 // entriesDiffer returns whether the two given entries differ.
 //
 // This function employs negative logic, i.e. that the default is that the
@@ -459,4 +446,17 @@ func (s *ExternalDiffSystem) entriesDiffer(absPath1, absPath2 AbsPath) (bool, er
 		// sockets) but chezmoi does not manage these types of entries.
 		return true, nil
 	}
+}
+
+// tempDir creates a temporary directory for s if it does not already exist and
+// returns its path.
+func (s *ExternalDiffSystem) tempDir() (AbsPath, error) {
+	if s.tempDirAbsPath.IsEmpty() {
+		tempDir, err := os.MkdirTemp("", "chezmoi-diff")
+		if err != nil {
+			return EmptyAbsPath, err
+		}
+		s.tempDirAbsPath = NewAbsPath(tempDir)
+	}
+	return s.tempDirAbsPath, nil
 }

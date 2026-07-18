@@ -31,11 +31,11 @@ type fileInfo struct {
 	isDir   bool
 }
 
+func (fi *fileInfo) IsDir() bool        { return fi.isDir }
+func (fi *fileInfo) ModTime() time.Time { return fi.modTime }
+func (fi *fileInfo) Mode() fs.FileMode  { return fi.mode }
 func (fi *fileInfo) Name() string       { return fi.name }
 func (fi *fileInfo) Size() int64        { return fi.size }
-func (fi *fileInfo) Mode() fs.FileMode  { return fi.mode }
-func (fi *fileInfo) ModTime() time.Time { return fi.modTime }
-func (fi *fileInfo) IsDir() bool        { return fi.isDir }
 func (fi *fileInfo) Sys() any           { return nil } // Sys always returns nil to avoid any inconsistency.
 
 func (c *Config) newReAddCmd() *cobra.Command {

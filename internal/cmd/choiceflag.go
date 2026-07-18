@@ -24,26 +24,6 @@ type choiceFlag struct {
 	uniqueAbbreviations map[string]string
 }
 
-// newChoiceFlag returns a new choiceFlag with the given value and allowed
-// values. If value is not allowed then it panics.
-//
-// If allowedValues is empty then all values are allowed. This functionality,
-// although counter-intuitive, is required because the allowed values are
-// carried in the value, not in the type, so a serialization/deserialization
-// round trip discards the allowed values. To allow deserialization to succeed,
-// we must allow all values.
-func newChoiceFlag(value string, allowedValues []string) *choiceFlag {
-	allowedValuesSet := chezmoiset.New(allowedValues...)
-	if !allowedValuesSet.IsEmpty() && !allowedValuesSet.Contains(value) {
-		panic("value not allowed")
-	}
-	return &choiceFlag{
-		value:               value,
-		allowedValues:       allowedValuesSet,
-		uniqueAbbreviations: chezmoi.UniqueAbbreviations(allowedValues),
-	}
-}
-
 // FlagCompletionFunc returns f's flag completion function.
 func (f *choiceFlag) FlagCompletionFunc() func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
 	return chezmoi.FlagCompletionFunc(slices.Sorted(maps.Keys(f.allowedValues)))
@@ -135,5 +115,25 @@ func StringToChoiceFlagHookFunc() mapstructure.DecodeHookFunc {
 			return nil, fmt.Errorf("expected a string, got a %T", data)
 		}
 		return cf, nil
+	}
+}
+
+// newChoiceFlag returns a new choiceFlag with the given value and allowed
+// values. If value is not allowed then it panics.
+//
+// If allowedValues is empty then all values are allowed. This functionality,
+// although counter-intuitive, is required because the allowed values are
+// carried in the value, not in the type, so a serialization/deserialization
+// round trip discards the allowed values. To allow deserialization to succeed,
+// we must allow all values.
+func newChoiceFlag(value string, allowedValues []string) *choiceFlag {
+	allowedValuesSet := chezmoiset.New(allowedValues...)
+	if !allowedValuesSet.IsEmpty() && !allowedValuesSet.Contains(value) {
+		panic("value not allowed")
+	}
+	return &choiceFlag{
+		value:               value,
+		allowedValues:       allowedValuesSet,
+		uniqueAbbreviations: chezmoi.UniqueAbbreviations(allowedValues),
 	}
 }

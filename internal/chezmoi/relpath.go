@@ -38,11 +38,6 @@ func (p RelPath) Dir() RelPath {
 	return NewRelPath(path.Dir(p.relPath))
 }
 
-// IsEmpty returns if p is empty.
-func (p RelPath) IsEmpty() bool {
-	return p.relPath == ""
-}
-
 // Ext returns p's extension.
 func (p RelPath) Ext() string {
 	return path.Ext(p.relPath)
@@ -51,6 +46,11 @@ func (p RelPath) Ext() string {
 // HasDirPrefix returns true if p has dir prefix dirPrefix.
 func (p RelPath) HasDirPrefix(dirPrefix RelPath) bool {
 	return strings.HasPrefix(p.relPath, dirPrefix.String()+"/")
+}
+
+// IsEmpty returns if p is empty.
+func (p RelPath) IsEmpty() bool {
+	return p.relPath == ""
 }
 
 // Join appends relPaths to p.
@@ -88,14 +88,14 @@ func (p RelPath) Slice(begin, end int) RelPath {
 	return NewRelPath(p.relPath[begin:end])
 }
 
-// SourceRelPath returns p as a SourceRelPath.
-func (p RelPath) SourceRelPath() SourceRelPath {
-	return NewSourceRelPath(p.relPath)
-}
-
 // SourceRelDirPath returns p as a directory SourceRelPath.
 func (p RelPath) SourceRelDirPath() SourceRelPath {
 	return NewSourceRelDirPath(p.relPath)
+}
+
+// SourceRelPath returns p as a SourceRelPath.
+func (p RelPath) SourceRelPath() SourceRelPath {
+	return NewSourceRelPath(p.relPath)
 }
 
 // Split returns p's directory and path.

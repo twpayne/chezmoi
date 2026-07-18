@@ -18,6 +18,15 @@ type httpCache struct {
 	open func() (driver.Conn, error)
 }
 
+// Delete implements [github.com/bartventer/httpcache/store/driver.Conn.Delete].
+func (c *httpCache) Delete(key string) error {
+	conn, err := c.open()
+	if err != nil {
+		return err
+	}
+	return conn.Delete(key)
+}
+
 // Get implements [github.com/bartventer/httpcache/store/driver.Conn.Get].
 func (c *httpCache) Get(key string) ([]byte, error) {
 	conn, err := c.open()
@@ -34,15 +43,6 @@ func (c *httpCache) Set(key string, entry []byte) error {
 		return err
 	}
 	return conn.Set(key, entry)
-}
-
-// Delete implements [github.com/bartventer/httpcache/store/driver.Conn.Delete].
-func (c *httpCache) Delete(key string) error {
-	conn, err := c.open()
-	if err != nil {
-		return err
-	}
-	return conn.Delete(key)
 }
 
 func init() {

@@ -39,6 +39,12 @@ func (s *DryRunSystem) Glob(pattern string) ([]string, error) {
 	return s.system.Glob(pattern)
 }
 
+// IsModified returns true if a method that would have modified the wrapped
+// system has been called.
+func (s *DryRunSystem) IsModified() bool {
+	return s.modified
+}
+
 // Link implements System.Link.
 func (s *DryRunSystem) Link(oldName, newName AbsPath) error {
 	s.setModified()
@@ -54,12 +60,6 @@ func (s *DryRunSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 func (s *DryRunSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	s.setModified()
 	return nil
-}
-
-// IsModified returns true if a method that would have modified the wrapped
-// system has been called.
-func (s *DryRunSystem) IsModified() bool {
-	return s.modified
 }
 
 // RawPath implements System.RawPath.
