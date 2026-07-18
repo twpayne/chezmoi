@@ -17,7 +17,7 @@ type azureKeyVault struct {
 }
 
 func (v *azureKeyVault) URL(vaultName string) string {
-	return fmt.Sprintf("https://%s.vault.azure.net/", vaultName)
+	return "https://" + vaultName + ".vault.azure.net/"
 }
 
 type azureKeyVaultConfig struct {

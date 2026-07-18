@@ -278,7 +278,8 @@ func (m MultichoiceInputModel) View() string {
 
 	if m.paginator.TotalPages > 1 {
 		s.WriteString(strings.Repeat("\n", height-m.paginator.ItemsOnPage(len(m.items))+1))
-		s.WriteString("  " + m.paginator.View())
+		s.WriteString("  ")
+		s.WriteString(m.paginator.View())
 	}
 
 	var parts []string
