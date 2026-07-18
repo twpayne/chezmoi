@@ -9,6 +9,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -28,6 +29,8 @@ type passholeConfig struct {
 var passholeMinVersion = semver.Version{Major: 1, Minor: 10, Patch: 0}
 
 func (c *Config) passholeTemplateFunc(path, field string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	key := passholeCacheKey{
 		path:  path,
 		field: field,

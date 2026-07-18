@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/Shopify/ejson"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type ejsonConfig struct {
@@ -13,6 +15,8 @@ type ejsonConfig struct {
 }
 
 func (c *Config) ejsonDecryptWithKeyTemplateFunc(filePath, key string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if data, ok := c.Ejson.cache[filePath]; ok {
 		return data
 	}

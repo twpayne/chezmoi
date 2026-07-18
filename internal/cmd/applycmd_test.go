@@ -217,6 +217,33 @@ func TestApplyCmd(t *testing.T) {
 	}
 }
 
+func TestApplySkipSecrets(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local/share/chezmoi": map[string]any{
+				"dot_file":           "# contents of .file\n",
+				"dot_secret.tmpl":    `{{ secret "password" }}`,
+				"dot_encrypted.tmpl": `{{ decrypt "ciphertext" }}`,
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		c := newTestConfig(t, fileSystem)
+		c.skipSecrets = true
+		assert.NoError(t, c.execute([]string{"apply"}))
+		vfst.RunTests(t, fileSystem, "",
+			vfst.TestPath("/home/user/.encrypted",
+				vfst.TestDoesNotExist(),
+			),
+			vfst.TestPath("/home/user/.file",
+				vfst.TestContentsString("# contents of .file\n"),
+			),
+			vfst.TestPath("/home/user/.secret",
+				vfst.TestDoesNotExist(),
+			),
+		)
+	})
+}
+
 func TestUserAgent(t *testing.T) {
 	var userAgent string
 	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

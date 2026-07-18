@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"slices"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -17,6 +18,8 @@ type dashlaneConfig struct {
 }
 
 func (c *Config) dashlaneNoteTemplateFunc(filter string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if data, ok := c.Dashlane.cacheNote[filter]; ok {
 		return data
 	}
@@ -34,6 +37,8 @@ func (c *Config) dashlaneNoteTemplateFunc(filter string) any {
 }
 
 func (c *Config) dashlanePasswordTemplateFunc(filter string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if data, ok := c.Dashlane.cachePassword[filter]; ok {
 		return data
 	}

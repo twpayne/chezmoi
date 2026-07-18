@@ -8,6 +8,7 @@ import (
 	"slices"
 	"strings"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -20,6 +21,8 @@ type dopplerConfig struct {
 }
 
 func (c *Config) dopplerTemplateFunc(key string, additionalArgs ...string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if len(additionalArgs) > 2 {
 		// Add one to the number of received arguments as the key
 		// is the first argument.
@@ -41,6 +44,8 @@ func (c *Config) dopplerTemplateFunc(key string, additionalArgs ...string) any {
 }
 
 func (c *Config) dopplerProjectJSONTemplateFunc(additionalArgs ...string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if len(additionalArgs) > 2 {
 		panic(fmt.Errorf("expected 0 to 2 arguments, got %d", len(additionalArgs)))
 	}

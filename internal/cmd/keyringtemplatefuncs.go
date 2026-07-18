@@ -6,6 +6,8 @@ import (
 	"fmt"
 
 	"github.com/zalando/go-keyring"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type keyringKey struct {
@@ -18,6 +20,8 @@ type keyringData struct {
 }
 
 func (c *Config) keyringTemplateFunc(service, user string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	key := keyringKey{
 		service: service,
 		user:    user,

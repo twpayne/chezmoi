@@ -206,6 +206,7 @@ type Config struct {
 	noTTY            bool
 	outputAbsPath    chezmoi.AbsPath
 	refreshExternals chezmoi.RefreshExternals
+	skipSecrets      bool
 	sourcePath       bool
 	errorOnConflict  bool
 	templateFuncs    template.FuncMap
@@ -1929,6 +1930,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.overrideDataFileAbsPath, "override-data-file", "Override data with file")
 	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
+	persistentFlags.BoolVar(&c.skipSecrets, "skip-secrets", c.skipSecrets, "Skip all templates containing secrets")
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
 	persistentFlags.BoolVar(&c.errorOnConflict, "error-on-conflict", c.errorOnConflict, "Error on conflict")
 	persistentFlags.BoolVarP(&c.useBuiltinDiff, "use-builtin-diff", "", c.useBuiltinDiff, "Use builtin diff")

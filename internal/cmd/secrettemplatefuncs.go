@@ -8,6 +8,7 @@ import (
 	"slices"
 	"strings"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -18,10 +19,12 @@ type secretConfig struct {
 }
 
 func (c *Config) secretTemplateFunc(args ...string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	return string(bytes.TrimSpace(mustValue(c.secretOutput(args))))
 }
 
 func (c *Config) secretJSONTemplateFunc(args ...string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	output := mustValue(c.secretOutput(args))
 	var value any
 	must(json.Unmarshal(output, &value))

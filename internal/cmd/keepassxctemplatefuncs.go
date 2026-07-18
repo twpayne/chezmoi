@@ -61,6 +61,8 @@ var (
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if data, ok := c.Keepassxc.attachmentCache[entry][name]; ok {
 		return data
 	}
@@ -91,6 +93,8 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 }
 
 func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if c.Keepassxc.cache == nil {
 		c.Keepassxc.cache = make(map[string]map[string]string)
 	}
@@ -115,6 +119,8 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 }
 
 func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if c.Keepassxc.Mode == keepassxcModeBuiltin {
 		// builtin stores attributes in cache
 		if c.Keepassxc.cache == nil {
