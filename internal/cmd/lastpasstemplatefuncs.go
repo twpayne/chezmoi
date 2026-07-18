@@ -30,6 +30,7 @@ type lastpassConfig struct {
 
 func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	data := mustValue(c.lastpassData(id))
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {

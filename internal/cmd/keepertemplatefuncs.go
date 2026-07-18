@@ -27,7 +27,9 @@ func (c *Config) keeperTemplateFunc(record string) map[string]any {
 
 func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
 	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	output := mustValue(c.keeperOutput([]string{"get", "--format=json", record}))
+
 	var data struct {
 		Data struct {
 			Fields []struct {
@@ -37,6 +39,7 @@ func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
 		} `json:"data"`
 	}
 	must(json.Unmarshal(output, &data))
+
 	result := make(map[string]any)
 	for _, field := range data.Data.Fields {
 		result[field.Type] = field.Value
