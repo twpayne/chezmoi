@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -15,11 +16,13 @@ type protonPassConfig struct {
 }
 
 func (c *Config) protonPassTemplateFunc(item string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	args := []string{"item", "view", item}
 	return string(mustValue(c.protonPassOutput(args)))
 }
 
 func (c *Config) protonPassJSONTemplateFunc(item string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	args := []string{"item", "view", item, "--output=json"}
 	output := mustValue(c.protonPassOutput(args))
 	var result map[string]any

@@ -11,6 +11,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -28,6 +29,7 @@ type lastpassConfig struct {
 }
 
 func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	data := mustValue(c.lastpassData(id))
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
@@ -38,6 +40,7 @@ func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
 }
 
 func (c *Config) lastpassRawTemplateFunc(id string) []map[string]any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	return mustValue(c.lastpassData(id))
 }
 

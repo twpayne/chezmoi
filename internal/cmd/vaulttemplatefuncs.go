@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -14,6 +15,8 @@ type vaultConfig struct {
 }
 
 func (c *Config) vaultTemplateFunc(key string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if data, ok := c.Vault.cache[key]; ok {
 		return data
 	}

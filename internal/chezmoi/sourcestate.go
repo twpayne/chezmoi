@@ -791,7 +791,10 @@ func (s *SourceState) Apply(
 	targetAbsPath := targetDirAbsPath.Join(targetRelPath)
 
 	targetEntryState, err := targetStateEntry.EntryState(options.Umask)
-	if err != nil {
+	switch {
+	case errors.Is(err, errSkipTemplate):
+		return nil
+	case err != nil:
 		return err
 	}
 

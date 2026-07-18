@@ -7,6 +7,8 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type azureKeyVault struct {
@@ -57,6 +59,8 @@ func (a *azureKeyVaultConfig) GetSecret(secretName, vaultName string) string {
 }
 
 func (c *Config) azureKeyVaultTemplateFunc(args ...string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	var secretName, vaultName string
 
 	switch len(args) {

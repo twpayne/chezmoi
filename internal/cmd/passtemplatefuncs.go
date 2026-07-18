@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -14,14 +15,15 @@ type passConfig struct {
 }
 
 func (c *Config) passTemplateFunc(id string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	output := mustValue(c.passOutput(id))
 	firstLine, _, _ := bytes.Cut(output, []byte{'\n'})
 	return string(bytes.TrimSpace(firstLine))
 }
 
 func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	output := mustValue(c.passOutput(id))
-
 	result := make(map[string]string)
 	for line := range bytes.SplitSeq(output, []byte{'\n'}) {
 		if key, value, ok := bytes.Cut(line, []byte{':'}); ok {
@@ -32,6 +34,7 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 }
 
 func (c *Config) passRawTemplateFunc(id string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	return string(mustValue(c.passOutput(id)))
 }
 

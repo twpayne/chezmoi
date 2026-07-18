@@ -8,6 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type awsSecretsManagerConfig struct {
@@ -19,6 +21,8 @@ type awsSecretsManagerConfig struct {
 }
 
 func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if secret, ok := c.AWSSecretsManager.cache[arn]; ok {
 		return secret
 	}
@@ -71,6 +75,8 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 }
 
 func (c *Config) awsSecretsManagerTemplateFunc(arn string) map[string]any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if secret, ok := c.AWSSecretsManager.jsonCache[arn]; ok {
 		return secret
 	}

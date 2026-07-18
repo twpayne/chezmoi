@@ -8,6 +8,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -19,6 +20,7 @@ type rbwConfig struct {
 var rbwMinVersion = semver.Version{Major: 1, Minor: 7, Patch: 0}
 
 func (c *Config) rbwFieldsTemplateFunc(name string, extraArgs ...string) map[string]any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	args := append([]string{"get", "--raw", name}, extraArgs...)
 	output := mustValue(c.rbwOutput(args))
 	var data struct {
@@ -35,6 +37,7 @@ func (c *Config) rbwFieldsTemplateFunc(name string, extraArgs ...string) map[str
 }
 
 func (c *Config) rbwTemplateFunc(name string, extraArgs ...string) map[string]any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	args := append([]string{"get", "--raw", name}, extraArgs...)
 	output := mustValue(c.rbwOutput(args))
 	var data map[string]any

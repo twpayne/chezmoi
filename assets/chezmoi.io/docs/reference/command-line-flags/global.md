@@ -101,6 +101,10 @@ their refresh periods.
 `never` (or any other falsy value accepted by `parseBool`) means only download
 if no cached external is available.
 
+### `--skip-secrets`
+
+Skip all templates containing secrets.
+
 ### `-S`, `--source` *directory*
 
 > Configuration: `sourceDir`

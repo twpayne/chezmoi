@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -16,6 +17,7 @@ type bitwardenSecretsConfig struct {
 }
 
 func (c *Config) bitwardenSecretsTemplateFunc(secretID string, additionalArgs ...string) any {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
 	args := []string{"secret", "get", secretID}
 	switch len(additionalArgs) {
 	case 0:

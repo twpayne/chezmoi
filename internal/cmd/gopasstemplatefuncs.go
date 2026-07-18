@@ -13,6 +13,7 @@ import (
 	"github.com/gopasspw/gopass/pkg/gopass"
 	"github.com/gopasspw/gopass/pkg/gopass/api"
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -42,6 +43,8 @@ type gopassConfig struct {
 }
 
 func (c *Config) gopassTemplateFunc(id string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if password, ok := c.Gopass.cache[id]; ok {
 		return password
 	}
@@ -67,6 +70,8 @@ func (c *Config) gopassTemplateFunc(id string) string {
 }
 
 func (c *Config) gopassRawTemplateFunc(id string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
 	if output, ok := c.Gopass.rawCache[id]; ok {
 		return string(output)
 	}
