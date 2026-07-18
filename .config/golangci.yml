@@ -118,6 +118,9 @@ linters:
       - pattern: ^fmt\.Print.*$
       - pattern: ^ioutil\..*$
       - pattern: ^os\.(DirEntry|ErrExist|ErrNotExist|FileInfo|FileMode|Is.*|Mode.*)$
+    funcorder:
+      alphabetical: true
+      function: true
     gocritic:
       enable-all: true
       disabled-checks:

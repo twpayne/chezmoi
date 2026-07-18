@@ -157,10 +157,9 @@ func (formatTOML) Name() string {
 	return "toml"
 }
 
-// Unmarshal implements Format.Unmarshal.
-func (formatTOML) Unmarshal(data []byte, value any) error {
-	_, err := toml.Decode(string(data), value)
-	return err
+// Marshal implements Format.Marshal.
+func (formatYAML) Marshal(value any) ([]byte, error) {
+	return yaml.Marshal(value)
 }
 
 // Name implements Format.Name.
@@ -168,9 +167,10 @@ func (formatYAML) Name() string {
 	return "yaml"
 }
 
-// Marshal implements Format.Marshal.
-func (formatYAML) Marshal(value any) ([]byte, error) {
-	return yaml.Marshal(value)
+// Unmarshal implements Format.Unmarshal.
+func (formatTOML) Unmarshal(data []byte, value any) error {
+	_, err := toml.Decode(string(data), value)
+	return err
 }
 
 // Unmarshal implements Format.Unmarshal.

@@ -232,6 +232,22 @@ func (m MultichoiceInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+func (m MultichoiceInputModel) Value() []string {
+	if (m.numSelected == 0 || !m.submitted) && m.defaultValue != nil {
+		return *m.defaultValue
+	}
+
+	var out []string
+
+	for _, item := range m.items {
+		if item.selected {
+			out = append(out, item.text)
+		}
+	}
+
+	return out
+}
+
 func (m MultichoiceInputModel) View() string {
 	if m.quitting {
 		return ""
@@ -273,22 +289,6 @@ func (m MultichoiceInputModel) View() string {
 	parts = append(parts, s.String(), m.help.View(m.keymap))
 
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
-}
-
-func (m MultichoiceInputModel) Value() []string {
-	if (m.numSelected == 0 || !m.submitted) && m.defaultValue != nil {
-		return *m.defaultValue
-	}
-
-	var out []string
-
-	for _, item := range m.items {
-		if item.selected {
-			out = append(out, item.text)
-		}
-	}
-
-	return out
 }
 
 func (m MultichoiceInputModel) deselectAll() MultichoiceInputModel {

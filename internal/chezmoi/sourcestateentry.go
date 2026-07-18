@@ -301,19 +301,19 @@ func (SourceStateOriginAbsPath) IsExternal() bool {
 	return false
 }
 
-// Path returns s's path.
-func (s SourceStateOriginAbsPath) Path() AbsPath {
-	return AbsPath(s)
-}
-
 // OriginString returns s's origin.
 func (s SourceStateOriginAbsPath) OriginString() string {
 	return AbsPath(s).String()
 }
 
 // Path returns s's path.
-func (s SourceStateOriginRemove) Path() AbsPath {
-	return EmptyAbsPath
+func (s SourceStateOriginAbsPath) Path() AbsPath {
+	return AbsPath(s)
+}
+
+// IsExternal returns if s is an external.
+func (SourceStateOriginRemove) IsExternal() bool {
+	return false
 }
 
 // OriginString returns s's origin.
@@ -321,7 +321,7 @@ func (s SourceStateOriginRemove) OriginString() string {
 	return "remove"
 }
 
-// IsExternal returns if s is an external.
-func (SourceStateOriginRemove) IsExternal() bool {
-	return false
+// Path returns s's path.
+func (s SourceStateOriginRemove) Path() AbsPath {
+	return EmptyAbsPath
 }

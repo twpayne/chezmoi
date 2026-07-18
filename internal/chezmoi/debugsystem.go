@@ -26,6 +26,16 @@ func NewDebugSystem(system System, logger *slog.Logger) *DebugSystem {
 	}
 }
 
+// Chmod implements System.Chmod.
+func (s *DebugSystem) Chmod(name AbsPath, mode fs.FileMode) error {
+	err := s.system.Chmod(name, mode)
+	chezmoilog.InfoOrError(s.logger, "Chmod", err,
+		chezmoilog.Stringer("name", name),
+		slog.Int("mode", int(mode)),
+	)
+	return err
+}
+
 // Chtimes implements System.Chtimes.
 func (s *DebugSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	err := s.system.Chtimes(name, atime, mtime)
@@ -33,16 +43,6 @@ func (s *DebugSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
 		chezmoilog.Stringer("name", name),
 		slog.Time("atime", atime),
 		slog.Time("mtime", mtime),
-	)
-	return err
-}
-
-// Chmod implements System.Chmod.
-func (s *DebugSystem) Chmod(name AbsPath, mode fs.FileMode) error {
-	err := s.system.Chmod(name, mode)
-	chezmoilog.InfoOrError(s.logger, "Chmod", err,
-		chezmoilog.Stringer("name", name),
-		slog.Int("mode", int(mode)),
 	)
 	return err
 }

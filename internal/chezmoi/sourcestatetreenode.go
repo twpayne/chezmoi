@@ -19,34 +19,6 @@ func NewSourceStateEntryTreeNode() *SourceStateEntryTreeNode {
 	return &SourceStateEntryTreeNode{}
 }
 
-// Get returns the SourceStateEntry at relPath.
-func (n *SourceStateEntryTreeNode) Get(relPath RelPath) SourceStateEntry {
-	nodes := n.GetNodes(relPath)
-	if nodes == nil {
-		return nil
-	}
-	return nodes[len(nodes)-1].SourceStateEntry
-}
-
-// GetNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
-func (n *SourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*SourceStateEntryTreeNode {
-	if targetRelPath.IsEmpty() {
-		return []*SourceStateEntryTreeNode{n}
-	}
-
-	targetRelPathComponents := targetRelPath.SplitAll()
-	nodes := make([]*SourceStateEntryTreeNode, 0, len(targetRelPathComponents))
-	nodes = append(nodes, n)
-	for _, childRelPath := range targetRelPathComponents {
-		childNode, ok := nodes[len(nodes)-1].Children[childRelPath]
-		if !ok {
-			return nil
-		}
-		nodes = append(nodes, childNode)
-	}
-	return nodes
-}
-
 // ForEach calls f for each SourceStateEntry in the tree.
 func (n *SourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath, SourceStateEntry) error) error {
 	return n.ForEachNode(targetRelPath, func(targetRelPath RelPath, node *SourceStateEntryTreeNode) error {
@@ -78,6 +50,15 @@ func (n *SourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(Rel
 	return nil
 }
 
+// Get returns the SourceStateEntry at relPath.
+func (n *SourceStateEntryTreeNode) Get(relPath RelPath) SourceStateEntry {
+	nodes := n.GetNodes(relPath)
+	if nodes == nil {
+		return nil
+	}
+	return nodes[len(nodes)-1].SourceStateEntry
+}
+
 // GetMap returns a map of relPaths to SourceStateEntries.
 func (n *SourceStateEntryTreeNode) GetMap() map[RelPath]SourceStateEntry {
 	m := make(map[RelPath]SourceStateEntry)
@@ -86,6 +67,25 @@ func (n *SourceStateEntryTreeNode) GetMap() map[RelPath]SourceStateEntry {
 		return nil
 	})
 	return m
+}
+
+// GetNodes returns the sourceStateEntryTreeNodes to reach targetRelPath.
+func (n *SourceStateEntryTreeNode) GetNodes(targetRelPath RelPath) []*SourceStateEntryTreeNode {
+	if targetRelPath.IsEmpty() {
+		return []*SourceStateEntryTreeNode{n}
+	}
+
+	targetRelPathComponents := targetRelPath.SplitAll()
+	nodes := make([]*SourceStateEntryTreeNode, 0, len(targetRelPathComponents))
+	nodes = append(nodes, n)
+	for _, childRelPath := range targetRelPathComponents {
+		childNode, ok := nodes[len(nodes)-1].Children[childRelPath]
+		if !ok {
+			return nil
+		}
+		nodes = append(nodes, childNode)
+	}
+	return nodes
 }
 
 // MkdirAll creates SourceStateDirs for all components of targetRelPath if they

@@ -42,17 +42,6 @@ func NewPatternSet() *PatternSet {
 	}
 }
 
-// LogValue implements log/slog.LogValuer.LogValue.
-func (ps *PatternSet) LogValue() slog.Value {
-	if ps == nil {
-		return slog.Value{}
-	}
-	return slog.GroupValue(
-		slog.Any("includePatterns", slices.Sorted(ps.IncludePatterns.Elements())),
-		slog.Any("excludePatterns", slices.Sorted(ps.ExcludePatterns.Elements())),
-	)
-}
-
 // Add adds a pattern to ps.
 func (ps *PatternSet) Add(pattern string, include PatternSetIncludeType) error {
 	if ok := doublestar.ValidatePattern(pattern); !ok {
@@ -93,6 +82,17 @@ func (ps *PatternSet) Glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 		sortedMatches[i] = filepath.ToSlash(match)[len(prefix):]
 	}
 	return sortedMatches, nil
+}
+
+// LogValue implements log/slog.LogValuer.LogValue.
+func (ps *PatternSet) LogValue() slog.Value {
+	if ps == nil {
+		return slog.Value{}
+	}
+	return slog.GroupValue(
+		slog.Any("includePatterns", slices.Sorted(ps.IncludePatterns.Elements())),
+		slog.Any("excludePatterns", slices.Sorted(ps.ExcludePatterns.Elements())),
+	)
 }
 
 // Match returns if name matches ps.

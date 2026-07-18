@@ -44,11 +44,6 @@ func (p AbsPath) Dir() AbsPath {
 	return NewAbsPath(filepath.Dir(string(p))).ToSlash()
 }
 
-// IsEmpty returns if p is empty.
-func (p AbsPath) IsEmpty() bool {
-	return p == ""
-}
-
 // Ext returns p's extension.
 func (p AbsPath) Ext() string {
 	return path.Ext(string(p))
@@ -62,6 +57,11 @@ func (p AbsPath) HasDirPrefix(prefix AbsPath) bool {
 		return true
 	}
 	return strings.HasPrefix(string(pWithTrailingSlash), string(prefixWithTrailingSlash))
+}
+
+// IsEmpty returns if p is empty.
+func (p AbsPath) IsEmpty() bool {
+	return p == ""
 }
 
 // Join returns a new AbsPath with relPaths appended.

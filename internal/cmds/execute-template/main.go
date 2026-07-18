@@ -42,6 +42,20 @@ func newGitHubClient(ctx context.Context) *gitHubClient {
 	}
 }
 
+func (c *gitHubClient) gitHubLatestRelease(ownerRepo string) *github.RepositoryRelease {
+	owner, repo, ok := strings.Cut(ownerRepo, "/")
+	if !ok {
+		panic(fmt.Errorf("%s: not a owner/repo", ownerRepo))
+	}
+
+	rr, _, err := c.client.Repositories.GetLatestRelease(c.ctx, owner, repo)
+	if err != nil {
+		panic(err)
+	}
+
+	return rr
+}
+
 func (c *gitHubClient) gitHubListReleases(ownerRepo string) []*github.RepositoryRelease {
 	owner, repo, ok := strings.Cut(ownerRepo, "/")
 	if !ok {
@@ -64,20 +78,6 @@ func (c *gitHubClient) gitHubListReleases(ownerRepo string) []*github.Repository
 		opts.Page = resp.NextPage
 	}
 	return allRepositoryReleases
-}
-
-func (c *gitHubClient) gitHubLatestRelease(ownerRepo string) *github.RepositoryRelease {
-	owner, repo, ok := strings.Cut(ownerRepo, "/")
-	if !ok {
-		panic(fmt.Errorf("%s: not a owner/repo", ownerRepo))
-	}
-
-	rr, _, err := c.client.Repositories.GetLatestRelease(c.ctx, owner, repo)
-	if err != nil {
-		panic(err)
-	}
-
-	return rr
 }
 
 func slugify(s string) string {
