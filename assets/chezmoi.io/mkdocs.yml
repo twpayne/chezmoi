@@ -209,6 +209,7 @@ nav:
       - abortEmpty: reference/templates/functions/abortEmpty.md
       - comment: reference/templates/functions/comment.md
       - completion: reference/templates/functions/completion.md
+      - debugf: reference/templates/functions/debugf.md
       - decrypt: reference/templates/functions/decrypt.md
       - deleteValueAtPath: reference/templates/functions/deleteValueAtPath.md
       - encrypt: reference/templates/functions/encrypt.md

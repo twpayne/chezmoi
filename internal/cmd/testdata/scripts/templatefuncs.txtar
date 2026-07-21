@@ -15,6 +15,12 @@ cmp stdout golden/comment
 exec chezmoi execute-template '{{ completion "zsh" }}'
 stdout '^# zsh completion for chezmoi'
 
+# test debugf template function
+exec chezmoi execute-template '{{ debugf "message" }}'
+! stderr .
+exec chezmoi --verbose execute-template '{{ debugf "message" }}'
+stderr 'chezmoi: debug: message'
+
 # test deleteValueAtPath template function
 exec chezmoi execute-template '{{ dict "a" (dict "b" (dict "c" 1 "d" 2)) | deleteValueAtPath "a.b.c" | toJson }}'
 rmfinalnewline golden/deleteValueAtPath

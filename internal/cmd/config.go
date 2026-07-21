@@ -503,6 +503,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"comment":                     c.commentTemplateFunc,
 		"dashlaneNote":                c.dashlaneNoteTemplateFunc,
 		"dashlanePassword":            c.dashlanePasswordTemplateFunc,
+		"debugf":                      c.debugfTemplateFunc,
 		"decrypt":                     c.decryptTemplateFunc,
 		"deleteValueAtPath":           c.deleteValueAtPathTemplateFunc,
 		"doppler":                     c.dopplerTemplateFunc,
