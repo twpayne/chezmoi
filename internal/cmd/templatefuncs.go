@@ -97,6 +97,13 @@ func (c *Config) deleteValueAtPathTemplateFunc(path string, dict map[string]any)
 	return dict
 }
 
+func (c *Config) debugfTemplateFunc(format string, args ...any) string {
+	if c.Verbose {
+		c.errorf("debug: "+format+"\n", args...)
+	}
+	return ""
+}
+
 func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	if strings.EqualFold(first, second) {
 		return true
