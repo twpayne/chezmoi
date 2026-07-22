@@ -65,16 +65,18 @@ Print help.
 You can provide a list of entry types, separated by commas.
 Types can be preceded with `no` to remove them, e.g. `scripts,noalways`.
 
-| Type        | Description                 |
-| ----------- | --------------------------- |
-| `all`       | All entries                 |
-| `none`      | No entries                  |
-| `dirs`      | Directories                 |
-| `files`     | Files                       |
-| `remove`    | Removes                     |
-| `scripts`   | Scripts                     |
-| `symlinks`  | Symbolic links              |
-| `always`    | Scripts that are always run |
-| `encrypted` | Encrypted entries           |
-| `externals` | External entries            |
-| `templates` | Templates                   |
+| Type        | Description                        |
+| ----------- | ---------------------------------- |
+| `all`       | All entries                        |
+| `none`      | No entries                         |
+| `create`    | Files with the `create_` attribute |
+| `dirs`      | Directories                        |
+| `files`     | Files                              |
+| `modify`    | Files with the `modify_` attribute |
+| `remove`    | Removes                            |
+| `scripts`   | Scripts                            |
+| `symlinks`  | Symbolic links                     |
+| `always`    | Scripts that are always run        |
+| `encrypted` | Encrypted entries                  |
+| `externals` | External entries                   |
+| `templates` | Templates                          |
