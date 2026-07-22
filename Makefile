@@ -191,5 +191,4 @@ update-go-tools:
 		github.com/google/capslock@latest \
 		github.com/josephspurrier/goversioninfo@latest \
 		github.com/rhysd/actionlint@latest \
-		github.com/twpayne/find-typos@latest \
-		github.com/twpayne/go-jsonstruct/v3@latest
+		github.com/twpayne/find-typos@latest

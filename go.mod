@@ -18,7 +18,6 @@ tool (
 	github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 	github.com/rhysd/actionlint/cmd/actionlint
 	github.com/twpayne/find-typos
-	github.com/twpayne/go-jsonstruct/v3/cmd/gojsonstruct
 )
 
 require (
@@ -145,10 +144,8 @@ require (
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/expr-lang/expr v1.17.8 // indirect
-	github.com/fatih/camelcase v1.0.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/fatih/semgroup v1.3.0 // indirect
-	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
@@ -213,7 +210,6 @@ require (
 	github.com/stangelandcl/ppmd v0.1.1 // indirect
 	github.com/tobischo/argon2 v0.1.0 // indirect
 	github.com/twpayne/find-typos v0.0.3 // indirect
-	github.com/twpayne/go-jsonstruct/v3 v3.3.0 // indirect
 	github.com/urfave/cli/v2 v2.27.7 // indirect
 	github.com/wlynxg/chardet v1.0.5 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect

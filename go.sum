@@ -246,14 +246,10 @@ github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f h1:Y/CXytFA4m6
 github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f/go.mod h1:vw97MGsxSvLiUE2X8qFplwetxpGLQrlU1Q9AUEIzCaM=
 github.com/expr-lang/expr v1.17.8 h1:W1loDTT+0PQf5YteHSTpju2qfUfNoBt4yw9+wOEU9VM=
 github.com/expr-lang/expr v1.17.8/go.mod h1:8/vRC7+7HBzESEqt5kKpYXxrxkr31SaO8r40VO/1IT4=
-github.com/fatih/camelcase v1.0.0 h1:hxNvNX/xYBp0ovncs8WyWZrOrpBNub/JfaMvbURyft8=
-github.com/fatih/camelcase v1.0.0/go.mod h1:yN2Sb0lFhZJUdVvtELVWefmrXpuZESvPmqwoZc+/fpc=
 github.com/fatih/color v1.19.0 h1:Zp3PiM21/9Ld6FzSKyL5c/BULoe/ONr9KlbYVOfG8+w=
 github.com/fatih/color v1.19.0/go.mod h1:zNk67I0ZUT1bEGsSGyCZYZNrHuTkJJB+r6Q9VuMi0LE=
 github.com/fatih/semgroup v1.3.0 h1:pTEnmcEze/BUf4UmVn9f1ZT1OckkBTNRV9w9k/I2/y4=
 github.com/fatih/semgroup v1.3.0/go.mod h1:thVp+PGZMO9KJ+k96oNGJo06hWgsKOWxTfYfx5R2VaE=
-github.com/fatih/structtag v1.2.0 h1:/OdNE99OxoI/PqaW/SuSK9uxxT3f/tcSZgon/ssNSx4=
-github.com/fatih/structtag v1.2.0/go.mod h1:mBJUNpUnHmRKrKlQQlmCrh5PuhftFbNv8Ys4/aAZl94=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
@@ -598,8 +594,6 @@ github.com/tobischo/gokeepasslib/v3 v3.6.2 h1:SJzzllmNe7iZLudLJ3Lzdm3pDb++AJqZlm
 github.com/tobischo/gokeepasslib/v3 v3.6.2/go.mod h1:ga7HFqG0TZSLNao/QOnV2+yngkrf5186saPxSQ1Xp7o=
 github.com/twpayne/find-typos v0.0.3 h1:ht/lBr6E7llyqBlRIwWXcWG1nhPemW1Db/QE6vK43L8=
 github.com/twpayne/find-typos v0.0.3/go.mod h1:+6q93VenFlU95gXd6qPbTyqh4vYvIuqDk4msgBeW36s=
-github.com/twpayne/go-jsonstruct/v3 v3.3.0 h1:LaxH/CPO2mUnvnsIe+0E/WS2RN/PiUWEjoHlGI31ogY=
-github.com/twpayne/go-jsonstruct/v3 v3.3.0/go.mod h1:Ep6oLjT0GADi6TmsIDASia0cfw3Nja3rBz+GIfYlC/A=
 github.com/twpayne/go-pinentry/v4 v4.0.1 h1:2mIMlMRzNwzQtTe96NnjY46xFiqsR+EasvXt4NkNKIY=
 github.com/twpayne/go-pinentry/v4 v4.0.1/go.mod h1:z5f+OFtNOUILmMdKBGVbZTcO7sDjg7HHvcrnGxr/cq0=
 github.com/twpayne/go-shell v0.5.0 h1:Mgd2GReIHdsCRT9OqYCh/ywf7x9r9cJhsZMIqKSVjIU=
