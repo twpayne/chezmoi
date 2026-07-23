@@ -8,7 +8,6 @@ dependencies = [
     "idna>=3.15",
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.7.5",
-    "mkdocs-mermaid2-plugin>=1.2.3",
     "pymdown-extensions>=10.21.3",
     "ruamel.yaml>=0.19.1",
     "ruff>=0.15.6",

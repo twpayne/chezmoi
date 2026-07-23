@@ -385,7 +385,7 @@ markdown_extensions:
     custom_fences:
     - name: mermaid
       class: mermaid
-      format: !!python/name:mermaid2.fence_mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.tabbed:
     alternate_style: true
 
@@ -393,11 +393,6 @@ hooks:
 - docs/hooks.py
 
 plugins:
-- mermaid2:
-    version: 11.4.1
-    arguments:
-      theme: |
-        ^(JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
 - search
 
 extra_javascript:
