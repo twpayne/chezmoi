@@ -1714,7 +1714,11 @@ func (c *Config) getSourceDirAbsPath(options *getSourceDirAbsPathOptions) (chezm
 	case err != nil:
 		c.sourceDirAbsPathErr = err
 	default:
-		c.sourceDirAbsPath = c.SourceDirAbsPath.JoinString(string(bytes.TrimSpace(data)))
+		rootPath := string(bytes.TrimSpace(data))
+		if rootPath == ".." || strings.HasPrefix(rootPath, "../") || strings.Contains(rootPath, "/../") {
+			return chezmoi.EmptyAbsPath, fmt.Errorf(".chezmoiroot: %s: invalid path", rootPath)
+		}
+		c.sourceDirAbsPath = c.SourceDirAbsPath.JoinString(rootPath)
 	}
 
 	return c.sourceDirAbsPath, c.sourceDirAbsPathErr

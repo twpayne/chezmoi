@@ -23,6 +23,12 @@ exec chezmoi init --apply file://$HOME/repo
 exists $CHEZMOICONFIGDIR/chezmoi.toml
 cmp $HOME/.file golden/.file
 
+chhome home3/user
+
+# test that .. is rejected in .chezmoiroot
+! exec chezmoi status
+stderr 'chezmoi: .chezmoiroot: a/../b: invalid path'
+
 -- golden/.file --
 # contents of .file
 -- golden/symlink_dot_symlink --
@@ -36,3 +42,5 @@ home
 -- home2/user/repo/home/.chezmoi.toml.tmpl --
 -- home2/user/repo/home/dot_file --
 # contents of .file
+-- home3/user/.local/share/chezmoi/.chezmoiroot --
+a/../b
