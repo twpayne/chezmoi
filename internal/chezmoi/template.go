@@ -164,11 +164,14 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) ([]byte, error) 
 			case "format-indent":
 				o.FormatIndent = value
 			case "format-indent-width":
-				width, err := strconv.Atoi(value)
-				if err != nil {
+				switch width, err := strconv.Atoi(value); {
+				case err != nil:
 					return nil, err
+				case width < 0:
+					return nil, fmt.Errorf("%d: invalid format-indent-width", width)
+				default:
+					o.FormatIndent = strings.Repeat(" ", width)
 				}
-				o.FormatIndent = strings.Repeat(" ", width)
 			case "left-delimiter":
 				o.LeftDelimiter = value
 			case "line-ending", "line-endings":

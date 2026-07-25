@@ -16,6 +16,10 @@ cmp stdout golden/missing-key
 exec chezmoi cat $HOME${/}nested-template
 cmp stdout golden/nested-template
 
+# test that negative format-indent-widths return an error
+! exec chezmoi execute-template '# chezmoi:template:format-indent-width=-1'
+stderr 'chezmoi: -1: invalid format-indent-width'
+
 -- golden/encoding.hex --
 fffe                                                     # UTF-16 BOM
 480065006c006c006f002c00200077006f0072006c00640021000a00 # "Hello, world!\n"
