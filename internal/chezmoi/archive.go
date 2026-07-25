@@ -170,7 +170,10 @@ func walkArchiveRar(r io.Reader, f WalkArchiveFunc) error {
 			return nil
 		}
 		seenDirs.Add(dir)
-		name := strings.TrimSuffix(header.Name, "/")
+		name := path.Clean(strings.TrimSuffix(header.Name, "/"))
+		if name == ".." || strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
+			return invalidDirNameError(name)
+		}
 		switch err := f(name, RARFileInfo{FileHeader: header}, rarReader, ""); {
 		case errors.Is(err, fs.SkipDir):
 			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
@@ -214,7 +217,10 @@ func walkArchiveTar(r io.Reader, f WalkArchiveFunc) error {
 			return nil
 		}
 		seenDirs.Add(dir)
-		name := strings.TrimSuffix(header.Name, "/")
+		name := path.Clean(strings.TrimSuffix(header.Name, "/"))
+		if name == ".." || strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
+			return invalidDirNameError(name)
+		}
 		switch err := f(name, header.FileInfo(), tarReader, header.Linkname); {
 		case errors.Is(err, fs.SkipDir):
 			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
@@ -303,8 +309,8 @@ FILE:
 		}
 
 		name := path.Clean(zipFile.Name)
-		if strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
-			return fmt.Errorf("%s: invalid filename", zipFile.Name)
+		if name == ".." || strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
+			return invalidFileNameError(zipFile.Name)
 		}
 
 		for _, skippedDirPrefix := range skippedDirPrefixes {
