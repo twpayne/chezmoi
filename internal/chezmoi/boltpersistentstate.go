@@ -54,7 +54,7 @@ func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStat
 				return nil, err
 			}
 			dir, _ := filepath.Split(rawPath.String())
-			if err := os.MkdirAll(dir, 0o777); err != nil {
+			if err := os.MkdirAll(dir, 0o700); err != nil {
 				return nil, err
 			}
 			return os.OpenFile(rawPath.String(), flag, perm)
