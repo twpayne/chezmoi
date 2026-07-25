@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"os"
 	"strings"
 	"time"
@@ -11,8 +10,6 @@ import (
 	"filippo.io/age"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
-
-	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
 
 type ageKeygenCmdConfig struct {
@@ -110,20 +107,9 @@ func (c *Config) runAgeKeygenGenerateCmd(cmd *cobra.Command, args []string) erro
 		fmt.Fprintf(c.stderr, "Public key: %s\n", recipient)
 	}
 
-	if !c.outputAbsPath.IsEmpty() && c.outputAbsPath != chezmoi.NewAbsPath("-") {
-		switch fileInfo, err := c.baseSystem.Stat(c.outputAbsPath); {
-		case errors.Is(err, fs.ErrNotExist):
-			// Do nothing.
-		case err != nil:
-			return err
-		case fileInfo.Mode().IsRegular() && fileInfo.Mode().Perm()&0o004 != 0:
-			c.errorf("writing secret key to a world-readable file\n")
-		}
-	}
-
 	var builder strings.Builder
 	fmt.Fprintf(&builder, "# created: %s\n", time.Now().Format(time.RFC3339))
 	fmt.Fprintf(&builder, "# public key: %s\n", recipient)
 	fmt.Fprintf(&builder, "%s\n", identity)
-	return c.writeOutputString(builder.String(), 0o660)
+	return c.writeOutputString(builder.String(), 0o600)
 }
