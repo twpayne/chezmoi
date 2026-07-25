@@ -97,7 +97,7 @@ func (c *Config) runSecretKeyringGetCmdE(cmd *cobra.Command, args []string) erro
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(value, 0o666)
+	return c.writeOutputString(value, 0o600)
 }
 
 func (c *Config) runSecretKeyringSetCmdE(cmd *cobra.Command, args []string) error {
