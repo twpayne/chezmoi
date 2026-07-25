@@ -112,7 +112,7 @@ func parseDirAttr(name string) (DirAttr, error) {
 	case strings.HasPrefix(name, literalPrefix):
 		name = name[len(literalPrefix):]
 	}
-	if name == "" {
+	if name == "" || namePrefix+name == ".." {
 		return DirAttr{}, invalidDirNameError(originalName)
 	}
 	return DirAttr{
@@ -264,7 +264,7 @@ func parseFileAttr(name, encryptedSuffix string) (FileAttr, error) {
 		template = true
 		name, _ = strings.CutSuffix(name, literalSuffix)
 	}
-	if name == "" {
+	if name == "" || namePrefix+name == ".." {
 		return FileAttr{}, invalidFileNameError(originalName)
 	}
 	return FileAttr{

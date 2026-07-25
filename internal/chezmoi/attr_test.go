@@ -374,8 +374,16 @@ func TestFileAttrPerm(t *testing.T) {
 
 func TestInvalidDirAttr(t *testing.T) {
 	for _, tc := range []string{
+		"dot_.",
 		"dot_",
+		"external_..",
+		"external_dot_.",
+		"literal_..",
 		"literal_",
+		"private_..",
+		"private_dot_.",
+		"remove_..",
+		"remove_dot_.",
 	} {
 		t.Run(tc, func(t *testing.T) {
 			_, err := parseDirAttr(tc)
@@ -386,10 +394,26 @@ func TestInvalidDirAttr(t *testing.T) {
 
 func TestInvalidFileAttr(t *testing.T) {
 	for _, tc := range []string{
-		"dot_",
-		"literal_",
+		"...tmpl",
 		".tmpl",
+		"dot_.",
+		"dot_",
+		"encrypted_...age",
 		"encrypted_.age",
+		"executable_..",
+		"executable_dot_.",
+		"literal_..",
+		"literal_",
+		"private_..",
+		"private_dot_.",
+		"run_..",
+		"run_after_..",
+		"run_after_dot_.",
+		"run_before_..",
+		"run_before_dot_.",
+		"run_dot_.",
+		"run_once_..",
+		"run_once_dot_.",
 	} {
 		t.Run(tc, func(t *testing.T) {
 			_, err := parseFileAttr(tc, ".age")
