@@ -313,6 +313,7 @@ nav:
     - gopass functions:
       - reference/templates/gopass-functions/index.md
       - gopass: reference/templates/gopass-functions/gopass.md
+      - gopassCat: reference/templates/gopass-functions/gopassCat.md
       - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
     - KeePassXC functions:
       - reference/templates/keepassxc-functions/index.md
