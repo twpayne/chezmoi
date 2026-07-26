@@ -226,6 +226,12 @@ def on_post_build(config: MkDocsConfig, **kwargs) -> None:
         Path(site_dir, 'cosign.pub'),
     )
 
+    # copy v2 to support https://pkg.go.dev/github.com/twpayne/chezmoi/v2
+    utils.copy_file(
+        Path(config_dir, 'v2'),
+        Path(site_dir, 'chezmoi/v2'),
+    )
+
 
 def on_page_markdown(markdown: str, **kwargs) -> str:
     lines = markdown.splitlines()
