@@ -161,6 +161,7 @@ jobs:
     - name: install-rage
       run: |
         brew tap str4d.xyz/rage https://str4d.xyz/rage
+        brew trust str4d.xyz/rage
         brew install rage
         rage --version
     - name: install-keepassxc
