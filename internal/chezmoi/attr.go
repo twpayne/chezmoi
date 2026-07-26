@@ -252,7 +252,7 @@ func parseFileAttr(name, encryptedSuffix string) (FileAttr, error) {
 		template = true
 		name, _ = strings.CutSuffix(name, literalSuffix)
 	}
-	if name == "" || namePrefix+name == ".." {
+	if name == "" || name == "." || namePrefix+name == ".." {
 		return FileAttr{}, InvalidPathError(originalName)
 	}
 	return FileAttr{
