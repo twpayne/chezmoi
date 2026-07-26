@@ -3,10 +3,12 @@ package cmd
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/gopasspw/gopass/pkg/ctxutil"
@@ -39,6 +41,7 @@ type gopassConfig struct {
 	clientErr     error
 	passwordCache map[string][]byte
 	cache         map[string]string
+	catCache      map[string]string
 	rawCache      map[string][]byte
 }
 
@@ -65,6 +68,36 @@ func (c *Config) gopassTemplateFunc(id string) string {
 		c.Gopass.cache = make(map[string]string)
 	}
 	c.Gopass.cache[id] = password
+
+	return password
+}
+
+func (c *Config) gopassCatTemplateFunc(id string) string {
+	chezmoi.SkipTemplateIf(c.skipSecrets)
+
+	if password, ok := c.Gopass.catCache[id]; ok {
+		return password
+	}
+
+	var password string
+	switch c.Gopass.Mode {
+	case gopassModeBuiltin:
+		secret := mustValue(c.builtinGopassSecret(id, "latest"))
+		if gopassSecretIsBase64Encoded(secret) {
+			password = string(mustValue(base64.StdEncoding.DecodeString(secret.Body())))
+		} else {
+			password = secret.Body()
+		}
+	case gopassModeDefault:
+		password = string(mustValue(c.gopassOutput("cat", id)))
+	default:
+		panic(fmt.Errorf("%s: invalid mode", c.Gopass.Mode))
+	}
+
+	if c.Gopass.catCache == nil {
+		c.Gopass.catCache = make(map[string]string)
+	}
+	c.Gopass.catCache[id] = password
 
 	return password
 }
@@ -139,4 +172,18 @@ func (c *Config) gopassOutput(args ...string) ([]byte, error) {
 		return nil, newCmdOutputError(cmd, output, err)
 	}
 	return output, nil
+}
+
+func gopassSecretIsBase64Encoded(secret gopass.Secret) bool {
+	for _, key := range []string{
+		"Content-Transfer-Encoding",
+		"content-transfer-encoding",
+	} {
+		if value, ok := secret.Get(key); ok {
+			if strings.EqualFold(value, "base64") {
+				return true
+			}
+		}
+	}
+	return false
 }

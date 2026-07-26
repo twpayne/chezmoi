@@ -533,6 +533,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"glob":                        c.globTemplateFunc,
 		"globCaseInsensitive":         c.globCaseInsensitiveTemplateFunc,
 		"gopass":                      c.gopassTemplateFunc,
+		"gopassCat":                   c.gopassCatTemplateFunc,
 		"gopassRaw":                   c.gopassRawTemplateFunc,
 		"hexDecode":                   c.hexDecodeTemplateFunc,
 		"hexEncode":                   c.hexEncodeTemplateFunc,
