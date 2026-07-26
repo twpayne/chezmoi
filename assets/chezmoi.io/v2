@@ -1,0 +1,5 @@
+<html>
+    <head>
+        <meta name="go-import" content="chezmoi.io/chezmoi/v2 git https://github.com/twpayne/chezmoi.git">
+    </head>
+</html>
