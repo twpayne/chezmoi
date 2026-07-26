@@ -394,7 +394,9 @@ func TestInvalidDirAttr(t *testing.T) {
 
 func TestInvalidFileAttr(t *testing.T) {
 	for _, tc := range []string{
+		"...literal",
 		"...tmpl",
+		"..literal",
 		".tmpl",
 		"dot_.",
 		"dot_",
@@ -403,6 +405,7 @@ func TestInvalidFileAttr(t *testing.T) {
 		"executable_..",
 		"executable_dot_.",
 		"literal_..",
+		"literal_.",
 		"literal_",
 		"private_..",
 		"private_dot_.",
