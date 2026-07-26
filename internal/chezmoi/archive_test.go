@@ -86,27 +86,27 @@ func TestWalkArchive(t *testing.T) {
 			data, err := tc.dataFunc(tc.root)
 			assert.NoError(t, err)
 
-			expectedNames := []string{
-				"dir1",
-				"dir1/subdir1",
-				"dir1/subdir1/file1",
-				"dir1/subdir1/file2",
-				"dir1/subdir2",
-				"dir2",
-				"file1",
-				"file2",
-				"symlink1",
+			expectedNames := []RelPath{
+				NewRelPath("dir1"),
+				NewRelPath("dir1/subdir1"),
+				NewRelPath("dir1/subdir1/file1"),
+				NewRelPath("dir1/subdir1/file2"),
+				NewRelPath("dir1/subdir2"),
+				NewRelPath("dir2"),
+				NewRelPath("file1"),
+				NewRelPath("file2"),
+				NewRelPath("symlink1"),
 			}
 
-			var actualNames []string
-			walkArchiveFunc := func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+			var actualNames []RelPath
+			walkArchiveFunc := func(name RelPath, info fs.FileInfo, r io.Reader, linkname string) error {
 				actualNames = append(actualNames, name)
 				switch name {
-				case "dir1/subdir2":
+				case NewRelPath("dir1/subdir2"):
 					return fs.SkipDir
-				case "dir2":
+				case NewRelPath("dir2"):
 					return fs.SkipDir
-				case "symlink1":
+				case NewRelPath("symlink1"):
 					return fs.SkipAll
 				default:
 					return nil

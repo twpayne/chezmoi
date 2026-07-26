@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"path"
 	"strings"
 	"time"
 
@@ -38,7 +37,7 @@ const (
 )
 
 // An WalkArchiveFunc is called once for each entry in an archive.
-type WalkArchiveFunc func(name string, info fs.FileInfo, r io.Reader, linkname string) error
+type WalkArchiveFunc func(name RelPath, info fs.FileInfo, r io.Reader, linkname string) error
 
 // GuessArchiveFormat guesses the archive format from the name and data.
 func GuessArchiveFormat(name string, data []byte) ArchiveFormat {
@@ -129,10 +128,10 @@ func isTarArchive(r io.Reader) bool {
 	return err == nil
 }
 
-func implicitTarDirHeader(dir string, modTime time.Time) *tar.Header {
+func implicitTarDirHeader(dir RelPath, modTime time.Time) *tar.Header {
 	return &tar.Header{
 		Typeflag: tar.TypeDir,
-		Name:     dir,
+		Name:     dir.String(),
 		Mode:     0o777,
 		Size:     0,
 		ModTime:  modTime,
@@ -158,30 +157,28 @@ func walkArchiveRar(r io.Reader, f WalkArchiveFunc) error {
 	if err != nil {
 		return err
 	}
-	var skippedDirPrefixes []string
-	seenDirs := chezmoiset.New[string]()
-	processHeader := func(header *rardecode.FileHeader, dir string) error {
-		for _, skippedDirPrefix := range skippedDirPrefixes {
-			if strings.HasPrefix(header.Name, skippedDirPrefix) {
-				return fs.SkipDir
-			}
-		}
-		if seenDirs.Contains(dir) {
-			return nil
-		}
-		seenDirs.Add(dir)
-		name := path.Clean(strings.TrimSuffix(header.Name, "/"))
-		if name == ".." || strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
-			return invalidDirNameError(name)
-		}
-		switch err := f(name, RARFileInfo{FileHeader: header}, rarReader, ""); {
-		case errors.Is(err, fs.SkipDir):
-			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
-		case err != nil:
+
+	// Process a single header. Remember skipped directories.
+	skippedDirs := chezmoiset.New[RelPath]()
+	processHeader := func(header *rardecode.FileHeader) error {
+		relPath, err := NewUntrustedRelPath(strings.TrimSuffix(header.Name, "/"))
+		if err != nil {
 			return err
 		}
-		return nil
+		if header.IsDir && skippedDirs.Contains(relPath) {
+			return fs.SkipDir
+		}
+		switch err := f(relPath, RARFileInfo{FileHeader: header}, rarReader, ""); {
+		case errors.Is(err, fs.SkipDir):
+			skippedDirs.Add(relPath)
+			return fs.SkipDir
+		case err != nil:
+			return err
+		default:
+			return nil
+		}
 	}
+
 HEADER:
 	for {
 		fileHeader, err := rarReader.Next()
@@ -191,7 +188,7 @@ HEADER:
 		case err != nil:
 			return err
 		}
-		switch err := processHeader(fileHeader, fileHeader.Name); {
+		switch err := processHeader(fileHeader); {
 		case errors.Is(err, fs.SkipDir):
 			continue HEADER
 		case errors.Is(err, fs.SkipAll):
@@ -205,30 +202,30 @@ HEADER:
 // walkArchiveTar walks over all the entries in a tar archive.
 func walkArchiveTar(r io.Reader, f WalkArchiveFunc) error {
 	tarReader := tar.NewReader(r)
-	var skippedDirPrefixes []string
-	seenDirs := chezmoiset.New[string]()
-	processHeader := func(header *tar.Header, dir string) error {
-		for _, skippedDirPrefix := range skippedDirPrefixes {
-			if strings.HasPrefix(header.Name, skippedDirPrefix) {
-				return fs.SkipDir
+
+	// Process a single header, which might be an implicit parent directory.
+	// Remember already-seen directories so we do not visit them twice.
+	seenDirErrors := make(map[RelPath]error)
+	processHeader := func(relPath RelPath, header *tar.Header) error {
+		if header.Typeflag == tar.TypeDir {
+			if seenDirError, ok := seenDirErrors[relPath]; ok {
+				return seenDirError
 			}
 		}
-		if seenDirs.Contains(dir) {
-			return nil
-		}
-		seenDirs.Add(dir)
-		name := path.Clean(strings.TrimSuffix(header.Name, "/"))
-		if name == ".." || strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
-			return invalidDirNameError(name)
-		}
-		switch err := f(name, header.FileInfo(), tarReader, header.Linkname); {
+		switch err := f(relPath, header.FileInfo(), tarReader, header.Linkname); {
 		case errors.Is(err, fs.SkipDir):
-			skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
+			seenDirErrors[relPath] = fs.SkipDir
+			return fs.SkipDir
 		case err != nil:
 			return err
+		default:
+			if header.Typeflag == tar.TypeDir {
+				seenDirErrors[relPath] = nil
+			}
+			return nil
 		}
-		return nil
 	}
+
 HEADER:
 	for {
 		header, err := tarReader.Next()
@@ -238,25 +235,31 @@ HEADER:
 		case err != nil:
 			return err
 		}
+
+		relPath, err := NewUntrustedRelPath(strings.TrimSuffix(header.Name, "/"))
+		if err != nil {
+			return err
+		}
+
 		switch header.Typeflag {
-		case tar.TypeReg, tar.TypeDir, tar.TypeSymlink:
-			if header.Typeflag == tar.TypeReg {
-				dirs, _ := path.Split(header.Name)
-				dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
+		case tar.TypeReg, tar.TypeSymlink, tar.TypeDir:
+			// Create implicit parent directories.
+			if dir, _ := relPath.Split(); !dir.IsEmpty() {
+				dirComponents := dir.TrimTrailingSlash().SplitAll()
 				for i := range dirComponents {
-					if dir := strings.Join(dirComponents[0:i+1], "/"); dir != "" {
-						switch err := processHeader(implicitTarDirHeader(dir+"/", header.ModTime), dir+"/"); {
-						case errors.Is(err, fs.SkipDir):
-							continue HEADER
-						case errors.Is(err, fs.SkipAll):
-							return nil
-						case err != nil:
-							return err
-						}
+					implicitParentDirRelPath := NewRelPathFromComponents(dirComponents[:i+1]...)
+					implicitParentDirHeader := implicitTarDirHeader(implicitParentDirRelPath, header.ModTime)
+					switch err := processHeader(implicitParentDirRelPath, implicitParentDirHeader); {
+					case errors.Is(err, fs.SkipDir):
+						continue HEADER
+					case errors.Is(err, fs.SkipAll):
+						return nil
+					case err != nil:
+						return err
 					}
 				}
 			}
-			switch err := processHeader(header, header.Name); {
+			switch err := processHeader(relPath, header); {
 			case errors.Is(err, fs.SkipDir):
 				continue HEADER
 			case errors.Is(err, fs.SkipAll):
@@ -278,54 +281,47 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 	if err != nil {
 		return err
 	}
-	var skippedDirPrefixes []string
-	seenDirs := chezmoiset.New[string]()
-	processHeader := func(fileInfo fs.FileInfo, dir string) error {
-		for _, skippedDirPrefix := range skippedDirPrefixes {
-			if strings.HasPrefix(dir, skippedDirPrefix) {
-				return fs.SkipDir
+
+	// Process a single header, which might be an implicit parent directory.
+	// Remember already-seen directories so we do not visit them twice.
+	seenDirErrors := make(map[RelPath]error)
+	processHeader := func(relPath RelPath, fileInfo fs.FileInfo) error {
+		if fileInfo.IsDir() {
+			if seenDirError, ok := seenDirErrors[relPath]; ok {
+				return seenDirError
 			}
 		}
-		if seenDirs.Contains(dir) {
-			return nil
-		}
-		seenDirs.Add(dir)
-		name := strings.TrimSuffix(dir, "/")
-		dirFileInfo := implicitTarDirHeader(dir, fileInfo.ModTime()).FileInfo()
-		switch err := f(name, dirFileInfo, nil, ""); {
+		switch err := f(relPath, fileInfo, nil, ""); {
 		case errors.Is(err, fs.SkipDir):
-			skippedDirPrefixes = append(skippedDirPrefixes, dir)
-			return err
+			seenDirErrors[relPath] = fs.SkipDir
+			return fs.SkipDir
 		case err != nil:
 			return err
+		default:
+			if fileInfo.IsDir() {
+				seenDirErrors[relPath] = nil
+			}
+			return nil
 		}
-		return nil
 	}
+
 FILE:
 	for _, zipFile := range zipReader.File {
-		zipFileReader, err := zipFile.Open()
+		relPath, err := NewUntrustedRelPath(zipFile.Name)
 		if err != nil {
 			return err
 		}
 
-		name := path.Clean(zipFile.Name)
-		if name == ".." || strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
-			return invalidFileNameError(zipFile.Name)
-		}
-
-		for _, skippedDirPrefix := range skippedDirPrefixes {
-			if strings.HasPrefix(zipFile.Name, skippedDirPrefix) {
-				continue FILE
-			}
-		}
-
-		switch fileInfo := zipFile.FileInfo(); fileInfo.Mode() & fs.ModeType {
-		case 0:
-			dirs, _ := path.Split(name)
-			dirComponents := strings.Split(strings.TrimSuffix(dirs, "/"), "/")
-			for i := range dirComponents {
-				if dir := strings.Join(dirComponents[0:i+1], "/"); dir != "" {
-					switch err := processHeader(fileInfo, dir+"/"); {
+		fileInfo := zipFile.FileInfo()
+		switch fileInfo.Mode() & fs.ModeType {
+		case 0, fs.ModeDir, fs.ModeSymlink:
+			// Create implicit parent directories.
+			if dir, _ := relPath.Split(); !dir.IsEmpty() {
+				dirComponents := dir.TrimTrailingSlash().SplitAll()
+				for i := range dirComponents {
+					implicitParentDirRelPath := NewRelPathFromComponents(dirComponents[:i+1]...)
+					implicitParentDirFileInfo := implicitTarDirHeader(implicitParentDirRelPath, fileInfo.ModTime()).FileInfo()
+					switch err := processHeader(implicitParentDirRelPath, implicitParentDirFileInfo); {
 					case errors.Is(err, fs.SkipDir):
 						continue FILE
 					case errors.Is(err, fs.SkipAll):
@@ -335,33 +331,55 @@ FILE:
 					}
 				}
 			}
+		default:
+			return fmt.Errorf("%s: unsupported file mode %o", zipFile.Name, fileInfo.Mode())
+		}
 
-			err = f(name, fileInfo, zipFileReader, "")
-		case fs.ModeDir:
-			err = processHeader(fileInfo, name+"/")
-		case fs.ModeSymlink:
-			var linknameBytes []byte
-			linknameBytes, err = io.ReadAll(zipFileReader)
+		switch fileInfo.Mode() & fs.ModeType {
+		case 0:
+			zipFileReader, err := zipFile.Open()
 			if err != nil {
 				return err
 			}
-			err = f(name, fileInfo, nil, string(linknameBytes))
-		}
-
-		err2 := zipFileReader.Close()
-
-		switch {
-		case errors.Is(err, fs.SkipDir):
-			skippedDirPrefixes = append(skippedDirPrefixes, zipFile.Name+"/")
-		case errors.Is(err, fs.SkipAll):
-			return nil
-		case err != nil:
-			return err
-		}
-
-		if err2 != nil {
-			return err2
+			err = f(relPath, fileInfo, zipFileReader, "")
+			err2 := zipFileReader.Close()
+			switch {
+			case errors.Is(err, fs.SkipAll):
+				return err2
+			case err != nil:
+				return err
+			case err2 != nil:
+				return err2
+			}
+		case fs.ModeDir:
+			switch err := processHeader(relPath, fileInfo); {
+			case errors.Is(err, fs.SkipDir):
+				continue FILE
+			case errors.Is(err, fs.SkipAll):
+				return nil
+			case err != nil:
+				return err
+			}
+		case fs.ModeSymlink:
+			zipFileReader, err := zipFile.Open()
+			if err != nil {
+				return err
+			}
+			linknameBytes, err := io.ReadAll(zipFileReader)
+			if err != nil {
+				return err
+			}
+			if err := zipFileReader.Close(); err != nil {
+				return err
+			}
+			switch err := f(relPath, fileInfo, nil, string(linknameBytes)); {
+			case errors.Is(err, fs.SkipAll):
+				return nil
+			case err != nil:
+				return err
+			}
 		}
 	}
+
 	return nil
 }

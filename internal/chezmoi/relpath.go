@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"cmp"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -21,6 +22,29 @@ func NewRelPath(relPath string) RelPath {
 	return RelPath{
 		relPath: relPath,
 	}
+}
+
+// NewRelPathFromComponents returns a new RelPath from the given components.
+func NewRelPathFromComponents(components ...RelPath) RelPath {
+	componentStrs := make([]string, len(components))
+	for i, component := range components {
+		componentStrs[i] = component.String()
+	}
+	return NewRelPath(strings.Join(componentStrs, "/"))
+}
+
+// NewUntrustedRelPath returns a clean version of path that does not escape its
+// parent directory.
+func NewUntrustedRelPath(relPath string) (RelPath, error) {
+	if relPath == ".." || strings.HasPrefix(relPath, "../") || strings.Contains(relPath, "/../") || filepath.IsAbs(relPath) {
+		return RelPath{}, InvalidPathError(relPath)
+	}
+	return NewRelPath(relPath), nil
+}
+
+// AppendSlash returns p with an appended slash.
+func (p RelPath) AppendSlash() RelPath {
+	return p.AppendString("/")
 }
 
 // AppendString appends s to p.
@@ -127,6 +151,22 @@ func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 		}
 	}
 	return p.Slice(dirPrefix.Len()+1, p.Len()), nil
+}
+
+// TrimTrailingSlash returns p with any trailing slash removed.
+func (p RelPath) TrimTrailingSlash() RelPath {
+	relPath, _ := strings.CutSuffix(p.relPath, "/")
+	return NewRelPath(relPath)
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
+func (p *RelPath) UnmarshalText(data []byte) error {
+	relPath, err := NewUntrustedRelPath(string(data))
+	if err != nil {
+		return err
+	}
+	*p = relPath
+	return nil
 }
 
 // CompareRelPaths compares a and b.

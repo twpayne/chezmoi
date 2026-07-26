@@ -270,11 +270,11 @@ func (c *Config) replaceExecutable(
 
 	// Extract the executable from the archive.
 	var executableData []byte
-	executableName := "chezmoi"
+	executableName := chezmoi.NewRelPath("chezmoi")
 	if runtime.GOOS == "windows" {
-		executableName += ".exe"
+		executableName = executableName.AppendString(".exe")
 	}
-	walkArchiveFunc := func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+	walkArchiveFunc := func(name chezmoi.RelPath, info fs.FileInfo, r io.Reader, linkname string) error {
 		if name == executableName {
 			var err error
 			executableData, err = io.ReadAll(r)
