@@ -38,6 +38,12 @@ func (e *InconsistentStateError) Error() string {
 	return fmt.Sprintf(format, e.targetRelPath, strings.Join(e.origins, ", "))
 }
 
+type InvalidPathError string
+
+func (e InvalidPathError) Error() string {
+	return string(e) + ": invalid path"
+}
+
 type NotInAbsDirError struct {
 	pathAbsPath AbsPath
 	dirAbsPath  AbsPath

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"path"
-	"strings"
 )
 
 // A ArchiveReaderSystem a system constructed from reading an archive.
@@ -42,18 +40,18 @@ func NewArchiveReaderSystem(
 		format = GuessArchiveFormat(archivePath, data)
 	}
 
-	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+	if err := WalkArchive(data, format, func(name RelPath, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
 		if options.StripComponents > 0 {
-			components := strings.Split(name, "/")
+			components := name.SplitAll()
 			if len(components) <= options.StripComponents {
 				return nil
 			}
-			name = path.Join(components[options.StripComponents:]...)
+			name = NewRelPathFromComponents(components[options.StripComponents:]...)
 		}
-		if name == "" {
+		if name.IsEmpty() {
 			return nil
 		}
-		nameAbsPath := options.RootAbsPath.JoinString(name)
+		nameAbsPath := options.RootAbsPath.Join(name)
 
 		s.fileInfos[nameAbsPath] = fileInfo
 		switch {

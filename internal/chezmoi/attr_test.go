@@ -387,7 +387,7 @@ func TestInvalidDirAttr(t *testing.T) {
 	} {
 		t.Run(tc, func(t *testing.T) {
 			_, err := parseDirAttr(tc)
-			assert.IsError(t, err, invalidDirNameError(tc))
+			assert.IsError(t, err, InvalidPathError(tc))
 		})
 	}
 }
@@ -417,7 +417,7 @@ func TestInvalidFileAttr(t *testing.T) {
 	} {
 		t.Run(tc, func(t *testing.T) {
 			_, err := parseFileAttr(tc, ".age")
-			assert.IsError(t, err, invalidFileNameError(tc))
+			assert.IsError(t, err, InvalidPathError(tc))
 		})
 	}
 }

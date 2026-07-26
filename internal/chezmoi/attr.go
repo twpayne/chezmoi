@@ -81,18 +81,6 @@ type FileAttr struct {
 	Template   bool
 }
 
-type invalidDirNameError string
-
-func (e invalidDirNameError) Error() string {
-	return string(e) + ": invalid directory name"
-}
-
-type invalidFileNameError string
-
-func (e invalidFileNameError) Error() string {
-	return string(e) + ": invalid filename"
-}
-
 // parseDirAttr parses a single directory name in the source state.
 func parseDirAttr(name string) (DirAttr, error) {
 	if name == "" {
@@ -113,7 +101,7 @@ func parseDirAttr(name string) (DirAttr, error) {
 		name = name[len(literalPrefix):]
 	}
 	if name == "" || namePrefix+name == ".." {
-		return DirAttr{}, invalidDirNameError(originalName)
+		return DirAttr{}, InvalidPathError(originalName)
 	}
 	return DirAttr{
 		TargetName: namePrefix + name,
@@ -265,7 +253,7 @@ func parseFileAttr(name, encryptedSuffix string) (FileAttr, error) {
 		name, _ = strings.CutSuffix(name, literalSuffix)
 	}
 	if name == "" || namePrefix+name == ".." {
-		return FileAttr{}, invalidFileNameError(originalName)
+		return FileAttr{}, InvalidPathError(originalName)
 	}
 	return FileAttr{
 		TargetName: namePrefix + name,

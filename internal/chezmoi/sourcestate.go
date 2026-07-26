@@ -107,7 +107,7 @@ type External struct {
 	Format          ArchiveFormat     `json:"format"          toml:"format"          yaml:"format"`
 	Archive         ExternalArchive   `json:"archive"         toml:"archive"         yaml:"archive"`
 	Include         []string          `json:"include"         toml:"include"         yaml:"include"`
-	ArchivePath     string            `json:"path"            toml:"path"            yaml:"path"`
+	ArchivePath     RelPath           `json:"path"            toml:"path"            yaml:"path"`
 	Pull            ExternalPull      `json:"pull"            toml:"pull"            yaml:"pull"`
 	RefreshPeriod   Duration          `json:"refreshPeriod"   toml:"refreshPeriod"   yaml:"refreshPeriod"`
 	StripComponents int               `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
@@ -2471,11 +2471,11 @@ func (s *SourceState) readExternalArchive(
 	}
 
 	sourceRelPaths := make(map[RelPath]SourceRelPath)
-	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+	if err := WalkArchive(data, format, func(name RelPath, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
 		// Perform matching against the name before stripping any components,
 		// otherwise it is not possible to differentiate between
 		// identically-named files at the same level.
-		if patternSet.Match(name) == PatternSetMatchExclude {
+		if patternSet.Match(name.String()) == PatternSetMatchExclude {
 			// In case that `name` is a directory which matched an explicit
 			// exclude pattern, return fs.SkipDir to exclude not just the
 			// directory itself but also everything it contains (recursively).
@@ -2486,16 +2486,16 @@ func (s *SourceState) readExternalArchive(
 		}
 
 		if external.StripComponents > 0 {
-			components := strings.Split(name, "/")
+			components := name.SplitAll()
 			if len(components) <= external.StripComponents {
 				return nil
 			}
-			name = path.Join(components[external.StripComponents:]...)
+			name = NewRelPathFromComponents(components[external.StripComponents:]...)
 		}
-		if name == "" {
+		if name.IsEmpty() {
 			return nil
 		}
-		targetRelPath := externalRelPath.JoinString(name)
+		targetRelPath := externalRelPath.Join(name)
 
 		if s.Ignore(targetRelPath) {
 			if fileInfo.IsDir() {
@@ -2534,7 +2534,7 @@ func (s *SourceState) readExternalArchive(
 				return fmt.Errorf("%s: %w", name, err)
 			}
 
-			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(name, contents) {
+			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(name.String(), contents) {
 				return nil
 			}
 
@@ -2638,7 +2638,7 @@ func (s *SourceState) readExternalArchiveFile(
 	external *External,
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
-	if external.ArchivePath == "" {
+	if external.ArchivePath.IsEmpty() {
 		return nil, fmt.Errorf("%s: missing path", externalRelPath)
 	}
 
@@ -2648,21 +2648,21 @@ func (s *SourceState) readExternalArchiveFile(
 	}
 
 	var sourceStateEntry SourceStateEntry
-	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+	if err := WalkArchive(data, format, func(name RelPath, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
-			components := strings.Split(name, "/")
+			components := name.SplitAll()
 			if len(components) <= external.StripComponents {
 				return nil
 			}
-			name = path.Join(components[external.StripComponents:]...)
+			name = NewRelPathFromComponents(components[external.StripComponents:]...)
 		}
 		switch {
-		case name == "":
+		case name.IsEmpty():
 			return nil
 		case name != external.ArchivePath:
 			// If this entry is a directory and it cannot contain the file we
 			// are looking for then skip this directory.
-			if fileInfo.IsDir() && !strings.HasPrefix(external.ArchivePath, name) {
+			if fileInfo.IsDir() && !external.ArchivePath.HasDirPrefix(name) {
 				return fs.SkipDir
 			}
 			return nil
@@ -2672,7 +2672,7 @@ func (s *SourceState) readExternalArchiveFile(
 				return fmt.Errorf("%s: %w", name, err)
 			}
 
-			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(name, contents) {
+			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(name.String(), contents) {
 				return nil
 			}
 
