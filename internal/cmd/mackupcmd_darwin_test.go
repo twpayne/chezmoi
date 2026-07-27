@@ -11,9 +11,10 @@ import (
 
 func TestParseMackupApplication(t *testing.T) {
 	for _, tc := range []struct {
-		name     string
-		lines    []string
-		expected mackupApplicationConfig
+		name        string
+		lines       []string
+		expected    *mackupApplicationConfig
+		expectedErr bool
 	}{
 		{
 			name: "curl.cfg",
@@ -25,7 +26,7 @@ func TestParseMackupApplication(t *testing.T) {
 				".netrc",
 				".curlrc",
 			},
-			expected: mackupApplicationConfig{
+			expected: &mackupApplicationConfig{
 				Application: mackupApplicationApplicationConfig{
 					Name: "Curl",
 				},
@@ -51,7 +52,7 @@ func TestParseMackupApplication(t *testing.T) {
 				"Code/User/keybindings.json",
 				"Code/User/settings.json",
 			},
-			expected: mackupApplicationConfig{
+			expected: &mackupApplicationConfig{
 				Application: mackupApplicationApplicationConfig{
 					Name: "Visual Studio Code",
 				},
@@ -67,9 +68,40 @@ func TestParseMackupApplication(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "invalid_configuration_files.cfg",
+			lines: []string{
+				"[application]",
+				"name = Application",
+				"",
+				"[configuration_files]",
+				"../Library/Application Support/Code/User/snippets",
+			},
+			expectedErr: true,
+		},
+		{
+			name: "invalid_xdg_configuration_files.cfg",
+			lines: []string{
+				"[application]",
+				"name = Application",
+				"",
+				"[configuration_files]",
+				"../Library/Application Support/Code/User/snippets",
+				"",
+				"[xdg_configuration_files]",
+				"Code/User/../snippets",
+			},
+			expectedErr: true,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.expected, parseMackupApplication([]byte(chezmoitest.JoinLines(tc.lines...))))
+			actual, err := parseMackupApplication([]byte(chezmoitest.JoinLines(tc.lines...)))
+			if tc.expectedErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expected, actual)
+			}
 		})
 	}
 }

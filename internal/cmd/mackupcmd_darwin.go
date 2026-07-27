@@ -75,7 +75,10 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 		if err != nil {
 			return err
 		}
-		config := parseMackupApplication(data)
+		config, err := parseMackupApplication(data)
+		if err != nil {
+			return fmt.Errorf("%s: %w", arg, err)
+		}
 		for _, filename := range config.ConfigurationFiles {
 			addArg := c.DestDirAbsPath.Join(filename)
 			addArgs = append(addArgs, addArg.String())
@@ -142,7 +145,7 @@ func (c *Config) mackupApplicationsDir() (chezmoi.AbsPath, error) {
 	return chezmoi.EmptyAbsPath, fmt.Errorf("%s: mackup application directory not found", libDirAbsPath)
 }
 
-func parseMackupApplication(data []byte) mackupApplicationConfig {
+func parseMackupApplication(data []byte) (*mackupApplicationConfig, error) {
 	var config mackupApplicationConfig
 	var section string
 	for line := range strings.Lines(string(data)) {
@@ -165,10 +168,18 @@ func parseMackupApplication(data []byte) mackupApplicationConfig {
 				}
 			}
 		case "configuration_files":
-			config.ConfigurationFiles = append(config.ConfigurationFiles, chezmoi.NewRelPath(line))
+			relPath, err := chezmoi.NewUntrustedRelPath(line)
+			if err != nil {
+				return nil, err
+			}
+			config.ConfigurationFiles = append(config.ConfigurationFiles, relPath)
 		case "xdg_configuration_files":
-			config.XDGConfigurationFiles = append(config.XDGConfigurationFiles, chezmoi.NewRelPath(line))
+			relPath, err := chezmoi.NewUntrustedRelPath(line)
+			if err != nil {
+				return nil, err
+			}
+			config.XDGConfigurationFiles = append(config.XDGConfigurationFiles, relPath)
 		}
 	}
-	return config
+	return &config, nil
 }
