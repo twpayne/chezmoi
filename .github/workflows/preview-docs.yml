@@ -36,8 +36,10 @@ jobs:
         HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
       run: |
-        PR=$(gh api "repos/${GH_REPO}/pulls" --paginate \
-          --jq ".[] | select(.head.ref == \"${HEAD_BRANCH}\" and .head.repo.full_name == \"${HEAD_REPO}\") | {number, base_sha: .base.sha}")
+        PR=$(gh api "repos/${GH_REPO}/pulls" --paginate | \
+          jq -c --arg branch "${HEAD_BRANCH}" --arg repo "${HEAD_REPO}" \
+            '.[] | select(.head.ref == $branch and .head.repo.full_name == $repo) | {number, base_sha: .base.sha}' | \
+          head -1)
         if [ -z "${PR}" ]; then
           echo "error: could not find PR for ${HEAD_REPO}:${HEAD_BRANCH}"
           exit 1
