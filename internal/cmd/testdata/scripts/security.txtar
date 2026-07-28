@@ -1,0 +1,14 @@
+# test that chezmoi apply returns an error if a .chezmoiremove file contains a pattern with ..
+! exec chezmoi apply
+stderr '.chezmoiremove:1: a/../b: invalid path'
+
+chhome home2/user
+
+# test that chezmoi apply returns an error if a .chezmoiignore file contains a pattern with ..
+! exec chezmoi apply
+stderr '.chezmoiignore:1: ../a: invalid path'
+
+-- home/user/.local/share/chezmoi/.chezmoiremove --
+a/../b
+-- home2/user/.local/share/chezmoi/.chezmoiignore --
+../a

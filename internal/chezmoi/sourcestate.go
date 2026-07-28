@@ -1536,6 +1536,9 @@ func (s *SourceState) addPatterns(patternSet *PatternSet, sourceAbsPath AbsPath,
 		if ok {
 			include = PatternSetExclude
 		}
+		if _, err := NewUntrustedRelPath(string(line)); err != nil {
+			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
+		}
 		pattern := dir.JoinString(string(line)).String()
 		if err := patternSet.Add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
