@@ -36,7 +36,12 @@ func NewRelPathFromComponents(components ...RelPath) RelPath {
 // NewUntrustedRelPath returns a clean version of path that does not escape its
 // parent directory.
 func NewUntrustedRelPath(relPath string) (RelPath, error) {
-	if relPath == ".." || strings.HasPrefix(relPath, "../") || strings.Contains(relPath, "/../") || filepath.IsAbs(relPath) {
+	if relPath == "" ||
+		relPath == ".." ||
+		strings.HasPrefix(relPath, "../") ||
+		strings.Contains(relPath, "/../") ||
+		strings.HasSuffix(relPath, "/..") ||
+		filepath.IsAbs(relPath) {
 		return RelPath{}, InvalidPathError(relPath)
 	}
 	return NewRelPath(relPath), nil
