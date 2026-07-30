@@ -1,0 +1,42 @@
+# chezmoi
+
+> chezmoi manages your dotfiles across multiple diverse machines, securely.
+
+## Getting Started
+
+- [Home](https://www.chezmoi.io/): overview and links
+- [Install](https://www.chezmoi.io/install/): installation instructions for all platforms
+- [Quick start](https://www.chezmoi.io/quick-start/): get up and running in minutes
+- [What does chezmoi do?](https://www.chezmoi.io/what-does-chezmoi-do/): high-level explanation
+- [Why use chezmoi?](https://www.chezmoi.io/why-use-chezmoi/): rationale and use cases
+- [Comparison table](https://www.chezmoi.io/comparison-table/): how chezmoi compares to other dotfile managers
+- [Migrating from another dotfile manager](https://www.chezmoi.io/migrating-from-another-dotfile-manager/)
+
+## User Guide
+
+- [Command overview](https://www.chezmoi.io/user-guide/command-overview/)
+- [Setup](https://www.chezmoi.io/user-guide/setup/)
+- [Daily operations](https://www.chezmoi.io/user-guide/daily-operations/)
+- [Manage different types of file](https://www.chezmoi.io/user-guide/manage-different-types-of-file/)
+- [Templating](https://www.chezmoi.io/user-guide/templating/)
+- [Machines: general](https://www.chezmoi.io/user-guide/machines/general/)
+- [FAQ: usage](https://www.chezmoi.io/user-guide/frequently-asked-questions/usage/)
+
+## Reference
+
+- [Reference index](https://www.chezmoi.io/reference/): entry point for all reference docs
+- [Concepts](https://www.chezmoi.io/reference/concepts/)
+- [Source state attributes](https://www.chezmoi.io/reference/source-state-attributes/)
+- [Configuration file](https://www.chezmoi.io/reference/configuration-file/)
+- [Special files](https://www.chezmoi.io/reference/special-files/)
+- [Special directories](https://www.chezmoi.io/reference/special-directories/)
+- [Command line flags](https://www.chezmoi.io/reference/command-line-flags/)
+- [Commands](https://www.chezmoi.io/reference/commands/): index of all chezmoi subcommands
+
+## Project
+
+- [Developer guide](https://www.chezmoi.io/developer-guide/)
+
+## Optional
+
+- [GitHub repository](https://github.com/twpayne/chezmoi)
