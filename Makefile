@@ -179,7 +179,7 @@ shellcheck:
 test-release: ensure-goreleaser
 	./bin/goreleaser release \
 		--clean \
-		--skip=chocolatey,sign \
+		--skip=chocolatey,sbom,sign \
 		--snapshot \
 		${GORELEASER_FLAGS}
 
