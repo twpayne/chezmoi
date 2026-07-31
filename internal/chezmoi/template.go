@@ -5,17 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"maps"
+	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
 
 	"github.com/BurntSushi/toml"
 	"github.com/goccy/go-yaml"
-	"github.com/mattn/go-runewidth"
 	"github.com/mitchellh/copystructure"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 )
+
+var formatIndentRx = regexp.MustCompile(`[ \t]*`)
 
 // A Template extends [text/template.Template] with support for directives.
 type Template struct {
@@ -44,6 +46,9 @@ func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template
 	}
 	funcs := options.Funcs
 	if options.FormatIndent != "" {
+		if !formatIndentRx.MatchString(options.FormatIndent) {
+			return nil, fmt.Errorf("%s: invalid format-indent", options.FormatIndent)
+		}
 		funcs = maps.Clone(funcs)
 		funcs["toJson"] = func(data any) string {
 			var builder strings.Builder
@@ -66,7 +71,7 @@ func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template
 		funcs["toYaml"] = func(data any) string {
 			var builder strings.Builder
 			encoder := yaml.NewEncoder(&builder,
-				yaml.Indent(runewidth.StringWidth(options.FormatIndent)),
+				yaml.Indent(stringWidth(options.FormatIndent)),
 			)
 			if err := encoder.Encode(data); err != nil {
 				panic(err)
@@ -214,4 +219,16 @@ func replaceLineEndings(s, lineEnding string) string {
 		return s
 	}
 	return lineEndingRx.ReplaceAllString(s, lineEnding)
+}
+
+// stringWidth returns the width of s. s is assumed to contain only space and
+// tab characters.
+func stringWidth(s string) int {
+	width := len(s)
+	for _, b := range []byte(s) {
+		if b == '\t' {
+			width += 7
+		}
+	}
+	return width
 }
