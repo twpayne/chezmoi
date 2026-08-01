@@ -1416,7 +1416,7 @@ func (c *Config) externalDiffFile(
 			return err
 		}
 		fromAbsPath = fromTempDir.Join(relPath)
-		if err := os.MkdirAll(fromAbsPath.Dir().String(), 0o777); err != nil {
+		if err := os.MkdirAll(fromAbsPath.Dir().String(), 0o700); err != nil {
 			return err
 		}
 		if err := os.WriteFile(fromAbsPath.String(), fromData, fromMode); err != nil {
@@ -1430,7 +1430,7 @@ func (c *Config) externalDiffFile(
 			return err
 		}
 		toAbsPath = toTempDir.Join(relPath)
-		if err := os.MkdirAll(toAbsPath.Dir().String(), 0o777); err != nil {
+		if err := os.MkdirAll(toAbsPath.Dir().String(), 0o700); err != nil {
 			return err
 		}
 		if err := os.WriteFile(toAbsPath.String(), toData, toMode); err != nil {
