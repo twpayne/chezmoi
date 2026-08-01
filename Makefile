@@ -2,6 +2,7 @@ GO?=go
 GOOS=$(shell ${GO} env GOOS)
 GOARCH=$(shell ${GO} env GOARCH)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GOLANGCI_LINT_BASENAME=golangci-lint-${GOLANGCI_LINT_VERSION}-$(shell ${GO} env GOOS)-$(shell ${GO} env GOARCH)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 SYFT_VERSION=$(shell awk '/SYFT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
@@ -146,7 +147,7 @@ ensure-tools: \
 .PHONY: ensure-golangci-lint
 ensure-golangci-lint:
 	if [ ! -x bin/golangci-lint ] || ( ./bin/golangci-lint version | grep -Fqv "version ${GOLANGCI_LINT_VERSION}" ) ; then \
-		curl -sSfL https://golangci-lint.run/install.sh | sh -s -- v${GOLANGCI_LINT_VERSION} ; \
+		curl -fsLS "https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_LINT_VERSION}/${GOLANGCI_LINT_BASENAME}.tar.gz" | tar -C bin --strip-components 1 -xzf - "${GOLANGCI_LINT_BASENAME}/golangci-lint" ; \
 	fi
 
 .PHONY: ensure-goreleaser
