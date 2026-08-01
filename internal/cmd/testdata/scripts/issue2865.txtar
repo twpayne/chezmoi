@@ -23,7 +23,7 @@ stdout '/.local/share/chezmoi/home\r?$'
 home
 -- home/user/.local/share/chezmoi/home/.chezmoi.toml.tmpl --
 [data]
-    testDir = {{ .chezmoi.sourceDir | quote }}
+    testDir = {{ .chezmoi.sourceDir | toToml }}
 -- home/user/.local/share/chezmoi/home/.chezmoiignore --
 {{- if eq .chezmoi.os "windows" }}
 .chezmoiscripts/echo.sh
