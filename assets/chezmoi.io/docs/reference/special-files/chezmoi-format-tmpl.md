@@ -22,7 +22,7 @@ executed prior to the reading of the source state.
     {{ $email := promptStringOnce . "email" "What is your email address" -}}
 
     data:
-        email: {{ $email | quote }}
+        email: {{ $email | toYaml }}
     ```
 
 --8<-- "config-format.md"

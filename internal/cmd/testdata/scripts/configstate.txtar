@@ -58,7 +58,7 @@ exec chezmoi diff
 ((   $email = promptString "email" -))
 (( end -))
 [data]
-    email = (( $email | quote ))
+    email = (( $email | toToml ))
 -- golden/chezmoi.toml --
 [data]
     email = "me@home.org"
