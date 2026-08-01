@@ -1,11 +1,13 @@
 GO?=go
-GOOS=$(shell ${GO} env GOOS)
-GOARCH=$(shell ${GO} env GOARCH)
+HOST_GOOS=$(shell ${GO} env GOOS)
+GOOS?=${HOST_GOOS}
+HOST_GOARCH=$(shell ${GO} env GOARCH)
+GOARCH?=${HOST_GOARCH}
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-GOLANGCI_LINT_BASENAME=golangci-lint-${GOLANGCI_LINT_VERSION}-$(shell ${GO} env GOOS)-$(shell ${GO} env GOARCH)
+GOLANGCI_LINT_BASENAME=golangci-lint-${GOLANGCI_LINT_VERSION}-${HOST_GOOS}-${HOST_GOARCH}
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 SYFT_VERSION=$(shell awk '/SYFT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
-SYFT_BASENAME=syft_${SYFT_VERSION}_$(shell ${GO} env GOOS)_$(shell ${GO} env GOARCH)
+SYFT_BASENAME=syft_${SYFT_VERSION}_${HOST_GOOS}_$(shell ${GO} env GOARCH)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
