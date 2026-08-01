@@ -5,6 +5,7 @@ GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .gith
 GOLANGCI_LINT_BASENAME=golangci-lint-${GOLANGCI_LINT_VERSION}-$(shell ${GO} env GOOS)-$(shell ${GO} env GOARCH)
 GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 SYFT_VERSION=$(shell awk '/SYFT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+SYFT_BASENAME=syft_${SYFT_VERSION}_$(shell ${GO} env GOOS)_$(shell ${GO} env GOARCH)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
@@ -159,7 +160,7 @@ ensure-goreleaser:
 .PHONY: ensure-syft
 ensure-syft:
 	if [ ! -x bin/syft ] || ( ./bin/syft --version | grep -Fqv "${SYFT_VERSION}" ) ; then \
-		curl -fsLS https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/syft_${SYFT_VERSION}_$(shell ${GO} env GOOS)_$(shell ${GO} env GOARCH).tar.gz | tar -C bin -xzf - syft ; \
+		curl -fsLS "https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/${SYFT_BASENAME}.tar.gz" | tar -C bin -xzf - syft ; \
 	fi
 
 .PHONY: generate
