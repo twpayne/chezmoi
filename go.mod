@@ -2,7 +2,7 @@ module chezmoi.io/chezmoi/v2
 
 go 1.26
 
-toolchain go1.26.5
+toolchain go1.26.0
 
 tool (
 	chezmoi.io/chezmoi/v2
