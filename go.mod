@@ -237,3 +237,5 @@ exclude (
 	github.com/charmbracelet/bubbles v0.21.1 // https://github.com/twpayne/chezmoi/issues/4405
 	github.com/charmbracelet/bubbles v1.0.0 // https://github.com/twpayne/chezmoi/issues/4405
 )
+
+replace github.com/bartventer/httpcache => github.com/twpayne/bartventer-httpcache v0.14.0 // https://github.com/bartventer/httpcache/pull/37
