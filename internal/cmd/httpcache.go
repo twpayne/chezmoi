@@ -51,6 +51,7 @@ func init() {
 			return fscache.Open(httpCacheScheme,
 				fscache.WithBaseDir(u.Path),
 				fscache.WithUpdateMTime(true),
+				fscache.WithUmask(0o077),
 			)
 		})
 		return &httpCache{open: open}, nil
