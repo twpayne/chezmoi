@@ -23,7 +23,7 @@ env:
   PYTHON_VERSION: '3.14' # https://www.python.org/downloads/
   RAGE_VERSION: 0.12.1 # https://github.com/str4d/rage/releases
   SYFT_VERSION: 1.50.0 # https://github.com/anchore/syft/releases
-  UV_VERSION: 0.12.0 # https://github.com/astral-sh/uv/releases
+  UV_VERSION: 0.12.1 # https://github.com/astral-sh/uv/releases
   NO_MKDOCS_2_WARNING: 1
 jobs:
   changes:
