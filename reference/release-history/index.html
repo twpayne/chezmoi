@@ -5710,6 +5710,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -5837,6 +5843,34 @@
     
   
     completion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/debugf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    debugf
   
 
     
@@ -6761,6 +6795,62 @@
     
   
     setValueAtPath
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/shellQuote/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    shellQuote
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/functions/shellQuoteList/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    shellQuoteList
   
 
     
@@ -8961,6 +9051,8 @@
       
         
       
+        
+      
     
     
     
@@ -9032,6 +9124,34 @@
     
   
     gopass
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../templates/gopass-functions/gopassCat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    gopassCat
   
 
     
@@ -10389,6 +10509,17 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#v2.72.0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.72.0 (2026-08-02)
+      
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#v2.71.1" class="md-nav__link">
@@ -13884,6 +14015,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#v2.72.0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.72.0 (2026-08-02)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#v2.71.1" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -16709,7 +16851,39 @@
 
 
 <h1 id="release-history">Release history</h1>
-<p><a href="https://github.com/twpayne/chezmoi/compare/v2.71.1...master">Upcoming changes</a></p>
+<p><a href="https://github.com/twpayne/chezmoi/compare/v2.72.0...master">Upcoming changes</a></p>
+<h2 id="v2.72.0"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.72.0">2.72.0</a> (2026-08-02)</h2>
+<p>Features</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/f81cb321789aa3df62871248f5e4d361a59e7cc1"><code>f81cb32</code></a> feat: Fix multiple security vulns thanks to secur0.com</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/1e51cc5d88e10ea04d7f74b78380693ce41cbb85"><code>1e51cc5</code></a> feat: Add shellQuote and shellQuoteList template funcs</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/4249f4f6c24954d3ce8bfd0d76673bb8c55869d3"><code>4249f4f</code></a> feat: Add gopassCat template function</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/a7d91a55f885d87be7089095c69705e499cd41a4"><code>a7d91a5</code></a> feat: Add debugf template function</li>
+</ul>
+<p>Fixes</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/0ad679a834533d3f548c18f62ed7c97dc05a3250"><code>0ad679a</code></a> fix: Tighten permissions on temporary files</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/4031be13eebd4a964242fade1b4b23688d6e4589"><code>4031be1</code></a> fix: Ensure HTTP cache dir is private</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/ba5a19a2fd28e3a16d9f8d86c6c906acf229dd3e"><code>ba5a19a</code></a> fix: Disallow relative paths with /.. suffix</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/1fe762752a243991df1a749cdf89fa3e4de7df04"><code>1fe7627</code></a> fix: Disallow .. in ignore and remove patterns</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/3c9e70b5262856aee320dc68a3035ce2e344d6bf"><code>3c9e70b</code></a> fix: Disallow .. paths in mackup files</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/01b60ddecfd021b83b174dd9ae6d54a9909bc769"><code>01b60dd</code></a> fix: Disallow filenames that resolve to .</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/5cdaf4ea3613717756bece1083fde079f4e37978"><code>5cdaf4e</code></a> fix: Improve handling of untrusted relative paths</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/e8a57dc1b617068fd54cf4c998ac95bbc9150a70"><code>e8a57dc</code></a> fix: Disallow .. paths in .chezmoiroot</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/76e2ddf60a7b020fec4f06961ec8401e7a4c6ab9"><code>76e2ddf</code></a> fix: Reject negative format-indent-width template directives</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/840f68213525cdf7cdaa48a248fe751cb4361a9d"><code>840f682</code></a> fix: Ensure that secret keyring get command always writes a private file</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/f7282b8127ad67d17b069ea8b4bfa1f66b8c43ef"><code>f7282b8</code></a> fix: Ensure that age-keygen always writes a private file</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/e7cbe71abd5f51524196a45bb94c1d9b006cf577"><code>e7cbe71</code></a> fix: Make persistent state directory private by default</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/0d6fc2bf7ca5fd9b24fa93b09874170a0a16572b"><code>0d6fc2b</code></a> fix: Prevent directory escape in tar and rar archives</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/239cc6b9eea29698a003bf23eeb0bf112fe93006"><code>239cc6b</code></a> fix: Disallow file and dir names that resolve to ..</li>
+</ul>
+<p>Documentation</p>
+<ul>
+<li><a href="https://github.com/twpayne/chezmoi/commit/a331111360f57705beb83385f2f5684514682a4c"><code>a331111</code></a> docs: Use more robust quoting functions in examples</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/80441a5fc79775e981f127e4a4c0d5575872eb55"><code>80441a5</code></a> docs: Add link to article</li>
+<li><a href="https://github.com/twpayne/chezmoi/commit/6cd634d875a99dd152b1a8fd1ae7fba67f13659f"><code>6cd634d</code></a> docs: Add link to article</li>
+</ul>
+<p>Full changelog: <a href="https://github.com/twpayne/chezmoi/compare/v2.71.1...v2.72.0">v2.71.1...v2.72.0</a></p>
 <h2 id="v2.71.1"><a href="https://github.com/twpayne/chezmoi/releases/tag/v2.71.1">2.71.1</a> (2026-07-20)</h2>
 <p>Features</p>
 <ul>

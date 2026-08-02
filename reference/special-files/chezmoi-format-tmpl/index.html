@@ -5720,6 +5720,12 @@
       
         
       
+        
+      
+        
+      
+        
+      
     
     
     
@@ -5847,6 +5853,34 @@
     
   
     completion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/debugf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    debugf
   
 
     
@@ -6771,6 +6805,62 @@
     
   
     setValueAtPath
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/shellQuote/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    shellQuote
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/functions/shellQuoteList/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    shellQuoteList
   
 
     
@@ -8971,6 +9061,8 @@
       
         
       
+        
+      
     
     
     
@@ -9042,6 +9134,34 @@
     
   
     gopass
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/gopass-functions/gopassCat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    gopassCat
   
 
     
@@ -11098,7 +11218,7 @@ executed prior to the reading of the source state.</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.yaml.tmpl</span><pre><span></span><code>{{ $email := promptStringOnce . &quot;email&quot; &quot;What is your email address&quot; -}}
 
 data:
-    email: {{ $email | quote }}
+    email: {{ $email | toYaml }}
 </code></pre></div>
 </div>
 <!-- markdownlint-disable first-line-heading -->
