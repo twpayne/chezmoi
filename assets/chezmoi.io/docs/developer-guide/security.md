@@ -19,6 +19,26 @@ the Go FAQ.
 Please report vulnerabilities by [opening a GitHub issue][issue] or sending an
 email to [`twpayne+chezmoi-security@gmail.com`][email].
 
+## Security thanks
+
+Security problems are reported privately and do not show up in the list of
+contributors. chezmoi thanks:
+
+### Organizations
+
+* [Secur0](https://secur0.com/) who performed an extensive security analysis of
+  chezmoi.
+
+### Individuals
+
+* eltiburon7
+* gueco
+* julichaan
+* Krypt3d (multiple vulnerabilities)
+* pulpo
+* reddev (multiple vulnerabilities)
+* TheRedP4nther (multiple vulnerabilities)
+
 [false]: https://go.dev/doc/faq#virus
 [issue]: https://github.com/twpayne/chezmoi/issues/new/choose
 [email]: mailto:twpayne%2Bchezmoi-security@gmail.com
