@@ -1,13 +1,15 @@
 package cmd
 
 import (
+	"maps"
+	"slices"
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
 )
 
 func TestShellQuote(t *testing.T) {
-	for s, expected := range map[string]string{
+	tcs := map[string]string{
 		``:            `''`,
 		`'`:           `\'`,
 		`''`:          `\'\'`,
@@ -20,8 +22,11 @@ func TestShellQuote(t *testing.T) {
 		`a b`:         `'a b'`,
 		`--arg`:       `--arg`,
 		`--arg=value`: `--arg=value`,
-	} {
-		assert.Equal(t, expected, shellQuote(s), "quoting %q", s)
+		`it's`:        `'it'\''s'`,
+		`$(echo foo)`: `'$(echo foo)'`,
+	}
+	for _, s := range slices.Sorted(maps.Keys(tcs)) {
+		assert.Equal(t, tcs[s], shellQuote(s), "quoting %q", s)
 	}
 }
 

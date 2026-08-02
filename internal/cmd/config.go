@@ -577,6 +577,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		"secret":                      c.secretTemplateFunc,
 		"secretJSON":                  c.secretJSONTemplateFunc,
 		"setValueAtPath":              c.setValueAtPathTemplateFunc,
+		"shellQuote":                  c.shellQuoteTemplateFunc,
+		"shellQuoteList":              c.shellQuoteListTemplateFunc,
 		"splitList":                   c.splitListTemplateFunc,
 		"squote":                      c.squoteTemplateFunc,
 		"stat":                        c.statTemplateFunc,

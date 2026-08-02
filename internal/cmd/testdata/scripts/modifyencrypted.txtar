@@ -35,4 +35,4 @@ echo "# modified"
 #!/bin/sh
 
 cat
-echo {{ "# modified" | quote }}
+echo {{ "# modified" | shellQuote }}

@@ -231,6 +231,14 @@ stdout '^key: value$'
 exec chezmoi execute-template '{{ "a b" | splitList " " | quoteList }}'
 stdout '["a" "b"]'
 
+# test the shellQuote template function
+exec chezmoi execute-template '{{ "a b" | shellQuote }}{{ "\n" }}'
+cmp stdout golden/shellQuote
+
+# test the shellQuoteList template function
+exec chezmoi execute-template '{{ list "$(foo a b)" "${bar}" | shellQuoteList | join " " }}{{ "\n" }}'
+cmp stdout golden/shellQuoteList
+
 -- bin/chezmoi-output-test --
 #!/bin/sh
 
@@ -316,6 +324,10 @@ file2.txt
 {"key1":"value1"}
 -- golden/setValueAtPath --
 {"key1":{"key2":"value2"}}
+-- golden/shellQuote --
+'a b'
+-- golden/shellQuoteList --
+'$(foo a b)' '${bar}'
 -- golden/toIni --
 key = value
 

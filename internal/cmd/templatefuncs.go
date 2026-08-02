@@ -486,6 +486,22 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 	return result
 }
 
+func (c *Config) shellQuoteTemplateFunc(s string) string {
+	return shellQuote(s)
+}
+
+func (c *Config) shellQuoteListTemplateFunc(list ...any) []string {
+	ss, err := anyToStringSlice(list)
+	if err != nil {
+		panic(err)
+	}
+	result := make([]string, len(ss))
+	for i, s := range ss {
+		result[i] = shellQuote(s)
+	}
+	return result
+}
+
 func (c *Config) splitListTemplateFunc(sep, s string) []any {
 	strSlice := strings.Split(s, sep)
 	result := make([]any, len(strSlice))
