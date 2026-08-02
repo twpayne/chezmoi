@@ -100,7 +100,7 @@ else
 	exit 1
 fi
 
-${chezmoi} init --apply {{ .args | quoteList | join " " }}
+${chezmoi} init --apply {{ .args | shellQuoteList | join " " }}
 {{- if .shell }}
 
 shell="$(awk -F : "\$1 == \"${username}\" { print \$7 }" /etc/passwd)"

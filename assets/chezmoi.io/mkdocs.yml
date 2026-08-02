@@ -243,6 +243,8 @@ nav:
       - quoteList: reference/templates/functions/quoteList.md
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md
       - setValueAtPath: reference/templates/functions/setValueAtPath.md
+      - shellQuote: reference/templates/functions/shellQuote.md
+      - shellQuoteList: reference/templates/functions/shellQuoteList.md
       - stat: reference/templates/functions/stat.md
       - stdinIsATTY: reference/templates/functions/stdinIsATTY.md
       - toIni: reference/templates/functions/toIni.md

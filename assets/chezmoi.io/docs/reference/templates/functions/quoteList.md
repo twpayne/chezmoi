@@ -7,7 +7,7 @@
 
     ```
     {{ $args := list "alpha" "beta" "gamma" }}
-    command {{ $args | quoteList }}
+    command {{ $args | quoteList | join " " }}
     ```
 
     ```
