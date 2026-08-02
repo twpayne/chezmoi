@@ -23,7 +23,8 @@ func NewGitHubClient(ctx context.Context, httpClient *http.Client) *github.Clien
 				context.WithValue(ctx, oauth2.HTTPClient, httpClient),
 				oauth2.StaticTokenSource(&oauth2.Token{
 					AccessToken: accessToken,
-				}))
+				}),
+			)
 			break
 		}
 	}

@@ -399,7 +399,8 @@ func TestIssue4927(t *testing.T) {
 				`    url = "`+httpServer.URL+`/file"`,
 				`    checksum.sha256 = "5ecfe762ad9a450cbc2317d8fd114d226ad97209ba1e11dc30ab26423a335fed"`,
 			)),
-			0o666))
+			0o666,
+		))
 		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
 		vfst.RunTests(t, fileSystem, ".file",
 			vfst.TestPath("/home/user/.file",

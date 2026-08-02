@@ -442,7 +442,7 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Fatalf("unsupported: ! mkgitconfig")
 	}
 	if len(args) > 1 {
-		ts.Fatalf(("usage: mkgitconfig [path]"))
+		ts.Fatalf("usage: mkgitconfig [path]")
 	}
 	gitconfigPath := filepath.Join(ts.Getenv("HOME"), ".gitconfig")
 	if len(args) > 0 {
@@ -517,7 +517,7 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Fatalf("unsupported: ! mkhomedir")
 	}
 	if len(args) > 1 {
-		ts.Fatalf(("usage: mkhomedir [path]"))
+		ts.Fatalf("usage: mkhomedir [path]")
 	}
 	homeDir := ts.Getenv("HOME")
 	if len(args) > 0 {

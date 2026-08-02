@@ -108,7 +108,8 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 		persistentState, GitRepoExternalStateBucket, modifyDirWithCmdStateKey, &ModifyDirWithCmdState{
 			Name:  actualStateEntry.Path(),
 			RunAt: runAt,
-		}); err != nil {
+		},
+	); err != nil {
 		return false, err
 	}
 
