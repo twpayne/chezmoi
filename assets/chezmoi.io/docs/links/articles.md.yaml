@@ -731,3 +731,8 @@ articles:
   version: 2.70.5
   title: How to Turn a Custom Terminal Setup into Portable Dotfiles with chezmoi
   url: https://lirantal.com/blog/portable-terminal-dotfiles-chezmoi
+- date: '2026-08-01'
+  lang: CN
+  version: 2.70.5
+  title: 用 chezmoi 同步多台机器的 Claude Code 配置：完整教程
+  url: http://www.jxxy.net/ai/articles/frxiaobei-chezmoi-claude-config/
