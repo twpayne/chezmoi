@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
@@ -58,11 +58,11 @@ func (m ChoiceInputModel) Init() tea.Cmd {
 
 func (m ChoiceInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if keyMsg, ok := msg.(tea.KeyMsg); ok {
-		switch keyMsg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+		switch keyMsg.String() {
+		case "ctrl+c", "esc":
 			m.canceled = true
 			return m, tea.Quit
-		case tea.KeyEnter:
+		case "enter":
 			value := m.textInput.Value()
 			if value == "" && m.defaultValue != nil {
 				m.textInput.SetValue(*m.defaultValue)
@@ -90,6 +90,6 @@ func (m ChoiceInputModel) Value() string {
 	return m.uniqueAbbreviations[value]
 }
 
-func (m ChoiceInputModel) View() string {
-	return m.textInput.View()
+func (m ChoiceInputModel) View() tea.View {
+	return tea.NewView(m.textInput.View())
 }

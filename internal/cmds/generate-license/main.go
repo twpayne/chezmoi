@@ -15,8 +15,8 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/charmbracelet/glamour"
-	"github.com/charmbracelet/glamour/styles"
+	"charm.land/glamour/v2"
+	"charm.land/glamour/v2/styles"
 
 	"chezmoi.io/chezmoi/v2/assets/chezmoi.io/docs"
 )

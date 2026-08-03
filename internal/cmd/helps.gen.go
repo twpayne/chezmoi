@@ -146,7 +146,8 @@ var helps = map[string]*help{
 			"  Launch a shell in the working tree (typically the source directory). chezmoi\n" +
 			"  will launch the command set by the cd.command configuration variable with\n" +
 			"  any extra arguments specified by cd.args. If this is not set, chezmoi will\n" +
-			"  attempt to detect your shell and finally fall back to an OS-specific default.\n" +
+			"  attempt to detect your shell and finally fall back to an OS-specific\n" +
+			"  default.\n" +
 			"\n" +
 			"  If the optional argument path is present, the shell will be launched in the\n" +
 			"  source directory corresponding to path.\n" +
@@ -170,26 +171,26 @@ var helps = map[string]*help{
 			"  them or their attributes with the string no or a minus sign (-). The\n" +
 			"  available attribute modifiers and their abbreviations are:\n" +
 			"\n" +
-			"   Attribute modifier                  | Abbreviation\n" +
-			"  -------------------------------------|------------------------------------\n" +
-			"   after                               | a\n" +
-			"   before                              | b\n" +
-			"   empty                               | e\n" +
-			"   encrypted                           | none\n" +
-			"   exact                               | none\n" +
-			"   executable                          | x\n" +
-			"   external                            | none\n" +
-			"   once                                | o\n" +
-			"   onchange                            | none\n" +
-			"   private                             | p\n" +
-			"   readonly                            | r\n" +
-			"   remove                              | none\n" +
-			"   template                            | t\n" +
+			"   Attribute modifier                   | Abbreviation\n" +
+			"  --------------------------------------|-------------------------------------\n" +
+			"   after                                | a\n" +
+			"   before                               | b\n" +
+			"   empty                                | e\n" +
+			"   encrypted                            | none\n" +
+			"   exact                                | none\n" +
+			"   executable                           | x\n" +
+			"   external                             | none\n" +
+			"   once                                 | o\n" +
+			"   onchange                             | none\n" +
+			"   private                              | p\n" +
+			"   readonly                             | r\n" +
+			"   remove                               | none\n" +
+			"   template                             | t\n" +
 			"\n" +
 			"  The type of a target can be changed using a type modifier:\n" +
 			"\n" +
 			"   Type modifier\n" +
-			"  --------------------------------------------------------------------------\n" +
+			"  ----------------------------------------------------------------------------\n" +
 			"   create\n" +
 			"   modify\n" +
 			"   script\n" +
@@ -200,8 +201,7 @@ var helps = map[string]*help{
 			"\n" +
 			"  Multiple modifications may be specified by separating them with a comma (,).\n" +
 			"  If you use the -modifier form then you must put modifier after a -- to\n" +
-			"  prevent\n" +
-			"  chezmoi from interpreting -modifier as an option.",
+			"  prevent chezmoi from interpreting -modifier as an option.",
 		example: "" +
 			"  chezmoi chattr template ~/.bashrc\n" +
 			"  chezmoi chattr noempty ~/.profile\n" +
@@ -444,7 +444,7 @@ var helps = map[string]*help{
 			"  Generates output for use with chezmoi. The currently supported outputs are:\n" +
 			"\n" +
 			"   Output                | Description\n" +
-			"  -----------------------|--------------------------------------------------\n" +
+			"  -----------------------|----------------------------------------------------\n" +
 			"   git-commit-message    | A git commit message, describing the changes to\n" +
 			"                         | the source directory.\n" +
 			"   install.sh            | An install script, suitable for use with GitHub\n" +
@@ -497,8 +497,8 @@ var helps = map[string]*help{
 			"  curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.\n" +
 			"com/ohmyzsh/ohmyzsh/archive/master.tar.gz\n" +
 			"  mkdir -p $(chezmoi source-path)/dot_oh-my-zsh\n" +
-			"  chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-\n" +
-			"zsh-master.tar.gz",
+			"  chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-\n" +
+			"my-zsh-master.tar.gz",
 		longFlags: chezmoiset.New(
 			"destination",
 			"exact",
@@ -534,21 +534,20 @@ var helps = map[string]*help{
 			"\n" +
 			"  By default, if repo is given, chezmoi will guess the full git repo URL,\n" +
 			"  using HTTPS by default, or SSH if the --ssh option is specified, according\n" +
-			"  to\n" +
-			"  the following patterns:\n" +
+			"  to the following patterns:\n" +
 			"\n" +
-			"   Pattern          | HTTPS Repo                | SSH repo\n" +
-			"  ------------------|---------------------------|---------------------------\n" +
-			"   user             | https://user@github.com/u | git@github.com:user/dotfi\n" +
-			"                    | ser/dotfiles.git          | les.git\n" +
-			"   user/repo        | https://user@github.com/u | git@github.com:user/repo.\n" +
-			"                    | ser/repo.git              | git\n" +
-			"   site/user/repo   | https://user@site/user/re | git@site:user/repo.git\n" +
-			"                    | po.git                    |\n" +
-			"   sr.ht/~user      | https://user@git.sr.ht/~u | git@git.sr.ht:~user/dotfi\n" +
-			"                    | ser/dotfiles              | les.git\n" +
-			"   sr.ht/~user/repo | https://user@git.sr.ht/~u | git@git.sr.ht:~user/repo.\n" +
-			"                    | ser/repo                  | git\n" +
+			"   Pattern          | HTTPS Repo                 | SSH repo\n" +
+			"  ------------------|----------------------------|----------------------------\n" +
+			"   user             | https://user@github.com/us | git@github.com:user/dotfil\n" +
+			"                    | er/dotfiles.git            | es.git\n" +
+			"   user/repo        | https://user@github.com/us | git@github.com:user/repo.g\n" +
+			"                    | er/repo.git                | it\n" +
+			"   site/user/repo   | https://user@site/user/rep | git@site:user/repo.git\n" +
+			"                    | o.git                      |\n" +
+			"   sr.ht/~user      | https://user@git.sr.ht/~us | git@git.sr.ht:~user/dotfil\n" +
+			"                    | er/dotfiles                | es.git\n" +
+			"   sr.ht/~user/repo | https://user@git.sr.ht/~us | git@git.sr.ht:~user/repo.g\n" +
+			"                    | er/repo                    | it\n" +
 			"\n" +
 			"  To disable git repo URL guessing, pass the --guess-repo-url=false option.",
 		example: "" +
@@ -781,13 +780,13 @@ var helps = map[string]*help{
 			"  difference between the actual state and the target state, and what effect\n" +
 			"  running chezmoi apply will have.\n" +
 			"\n" +
-			"   Character    | Meaning     | First column       | Second column\n" +
-			"  --------------|-------------|--------------------|------------------------\n" +
-			"   Space        | No change   | No change          | No change\n" +
-			"   A            | Added       | Entry was created  | Entry will be created\n" +
-			"   D            | Deleted     | Entry was deleted  | Entry will be deleted\n" +
-			"   M            | Modified    | Entry was modified | Entry will be modified\n" +
-			"   R            | Run         | Not applicable     | Script will be run",
+			"   Character     | Meaning      | First column       | Second column\n" +
+			"  ---------------|--------------|--------------------|------------------------\n" +
+			"   Space         | No change    | No change          | No change\n" +
+			"   A             | Added        | Entry was created  | Entry will be created\n" +
+			"   D             | Deleted      | Entry was deleted  | Entry will be deleted\n" +
+			"   M             | Modified     | Entry was modified | Entry will be modified\n" +
+			"   R             | Run          | Not applicable     | Script will be run",
 		example: "" +
 			"  chezmoi status",
 		longFlags: chezmoiset.New(
