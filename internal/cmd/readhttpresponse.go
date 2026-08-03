@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/bubbles/progress"
-	"github.com/charmbracelet/bubbles/spinner"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/progress"
+	"charm.land/bubbles/v2/spinner"
+	tea "charm.land/bubbletea/v2"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
@@ -51,11 +51,11 @@ func (m httpProgressModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	case progress.FrameMsg:
 		model, cmd := m.progress.Update(msg)
-		m.progress = model.(progress.Model) //nolint:forcetypeassert,revive
+		m.progress = model //nolint:forcetypeassert,revive
 		return m, cmd
-	case tea.KeyMsg:
-		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+	case tea.KeyPressMsg:
+		switch msg.String() {
+		case "ctrl+c", "esc":
 			m.canceled = true
 			return m, tea.Quit
 		default:
@@ -66,8 +66,8 @@ func (m httpProgressModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 }
 
-func (m httpProgressModel) View() string {
-	return "[" + m.progress.View() + "] " + m.url
+func (m httpProgressModel) View() tea.View {
+	return tea.NewView("[" + m.progress.View() + "] " + m.url)
 }
 
 func (m httpSpinnerModel) Canceled() bool {
@@ -90,9 +90,9 @@ func (m httpSpinnerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		var cmd tea.Cmd
 		m.spinner, cmd = m.spinner.Update(msg)
 		return m, cmd
-	case tea.KeyMsg:
-		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+	case tea.KeyPressMsg:
+		switch msg.String() {
+		case "ctrl+c", "esc":
 			m.canceled = true
 			return m, tea.Quit
 		default:
@@ -103,8 +103,8 @@ func (m httpSpinnerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 }
 
-func (m httpSpinnerModel) View() string {
-	return "[" + m.spinner.View() + "] " + m.url
+func (m httpSpinnerModel) View() tea.View {
+	return tea.NewView("[" + m.spinner.View() + "] " + m.url)
 }
 
 func (c *Config) readHTTPResponse(url string, resp *http.Response) ([]byte, error) {
@@ -117,9 +117,7 @@ func (c *Config) readHTTPResponse(url string, resp *http.Response) ([]byte, erro
 			progress.WithWidth(httpProgressWidth),
 		)
 		httpProgress.Full = '#'
-		httpProgress.FullColor = ""
 		httpProgress.Empty = ' '
-		httpProgress.EmptyColor = ""
 		httpProgress.ShowPercentage = false
 
 		model := httpProgressModel{

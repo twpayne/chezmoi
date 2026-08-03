@@ -23,6 +23,10 @@ tool (
 )
 
 require (
+	charm.land/bubbles/v2 v2.1.0
+	charm.land/bubbletea/v2 v2.0.8
+	charm.land/glamour/v2 v2.0.1
+	charm.land/lipgloss/v2 v2.0.4
 	filippo.io/age v1.3.1
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.14.0
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.5.0
@@ -37,10 +41,6 @@ require (
 	github.com/betterleaks/betterleaks v1.7.3
 	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/bradenhilton/mozillainstallhash v1.0.1
-	github.com/charmbracelet/bubbles v0.20.0
-	github.com/charmbracelet/bubbletea v1.3.10
-	github.com/charmbracelet/glamour v1.0.0
-	github.com/charmbracelet/lipgloss v1.1.1-0.20250404203927-76690c660834
 	github.com/coreos/go-semver v0.3.1
 	github.com/fsnotify/fsnotify v1.10.1
 	github.com/go-git/go-git/v5 v5.19.2
@@ -122,12 +122,13 @@ require (
 	github.com/charlievieth/fastwalk v1.0.14 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
+	github.com/charmbracelet/ultraviolet v0.0.0-20260703014108-f5a850f9c2b7 // indirect
 	github.com/charmbracelet/x/ansi v0.11.7 // indirect
-	github.com/charmbracelet/x/cellbuf v0.0.15 // indirect
 	github.com/charmbracelet/x/conpty v0.2.0 // indirect
-	github.com/charmbracelet/x/exp/slice v0.0.0-20260730164118-7e2d3e6c5238 // indirect
+	github.com/charmbracelet/x/exp/slice v0.0.0-20260803091719-3755ebad01b1 // indirect
 	github.com/charmbracelet/x/term v0.2.2 // indirect
 	github.com/charmbracelet/x/termios v0.1.1 // indirect
+	github.com/charmbracelet/x/windows v0.2.2 // indirect
 	github.com/charmbracelet/x/xpty v0.1.4 // indirect
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
@@ -144,7 +145,6 @@ require (
 	github.com/editorconfig-checker/editorconfig-checker/v3 v3.9.0 // indirect
 	github.com/editorconfig/editorconfig-core-go/v2 v2.6.4 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
-	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/expr-lang/expr v1.17.8 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/fatih/semgroup v1.3.0 // indirect
@@ -180,7 +180,6 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.4.1 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
-	github.com/mattn/go-localereader v0.0.1 // indirect
 	github.com/mattn/go-runewidth v0.0.27 // indirect
 	github.com/mattn/go-shellwords v1.0.12 // indirect
 	github.com/mholt/archives v0.1.6-0.20260429171216-ef71b7a32fae // indirect
@@ -188,9 +187,7 @@ require (
 	github.com/mikelolasagasti/xz v1.0.1 // indirect
 	github.com/minio/minlz v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
-	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.4.3 // indirect
 	github.com/pierrec/lz4/v4 v4.1.27 // indirect
 	github.com/pjbgf/sha1cd v0.6.0 // indirect

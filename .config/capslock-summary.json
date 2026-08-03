@@ -1,4 +1,13 @@
 {
+  "charm.land/bubbles/v2/progress": [
+    "CAPABILITY_READ_SYSTEM_STATE"
+  ],
+  "charm.land/lipgloss/v2": [
+    "CAPABILITY_READ_SYSTEM_STATE"
+  ],
+  "charm.land/lipgloss/v2/compat": [
+    "CAPABILITY_EXEC"
+  ],
   "chezmoi.io/chezmoi/v2": [
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
@@ -17,10 +26,12 @@
   "chezmoi.io/chezmoi/v2/internal/chezmoi": [
     "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_NETWORK",
     "CAPABILITY_SYSTEM_CALLS"
+  ],
+  "chezmoi.io/chezmoi/v2/internal/chezmoibubbles": [
+    "CAPABILITY_EXEC"
   ],
   "chezmoi.io/chezmoi/v2/internal/cmd": [
     "CAPABILITY_ARBITRARY_EXECUTION",
@@ -51,7 +62,6 @@
   ],
   "github.com/betterleaks/betterleaks/detect": [
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_FILES",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
@@ -71,17 +81,18 @@
   ],
   "github.com/betterleaks/betterleaks/sources": [
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
   ],
   "github.com/bodgit/sevenzip": [
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
+  ],
+  "github.com/charmbracelet/colorprofile": [
+    "CAPABILITY_EXEC"
   ],
   "github.com/charmbracelet/x/xpty": [
     "CAPABILITY_OPERATING_SYSTEM"
@@ -91,9 +102,6 @@
   ],
   "github.com/expr-lang/expr/vm": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
-  ],
-  "github.com/fsnotify/fsnotify": [
-    "CAPABILITY_READ_SYSTEM_STATE"
   ],
   "github.com/go-git/go-git/v5/plumbing/transport/file": [
     "CAPABILITY_OPERATING_SYSTEM"
@@ -128,7 +136,6 @@
   ],
   "github.com/mholt/archives": [
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
@@ -138,7 +145,6 @@
   ],
   "github.com/rs/zerolog": [
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"
@@ -164,7 +170,6 @@
   ],
   "go4.org/readerutil": [
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
     "CAPABILITY_RUNTIME"

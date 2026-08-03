@@ -3,29 +3,21 @@ package chezmoibubbles
 import (
 	"testing"
 
+	tea "charm.land/bubbletea/v2"
 	"github.com/alecthomas/assert/v2"
-	tea "github.com/charmbracelet/bubbletea"
-
-	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
-)
-
-var keyTypes = chezmoiset.New(
-	tea.KeyCtrlC,
-	tea.KeyEnter,
-	tea.KeyEsc,
 )
 
 func makeKeyMsg(r rune) tea.Msg {
-	key := tea.Key{
-		Type:  tea.KeyRunes,
-		Runes: []rune{r},
+	switch r {
+	case '\x03':
+		return tea.KeyPressMsg{Code: 'c', Mod: tea.ModCtrl}
+	case '\r':
+		return tea.KeyPressMsg{Code: tea.KeyEnter}
+	case '\x1b':
+		return tea.KeyPressMsg{Code: tea.KeyEsc}
+	default:
+		return tea.KeyPressMsg{Code: r, Text: string(r)}
 	}
-	if keyTypes.Contains(tea.KeyType(r)) {
-		key = tea.Key{
-			Type: tea.KeyType(r),
-		}
-	}
-	return tea.KeyMsg(key)
 }
 
 func makeKeyMsgs(s string) []tea.Msg {
