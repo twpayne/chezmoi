@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	tea "github.com/charmbracelet/bubbletea"
+	tea "charm.land/bubbletea/v2"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoibubbles"
