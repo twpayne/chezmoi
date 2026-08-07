@@ -37,7 +37,7 @@ jobs:
       with:
         persist-credentials: false
     - id: filter
-      uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706   # v4.0.2
+      uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d   # v4.0.3
       with:
         filters: |
           code:
@@ -399,7 +399,7 @@ jobs:
       run: |
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
-      uses: DavidAnson/markdownlint-cli2-action@6bf21b07787794f89a243495939cd651942aeabe   # v24.1.0
+      uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff   # v24.2.0
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
