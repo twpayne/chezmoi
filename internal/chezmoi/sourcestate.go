@@ -45,6 +45,7 @@ type ExternalType string
 const (
 	ExternalTypeArchive     ExternalType = "archive"
 	ExternalTypeArchiveFile ExternalType = "archive-file"
+	ExternalTypeDMG         ExternalType = "dmg"
 	ExternalTypeFile        ExternalType = "file"
 	ExternalTypeGitRepo     ExternalType = "git-repo"
 )
@@ -2417,6 +2418,8 @@ func (s *SourceState) readExternal(
 		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeArchiveFile:
 		return s.readExternalArchiveFile(ctx, externalRelPath, parentSourceRelPath, external, options)
+	case ExternalTypeDMG:
+		return s.readExternalDMG(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeFile:
 		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeGitRepo:
@@ -2742,6 +2745,240 @@ func (s *SourceState) readExternalArchiveFile(
 	return s.populateImplicitParentDirs(externalRelPath, external, map[RelPath][]SourceStateEntry{
 		externalRelPath: {sourceStateEntry},
 	}), nil
+}
+
+// readExternalDMG reads an external DMG and returns its SourceStateEntries.
+func (s *SourceState) readExternalDMG(
+	ctx context.Context,
+	externalRelPath RelPath,
+	parentSourceRelPath SourceRelPath,
+	external *External,
+	options *ReadOptions,
+) (map[RelPath][]SourceStateEntry, error) {
+	// DMG type is only supported on macOS
+	if runtime.GOOS != "darwin" {
+		return nil, fmt.Errorf("%s: DMG type is only supported on macOS", externalRelPath)
+	}
+
+	data, _, err := s.getExternalData(ctx, externalRelPath, external, options)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a temporary directory for mounting the DMG
+	tempDir, err := os.MkdirTemp("", "chezmoi-dmg-*")
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Create a temporary file for the DMG
+	dmgTempFile, err := os.CreateTemp("", "chezmoi-*.dmg")
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
+	}
+	dmgTempPath := dmgTempFile.Name()
+	defer os.Remove(dmgTempPath)
+
+	// Write the DMG data to the temporary file
+	if _, err := dmgTempFile.Write(data); err != nil {
+		dmgTempFile.Close()
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
+	}
+	dmgTempFile.Close()
+
+	// Mount the DMG
+	mountPoint := filepath.Join(tempDir, "mnt")
+	if err := os.Mkdir(mountPoint, 0o700); err != nil {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
+	}
+
+	cmd := exec.CommandContext(ctx, "hdiutil", "mount", "-nobrowse", "-readonly", dmgTempPath, "-mountpoint", mountPoint)
+	if output, err := cmd.CombinedOutput(); err != nil {
+		return nil, fmt.Errorf("%s: hdiutil mount failed: %w: %s", externalRelPath, err, string(output))
+	}
+	defer func() {
+		_ = exec.Command("hdiutil", "detach", mountPoint).Run()
+	}()
+
+	// Read the mounted DMG contents
+	dirAttr := DirAttr{
+		TargetName: externalRelPath.Base(),
+		Exact:      external.Exact,
+	}
+	sourceStateDir := &SourceStateDir{
+		attr:          dirAttr,
+		origin:        external,
+		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
+		targetStateEntry: &TargetStateDir{
+			perm: fs.ModePerm &^ s.umask,
+			sourceAttr: SourceAttr{
+				External: true,
+			},
+		},
+	}
+	sourceStateEntries := map[RelPath][]SourceStateEntry{
+		externalRelPath: {sourceStateDir},
+	}
+
+	patternSet := NewPatternSet()
+	for _, includePattern := range external.Include {
+		if err := patternSet.Add(includePattern, PatternSetInclude); err != nil {
+			return nil, err
+		}
+	}
+	for _, excludePattern := range external.Exclude {
+		if err := patternSet.Add(excludePattern, PatternSetExclude); err != nil {
+			return nil, err
+		}
+	}
+
+	sourceRelPaths := make(map[RelPath]SourceRelPath)
+	if err := filepath.Walk(mountPoint, func(absPathStr string, fileInfo fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Convert to relative path from mount point
+		relPathStr, err := filepath.Rel(mountPoint, absPathStr)
+		if err != nil || relPathStr == "." {
+			return nil // Skip the mount point itself
+		}
+
+		relPath := NewRelPath(filepath.ToSlash(relPathStr))
+
+		// Apply include/exclude patterns
+		if patternSet.Match(relPath.String()) == PatternSetMatchExclude {
+			if fileInfo.IsDir() && len(patternSet.ExcludePatterns) > 0 {
+				return fs.SkipDir
+			}
+			return nil
+		}
+
+		// Strip leading components if requested
+		if external.StripComponents > 0 {
+			components := relPath.SplitAll()
+			if len(components) <= external.StripComponents {
+				return nil
+			}
+			relPath = NewRelPathFromComponents(components[external.StripComponents:]...)
+		}
+		if relPath.IsEmpty() {
+			return nil
+		}
+
+		targetRelPath := externalRelPath.Join(relPath)
+
+		// Skip ignored paths
+		if s.Ignore(targetRelPath) {
+			if fileInfo.IsDir() {
+				return fs.SkipDir
+			}
+			return nil
+		}
+
+		dirTargetRelPath, _ := targetRelPath.Split()
+		dirSourceRelPath := sourceRelPaths[dirTargetRelPath]
+
+		var sourceStateEntry SourceStateEntry
+		switch {
+		case fileInfo.IsDir():
+			targetStateEntry := &TargetStateDir{
+				perm: fileInfo.Mode().Perm() &^ s.umask,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
+			}
+			dirAttr := DirAttr{
+				TargetName: fileInfo.Name(),
+				Exact:      external.Exact,
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
+			}
+			sourceStateEntry = &SourceStateDir{
+				attr:             dirAttr,
+				origin:           external,
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
+				targetStateEntry: targetStateEntry,
+			}
+		case fileInfo.Mode()&fs.ModeType == 0:
+			// Regular file
+			contents, err := os.ReadFile(absPathStr)
+			if err != nil {
+				return fmt.Errorf("%s: %w", relPath, err)
+			}
+
+			if !external.Archive.ExtractAppleDoubleFiles && isAppleDoubleFile(relPath.String(), contents) {
+				return nil
+			}
+
+			contentsFunc := eagerNoErr(contents)
+			contentsSHA256Func := lazySHA256(contentsFunc)
+			fileAttr := FileAttr{
+				TargetName: fileInfo.Name(),
+				Type:       SourceFileTypeFile,
+				Empty:      fileInfo.Size() == 0,
+				Executable: IsExecutable(fileInfo),
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
+			}
+			targetStateEntry := &TargetStateFile{
+				contentsFunc:       contentsFunc,
+				contentsSHA256Func: contentsSHA256Func,
+				empty:              fileAttr.Empty,
+				perm:               fileAttr.perm() &^ s.umask,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
+			}
+			sourceStateEntry = &SourceStateFile{
+				attr:             fileAttr,
+				origin:           external,
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
+				targetStateEntry: targetStateEntry,
+			}
+		case fileInfo.Mode()&fs.ModeSymlink != 0:
+			// Symlink
+			linkname, err := os.Readlink(absPathStr)
+			if err != nil {
+				return fmt.Errorf("%s: %w", relPath, err)
+			}
+			linknameFunc := eagerNoErr(linkname)
+			fileAttr := FileAttr{
+				TargetName: fileInfo.Name(),
+				Type:       SourceFileTypeSymlink,
+				Empty:      fileInfo.Size() == 0,
+			}
+			targetStateEntry := &TargetStateSymlink{
+				linknameFunc: linknameFunc,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
+			}
+			sourceStateEntry = &SourceStateFile{
+				attr:             fileAttr,
+				origin:           external,
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
+				targetStateEntry: targetStateEntry,
+			}
+		default:
+			// Skip other types (devices, sockets, etc.)
+			return nil
+		}
+
+		if sourceStateEntry != nil {
+			sourceStateEntries[targetRelPath] = append(sourceStateEntries[targetRelPath], sourceStateEntry)
+			if fileInfo.IsDir() {
+				sourceRelPaths[targetRelPath] = sourceStateEntry.SourceRelPath()
+			}
+		}
+
+		return nil
+	}); err != nil {
+		return nil, fmt.Errorf("%s: %w", externalRelPath, err)
+	}
+
+	return s.populateImplicitParentDirs(externalRelPath, external, sourceStateEntries), nil
 }
 
 // readExternalDir returns all source state entries in an external_ dir.

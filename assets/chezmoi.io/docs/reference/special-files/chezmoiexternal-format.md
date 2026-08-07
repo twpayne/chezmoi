@@ -17,10 +17,9 @@ machines.
 If a `.chezmoiexternal.$FORMAT` file is located in an ignored directory (one
 listed in [`.chezmoiignore`][ignore]), all entries within the file are also
 ignored.
-
 Entries are indexed by target name relative to the directory of the
 `.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` and/or a
-`urls` field. `type` can be either `file`, `archive`, `archive-file`, or
+`urls` field. `type` can be either `file`, `archive`, `archive-file`, `dmg`, or
 `git-repo`. If the entry's parent directories do not already exist in the source
 state then chezmoi will create them as regular directories.
 
@@ -28,7 +27,7 @@ Entries may have the following fields:
 
 | Variable                     | Type     | Default value | Description                                                      |
 | ---------------------------- | -------- | ------------- | ---------------------------------------------------------------- |
-| `type`                       | string   | *none*        | External type (`file`, `archive`, `archive-file`, or `git-repo`) |
+| `type`                       | string   | *none*        | External type (`file`, `archive`, `archive-file`, `dmg`, or `git-repo`) |
 | `decompress`                 | string   | *none*        | Decompression for file                                           |
 | `encrypted`                  | bool     | `false`       | Whether the external is encrypted                                |
 | `exact`                      | bool     | `false`       | Add `exact_` attribute to directories in archive                 |
@@ -179,6 +178,17 @@ bits on the target file, even if they are not set in the archive.
             }
         }
         ```
+
+If `type` is `dmg` then the target is a directory with the contents of the
+macOS disk image (DMG) at `url`. This type is only supported on macOS. The
+optional boolean field `exact` may be set, in which case the directory and all
+subdirectories will be treated as exact directories, i.e. `chezmoi apply` will
+remove entries not present in the DMG. The optional integer field
+`stripComponents` will remove leading path components from the members of the
+DMG. The optional `include` and `exclude` fields work the same as for the
+`archive` type. Note that when `type` is `dmg`, the optional setting
+`archive.extractAppleDouble` controls whether [AppleDouble][appledouble] files
+are extracted.
 
 If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME` with
 the optional `clone.args` if the target does not exist. If the target exists,
