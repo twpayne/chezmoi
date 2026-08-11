@@ -62,8 +62,7 @@
     "CAPABILITY_FILES"
   ],
   "github.com/betterleaks/betterleaks/internal/exprruntime": [
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_REFLECT"
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
   "github.com/betterleaks/betterleaks/report": [
     "CAPABILITY_FILES",
@@ -109,6 +108,9 @@
   ],
   "github.com/go-sprout/sprout/sprigin": [
     "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/go-viper/mapstructure/v2": [
+    "CAPABILITY_REFLECT"
   ],
   "github.com/godbus/dbus/v5": [
     "CAPABILITY_MODIFY_SYSTEM_STATE",
