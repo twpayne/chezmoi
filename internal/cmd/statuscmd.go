@@ -82,7 +82,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("%s: invalid path style", pathStyle)
 			}
 
-			fmt.Fprintf(&builder, "%c%c %s\n", x, y, path)
+			fmt.Fprintf(&builder, "%c%c %s\n", x, y, chezmoi.SanitizePathForDisplay(path))
 		}
 		return fs.SkipDir
 	}

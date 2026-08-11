@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"net/http"
 	"strings"
+	"unicode"
 
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
@@ -11,6 +12,23 @@ import (
 	znkrdiff "znkr.io/diff"
 	znkrtextdiff "znkr.io/diff/textdiff"
 )
+
+// SanitizePathForDisplay replaces control characters (which can include
+// terminal escape sequences) with the Unicode replacement character. A
+// source state entry's name comes directly from a dotfile repository,
+// which has no character restrictions, and chezmoi supports applying a
+// dotfile repository the user hasn't audited yet (chezmoi init followed
+// by chezmoi diff, a routine preview step). Applied only to the path
+// string returned to go-git's diff encoder for display; callers still
+// hold the unmodified RelPath for actual filesystem operations.
+func SanitizePathForDisplay(s string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsControl(r) {
+			return '�'
+		}
+		return r
+	}, s)
+}
 
 var gitDiffOperation = [...]diff.Operation{
 	znkrdiff.Delete: diff.Delete,
@@ -38,7 +56,7 @@ type gitDiffFile struct {
 
 func (f *gitDiffFile) Hash() plumbing.Hash     { return f.hash }
 func (f *gitDiffFile) Mode() filemode.FileMode { return f.fileMode }
-func (f *gitDiffFile) Path() string            { return f.relPath.String() }
+func (f *gitDiffFile) Path() string            { return SanitizePathForDisplay(f.relPath.String()) }
 
 // A gitDiffFilePatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.FilePatch interface.
