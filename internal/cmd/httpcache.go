@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"io/fs"
 	"net/url"
+	"runtime"
 	"sync"
 
 	"github.com/bartventer/httpcache/store"
@@ -47,11 +49,15 @@ func (c *httpCache) Set(key string, entry []byte) error {
 
 func init() {
 	store.Register(httpCacheScheme, driver.DriverFunc(func(u *url.URL) (driver.Conn, error) {
+		umask := fs.FileMode(0o077)
+		if runtime.GOOS == "windows" {
+			umask = fs.FileMode(0)
+		}
 		open := sync.OnceValues(func() (driver.Conn, error) {
 			return fscache.Open(httpCacheScheme,
 				fscache.WithBaseDir(u.Path),
 				fscache.WithUpdateMTime(true),
-				fscache.WithUmask(0o077),
+				fscache.WithUmask(umask),
 			)
 		})
 		return &httpCache{open: open}, nil

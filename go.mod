@@ -33,7 +33,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.43.4
 	github.com/aws/aws-sdk-go-v2/config v1.32.35
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.44.4
-	github.com/bartventer/httpcache v0.13.0
+	github.com/bartventer/httpcache v0.14.0
 	github.com/betterleaks/betterleaks v1.7.3
 	github.com/bmatcuk/doublestar/v4 v4.10.0
 	github.com/bradenhilton/mozillainstallhash v1.0.1
@@ -237,5 +237,3 @@ exclude (
 	github.com/charmbracelet/bubbles v0.21.1 // https://github.com/twpayne/chezmoi/issues/4405
 	github.com/charmbracelet/bubbles v1.0.0 // https://github.com/twpayne/chezmoi/issues/4405
 )
-
-replace github.com/bartventer/httpcache => github.com/twpayne/bartventer-httpcache v0.14.0 // https://github.com/bartventer/httpcache/pull/37
