@@ -11,10 +11,7 @@ var nonShellLiteralRx = regexp.MustCompile(`[^+\-./0-9=A-Z_a-z]`)
 
 // shellQuote returns s quoted as a shell argument, if necessary.
 func shellQuote(s string) string {
-	const (
-		backslash   = '\\'
-		singleQuote = '\''
-	)
+	const singleQuote = '\''
 
 	switch {
 	case s == "":
@@ -24,12 +21,6 @@ func shellQuote(s string) string {
 		inSingleQuotes := false
 		for _, b := range []byte(s) {
 			switch b {
-			case backslash:
-				if !inSingleQuotes {
-					result = append(result, singleQuote)
-					inSingleQuotes = true
-				}
-				result = append(result, backslash, backslash)
 			case singleQuote:
 				if inSingleQuotes {
 					result = append(result, singleQuote)
