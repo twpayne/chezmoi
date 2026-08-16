@@ -736,3 +736,11 @@ articles:
   version: 2.70.5
   title: 用 chezmoi 同步多台机器的 Claude Code 配置：完整教程
   url: http://www.jxxy.net/ai/articles/frxiaobei-chezmoi-claude-config/
+- date: '2026-08-10'
+  version: 2.72.0
+  title: How I Stopped Losing My Configs Every Time I Switch Linux Distros
+  url: https://www.naas.work/blog/dotfiles
+- date: '2026-08-12'
+  version: 2.72.0
+  title: 'Chezmoi and Git: Dotfiles Without Pretending Every Machine Is the Same'
+  url: https://blog.hofstede.it/chezmoi-and-git-dotfiles-without-pretending-every-machine-is-the-same/
