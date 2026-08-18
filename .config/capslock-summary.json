@@ -43,9 +43,6 @@
   "filippo.io/age/agessh": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
-  "github.com/Masterminds/sprig/v3": [
-    "CAPABILITY_REFLECT"
-  ],
   "github.com/bartventer/httpcache/internal": [
     "CAPABILITY_NETWORK"
   ],
@@ -55,8 +52,7 @@
     "CAPABILITY_FILES",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/betterleaks/betterleaks/internal/color": [
     "CAPABILITY_FILES"
@@ -65,8 +61,7 @@
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
   "github.com/betterleaks/betterleaks/report": [
-    "CAPABILITY_FILES",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_FILES"
   ],
   "github.com/betterleaks/betterleaks/sources": [
     "CAPABILITY_CGO",
@@ -107,6 +102,7 @@
     "CAPABILITY_UNANALYZED"
   ],
   "github.com/go-sprout/sprout/sprigin": [
+    "CAPABILITY_REFLECT",
     "CAPABILITY_UNANALYZED"
   ],
   "github.com/go-viper/mapstructure/v2": [
