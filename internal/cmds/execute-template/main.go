@@ -16,7 +16,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
+	"github.com/go-sprout/sprout/sprigin"
 	"github.com/goccy/go-yaml"
 	"github.com/google/go-github/v61/github"
 	"github.com/google/renameio/v2/maybe"
@@ -107,7 +107,7 @@ func run() error {
 
 	templateName := path.Base(flag.Arg(0))
 	buffer := &bytes.Buffer{}
-	funcMap := sprig.TxtFuncMap()
+	funcMap := sprigin.TxtFuncMap()
 	gitHubClient := newGitHubClient(context.Background())
 	funcMap["exists"] = func(name string) bool {
 		switch _, err := os.Stat(name); {
