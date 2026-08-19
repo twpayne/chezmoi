@@ -66,7 +66,6 @@ build-all: build-darwin build-freebsd build-linux build-windows
 
 .PHONY: build-darwin
 build-darwin:
-	GOOS=darwin GOARCH=amd64 ${GO} build -o /dev/null .
 	GOOS=darwin GOARCH=arm64 ${GO} build -o /dev/null .
 
 .PHONY: build-freebsd
