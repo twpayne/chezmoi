@@ -442,7 +442,9 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 
 	worstResult := checkResultOK
 	resultWriter := tabwriter.NewWriter(c.stdout, 3, 0, 3, ' ', 0)
-	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")
+	if _, err := fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n"); err != nil {
+		return err
+	}
 	for _, check := range checks {
 		checkResult, message := check.Run(c)
 		if checkResult == checkResultOmitted {
@@ -452,12 +454,16 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		// output of chezmoi doctor is often posted publicly and would otherwise
 		// reveal the user's username.
 		message = strings.ReplaceAll(message, homeDirAbsPath.String(), "~")
-		fmt.Fprintf(resultWriter, "%s\t%s\t%s\n", checkResultStr[checkResult], check.Name(), message)
+		if _, err := fmt.Fprintf(resultWriter, "%s\t%s\t%s\n", checkResultStr[checkResult], check.Name(), message); err != nil {
+			return err
+		}
 		if checkResult > worstResult {
 			worstResult = checkResult
 		}
 	}
-	resultWriter.Flush()
+	if err := resultWriter.Flush(); err != nil {
+		return err
+	}
 
 	if worstResult > checkResultWarning {
 		return chezmoi.ExitCodeError(1)

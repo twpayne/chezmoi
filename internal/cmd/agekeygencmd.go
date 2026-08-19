@@ -56,7 +56,7 @@ func (c *Config) runAgeKeygenConvertCmd(args []string) error {
 		if err != nil {
 			return err
 		}
-		defer inputFile.Close()
+		defer func() { _ = inputFile.Close() }()
 		input = inputFile
 	}
 
@@ -104,7 +104,9 @@ func (c *Config) runAgeKeygenGenerateCmd(cmd *cobra.Command, args []string) erro
 	}
 
 	if stdout, ok := c.stdout.(*os.File); ok && term.IsTerminal(int(stdout.Fd())) {
-		fmt.Fprintf(c.stderr, "Public key: %s\n", recipient)
+		if _, err := fmt.Fprintf(c.stderr, "Public key: %s\n", recipient); err != nil {
+			return err
+		}
 	}
 
 	var builder strings.Builder

@@ -479,7 +479,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	gpgHomeDir, err := os.MkdirTemp("", "test-gpg-homedir")
 	ts.Check(err)
 	ts.Defer(func() {
-		os.RemoveAll(gpgHomeDir)
+		ts.Check(os.RemoveAll(gpgHomeDir))
 	})
 	if runtime.GOOS != "windows" {
 		ts.Check(os.Chmod(gpgHomeDir, 0o700))

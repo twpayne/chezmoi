@@ -220,7 +220,7 @@ TARGET_REL_PATH:
 		if err != nil {
 			return err
 		}
-		defer watcher.Close()
+		defer func() { _ = watcher.Close() }()
 
 		for _, editorArg := range editorArgs {
 			// FIXME watch directories recursively

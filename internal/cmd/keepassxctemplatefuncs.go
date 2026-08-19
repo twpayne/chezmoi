@@ -369,7 +369,7 @@ func (c *Config) keepassxcBuiltinExtractValues(
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	if c.Keepassxc.password == "" && c.Keepassxc.Prompt {
 		password, err := c.readPassword(fmt.Sprintf("Enter password to unlock %s: ", c.Keepassxc.Database), "password")

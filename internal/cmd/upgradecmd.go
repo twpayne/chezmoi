@@ -96,7 +96,9 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// If the upgrade is not forced, stop if we're already the latest version.
 	// Print a message and return no error so the command exits with success.
 	if !c.force && !c.version.LessThan(*version) {
-		fmt.Fprintf(c.stdout, "chezmoi: already at the latest version (%s)\n", c.version)
+		if _, err := fmt.Fprintf(c.stdout, "chezmoi: already at the latest version (%s)\n", c.version); err != nil {
+			return err
+		}
 		return nil
 	}
 
@@ -165,7 +167,9 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 
 	// Execute the new version.
 	if c.Verbose {
-		fmt.Fprintf(c.stdout, "before: chezmoi version %s\nafter: ", c.versionStr)
+		if _, err := fmt.Fprintf(c.stdout, "before: chezmoi version %s\nafter: ", c.versionStr); err != nil {
+			return err
+		}
 	}
 	chezmoiVersionCmd := exec.Command(path, "--version")
 	chezmoiVersionCmd.Stdin = os.Stdin

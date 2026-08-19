@@ -132,7 +132,7 @@ func run() error {
 		if err != nil {
 			return err
 		}
-		defer outputFile.Close()
+		defer func() { _ = outputFile.Close() }()
 	}
 	return installShTemplate.ExecuteTemplate(outputFile, "install.sh.tmpl", struct {
 		BinDir    string

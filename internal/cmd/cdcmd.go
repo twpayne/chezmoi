@@ -37,7 +37,9 @@ func (c *Config) newCDCmd() *cobra.Command {
 }
 
 func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
-	os.Setenv("CHEZMOI_SUBSHELL", "1")
+	if err := os.Setenv("CHEZMOI_SUBSHELL", "1"); err != nil {
+		return err
+	}
 
 	cdCommand, cdArgs, err := c.cdCommand()
 	if err != nil {

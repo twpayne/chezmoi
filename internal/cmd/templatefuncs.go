@@ -221,7 +221,11 @@ func (c *Config) getRedirectedURLTemplateFunc(requestURL string) string {
 	client := mustValue(c.getHTTPClient())
 	req := mustValue(http.NewRequestWithContext(context.Background(), http.MethodHead, requestURL, http.NoBody))
 	resp := mustValue(client.Do(req)) //nolint:bodyclose
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	return resp.Request.URL.String()
 }
 
@@ -787,11 +791,17 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 	for _, key := range slices.Sorted(maps.Keys(data)) {
 		switch value := data[key].(type) {
 		case bool:
-			fmt.Fprintf(w, "%s = %t\n", key, value)
+			if _, err := fmt.Fprintf(w, "%s = %t\n", key, value); err != nil {
+				return err
+			}
 		case float32, float64:
-			fmt.Fprintf(w, "%s = %f\n", key, value)
+			if _, err := fmt.Fprintf(w, "%s = %f\n", key, value); err != nil {
+				return err
+			}
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr:
-			fmt.Fprintf(w, "%s = %d\n", key, value)
+			if _, err := fmt.Fprintf(w, "%s = %d\n", key, value); err != nil {
+				return err
+			}
 		case map[string]any:
 			subsection := subsection{
 				key:   key,
@@ -799,7 +809,9 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 			}
 			subsections = append(subsections, subsection)
 		case string:
-			fmt.Fprintf(w, "%s = %s\n", key, maybeQuote(value))
+			if _, err := fmt.Fprintf(w, "%s = %s\n", key, maybeQuote(value)); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("%s%s: %T: unsupported type", sectionPrefix, key, value)
 		}
