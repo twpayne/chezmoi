@@ -134,7 +134,7 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 		t.Run(string(mode), func(t *testing.T) {
 			t.Run("correct_password", func(t *testing.T) {
 				config := newTestConfig(t, vfs.OSFS)
-				defer config.keepassxcClose()
+				defer func() { assert.NoError(t, config.keepassxcClose()) }()
 				config.Keepassxc.Database = chezmoi.NewAbsPath(database)
 				config.Keepassxc.Mode = mode
 				config.Keepassxc.Prompt = true
@@ -154,7 +154,7 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 
 			t.Run("incorrect_password", func(t *testing.T) {
 				config := newTestConfig(t, vfs.OSFS)
-				defer config.keepassxcClose()
+				defer func() { assert.NoError(t, config.keepassxcClose()) }()
 				config.Keepassxc.Database = chezmoi.NewAbsPath(database)
 				config.Keepassxc.Mode = mode
 				config.Keepassxc.Prompt = true
@@ -172,7 +172,7 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 
 			t.Run("incorrect_database", func(t *testing.T) {
 				config := newTestConfig(t, vfs.OSFS)
-				defer config.keepassxcClose()
+				defer func() { assert.NoError(t, config.keepassxcClose()) }()
 				config.Keepassxc.Database = chezmoi.NewAbsPath(filepath.Join(tempDir, "Non-existent database.kdbx"))
 				config.Keepassxc.Mode = mode
 				config.Keepassxc.Prompt = true
