@@ -20,7 +20,7 @@ import (
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v61/github"
+	"github.com/google/go-github/v72/github"
 	"github.com/spf13/cobra"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"

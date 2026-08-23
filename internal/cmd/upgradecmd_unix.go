@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v61/github"
+	"github.com/google/go-github/v72/github"
 	vfs "github.com/twpayne/go-vfs/v5"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"

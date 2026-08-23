@@ -52,7 +52,8 @@
     "CAPABILITY_FILES",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME"
+    "CAPABILITY_RUNTIME",
+    "CAPABILITY_UNANALYZED"
   ],
   "github.com/betterleaks/betterleaks/internal/color": [
     "CAPABILITY_FILES"
@@ -68,7 +69,8 @@
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME"
+    "CAPABILITY_RUNTIME",
+    "CAPABILITY_UNANALYZED"
   ],
   "github.com/bodgit/sevenzip": [
     "CAPABILITY_CGO",
@@ -79,6 +81,12 @@
   ],
   "github.com/charmbracelet/x/xpty": [
     "CAPABILITY_OPERATING_SYSTEM"
+  ],
+  "github.com/dsnet/compress/bzip2": [
+    "CAPABILITY_UNANALYZED"
+  ],
+  "github.com/dsnet/compress/internal/prefix": [
+    "CAPABILITY_UNANALYZED"
   ],
   "github.com/expr-lang/expr": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
@@ -98,12 +106,8 @@
   "github.com/go-git/go-git/v5/utils/ioutil": [
     "CAPABILITY_OPERATING_SYSTEM"
   ],
-  "github.com/go-sprout/sprout/registry/strings": [
-    "CAPABILITY_UNANALYZED"
-  ],
   "github.com/go-sprout/sprout/sprigin": [
-    "CAPABILITY_REFLECT",
-    "CAPABILITY_UNANALYZED"
+    "CAPABILITY_REFLECT"
   ],
   "github.com/go-viper/mapstructure/v2": [
     "CAPABILITY_REFLECT"
@@ -129,7 +133,8 @@
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME"
+    "CAPABILITY_RUNTIME",
+    "CAPABILITY_UNANALYZED"
   ],
   "github.com/pete-woods/go-expect": [
     "CAPABILITY_OPERATING_SYSTEM"

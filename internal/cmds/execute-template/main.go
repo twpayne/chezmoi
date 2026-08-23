@@ -27,7 +27,7 @@ import (
 	sproutstrings "github.com/go-sprout/sprout/registry/strings"
 	sprouttime "github.com/go-sprout/sprout/registry/time"
 	"github.com/goccy/go-yaml"
-	"github.com/google/go-github/v61/github"
+	"github.com/google/go-github/v72/github"
 	"github.com/google/renameio/v2/maybe"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
