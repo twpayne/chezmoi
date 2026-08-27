@@ -173,6 +173,30 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         go test ./...
+  test-oldstable-go:
+    needs: changes
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+    - uses: ./.github/actions/setup-go
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      with:
+        go-version: oldstable
+    - name: build
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      run: |
+        go build -v ./...
+    - name: run
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      run: |
+        go tool chezmoi --version
   test-release:
     needs: changes
     runs-on: ubuntu-22.04 # use older Ubuntu for older glibc, update minimum glibc version in install.sh.tmpl if this changes
