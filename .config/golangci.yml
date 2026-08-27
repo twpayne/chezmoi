@@ -1,6 +1,6 @@
 version: '2'
 run:
-  go: '1.25'
+  go: '1.26'
 linters:
   enable:
   - asciicheck
@@ -46,6 +46,7 @@ linters:
   - modernize
   - nilerr
   - nilnesserr
+  - nolintlint
   - nosprintfhostport
   - perfsprint
   - predeclared
@@ -91,12 +92,14 @@ linters:
   - ireturn
   - lll
   - maintidx
+  - mnd
   - musttag
   - nakedret
   - nestif
   - nilnil
   - nlreturn
   - noctx
+  - noinlineerr
   - nolintlint
   - nonamedreturns
   - paralleltest
@@ -228,7 +231,10 @@ formatters:
       - prefix(chezmoi.io)
     gofumpt:
       module-path: chezmoi.io
-      extra-rules: true
+      extra:
+        group-params: true
+        clothe-returns: true
+        balance-calls: true
     goimports:
       local-prefixes:
       - chezmoi.io
