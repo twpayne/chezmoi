@@ -1,0 +1,43 @@
+[windows] skip
+chmod 755 bin/pass-cli
+
+exec chezmoi execute-template '{{ protonPassAttachment "share-id" "item-id" "attachment-id" }}'
+stdout 'Example contents'
+
+-- bin/pass-cli --
+#!/bin/sh
+
+[ "$1" = "item" ] || exit 1
+[ "$2" = "attachment" ] || exit 1
+[ "$3" = "download" ] || exit 1
+shift 3
+
+[ "$1" = "--share-id" ] || exit 1
+share_id="$2"
+shift 2
+
+[ "$1" = "--item-id" ] || exit 1
+item_id="$2"
+shift 2
+
+[ "$1" = "--attachment-id" ] || exit 1
+attachment_id="$2"
+shift 2
+
+[ "$1" = "--output" ] || exit 1
+output="$2"
+shift 2
+
+echo "Downloading attachment..."
+echo "Share ID: $share_id"
+echo "Item ID: $item_id"
+echo "Attachment ID: $attachment_id"
+echo "Output path: $output"
+echo "Found attachment: example.txt"
+echo "Attachment size: 45 bytes"
+echo "Attachment type: text/plain"
+echo "Attachment chunks: 1"
+
+echo "Example contents" > "$output"
+
+echo "Successfully downloaded attachment to: $output"

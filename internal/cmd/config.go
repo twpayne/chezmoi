@@ -569,6 +569,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"passRaw":                     c.passRawTemplateFunc,
 		"passhole":                    c.passholeTemplateFunc,
 		"protonPass":                  c.protonPassTemplateFunc,
+		"protonPassAttachment":        c.protonPassAttachmentTemplateFunc,
 		"protonPassJSON":              c.protonPassJSONTemplateFunc,
 		"pruneEmptyDicts":             c.pruneEmptyDictsTemplateFunc,
 		"quote":                       c.quoteTemplateFunc,
