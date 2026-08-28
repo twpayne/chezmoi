@@ -344,6 +344,7 @@ nav:
     - Proton Pass functions:
       - reference/templates/protonpass-functions/index.md
       - protonPass: reference/templates/protonpass-functions/protonPass.md
+      - protonPassAttachment: reference/templates/protonpass-functions/protonPassAttachment.md
       - protonPassJSON: reference/templates/protonpass-functions/protonPassJSON.md
     - Vault functions:
       - vault: reference/templates/vault-functions/vault.md
