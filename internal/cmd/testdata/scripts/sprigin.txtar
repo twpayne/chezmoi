@@ -1,0 +1,5 @@
+exec chezmoi execute-template '{{ derivePassword 1 "long" "password" "user" "example.com" }}'
+stdout ^ZedaFaxcZaso9\*$
+
+exec chezmoi execute-template '{{ mul "3" 5 }}'
+stdout ^15$
