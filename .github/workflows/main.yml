@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@c16c0f3f2812ec4bb3750a5ed64873fe2ce0fbef   # codeql-bundle-v2.26.3
+    - uses: github/codeql-action/init@486fec2a3ea2626afcd8c7e9208b4f515078dd7e   # codeql-bundle-v2.26.4
       with:
         languages: go
-    - uses: github/codeql-action/analyze@c16c0f3f2812ec4bb3750a5ed64873fe2ce0fbef   # codeql-bundle-v2.26.3
+    - uses: github/codeql-action/analyze@486fec2a3ea2626afcd8c7e9208b4f515078dd7e   # codeql-bundle-v2.26.4
   misspell:
     runs-on: ubuntu-22.04
     permissions:
