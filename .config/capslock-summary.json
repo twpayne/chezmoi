@@ -43,6 +43,9 @@
   "filippo.io/age/agessh": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
+  "github.com/Masterminds/sprig/v3": [
+    "CAPABILITY_REFLECT"
+  ],
   "github.com/bartventer/httpcache/internal": [
     "CAPABILITY_NETWORK"
   ],
@@ -105,9 +108,6 @@
   ],
   "github.com/go-git/go-git/v5/utils/ioutil": [
     "CAPABILITY_OPERATING_SYSTEM"
-  ],
-  "github.com/go-sprout/sprout/sprigin": [
-    "CAPABILITY_REFLECT"
   ],
   "github.com/go-viper/mapstructure/v2": [
     "CAPABILITY_REFLECT"
