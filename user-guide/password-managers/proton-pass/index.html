@@ -10067,6 +10067,8 @@
       
         
       
+        
+      
     
     
     
@@ -10138,6 +10140,34 @@
     
   
     protonPass
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/protonpass-functions/protonPassAttachment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    protonPassAttachment
   
 
     
@@ -11179,14 +11209,19 @@ CLI</a>.</p>
 <p>Log in to Proton Pass using
 <div class="highlight"><pre><span></span><code>pass-cli<span class="w"> </span>login
 </code></pre></div></p>
-<p>The  output of <code>pass-cli item view pass://$SHARE_ID/$ITEM_ID/$FIELD</code> is available as the
-<code>protonPass</code> template function, for example:</p>
+<p>The  output of <code>pass-cli item view pass://$SHARE_ID/$ITEM_ID/$FIELD</code> is
+available with the <a href="../../../reference/templates/protonpass-functions/protonPass/"><code>protonPass</code></a> template function, for
+example:</p>
 <div class="highlight"><pre><span></span><code>{{ protonPass &quot;pass://$SHARE_ID/$ITEM_ID/$FIELD&quot; }}
 </code></pre></div>
 <p>The  output of <code>pass-cli item view --output=json pass://$SHARE_ID/$ITEM_ID</code> is
-available as <code>protonPassJSON</code> and returns the structured data the item holds.
-For example:</p>
+available with <a href="../../../reference/templates/protonpass-functions/protonPassJSON/"><code>protonPassJSON</code></a> which returns the structured
+data the item holds. For example:</p>
 <div class="highlight"><pre><span></span><code>{{ (protonPassJSON &quot;pass://$SHARE_ID/$ITEM_ID&quot;).item.content.content.key.password }}
+</code></pre></div>
+<p>The contents of attachments are available using the
+<a href="../../../reference/templates/protonpass-functions/protonPassAttachment/"><code>protonPassAttachment</code></a> template function, for example:</p>
+<div class="highlight"><pre><span></span><code>{{ protonPassAttachment &quot;$SHARE_ID&quot; &quot;$ITEM_ID&quot; &quot;$ATTACHMENT_ID&quot; }}
 </code></pre></div>
 
 
