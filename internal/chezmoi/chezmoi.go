@@ -319,7 +319,7 @@ LINE:
 		if !net.ParseIP(ipAddress).IsLoopback() {
 			continue
 		}
-		if hostname, _, found := strings.Cut(canonicalHostname, "."); !found || hostname == "localhost" {
+		if hostname, domainname, found := strings.Cut(canonicalHostname, "."); !found || strings.HasPrefix(hostname, "localhost") || strings.HasPrefix(domainname, "localdomain") {
 			continue
 		}
 		for _, ignoredHostnameSuffix := range ignoredHostnameSuffixes {

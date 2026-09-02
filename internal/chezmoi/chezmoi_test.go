@@ -57,7 +57,15 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 			name: "etc_hosts_loopback_ipv4_localhost_dot_localdomain",
 			root: map[string]any{
 				"/etc/hosts": chezmoitest.JoinLines(
+					`127.0.0.1 host1.localdomain`,
+					`127.0.0.1 host2.localdomain4`,
+					`127.0.0.1 host3.localdomain6`,
 					`127.0.0.1 localhost.localdomain`,
+					`127.0.0.1 localhost.example.com`,
+					`127.0.0.1 localhost4.localdomain4`,
+					`127.0.0.1 localhost4.example.com`,
+					`127.0.0.1 localhost6.localdomain6`,
+					`127.0.0.1 localhost6.example.com`,
 					`127.0.0.2 service.local`,
 					`127.0.0.4 multi.part.domain.example`,
 					`127.0.0.4 host.example.com host`,
