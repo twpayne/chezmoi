@@ -44,7 +44,7 @@ sections:
     scriptTempDir:
       description: Temporary directory for scripts.
     sourceDir:
-      default: '`$XDG_SHARE_HOME/chezmoi` / `$HOME/.local/share/chezmoi` / `%USERPROFILE%/.local/share/chezmoi`'
+      default: '`$XDG_DATA_HOME/chezmoi` / `$HOME/.local/share/chezmoi` / `%USERPROFILE%/.local/share/chezmoi`'
       description: Source directory.
     tempDir:
       default: '*from system*'
