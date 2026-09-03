@@ -7,7 +7,7 @@ license = { text = "MIT" }
 dependencies = [
     "idna>=3.15",
     "mkdocs>=1.6.1",
-    "mkdocs-material>=9.7.5",
+    "mkdocs-material>=9.7.7",
     "pymdown-extensions>=11.0.1",
     "ruamel.yaml>=0.19.1",
     "ruff>=0.15.6",
