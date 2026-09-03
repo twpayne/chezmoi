@@ -233,5 +233,6 @@ exclude (
 	github.com/charmbracelet/bubbles v0.21.0 // https://github.com/twpayne/chezmoi/issues/4405
 	github.com/charmbracelet/bubbles v0.21.1 // https://github.com/twpayne/chezmoi/issues/4405
 	github.com/charmbracelet/bubbles v1.0.0 // https://github.com/twpayne/chezmoi/issues/4405
-	github.com/editorconfig-checker/editorconfig-checker/v3 v3.11.2 // Requires Go 1.27
+	github.com/editorconfig-checker/editorconfig-checker/v3 v3.11.2 // https://github.com/editorconfig-checker/editorconfig-checker/pull/615
+	github.com/gopasspw/gopass v1.17.0 // https://github.com/gopasspw/gopass/issues/3589
 )
