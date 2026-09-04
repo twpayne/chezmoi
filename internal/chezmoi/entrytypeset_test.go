@@ -42,6 +42,10 @@ func TestIncludeMaskSet(t *testing.T) {
 			expected: NewEntryTypeSet(EntryTypesAll &^ (EntryTypeScripts | EntryTypeSymlinks)),
 		},
 		{
+			s:        "create,nomodify",
+			expected: NewEntryTypeSet(EntryTypeCreate),
+		},
+		{
 			s:        "symlinks,,",
 			expected: NewEntryTypeSet(EntryTypeSymlinks),
 		},
