@@ -1113,7 +1113,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceStateDir := s.newSourceStateDir(sourceAbsPath, sourceRelPath, da)
 			addSourceStateEntries(targetRelPath, sourceStateDir)
 			if da.External {
-				sourceStateEntries, err := s.readExternalDir(sourceAbsPath, sourceRelPath, targetRelPath)
+				sourceStateEntries, err := s.readExternalDir(sourceAbsPath, sourceRelPath, targetRelPath, da)
 				if err != nil {
 					return err
 				}
@@ -2749,6 +2749,7 @@ func (s *SourceState) readExternalDir(
 	rootSourceAbsPath AbsPath,
 	rootSourceRelPath SourceRelPath,
 	rootTargetRelPath RelPath,
+	dirAttr DirAttr,
 ) (map[RelPath][]SourceStateEntry, error) {
 	sourceStateEntries := make(map[RelPath][]SourceStateEntry)
 	walkFunc := func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
@@ -2798,7 +2799,7 @@ func (s *SourceState) readExternalDir(
 			dirAttr := DirAttr{
 				TargetName: fileInfo.Name(),
 				Exact:      true,
-				Private:    isPrivate(fileInfo),
+				Private:    isPrivate(fileInfo) || dirAttr.Private,
 				ReadOnly:   isReadOnly(fileInfo),
 			}
 			sourceStateEntry = &SourceStateDir{

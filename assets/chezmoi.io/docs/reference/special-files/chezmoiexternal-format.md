@@ -34,7 +34,7 @@ Entries may have the following fields:
 | `exact`                      | bool     | `false`       | Add `exact_` attribute to directories in archive                 |
 | `exclude`                    | []string | *none*        | Patterns to exclude from archive                                 |
 | `executable`                 | bool     | `false`       | Add `executable_` attribute to file                              |
-| `private`                    | bool     | `false`       | Add `private_` attribute to file                                 |
+| `private`                    | bool     | `false`       | Add `private_` attribute to file or directory                    |
 | `readonly`                   | bool     | `false`       | Add `readonly_` attribute to file                                |
 | `format`                     | string   | *autodetect*  | Format of archive                                                |
 | `path`                       | string   | *none*        | Path to file in archive                                          |
