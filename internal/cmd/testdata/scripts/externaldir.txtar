@@ -23,6 +23,14 @@ issymlink $HOME/.vim/bundle/symlink
 cmp $HOME/.vim/bundle/symlink_example $CHEZMOISOURCEDIR/dot_vim/external_bundle/symlink_example
 ! issymlink $HOME/.vim/bundle/symlink_example
 
+# test that private_ attributes apply to external dirs but not files in them
+isdir $HOME/.private
+cmpmod 700 $HOME/.private
+cmp $HOME/.private/file golden/file
+cmpmod 644 $HOME/.private/file
+
+-- golden/file --
+# contents of .private/file
 -- home/user/.local/share/chezmoi/.chezmoiignore --
 **/.keep
 -- home/user/.local/share/chezmoi/dot_vim/external_bundle/executable_file --
@@ -33,3 +41,5 @@ cmp $HOME/.vim/bundle/symlink_example $CHEZMOISOURCEDIR/dot_vim/external_bundle/
 echo evil
 -- home/user/.local/share/chezmoi/dot_vim/external_bundle/symlink_example --
 # contents of .vim/bundle/symlink_example
+-- home/user/.local/share/chezmoi/external_private_dot_private/file --
+# contents of .private/file
