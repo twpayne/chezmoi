@@ -36,18 +36,18 @@ jobs:
           ps1:
           - *shared
           - 'assets/scripts/install.ps1'
-  #misspell:
-  #  runs-on: ubuntu-22.04
-  #  permissions:
-  #    contents: read
-  #  steps:
-  #  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
-  #    with:
-  #      persist-credentials: false
-  #  - uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962   # v1.27.0
-  #    with:
-  #      locale: US
-  #      ignore: importas,Produktive
+  misspell:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      with:
+        persist-credentials: false
+    - uses: reviewdog/action-misspell@ba7ac4030fa6812f8c8b2d4e516af8bc99553c32   # v1.28.0
+      with:
+        locale: US
+        ignore: importas,Produktive
   test-install-sh:
     if: ${{ needs.changes.outputs.sh == 'true' }}
     strategy:
