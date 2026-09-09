@@ -195,7 +195,7 @@ test-release: ensure-goreleaser
 .PHONY: update-go-tools
 update-go-tools:
 	go get \
-		github.com/editorconfig-checker/editorconfig-checker/v3@latest \
+		github.com/editorconfig-checker/editorconfig-checker/v4@latest \
 		github.com/google/capslock@latest \
 		github.com/josephspurrier/goversioninfo@latest \
 		github.com/rhysd/actionlint@latest \

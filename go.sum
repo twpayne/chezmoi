@@ -227,8 +227,8 @@ github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad h1:Qk76DOWdOp+GlyDKB
 github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad/go.mod h1:mPKfmRa823oBIgl2r20LeMSpTAteW5j7FLkc0vjmzyQ=
 github.com/ebitengine/purego v0.10.1 h1:dewVBCBT2GaMu1SrNTYxQhgQBethzfhiwvZiLGP/qyY=
 github.com/ebitengine/purego v0.10.1/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
-github.com/editorconfig-checker/editorconfig-checker/v3 v3.11.1 h1:PMiVPghyO7JSKLh87UfVdJUUC/qzT2oqVUxeEfazOzw=
-github.com/editorconfig-checker/editorconfig-checker/v3 v3.11.1/go.mod h1:9W53jUVb5cBaBWslsOEDXDya3i7v3g2JDxOuqUXdyeE=
+github.com/editorconfig-checker/editorconfig-checker/v4 v4.0.1 h1:RBY86dpChVdvRB4B9xhUvvvI6wnrn0T5E4hQhdwWbWc=
+github.com/editorconfig-checker/editorconfig-checker/v4 v4.0.1/go.mod h1:jusSYdzw5UQUreCSzoQ8Otom0SXiaKhBtS2k6B3lZCg=
 github.com/editorconfig/editorconfig-core-go/v2 v2.6.4 h1:CHwUbBVVyKWRX9kt5A/OtwhYUJB32DrFp9xzmjR6cac=
 github.com/editorconfig/editorconfig-core-go/v2 v2.6.4/go.mod h1:JWRVKHdVW+dkv6F8p+xGCa6a+TyMrqsFbFkSs/aQkrQ=
 github.com/elazarl/goproxy v1.7.2 h1:Y2o6urb7Eule09PjlhQRGNsqRfPmYI3KKQLFpCAV3+o=

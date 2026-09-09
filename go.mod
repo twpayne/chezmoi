@@ -13,7 +13,7 @@ tool (
 	chezmoi.io/chezmoi/v2/internal/cmds/lint-commit-messages
 	chezmoi.io/chezmoi/v2/internal/cmds/lint-txtar
 	chezmoi.io/chezmoi/v2/internal/cmds/lint-whitespace
-	github.com/editorconfig-checker/editorconfig-checker/v3/cmd/editorconfig-checker
+	github.com/editorconfig-checker/editorconfig-checker/v4/cmd/editorconfig-checker
 	github.com/google/capslock/cmd/capslock
 	github.com/josephspurrier/goversioninfo/cmd/goversioninfo
 	github.com/rhysd/actionlint/cmd/actionlint
@@ -140,7 +140,7 @@ require (
 	github.com/dsnet/compress v0.0.2-0.20230904184137-39efe44ab707 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
-	github.com/editorconfig-checker/editorconfig-checker/v3 v3.11.1 // indirect
+	github.com/editorconfig-checker/editorconfig-checker/v4 v4.0.1 // indirect
 	github.com/editorconfig/editorconfig-core-go/v2 v2.6.4 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
@@ -149,6 +149,7 @@ require (
 	github.com/fatih/semgroup v1.3.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.15 // indirect
 	github.com/gitleaks/go-gitdiff v0.9.1 // indirect
+	github.com/gkampitakis/ciinfo v0.3.4 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.9.1 // indirect
 	github.com/gobwas/glob v1.0.0 // indirect
@@ -235,5 +236,4 @@ exclude (
 	github.com/charmbracelet/bubbles v0.21.0 // https://github.com/twpayne/chezmoi/issues/4405
 	github.com/charmbracelet/bubbles v0.21.1 // https://github.com/twpayne/chezmoi/issues/4405
 	github.com/charmbracelet/bubbles v1.0.0 // https://github.com/twpayne/chezmoi/issues/4405
-	github.com/editorconfig-checker/editorconfig-checker/v3 v3.11.2 // https://github.com/editorconfig-checker/editorconfig-checker/pull/615
 )
