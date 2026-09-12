@@ -33,6 +33,8 @@ const (
 	EntryTypeExternals
 	EntryTypeTemplates
 	EntryTypeAlways
+	EntryTypeCreate
+	EntryTypeModify
 
 	// EntryTypesAll is all entry types.
 	EntryTypesAll EntryTypeBits = EntryTypeDirs |
@@ -43,7 +45,9 @@ const (
 		EntryTypeEncrypted |
 		EntryTypeExternals |
 		EntryTypeTemplates |
-		EntryTypeAlways
+		EntryTypeAlways |
+		EntryTypeCreate |
+		EntryTypeModify
 
 	// EntryTypesNone is no entry types.
 	EntryTypesNone EntryTypeBits = 0
@@ -54,8 +58,10 @@ var (
 	entryTypeBits = map[string]EntryTypeBits{
 		"all":       EntryTypesAll,
 		"always":    EntryTypeAlways,
+		"create":    EntryTypeCreate,
 		"dirs":      EntryTypeDirs,
 		"files":     EntryTypeFiles,
+		"modify":    EntryTypeModify,
 		"remove":    EntryTypeRemove,
 		"scripts":   EntryTypeScripts,
 		"symlinks":  EntryTypeSymlinks,
@@ -69,15 +75,19 @@ var (
 	entryTypeCompletions = []string{
 		"all",
 		"always",
+		"create",
 		"dirs",
 		"encrypted",
 		"externals",
 		"files",
+		"modify",
 		"noalways",
+		"nocreate",
 		"nodirs",
 		"noencrypted",
 		"noexternals",
 		"nofiles",
+		"nomodify",
 		"none",
 		"noremove",
 		"noscripts",
@@ -147,7 +157,11 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 		switch sourceAttr := sourceStateEntry.Attr(); {
 		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
+		case s.bits&EntryTypeCreate != 0 && sourceAttr.Type == SourceFileTypeCreate:
+			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeModify != 0 && sourceAttr.Type == SourceFileTypeModify:
 			return true
 		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
 			return true
