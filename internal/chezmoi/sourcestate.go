@@ -367,11 +367,11 @@ func (o *AddOptions) shouldBeExact(targetRelPath RelPath) bool {
 	if !o.Exact {
 		return false
 	}
-	// If ExactTargetRelPaths is nil, use legacy behavior (all dirs are exact)
+	// If ExactTargetRelPaths is nil, use legacy behavior (all dirs are exact).
 	if o.ExactTargetRelPaths == nil {
 		return true
 	}
-	// Check if targetRelPath equals or is a descendant of any exact target
+	// Check if targetRelPath equals or is a descendant of any exact target.
 	for exactTarget := range o.ExactTargetRelPaths {
 		if targetRelPath == exactTarget || targetRelPath.HasDirPrefix(exactTarget) {
 			return true
