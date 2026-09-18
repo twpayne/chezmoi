@@ -98,6 +98,10 @@ main() {
 	install -- "${tmpdir}/${BINARY}" "${BINDIR}/"
 	log_info "installed ${BINDIR}/${BINARY}"
 
+	if ! is_command chezmoi; then
+		log_info "add ${BINDIR} to your PATH to use chezmoi"
+	fi
+
 	if [ -n "${1+n}" ]; then
 		exec "${BINDIR}/${BINARY}" "${@}"
 	fi

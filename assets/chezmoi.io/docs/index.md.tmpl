@@ -32,7 +32,7 @@ sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 As well as the `curl | sh` installation, you can [install chezmoi with your
 favorite package manager][install].
 
-Updating your dotfiles on any machine is a single command:
+Updating your dotfiles on any machine is a single command (assuming chezmoi's installation directory is [on your `PATH`][installation-path]):
 
 ```sh
 chezmoi update
@@ -87,6 +87,7 @@ to a charity or cause of your choice.
 [guide]: /user-guide/setup.md
 [history]: /reference/release-history.md
 [install]: /install.md
+[installation-path]: /install.md#installation-path
 [issues]: https://github.com/twpayne/chezmoi/issues
 [listen1]: /voice_30-04-2025_09-20-13.ogx
 [listen2]: /voice_30-04-2025_09-20-48.ogx
