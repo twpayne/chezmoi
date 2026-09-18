@@ -216,6 +216,16 @@ with a single command:
     sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin
     ```
 
+<a id="installation-path"></a>
+
+!!! important
+
+    The installer does not modify your `PATH`. To run chezmoi by name, ensure its installation directory is on your `PATH`. For example, if you installed to `$HOME/bin`, add this to your Bash or Zsh configuration:
+
+    ```sh
+    export PATH="$HOME/bin:$PATH"
+    ```
+
 ## Download a pre-built package
 
 Download a package for your distribution and architecture.

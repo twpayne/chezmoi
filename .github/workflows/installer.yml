@@ -64,12 +64,42 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - name: test-${{ matrix.os }}-local
+    - name: test-${{ matrix.os }}-local-not-on-path
       shell: bash
       run: |
         rm -f ${{ env.BINARY }}
-        sh assets/scripts/install.sh -d
+        if sh -c "command -v chezmoi"; then
+          echo "Test precondition failed: chezmoi is already available on PATH." >&2
+          exit 1
+        fi
+        sh assets/scripts/install.sh -d 2>installer-stderr.log || {
+          cat installer-stderr.log >&2
+          exit 1
+        }
+        cat installer-stderr.log >&2
+        if ! grep -Fq "add bin to your PATH to use chezmoi" installer-stderr.log; then
+          echo "Expected PATH guidance was not printed." >&2
+          exit 1
+        fi
         ${{ env.BINARY }} --version
+    - name: test-${{ matrix.os }}-local-on-path
+      shell: bash
+      run: |
+        export PATH="$PWD/bin:${PATH}"
+        if ! sh -c "command -v chezmoi"; then
+          echo "Test precondition failed: chezmoi is unavailable on PATH." >&2
+          exit 1
+        fi
+        sh assets/scripts/install.sh -d 2>installer-stderr.log || {
+          cat installer-stderr.log >&2
+          exit 1
+        }
+        cat installer-stderr.log >&2
+        if grep -Fq "add bin to your PATH to use chezmoi" installer-stderr.log; then
+          echo "Unexpected PATH guidance was printed." >&2
+          exit 1
+        fi
+        chezmoi --version
     - name: test-${{ matrix.os }}-url
       shell: bash
       run: |
