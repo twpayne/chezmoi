@@ -744,3 +744,8 @@ articles:
   version: 2.72.0
   title: 'Chezmoi and Git: Dotfiles Without Pretending Every Machine Is the Same'
   url: https://blog.hofstede.it/chezmoi-and-git-dotfiles-without-pretending-every-machine-is-the-same/
+- date: '2026-09-20'
+  version: 2.72.2
+  lang: CN
+  title: chezmoi 实战：在 `chezmoi init` 阶段用 `hooks.read-source-state.pre` 自动安装密码管理器
+  url: https://blog.csdn.net/gitblog_00919/article/details/166142581
