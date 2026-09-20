@@ -32,6 +32,7 @@ import (
 	"github.com/bartventer/httpcache"
 	"github.com/betterleaks/betterleaks/detect"
 	"github.com/coreos/go-semver/semver"
+	"github.com/dustin/go-humanize/english"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/go-viper/mapstructure/v2"
@@ -1096,7 +1097,7 @@ CONFIG_DIR:
 				configFileAbsPathStr := configDirAbsPath.JoinString("chezmoi", name)
 				configFileAbsPathStrs = append(configFileAbsPathStrs, configFileAbsPathStr.String())
 			}
-			return chezmoi.EmptyAbsPath, fmt.Errorf("multiple config files: %s", englishList(configFileAbsPathStrs))
+			return chezmoi.EmptyAbsPath, fmt.Errorf("multiple config files: %s", english.OxfordWordSeries(configFileAbsPathStrs, "and"))
 		}
 	}
 
@@ -1580,7 +1581,7 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 			sourceAbsPathStr := configTemplate.sourceAbsPath.String()
 			sourceAbsPathStrs[i] = sourceAbsPathStr
 		}
-		return nil, fmt.Errorf("multiple config file templates: %s ", englishList(sourceAbsPathStrs))
+		return nil, fmt.Errorf("multiple config file templates: %s ", english.OxfordWordSeries(sourceAbsPathStrs, "and"))
 	}
 }
 

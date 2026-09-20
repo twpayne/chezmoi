@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/dustin/go-humanize/english"
 	"github.com/google/go-github/v72/github"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
@@ -784,7 +785,7 @@ func (c *suspiciousEntriesCheck) Run(config *Config) (checkResult, string) {
 		return checkResultError, err.Error()
 	}
 	if len(suspiciousEntries) > 0 {
-		return checkResultWarning, englishList(suspiciousEntries)
+		return checkResultWarning, english.OxfordWordSeries(suspiciousEntries, "and")
 	}
 	return checkResultOK, "no suspicious entries"
 }

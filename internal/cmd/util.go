@@ -5,6 +5,8 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/dustin/go-humanize/english"
+
 	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
@@ -64,43 +66,17 @@ func camelCaseToUpperSnakeCase(s string) string {
 	return strings.Join(words, "_")
 }
 
-// englishList returns ss formatted as a list, including an Oxford comma.
-func englishList(ss []string) string {
-	switch n := len(ss); n {
-	case 0:
-		return ""
-	case 1:
-		return ss[0]
-	case 2:
-		return ss[0] + " and " + ss[1]
-	default:
-		return strings.Join(ss[:n-1], ", ") + ", and " + ss[n-1]
-	}
-}
-
 // englishListWithNoun returns ss formatted as an English list, including an
 // Oxford comma.
 func englishListWithNoun(ss []string, singular, plural string) string {
-	if len(ss) == 1 {
-		return ss[0] + " " + singular
-	}
-	if plural == "" {
-		plural = pluralize(singular)
-	}
 	switch n := len(ss); n {
 	case 0:
-		return "no " + plural
+		return "no " + english.PluralWord(0, singular, plural)
+	case 1:
+		return ss[0] + " " + singular
 	default:
-		return englishList(ss) + " " + plural
+		return english.OxfordWordSeries(ss, "and") + " " + english.PluralWord(n, singular, plural)
 	}
-}
-
-// pluralize returns the English plural form of singular.
-func pluralize(singular string) string {
-	if prefix, found := strings.CutSuffix(singular, "y"); found {
-		return prefix + "ies"
-	}
-	return singular + "s"
 }
 
 // stringersToStrings converts a slice of fmt.Stringers to a list of strings.
