@@ -35,36 +35,6 @@ func TestCamelCaseToUpperSnakeCase(t *testing.T) {
 	}
 }
 
-func TestEnglishList(t *testing.T) {
-	for _, tc := range []struct {
-		ss       []string
-		expected string
-	}{
-		{
-			expected: "",
-		},
-		{
-			ss:       []string{"first"},
-			expected: "first",
-		},
-		{
-			ss:       []string{"first", "second"},
-			expected: "first and second",
-		},
-		{
-			ss:       []string{"first", "second", "third"},
-			expected: "first, second, and third",
-		},
-		{
-			ss:       []string{"first", "second", "third", "fourth"},
-			expected: "first, second, third, and fourth",
-		},
-	} {
-		actual := englishList(tc.ss)
-		assert.Equal(t, tc.expected, actual)
-	}
-}
-
 func TestEnglishListWithNoun(t *testing.T) {
 	for _, tc := range []struct {
 		ss       []string
