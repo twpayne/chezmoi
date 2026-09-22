@@ -8,9 +8,9 @@ address). chezmoi caches results from identical GitHub API requests for the
 period defined in `gitHub.refreshPeriod` (default one minute).
 
 If any of the environment variables `$CHEZMOI_GITHUB_ACCESS_TOKEN`,
-`$GITHUB_ACCESS_TOKEN`, or `$GITHUB_TOKEN` are found, then the first one found
-will be used to authenticate the GitHub API requests which have a higher rate
-limit (currently 5,000 requests per hour per user).
+`$CHEZMOI_GITHUB_TOKEN`, `$GITHUB_ACCESS_TOKEN`, or `$GITHUB_TOKEN` are found,
+then the first one found will be used to authenticate the GitHub API requests
+which have a higher rate limit (currently 5,000 requests per hour per user).
 
 In practice, GitHub API rate limits are high enough chezmoi's caching of results
 mean that you should rarely need to set a token, unless you are sharing a source
