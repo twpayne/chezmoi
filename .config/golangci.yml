@@ -7,7 +7,6 @@ linters:
   - bidichk
   - bodyclose
   - canonicalheader
-  - clickhouselint
   - containedctx
   - copyloopvar
   - decorder
@@ -72,6 +71,7 @@ linters:
   disable:
   - arangolint
   - asasalint
+  - clickhouselint
   - contextcheck
   - cyclop
   - depguard
@@ -178,6 +178,8 @@ linters:
       - name: max-control-nesting
         disabled: true
       - name: max-public-structs
+        disabled: true
+      - name: multiline-if-init
         disabled: true
       - name: nested-structs
         disabled: true
