@@ -251,7 +251,7 @@ func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntr
 }
 
 // MarshalJSON implements encoding/json.Marshaler.MarshalJSON.
-func (s *EntryTypeSet) MarshalJSON() ([]byte, error) {
+func (s EntryTypeSet) MarshalJSON() ([]byte, error) {
 	switch s.bits {
 	case EntryTypesAll:
 		return []byte(`["all"]`), nil
@@ -269,7 +269,7 @@ func (s *EntryTypeSet) MarshalJSON() ([]byte, error) {
 }
 
 // MarshalYAML implements github.com/goccy/go-yaml.Marshaler.
-func (s *EntryTypeSet) MarshalYAML() (any, error) {
+func (s EntryTypeSet) MarshalYAML() (any, error) {
 	if s.bits == EntryTypesAll {
 		return []string{"all"}, nil
 	}

@@ -30,12 +30,12 @@ func (f *choiceFlag) FlagCompletionFunc() func(*cobra.Command, []string, string)
 }
 
 // MarshalJSON implements encoding/json.Marshaler.MarshalJSON.
-func (f *choiceFlag) MarshalJSON() ([]byte, error) {
+func (f choiceFlag) MarshalJSON() ([]byte, error) {
 	return []byte(strconv.Quote(f.value)), nil
 }
 
 // MarshalText implements encoding.TextMarshaler.MarshalText.
-func (f *choiceFlag) MarshalText() ([]byte, error) {
+func (f choiceFlag) MarshalText() ([]byte, error) {
 	return []byte(f.value), nil
 }
 
