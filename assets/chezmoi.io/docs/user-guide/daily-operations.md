@@ -90,6 +90,47 @@ sequenceDiagram
     W->>H: chezmoi apply
 ```
 
+## Push all changes in your source state to your repo
+
+You can push all changes in your source state to your repo with a single
+command:
+
+```sh
+chezmoi push
+```
+
+By default, `chezmoi push` will generate a commit message based on the files
+changed. You can override this by setting the `git.commitMessageTemplate`
+configuration variable. For example, to have chezmoi prompt you for a commit
+message each time, use:
+
+<!-- example-formats -->
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[git]
+    commitMessageTemplate = "{{ promptString \"Commit message\" }}"
+```
+<!-- /example-formats -->
+
+If your commit message is longer than fits in a string then you can set
+`git.commitMessageTemplateFile` to specify a path to the commit message template
+relative to the source directory, for example:
+
+<!-- example-formats -->
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[git]
+    commitMessageTemplateFile = ".commit_message.tmpl"
+```
+<!-- /example-formats -->
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    W->>R: chezmoi push
+```
+
 ## Automatically commit and push changes to your repo
 
 chezmoi can automatically commit and push changes to your source directory to
@@ -110,31 +151,6 @@ and push them to your repo (if `autoPush` is true). `autoPush` implies
 `autoCommit`, i.e. if `autoPush` is true then chezmoi will auto-commit your
 changes. If you only set `autoCommit` to true then changes will be committed but
 not pushed.
-
-By default, `autoCommit` will generate a commit message based on the files
-changed. You can override this by setting the `git.commitMessageTemplate`
-configuration variable. For example, to have chezmoi prompt you for a commit
-message each time, use:
-
-<!-- example-formats -->
-```toml title="~/.config/chezmoi/chezmoi.toml"
-[git]
-    autoCommit = true
-    commitMessageTemplate = "{{ promptString \"Commit message\" }}"
-```
-<!-- /example-formats -->
-
-If your commit message is longer than fits in a string then you can set
-`git.commitMessageTemplateFile` to specify a path to the commit message template
-relative to the source directory, for example:
-
-<!-- example-formats -->
-```toml title="~/.config/chezmoi/chezmoi.toml"
-[git]
-    autoCommit = true
-    commitMessageTemplateFile = ".commit_message.tmpl"
-```
-<!-- /example-formats -->
 
 Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
