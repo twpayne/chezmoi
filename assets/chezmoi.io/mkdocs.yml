@@ -186,6 +186,7 @@ nav:
     - merge-all: reference/commands/merge-all.md
     - podman: reference/commands/podman.md
     - purge: reference/commands/purge.md
+    - push: reference/commands/push.md
     - re-add: reference/commands/re-add.md
     - remove: reference/commands/remove.md
     - rm: reference/commands/rm.md

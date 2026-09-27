@@ -1,0 +1,16 @@
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+# create a repo
+exec git init --bare $WORK/dotfiles.git
+exec chezmoi init file://$WORK/dotfiles.git
+
+# test that chezmoi push pushes changes to the repo
+exec chezmoi add $HOME${/}.file
+exec chezmoi push
+exec git --git-dir=$WORK/dotfiles.git show
+stdout 'Add \.file'
+
+-- home/user/.file --
+# contents of .file

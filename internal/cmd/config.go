@@ -2065,6 +2065,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newMergeCmd(),
 		c.newMergeAllCmd(),
 		c.newPurgeCmd(),
+		c.newPushCmd(),
 		c.newReAddCmd(),
 		c.newRemoveCmd(),
 		c.newSSHCmd(),
