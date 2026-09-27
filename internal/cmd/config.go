@@ -1790,8 +1790,8 @@ func (c *Config) getTemplateDataMap(cmd *cobra.Command) map[string]any {
 	}
 }
 
-// gitAutoAdd adds all changes to the git index and returns the new git status.
-func (c *Config) gitAutoAdd() (*chezmoigit.Status, error) {
+// gitAdd adds all changes to the git index and returns the new git status.
+func (c *Config) gitAdd() (*chezmoigit.Status, error) {
 	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
 	}
@@ -1802,9 +1802,9 @@ func (c *Config) gitAutoAdd() (*chezmoigit.Status, error) {
 	return chezmoigit.ParseStatusPorcelainV2(output)
 }
 
-// gitAutoCommit commits all changes in the git index, including generating a
+// gitCommit commits all changes in the git index, including generating a
 // commit message from status.
-func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) error {
+func (c *Config) gitCommit(cmd *cobra.Command, status *chezmoigit.Status) error {
 	if status.IsEmpty() {
 		return nil
 	}
@@ -1819,20 +1819,6 @@ func (c *Config) gitAutoCommit(cmd *cobra.Command, status *chezmoigit.Status) er
 		return err
 	}
 	return c.runHookPost("git-auto-commit")
-}
-
-// gitAutoPush pushes all changes to the remote if status is not empty.
-func (c *Config) gitAutoPush(status *chezmoigit.Status) error {
-	if status.IsEmpty() {
-		return nil
-	}
-	if err := c.runHookPre("git-auto-push"); err != nil {
-		return err
-	}
-	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"push"}); err != nil {
-		return err
-	}
-	return c.runHookPost("git-auto-push")
 }
 
 // gitCommitMessage returns the git commit message for the given status.
@@ -1883,6 +1869,20 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status)
 	templateDataMap := sourceState.TemplateData()
 	templateDataMap["chezmoi"].(map[string]any)["status"] = status //nolint:forcetypeassert
 	return commitMessageTmpl.Execute(templateDataMap)
+}
+
+// gitPush pushes all changes to the remote if status is not empty.
+func (c *Config) gitPush(status *chezmoigit.Status) error {
+	if status.IsEmpty() {
+		return nil
+	}
+	if err := c.runHookPre("git-auto-push"); err != nil {
+		return err
+	}
+	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"push"}); err != nil {
+		return err
+	}
+	return c.runHookPost("git-auto-push")
 }
 
 // makeRunEWithSourceState returns a function for
@@ -2358,18 +2358,18 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		var status *chezmoigit.Status
 		if c.Git.AutoAdd || c.Git.AutoCommit || c.Git.AutoPush {
 			var err error
-			status, err = c.gitAutoAdd()
+			status, err = c.gitAdd()
 			if err != nil {
 				return err
 			}
 		}
 		if c.Git.AutoCommit || c.Git.AutoPush {
-			if err := c.gitAutoCommit(cmd, status); err != nil {
+			if err := c.gitCommit(cmd, status); err != nil {
 				return err
 			}
 		}
 		if c.Git.AutoPush {
-			if err := c.gitAutoPush(status); err != nil {
+			if err := c.gitPush(status); err != nil {
 				return err
 			}
 		}
