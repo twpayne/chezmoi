@@ -692,6 +692,13 @@ var helps = map[string]*help{
 			"P",
 		),
 	},
+	"push": {
+		longHelp: "" +
+			"  Push all changes to your dotfiles repo by running git add, git commit, and\n" +
+			"  git push in the source directory.",
+		example: "" +
+			"  chezmoi push",
+	},
 	"re-add": {
 		longHelp: "" +
 			"  Re-add modified files in the target state, preserving any encrypted_\n" +
