@@ -127,6 +127,9 @@ func mustLongHelp(command string) string {
 	if chezmoiDev["ignorehelp"] != "1" && (!ok || strings.TrimSpace(help.longHelp) == "") {
 		panic(command + ": missing long help")
 	}
+	if help == nil {
+		return ""
+	}
 	return "Description\n" + help.longHelp
 }
 
