@@ -3884,6 +3884,8 @@
       
         
       
+        
+      
     
     
     
@@ -5022,6 +5024,34 @@
     
   
     purge
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/push/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    push
   
 
     
@@ -11200,9 +11230,9 @@
 address). chezmoi caches results from identical GitHub API requests for the
 period defined in <code>gitHub.refreshPeriod</code> (default one minute).</p>
 <p>If any of the environment variables <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>,
-<code>$GITHUB_ACCESS_TOKEN</code>, or <code>$GITHUB_TOKEN</code> are found, then the first one found
-will be used to authenticate the GitHub API requests which have a higher rate
-limit (currently 5,000 requests per hour per user).</p>
+<code>$CHEZMOI_GITHUB_TOKEN</code>, <code>$GITHUB_ACCESS_TOKEN</code>, or <code>$GITHUB_TOKEN</code> are found,
+then the first one found will be used to authenticate the GitHub API requests
+which have a higher rate limit (currently 5,000 requests per hour per user).</p>
 <p>In practice, GitHub API rate limits are high enough chezmoi's caching of results
 mean that you should rarely need to set a token, unless you are sharing a source
 IP address with many other GitHub users. If needed, the GitHub documentation
