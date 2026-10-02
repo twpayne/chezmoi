@@ -53,7 +53,7 @@ jobs:
     strategy:
       matrix:
         os:
-        - macos-14
+        - macos-15
         - ubuntu-22.04
         - windows-2022
     needs: changes
@@ -111,7 +111,7 @@ jobs:
     strategy:
       matrix:
         os:
-        - macos-14
+        - macos-15
         - ubuntu-22.04
         - windows-2022
     needs: changes
