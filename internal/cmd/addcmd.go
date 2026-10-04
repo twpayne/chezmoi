@@ -109,7 +109,7 @@ func (c *Config) defaultPreAddFunc(
 		}
 		findings := betterleaksDetector.DetectString(string(content))
 		for _, finding := range findings {
-			c.errorf("%s:%d: %s\n", absPath, finding.StartLine+1, finding.Description)
+			c.errorf("%s:%d: %s\n", absPath, finding.StartLine, finding.Description)
 		}
 		if !c.force && c.Add.Secrets.String() == severityError && len(findings) > 0 {
 			return chezmoi.ExitCodeError(1)
