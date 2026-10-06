@@ -187,7 +187,7 @@ shellcheck:
 test-release: ensure-goreleaser
 	./bin/goreleaser release \
 		--clean \
-		--skip=chocolatey,sbom,sign \
+		--skip=chocolatey,sbom,snapcraft,sign \
 		--snapshot \
 		${GORELEASER_FLAGS}
 
