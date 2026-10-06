@@ -749,3 +749,8 @@ articles:
   lang: CN
   title: chezmoi 实战：在 `chezmoi init` 阶段用 `hooks.read-source-state.pre` 自动安装密码管理器
   url: https://blog.csdn.net/gitblog_00919/article/details/166142581
+- date: '2026-10-04'
+  version: 2.73.0
+  lang: CN
+  title: 从零构建无懈可击的开发环境：chezmoi dotfiles 管理与一键恢复
+  url: https://blog.csdn.net/weixin_28834765/article/details/167096941
