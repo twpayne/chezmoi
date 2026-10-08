@@ -146,8 +146,7 @@ fi
 ## Handle configuration files which are externally modified
 
 Some programs modify their configuration files. When you next run
-`chezmoi
-apply`, any modifications made by the program will be lost.
+`chezmoi apply`, any modifications made by the program will be lost.
 
 You can track changes to these files by replacing with a symlink back to a file
 in your source directory, which is under version control. Here is a worked
