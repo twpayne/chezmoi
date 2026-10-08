@@ -24,7 +24,7 @@ is non-interactive when running in Codespaces, for example,
 === "TOML"
 
     ```text title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
-    {{- $codespaces:= env "CODESPACES" | not | not -}}
+    {{- $codespaces := env "CODESPACES" | not | not -}}
     sourceDir = {{ .chezmoi.sourceDir | quote }}
 
     [data]
@@ -40,8 +40,8 @@ is non-interactive when running in Codespaces, for example,
 === "YAML"
 
     ```text title="~/.local/share/chezmoi/.chezmoi.yaml.tmpl"
-    {{- $codespaces:= env "CODESPACES" | not | not -}}
-    sourceDir = {{ .chezmoi.sourceDir | quote }}
+    {{- $codespaces := env "CODESPACES" | not | not -}}
+    sourceDir: {{ .chezmoi.sourceDir | quote }}
 
     data:
       name: Your name
@@ -56,13 +56,12 @@ is non-interactive when running in Codespaces, for example,
 === "JSON"
 
     ```text title="~/.local/share/chezmoi/.chezmoi.json.tmpl"
-    {{- $codespaces:= env "CODESPACES" | not | not -}}
-    sourceDir = {{ .chezmoi.sourceDir | quote }}
-
+    {{- $codespaces := env "CODESPACES" | not | not -}}
     {
+        "sourceDir": {{ .chezmoi.sourceDir | quote }},
         "data": {
             "name": "Your name",
-            "codespaces": {{ $codespaces | quote }},
+            "codespaces": {{ $codespaces }},
     {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
             "email": "your@email.com"
     {{- else }}{{/* Interactive setup, so prompt for an email address */}}

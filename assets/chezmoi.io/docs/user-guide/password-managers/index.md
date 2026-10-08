@@ -11,8 +11,8 @@ generated destination file.
 
 !!! example
 
-    Here's a practical example of a `.zshrc.tmpl` file that retrieves an
-    CloudFlare API token from 1Password while maintaining other standard shell
+    Here's a practical example of a `.zshrc.tmpl` file that retrieves a
+    Cloudflare API token from 1Password while maintaining other standard shell
     configurations:
 
     ```zsh
@@ -20,7 +20,7 @@ generated destination file.
     # …
 
     # Cloudflare API Token retrieved from 1Password for use with flarectl
-    export CF_API_TOKEN='{{ onepasswordRead "op://Personal/cloudlfare-api-token/password" }}'
+    export CF_API_TOKEN='{{ onepasswordRead "op://Personal/cloudflare-api-token/password" }}'
 
     # set up aliases and useful functions
     ```
