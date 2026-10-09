@@ -703,7 +703,8 @@ var helps = map[string]*help{
 		longHelp: "" +
 			"  Re-add modified files in the target state, preserving any encrypted_\n" +
 			"  attributes. chezmoi will not overwrite templates, and all entries that are\n" +
-			"  not files are ignored. Directories are recursed into by default.\n" +
+			"  either externals or not files are ignored. Directories are recursed into by\n" +
+			"  default.\n" +
 			"\n" +
 			"  If no targets are specified then all modified files are re-added. If one or\n" +
 			"  more targets are given then only those targets are re-added.",
