@@ -236,7 +236,8 @@ func (c *Config) processExactDirs(
 
 	// First, collect exact directories that are directly in the entries
 	for targetRelPath, entry := range sourceStateEntries {
-		if sourceStateDir, ok := entry.(*chezmoi.SourceStateDir); ok && sourceStateDir.Attr().Exact {
+		if sourceStateDir, ok := entry.(*chezmoi.SourceStateDir); ok &&
+			sourceStateDir.Attr().Exact && !sourceStateDir.Origin().IsExternal() {
 			exactDirs[targetRelPath] = sourceStateDir
 		}
 	}
@@ -247,7 +248,8 @@ func (c *Config) processExactDirs(
 		for parentPath := targetRelPath.Dir(); parentPath != chezmoi.DotRelPath; parentPath = parentPath.Dir() {
 			// Check if this parent is an exact directory in source state
 			parentEntry := sourceState.Get(parentPath)
-			if sourceStateDir, ok := parentEntry.(*chezmoi.SourceStateDir); ok && sourceStateDir.Attr().Exact {
+			if sourceStateDir, ok := parentEntry.(*chezmoi.SourceStateDir); ok &&
+				sourceStateDir.Attr().Exact && !sourceStateDir.Origin().IsExternal() {
 				// Only add if not already present
 				if _, exists := exactDirs[parentPath]; !exists {
 					exactDirs[parentPath] = sourceStateDir

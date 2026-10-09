@@ -7,11 +7,26 @@ exec chezmoi apply
 edit $HOME/.dir/subdir/tool
 exec chezmoi re-add
 
+chhome home2/user
+
+# test that chezmoi re-add does not panic with exact_ external archives with implicit parents
+exec chezmoi apply
+cp golden/new $HOME/.dir/subdir/pkg
+exec chezmoi re-add
+
 -- archive/pkg-1.0/tool --
 v1
+-- golden/new --
+# contents of new
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
 [".dir/subdir/tool"]
 type = "archive-file"
 url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
 path = "archive/pkg-1.0/tool"
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".dir/subdir/pkg"]
+type = "archive"
+url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+exact = true
+stripComponents = 2
 -- www/.keep --
