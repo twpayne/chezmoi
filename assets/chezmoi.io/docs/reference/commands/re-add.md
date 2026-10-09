@@ -1,8 +1,9 @@
 # `re-add` [*target*...]
 
 Re-add modified files in the target state, preserving any `encrypted_`
-attributes. chezmoi will not overwrite templates, and all entries that are not
-files are ignored. Directories are recursed into by default.
+attributes. chezmoi will not overwrite templates, and all entries that are
+either externals or not files are ignored. Directories are recursed into by
+default.
 
 If no *target*s are specified then all modified files are re-added. If one or
 more *target*s are given then only those targets are re-added.
