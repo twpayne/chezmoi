@@ -1,0 +1,17 @@
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that chezmoi re-add does not panic with an external whose parents dirs exist only implicitly
+exec chezmoi apply
+edit $HOME/.dir/subdir/tool
+exec chezmoi re-add
+
+-- archive/pkg-1.0/tool --
+v1
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".dir/subdir/tool"]
+type = "archive-file"
+url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+path = "archive/pkg-1.0/tool"
+-- www/.keep --

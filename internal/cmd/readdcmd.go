@@ -97,6 +97,9 @@ TARGET_REL_PATH:
 		if !ok {
 			continue
 		}
+		if sourceStateFile.Origin().IsExternal() {
+			continue
+		}
 		if sourceStateFile.Attr().Template {
 			continue
 		}
