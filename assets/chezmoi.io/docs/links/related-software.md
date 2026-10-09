@@ -1,6 +1,5 @@
 # Related software
 
-
 ## Editor integration
 
 ### [`github.com/andre-kotake/nvim-chezmoi`](https://github.com/andre-kotake/nvim-chezmoi) { id="andre-kotake/nvim-chezmoi" }
@@ -32,7 +31,6 @@ Edit your chezmoi-managed files and automatically apply.
 
 Custom Telescope Picker for Chez Moi Managed Dot files.
 
-
 ## Frontends
 
 ### [`github.com/daptify14/chezit`](https://github.com/daptify14/chezit) { id="daptify14/chezit"}
@@ -50,7 +48,6 @@ A web UI for managing a list of apps to seed/feed a chezmoi setup.
 ### [`github.com/matmaer/chezmoi-mousse`](https://github.com/matmaer/chezmoi-mousse) { id="matmaer/chezmoi-mousse" }
 
 Visual interface in the terminal for the chezmoi dotfile manager, with a wink to the mouse.
-
 
 ## Other
 

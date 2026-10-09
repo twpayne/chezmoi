@@ -3,7 +3,8 @@
 chezmoi includes support for [Proton Pass][protonpass] using the [Proton Pass
 CLI][cli].
 
-Log in to Proton Pass using
+Log in to Proton Pass using the following:
+
 ```shell
 pass-cli login
 ```
