@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"encoding/json"
 	"errors"
 	"io/fs"
 	"log/slog"
@@ -47,15 +48,30 @@ const (
 )
 
 // A ScriptCondition defines under what conditions a script should be executed.
-type ScriptCondition string
+type ScriptCondition int
 
 // Script conditions.
 const (
-	ScriptConditionNone     ScriptCondition = ""
-	ScriptConditionAlways   ScriptCondition = "always"
-	ScriptConditionOnce     ScriptCondition = "once"
-	ScriptConditionOnChange ScriptCondition = "onchange"
+	ScriptConditionNone ScriptCondition = iota
+	ScriptConditionAlways
+	ScriptConditionOnce
+	ScriptConditionOnChange
 )
+
+var scriptConditionStrs = map[ScriptCondition]string{
+	ScriptConditionNone:     "",
+	ScriptConditionAlways:   "always",
+	ScriptConditionOnce:     "once",
+	ScriptConditionOnChange: "onchange",
+}
+
+func (c ScriptCondition) MarshalJSON() ([]byte, error) {
+	return json.Marshal(c.String())
+}
+
+func (c ScriptCondition) String() string {
+	return scriptConditionStrs[c]
+}
 
 // DirAttr holds attributes parsed from a source directory name.
 type DirAttr struct {
@@ -274,7 +290,7 @@ func (fa FileAttr) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.String("TargetName", fa.TargetName),
 		slog.String("Type", sourceFileTypeStrs[fa.Type]),
-		slog.String("Condition", string(fa.Condition)),
+		slog.String("Condition", fa.Condition.String()),
 		slog.Bool("Empty", fa.Empty),
 		slog.Bool("Encrypted", fa.Encrypted),
 		slog.Bool("Executable", fa.Executable),
