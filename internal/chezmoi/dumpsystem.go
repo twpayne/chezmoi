@@ -54,7 +54,7 @@ type DumpSystemScriptData struct {
 	Type        DumpSystemDataType `json:"type"                  yaml:"type"`
 	Name        AbsPath            `json:"name"                  yaml:"name"`
 	Contents    string             `json:"contents"              yaml:"contents"`
-	Condition   string             `json:"condition"             yaml:"condition"`
+	Condition   ScriptCondition    `json:"condition"             yaml:"condition"`
 	Interpreter *Interpreter       `json:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 }
 
@@ -102,12 +102,10 @@ func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
 func (s *DumpSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, options RunScriptOptions) error {
 	scriptNameStr := scriptName.String()
 	scriptData := &DumpSystemScriptData{
-		Type:     DumpSystemDataTypeScript,
-		Name:     NewAbsPath(scriptNameStr),
-		Contents: string(data),
-	}
-	if options.Condition != ScriptConditionNone {
-		scriptData.Condition = string(options.Condition)
+		Type:      DumpSystemDataTypeScript,
+		Name:      NewAbsPath(scriptNameStr),
+		Contents:  string(data),
+		Condition: options.Condition,
 	}
 	if !options.Interpreter.None() {
 		scriptData.Interpreter = options.Interpreter

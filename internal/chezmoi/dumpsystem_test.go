@@ -68,7 +68,7 @@ func TestDumpSystem(t *testing.T) {
 				Type:      DumpSystemDataTypeScript,
 				Name:      NewAbsPath("script"),
 				Contents:  "# contents of script\n",
-				Condition: "always",
+				Condition: ScriptConditionAlways,
 			},
 			"symlink": &DumpSystemSymlinkData{
 				Type:     DumpSystemDataTypeSymlink,

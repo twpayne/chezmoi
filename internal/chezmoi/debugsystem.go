@@ -169,7 +169,7 @@ func (s *DebugSystem) RunScript(scriptName RelPath, dir AbsPath, data []byte, op
 		chezmoilog.Stringer("dir", dir),
 		chezmoilog.FirstFewBytes("data", data),
 		slog.Any("interpreter", options.Interpreter),
-		slog.String("condition", string(options.Condition)),
+		slog.String("condition", options.Condition.String()),
 	}
 	attrs = chezmoilog.AppendExitErrorAttrs(attrs, err)
 	chezmoilog.InfoOrError(s.logger, "RunScript", err, attrs...)
