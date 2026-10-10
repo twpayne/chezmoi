@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"io/fs"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"runtime"
 	"testing"
@@ -10,6 +12,7 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
+	"chezmoi.io/chezmoi/v2/internal/archivetest"
 	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
@@ -344,5 +347,40 @@ func TestIssue4107(t *testing.T) {
 		},
 	}, func(fileSystem vfs.FS) {
 		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "--secrets=ignore", "/home/user/.secret"}))
+	})
+}
+
+func TestIssue4873(t *testing.T) {
+	if runtime.GOOS == "windows" && os.Getenv("GITHUB_RUN_ID") != "" {
+		// FIXME fix this test. It may be failing because the home directory on
+		// GitHub Actions is on the D: drive
+		t.Skip("skipping failing test on Windows on GitHub Actions")
+	}
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tar, err := archivetest.NewTar(map[string]any{
+			"dir": map[string]any{
+				"file": "# contents of dir/file",
+			},
+		})
+		assert.NoError(t, err)
+		_, err = w.Write(tar)
+		assert.NoError(t, err)
+	}))
+	defer httpServer.Close()
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local": map[string]any{
+				"bin/opencode-docker": "# contents of opencode-docker",
+				"share/chezmoi": map[string]any{
+					".chezmoiexternal.yaml.tmpl": chezmoitest.JoinLines(
+						`".local/bin":`,
+						`    type: archive`,
+						`    url: `+httpServer.URL+`/archive.tar`,
+					),
+				},
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "/home/user/.local/bin/opencode-docker"}))
 	})
 }

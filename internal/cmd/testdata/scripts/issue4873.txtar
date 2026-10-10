@@ -1,0 +1,17 @@
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that chezmoi add does not panic when adding a file in external_ implicit directories
+exec chezmoi add $HOME${/}.local/bin/opencode-docker
+stderr 'skipping entries in external_ implicit directory'
+
+-- archive/dir/file --
+# contents of dir/file
+-- home/user/.local/bin/opencode-docker --
+# contents of opencode-docker
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml.tmpl --
+".local/bin":
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive.tar.gz
+-- www/.keep --
