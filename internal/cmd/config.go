@@ -1197,9 +1197,13 @@ func (c *Config) defaultPreApplyFunc(
 		case err != nil:
 			return err
 		case choice == "diff":
+			destAbsPath := c.DestDirAbsPath.Join(targetRelPath)
+			if actualEntryState.Type == chezmoi.EntryStateTypeRemove {
+				destAbsPath = chezmoi.DevNullAbsPath
+			}
 			if err := c.diffFile(
 				targetRelPath,
-				c.DestDirAbsPath.Join(targetRelPath), actualContents, actualEntryState.Mode,
+				destAbsPath, actualContents, actualEntryState.Mode,
 				chezmoi.EmptyAbsPath, targetContents, targetEntryState.Mode,
 			); err != nil {
 				return err
