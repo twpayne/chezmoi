@@ -24,18 +24,12 @@ func shellQuote(s string) string {
 		inSingleQuotes := false
 		for _, b := range []byte(s) {
 			switch b {
-			case backslash:
-				if !inSingleQuotes {
-					result = append(result, singleQuote)
-					inSingleQuotes = true
-				}
-				result = append(result, backslash, backslash)
 			case singleQuote:
 				if inSingleQuotes {
 					result = append(result, singleQuote)
 					inSingleQuotes = false
 				}
-				result = append(result, '\\', singleQuote)
+				result = append(result, backslash, singleQuote)
 			default:
 				if !inSingleQuotes {
 					result = append(result, singleQuote)
