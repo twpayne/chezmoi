@@ -115,7 +115,7 @@ func (s *ExternalDiffSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 		if err := os.MkdirAll(targetAbsPath.String(), perm); err != nil {
 			return err
 		}
-		if err := s.RunDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
+		if err := s.RunDiffCommand(DevNullAbsPath, targetAbsPath); err != nil {
 			return err
 		}
 	}
@@ -151,7 +151,7 @@ func (s *ExternalDiffSystem) Remove(name AbsPath) error {
 		case err != nil:
 			return err
 		case s.filter.IncludeFileInfo(fileInfo):
-			if err := s.RunDiffCommand(name, devNullAbsPath); err != nil {
+			if err := s.RunDiffCommand(name, DevNullAbsPath); err != nil {
 				return err
 			}
 		}
@@ -168,7 +168,7 @@ func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
 		case err != nil:
 			return err
 		case s.filter.IncludeFileInfo(fileInfo):
-			if err := s.RunDiffCommand(name, devNullAbsPath); err != nil {
+			if err := s.RunDiffCommand(name, DevNullAbsPath); err != nil {
 				return err
 			}
 		}
@@ -304,7 +304,7 @@ func (s *ExternalDiffSystem) RunScript(scriptName RelPath, dir AbsPath, data []b
 		if err := os.WriteFile(targetAbsPath.String(), toData, 0o700); err != nil {
 			return err
 		}
-		if err := s.RunDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
+		if err := s.RunDiffCommand(DevNullAbsPath, targetAbsPath); err != nil {
 			return err
 		}
 	}
@@ -340,7 +340,7 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 		fromAbsPath := filename
 		switch fileInfo, err := os.Lstat(fromAbsPath.String()); {
 		case errors.Is(err, fs.ErrNotExist):
-			fromAbsPath = devNullAbsPath
+			fromAbsPath = DevNullAbsPath
 		case err != nil:
 			return err
 		case s.textConvFunc != nil:

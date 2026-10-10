@@ -1,5 +1,6 @@
 [windows] skip 'UNIX only'
 
+chmod 755 bin/diff-exists
 chmod 755 bin/diff-pager
 
 # test that chezmoi diff invokes diff.command when configured
@@ -59,10 +60,30 @@ cp golden/dot_file $CHEZMOISOURCEDIR
 exec chezmoi diff
 stdout diff-pager
 
+chhome home7/user
+
+stdin golden/diff-no
+exec chezmoi apply --interactive --no-tty
+stdout \s/dev/null\s+${WORK@R}/.*/\.file$
+! exists $HOME/.file
+
+-- bin/diff-exists --
+#!/bin/sh
+
+for arg in "$@"; do
+    if [ ! -e "$arg" ]; then
+        echo "$arg: no such file" >&2
+        exit 2
+    fi
+done
+echo "$@"
 -- bin/diff-pager --
 #!/bin/sh
 
 echo diff-pager
+-- golden/diff-no --
+diff
+no
 -- golden/diff-umask-002.diff --
 diff --git a/.file b/.file
 index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100664
@@ -118,3 +139,8 @@ index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10
 [diff]
     pager = "diff-pager"
 -- home6/user/.local/share/chezmoi/.keep --
+-- home7/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "diff-exists"
+-- home7/user/.local/share/chezmoi/dot_file --
+# contents of .file
