@@ -28,15 +28,15 @@ type TargetStateEntry interface {
 // a directory.
 type TargetStateModifyDirWithCmd struct {
 	cmdFunc       func() *exec.Cmd
-	forceRefresh  bool
-	refreshPeriod Duration
 	sourceAttr    SourceAttr
+	refreshPeriod Duration
+	forceRefresh  bool
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
 type TargetStateDir struct {
-	perm       fs.FileMode
 	sourceAttr SourceAttr
+	perm       fs.FileMode
 }
 
 type ContentsFunc func() ([]byte, error)
@@ -47,10 +47,10 @@ type ContentsSHA256Func func() ([32]byte, error)
 type TargetStateFile struct {
 	contentsFunc       ContentsFunc
 	contentsSHA256Func ContentsSHA256Func
+	sourceAttr         SourceAttr
+	perm               fs.FileMode
 	empty              bool
 	overwrite          bool
-	perm               fs.FileMode
-	sourceAttr         SourceAttr
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -58,13 +58,13 @@ type TargetStateRemove struct{}
 
 // A TargetStateScript represents the state of a script.
 type TargetStateScript struct {
-	name               RelPath
 	contentsFunc       ContentsFunc
 	contentsSHA256Func ContentsSHA256Func
 	interpreter        *Interpreter
-	condition          ScriptCondition
-	sourceAttr         SourceAttr
+	name               RelPath
 	sourceRelPath      SourceRelPath
+	sourceAttr         SourceAttr
+	condition          ScriptCondition
 }
 
 // A TargetStateSymlink represents the state of a symlink in the target state.

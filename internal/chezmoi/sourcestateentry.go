@@ -38,31 +38,31 @@ type SourceStateEntry interface {
 
 // A SourceStateCommand represents a command that should be run.
 type SourceStateCommand struct {
-	cmdFunc       func() *exec.Cmd
 	origin        SourceStateOrigin
-	forceRefresh  bool
-	refreshPeriod Duration
+	cmdFunc       func() *exec.Cmd
 	sourceAttr    SourceAttr
+	refreshPeriod Duration
+	forceRefresh  bool
 }
 
 // A SourceStateDir represents the state of a directory in the source state.
 type SourceStateDir struct {
-	attr             DirAttr
 	origin           SourceStateOrigin
-	sourceRelPath    SourceRelPath
 	targetStateEntry TargetStateEntry
+	attr             DirAttr
+	sourceRelPath    SourceRelPath
 }
 
 // A SourceStateFile represents the state of a file in the source state.
 type SourceStateFile struct {
-	attr                 FileAttr
-	contentsFunc         ContentsFunc
-	contentsSHA256Func   ContentsSHA256Func
 	origin               SourceStateOrigin
-	sourceRelPath        SourceRelPath
-	targetStateEntryFunc TargetStateEntryFunc
 	targetStateEntry     TargetStateEntry
 	targetStateEntryErr  error
+	contentsFunc         ContentsFunc
+	contentsSHA256Func   ContentsSHA256Func
+	targetStateEntryFunc TargetStateEntryFunc
+	sourceRelPath        SourceRelPath
+	attr                 FileAttr
 }
 
 // A SourceStateImplicitDir represents the state of a directory that is implicit
@@ -77,8 +77,8 @@ type SourceStateImplicitDir struct {
 // A SourceStateRemove represents that an entry should be removed.
 type SourceStateRemove struct {
 	origin        SourceStateOrigin
-	sourceRelPath SourceRelPath
 	targetRelPath RelPath
+	sourceRelPath SourceRelPath
 }
 
 // A SourceStateOriginRemove is used for removes. The source of the remove is
