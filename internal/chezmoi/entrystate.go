@@ -2,6 +2,8 @@ package chezmoi
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/fs"
 	"log/slog"
 	"runtime"
@@ -10,16 +12,54 @@ import (
 )
 
 // An EntryStateType is an entry state type.
-type EntryStateType string
+type EntryStateType int
 
 // Entry state types.
 const (
-	EntryStateTypeDir     EntryStateType = "dir"
-	EntryStateTypeFile    EntryStateType = "file"
-	EntryStateTypeSymlink EntryStateType = "symlink"
-	EntryStateTypeRemove  EntryStateType = "remove"
-	EntryStateTypeScript  EntryStateType = "script"
+	EntryStateTypeDir EntryStateType = iota
+	EntryStateTypeFile
+	EntryStateTypeSymlink
+	EntryStateTypeRemove
+	EntryStateTypeScript
 )
+
+var (
+	entryTypeStateStrs = map[EntryStateType]string{
+		EntryStateTypeDir:     "dir",
+		EntryStateTypeFile:    "file",
+		EntryStateTypeRemove:  "remove",
+		EntryStateTypeScript:  "script",
+		EntryStateTypeSymlink: "symlink",
+	}
+	entryTypeStateValues = map[string]EntryStateType{
+		"dir":     EntryStateTypeDir,
+		"file":    EntryStateTypeFile,
+		"remove":  EntryStateTypeRemove,
+		"script":  EntryStateTypeScript,
+		"symlink": EntryStateTypeSymlink,
+	}
+)
+
+func (t EntryStateType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+func (t EntryStateType) String() string {
+	return entryTypeStateStrs[t]
+}
+
+func (t *EntryStateType) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	value, ok := entryTypeStateValues[s]
+	if !ok {
+		return fmt.Errorf("%s: invalid entry type state", s)
+	}
+	*t = value
+	return nil
+}
 
 // An EntryState represents the state of an entry. A nil EntryState is
 // equivalent to EntryStateTypeAbsent.
@@ -65,7 +105,7 @@ func (s *EntryState) LogValue() slog.Value {
 		return slog.Value{}
 	}
 	attrs := []slog.Attr{
-		slog.String("Type", string(s.Type)),
+		slog.String("Type", s.Type.String()),
 		slog.Int("Mode", int(s.Mode)),
 		chezmoilog.Stringer("ContentsSHA256", s.ContentsSHA256),
 	}
