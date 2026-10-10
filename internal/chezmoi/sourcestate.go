@@ -536,17 +536,27 @@ DEST_ABS_PATH:
 					}
 					continue
 				}
-				switch sourceStateDir, ok := node.SourceStateEntry.(*SourceStateDir); {
-				case i != len(nodes)-1 && !ok:
-					panic(fmt.Errorf("nodes[%d]: unexpected non-terminal source state entry, got %T", i, node.SourceStateEntry))
-				case ok && sourceStateDir.attr.External:
-					targetRelPathComponents := targetRelPath.SplitAll()
-					externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
-					externalDirRelPaths.Add(externalDirRelPath)
-					if options.Errorf != nil {
-						options.Errorf("%s: skipping entries in external_ directory\n", externalDirRelPath)
+				switch sourceStateEntry := node.SourceStateEntry.(type) {
+				case *SourceStateDir:
+					if sourceStateEntry.attr.External {
+						targetRelPathComponents := targetRelPath.SplitAll()
+						externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
+						externalDirRelPaths.Add(externalDirRelPath)
+						if options.Errorf != nil {
+							options.Errorf("%s: skipping entries in external_ directory\n", externalDirRelPath)
+						}
+						continue DEST_ABS_PATH
 					}
-					continue DEST_ABS_PATH
+				case *SourceStateImplicitDir:
+					if sourceStateEntry.Origin().IsExternal() {
+						targetRelPathComponents := targetRelPath.SplitAll()
+						externalDirRelPath := EmptyRelPath.Join(targetRelPathComponents[:i]...)
+						externalDirRelPaths.Add(externalDirRelPath)
+						if options.Errorf != nil {
+							options.Errorf("%s: skipping entries in external_ implicit directory\n", externalDirRelPath)
+						}
+						continue DEST_ABS_PATH
+					}
 				}
 			}
 			parentSourceRelPath = nodes[len(nodes)-1].SourceStateEntry.SourceRelPath()
