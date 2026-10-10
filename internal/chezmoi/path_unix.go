@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var devNullAbsPath = NewAbsPath("/dev/null")
+var DevNullAbsPath = NewAbsPath("/dev/null")
 
 // NewAbsPathFromExtPath returns a new AbsPath by converting extPath to use
 // slashes, performing tilde expansion, and making the path absolute.
