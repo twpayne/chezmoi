@@ -173,7 +173,8 @@ func (c *Config) keepassxcOutput(command string, args ...string) ([]byte, error)
 // keepassxcOutputCachePassword returns the output of command and args,
 // prompting the user for the password and caching it for later use.
 func (c *Config) keepassxcOutputCachePassword(command string, args ...string) ([]byte, error) {
-	cmdArgs := []string{command}
+	cmdArgs := make([]string, 0, 1+len(c.Keepassxc.Args)+1+len(args))
+	cmdArgs = append(cmdArgs, command)
 	cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
 	cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
 	cmdArgs = append(cmdArgs, args...)
@@ -211,7 +212,8 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		}
 
 		// Start the keepassxc-cli open command.
-		cmdArgs := []string{"open"}
+		cmdArgs := make([]string, 0, 1+len(c.Keepassxc.Args)+1)
+		cmdArgs = append(cmdArgs, "open")
 		cmdArgs = append(cmdArgs, c.Keepassxc.Args...)
 		cmdArgs = append(cmdArgs, c.Keepassxc.Database.String())
 		cmd := exec.Command(c.Keepassxc.Command, cmdArgs...)

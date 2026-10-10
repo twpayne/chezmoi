@@ -108,7 +108,8 @@ func (e *GPGEncryption) EncryptedSuffix() string {
 
 // decryptArgs returns the arguments for decryption.
 func (e *GPGEncryption) decryptArgs(plaintextAbsPath, ciphertextAbsPath AbsPath) []string {
-	args := []string{"--output", plaintextAbsPath.String()}
+	args := make([]string, 0, 2+len(e.Args)+2)
+	args = append(args, "--output", plaintextAbsPath.String())
 	args = append(args, e.Args...)
 	args = append(args, "--decrypt", ciphertextAbsPath.String())
 	return args
