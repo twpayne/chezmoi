@@ -70,12 +70,12 @@ type DirAttr struct {
 // A FileAttr holds attributes parsed from a source file name.
 type FileAttr struct {
 	TargetName string
-	Type       SourceFileTargetType
 	Condition  ScriptCondition
+	Type       SourceFileTargetType
+	Order      ScriptOrder
 	Empty      bool
 	Encrypted  bool
 	Executable bool
-	Order      ScriptOrder
 	Private    bool
 	ReadOnly   bool
 	Template   bool

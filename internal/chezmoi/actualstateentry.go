@@ -30,15 +30,15 @@ type ActualStateDir struct {
 
 // A ActualStateFile represents the state of a file in the filesystem.
 type ActualStateFile struct {
+	contentsFunc ContentsFunc
 	absPath      AbsPath
 	perm         fs.FileMode
-	contentsFunc ContentsFunc
 }
 
 // A ActualStateSymlink represents the state of a symlink in the filesystem.
 type ActualStateSymlink struct {
-	absPath      AbsPath
 	linknameFunc func() (string, error)
+	absPath      AbsPath
 }
 
 // NewActualStateEntry returns a new ActualStateEntry populated with absPath
