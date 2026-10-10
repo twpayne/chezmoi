@@ -48,6 +48,7 @@ linters:
   - nolintlint
   - nosprintfhostport
   - perfsprint
+  - prealloc
   - predeclared
   - protogetter
   - reassign
@@ -103,7 +104,6 @@ linters:
   - nolintlint
   - nonamedreturns
   - paralleltest
-  - prealloc
   - promlinter
   - recvcheck
   - testifylint
