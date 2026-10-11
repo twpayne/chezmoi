@@ -11233,14 +11233,14 @@ manager, it will automatically fetch the secret value and insert it into the
 generated destination file.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<p>Here's a practical example of a <code>.zshrc.tmpl</code> file that retrieves an
-CloudFlare API token from 1Password while maintaining other standard shell
+<p>Here's a practical example of a <code>.zshrc.tmpl</code> file that retrieves a
+Cloudflare API token from 1Password while maintaining other standard shell
 configurations:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># set up $PATH</span>
 <span class="c1"># …</span>
 
 <span class="c1"># Cloudflare API Token retrieved from 1Password for use with flarectl</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">CF_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;{{ onepasswordRead &quot;op://Personal/cloudlfare-api-token/password&quot; }}&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">CF_API_TOKEN</span><span class="o">=</span><span class="s1">&#39;{{ onepasswordRead &quot;op://Personal/cloudflare-api-token/password&quot; }}&#39;</span>
 
 <span class="c1"># set up aliases and useful functions</span>
 </code></pre></div>

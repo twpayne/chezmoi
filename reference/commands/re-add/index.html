@@ -11446,8 +11446,9 @@
 
 <h1 id="re-add-target"><code>re-add</code> [<em>target</em>...]</h1>
 <p>Re-add modified files in the target state, preserving any <code>encrypted_</code>
-attributes. chezmoi will not overwrite templates, and all entries that are not
-files are ignored. Directories are recursed into by default.</p>
+attributes. chezmoi will not overwrite templates, and all entries that are
+either externals or not files are ignored. Directories are recursed into by
+default.</p>
 <p>If no <em>target</em>s are specified then all modified files are re-added. If one or
 more <em>target</em>s are given then only those targets are re-added.</p>
 <h2 id="common-flags">Common flags</h2>

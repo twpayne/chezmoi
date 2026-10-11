@@ -11522,8 +11522,7 @@ a <code>run_</code> script. For example, create a file in your source state call
 </code></pre></div>
 <h2 id="handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</h2>
 <p>Some programs modify their configuration files. When you next run
-<code>chezmoi
-apply</code>, any modifications made by the program will be lost.</p>
+<code>chezmoi apply</code>, any modifications made by the program will be lost.</p>
 <p>You can track changes to these files by replacing with a symlink back to a file
 in your source directory, which is under version control. Here is a worked
 example for VSCode's <code>settings.json</code> on Linux:</p>
