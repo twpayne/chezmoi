@@ -1,0 +1,14 @@
+# test that chezmoi re-add on an individual file in an exact_ dir does not trash templates
+exec chezmoi re-add $HOME${/}dir/regular
+cmp $CHEZMOISOURCEDIR/exact_dir/template.tmpl golden/template.tmpl
+
+-- golden/template.tmpl --
+{{ "template" }}
+-- home/user/.local/share/chezmoi/exact_dir/regular --
+# contents of dir/regular
+-- home/user/.local/share/chezmoi/exact_dir/template.tmpl --
+{{ "template" }}
+-- home/user/dir/regular --
+# contents of dir/regular
+-- home/user/dir/template --
+template
