@@ -1331,7 +1331,7 @@ func TestSourceStateRead(t *testing.T) {
 							perm:               0o666 &^ chezmoitest.Umask,
 						},
 					},
-					NewRelPath("dir/file2"): &SourceStateRemove{
+					NewRelPath("dir/file2"): &SourceStateAbsent{
 						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/exact_dir")),
 						sourceRelPath: NewSourceRelDirPath("exact_dir"),
 						targetRelPath: NewRelPath("dir/file2"),
@@ -1357,7 +1357,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					NewRelPath("file"): &SourceStateRemove{
+					NewRelPath("file"): &SourceStateAbsent{
 						origin:        SourceStateOriginRemove{},
 						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("file"),
@@ -1384,7 +1384,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					NewRelPath("file1"): &SourceStateRemove{
+					NewRelPath("file1"): &SourceStateAbsent{
 						origin:        SourceStateOriginRemove{},
 						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("file1"),
@@ -1431,7 +1431,7 @@ func TestSourceStateRead(t *testing.T) {
 							perm: fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
-					NewRelPath("dir/file1"): &SourceStateRemove{
+					NewRelPath("dir/file1"): &SourceStateAbsent{
 						origin:        SourceStateOriginRemove{},
 						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("dir/file1"),

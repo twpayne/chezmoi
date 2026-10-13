@@ -57,8 +57,8 @@ func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *c
 		// from the target state, not the source state.
 		//
 		// For entries in exact_ directories in the target state that are not
-		// present in the source state, we generate SourceStateRemove entries.
-		// So, if the source state entry is a SourceStateRemove then we know
+		// present in the source state, we generate SourceStateAbsent entries.
+		// So, if the source state entry is a SourceStateAbsent then we know
 		// that there is no actual source state entry to remove.
 		var sourceAbsPath chezmoi.AbsPath
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
@@ -66,7 +66,7 @@ func (c *Config) runDestroyCmd(cmd *cobra.Command, args []string, sourceState *c
 			c.errorf("warning: skipping external %s\n", targetRelPath)
 			continue
 		}
-		if _, ok := sourceStateEntry.(*chezmoi.SourceStateRemove); !ok {
+		if _, ok := sourceStateEntry.(*chezmoi.SourceStateAbsent); !ok {
 			relPath := sourceStateEntry.SourceRelPath().RelPath()
 			if !relPath.IsEmpty() {
 				sourceAbsPath = c.SourceDirAbsPath.Join(relPath)

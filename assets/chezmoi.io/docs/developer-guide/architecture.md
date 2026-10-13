@@ -71,8 +71,8 @@ equivalent entry should be in the target state, abstracted by the
 
 Actual target state entries include `TargetStateFile` structs, representing a
 file with contents and permissions, `TargetStateDir` structs, representing a
-directory, `TargetStateSymlink` for symlinks, `TargetStateRemove` for entries
-that should be removed, and `TargetStateScript` for scripts that should be run.
+directory, `TargetStateSymlink` for symlinks, `TargetStateAbsent` for entries
+that should be absent, and `TargetStateScript` for scripts that should be run.
 
 The actual state of an entry in the target state is abstracted via the
 `ActualStateEntry` interface, with `ActualStateAbsent`, `ActualStateDir`,

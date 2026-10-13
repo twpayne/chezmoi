@@ -168,7 +168,7 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 		default:
 			return false
 		}
-	case *SourceStateRemove:
+	case *SourceStateAbsent:
 		switch {
 		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
@@ -217,7 +217,7 @@ func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntr
 		default:
 			return false
 		}
-	case *TargetStateRemove:
+	case *TargetStateAbsent:
 		return s.bits&EntryTypeRemove != 0
 	case *TargetStateScript:
 		switch {

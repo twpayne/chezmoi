@@ -74,8 +74,8 @@ type SourceStateImplicitDir struct {
 	targetStateEntry TargetStateEntry
 }
 
-// A SourceStateRemove represents that an entry should be removed.
-type SourceStateRemove struct {
+// A SourceStateAbsent represents that an entry should be absent.
+type SourceStateAbsent struct {
 	origin        SourceStateOrigin
 	targetRelPath RelPath
 	sourceRelPath SourceRelPath
@@ -265,35 +265,35 @@ func (s *SourceStateImplicitDir) TargetStateEntry(destSystem System, destDirAbsP
 }
 
 // Evaluate evaluates s and returns any error.
-func (s *SourceStateRemove) Evaluate() error {
+func (s *SourceStateAbsent) Evaluate() error {
 	return nil
 }
 
 // LogValue implements log/slog.LogValuer.LogValue.
-func (s *SourceStateRemove) LogValue() slog.Value {
+func (s *SourceStateAbsent) LogValue() slog.Value {
 	return slog.GroupValue(
 		chezmoilog.Stringer("targetRelPath", s.targetRelPath),
 	)
 }
 
 // Order returns s's order.
-func (s *SourceStateRemove) Order() ScriptOrder {
+func (s *SourceStateAbsent) Order() ScriptOrder {
 	return ScriptOrderDuring
 }
 
 // Origin returns s's origin.
-func (s *SourceStateRemove) Origin() SourceStateOrigin {
+func (s *SourceStateAbsent) Origin() SourceStateOrigin {
 	return s.origin
 }
 
 // SourceRelPath returns s's source relative path.
-func (s *SourceStateRemove) SourceRelPath() SourceRelPath {
+func (s *SourceStateAbsent) SourceRelPath() SourceRelPath {
 	return SourceRelPath{}
 }
 
 // TargetStateEntry returns s's target state entry.
-func (s *SourceStateRemove) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
-	return &TargetStateRemove{}, nil
+func (s *SourceStateAbsent) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
+	return &TargetStateAbsent{}, nil
 }
 
 // IsExternal returns if s is an external.
