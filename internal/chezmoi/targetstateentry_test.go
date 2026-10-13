@@ -37,7 +37,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 			contentsSHA256Func: eagerNoErr(sha256.Sum256([]byte("#!/bin/sh\n"))),
 			perm:               fs.ModePerm &^ chezmoitest.Umask,
 		},
-		"remove": &TargetStateRemove{},
+		"remove": &TargetStateAbsent{},
 		"symlink": &TargetStateSymlink{
 			linknameFunc: eagerNoErr("target"),
 		},
@@ -115,7 +115,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 	t.Helper()
 	switch ts := ts.(type) {
-	case *TargetStateRemove:
+	case *TargetStateAbsent:
 		return []vfst.PathTest{
 			vfst.TestDoesNotExist(),
 		}

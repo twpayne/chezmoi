@@ -53,8 +53,8 @@ type TargetStateFile struct {
 	overwrite          bool
 }
 
-// A TargetStateRemove represents the absence of an entry in the target state.
-type TargetStateRemove struct{}
+// A TargetStateAbsent represents the absence of an entry in the target state.
+type TargetStateAbsent struct{}
 
 // A TargetStateScript represents the state of a script.
 type TargetStateScript struct {
@@ -300,7 +300,7 @@ func (t *TargetStateFile) SourceAttr() SourceAttr {
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateRemove) Apply(
+func (t *TargetStateAbsent) Apply(
 	system System,
 	persistentState PersistentState,
 	actualStateEntry ActualStateEntry,
@@ -312,24 +312,24 @@ func (t *TargetStateRemove) Apply(
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateRemove) EntryState(umask fs.FileMode) (*EntryState, error) {
+func (t *TargetStateAbsent) EntryState(umask fs.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeRemove,
 	}, nil
 }
 
 // Evaluate evaluates t.
-func (t *TargetStateRemove) Evaluate() error {
+func (t *TargetStateAbsent) Evaluate() error {
 	return nil
 }
 
 // SkipApply implements TargetStateEntry.SkipApply.
-func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateAbsent) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
 // SourceAttr implements TargetStateEntry.SourceAttr.
-func (t *TargetStateRemove) SourceAttr() SourceAttr {
+func (t *TargetStateAbsent) SourceAttr() SourceAttr {
 	return SourceAttr{}
 }
 

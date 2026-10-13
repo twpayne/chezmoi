@@ -654,7 +654,7 @@ DEST_ABS_PATH:
 				}
 
 				// Otherwise, remove the old entry.
-				newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateRemove{
+				newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateAbsent{
 					origin: SourceStateOriginRemove{},
 				}
 				update.sourceRelPaths = append(update.sourceRelPaths, oldSourceEntryRelPath)
@@ -703,7 +703,7 @@ DEST_ABS_PATH:
 		sourceRoot.Set(sourceRelPath.RelPath(), sourceStateEntry)
 	}
 
-	// Simulate removing a directory by creating SourceStateRemove entries for
+	// Simulate removing a directory by creating SourceStateAbsent entries for
 	// all existing source state entries that are in options.RemoveDir and not
 	// in the new source state.
 	if options.RemoveDir != EmptyRelPath {
@@ -715,7 +715,7 @@ DEST_ABS_PATH:
 				return nil
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
-			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
+			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateAbsent{
 				origin:        SourceStateOriginRemove{},
 				sourceRelPath: sourceRelPath,
 				targetRelPath: targetRelPath,
@@ -1280,7 +1280,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 	}
 
-	// Generate SourceStateRemoves for existing targets.
+	// Generate SourceStateAbsents for existing targets.
 	matches, err := s.remove.Glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
 	if err != nil {
 		return err
@@ -1290,7 +1290,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		if s.Ignore(targetRelPath) {
 			continue
 		}
-		sourceStateEntry := &SourceStateRemove{
+		sourceStateEntry := &SourceStateAbsent{
 			origin:        SourceStateOriginRemove{},
 			sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 			targetRelPath: targetRelPath,
@@ -1306,7 +1306,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 	}
 
-	// Generate SourceStateRemoves for exact directories.
+	// Generate SourceStateAbsents for exact directories.
 	for targetRelPath, sourceStateEntries := range allSourceStateEntries {
 		if len(sourceStateEntries) != 1 {
 			continue
@@ -1334,12 +1334,12 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				if s.Ignore(destEntryRelPath) {
 					continue
 				}
-				sourceStateRemove := &SourceStateRemove{
+				sourceStateAbsent := &SourceStateAbsent{
 					origin:        sourceStateDir.Origin(),
 					sourceRelPath: sourceStateDir.sourceRelPath,
 					targetRelPath: destEntryRelPath,
 				}
-				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], sourceStateRemove)
+				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], sourceStateAbsent)
 			}
 		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
@@ -1976,6 +1976,14 @@ func (s *SourceState) getExternalDataRaw(
 	return data, nil
 }
 
+// newAbsentTargetStateEntryFunc returns a targetStateEntryFunc that declares
+// the target as absent.
+func (s *SourceState) newAbsentTargetStateEntryFunc() TargetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		return &TargetStateAbsent{}, nil
+	}
+}
+
 // newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with the value of sourceContentsFunc if the file does not already exist,
 // or returns the actual file's contents unchanged if the file already exists.
@@ -2026,7 +2034,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			case err != nil:
 				return nil, err
 			case isEmpty(contents) && !fileAttr.Empty:
-				return &TargetStateRemove{}, nil
+				return &TargetStateAbsent{}, nil
 			default:
 				linkname := normalizeLinkname(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()).String())
 				return &TargetStateSymlink{
@@ -2142,14 +2150,6 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 	}
 }
 
-// newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
-// target.
-func (s *SourceState) newRemoveTargetStateEntryFunc() TargetStateEntryFunc {
-	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-		return &TargetStateRemove{}, nil
-	}
-}
-
 // newScriptTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // script with sourceLazyContents.
 func (s *SourceState) newScriptTargetStateEntryFunc(
@@ -2261,7 +2261,7 @@ func (s *SourceState) newSourceStateFile(
 			targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, contentsFunc, nil)
 		}
 	case SourceFileTypeRemove:
-		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc()
+		targetStateEntryFunc = s.newAbsentTargetStateEntryFunc()
 	case SourceFileTypeScript:
 		// If the script has an extension, determine if it indicates an
 		// interpreter to use.
