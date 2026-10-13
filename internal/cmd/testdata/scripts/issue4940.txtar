@@ -1,0 +1,10 @@
+# test that chezmoi data does not read .chezmoidata files in external_ directories
+exec chezmoi data
+! stdout 'external data'
+! exec chezmoi apply
+stderr 'map has no entry for key "nested"'
+
+-- home/user/.local/share/chezmoi/ext-data.tmpl --
+{{ .nested.sentinel_value }}
+-- home/user/.local/share/chezmoi/external_private/.chezmoidata.json --
+{"nested": {"sentinel_value": "external data"}}

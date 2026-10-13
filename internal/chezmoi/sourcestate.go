@@ -1134,6 +1134,17 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return fs.SkipDir
 		case s.templateDataOnly:
+			// Don't descend into external_ directories when reading template
+			// data.
+			if fileInfo.IsDir() {
+				dirAttr, err := parseDirAttr(sourceName.String())
+				if err != nil {
+					return err
+				}
+				if dirAttr.External {
+					return fs.SkipDir
+				}
+			}
 			return nil
 		case isPrefixDotFormat(fileInfo.Name(), externalName) || isPrefixDotFormatDotTmpl(fileInfo.Name(), externalName):
 			parentAbsPath, _ := sourceAbsPath.Split()
