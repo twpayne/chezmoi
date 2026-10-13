@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
-	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
 type reAddCmdConfig struct {
@@ -273,27 +272,21 @@ func (c *Config) processExactDirs(
 		}
 
 		// Build sets of files in source and target
-		sourceFiles := make(map[string]chezmoi.SourceStateEntry)
-		ignoredFiles := chezmoiset.New[chezmoi.RelPath]()
-		targetFiles := make(map[string]fs.DirEntry)
-
 		// Collect files from source state that are in this exact directory
 		// Only consider actual files, not removes or other entry types
+		sourceFiles := make(map[string]chezmoi.SourceStateEntry)
 		for entryRelPath, entry := range sourceStateEntries {
 			// Check if this entry is a direct child of the exact directory
 			if entryRelPath.Dir() == targetRelPath {
-				// Only count actual files in source, not remove entries or templates
-				if sourceStateFile, ok := entry.(*chezmoi.SourceStateFile); ok {
-					if sourceStateFile.Attr().Template {
-						ignoredFiles.Add(entryRelPath)
-					} else {
-						sourceFiles[entryRelPath.Base()] = entry
-					}
+				// Only count actual files in source
+				if _, ok := entry.(*chezmoi.SourceStateFile); ok {
+					sourceFiles[entryRelPath.Base()] = entry
 				}
 			}
 		}
 
 		// Collect files from target directory
+		targetFiles := make(map[string]fs.DirEntry)
 		for _, dirEntry := range dirEntries {
 			name := dirEntry.Name()
 			if name == "." || name == ".." {
@@ -309,7 +302,7 @@ func (c *Config) processExactDirs(
 
 			// Skip files that were already processed in the file re-add loop or
 			// are ignored
-			if processedFiles[entryRelPath] || ignoredFiles.Contains(entryRelPath) {
+			if processedFiles[entryRelPath] {
 				continue
 			}
 
@@ -319,13 +312,23 @@ func (c *Config) processExactDirs(
 					continue
 				}
 
-				// Skip subdirectories that are themselves exact directories
-				// They will be processed separately in their own exact directory processing
-				if dirEntry.IsDir() {
-					childEntry := sourceState.Get(entryRelPath)
-					if childDir, ok := childEntry.(*chezmoi.SourceStateDir); ok && childDir.Attr().Exact {
+				switch sourceStateEntry := sourceState.Get(entryRelPath).(type) {
+				case *chezmoi.SourceStateAbsent:
+					// Do nothing, the file or directory is not in the source
+					// state and is being added.
+				case *chezmoi.SourceStateDir:
+					// Skip subdirectories that are themselves exact_
+					// directories. They will be processed separately in their
+					// own exact_ directory processing.
+					if sourceStateEntry.Attr().Exact {
 						continue
 					}
+				case *chezmoi.SourceStateFile:
+					if sourceStateEntry.Attr().Template {
+						continue
+					}
+				default:
+					continue
 				}
 
 				// This is a new file - add it
