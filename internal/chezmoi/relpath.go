@@ -44,7 +44,7 @@ func NewUntrustedRelPath(relPath string) (RelPath, error) {
 		filepath.IsAbs(relPath) {
 		return RelPath{}, InvalidPathError(relPath)
 	}
-	return NewRelPath(relPath), nil
+	return NewRelPath(path.Clean(relPath)), nil
 }
 
 // AppendSlash returns p with an appended slash.
