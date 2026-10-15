@@ -240,6 +240,10 @@ HEADER:
 		if err != nil {
 			return err
 		}
+		// Ignore entries that resolve to the current directory.
+		if relPath == DotRelPath {
+			continue
+		}
 
 		switch header.Typeflag {
 		case tar.TypeReg, tar.TypeSymlink, tar.TypeDir:

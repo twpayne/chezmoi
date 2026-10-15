@@ -14,6 +14,7 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 	"github.com/twpayne/go-vfs/v5/vfst"
 
+	"chezmoi.io/chezmoi/v2/internal/archivetest"
 	"chezmoi.io/chezmoi/v2/internal/chezmoitest"
 )
 
@@ -453,5 +454,32 @@ func TestIssue4927(t *testing.T) {
 				vfst.TestContentsString("contents of file, count 2\n"),
 			),
 		)
+	})
+}
+
+func TestIssue5240(t *testing.T) {
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tar, err := archivetest.NewTar(map[string]any{
+			"./": map[string]any{},
+		})
+		assert.NoError(t, err)
+		_, err = w.Write(tar)
+		assert.NoError(t, err)
+	}))
+	defer httpServer.Close()
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local": map[string]any{
+				"share/chezmoi": map[string]any{
+					".chezmoiexternal.yaml.tmpl": chezmoitest.JoinLines(
+						`".local/bin":`,
+						`    type: archive`,
+						`    url: `+httpServer.URL+`/archive.tar`,
+					),
+				},
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		assert.NoError(t, newTestConfig(t, fileSystem).execute([]string{"apply"}))
 	})
 }
