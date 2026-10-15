@@ -15,7 +15,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"regexp"
 	"runtime"
 	"strings"
 
@@ -25,6 +24,7 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 const (
@@ -37,7 +37,7 @@ const (
 )
 
 var (
-	checksumRx                  = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
+	checksumRxFn                = chezmoiregexp.MustCompileRegexpOnce(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
 	errUnsupportedUpgradeMethod = errors.New("unsupported upgrade method")
 )
 
@@ -192,7 +192,7 @@ func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease)
 
 	checksums := make(map[string][]byte)
 	for line := range bytes.Lines(data) {
-		m := checksumRx.FindSubmatch(line)
+		m := checksumRxFn().FindSubmatch(line)
 		if m == nil {
 			return nil, fmt.Errorf("%q: cannot parse checksum", line)
 		}

@@ -11,7 +11,6 @@ import (
 	"io/fs"
 	"net"
 	"os"
-	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -21,6 +20,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v5"
 	"golang.org/x/crypto/ripemd160" //nolint:staticcheck
 
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
@@ -73,12 +73,13 @@ const (
 )
 
 var (
-	dirPrefixRx  = regexp.MustCompile(`\A(dot|exact|literal|readonly|private)_`)
-	filePrefixRx = regexp.MustCompile(
+	dirPrefixRxFn  = chezmoiregexp.MustCompileRegexpOnce(`\A(dot|exact|literal|readonly|private)_`)
+	filePrefixRxFn = chezmoiregexp.MustCompileRegexpOnce(
 		`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|readonly|remove|run|symlink)_`,
 	)
-	fileSuffixRx = regexp.MustCompile(`\.(literal|tmpl)\z`)
-	whitespaceRx = regexp.MustCompile(`\s+`)
+	fileSuffixRxFn = chezmoiregexp.MustCompileRegexpOnce(`\.(literal|tmpl)\z`)
+
+	WhitespaceRxFn = chezmoiregexp.MustCompileRegexpOnce(`\s+`)
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
@@ -311,7 +312,7 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 LINE:
 	for line := range bytes.Lines(contents) {
 		line, _, _ = bytes.Cut(bytes.TrimSpace(line), []byte{'#'})
-		fields := whitespaceRx.Split(string(line), -1)
+		fields := WhitespaceRxFn().Split(string(line), -1)
 		if len(fields) < 2 {
 			continue
 		}

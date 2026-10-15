@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 type onepasswordMode string
@@ -31,8 +31,8 @@ const (
 )
 
 var (
-	onepasswordVersionRx  = regexp.MustCompile(`^(\d+\.\d+\.\d+\S*)`)
-	onepasswordMinVersion = semver.Version{Major: 2}
+	onepasswordVersionRxFn = chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+\S*)`)
+	onepasswordMinVersion  = semver.Version{Major: 2}
 )
 
 type onepasswordAccount struct {

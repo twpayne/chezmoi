@@ -7,7 +7,6 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
-	"regexp"
 	"runtime/debug"
 	"strconv"
 	"strings"
@@ -18,6 +17,7 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoierrors"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
@@ -26,7 +26,7 @@ const readSourceStateHookName = "read-source-state"
 var (
 	noArgs = []string(nil)
 
-	deDuplicateErrorRx = regexp.MustCompile(`:\s+`)
+	deDuplicateErrorRxFn = chezmoiregexp.MustCompileRegexpOnce(`:\s+`)
 
 	chezmoiDev = make(map[string]string)
 )
@@ -68,7 +68,7 @@ func Main(versionInfo VersionInfo, args []string) int {
 // deDuplicateError returns err's human-readable string with duplicate
 // components removed.
 func deDuplicateError(err error) string {
-	components := deDuplicateErrorRx.Split(err.Error(), -1)
+	components := deDuplicateErrorRxFn().Split(err.Error(), -1)
 	seenComponents := chezmoiset.NewWithCapacity[string](len(components))
 	uniqueComponents := make([]string, 0, len(components))
 	for _, component := range components {

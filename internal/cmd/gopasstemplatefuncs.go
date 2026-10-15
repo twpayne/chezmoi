@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
@@ -17,6 +16,7 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 type gopassMode string
@@ -30,7 +30,7 @@ var (
 	// chezmoi uses gopass show --password which was added in v1.6.1.
 	gopassMinVersion  = semver.Version{Major: 1, Minor: 6, Patch: 1}
 	gopassVersionArgs = []string{"--version"}
-	gopassVersionRx   = regexp.MustCompile(`gopass\s+(\d+\.\d+\.\d+)`)
+	gopassVersionRxFn = chezmoiregexp.MustCompileRegexpOnce(`gopass\s+(\d+\.\d+\.\d+)`)
 )
 
 type gopassConfig struct {

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -19,6 +18,7 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 type keepassxcMode string
@@ -50,14 +50,16 @@ type keepassxcConfig struct {
 }
 
 var (
-	keepassxcAnyResponseRx                               = regexp.MustCompile(`(?m)\A.*\r\n`)
-	keepassxcEnterPasswordToUnlockDatabaseRx             = regexp.MustCompile(`^Enter password to unlock .*: `)
-	keepassxcMinVersion                                  = semver.Version{Major: 2, Minor: 7, Patch: 0}
-	keepassxcPairRx                                      = regexp.MustCompile(`\A([A-Z]\w*):\s*(.*?)\r?\n\z`)
-	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRx = regexp.MustCompile(
+	keepassxcAnyResponseRxFn                   = chezmoiregexp.MustCompileRegexpOnce(`(?m)\A.*\r\n`)
+	keepassxcEnterPasswordToUnlockDatabaseRxFn = chezmoiregexp.MustCompileRegexpOnce(`^Enter password to unlock .*: `)
+	keepassxcMinVersion                        = semver.Version{Major: 2, Minor: 7, Patch: 0}
+	keepassxcPairRxFn                          = chezmoiregexp.MustCompileRegexpOnce(
+		`\A([A-Z]\w*):\s*(.*?)\r?\n\z`,
+	)
+	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRxFn = chezmoiregexp.MustCompileRegexpOnce(
 		"^Please present or touch your \\S+ to continue\\.\r\n",
 	)
-	keepassxcPromptRx = regexp.MustCompile(`^.*> `)
+	keepassxcPromptRxFn = chezmoiregexp.MustCompileRegexpOnce(`^.*> `)
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
@@ -232,16 +234,16 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		if c.Keepassxc.Prompt {
 			// Expect the password or YubiKey response.
 			response, err := console.Expect(
-				expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRx),
-				expect.Regexp(keepassxcPleasePresentOrTouchYourYubiKeyToContinueRx),
-				expect.Regexp(keepassxcAnyResponseRx),
+				expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRxFn()),
+				expect.Regexp(keepassxcPleasePresentOrTouchYourYubiKeyToContinueRxFn()),
+				expect.Regexp(keepassxcAnyResponseRxFn()),
 			)
 			if err != nil {
 				return nil, err
 			}
 
 			switch {
-			case keepassxcEnterPasswordToUnlockDatabaseRx.MatchString(response):
+			case keepassxcEnterPasswordToUnlockDatabaseRxFn().MatchString(response):
 				// Read the password from the user, if necessary.
 				var password string
 				if c.Keepassxc.password != "" {
@@ -262,7 +264,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 				if _, err := console.ExpectString("\r\n"); err != nil {
 					return nil, err
 				}
-			case keepassxcPleasePresentOrTouchYourYubiKeyToContinueRx.MatchString(response):
+			case keepassxcPleasePresentOrTouchYourYubiKeyToContinueRxFn().MatchString(response):
 				if _, err := console.ExpectString("\r\n"); err != nil {
 					return nil, err
 				}
@@ -276,19 +278,19 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 
 		// Read the response, e.g "Passwords> ", so we can expect it later.
 		response, err := console.Expect(
-			expect.Regexp(keepassxcPromptRx),
-			expect.Regexp(keepassxcAnyResponseRx),
+			expect.Regexp(keepassxcPromptRxFn()),
+			expect.Regexp(keepassxcAnyResponseRxFn()),
 		)
 		if err != nil {
 			return nil, err
 		}
-		if !keepassxcPromptRx.MatchString(response) {
+		if !keepassxcPromptRxFn().MatchString(response) {
 			return nil, fmt.Errorf("%q: unexpected response", response)
 		}
 
 		c.Keepassxc.cmd = cmd
 		c.Keepassxc.console = console
-		c.Keepassxc.promptStr = keepassxcPromptRx.FindString(response)
+		c.Keepassxc.promptStr = keepassxcPromptRxFn().FindString(response)
 	}
 
 	// Build the command line. Strings with spaces and other non-word characters
@@ -329,7 +331,7 @@ func keepassxcParseOutput(output []byte) map[string]string {
 	data := make(map[string]string)
 	var key string
 	for line := range bytes.Lines(output) {
-		switch match := keepassxcPairRx.FindSubmatch(line); {
+		switch match := keepassxcPairRxFn().FindSubmatch(line); {
 		case match != nil:
 			key = string(match[1])
 			data[key] = string(match[2])

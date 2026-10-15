@@ -29,6 +29,7 @@ import (
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoigit"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 // A checkResult is the result of a check.
@@ -85,7 +86,7 @@ type binaryCheck struct {
 	ifNotSet    checkResult
 	ifNotExist  checkResult
 	versionArgs []string
-	versionRx   *regexp.Regexp
+	versionRxFn func() *regexp.Regexp
 	minVersion  *semver.Version
 }
 
@@ -266,7 +267,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultWarning,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^git\s+version\s+(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^git\s+version\s+(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:       "merge-command",
@@ -289,7 +290,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:        "age-command",
 			binaryName:  c.Age.Command,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`(\d+\.\d+\.\d+\S*)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`(\d+\.\d+\.\d+\S*)`),
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 		},
@@ -297,7 +298,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:        "gpg-command",
 			binaryName:  c.GPG.Command,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`(?m)^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`(?m)^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 		},
@@ -305,7 +306,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:        "pinentry-command",
 			binaryName:  c.PINEntry.Command,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^\S+\s+\(pinentry\)\s+(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^\S+\s+\(pinentry\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultInfo,
 			ifNotExist:  checkResultWarning,
 		},
@@ -315,7 +316,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   onepasswordVersionRx,
+			versionRxFn: onepasswordVersionRxFn,
 			minVersion:  &onepasswordMinVersion,
 		},
 		&binaryCheck{
@@ -324,7 +325,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`(?m)^(\d+\.\d+\.\d+)$`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`(?m)^(\d+\.\d+\.\d+)$`),
 		},
 		&binaryCheck{
 			name:        "bitwarden-secrets-command",
@@ -332,7 +333,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`Bitwarden\s+Secrets\s+CLI\s+(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`Bitwarden\s+Secrets\s+CLI\s+(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "dashlane-command",
@@ -340,7 +341,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "doppler-command",
@@ -348,7 +349,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^v(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "gopass-command",
@@ -356,7 +357,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: gopassVersionArgs,
-			versionRx:   gopassVersionRx,
+			versionRxFn: gopassVersionRxFn,
 			minVersion:  &gopassMinVersion,
 		},
 		&binaryCheck{
@@ -365,7 +366,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+)`),
 			minVersion:  &keepassxcMinVersion,
 		},
 		&fileCheck{
@@ -380,7 +381,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
-			versionRx:   regexp.MustCompile(`^Commander\s+Version:\s+(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^Commander\s+Version:\s+(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "lastpass-command",
@@ -388,7 +389,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: lastpassVersionArgs,
-			versionRx:   lastpassVersionRx,
+			versionRxFn: lastpassVersionRxFn,
 			minVersion:  &lastpassMinVersion,
 		},
 		&binaryCheck{
@@ -397,7 +398,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
-			versionRx:   regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`(?m)=\s*v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "passhole-command",
@@ -405,7 +406,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+)`),
 			minVersion:  &passholeMinVersion,
 		},
 		&binaryCheck{
@@ -414,7 +415,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^Proton Pass CLI (\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^Proton Pass CLI (\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "rbw-command",
@@ -422,7 +423,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^rbw\s+(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^rbw\s+(\d+\.\d+\.\d+)`),
 			minVersion:  &rbwMinVersion,
 		},
 		&binaryCheck{
@@ -431,7 +432,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
-			versionRx:   regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
+			versionRxFn: chezmoiregexp.MustCompileRegexpOnce(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:       "secret-command",
@@ -514,8 +515,8 @@ func (c *binaryCheck) Run(config *Config) (checkResult, string) {
 	}
 
 	versionBytes := output
-	if c.versionRx != nil {
-		match := c.versionRx.FindSubmatch(versionBytes)
+	if c.versionRxFn != nil {
+		match := c.versionRxFn().FindSubmatch(versionBytes)
 		if len(match) != 2 {
 			s := fmt.Sprintf("found %s, cannot parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
 			return checkResultWarning, s

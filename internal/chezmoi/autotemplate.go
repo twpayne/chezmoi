@@ -2,9 +2,10 @@ package chezmoi
 
 import (
 	"cmp"
-	"regexp"
 	"slices"
 	"strings"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 // A TemplateVariable is a template variable. It is used instead of a
@@ -14,7 +15,7 @@ type TemplateVariable struct {
 	Components []string
 }
 
-var templateMarkerRx = regexp.MustCompile(`\{{2,}|\}{2,}`)
+var templateMarkerRxFn = chezmoiregexp.MustCompileRegexpOnce(`\{{2,}|\}{2,}`)
 
 // autoTemplate converts contents into a template by escaping template markers
 // and replacing values in data with their keys. It returns the template and if
@@ -24,7 +25,7 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	replacements := false
 
 	// Replace template markers.
-	replacedTemplateMarkersStr := templateMarkerRx.ReplaceAllString(contentsStr, `{{ "$0" }}`)
+	replacedTemplateMarkersStr := templateMarkerRxFn().ReplaceAllString(contentsStr, `{{ "$0" }}`)
 	if replacedTemplateMarkersStr != contentsStr {
 		contentsStr = replacedTemplateMarkersStr
 		replacements = true

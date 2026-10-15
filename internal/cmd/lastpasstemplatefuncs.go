@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
 	"strings"
 	"unicode"
 
@@ -13,14 +12,15 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 var (
 	// chezmoi uses lpass show --json which was added in v1.3.0~6.
-	lastpassMinVersion  = semver.Version{Major: 1, Minor: 3, Patch: 0}
-	lastpassParseNoteRx = regexp.MustCompile(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
-	lastpassVersionArgs = []string{"--version"}
-	lastpassVersionRx   = regexp.MustCompile(`^LastPass CLI v(\d+\.\d+\.\d+)`)
+	lastpassMinVersion    = semver.Version{Major: 1, Minor: 3, Patch: 0}
+	lastpassParseNoteRxFn = chezmoiregexp.MustCompileRegexpOnce(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
+	lastpassVersionArgs   = []string{"--version"}
+	lastpassVersionRxFn   = chezmoiregexp.MustCompileRegexpOnce(`^LastPass CLI v(\d+\.\d+\.\d+)`)
 )
 
 type lastpassConfig struct {
@@ -83,7 +83,7 @@ func lastpassParseNote(note string) map[string]string {
 	result := make(map[string]string)
 	key := ""
 	for line := range strings.Lines(note) {
-		if m := lastpassParseNoteRx.FindStringSubmatch(line); m != nil {
+		if m := lastpassParseNoteRxFn().FindStringSubmatch(line); m != nil {
 			keyComponents := strings.Split(m[1], " ")
 			firstComponentRunes := []rune(keyComponents[0])
 			firstComponentRunes[0] = unicode.ToLower(firstComponentRunes[0])
