@@ -239,3 +239,5 @@ exclude (
 	znkr.io/diff v1.1.1 // requires Go 1.27
 	znkr.io/diff v1.1.2 // requires Go 1.27
 )
+
+replace github.com/Masterminds/semver/v3 => github.com/twpayne/Masterminds-semver/v3 v3.0.0-20261015232208-6461e72e87c2 // https://github.com/Masterminds/semver/pull/325
