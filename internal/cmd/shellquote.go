@@ -1,13 +1,14 @@
 package cmd
 
 import (
-	"regexp"
 	"strings"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
-// nonShellLiteralRx is a regular expression that matches anything that is not a
-// shell literal.
-var nonShellLiteralRx = regexp.MustCompile(`[^+\-./0-9=A-Z_a-z]`)
+// nonShellLiteralRxFn is a regular expression that matches anything that is not
+// a shell literal.
+var nonShellLiteralRxFn = chezmoiregexp.MustCompileRegexpOnce(`[^+\-./0-9=A-Z_a-z]`)
 
 // shellQuote returns s quoted as a shell argument, if necessary.
 func shellQuote(s string) string {
@@ -19,7 +20,7 @@ func shellQuote(s string) string {
 	switch {
 	case s == "":
 		return "''"
-	case nonShellLiteralRx.MatchString(s):
+	case nonShellLiteralRxFn().MatchString(s):
 		result := make([]byte, 0, 2+len(s))
 		inSingleQuotes := false
 		for _, b := range []byte(s) {

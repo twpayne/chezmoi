@@ -28,6 +28,7 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
 type ioregData struct {
@@ -65,9 +66,9 @@ func (e invalidPathTypeError) Error() string {
 // errEmptyPath is returned when a path is empty.
 var errEmptyPath = errors.New("empty path")
 
-// needsQuoteRx matches any string that contains non-printable characters,
+// needsQuoteRxFn matches any string that contains non-printable characters,
 // double quotes, or a backslash.
-var needsQuoteRx = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
+var needsQuoteRxFn = chezmoiregexp.MustCompileRegexpOnce(`[^\x21\x23-\x5b\x5d-\x7e]`)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
 	var builder strings.Builder
@@ -844,7 +845,7 @@ func needsQuote(s string) bool {
 	if s == "" {
 		return true
 	}
-	if needsQuoteRx.MatchString(s) {
+	if needsQuoteRxFn().MatchString(s) {
 		return true
 	}
 	if _, err := strconv.ParseBool(s); err == nil {

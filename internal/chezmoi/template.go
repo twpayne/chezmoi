@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"maps"
-	"regexp"
 	"strconv"
 	"strings"
 	"text/template"
@@ -15,9 +14,11 @@ import (
 	"github.com/mitchellh/copystructure"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
+
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
-var formatIndentRx = regexp.MustCompile(`[ \t]*`)
+var formatIndentRxFn = chezmoiregexp.MustCompileRegexpOnce(`[ \t]*`)
 
 // A Template extends [text/template.Template] with support for directives.
 type Template struct {
@@ -46,7 +47,7 @@ func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template
 	}
 	funcs := options.Funcs
 	if options.FormatIndent != "" {
-		if !formatIndentRx.MatchString(options.FormatIndent) {
+		if !formatIndentRxFn().MatchString(options.FormatIndent) {
 			return nil, fmt.Errorf("%s: invalid format-indent", options.FormatIndent)
 		}
 		funcs = maps.Clone(funcs)
@@ -137,14 +138,14 @@ func (t *Template) ExecuteString(data any) (string, error) {
 // and returns data with the lines containing directives removed. The lines are
 // removed so that any delimiters do not break template parsing.
 func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) ([]byte, error) {
-	directiveMatches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
+	directiveMatches := templateDirectiveRxFn().FindAllSubmatchIndex(data, -1)
 	if directiveMatches == nil {
 		return data, nil
 	}
 
 	// Parse options from directives.
 	for _, directiveMatch := range directiveMatches {
-		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
+		keyValuePairMatches := templateDirectiveKeyValuePairRxFn().FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
 		for _, keyValuePairMatch := range keyValuePairMatches {
 			key := string(keyValuePairMatch[1])
 			value := maybeUnquote(string(keyValuePairMatch[2]))
@@ -218,7 +219,7 @@ func replaceLineEndings(s, lineEnding string) string {
 	if lineEnding == "" {
 		return s
 	}
-	return lineEndingRx.ReplaceAllString(s, lineEnding)
+	return lineEndingRxFn().ReplaceAllString(s, lineEnding)
 }
 
 // stringWidth returns the width of s. s is assumed to contain only space and

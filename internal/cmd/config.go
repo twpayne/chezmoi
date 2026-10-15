@@ -20,7 +20,6 @@ import (
 	"path"
 	"path/filepath"
 	"reflect"
-	"regexp"
 	"runtime"
 	"slices"
 	"strconv"
@@ -351,8 +350,6 @@ var (
 		Command: "gpg",
 		Suffix:  ".asc",
 	}
-
-	whitespaceRx = regexp.MustCompile(`\s+`)
 
 	commonFlagCompletionFuncs = map[string]func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
 		"exclude": chezmoi.EntryTypeSetFlagCompletionFunc,
@@ -1627,7 +1624,7 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 	// that it is a full shell command to be executed via the user's shell.
 	// Otherwise, execute it directly.
 	var pagerCmd *exec.Cmd
-	if runtime.GOOS != "windows" && whitespaceRx.MatchString(pager) {
+	if runtime.GOOS != "windows" && chezmoi.WhitespaceRxFn().MatchString(pager) {
 		shellCommand, _ := shell.CurrentUserShell()
 		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
 		if err != nil {
@@ -3367,7 +3364,7 @@ func parseCommand(command string, args []string) (string, []string, error) {
 	}
 
 	// Otherwise, if the command contains spaces, parse it as a shell command.
-	if whitespaceRx.MatchString(command) {
+	if chezmoi.WhitespaceRxFn().MatchString(command) {
 		var words []*syntax.Word
 		for word, err := range syntax.NewParser().WordsSeq(strings.NewReader(command)) {
 			if err != nil {

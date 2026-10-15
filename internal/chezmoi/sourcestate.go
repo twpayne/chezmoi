@@ -21,7 +21,6 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
-	"regexp"
 	"runtime"
 	"slices"
 	"strings"
@@ -36,6 +35,7 @@ import (
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoierrors"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
+	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 	"chezmoi.io/chezmoi/v2/internal/chezmoiset"
 )
 
@@ -108,11 +108,11 @@ func (t *ExternalType) UnmarshalText(data []byte) error {
 }
 
 var (
-	commentRx                       = regexp.MustCompile(`(?:\A|\s+)#.*(?:\r?\n)?$`)
-	lineEndingRx                    = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
-	modifyTemplateRx                = regexp.MustCompile(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
-	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
-	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
+	commentRxFn                       = chezmoiregexp.MustCompileRegexpOnce(`(?:\A|\s+)#.*(?:\r?\n)?$`)
+	lineEndingRxFn                    = chezmoiregexp.MustCompileRegexpOnce(`(?m)(?:\r\n|\r|\n)`)
+	modifyTemplateRxFn                = chezmoiregexp.MustCompileRegexpOnce(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
+	templateDirectiveRxFn             = chezmoiregexp.MustCompileRegexpOnce(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
+	templateDirectiveKeyValuePairRxFn = chezmoiregexp.MustCompileRegexpOnce(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 
 	// AppleDouble constants.
 	appleDoubleNamePrefix     = "._"
@@ -1605,7 +1605,7 @@ func (s *SourceState) addPatterns(patternSet *PatternSet, sourceAbsPath AbsPath,
 	lineNumber := 0
 	for line := range bytes.Lines(data) {
 		lineNumber++
-		line = commentRx.ReplaceAll(line, nil)
+		line = commentRxFn().ReplaceAll(line, nil)
 		line = bytes.TrimSpace(line)
 		if len(line) == 0 {
 			continue
@@ -2095,7 +2095,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 
 			// If the modifier contains chezmoi:modify-template then execute it
 			// as a template.
-			if matches := modifyTemplateRx.FindAllSubmatchIndex(modifierContents, -1); matches != nil {
+			if matches := modifyTemplateRxFn().FindAllSubmatchIndex(modifierContents, -1); matches != nil {
 				sourceFile := sourceRelPath.String()
 				templateContents := removeMatches(modifierContents, matches)
 				var tmpl *Template
