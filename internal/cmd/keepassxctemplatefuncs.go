@@ -70,14 +70,12 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 	}
 
 	switch c.Keepassxc.Mode {
-	case keepassxcModeCachePassword:
-		// In cache password mode use --stdout to read the attachment data directly.
-		return string(mustValue(c.keepassxcOutput("attachment-export", "--quiet", "--stdout", entry, name)))
-	case keepassxcModeOpen:
-		// In open mode write the attachment data to a temporary file.
+	case keepassxcModeCachePassword, keepassxcModeOpen:
+		// Write the attachment data to a temporary file as the keepassxc-cli
+		// prompt corrupts stdout.
 		tempDir := mustValue(c.tempDir("chezmoi-keepassxc"))
 		tempFilename := tempDir.JoinString("attachment-" + strconv.FormatInt(time.Now().UnixNano(), 10)).String()
-		_ = mustValue(c.keepassxcOutputOpen("attachment-export", "--quiet", entry, name, tempFilename))
+		_ = mustValue(c.keepassxcOutput("attachment-export", "--quiet", entry, name, tempFilename))
 		data := mustValue(os.ReadFile(tempFilename))
 		must(os.Remove(tempFilename))
 		return string(data)

@@ -1,0 +1,45 @@
+[windows] skip
+chmod 755 bin/keepassxc-cli
+
+# test keepassxcAttachment template function
+stdin golden/input
+exec chezmoi execute-template --no-tty '{{ keepassxcAttachment "example.com" "attachment" }}'
+stdout '# contents of attachment'
+
+-- bin/keepassxc-cli --
+#!/bin/sh
+
+[ "$1" = "attachment-export" ] || exit 1
+shift
+
+[ "$1" = "--key-file" ] || exit 1
+[ "$2" = "/secrets.key" ] || exit 1
+shift 2
+
+[ "$1" = "/secrets.kdbx" ] || exit 1
+database="$1"
+shift
+
+[ "$1" = "--quiet" ] || exit 1
+shift
+
+[ "$1" = "example.com" ] || exit 1
+[ "$2" = "attachment" ] || exit 1
+entry="$1"
+attachment="$2"
+output="$3"
+shift 3
+
+echo -n "Enter password to unlock $database: "
+read password
+echo
+[ "$password" = "examplepassword" ] || exit 1
+
+echo "# contents of attachment" > "$output"
+echo "Successfully exported attachment $attachment of entry $entry to $output."
+-- golden/input --
+examplepassword
+-- home/user/.config/chezmoi/chezmoi.toml --
+[keepassxc]
+    args = ["--key-file", "/secrets.key"]
+    database = "/secrets.kdbx"

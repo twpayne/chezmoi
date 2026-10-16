@@ -1,10 +1,5 @@
 mockcommand bin/keepassxc-cli
 
-# test keepassxcAttachment template function
-stdin $HOME/input
-exec chezmoi execute-template --no-tty '{{ keepassxcAttachment "example.com" "attachment" }}'
-stdout '# contents of attachment'
-
 # test keepassxcAttribute template function
 stdin $HOME/input
 exec chezmoi execute-template --no-tty '{{ keepassxcAttribute "example.com" "host-name" }}'
@@ -19,9 +14,6 @@ stdout examplelogin/examplepassword$
 responses:
 - args: '--version'
   response: '2.7.0'
-- args: 'attachment-export --key-file /secrets.key /secrets.kdbx --quiet --stdout example.com attachment'
-  windowsArgs: 'attachment-export --key-file /secrets.key C:/secrets.kdbx --quiet --stdout example.com attachment'
-  response: '# contents of attachment'
 - args: 'show --key-file /secrets.key /secrets.kdbx --quiet --show-protected example.com'
   windowsArgs: 'show --key-file /secrets.key C:/secrets.kdbx --quiet --show-protected example.com'
   response: |
