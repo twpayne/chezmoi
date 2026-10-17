@@ -78,7 +78,7 @@ linters:
   - depguard
   - dupl
   - exhaustive
-  - exhaustruct
+  - exhaustruct_v5
   - funlen
   - ginkgolinter
   - gochecknoglobals
