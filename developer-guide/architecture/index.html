@@ -11531,8 +11531,8 @@ equivalent entry should be in the target state, abstracted by the
 <code>TargetStateEntry</code> interface.</p>
 <p>Actual target state entries include <code>TargetStateFile</code> structs, representing a
 file with contents and permissions, <code>TargetStateDir</code> structs, representing a
-directory, <code>TargetStateSymlink</code> for symlinks, <code>TargetStateRemove</code> for entries
-that should be removed, and <code>TargetStateScript</code> for scripts that should be run.</p>
+directory, <code>TargetStateSymlink</code> for symlinks, <code>TargetStateAbsent</code> for entries
+that should be absent, and <code>TargetStateScript</code> for scripts that should be run.</p>
 <p>The actual state of an entry in the target state is abstracted via the
 <code>ActualStateEntry</code> interface, with <code>ActualStateAbsent</code>, <code>ActualStateDir</code>,
 <code>ActualStateFile</code>, <code>ActualStateSymlink</code> structs implementing this interface.</p>
