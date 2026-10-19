@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -63,6 +64,8 @@ func (c *Config) newReAddCmd() *cobra.Command {
 }
 
 func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+	ctx := cmd.Context()
+
 	var targetRelPaths []chezmoi.RelPath
 	sourceStateEntries := make(map[chezmoi.RelPath]chezmoi.SourceStateEntry)
 	if len(args) == 0 {
@@ -200,7 +203,7 @@ TARGET_REL_PATH:
 		destAbsPathInfos := map[chezmoi.AbsPath]fs.FileInfo{
 			destAbsPath: destAbsPathInfo,
 		}
-		if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
+		if err := sourceState.Add(ctx, c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
 			Encrypt:         sourceStateFile.Attr().Encrypted,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
 			Errorf:          c.errorf,
@@ -214,7 +217,7 @@ TARGET_REL_PATH:
 	}
 
 	// Process exact directories - add new files and remove deleted files
-	return c.processExactDirs(sourceState, sourceStateEntries, processedFiles)
+	return c.processExactDirs(ctx, sourceState, sourceStateEntries, processedFiles)
 }
 
 // processExactDirs handles exact directory synchronization during re-add.
@@ -223,6 +226,7 @@ TARGET_REL_PATH:
 // processedFiles contains files that were already re-added in the file loop,
 // outside of the exact directory logic, to avoid double-processing them.
 func (c *Config) processExactDirs(
+	ctx context.Context,
 	sourceState *chezmoi.SourceState,
 	sourceStateEntries map[chezmoi.RelPath]chezmoi.SourceStateEntry,
 	processedFiles map[chezmoi.RelPath]bool,
@@ -344,10 +348,17 @@ func (c *Config) processExactDirs(
 
 		// Add new files if any were found
 		if len(destAbsPathInfos) > 0 {
-			if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-				Filter:     c.reAdd.filter,
-				PreAddFunc: c.defaultPreAddFunc,
-			}); err != nil {
+			if err := sourceState.Add(
+				ctx,
+				c.sourceSystem,
+				c.persistentState,
+				c.destSystem,
+				destAbsPathInfos,
+				&chezmoi.AddOptions{
+					Filter:     c.reAdd.filter,
+					PreAddFunc: c.defaultPreAddFunc,
+				},
+			); err != nil {
 				return err
 			}
 		}

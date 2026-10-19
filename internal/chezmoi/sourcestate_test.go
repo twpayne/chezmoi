@@ -566,7 +566,7 @@ func TestSourceStateAdd(t *testing.T) {
 				for _, destAbsPath := range tc.destAbsPaths {
 					assert.NoError(t, s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil))
 				}
-				assert.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions))
+				assert.NoError(t, s.Add(t.Context(), system, persistentState, system, destAbsPathInfos, &tc.addOptions))
 
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
@@ -622,7 +622,7 @@ func TestSourceStateAddInExternal(t *testing.T) {
 		destAbsPathInfos := map[AbsPath]fs.FileInfo{
 			destAbsPath: fileInfo,
 		}
-		assert.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &AddOptions{
+		assert.NoError(t, s.Add(t.Context(), system, persistentState, system, destAbsPathInfos, &AddOptions{
 			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
 

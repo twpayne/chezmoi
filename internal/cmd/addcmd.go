@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -8,6 +10,8 @@ import (
 	"os"
 	"slices"
 
+	betterleaksreport "github.com/betterleaks/betterleaks/v2/report"
+	betterleakssources "github.com/betterleaks/betterleaks/v2/sources"
 	"github.com/spf13/cobra"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
@@ -88,6 +92,7 @@ func (c *Config) defaultOnIgnoreFunc(targetRelPath chezmoi.RelPath) {
 }
 
 func (c *Config) defaultPreAddFunc(
+	ctx context.Context,
 	targetRelPath chezmoi.RelPath,
 	fileInfo fs.FileInfo,
 	sourceStateEntry chezmoi.SourceStateEntry,
@@ -103,15 +108,22 @@ func (c *Config) defaultPreAddFunc(
 		if err != nil {
 			return err
 		}
-		betterleaksDetector, err := c.getBetterleaksDetector()
+		betterleaksScanner, err := c.getBetterleaksScanner()
 		if err != nil {
 			return err
 		}
-		findings := betterleaksDetector.DetectString(string(content))
-		for _, finding := range findings {
-			c.errorf("%s:%d: %s\n", absPath, finding.StartLine, finding.Description)
+		source := &betterleakssources.Reader{
+			Content: bytes.NewReader(content),
 		}
-		if !c.force && c.Add.Secrets.String() == severityError && len(findings) > 0 {
+		findings := 0
+		if _, err := betterleaksScanner.Scan(ctx, source, func(finding betterleaksreport.Finding) error {
+			findings++
+			c.errorf("%s:%d: %s\n", absPath, finding.Location.StartLine, finding.Description)
+			return nil
+		}); err != nil {
+			return err
+		}
+		if !c.force && c.Add.Secrets.String() == severityError && findings > 0 {
 			return chezmoi.ExitCodeError(1)
 		}
 	}
@@ -257,6 +269,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	}
 
 	return sourceState.Add(
+		cmd.Context(),
 		c.sourceSystem,
 		c.persistentState,
 		c.destSystem,
