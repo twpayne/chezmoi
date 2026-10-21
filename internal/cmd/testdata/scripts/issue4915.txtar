@@ -1,0 +1,13 @@
+skip 'test fails due to bug' # FIXME
+
+# test that chezmoi apply returns an inconsistent state error when an external conflicts with a symlink
+! exec chezmoi apply
+stderr 'inconsistent state'
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+["data/ext/work_dir/cz-test"]
+    type = "git-repo"
+    url = "https://github.com/chezmoi/dotfiles.git"
+-- home/user/.local/share/chezmoi/data/symlink_ext --
+# symlink target
+-- home/user/data/ext/work_dir/.keep --

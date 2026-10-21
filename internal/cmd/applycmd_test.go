@@ -358,6 +358,26 @@ func TestIssue3703(t *testing.T) {
 	})
 }
 
+func TestIssue4915(t *testing.T) {
+	t.Skip("test fails due to bug") // FIXME https://github.com/twpayne/chezmoi/issues/4915
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
+			".local/share/chezmoi": map[string]any{
+				".chezmoiexternal.toml.tmpl": chezmoitest.JoinLines(
+					`["data/ext/work_dir/cz-test"]`,
+					`    type = "git-repo"`,
+					`    url = "https://github.com/chezmoi/dotfiles.git"`,
+				),
+				"data/symlink_ext": "# symlink target",
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		err := newTestConfig(t, fileSystem).execute([]string{"apply"})
+		assert.Error(t, err)
+		assert.Equal(t, "data/ext: inconsistent state", err.Error())
+	})
+}
+
 func TestIssue4927(t *testing.T) {
 	// httpServer returns a different file contents every time.
 	var count atomic.Int64
