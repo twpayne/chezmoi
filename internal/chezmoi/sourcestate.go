@@ -1375,15 +1375,19 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					// os/exec.LookupPath and therefore depends on the state of
 					// $PATH when os/exec.Command is called, not the state of
 					// $PATH when os/exec.Cmd.{Run,Start} is called.
-					cmdFunc: sync.OnceValue(func() *exec.Cmd {
+					cmdFunc: sync.OnceValues(func() (*exec.Cmd, error) {
 						args := []string{"clone"}
 						args = append(args, external.Clone.Args...)
-						args = append(args, external.URL, destAbsPath.String())
+						rawDestAbsPath, err := s.system.RawPath(destAbsPath)
+						if err != nil {
+							return nil, err
+						}
+						args = append(args, external.URL, rawDestAbsPath.String())
 						cmd := exec.Command("git", args...)
 						cmd.Stdin = os.Stdin
 						cmd.Stdout = os.Stdout
 						cmd.Stderr = os.Stderr
-						return cmd
+						return cmd, err
 					}),
 					origin:        external,
 					forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
@@ -1403,7 +1407,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					// os/exec.LookupPath and therefore depends on the state of
 					// $PATH when os/exec.Command is called, not the state of
 					// $PATH when os/exec.Cmd.{Run,Start} is called.
-					cmdFunc: sync.OnceValue(func() *exec.Cmd {
+					cmdFunc: sync.OnceValues(func() (*exec.Cmd, error) {
 						args := []string{"pull"}
 						args = append(args, external.Pull.Args...)
 						cmd := exec.Command("git", args...)
@@ -1411,7 +1415,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 						cmd.Stdin = os.Stdin
 						cmd.Stdout = os.Stdout
 						cmd.Stderr = os.Stderr
-						return cmd
+						return cmd, nil
 					}),
 					origin:        external,
 					forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,

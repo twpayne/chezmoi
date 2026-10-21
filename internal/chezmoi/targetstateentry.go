@@ -27,7 +27,7 @@ type TargetStateEntry interface {
 // A TargetStateModifyDirWithCmd represents running a command that modifies
 // a directory.
 type TargetStateModifyDirWithCmd struct {
-	cmdFunc       func() *exec.Cmd
+	cmdFunc       func() (*exec.Cmd, error)
 	sourceAttr    SourceAttr
 	refreshPeriod Duration
 	forceRefresh  bool
@@ -99,7 +99,11 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 	}
 
 	runAt := time.Now().UTC()
-	if err := system.RunCmd(t.cmdFunc()); err != nil {
+	cmd, err := t.cmdFunc()
+	if err != nil {
+		return false, err
+	}
+	if err := system.RunCmd(cmd); err != nil {
 		return false, fmt.Errorf("%s: %w", actualStateEntry.Path(), err)
 	}
 
