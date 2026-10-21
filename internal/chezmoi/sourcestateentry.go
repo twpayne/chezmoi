@@ -39,7 +39,7 @@ type SourceStateEntry interface {
 // A SourceStateCommand represents a command that should be run.
 type SourceStateCommand struct {
 	origin        SourceStateOrigin
-	cmdFunc       func() *exec.Cmd
+	cmdFunc       func() (*exec.Cmd, error)
 	sourceAttr    SourceAttr
 	refreshPeriod Duration
 	forceRefresh  bool
@@ -96,8 +96,12 @@ func (s *SourceStateCommand) Evaluate() error {
 
 // LogValue implements log/slog.LogValuer.LogValue.
 func (s *SourceStateCommand) LogValue() slog.Value {
+	cmd, err := s.cmdFunc()
+	if err != nil {
+		return slog.AnyValue(err)
+	}
 	return slog.GroupValue(
-		slog.Any("cmd", chezmoilog.OSExecCmdLogValuer{Cmd: s.cmdFunc()}),
+		slog.Any("cmd", chezmoilog.OSExecCmdLogValuer{Cmd: cmd}),
 		slog.String("origin", s.origin.OriginString()),
 	)
 }
