@@ -391,6 +391,10 @@ func (c *Config) keepassxcBuiltinExtractValues(
 	if err != nil {
 		panic(err)
 	}
+	rootData := keepassxcBuiltinSearchEntry(db, "", db.Content.Root.Groups[0].Entries, entry, mapper)
+	if rootData != nil {
+		return rootData
+	}
 	return keepassxcBuiltinBuildCache(db, "", db.Content.Root.Groups[0].Groups, nil, entry, mapper)
 }
 
@@ -405,23 +409,15 @@ func keepassxcBuiltinBuildCache(
 	mapper func(db *gokeepasslib.Database, entry gokeepasslib.Entry) map[string]string,
 ) map[string]string {
 	for _, group := range groups {
-		if len(group.Entries) > 0 {
-			for _, groupEntry := range group.Entries {
-				var elements []string
-				if path != "" {
-					elements = append(elements, path)
-				}
-				elements = append(elements, group.Name, groupEntry.GetTitle())
-				key := strings.Join(elements, "/")
-				if entry == key {
-					return mapper(db, groupEntry)
-				}
-			}
+		prefix := strings.TrimPrefix(fmt.Sprintf("%s/%s", path, group.Name), "/")
+		groupData := keepassxcBuiltinSearchEntry(db, prefix, group.Entries, entry, mapper)
+		if groupData != nil {
+			return groupData
 		}
 		if len(group.Groups) > 0 {
 			mapData = keepassxcBuiltinBuildCache(
 				db,
-				strings.TrimPrefix(fmt.Sprintf("%s/%s", path, group.Name), "/"),
+				prefix,
 				group.Groups,
 				mapData,
 				entry,
@@ -433,6 +429,30 @@ func keepassxcBuiltinBuildCache(
 		}
 	}
 	return map[string]string{}
+}
+
+// keepassxcBuiltinSearchEntry search for an entry in a list of entries.
+// prefix refers to the path of the group whose entries are currently
+// being searched. For root entries, the prefix is empty ("") because
+// the name of the root group is not part of the path.
+func keepassxcBuiltinSearchEntry(
+	db *gokeepasslib.Database,
+	prefix string,
+	groupEntries []gokeepasslib.Entry,
+	entry string,
+	mapper func(db *gokeepasslib.Database, entry gokeepasslib.Entry) map[string]string,
+) map[string]string {
+	for _, groupEntry := range groupEntries {
+		key := groupEntry.GetTitle()
+		if prefix != "" {
+			key = prefix + "/" + key
+		}
+		if entry == key {
+			return mapper(db, groupEntry)
+		}
+	}
+	// entry not found in list
+	return nil
 }
 
 // keepassxcBuiltinMapValueCache map builtin entries for values and attributes.

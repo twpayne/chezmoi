@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/alecthomas/assert/v2"
+	"github.com/tobischo/gokeepasslib/v3"
 	"github.com/twpayne/go-vfs/v5"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
@@ -81,6 +82,13 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	// The following test data includes spaces and slashes to test quoting.
 	database := filepath.Join(tempDir, "KeePassXC Passwords.kdbx")
 	databasePassword := "test / database / password"
+
+	rootEntryName := "root entry"
+	rootEntryUsername := "root / username"
+	rootEntryPassword := "root / password"
+	rootAttachmentName := "root / attachment name"
+	rootAttachmentData := "root / attachment data"
+
 	groupName := "test group"
 	entryName := groupName + "/test entry"
 	entryUsername := "test / username"
@@ -105,6 +113,18 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 	dbCreateCmd.Stderr = os.Stderr
 	assert.NoError(t, dbCreateCmd.Run())
 
+	rootName := rootGroupName(t, database, databasePassword)
+
+	createKeepassEntry(t, command, tempDir, keepassEntry{
+		database:         database,
+		databasePassword: databasePassword,
+		groupName:        "",
+		entryName:        rootEntryName,
+		entryUsername:    rootEntryUsername,
+		entryPassword:    rootEntryPassword,
+		attachmentName:   rootAttachmentName,
+		attachmentData:   rootAttachmentData,
+	})
 	createKeepassEntry(t, command, tempDir, keepassEntry{
 		database:         database,
 		databasePassword: databasePassword,
@@ -139,6 +159,10 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 				config.Keepassxc.Mode = mode
 				config.Keepassxc.Prompt = true
 				config.Keepassxc.password = databasePassword
+				assert.Equal(t, rootEntryPassword, config.keepassxcTemplateFunc(rootEntryName)["Password"])
+				assert.Equal(t, rootEntryUsername, config.keepassxcAttributeTemplateFunc(rootEntryName, "UserName"))
+				assert.Equal(t, rootAttachmentData, config.keepassxcAttachmentTemplateFunc(rootEntryName, rootAttachmentName))
+
 				assert.Equal(t, entryPassword, config.keepassxcTemplateFunc(entryName)["Password"])
 				assert.Equal(t, entryUsername, config.keepassxcAttributeTemplateFunc(entryName, "UserName"))
 				assert.Equal(t, attachmentData, config.keepassxcAttachmentTemplateFunc(entryName, attachmentName))
@@ -160,6 +184,16 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 				config.Keepassxc.Prompt = true
 				config.Keepassxc.password = "incorrect-" + databasePassword
 				assert.Panics(t, func() {
+					config.keepassxcTemplateFunc(rootEntryName)
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttributeTemplateFunc(rootEntryName, "UserName")
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttachmentTemplateFunc(rootEntryName, rootAttachmentName)
+				})
+
+				assert.Panics(t, func() {
 					config.keepassxcTemplateFunc(entryName)
 				})
 				assert.Panics(t, func() {
@@ -178,6 +212,16 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 				config.Keepassxc.Prompt = true
 				config.Keepassxc.password = databasePassword
 				assert.Panics(t, func() {
+					config.keepassxcTemplateFunc(rootEntryName)
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttributeTemplateFunc(rootEntryName, "UserName")
+				})
+				assert.Panics(t, func() {
+					config.keepassxcAttachmentTemplateFunc(rootEntryName, rootAttachmentName)
+				})
+
+				assert.Panics(t, func() {
 					config.keepassxcTemplateFunc(entryName)
 				})
 				assert.Panics(t, func() {
@@ -187,6 +231,19 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 					config.keepassxcAttachmentTemplateFunc(entryName, attachmentName)
 				})
 			})
+
+			if mode == keepassxcModeBuiltin {
+				// root name is not part of the path and an empty map is expected
+				t.Run("incorrect_root_path", func(t *testing.T) {
+					config := newTestConfig(t, vfs.OSFS)
+					defer func() { assert.NoError(t, config.keepassxcClose()) }()
+					config.Keepassxc.Database = chezmoi.NewAbsPath(database)
+					config.Keepassxc.Mode = mode
+					config.Keepassxc.Prompt = true
+					config.Keepassxc.password = databasePassword
+					assert.Equal(t, map[string]string{}, config.keepassxcTemplateFunc(rootName+"/"+rootEntryName))
+				})
+			}
 		})
 	}
 }
@@ -194,14 +251,16 @@ func TestKeepassxcTemplateFuncs(t *testing.T) {
 func createKeepassEntry(t *testing.T, command, tempDir string, kpe keepassEntry) {
 	t.Helper()
 	// Create nested groups in the database.
-	groupPath := strings.Split(kpe.groupName, "/")
-	for i := range groupPath {
-		name := strings.Join(groupPath[0:i+1], "/")
-		mkdirCmd := exec.Command(command, "mkdir", kpe.database, name)
-		mkdirCmd.Stdin = strings.NewReader(kpe.databasePassword + "\n")
-		mkdirCmd.Stdout = os.Stdout
-		mkdirCmd.Stderr = os.Stderr
-		assert.NoError(t, mkdirCmd.Run())
+	if kpe.groupName != "" {
+		groupPath := strings.Split(kpe.groupName, "/")
+		for i := range groupPath {
+			name := strings.Join(groupPath[0:i+1], "/")
+			mkdirCmd := exec.Command(command, "mkdir", kpe.database, name)
+			mkdirCmd.Stdin = strings.NewReader(kpe.databasePassword + "\n")
+			mkdirCmd.Stdout = os.Stdout
+			mkdirCmd.Stderr = os.Stderr
+			assert.NoError(t, mkdirCmd.Run())
+		}
 	}
 	// Create an entry in the database.
 	addCmd := exec.Command(command, "add", kpe.database, kpe.entryName, "--username", kpe.entryUsername, "--password-prompt")
@@ -228,4 +287,16 @@ func createKeepassEntry(t *testing.T, command, tempDir string, kpe keepassEntry)
 	attachmentImportCmd.Stdout = os.Stdout
 	attachmentImportCmd.Stderr = os.Stderr
 	assert.NoError(t, attachmentImportCmd.Run())
+}
+
+func rootGroupName(t *testing.T, path, password string) string {
+	t.Helper()
+	file, err := os.Open(path)
+	assert.NoError(t, err)
+	defer func() { _ = file.Close() }()
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials(password)
+	assert.NoError(t, gokeepasslib.NewDecoder(file).Decode(db))
+	return db.Content.Root.Groups[0].Name
 }
