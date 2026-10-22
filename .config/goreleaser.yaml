@@ -65,8 +65,8 @@ builds:
   - riscv64
   - s390x
   goarm:
-  - '5,softfloat'
-  - '6,hardfloat'
+  - 5,softfloat
+  - 6,hardfloat
   ldflags:
   - -s
   - -w
@@ -173,12 +173,12 @@ nfpms:
   - rpm
   bindir: /usr/bin
   msix:
-    publisher: 'CN=chezmoi.io'
+    publisher: CN=chezmoi.io
     properties:
       logo: ./assets/images/logo-256px-square.png
     applications:
-      - id: chezmoi
-        executable: chezmoi.exe
+    - id: chezmoi
+      executable: chezmoi.exe
   overrides:
     deb:
       file_name_template: >-
@@ -292,7 +292,7 @@ scoops:
 signs:
 - cmd: cosign
   stdin: '{{ .Env.COSIGN_PWD }}'
-  signature: '${artifact}.sigstore.json'
+  signature: ${artifact}.sigstore.json
   args:
   - sign-blob
   - --key=assets/cosign/cosign.key
