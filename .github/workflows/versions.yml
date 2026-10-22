@@ -63,7 +63,3 @@ jobs:
         syft-version=${{ env.SYFT_VERSION }}
         uv-version=${{ env.UV_VERSION }}
         EOF
-    - name: get
-      id: get
-      run: |-
-        echo "GO_VERSION=${{ steps.set.outputs.go-version }}"
