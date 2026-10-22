@@ -5,6 +5,7 @@ classifiers = ["Private :: Do Not Upload"]
 requires-python = ">=3.14"
 license = { text = "MIT" }
 dependencies = [
+    "certifi>=2026.10.19",
     "idna>=3.15",
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.7.7",
@@ -58,3 +59,4 @@ quote-style = "single"
 
 [tool.uv]
 exclude-newer = "5 days"
+exclude-newer-package.certifi = false
