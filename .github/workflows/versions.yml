@@ -1,0 +1,69 @@
+name: versions
+on:
+  workflow_call:
+    outputs:
+      age-version:
+        value: ${{ jobs.build.outputs.age-version }}
+      chocolately-version:
+        value: ${{ jobs.build.outputs.chocolatey-version }}
+      cosign-version:
+        value: ${{ jobs.build.outputs.cosign-version }}
+      go-version:
+        value: ${{ jobs.build.outputs.go-version }}
+      golangci-lint-version:
+        value: ${{ jobs.build.outputs.golangci-lint-version }}
+      goreleaser-version:
+        value: ${{ jobs.build.outputs.goreleaser-version }}
+      python-version:
+        value: ${{ jobs.build.outputs.python-version }}
+      rage-version:
+        value: ${{ jobs.build.outputs.rage-version }}
+      syft-version:
+        value: ${{ jobs.build.outputs.syft-version }}
+      uv-version:
+        value: ${{ jobs.build.outputs.uv-version }}
+env:
+  AGE_VERSION: 1.3.2 # https://github.com/FiloSottile/age/releases
+  CHOCOLATEY_VERSION: 2.7.4 # https://github.com/chocolatey/choco/releases
+  COSIGN_VERSION: 3.1.4 # https://github.com/sigstore/cosign/releases
+  GO_VERSION: 1.27.3 # https://go.dev/doc/devel/release
+  GOLANGCI_LINT_VERSION: 2.15.0 # https://github.com/golangci/golangci-lint/releases
+  GORELEASER_VERSION: 2.18.3 # https://github.com/goreleaser/goreleaser/releases
+  PYTHON_VERSION: '3.14' # https://www.python.org/downloads/
+  RAGE_VERSION: 0.12.1 # https://github.com/str4d/rage/releases
+  SYFT_VERSION: 1.55.0 # https://github.com/anchore/syft/releases
+  UV_VERSION: 0.13.5 # https://github.com/astral-sh/uv/releases
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    outputs:
+      age-version: ${{ steps.set.outputs.age-version }}
+      chocolatey-version: ${{ steps.set.outputs.chocolatey-version }}
+      cosign-version: ${{ steps.set.outputs.cosign-version }}
+      go-version: ${{ steps.set.outputs.go-version }}
+      golangci-lint-version: ${{ steps.set.outputs.golangci-lint-version }}
+      goreleaser-version: ${{ steps.set.outputs.goreleaser-version }}
+      python-version: ${{ steps.set.outputs.python-version }}
+      rage-version: ${{ steps.set.outputs.rage-version }}
+      syft-version: ${{ steps.set.outputs.syft-version }}
+      uv-version: ${{ steps.set.outputs.uv-version }}
+    steps:
+    - name: set
+      id: set
+      run: |
+        cat <<EOF >> "$GITHUB_OUTPUT"
+        age-version=${{ env.AGE_VERSION }}
+        chocolatey-version=${{ env.CHOCOLATEY_VERSION }}
+        cosign-version=${{ env.COSIGN_VERSION }}
+        go-version=${{ env.GO_VERSION }}
+        golangci-lint-version=${{ env.GOLANGCI_LINT_VERSION }}
+        goreleaser-version=${{ env.GORELEASER_VERSION }}
+        python-version=${{ env.PYTHON_VERSION }}
+        rage-version=${{ env.RAGE_VERSION }}
+        syft-version=${{ env.SYFT_VERSION }}
+        uv-version=${{ env.UV_VERSION }}
+        EOF
+    - name: get
+      id: get
+      run: |-
+        echo "GO_VERSION=${{ steps.set.outputs.go-version }}"

@@ -14,7 +14,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
+  versions:
+    uses: ./.github/workflows/versions.yml
   govulncheck:
+    needs: versions
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -22,15 +25,11 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - name: go-version
-      id: go-version
-      run: |
-        echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml | tr -d \')" >> "${GITHUB_OUTPUT}"
     - uses: ./.github/actions/setup-go
       with:
-        go-version: ${{ steps.go-version.outputs.go-version }}
+        go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
     - uses: golang/govulncheck-action@032d45514ae346b1db93c04b0c90b841c370344f   # v1.1.0
       with:
         cache: false
-        go-version-input: ${{ steps.go-version.outputs.go-version }}
+        go-version-input: ${{ needs.versions.outputs.go-version }}
