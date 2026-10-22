@@ -70,10 +70,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
         upload-cache: false
-    - uses: github/codeql-action/init@d208ec71e39ae46397cbf6569bef8439b9aab974   # codeql-bundle-v2.27.2
+    - uses: github/codeql-action/init@0fda7a646fd14a20daf520829ca1ae8847000819   # codeql-bundle-v2.27.3
       with:
         languages: go
-    - uses: github/codeql-action/analyze@d208ec71e39ae46397cbf6569bef8439b9aab974   # codeql-bundle-v2.27.2
+    - uses: github/codeql-action/analyze@0fda7a646fd14a20daf520829ca1ae8847000819   # codeql-bundle-v2.27.3
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -82,7 +82,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: reviewdog/action-misspell@ce198e1db0d029be165f2d3e809c1a42353446b0   # v1.30.2
+    - uses: reviewdog/action-misspell@3467363dab5b42db2b1372c5fd2b1771fea2ea48   # v1.30.3
       with:
         locale: US
         ignore: importas,Produktive
@@ -324,7 +324,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884   # v10.3.0
+    - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e   # v10.3.2
       with:
         enable-cache: false
         version: ${{ env.UV_VERSION }}
@@ -526,7 +526,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ env.GO_VERSION }}
-    - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884   # v10.3.0
+    - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e   # v10.3.2
       with:
         enable-cache: false
         version: ${{ env.UV_VERSION }}
