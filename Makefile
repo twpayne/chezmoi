@@ -3,15 +3,15 @@ HOST_GOOS=$(shell ${GO} env GOOS)
 GOOS?=${HOST_GOOS}
 HOST_GOARCH=$(shell ${GO} env GOARCH)
 GOARCH?=${HOST_GOARCH}
-GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/versions.yml)
 GOLANGCI_LINT_BASENAME=golangci-lint-${GOLANGCI_LINT_VERSION}-${HOST_GOOS}-${HOST_GOARCH}
-GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GORELEASER_VERSION=$(shell awk '/GORELEASER_VERSION:/ { print $$2 }' .github/workflows/versions.yml)
 ifeq ($(HOST_GOOS),darwin)
 	GORELEASER_BASENAME=goreleaser_Darwin_$(shell echo ${HOST_GOARCH} | sed 's/amd64/x86_64/')
 else
 	GORELEASER_BASENAME=goreleaser_$(shell echo ${HOST_GOOS} | sed 's/^./\U&\E/g')_$(shell echo ${HOST_GOARCH} | sed 's/amd64/x86_64/')
 endif
-SYFT_VERSION=$(shell awk '/SYFT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+SYFT_VERSION=$(shell awk '/SYFT_VERSION:/ { print $$2 }' .github/workflows/versions.yml)
 SYFT_BASENAME=syft_${SYFT_VERSION}_${HOST_GOOS}_$(shell ${GO} env GOARCH)
 UPSTREAM=$(shell git remote -v | awk '/github.com[:\/]twpayne\/chezmoi(.git)? \(fetch\)/ {print $$1}')
 ifdef VERSION
