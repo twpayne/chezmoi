@@ -231,12 +231,6 @@ jobs:
       with:
         version: ${{ needs.versions.outputs.goreleaser-version }}
         args: release --skip=sign --snapshot --timeout=1h
-    - name: upload-artifact-chezmoi-darwin-amd64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9   # v7.0.2
-      with:
-        name: chezmoi-darwin-amd64
-        path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     - name: upload-artifact-chezmoi-darwin-arm64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9   # v7.0.2
