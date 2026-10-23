@@ -154,10 +154,10 @@ configuration variable to `false`, for example:
 
 ## Secrets Automation
 
-chezmoi has experimental support for secrets automation with [1Password
-Connect][connect] and [1Password Service Accounts][service]. These might be used
-on restricted machines where you cannot or do not wish to install a full
-1Password desktop application.
+chezmoi supports secrets automation with [1Password Connect][connect] and
+[1Password Service Accounts][service]. These might be used on restricted
+machines where you cannot or do not wish to install a full 1Password desktop
+application.
 
 When these features are used, the behavior of the 1Password CLI changes, so
 chezmoi requires explicit configuration for either connect or service account
