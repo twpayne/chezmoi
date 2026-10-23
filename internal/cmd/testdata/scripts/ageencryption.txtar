@@ -1,5 +1,3 @@
-[!exec:age] skip 'age not found in $PATH'
-
 mkhomedir
 mkageconfig
 
@@ -49,8 +47,8 @@ cmp stdout golden/.encrypted
 
 # test that chezmoi --use-builtin-age=true encrypts a file than age then decrypts
 exec chezmoi --use-builtin-age=true --output=$WORK${/}encrypted.age encrypt golden/.encrypted
-exec chezmoi --use-builtin-age=false decrypt $WORK${/}encrypted.age
-cmp stdout golden/.encrypted
+[exec:age] exec chezmoi --use-builtin-age=false decrypt $WORK${/}encrypted.age
+[exec:age] cmp stdout golden/.encrypted
 
 # test that chezmoi edit --apply transparently decrypts and re-encrypts
 exec chezmoi edit --apply --force $HOME${/}.encrypted

@@ -5,7 +5,6 @@ exec chezmoi apply --force
 cmp $HOME/.create golden/.create
 
 [windows] skip 'UNIX only'
-[!exec:age] skip 'age not found in $PATH'
 
 chhome home2/user
 

@@ -1,5 +1,3 @@
-[!exec:age] skip 'age not found in path'
-
 mkageconfig
 mkgitconfig
 
