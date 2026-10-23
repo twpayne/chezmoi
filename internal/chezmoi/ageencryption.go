@@ -2,10 +2,12 @@ package chezmoi
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
 	"os/exec"
+	"runtime"
 
 	"filippo.io/age"
 	"filippo.io/age/armor"
@@ -116,6 +118,9 @@ func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
 
 // builtinEncrypt encrypts ciphertext using the builtin age.
 func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
+	if _, err := e.builtinIdentities(); err != nil {
+		return nil, err
+	}
 	recipients, err := e.builtinRecipients()
 	if err != nil {
 		return nil, err
@@ -253,6 +258,15 @@ func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err err
 		return nil, err
 	}
 	defer chezmoierrors.CombineFunc(&err, file.Close)
+	if runtime.GOOS != "windows" {
+		fileInfo, err := file.Stat()
+		if err != nil {
+			return nil, err
+		}
+		if fileInfo.Mode().Perm()&0o077 != 0 {
+			return nil, fmt.Errorf("%s: identity file has group and/or world permissions", identityFile)
+		}
+	}
 	return age.ParseIdentities(file)
 }
 
