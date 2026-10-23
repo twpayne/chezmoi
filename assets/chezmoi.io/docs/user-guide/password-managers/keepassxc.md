@@ -44,9 +44,8 @@ If your database is not password protected, add `--no-password` to
 
 ## YubiKey support
 
-chezmoi includes an experimental mode to support using KeePassXC with YubiKeys.
-Set `keepassxc.mode` to `open` and `keepassxc.args` to the arguments required to
-set your YubiKey, for example:
+chezmoi supports using KeePassXC with YubiKeys. Set `keepassxc.mode` to `open`
+and `keepassxc.args` to the arguments required to set your YubiKey, for example:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
