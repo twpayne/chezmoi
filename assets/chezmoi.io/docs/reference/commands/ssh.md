@@ -5,7 +5,7 @@ executes your shell.
 
 !!! Warning
 
-    `ssh` is an experimental, potentially destructive, command.
+    `ssh` is an potentially destructive command.
 
 ## Flags
 
