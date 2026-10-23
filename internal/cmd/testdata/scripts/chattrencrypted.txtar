@@ -1,5 +1,3 @@
-[!exec:age] skip 'age not found in $PATH'
-
 mkageconfig
 
 # test that chezmoi add --encrypted encrypts a file

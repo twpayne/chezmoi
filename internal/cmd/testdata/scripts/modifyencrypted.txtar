@@ -1,5 +1,4 @@
 [windows] skip 'UNIX only'
-[!exec:age] skip 'age not found in $PATH'
 
 # test that chezmoi applies encrypted modify scripts
 mkageconfig
