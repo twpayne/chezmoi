@@ -10,8 +10,4 @@ When setting `gopass.mode` to `builtin`, chezmoi use builtin code to access the
 goapass database and caches your passphrase in plaintext in memory until chezmoi
 terminates.
 
-!!! warning
-
-    Using the builtin code is experimental and may be removed.
-
 [gopass]: https://www.gopass.pw/
