@@ -42,13 +42,5 @@ The `onepassword*` template functions return structured data from
     `my@account1.1password.ca`, `your@account1`, and
     `your@account1.1password.ca` would all be valid lookups.
 
-!!! warning
-
-    chezmoi has experimental support for [1Password secrets
-    automation][automation] modes. These modes change how the 1Password CLI
-    works and affect all functions. Most notably, `account` parameters are not
-    allowed on all 1Password template functions.
-
 [1p]: https://1password.com/
 [op]: https://developer.1password.com/docs/cli
-[automation]: /user-guide/password-managers/1password.md#secrets-automation
