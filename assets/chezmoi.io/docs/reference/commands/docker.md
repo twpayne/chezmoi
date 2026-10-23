@@ -2,10 +2,6 @@
 
 <!-- markdownlint-disable no-duplicate-heading -->
 
-!!! Warning
-
-    `docker` is an experimental command.
-
 !!! Hint
 
     To use [podman](https://podman.io/) instead of Docker, set the
