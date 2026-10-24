@@ -102,15 +102,19 @@ yaml
 -- golden/entry-type-set --
 all
 always
+create
 dirs
 encrypted
 externals
 files
+modify
 noalways
+nocreate
 nodirs
 noencrypted
 noexternals
 nofiles
+nomodify
 none
 noremove
 noscripts
