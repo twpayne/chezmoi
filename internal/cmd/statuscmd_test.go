@@ -14,6 +14,7 @@ import (
 func TestStatusCmd(t *testing.T) {
 	for _, tc := range []struct {
 		name           string
+		skip           string
 		root           any
 		args           []string
 		postApplyTests []any
@@ -62,8 +63,26 @@ func TestStatusCmd(t *testing.T) {
 				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o755},
 			},
 		},
+		{
+			name: "remove_directory",
+			skip: "failing test", // FIXME https://github.com/twpayne/chezmoi/issues/4652
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".dir": &vfst.Dir{Perm: 0o755},
+					".local/share/chezmoi": map[string]any{
+						"remove_dot_dir": &vfst.Dir{Perm: 0o755},
+					},
+				},
+			},
+			stdoutStr: chezmoitest.JoinLines(
+				` D .dir`,
+			),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			if tc.skip != "" {
+				t.Skip(tc.skip)
+			}
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				stdout := strings.Builder{}
 				config1 := newTestConfig(t, fileSystem, withStdout(&stdout))
