@@ -29,12 +29,6 @@ var (
 		"no",
 		"quit",
 	}
-	choicesOverwrite = []string{
-		"overwrite",
-		"all-overwrite",
-		"skip",
-		"quit",
-	}
 )
 
 // camelCaseToUpperSnakeCase converts a string in camelCase to UPPER_SNAKE_CASE.

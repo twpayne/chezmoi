@@ -1,0 +1,20 @@
+# test Skip-conflicts choice to chezmoi apply prompt
+exec chezmoi apply
+edit $HOME/.file1
+edit $HOME/.file2
+edit $HOME/.file3
+stdin golden/stdin
+exec chezmoi apply --no-tty
+! grep edited $HOME/.file1
+grep edited $HOME/.file2
+grep edited $HOME/.file3
+
+-- golden/stdin --
+o
+S
+-- home/user/.local/share/chezmoi/dot_file1 --
+# contents of .file1
+-- home/user/.local/share/chezmoi/dot_file2 --
+# contents of .file2
+-- home/user/.local/share/chezmoi/dot_file3 --
+# contents of .file3

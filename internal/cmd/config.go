@@ -206,6 +206,7 @@ type Config struct {
 	noTTY            bool
 	outputAbsPath    chezmoi.AbsPath
 	refreshExternals chezmoi.RefreshExternals
+	skipConflicts    bool
 	skipSecrets      bool
 	sourcePath       bool
 	errorOnConflict  bool
@@ -1167,6 +1168,8 @@ func (c *Config) defaultPreApplyFunc(
 		return nil
 	case mode == promptConflict && c.errorOnConflict:
 		return chezmoi.ExitCodeError(1)
+	case mode == promptConflict && c.skipConflicts:
+		return fs.SkipDir
 	}
 
 	// Now prompt based on choice made above
@@ -1181,7 +1184,13 @@ func (c *Config) defaultPreApplyFunc(
 		choices = append(choices, choicesYesNoAllQuit...)
 		promptText = fmt.Sprintf("Apply %s", targetRelPath)
 	} else {
-		choices = append(choices, choicesOverwrite...)
+		choices = append(choices,
+			"overwrite",
+			"all-overwrite",
+			"skip",
+			"Skip-conflicts",
+			"quit",
+		)
 		if targetDirty {
 			promptText = fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath)
 		} else {
@@ -1219,6 +1228,9 @@ func (c *Config) defaultPreApplyFunc(
 		case choice == "all-overwrite":
 			c.force = true
 			return nil
+		case choice == "Skip-conflicts":
+			c.skipConflicts = true
+			return fs.SkipDir
 		case choice == "skip":
 			return fs.SkipDir
 		case choice == "quit":
