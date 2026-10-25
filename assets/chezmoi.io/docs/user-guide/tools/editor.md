@@ -46,8 +46,9 @@ edited dotfile on save.
 [`github.com/xvzc/chezmoi.nvim`][xvzc] allows you to edit your chezmoi-managed
 files and automatically apply.
 
-Alternatively, you can use an `autocmd` to run `chezmoi apply` whenever you save
-a dotfile, but you must disable `chezmoi edit`'s hardlinking:
+Alternatively, you can use an `autocmd` to run [`chezmoi apply`][apply-command]
+whenever you save a dotfile, but you must disable [`chezmoi
+edit`][edit-command]'s hardlinking:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
@@ -73,3 +74,5 @@ interacting with chezmoi from Emacs, and is available in [MELPA][melpa].
 [tuh8888]: https://github.com/tuh8888/chezmoi.el
 [melpa]: https://melpa.org/#/chezmoi
 [helix]: https://helix-editor.com/
+[apply-command]: /reference/commands/apply.md
+[edit-command]: /reference/commands/edit.md

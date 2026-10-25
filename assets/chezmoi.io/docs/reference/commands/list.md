@@ -1,5 +1,5 @@
 # `list`
 
-`list` is an alias for [`managed`][managed].
+`list` is an alias for [`managed`][managed-command].
 
-[managed]: /reference/commands/managed.md
+[managed-command]: /reference/commands/managed.md

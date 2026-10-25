@@ -10,11 +10,11 @@ Remove *target* from the source state, the destination directory, and the state.
     Only run `chezmoi destroy` if you have a separate backup of your home
     directory and your source directory.
 
-    If you want chezmoi to stop managing the file use [`forget`][forget]
+    If you want chezmoi to stop managing the file use [`forget`][forget-command]
     instead.
 
     If you want to remove all traces of chezmoi from your system use
-    [`purge`][purge] instead.
+    [`purge`][purge-command] instead.
 
 ## Common flags
 
@@ -26,5 +26,5 @@ Destroy without prompting.
 
 --8<-- "common-flags/recursive.md:default-false"
 
-[forget]: /reference/commands/forget.md
-[purge]: /reference/commands/purge.md
+[forget-command]: /reference/commands/forget.md
+[purge-command]: /reference/commands/purge.md

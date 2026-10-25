@@ -80,12 +80,13 @@ will be executable.
 If `type` is `archive` then the target is a directory with the contents of the
 archive at `url`. The optional boolean field `exact` may be set, in which case
 the directory and all subdirectories will be treated as exact directories, i.e.
-`chezmoi apply` will remove entries not present in the archive. The optional
-integer field `stripComponents` will remove leading path components from the
-members of archive. The optional string field `format` sets the archive format.
-The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
-`xz`, `.tar.zst`, and `zip`. If `format` is not specified then chezmoi will
-guess the format using firstly the path of the URL and secondly its contents.
+[`chezmoi apply`][apply-command] will remove entries not present in the archive.
+The optional integer field `stripComponents` will remove leading path components
+from the members of archive. The optional string field `format` sets the archive
+format. The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`,
+`tbz2`, `xz`, `.tar.zst`, and `zip`. If `format` is not specified then chezmoi
+will guess the format using firstly the path of the URL and secondly its
+contents.
 
 When `type` is `archive` or `archive-file`, the optional setting
 `archive.extractAppleDouble` controls whether [AppleDouble][appledouble] files
@@ -305,3 +306,5 @@ multiple externals into one target directory in one chezmoiexternal file.
 [elsewhere]: /user-guide/include-files-from-elsewhere.md
 [appledouble]: https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats
 [stat]: /reference/templates/functions/stat.md
+[apply-command]: /reference/commands/apply.md
+

@@ -6,7 +6,7 @@ similar to [`git status`][git-status].
 The first column of output indicates the difference between the last state
 written by chezmoi and the actual state. The second column indicates the
 difference between the actual state and the target state, and what effect
-running [`chezmoi apply`][apply] will have.
+running [`chezmoi apply`][apply-command] will have.
 
 | Character | Meaning   | First column       | Second column          |
 | --------- | --------- | ------------------ | ---------------------- |
@@ -49,4 +49,4 @@ chezmoi status
 ```
 
 [git-status]: https://git-scm.com/docs/git-status
-[apply]: /reference/commands/apply.md
+[apply-command]: /reference/commands/apply.md

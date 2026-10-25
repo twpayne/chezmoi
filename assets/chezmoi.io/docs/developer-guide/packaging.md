@@ -60,9 +60,9 @@ Please enable cgo, if possible. chezmoi can be built and run without cgo, but
 the `.chezmoi.username` and `.chezmoi.group` template variables may not be set
 correctly on some systems.
 
-chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
-remove this command completely by building chezmoi with the `noupgrade` build
-tag.
+chezmoi includes an [`upgrade` command][upgrade-command] which attempts to
+self-upgrade. You can remove this command completely by building chezmoi with
+the `noupgrade` build tag.
 
 chezmoi includes shell completions in the `completions` directory. Please
 include these in the package and install them in the shell-appropriate
@@ -72,3 +72,4 @@ If the instructions for installing chezmoi in chezmoi's [install guide][guide]
 are absent or incorrect, please open an issue or submit a PR to correct them.
 
 [guide]: /install.md
+[upgrade-command]: /reference/commands/upgrade.md

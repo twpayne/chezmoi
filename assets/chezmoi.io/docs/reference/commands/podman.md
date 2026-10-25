@@ -1,5 +1,5 @@
 # `podman`
 
-`podman` is an alias for [`docker`][docker].
+`podman` is an alias for [`docker`][docker-command].
 
-[docker]: /reference/commands/docker.md
+[docker-command]: /reference/commands/docker.md

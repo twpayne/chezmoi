@@ -4,16 +4,16 @@
 
 There are five popular approaches:
 
-1. Use `chezmoi edit $FILE`. This will open the source file for `$FILE` in your
-   editor, including opening the template if the file is templated and
-   transparently decrypting and re-encrypting it if it is encrypted. For extra
-   ease, use `chezmoi edit --apply $FILE` to apply the changes when you quit
-   your editor, and `chezmoi edit --watch $FILE` to apply the changes whenever
-   you save the file.
+1. Use [`chezmoi edit $FILE`][edit-command]. This will open the source file for
+   `$FILE` in your editor, including opening the template if the file is
+   templated and transparently decrypting and re-encrypting it if it is
+   encrypted. For extra ease, use `chezmoi edit --apply $FILE` to apply the
+   changes when you quit your editor, and `chezmoi edit --watch $FILE` to apply
+   the changes whenever you save the file.
 
-2. Use `chezmoi cd` and edit the files in the source directory directly. Run
-   `chezmoi diff` to see what changes would be made, and `chezmoi apply` to make
-   the changes.
+2. Use [`chezmoi cd`][cd-command] and edit the files in the source directory
+   directly. Run [`chezmoi diff`][diff-command] to see what changes would be
+   made, and [`chezmoi apply`][apply-command] to make the changes.
 
 3. If your editor supports opening directories, run `chezmoi edit` with no
    arguments to open the source directory.
@@ -30,26 +30,27 @@ There are five popular approaches:
 
 ## What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
 
-Until you run `chezmoi apply` your modified `~/.zshrc` will remain in place.
-When you run `chezmoi apply` chezmoi will detect that `~/.zshrc` has changed
-since chezmoi last wrote it and prompt you what to do. You can resolve
-differences with a merge tool by running `chezmoi merge ~/.zshrc`.
+Until you run [`chezmoi apply`][apply-command] your modified `~/.zshrc` will
+remain in place. When you run `chezmoi apply` chezmoi will detect that
+`~/.zshrc` has changed since chezmoi last wrote it and prompt you what to do.
+You can resolve differences with a merge tool by running [`chezmoi merge
+~/.zshrc`][merge-command].
 
 ## How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?
 
-`chezmoi unmanaged` will list everything not managed by chezmoi. You can add
-entire directories with `chezmoi add`.
+[`chezmoi unmanaged`][unmanaged-command] will list everything not managed by
+chezmoi. You can add entire directories with [`chezmoi add`][add-command].
 
 ## How can I tell what dotfiles in my home directory are currently managed by chezmoi?
 
-`chezmoi managed` will list everything managed by chezmoi.
+[`chezmoi managed`][managed-command] will list everything managed by chezmoi.
 
 ## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
 
 By default, chezmoi ignores everything that you haven't explicitly added. If you
 have files in your source directory that you don't want added to your
-destination directory when you run `chezmoi apply` add their names to a file
-called `.chezmoiignore` in the source state.
+destination directory when you run [`chezmoi apply`][apply-command] add their
+names to a file called `.chezmoiignore` in the source state.
 
 Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the
@@ -57,21 +58,21 @@ machine. The full usage and syntax is described in the
 
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 
-Yes. Running `chezmoi add` will update the source state with the target. To see
-diffs of what would change, without actually changing anything, use `chezmoi
-diff`.
+Yes. Running [`chezmoi add`][add-command] will update the source state with the
+target. To see diffs of what would change, without actually changing anything,
+use [`chezmoi diff`][diff-command].
 
 ## Once I've made a change to the source directory, how do I commit it?
 
 You have several options:
 
-* `chezmoi cd` opens a shell in the source directory, where you can run your
-  usual version control commands, like `git add` and `git commit`.
+* [`chezmoi cd`][cd-command] opens a shell in the source directory, where you
+  can run your usual version control commands, like `git add` and `git commit`.
 
-* `chezmoi git` runs `git` in the source
-  directory and pass extra arguments to the command. If you're passing any
-  flags, you'll need to use `--` to prevent chezmoi from consuming them, for
-  example `chezmoi git -- commit -m "Update dotfiles"`.
+* [`chezmoi git`][git-command] runs `git` in the source directory and pass extra
+  arguments to the command. If you're passing any flags, you'll need to use `--`
+  to prevent chezmoi from consuming them, for example `chezmoi git -- commit -m
+  "Update dotfiles"`.
 
 * You can configure chezmoi to automatically commit and push changes to your
   source state, as [described in the how-to guide][auto-commit].
@@ -199,8 +200,8 @@ your package manager then the shell completion should already be installed. For
 PowerShell, you need to manually add the completion script to your profile.
 Please [open an issue][choose] if this is not working correctly.
 
-chezmoi provides a [`completion`][completion-cmd] command and
-a [`completion`][completion-fun] template function which return the shell
+chezmoi provides a [`completion`][completion-command] command and a
+[`completion`][completion-fun] template function which return the shell
 completions for the given shell. These can be used either as a one-off or as
 part of your dotfiles repo. The details of how to use these depend on your
 shell.
@@ -211,7 +212,7 @@ Command line programs installed with [Flatpak][flatpak] cannot be run directly.
 Instead, they must be run with `flatpak run`. This can either be added by using
 a wrapper script or by configuring chezmoi to invoke `flatpak run` with the
 correct arguments directly. Wrapper scripts are recommended, as they work with
-the [`doctor` command][doctor].
+the [`doctor` command][doctor-command].
 
 ### Use a wrapper script
 
@@ -254,7 +255,7 @@ name of app, and any further arguments are passed to the app.
 [auto-commit]: /user-guide/daily-operations.md#automatically-commit-and-push-changes-to-your-repo
 [bash]: https://www.gnu.org/software/bash/
 [choose]: https://github.com/twpayne/chezmoi/issues/new/choose
-[completion-cmd]: /reference/commands/completion.md
+[completion-command]: /reference/commands/completion.md
 [completion-fun]: /reference/templates/functions/completion.md
 [fish]: https://fishshell.com/
 [ignore]: /reference/special-files/chezmoiignore.md
@@ -262,4 +263,13 @@ name of app, and any further arguments are passed to the app.
 [scriptenv]: /user-guide/use-scripts-to-perform-actions.md#set-environment-variables
 [zsh]: https://zsh.sourceforge.io/
 [flatpak]: https://flatpak.org/
-[doctor]: /reference/commands/doctor.md
+[add-command]: /reference/commands/add.md
+[apply-command]: /reference/commands/apply.md
+[cd-command]: /reference/commands/cd.md
+[diff-command]: /reference/commands/diff.md
+[doctor-command]: /reference/commands/doctor.md
+[edit-command]: /reference/commands/edit.md
+[git-command]: /reference/commands/git.md
+[managed-command]: /reference/commands/managed.md
+[merge-command]: /reference/commands/merge.md
+[unmanaged-command]: /reference/commands/unmanaged.md

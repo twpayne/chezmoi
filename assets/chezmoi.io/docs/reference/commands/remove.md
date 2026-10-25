@@ -1,7 +1,8 @@
 # `remove`
 
-The `remove` command has been removed. Use the [`forget` command][forget] or
-the [`destroy` command][destroy] instead.
+The `remove` command has been removed. Use the
+[`forget` command][forget-command] or the [`destroy` command][destroy-command]
+instead.
 
-[forget]: /reference/commands/forget.md
-[destroy]: /reference/commands/destroy.md
+[destroy-command]: /reference/commands/destroy.md
+[forget-command]: /reference/commands/forget.md

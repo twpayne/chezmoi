@@ -6,18 +6,18 @@
 
     To use [podman](https://podman.io/) instead of Docker, set the
     `docker.command` configuration variable to `podman`. You can also
-    use the [`chezmoi podman` command][chezmoi-podman] instead of
+    use the [`chezmoi podman` command][podman-command] instead of
     `chezmoi docker`.
 
-Install chezmoi, run `chezmoi init --apply`, and optionally execute your shell
-in [Docker](https://docker.com/) containers.
+Install chezmoi, run [`chezmoi init --apply`][init-command], and optionally
+execute your shell in [Docker](https://docker.com/) containers.
 
 ## Subcommands
 
 ### `exec` *container-id* *init-args*...
 
-Install chezmoi, run `chezmoi init --apply *init-args*`, and execute your shell
-in the existing Docker container *container-id*.
+Install chezmoi, run [`chezmoi init --apply *init-args*`][init-command], and
+execute your shell in the existing Docker container *container-id*.
 
 #### Flags
 
@@ -41,7 +41,7 @@ is the default.
 ### `run` *image-id* *init-args*...
 
 Create a new Docker container using *image-id*, and in it, install chezmoi, run
-`chezmoi init --apply *init-args*`, and execute your shell.
+[`chezmoi init --apply *init-args*`][init-command], and execute your shell.
 
 #### Flags
 
@@ -60,4 +60,5 @@ chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME
 chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME
 ```
 
-[chezmoi-podman]: /reference/commands/podman.md
+[init-command]: /reference/commands/init.md
+[podman-command]: /reference/commands/podman.md

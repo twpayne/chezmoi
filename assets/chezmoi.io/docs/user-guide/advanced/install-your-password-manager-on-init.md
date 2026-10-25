@@ -2,8 +2,8 @@
 
 If you use a password manager to store your secrets then you may need to install
 your password manager after you have run `chezmoi init` on a new machine but
-before `chezmoi init --apply` or `chezmoi apply` executes your `run_before_`
-scripts.
+before [`chezmoi init --apply`][init-command] or [`chezmoi
+apply`][apply-command] executes your `run_before_` scripts.
 
 chezmoi provides a `hooks.read-source-state.pre` hook that allows you to modify your
 system after `chezmoi init` has cloned your dotfile repo but before chezmoi has
@@ -55,3 +55,6 @@ the source state:
     command = ".local/share/chezmoi/.install-password-manager.sh"
 ```
 <!-- /example-formats -->
+
+[apply-command]: /reference/commands/apply.md
+[init-command]: /reference/commands/init.md

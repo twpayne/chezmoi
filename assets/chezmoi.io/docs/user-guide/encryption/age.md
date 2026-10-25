@@ -2,7 +2,7 @@
 
 chezmoi supports encrypting files with [age][age].
 
-Generate a key using `chezmoi age-keygen`:
+Generate a key using [`chezmoi age-keygen`][age-keygen-command]:
 
 ```console
 $ chezmoi age-keygen --output=$HOME/key.txt
@@ -64,9 +64,10 @@ encryption = "age"
 ```
 <!-- /example-formats -->
 
-You will be prompted for the passphrase whenever you run `chezmoi add
---encrypt` and whenever chezmoi needs to decrypt the file, for example when you
-run `chezmoi apply`, `chezmoi diff`, or `chezmoi status`.
+You will be prompted for the passphrase whenever you run [`chezmoi add
+--encrypt`][add-command] and whenever chezmoi needs to decrypt the file, for
+example when you run [`chezmoi apply`][apply-command], [`chezmoi
+diff`][diff-command], or [`chezmoi status`][status-command].
 
 ## Builtin age encryption
 
@@ -96,3 +97,8 @@ the `age` command is not found in `$PATH`.
 [age]: https://age-encryption.org/
 [issue]: https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=
 [nossh]: https://pkg.go.dev/filippo.io/age#hdr-Key_management
+[add-command]: /reference/commands/add.md
+[age-keygen-command]: /reference/commands/age-keygen.md
+[apply-command]: /reference/commands/apply.md
+[diff-command]: /reference/commands/diff.md
+[status-command]: /reference/commands/status.md

@@ -93,11 +93,11 @@ authentication requirements for Git operations][gh-token-auth].
 
 ## Create a config file on a new machine automatically
 
-`chezmoi init` can also create a config file automatically, if one does not
-already exist. If your repo contains a file called `.chezmoi.$FORMAT.tmpl` where
-`$FORMAT` is one of the supported config file formats (`json`, `jsonc`, `toml`,
-or `yaml`) then `chezmoi init` will execute that template to generate your
-initial config file.
+[`chezmoi init`][init-command] can also create a config file automatically, if
+one does not already exist. If your repo contains a file called
+`.chezmoi.$FORMAT.tmpl` where `$FORMAT` is one of the supported config file
+formats (`json`, `jsonc`, `toml`, or `yaml`) then `chezmoi init` will execute
+that template to generate your initial config file.
 
 Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
@@ -112,7 +112,8 @@ Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 `promptStringOnce` is a special function that prompts the user (you) for a value
 if it is not already set in your `data`.
 
-To test this template, use `chezmoi execute-template` with the `--init` and
+To test this template, use [`chezmoi
+execute-template`][execute-template-command] with the `--init` and
 `--promptString` flags, for example:
 
 ```sh
@@ -148,3 +149,5 @@ to `promptString` only if it is not set.
 [gitlab]: https://gitlab.com
 [gh-pat]: https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 [gh-token-auth]: https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/
+[execute-template]: /reference/commands/execute-template.md
+[init-command]: /reference/commands/init.md

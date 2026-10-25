@@ -1,7 +1,7 @@
 # `unmanage` *target*...
 
-`unmanage` is an alias for [`forget`][forget] for symmetry with
-[`manage`][manage].
+`unmanage` is an alias for [`forget`][forget-command] for symmetry with
+[`manage`][manage-command].
 
-[forget]: /reference/commands/forget.md
-[manage]: /reference/commands/manage.md
+[forget-command]: /reference/commands/forget.md
+[manage-command]: /reference/commands/manage.md

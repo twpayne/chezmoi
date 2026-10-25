@@ -129,8 +129,8 @@ command. *value* can be `on`, `off`, `auto`, or any boolean-like value
 recognized by `promptBool`. The default is `auto` which will only use the
 builtin age if `age.command` cannot be found in `$PATH`.
 
-The builtin `age` command does not support passphrases, symmetric encryption,
-or the use of SSH keys.
+The builtin [`age` command][age-command] does not support passphrases, symmetric
+encryption, or the use of SSH keys.
 
 ### `--use-builtin-diff` [*bool*]
 
@@ -170,3 +170,4 @@ contains a `.git` directory.
 
 [configuration]: /reference/configuration-file/index.md
 [age]: https://age-encryption.org
+[age-command]: /reference/commands/age.md
