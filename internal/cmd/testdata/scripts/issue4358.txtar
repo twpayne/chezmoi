@@ -1,0 +1,22 @@
+httpd www
+
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+
+# check that modifying an external file and then running chezmoi re-add does not result in an inconsistent state
+edit $HOME/.file
+! cmp $HOME/.file golden/.file
+exec chezmoi --exclude=externals re-add
+exec chezmoi status
+cmp stdout golden/status
+
+-- golden/.file --
+# contents of .file
+-- golden/status --
+MM .file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml.tmpl --
+[".file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/.file"
+-- www/.file --
+# contents of .file
