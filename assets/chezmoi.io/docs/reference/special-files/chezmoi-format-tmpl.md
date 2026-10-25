@@ -1,8 +1,8 @@
 # `.chezmoi.$FORMAT.tmpl`
 
 If a file called `.chezmoi.$FORMAT.tmpl` exists in the root of the source state
-then [`chezmoi init`][init] will use it to create or update the chezmoi config
-file. `$FORMAT` must be one of the supported config file formats.
+then [`chezmoi init`][init-command] will use it to create or update the chezmoi
+config file. `$FORMAT` must be one of the supported config file formats.
 
 This template differs from source state templates because this template is
 executed prior to the reading of the source state.
@@ -37,5 +37,5 @@ executed prior to the reading of the source state.
 [data-files]: /reference/special-files/chezmoidata-format.md
 [functions]: /reference/templates/functions/index.md
 [init-functions]: /reference/templates/init-functions/index.md
-[init]: /reference/commands/init.md
+[init-command]: /reference/commands/init.md
 [templates]: /reference/special-directories/chezmoitemplates.md

@@ -102,8 +102,9 @@ gpg:
 }
 ```
 
-This will prompt you for the passphrase the first time you run `chezmoi init` on
-a new machine, and then remember the passphrase in your configuration file.
+This will prompt you for the passphrase the first time you run [`chezmoi
+init`][init-command] on a new machine, and then remember the passphrase in your
+configuration file.
 
 ## Muting gpg output
 
@@ -121,3 +122,4 @@ configuration:
 <!-- /example-formats -->
 
 [gpg]: https://www.gnupg.org/
+[init-command]: /reference/commands/init.md

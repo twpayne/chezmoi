@@ -64,8 +64,8 @@ encryption = "age"
 ```
 <!-- /example-formats -->
 
-Run `chezmoi init --apply` to generate the chezmoi's config file and decrypt the
-private key:
+Run [`chezmoi init --apply`][init-command] to generate the chezmoi's config file
+and decrypt the private key:
 
 ```console
 $ chezmoi init --apply
@@ -111,13 +111,15 @@ encryption, the following steps can be used:
 2. Update chezmoi configuration to use the new encryption method (examples:
    [gpg][site-gpg], [age][site-age], [age with one-time
    passphrase][age-passphrase]).
-3. Remove all encrypted files from the state via `chezmoi forget` or `chezmoi unmanage`.
+3. Remove all encrypted files from the state via [`chezmoi
+   forget`][forget-command] or [`chezmoi unmanage`][unmanage-command].
 4. Add them back with `chezmoi add --encrypt`.
 
 ### Example: Migrate from GPG to age
 
-Update chezmoi configuration to use age encryption (with `chezmoi edit-config`
-or manually editing the corresponding template):
+Update chezmoi configuration to use age encryption (with [`chezmoi
+edit-config`][edit-config-command] or manually editing the corresponding
+template):
 
 ```diff
 - encryption = "gpg"
@@ -148,3 +150,7 @@ done
 [site-age]: /user-guide/encryption/age.md
 [age-passphrase]: #how-do-i-configure-chezmoi-to-encrypt-files-but-only-request-a-passphrase-the-first-time-chezmoi-init-is-run
 [age]: https://age-encryption.org/
+[edit-config-command]: /reference/commands/edit-config.md
+[forget-command]: /reference/commands/forget.md
+[init-command]: /reference/commands/init.md
+[unmanage-command]: /reference/commands/unmanage.md

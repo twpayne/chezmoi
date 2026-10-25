@@ -9,7 +9,8 @@ chezmoi edit $FILENAME
 ```
 
 This will edit `$FILENAME`'s source file in your source directory. chezmoi will
-not make any changes to the actual dotfile until you run `chezmoi apply`.
+not make any changes to the actual dotfile until you run [`chezmoi
+apply`][apply-command].
 
 To automatically run `chezmoi apply` when you quit your editor, run:
 
@@ -23,8 +24,8 @@ To automatically run `chezmoi apply` whenever you save the file in your editor, 
 chezmoi edit --watch $FILENAME
 ```
 
-You don't have to use `chezmoi edit` to edit your dotfiles. For more
-information, see [Do I have to use `chezmoi edit` to edit my
+You don't have to use [`chezmoi edit`][edit-command] to edit your dotfiles. For
+more information, see [Do I have to use `chezmoi edit` to edit my
 dotfiles?][faq-edit].
 
 ```mermaid
@@ -99,10 +100,10 @@ command:
 chezmoi push
 ```
 
-By default, `chezmoi push` will generate a commit message based on the files
-changed. You can override this by setting the `git.commitMessageTemplate`
-configuration variable. For example, to have chezmoi prompt you for a commit
-message each time, use:
+By default, [`chezmoi push`][push-command] will generate a commit message based
+on the files changed. You can override this by setting the
+`git.commitMessageTemplate` configuration variable. For example, to have chezmoi
+prompt you for a commit message each time, use:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
@@ -168,11 +169,11 @@ sequenceDiagram
 
 ## Install chezmoi and your dotfiles on a new machine with a single command
 
-chezmoi's install script can run `chezmoi init` for you by passing extra
-arguments to the newly installed chezmoi binary. If your dotfiles repo is
-`github.com/$GITHUB_USERNAME/dotfiles` then installing chezmoi, running
-`chezmoi init`, and running `chezmoi apply` can be done in a single line of
-shell:
+chezmoi's install script can run [`chezmoi init`][init-command] for you by
+passing extra arguments to the newly installed chezmoi binary. If your dotfiles
+repo is `github.com/$GITHUB_USERNAME/dotfiles` then installing chezmoi, running
+`chezmoi init`, and running [`chezmoi apply`][apply-command] can be done in a
+single line of shell:
 
 ```sh
 sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
@@ -180,7 +181,7 @@ sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
 dotfiles on a different service, then see the [reference manual for `chezmoi
-init`][init].
+init`][init-command].
 
 For setting up transitory environments (e.g. short-lived Linux containers) you
 can install chezmoi, install your dotfiles, and then remove all traces of
@@ -203,4 +204,7 @@ sequenceDiagram
 ```
 
 [faq-edit]: /user-guide/frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi
-[init]: /reference/commands/init.md
+[apply-command]: /reference/commands/apply.md
+[edit-command]: /reference/commands/edit.md
+[init-command]: /reference/commands/init.md
+[push-command]: /reference/commands/push.md

@@ -10,7 +10,8 @@ mkdir -p $(chezmoi source-path)/src
 ```
 
 This creates the directory in the source state, which means that chezmoi will
-create it (if it does not already exist) when you run `chezmoi apply`.
+create it (if it does not already exist) when you run [`chezmoi
+apply`][apply-command].
 
 However, as this is an empty directory it will be ignored by git. So, create a
 file in the directory in the source state that will be seen by git (so git does
@@ -22,7 +23,7 @@ touch $(chezmoi source-path)/src/.keep
 ```
 
 chezmoi automatically creates `.keep` files when you add an empty directory with
-`chezmoi add`.
+[`chezmoi add`][add-command].
 
 ## Ensure that a target is removed
 
@@ -197,3 +198,5 @@ populating your `~/.ssh/authorized_keys`. Put the following in your
 ```
 
 [chezmoi_modify_manager]: /links/related-software.md#vorpalblade/chezmoi_modify_manager
+[add-command]: /reference/commands/add.md
+[apply-command]: /reference/commands/apply.md

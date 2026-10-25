@@ -87,7 +87,8 @@ functions from [sprig][sprig] and its own [functions][functions] for interacting
 with [password managers][passman].
 
 Templates can be executed directly from the command line, without the need to
-create a file on disk, with the `execute-template` command, for example:
+create a file on disk, with the [`execute-template`
+command][execute-template-command], for example:
 
 ```sh
 chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
@@ -239,3 +240,4 @@ If you want to use templates within your templates, then, instead, create:
 [debugging]: /user-guide/templating.md#testing-templates
 [go-template-actions]: https://pkg.go.dev/text/template#hdr-Actions
 [passman]: /user-guide/password-managers/index.md
+[edit-template-command]: /reference/commands/edit-template.md

@@ -2,14 +2,14 @@
 
 ## Do I have to use `chezmoi edit` to edit my dotfiles?
 
-No. `chezmoi edit` is a convenience command that has a couple of useful
-features, but you don't have to use it.
+No. [`chezmoi edit`][edit-command] is a convenience command that has a couple of
+useful features, but you don't have to use it.
 
-You can also run `chezmoi cd` and then just edit the files in the source state
-directly. After saving an edited file you can run `chezmoi diff` to check what
-effect the changes would have, and run `chezmoi apply` if you're happy with
-them. If there are inconsistencies that you want to keep, then `chezmoi
-merge-all` will help you resolve any differences.
+You can also run [`chezmoi cd`][cd-command] and then just edit the files in the
+source state directly. After saving an edited file you can run `chezmoi diff` to
+check what effect the changes would have, and run `chezmoi apply` if you're
+happy with them. If there are inconsistencies that you want to keep, then
+[`chezmoi merge-all`][merge-all-command] will help you resolve any differences.
 
 `chezmoi edit` provides the following useful features:
 
@@ -98,8 +98,9 @@ attributes in the filename mangles entries in the directory, directories might
 have the `exact_` attribute and contain empty files, and the directory's
 entries might not be usable with symlinks.
 
-In symlink mode, running `chezmoi add` does not immediately replace the targets
-with a symlink. You must run `chezmoi apply` to create the symlinks.
+In symlink mode, running [`chezmoi add`][add-command] does not immediately
+replace the targets with a symlink. You must run [`chezmoi
+apply`][apply-command] to create the symlinks.
 
 ## Why does chezmoi use weird filenames?
 
@@ -125,10 +126,10 @@ control systems and their control files (e.g. `.git` and `.gitignore`).
 chezmoi needs per-file metadata to know how to interpret the source file's
 contents, for example to know when the source file is a template or if the
 file's contents are encrypted. By storing this metadata in the filename, the
-metadata is unambiguously associated with a single file and adding, updating,
-or removing a single file touches only a single file in the source state.
-Changes to the metadata (e.g. `chezmoi chattr +template $TARGET`) are simple
-file renames and isolated to the affected file.
+metadata is unambiguously associated with a single file and adding, updating, or
+removing a single file touches only a single file in the source state. Changes
+to the metadata (e.g. [`chezmoi chattr +template $TARGET`][chattr-command]) are
+simple file renames and isolated to the affected file.
 
 If chezmoi were to, say, use a common configuration file listing which files
 were templates and/or encrypted, then changes to any file would require updates
@@ -238,9 +239,10 @@ chezmoi-apply() {
 }
 ```
 
-If you want to generate multiple configuration files with `chezmoi init` then
-you will need the `--config-path` flag. For more advanced use, use the
-`--destination`, `--cache`, and `--persistent-state` flags.
+If you want to generate multiple configuration files with [`chezmoi
+init`][init-command] then you will need the `--config-path` flag. For more
+advanced use, use the `--destination`, `--cache`, and `--persistent-state`
+flags.
 
 Secondly, you can assemble a single source state from multiple sources and then
 use `chezmoi apply`. For example, if you have multiple source states in
@@ -269,8 +271,9 @@ Thirdly, you can use a `run_` script to invoke a second instance of chezmoi,
 
 ## Why does `chezmoi cd` spawn a shell instead of just changing directory?
 
-`chezmoi cd` spawns a shell because it is not possible for a program to change
-the working directory of its parent process. You can add a shell function instead:
+[`chezmoi cd`][cd-command] spawns a shell because it is not possible for a
+program to change the working directory of its parent process. You can add a
+shell function instead:
 
 ```bash
 chezmoi-cd() {
@@ -283,12 +286,13 @@ chezmoi's source directory.
 
 ## Why are the `prompt*` functions only available in config file templates?
 
-chezmoi regularly needs to execute templates to determine the target contents
-of files. For example, templates are executed for the `apply`, `diff`, and
-`status` commands, amongst many others. Having to interactively respond each
-time would quickly become tiresome. Therefore, chezmoi only provides these
-functions when generating a config file from a config file template (e.g. when
-you run `chezmoi init` or `chezmoi --init apply`).
+chezmoi regularly needs to execute templates to determine the target contents of
+files. For example, templates are executed for the [`apply`][apply-command],
+[`diff`][diff-command], and [`status`][status-command] commands, amongst many
+others. Having to interactively respond each time would quickly become tiresome.
+Therefore, chezmoi only provides these functions when generating a config file
+from a config file template (e.g. when you run [`chezmoi init`][init-command] or
+`chezmoi --init apply`).
 
 ## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
 
@@ -327,8 +331,9 @@ that is run every time you run `chezmoi apply`, to, for example:
 
 * Copy a file managed by chezmoi inside your home directory to the target file.
 
-* Execute a template with `chezmoi execute-template --output=$FILENAME
-  template` where `$FILENAME` is outside the target directory.
+* Execute a template with [`chezmoi execute-template --output=$FILENAME
+  template`][execute-template-command] where `$FILENAME` is outside the target
+  directory.
 
 chezmoi executes all scripts as the user executing chezmoi, so you may need to
 add extra privilege elevation commands like `sudo` or `PowerShell start -verb
@@ -375,3 +380,13 @@ alias cz=chezmoi
 [rootmoi]: https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl
 [salt]: https://www.saltstack.com/
 [symlink]: /reference/target-types.md#symlink-mode
+[add-command]: /reference/commands/add.md
+[apply-command]: /reference/commands/apply.md
+[cd-command]: /reference/commands/cd.md
+[chattr-command]: /reference/commands/chattr.md
+[diff-command]: /reference/commands/diff.md
+[edit-command]: /reference/commands/edit.md
+[execute-template-command]: /reference/commands/execute-template.md
+[init-command]: /reference/commands/init.md
+[merge-all-command]: /reference/commands/merge-all.md
+[status-command]: /reference/commands/status.md

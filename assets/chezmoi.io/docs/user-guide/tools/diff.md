@@ -48,10 +48,10 @@ example:
 
 ## Don't show scripts in the diff output
 
-By default, `chezmoi diff` will show all changes, including the contents of
-scripts that will be run. You can exclude scripts from the diff output by
-setting the `diff.exclude` configuration variable in your configuration file,
-for example:
+By default, [`chezmoi diff`][diff-command] will show all changes, including the
+contents of scripts that will be run. You can exclude scripts from the diff
+output by setting the `diff.exclude` configuration variable in your
+configuration file, for example:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
@@ -106,3 +106,4 @@ showing differences.
 [vscode]: https://code.visualstudio.com/
 [delta]: https://dandavison.github.io/delta/
 [fancy]: https://github.com/so-fancy/diff-so-fancy
+[diff-command]: /reference/commands/diff.md

@@ -174,8 +174,9 @@ is computed for the current OS and architecture) to the target
 ## Import archives
 
 It is occasionally useful to import entire archives of configuration into your
-source state. The `import` command does this. For example, to import the latest
-version [`github.com/ohmyzsh/ohmyzsh`][ohmyzsh] to `~/.oh-my-zsh` run:
+source state. The [`import` command][import-command] does this. For example, to
+import the latest version [`github.com/ohmyzsh/ohmyzsh`][ohmyzsh] to
+`~/.oh-my-zsh` run:
 
 ```sh
 curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
@@ -280,8 +281,9 @@ for example:
     the subdirectory containing the submodule.
 
 You can include git repos from elsewhere as git submodules in your source
-directory. `chezmoi init` and `chezmoi update` are aware of git submodules and
-will run git with the `--recurse-submodules` flag by default.
+directory. [`chezmoi init`][init-command] and [`chezmoi update`][update-command]
+are aware of git submodules and will run git with the `--recurse-submodules`
+flag by default.
 
 chezmoi assumes that all files and directories in its source state are in
 chezmoi's format, i.e. their filenames include attributes like `private_` and
@@ -301,3 +303,6 @@ configuration variable to `false`.
 [ignore]: /reference/special-files/chezmoiignore.md
 [plug.vim]: https://github.com/junegunn/vim-plug/blob/master/plug.vim
 [vim-plug]: https://github.com/junegunn/vim-plug
+[import-command]: /reference/commands/import.md
+[init-command]: /reference/commands/init.md
+[update-command]: /reference/commands/update.md

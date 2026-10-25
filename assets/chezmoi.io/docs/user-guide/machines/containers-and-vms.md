@@ -79,7 +79,7 @@ is non-interactive when running in Codespaces, for example,
 
 This sets the `codespaces` template variable, so you don't have to repeat `(env
 "CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
-the `--source` argument passed in `chezmoi init`.
+the `--source` argument passed in [`chezmoi init`][init-command].
 
 Second, create an `install.sh` script that installs chezmoi and your dotfiles
 and add it to `.chezmoiignore` and your dotfiles repo:
@@ -115,3 +115,4 @@ sudo apt install -y vim-gtk
 [vscrc]: https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories
 [czdot]: https://github.com/chezmoi/dotfiles
 [sprig-os]: http://masterminds.github.io/sprig/os.html
+[init-command]: /reference/commands/init.md

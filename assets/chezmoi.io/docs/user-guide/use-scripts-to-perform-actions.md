@@ -3,13 +3,14 @@
 ## Understand how scripts work
 
 chezmoi supports scripts that are executed when you run [`chezmoi
-apply`][apply]. These scripts can be configured to run every time, only when
-their contents have changed, or only if they haven't been run before.
+apply`][apply-command]. These scripts can be configured to run every time, only
+when their contents have changed, or only if they haven't been run before.
 
 Scripts are any file in the source directory with the prefix `run_`, and
 they are executed in alphabetical order.
 
-- **`run_` scripts**: These scripts are executed every time you run `chezmoi apply`.
+- **`run_` scripts**: These scripts are executed every time you run [`chezmoi
+  apply`][apply-command].
 - **`run_onchange_` scripts**: These scripts are only executed if their content
 has changed since the last time they were run successfully.
 - **`run_once_` scripts**: These scripts are executed once for each unique
@@ -28,8 +29,8 @@ To run scripts before or after the updates, use the `before_` or `after_`
 attributes, respectively, e.g., `run_once_before_install-password-manager.sh`.
 
 Scripts must be created manually in the source directory, typically by running
-[`chezmoi cd`][cd] and then creating a file with a `run_` prefix. There is no
-need to set the executable bit on the script.
+[`chezmoi cd`][cd-command] and then creating a file with a `run_` prefix. There
+is no need to set the executable bit on the script.
 
 Scripts with the `.tmpl` suffix are treated as templates, with the usual
 template variables available. If the template resolves to only whitespace
@@ -67,9 +68,10 @@ chezmoi sets a number of environment variables when running scripts, including
 
 ## Don't show scripts that would run in `chezmoi diff`/`chezmoi status`
 
-By default, `chezmoi diff` will print the contents of scripts that would be run
-by `chezmoi apply`. To exclude scripts from the output of `chezmoi diff`, set
-`diff.exclude` in your configuration file, for example:
+By default, [`chezmoi diff`][diff-command] will print the contents of scripts
+that would be run by [`chezmoi apply`][apply-command]. To exclude scripts from
+the output of `chezmoi diff`, set `diff.exclude` in your configuration file, for
+example:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
@@ -78,9 +80,9 @@ by `chezmoi apply`. To exclude scripts from the output of `chezmoi diff`, set
 ```
 <!-- /example-formats -->
 
-Similarly, `chezmoi status` will print the names of the scripts that it will
-execute with the status `R`. This can similarly disabled by setting
-`status.exclude` to `["scripts"]` in your configuration file.
+Similarly, [`chezmoi status`][status-command] will print the names of the
+scripts that it will execute with the status `R`. This can similarly disabled by
+setting `status.exclude` to `["scripts"]` in your configuration file.
 
 ## Install packages with scripts
 
@@ -93,10 +95,10 @@ installation script, e.g.
 sudo apt install ripgrep
 ```
 
-The next time you run [`chezmoi apply`][apply] or [`chezmoi update`][update]
-this script will be run. As it has the `run_onchange_` prefix, it will not be
-run again unless its contents change, for example if you add more packages to be
-installed.
+The next time you run [`chezmoi apply`][apply] or [`chezmoi
+update`][update-command] this script will be run. As it has the `run_onchange_`
+prefix, it will not be run again unless its contents change, for example if you
+add more packages to be installed.
 
 This script can also be a template. For example, if you create
 `run_onchange_install-packages.sh.tmpl` with the contents:
@@ -122,9 +124,9 @@ script to run when the contents of another file has changed by including
 a checksum of the other file's contents in the script.
 
 For example, if your [dconf][dconf] settings are stored in `dconf.ini` in your
-source directory then you can make `chezmoi apply` only load them when the
-contents of `dconf.ini` has changed by adding the following script as
-`run_onchange_dconf-load.sh.tmpl`:
+source directory then you can make [`chezmoi apply`][apply-command] only load
+them when the contents of `dconf.ini` has changed by adding the following script
+as `run_onchange_dconf-load.sh.tmpl`:
 
 ``` title="~/.local/share/chezmoi/run_onchange_dconf-load.sh.tmpl"
 #!/bin/bash
@@ -158,8 +160,10 @@ To clear the state of `run_once_` scripts, run:
 chezmoi state delete-bucket --bucket=scriptState
 ```
 
-[apply]: /reference/commands/apply.md
-[cd]: /reference/commands/cd.md
-[update]: /reference/commands/update.md
+[apply-command]: /reference/commands/apply.md
+[cd-command]: /reference/commands/cd.md
+[diff-command]: /reference/commands/diff.md
+[status-command]: /reference/commands/status.md
+[update-command]: /reference/commands/update.md
 [dconf]: https://wiki.gnome.org/Projects/dconf
 [ignore]: /reference/special-files/chezmoiignore.md

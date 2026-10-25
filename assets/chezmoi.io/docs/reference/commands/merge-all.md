@@ -1,7 +1,7 @@
 # `merge-all`
 
 Perform a three-way merge for file whose actual state does not match its target
-state. The merge is performed with `chezmoi merge`.
+state. The merge is performed with [`chezmoi merge`][merge-command].
 
 ## Common flags
 
@@ -18,3 +18,5 @@ state. The merge is performed with `chezmoi merge`.
 ```sh
 chezmoi merge-all
 ```
+
+[merge-command]: /reference/commands/merge.md

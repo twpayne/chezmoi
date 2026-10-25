@@ -83,7 +83,7 @@ Finally, an `EntryState` struct represents a serialization of an
 It stores a SHA256 of the entry's contents, rather than the full contents, to
 avoid storing secrets in the persistent state.
 
-With these concepts, chezmoi's apply command is effectively:
+With these concepts, chezmoi's [apply command][apply-command] is effectively:
 
 1. Read the source state from the source directory.
 
@@ -181,3 +181,4 @@ handling due to its path separator and lack of POSIX-style file permissions.
 [testscript]: https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript
 [ref]: /reference/concepts.md
 [assert]: https://pkg.go.dev/github.com/alecthomas/assert
+[apply-command]: /reference/commands/apply.md

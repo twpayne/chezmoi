@@ -92,10 +92,11 @@ chezmoi edit --apply ~/.zshrc
 
 ## Testing templates
 
-Templates can be tested and debugged with `chezmoi execute-template`,
-which treats each of its arguments as a template and executes it.
-The templates are interpreted and the results are output to standard
-output, making it useful for testing small template fragments:
+Templates can be tested and debugged with [`chezmoi
+execute-template`][execute-template-command], which treats each of its arguments
+as a template and executes it. The templates are interpreted and the results are
+output to standard output, making it useful for testing small template
+fragments:
 
 ```sh
 chezmoi execute-template '{{ .chezmoi.hostname }}'
@@ -333,7 +334,7 @@ Create other files using the template
 ```
 
 Here we're calling the shared `alacritty` template with the font size as the
-`.` value passed in. You can test this with `chezmoi cat`:
+`.` value passed in. You can test this with [`chezmoi cat`][cat-command]:
 
 ```console
 $ chezmoi cat ~/small-font.yml
@@ -386,7 +387,7 @@ And connect them with `~/.local/share/chezmoi/small-font.yml.tmpl`:
 At the moment, this means that you'll have to duplicate the alacritty data in
 the config file on every machine, but a feature will be added to avoid this.
 
-#### By passing a dictionary
+#### Bypassing a dictionary
 
 Using the same alacritty configuration as above, you can pass the arguments to
 it with a dictionary, for example `~/.local/share/chezmoi/small-font.yml.tmpl`:
@@ -400,3 +401,5 @@ it with a dictionary, for example `~/.local/share/chezmoi/small-font.yml.tmpl`:
 [reference]: /reference/templates/functions/index.md
 [variables]: /reference/templates/variables.md
 [action]: https://pkg.go.dev/text/template#hdr-Actions
+[cat-command]: /reference/commands/cat.md
+[execute-template-command]: /reference/commands/execute-template.md

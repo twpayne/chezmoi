@@ -9,7 +9,7 @@ represented as files in the source state. Some state is encoded in the source
 file names.
 
 Attributes can be changed by renaming the file in the source state or with the
-[chattr][chattr] command.
+[chattr][chattr-command] command.
 
 The following prefixes and suffixes are special, and are collectively referred
 to as "attributes":
@@ -66,4 +66,4 @@ chezmoi ignores all files and directories in the source directory that begin
 with a `.` with the exception of files and directories that begin with
 `.chezmoi`.
 
-[chattr]: /reference/commands/chattr.md
+[chattr-command]: /reference/commands/chattr.md

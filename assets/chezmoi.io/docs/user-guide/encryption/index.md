@@ -12,10 +12,11 @@ Add files to be encrypted with the `--encrypt` flag, for example:
 chezmoi add --encrypt ~/.ssh/id_rsa
 ```
 
-`chezmoi edit` will transparently decrypt the file before editing and
-re-encrypt it afterwards.
+[`chezmoi edit`][edit-command] will transparently decrypt the file before
+editing and re-encrypt it afterwards.
 
 [age]: https://age-encryption.org
 [gitcrypt]: https://github.com/AGWA/git-crypt
 [gpg]: https://www.gnupg.com/
 [transcrypt]: https://github.com/elasticdog/transcrypt
+[edit-command]: /reference/commands/edit.md

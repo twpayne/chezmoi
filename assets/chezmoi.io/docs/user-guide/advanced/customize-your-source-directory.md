@@ -38,9 +38,10 @@ as [fossil][fossil] or [pijul][pijul].
 
 The version control system is used in only three places:
 
-* `chezmoi init` will use `git clone` to clone the source repo if it does not
-  already exist.
-* `chezmoi update` will use `git pull` by default to pull the latest changes.
+* [`chezmoi init`][init-command] will use `git clone` to clone the source repo
+  if it does not already exist.
+* [`chezmoi update`][update-command] will use `git pull` by default to pull the
+  latest changes.
 * chezmoi's auto add, commit, and push functionality use `git status`, `git
   add`, `git commit` and `git push`.
 
@@ -68,7 +69,8 @@ chezmoi init --apply
     required for chezmoi to be able to identify the work tree.
 
 For updates, you can set the `update.command` and `update.args` configuration
-variables and `chezmoi update` will use these instead of `git pull`, for example:
+variables and [`chezmoi update`][update-command] will use these instead of `git
+pull`, for example:
 
 <!-- example-formats -->
 ```toml title="~/.config/chezmoi/chezmoi.toml"
@@ -90,3 +92,5 @@ fossil commit
 
 [fossil]: https://www.fossil-scm.org/
 [pijul]: https://pijul.org/
+[init-command]: /reference/commands/init.md
+[update-command]: /reference/commands/update.md
