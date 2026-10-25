@@ -19,7 +19,7 @@ dependencies = [
 
 [tool.taskipy.tasks]
 build-docs = { cmd = "mkdocs build -f assets/chezmoi.io/mkdocs.yml" }
-serve-docs = { cmd = "mkdocs serve -f assets/chezmoi.io/mkdocs.yml" }
+serve-docs = { cmd = "mkdocs serve -f assets/chezmoi.io/mkdocs.yml --livereload" }
 deploy-docs = { cmd = "cd assets/chezmoi.io && mkdocs gh-deploy" }
 lint = { cmd = "ruff check" }
 format = { cmd = "ruff format" }
