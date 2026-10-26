@@ -724,16 +724,6 @@ var helps = map[string]*help{
 			"x",
 		),
 	},
-	"remove": {
-		longHelp: "" +
-			"  The remove command has been removed. Use the forget command or the destroy\n" +
-			"  command instead.",
-	},
-	"rm": {
-		longHelp: "" +
-			"  The rm command has been removed. Use the forget command or the destroy\n" +
-			"  command instead.",
-	},
 	"secret": {
 		longHelp: "" +
 			"  Verify chezmoi's integration with the system's keyring.",
