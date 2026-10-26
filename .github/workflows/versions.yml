@@ -28,7 +28,7 @@ env:
   COSIGN_VERSION: 3.1.4 # https://github.com/sigstore/cosign/releases
   GO_VERSION: 1.27.3 # https://go.dev/doc/devel/release
   GOLANGCI_LINT_VERSION: 2.15.0 # https://github.com/golangci/golangci-lint/releases
-  GORELEASER_VERSION: 2.18.3 # https://github.com/goreleaser/goreleaser/releases
+  GORELEASER_VERSION: 2.19.0 # https://github.com/goreleaser/goreleaser/releases
   PYTHON_VERSION: '3.14' # https://www.python.org/downloads/
   RAGE_VERSION: 0.12.1 # https://github.com/str4d/rage/releases
   SYFT_VERSION: 1.55.0 # https://github.com/anchore/syft/releases
