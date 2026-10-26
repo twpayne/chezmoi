@@ -425,7 +425,7 @@ jobs:
       run: |
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
-      uses: DavidAnson/markdownlint-cli2-action@21c1be1b93ad9ed58fa840aacc3f279cde2a72ff   # v24.2.0
+      uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34   # v25.0.0
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
