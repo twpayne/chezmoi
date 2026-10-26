@@ -2080,7 +2080,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newPurgeCmd(),
 		c.newPushCmd(),
 		c.newReAddCmd(),
-		c.newRemoveCmd(),
 		c.newSSHCmd(),
 		c.newSecretCmd(),
 		c.newSourcePathCmd(),
