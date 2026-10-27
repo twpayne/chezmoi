@@ -754,8 +754,16 @@ articles:
   lang: CN
   title: 从零构建无懈可击的开发环境：chezmoi dotfiles 管理与一键恢复
   url: https://blog.csdn.net/weixin_28834765/article/details/167096941
+- date: '2026-10-07'
+  version: 2.73.0
+  title: mise and chezmoi will change your life
+  url: https://blog.src.rip/blog/mise-and-chezmoi/
 - date: '2026-10-18'
   version: 2.73.2
   lang: CN
   title: chezmoi实战：多设备dotfile加密与密钥注入方案
   url: https://blog.csdn.net/weixin_42635064/article/details/168379473
+- date: '2026-10-28'
+  version: 2.73.3
+  title: 'Dotfiles Management: chezmoi vs GNU Stow vs Bare Git Repositories (2026)'
+  url: https://sachinsharma.dev/blogs/dotfiles-management-chezmoi-vs-stow-vs-bare-git-2026
