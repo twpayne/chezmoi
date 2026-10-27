@@ -98,3 +98,7 @@ videos:
   lang: DE
   title: 'chezmoi: Deine Linux Dotfiles einfach und sicher verwalten'
   url: https://www.youtube.com/watch?v=FZ9Mt17B0T4
+- date: '2026-10-27'
+  version: 2.73.3
+  title: Mise and Chezmoi Will Change Your Life (for the better)
+  url: https://www.youtube.com/watch?v=pS9mOSGWIsw
