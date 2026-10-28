@@ -45,6 +45,8 @@ func (c *Config) newImportCmd() *cobra.Command {
 }
 
 func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+	ctx := cmd.Context()
+
 	var (
 		name string
 		data []byte
@@ -84,6 +86,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 		}
 	}
 	return sourceState.Add(
+		ctx,
 		c.sourceSystem,
 		c.persistentState,
 		archiveReaderSystem,
