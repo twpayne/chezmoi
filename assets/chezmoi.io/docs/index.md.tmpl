@@ -26,20 +26,25 @@ You can install chezmoi and your dotfiles from your GitHub
 dotfiles repo on a new, empty machine with a single command:
 
 ```sh
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $YOUR_GITHUB_USERNAME
 ```
 
 As well as the `curl | sh` installation, you can [install chezmoi with your
 favorite package manager][install].
 
-Updating your dotfiles on any machine is a single command (assuming chezmoi's installation directory is [on your `PATH`][installation-path]):
+Updating your dotfiles on any machine is a single command (assuming chezmoi's
+installation directory is [in your `PATH`][installation-path]):
 
 ```sh
 chezmoi update
 ```
 
+Get started quickly with chezmoi's [command overview][command-overview] and
+[daily operations][daily-operations].
+
 chezmoi runs on all popular operating systems, is distributed as a single
-statically-linked binary with no dependencies, and does not require root access.
+statically-linked binary with no dependencies (not even git or Python), and does
+not require root access.
 
 ## How do I start with chezmoi?
 
@@ -81,8 +86,10 @@ chezmoi does not accept financial contributions. Instead, please make a donation
 to a charity or cause of your choice.
 
 [articles]: /links/articles.md
+[command-overview]: /user-guide/command-overview.md
 [compares]: /comparison-table.md
 [contributions]: /developer-guide/contributing-changes.md
+[daily-operations]: /user-guide/daily-operations.md
 [github]: https://github.com/twpayne/chezmoi
 [guide]: /user-guide/setup.md
 [history]: /reference/release-history.md

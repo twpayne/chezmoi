@@ -171,12 +171,12 @@ sequenceDiagram
 
 chezmoi's install script can run [`chezmoi init`][init-command] for you by
 passing extra arguments to the newly installed chezmoi binary. If your dotfiles
-repo is `github.com/$GITHUB_USERNAME/dotfiles` then installing chezmoi, running
-`chezmoi init`, and running [`chezmoi apply`][apply-command] can be done in a
-single line of shell:
+repo is `github.com/$YOUR_GITHUB_USERNAME/dotfiles` then installing chezmoi,
+running `chezmoi init`, and running [`chezmoi apply`][apply-command] can be done
+in a single line of shell:
 
 ```sh
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --apply $YOUR_GITHUB_USERNAME
 ```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
@@ -189,7 +189,7 @@ chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
 ```sh
-sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --one-shot $GITHUB_USERNAME
+sh -c "$(curl -fsLS https://get.chezmoi.io)" -- init --one-shot $YOUR_GITHUB_USERNAME
 ```
 
 ```mermaid
@@ -198,9 +198,9 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R->>W: chezmoi init $GITHUB_USERNAME
-    R->>H: chezmoi init --apply $GITHUB_USERNAME
-    R->>H: chezmoi init --one-shot $GITHUB_USERNAME
+    R->>W: chezmoi init $YOUR_GITHUB_USERNAME
+    R->>H: chezmoi init --apply $YOUR_GITHUB_USERNAME
+    R->>H: chezmoi init --one-shot $YOUR_GITHUB_USERNAME
 ```
 
 [faq-edit]: /user-guide/frequently-asked-questions/usage.md#how-do-i-edit-my-dotfiles-with-chezmoi

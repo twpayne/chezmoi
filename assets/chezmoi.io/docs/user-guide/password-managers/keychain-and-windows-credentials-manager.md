@@ -17,7 +17,7 @@ takes the service and user as arguments.
 For example, save a GitHub access token in keyring with:
 
 ```console
-$ chezmoi secret keyring set --service=github --user=$GITHUB_USERNAME
+$ chezmoi secret keyring set --service=github --user=$YOUR_GITHUB_USERNAME
 Value: xxxxxxxx
 ```
 
@@ -32,7 +32,7 @@ and then include it in your `~/.gitconfig` file with:
 You can query the keyring from the command line:
 
 ```sh
-chezmoi secret keyring get --service=github --user=$GITHUB_USERNAME
+chezmoi secret keyring get --service=github --user=$YOUR_GITHUB_USERNAME
 ```
 
 [keyring]: https://github.com/zalando/go-keyring
