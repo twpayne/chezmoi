@@ -25,6 +25,6 @@ is the default.
 ## Examples
 
 ```sh
-chezmoi ssh $HOSTNAME $GITHUB_USERNAME
-chezmoi ssh $HOSTNAME -- --one-shot $GITHUB_USERNAME
+chezmoi ssh $HOSTNAME $YOUR_GITHUB_USERNAME
+chezmoi ssh $HOSTNAME -- --one-shot $YOUR_GITHUB_USERNAME
 ```

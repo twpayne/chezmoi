@@ -73,7 +73,7 @@ git commit -m "Initial commit"
 your repo:
 
 ```sh
-git remote add origin git@github.com:$GITHUB_USERNAME/dotfiles.git
+git remote add origin git@github.com:$YOUR_GITHUB_USERNAME/dotfiles.git
 git branch -M main
 git push -u origin main
 ```
@@ -117,7 +117,7 @@ sequenceDiagram
 On a second machine, initialize chezmoi with your dotfiles repo:
 
 ```sh
-chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
+chezmoi init https://github.com/$YOUR_GITHUB_USERNAME/dotfiles.git
 ```
 
 !!! hint
@@ -125,7 +125,7 @@ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
     Private GitHub repos require other [authentication methods][private-auth]:
 
     ```sh
-    chezmoi init git@github.com:$GITHUB_USERNAME/dotfiles.git
+    chezmoi init git@github.com:$YOUR_GITHUB_USERNAME/dotfiles.git
     ```
 
 This will check out the repo and any submodules and optionally create a chezmoi
@@ -184,14 +184,14 @@ sequenceDiagram
 You can install your dotfiles on new machine with a single command:
 
 ```sh
-chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
+chezmoi init --apply https://github.com/$YOUR_GITHUB_USERNAME/dotfiles.git
 ```
 
 If you use GitHub and your dotfiles repo is called `dotfiles` then this can be
 shortened to:
 
 ```sh
-chezmoi init --apply $GITHUB_USERNAME
+chezmoi init --apply $YOUR_GITHUB_USERNAME
 ```
 
 !!! hint
@@ -199,7 +199,7 @@ chezmoi init --apply $GITHUB_USERNAME
     Private GitHub repos require other [authentication methods][private-auth]:
 
     ```sh
-    chezmoi init --apply git@github.com:$GITHUB_USERNAME/dotfiles.git
+    chezmoi init --apply git@github.com:$YOUR_GITHUB_USERNAME/dotfiles.git
     ```
 
 This command is summarized in this sequence diagram:

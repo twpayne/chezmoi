@@ -13,5 +13,5 @@ Generates *output* for use with chezmoi. The currently supported *output*s are:
 ```sh
 chezmoi generate install.sh > install.sh
 chezmoi git -- commit -m "$(chezmoi generate git-commit-message)"
-chezmoi generate install-init-shell.sh $GITHUB_USERNAME
+chezmoi generate install-init-shell.sh $YOUR_GITHUB_USERNAME
 ```

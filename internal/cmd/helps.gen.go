@@ -291,8 +291,8 @@ var helps = map[string]*help{
 	},
 	"docker": {
 		example: "" +
-			"  chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME\n" +
-			"  chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME",
+			"  chezmoi docker exec $CONTAINER_ID $YOUR_GITHUB_USERNAME\n" +
+			"  chezmoi docker run -p apk alpine:latest $YOUR_GITHUB_USERNAME",
 	},
 	"doctor": {
 		longHelp: "" +
@@ -454,7 +454,7 @@ var helps = map[string]*help{
 		example: "" +
 			"  chezmoi generate install.sh > install.sh\n" +
 			"  chezmoi git -- commit -m \"$(chezmoi generate git-commit-message)\"\n" +
-			"  chezmoi generate install-init-shell.sh $GITHUB_USERNAME",
+			"  chezmoi generate install-init-shell.sh $YOUR_GITHUB_USERNAME",
 	},
 	"git": {
 		longHelp: "" +
@@ -745,8 +745,8 @@ var helps = map[string]*help{
 			"  SSH to host, install chezmoi, run chezmoi init --apply *init-args*, and\n" +
 			"  executes your shell.",
 		example: "" +
-			"  chezmoi ssh $HOSTNAME $GITHUB_USERNAME\n" +
-			"  chezmoi ssh $HOSTNAME -- --one-shot $GITHUB_USERNAME",
+			"  chezmoi ssh $HOSTNAME $YOUR_GITHUB_USERNAME\n" +
+			"  chezmoi ssh $HOSTNAME -- --one-shot $YOUR_GITHUB_USERNAME",
 		longFlags: chezmoiset.New(
 			"package-manager",
 			"shell",

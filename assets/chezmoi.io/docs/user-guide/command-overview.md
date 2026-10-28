@@ -47,11 +47,11 @@ sequenceDiagram
 
 ## Using chezmoi across multiple machines
 
-- [`chezmoi init $GITHUB_USERNAME`][init-command] clones your dotfiles from
+- [`chezmoi init $YOUR_GITHUB_USERNAME`][init-command] clones your dotfiles from
   GitHub into the source directory.
 
-- [`chezmoi init --apply $GITHUB_USERNAME`][init-command] clones your dotfiles
-  from GitHub into the source directory and runs `chezmoi apply`.
+- [`chezmoi init --apply $YOUR_GITHUB_USERNAME`][init-command] clones your
+  dotfiles from GitHub into the source directory and runs `chezmoi apply`.
 
 - [`chezmoi update`][update-command] pulls the latest changes from your remote
   repo and runs `chezmoi apply`.
@@ -64,9 +64,9 @@ sequenceDiagram
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R->>W: chezmoi init $GITHUB_USERNAME
-    R->>H: chezmoi init --apply $GITHUB_USERNAME
-    R->>H: chezmoi update $GITHUB_USERNAME
+    R->>W: chezmoi init $YOUR_GITHUB_USERNAME
+    R->>H: chezmoi init --apply $YOUR_GITHUB_USERNAME
+    R->>H: chezmoi update $YOUR_GITHUB_USERNAME
     W->>L: git commit
     L->>R: git push
 ```

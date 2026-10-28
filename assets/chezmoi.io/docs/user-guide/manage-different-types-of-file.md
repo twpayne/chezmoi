@@ -192,7 +192,7 @@ populating your `~/.ssh/authorized_keys`. Put the following in your
 `~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`:
 
 ```text
-{{ range gitHubKeys "$GITHUB_USERNAME" -}}
+{{ range gitHubKeys "$YOUR_GITHUB_USERNAME" -}}
 {{   .Key }}
 {{ end -}}
 ```

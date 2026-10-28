@@ -56,8 +56,8 @@ then install them with *package-manager*.
 ## Examples
 
 ```sh
-chezmoi docker exec $CONTAINER_ID $GITHUB_USERNAME
-chezmoi docker run -p apk alpine:latest $GITHUB_USERNAME
+chezmoi docker exec $CONTAINER_ID $YOUR_GITHUB_USERNAME
+chezmoi docker run -p apk alpine:latest $YOUR_GITHUB_USERNAME
 ```
 
 [init-command]: /reference/commands/init.md
