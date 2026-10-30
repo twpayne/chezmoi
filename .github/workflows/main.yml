@@ -78,7 +78,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: reviewdog/action-misspell@3467363dab5b42db2b1372c5fd2b1771fea2ea48   # v1.30.3
+    - uses: reviewdog/action-misspell@840bfbe9f804da9afb0bd739dc4689012f3fdd2d   # v1.30.4
       with:
         locale: US
         ignore: importas,Produktive
@@ -321,7 +321,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
-    - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e   # v10.3.2
+    - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2   # v10.3.3
       with:
         enable-cache: false
         version: ${{ needs.versions.outputs.uv-version }}
@@ -532,7 +532,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
-    - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e   # v10.3.2
+    - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2   # v10.3.3
       with:
         enable-cache: false
         version: ${{ needs.versions.outputs.uv-version }}
