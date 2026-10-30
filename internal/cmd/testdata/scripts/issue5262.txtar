@@ -1,0 +1,6 @@
+# test that chezmoi add creates ~/AppData
+exec chezmoi add $HOME${/}AppData${/}Roaming${/}kanata${/}kanata.kbd
+exists $CHEZMOISOURCEDIR/AppData/Roaming/kanata/kanata.kbd
+
+-- home/user/AppData/Roaming/kanata/kanata.kbd --
+# contents of ~/AppData/Roaming/kanata/kanata.kbd
