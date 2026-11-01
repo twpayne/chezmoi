@@ -11,6 +11,11 @@ A NeoVim plugin that integrates with chezmoi.
 Intelligent VIM syntax highlighting when editing files in your source directory.
 Works with both `chezmoi edit` and editing files directly.
 
+### [`github.com/dirichy/vimoi.nvim`](https://github.com/dirichy/vimoi.nvim) { id="dirichy/vimoi.nvim" }
+
+Edit chezmoi-managed files in Neovim with template-aware diff, preview and
+re-add.
+
 ### [`github.com/tuh8888/chezmoi.el`](https://github.com/tuh8888/chezmoi.el) { id="tuh8888/chezmoi.el" }
 
 Convenience functions for interacting with chezmoi in Emacs.
