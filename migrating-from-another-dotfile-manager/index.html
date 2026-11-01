@@ -3928,10 +3928,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5123,62 +5119,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11285,15 +11225,15 @@
 <h1 id="migrating-from-another-dotfile-manager">Migrating from another dotfile manager</h1>
 <h2 id="migrate-from-a-dotfile-manager-that-uses-symlinks">Migrate from a dotfile manager that uses symlinks</h2>
 <p>Many dotfile managers replace dotfiles with symbolic links to files in a common
-directory. If you <code>chezmoi add</code> such a symlink, chezmoi will add the symlink,
-not the file. To assist with migrating from symlink-based systems, use the
-<code>--follow</code> option to <code>chezmoi add</code>, for example:</p>
+directory. If you <a href="../reference/commands/add/"><code>chezmoi add</code></a> such a symlink, chezmoi will add
+the symlink, not the file. To assist with migrating from symlink-based systems,
+use the <code>--follow</code> option to <code>chezmoi add</code>, for example:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>add<span class="w"> </span>--follow<span class="w"> </span>~/.bashrc
 </code></pre></div>
-<p>This will tell <code>chezmoi add</code> that the target state of <code>~/.bashrc</code> is the target
-of the <code>~/.bashrc</code> symlink, rather than the symlink itself. When you run
-<code>chezmoi apply</code>, chezmoi will replace the <code>~/.bashrc</code> symlink with the file
-contents.</p>
+<p>This will tell <a href="../reference/commands/add/"><code>chezmoi add</code></a> that the target state of <code>~/.bashrc</code>
+is the target of the <code>~/.bashrc</code> symlink, rather than the symlink itself. When
+you run <a href="../reference/commands/apply/"><code>chezmoi apply</code></a>, chezmoi will replace the <code>~/.bashrc</code>
+symlink with the file contents.</p>
 
 
 

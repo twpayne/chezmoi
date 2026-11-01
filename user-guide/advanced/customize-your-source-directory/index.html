@@ -3957,10 +3957,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5152,62 +5148,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11351,9 +11291,10 @@ it does not require git and can be used with other version control systems, such
 as <a href="https://www.fossil-scm.org/">fossil</a> or <a href="https://pijul.org/">pijul</a>.</p>
 <p>The version control system is used in only three places:</p>
 <ul>
-<li><code>chezmoi init</code> will use <code>git clone</code> to clone the source repo if it does not
-  already exist.</li>
-<li><code>chezmoi update</code> will use <code>git pull</code> by default to pull the latest changes.</li>
+<li><a href="../../../reference/commands/init/"><code>chezmoi init</code></a> will use <code>git clone</code> to clone the source repo
+  if it does not already exist.</li>
+<li><a href="../../../reference/commands/update/"><code>chezmoi update</code></a> will use <code>git pull</code> by default to pull the
+  latest changes.</li>
 <li>chezmoi's auto add, commit, and push functionality use <code>git status</code>, <code>git
   add</code>, <code>git commit</code> and <code>git push</code>.</li>
 </ul>
@@ -11376,7 +11317,8 @@ chezmoi<span class="w"> </span>init<span class="w"> </span>--apply
 required for chezmoi to be able to identify the work tree.</p>
 </div>
 <p>For updates, you can set the <code>update.command</code> and <code>update.args</code> configuration
-variables and <code>chezmoi update</code> will use these instead of <code>git pull</code>, for example:</p>
+variables and <a href="../../../reference/commands/update/"><code>chezmoi update</code></a> will use these instead of <code>git
+pull</code>, for example:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

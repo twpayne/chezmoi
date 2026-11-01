@@ -3884,10 +3884,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5080,62 +5076,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11383,7 +11323,7 @@
 executes your shell.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><code>ssh</code> is an experimental, potentially destructive, command.</p>
+<p><code>ssh</code> is an potentially destructive command.</p>
 </div>
 <h2 id="flags">Flags</h2>
 <h3 id="-p-package-manager-package-manager"><code>-p</code>, <code>--package-manager</code> <em>package-manager</em></h3>
@@ -11396,8 +11336,8 @@ then install them with <em>package-manager</em>.</p>
 <p>After installing chezmoi, initializing your dotfiles, execute your shell. This
 is the default.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$HOSTNAME</span><span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
-chezmoi<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$HOSTNAME</span><span class="w"> </span>--<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$HOSTNAME</span><span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
+chezmoi<span class="w"> </span>ssh<span class="w"> </span><span class="nv">$HOSTNAME</span><span class="w"> </span>--<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
 </code></pre></div>
 
 

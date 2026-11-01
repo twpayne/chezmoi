@@ -3979,10 +3979,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5174,62 +5170,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11442,7 +11382,8 @@ export EDITOR=vi
 functions from <a href="http://masterminds.github.io/sprig/">sprig</a> and its own <a href="../../reference/templates/functions/">functions</a> for interacting
 with <a href="../password-managers/">password managers</a>.</p>
 <p>Templates can be executed directly from the command line, without the need to
-create a file on disk, with the <code>execute-template</code> command, for example:</p>
+create a file on disk, with the [<code>execute-template</code>
+command][execute-template-command], for example:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s2">&quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;</span>
 </code></pre></div>
 <p>This is useful when developing or <a href="../templating/#testing-templates">debugging templates</a>.</p>

@@ -4023,10 +4023,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5218,62 +5214,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11706,8 +11646,9 @@ is computed for the current OS and architecture) to the target
 <code>./local/bin/age</code>.</p>
 <h2 id="import-archives">Import archives</h2>
 <p>It is occasionally useful to import entire archives of configuration into your
-source state. The <code>import</code> command does this. For example, to import the latest
-version <a href="https://github.com/ohmyzsh/ohmyzsh"><code>github.com/ohmyzsh/ohmyzsh</code></a> to <code>~/.oh-my-zsh</code> run:</p>
+source state. The <a href="../../reference/commands/import/"><code>import</code> command</a> does this. For example, to
+import the latest version <a href="https://github.com/ohmyzsh/ohmyzsh"><code>github.com/ohmyzsh/ohmyzsh</code></a> to
+<code>~/.oh-my-zsh</code> run:</p>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz<span class="w"> </span>https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/dot_oh-my-zsh
 chezmoi<span class="w"> </span>import<span class="w"> </span>--strip-components<span class="w"> </span><span class="m">1</span><span class="w"> </span>--destination<span class="w"> </span>~/.oh-my-zsh<span class="w"> </span><span class="si">${</span><span class="nv">TMPDIR</span><span class="si">}</span>/oh-my-zsh-master.tar.gz
@@ -11870,8 +11811,9 @@ for example:</p>
 the subdirectory containing the submodule.</p>
 </div>
 <p>You can include git repos from elsewhere as git submodules in your source
-directory. <code>chezmoi init</code> and <code>chezmoi update</code> are aware of git submodules and
-will run git with the <code>--recurse-submodules</code> flag by default.</p>
+directory. <a href="../../reference/commands/init/"><code>chezmoi init</code></a> and <a href="../../reference/commands/update/"><code>chezmoi update</code></a>
+are aware of git submodules and will run git with the <code>--recurse-submodules</code>
+flag by default.</p>
 <p>chezmoi assumes that all files and directories in its source state are in
 chezmoi's format, i.e. their filenames include attributes like <code>private_</code> and
 <code>run_</code>.  Most git submodules are not in chezmoi's format and so files like

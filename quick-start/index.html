@@ -3972,10 +3972,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5167,62 +5163,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11417,7 +11357,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </code></pre></div>
 <p><a href="https://github.com/new">Create a new repository on GitHub</a> called <code>dotfiles</code> and then push
 your repo:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>git@github.com:<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>git@github.com:<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 git<span class="w"> </span>branch<span class="w"> </span>-M<span class="w"> </span>main
 git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
 </code></pre></div>
@@ -11449,12 +11389,12 @@ changes to your repo.</p>
     W--&gt;&gt;H: exit</code></pre>
 <h2 id="using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</h2>
 <p>On a second machine, initialize chezmoi with your dotfiles repo:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>Private GitHub repos require other <a href="https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls">authentication methods</a>:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>git@github.com:<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>git@github.com:<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 </div>
 <p>This will check out the repo and any submodules and optionally create a chezmoi
@@ -11490,16 +11430,16 @@ contents of the file:</p>
     R-&gt;&gt;H: chezmoi update</code></pre>
 <h2 id="set-up-a-new-machine-with-a-single-command">Set up a new machine with a single command</h2>
 <p>You can install your dotfiles on new machine with a single command:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>https://github.com/<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>If you use GitHub and your dotfiles repo is called <code>dotfiles</code> then this can be
 shortened to:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
 </code></pre></div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>Private GitHub repos require other <a href="https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-https-urls">authentication methods</a>:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>git@github.com:<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>git@github.com:<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 </div>
 <p>This command is summarized in this sequence diagram:</p>

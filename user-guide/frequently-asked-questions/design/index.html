@@ -4056,10 +4056,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5251,62 +5247,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11522,13 +11462,13 @@
 
 <h1 id="design">Design</h1>
 <h2 id="do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">Do I have to use <code>chezmoi edit</code> to edit my dotfiles?</h2>
-<p>No. <code>chezmoi edit</code> is a convenience command that has a couple of useful
-features, but you don't have to use it.</p>
-<p>You can also run <code>chezmoi cd</code> and then just edit the files in the source state
-directly. After saving an edited file you can run <code>chezmoi diff</code> to check what
-effect the changes would have, and run <code>chezmoi apply</code> if you're happy with
-them. If there are inconsistencies that you want to keep, then <code>chezmoi
-merge-all</code> will help you resolve any differences.</p>
+<p>No. <a href="../../../reference/commands/edit/"><code>chezmoi edit</code></a> is a convenience command that has a couple of
+useful features, but you don't have to use it.</p>
+<p>You can also run <a href="../../../reference/commands/cd/"><code>chezmoi cd</code></a> and then just edit the files in the
+source state directly. After saving an edited file you can run <code>chezmoi diff</code> to
+check what effect the changes would have, and run <code>chezmoi apply</code> if you're
+happy with them. If there are inconsistencies that you want to keep, then
+<a href="../../../reference/commands/merge-all/"><code>chezmoi merge-all</code></a> will help you resolve any differences.</p>
 <p><code>chezmoi edit</code> provides the following useful features:</p>
 <ul>
 <li>
@@ -11606,8 +11546,9 @@ the template, not the result of executing the template.</p>
 attributes in the filename mangles entries in the directory, directories might
 have the <code>exact_</code> attribute and contain empty files, and the directory's
 entries might not be usable with symlinks.</p>
-<p>In symlink mode, running <code>chezmoi add</code> does not immediately replace the targets
-with a symlink. You must run <code>chezmoi apply</code> to create the symlinks.</p>
+<p>In symlink mode, running <a href="../../../reference/commands/add/"><code>chezmoi add</code></a> does not immediately
+replace the targets with a symlink. You must run <a href="../../../reference/commands/apply/"><code>chezmoi
+apply</code></a> to create the symlinks.</p>
 <h2 id="why-does-chezmoi-use-weird-filenames">Why does chezmoi use weird filenames?</h2>
 <p>There are a number of criticisms of how chezmoi uses filenames:</p>
 <ol>
@@ -11628,10 +11569,10 @@ control systems and their control files (e.g. <code>.git</code> and <code>.gitig
 <p>chezmoi needs per-file metadata to know how to interpret the source file's
 contents, for example to know when the source file is a template or if the
 file's contents are encrypted. By storing this metadata in the filename, the
-metadata is unambiguously associated with a single file and adding, updating,
-or removing a single file touches only a single file in the source state.
-Changes to the metadata (e.g. <code>chezmoi chattr +template $TARGET</code>) are simple
-file renames and isolated to the affected file.</p>
+metadata is unambiguously associated with a single file and adding, updating, or
+removing a single file touches only a single file in the source state. Changes
+to the metadata (e.g. <a href="../../../reference/commands/chattr/"><code>chezmoi chattr +template $TARGET</code></a>) are
+simple file renames and isolated to the affected file.</p>
 <p>If chezmoi were to, say, use a common configuration file listing which files
 were templates and/or encrypted, then changes to any file would require updates
 to the common configuration file. Automating updates to configuration files
@@ -11730,9 +11671,10 @@ have to type one command you can wrap this in a shell function, for example:</p>
 <span class="w">                  </span>--source<span class="w"> </span>~/.local/share/chezmoi-work
 <span class="o">}</span>
 </code></pre></div>
-<p>If you want to generate multiple configuration files with <code>chezmoi init</code> then
-you will need the <code>--config-path</code> flag. For more advanced use, use the
-<code>--destination</code>, <code>--cache</code>, and <code>--persistent-state</code> flags.</p>
+<p>If you want to generate multiple configuration files with <a href="../../../reference/commands/init/"><code>chezmoi
+init</code></a> then you will need the <code>--config-path</code> flag. For more
+advanced use, use the <code>--destination</code>, <code>--cache</code>, and <code>--persistent-state</code>
+flags.</p>
 <p>Secondly, you can assemble a single source state from multiple sources and then
 use <code>chezmoi apply</code>. For example, if you have multiple source states in
 subdirectories of <code>~/.dotfiles</code>:</p>
@@ -11755,8 +11697,9 @@ chezmoi<span class="w"> </span>apply<span class="w"> </span>--source<span class=
 <p>Thirdly, you can use a <code>run_</code> script to invoke a second instance of chezmoi,
 <a href="https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl">as used by @felipecrs</a>.</p>
 <h2 id="why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</h2>
-<p><code>chezmoi cd</code> spawns a shell because it is not possible for a program to change
-the working directory of its parent process. You can add a shell function instead:</p>
+<p><a href="../../../reference/commands/cd/"><code>chezmoi cd</code></a> spawns a shell because it is not possible for a
+program to change the working directory of its parent process. You can add a
+shell function instead:</p>
 <div class="highlight"><pre><span></span><code>chezmoi-cd<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>
 <span class="o">}</span>
@@ -11764,12 +11707,13 @@ the working directory of its parent process. You can add a shell function instea
 <p>Typing <code>chezmoi-cd</code> will then change the directory of your current shell to
 chezmoi's source directory.</p>
 <h2 id="why-are-the-prompt-functions-only-available-in-config-file-templates">Why are the <code>prompt*</code> functions only available in config file templates?</h2>
-<p>chezmoi regularly needs to execute templates to determine the target contents
-of files. For example, templates are executed for the <code>apply</code>, <code>diff</code>, and
-<code>status</code> commands, amongst many others. Having to interactively respond each
-time would quickly become tiresome. Therefore, chezmoi only provides these
-functions when generating a config file from a config file template (e.g. when
-you run <code>chezmoi init</code> or <code>chezmoi --init apply</code>).</p>
+<p>chezmoi regularly needs to execute templates to determine the target contents of
+files. For example, templates are executed for the <a href="../../../reference/commands/apply/"><code>apply</code></a>,
+<a href="../../../reference/commands/diff/"><code>diff</code></a>, and <a href="../../../reference/commands/status/"><code>status</code></a> commands, amongst many
+others. Having to interactively respond each time would quickly become tiresome.
+Therefore, chezmoi only provides these functions when generating a config file
+from a config file template (e.g. when you run <a href="../../../reference/commands/init/"><code>chezmoi init</code></a> or
+<code>chezmoi --init apply</code>).</p>
 <h2 id="why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?</h2>
 <p>Whole system management tools are more than capable of managing your dotfiles,
 but they are large systems that entail several disadvantages. Compared to whole
@@ -11808,8 +11752,9 @@ that is run every time you run <code>chezmoi apply</code>, to, for example:</p>
 <p>Copy a file managed by chezmoi inside your home directory to the target file.</p>
 </li>
 <li>
-<p>Execute a template with <code>chezmoi execute-template --output=$FILENAME
-  template</code> where <code>$FILENAME</code> is outside the target directory.</p>
+<p>Execute a template with <a href="../../../reference/commands/execute-template/"><code>chezmoi execute-template --output=$FILENAME
+  template</code></a> where <code>$FILENAME</code> is outside the target
+  directory.</p>
 </li>
 </ul>
 <p>chezmoi executes all scripts as the user executing chezmoi, so you may need to

@@ -4001,10 +4001,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5196,62 +5192,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11417,7 +11357,8 @@ first run:</p>
 <div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/src
 </code></pre></div>
 <p>This creates the directory in the source state, which means that chezmoi will
-create it (if it does not already exist) when you run <code>chezmoi apply</code>.</p>
+create it (if it does not already exist) when you run <a href="../../reference/commands/apply/"><code>chezmoi
+apply</code></a>.</p>
 <p>However, as this is an empty directory it will be ignored by git. So, create a
 file in the directory in the source state that will be seen by git (so git does
 not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
@@ -11425,7 +11366,7 @@ in the target state):</p>
 <div class="highlight"><pre><span></span><code>touch<span class="w"> </span><span class="k">$(</span>chezmoi<span class="w"> </span>source-path<span class="k">)</span>/src/.keep
 </code></pre></div>
 <p>chezmoi automatically creates <code>.keep</code> files when you add an empty directory with
-<code>chezmoi add</code>.</p>
+<a href="../../reference/commands/add/"><code>chezmoi add</code></a>.</p>
 <h2 id="ensure-that-a-target-is-removed">Ensure that a target is removed</h2>
 <p>Create a file called <code>.chezmoiremove</code> in the source directory containing a list
 of patterns of files to remove. chezmoi will remove anything in the target
@@ -11548,7 +11489,7 @@ the source state instead.</p>
 <p>chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
 populating your <code>~/.ssh/authorized_keys</code>. Put the following in your
 <code>~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl</code>:</p>
-<div class="highlight"><pre><span></span><code>{{ range gitHubKeys &quot;$GITHUB_USERNAME&quot; -}}
+<div class="highlight"><pre><span></span><code>{{ range gitHubKeys &quot;$YOUR_GITHUB_USERNAME&quot; -}}
 {{   .Key }}
 {{ end -}}
 </code></pre></div>

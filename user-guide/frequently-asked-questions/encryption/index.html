@@ -3974,10 +3974,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5169,62 +5165,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11424,8 +11364,8 @@ Make sure <code>encryption</code> is added at the beginning, before any other se
 </div>
 </div>
 </div>
-<p>Run <code>chezmoi init --apply</code> to generate the chezmoi's config file and decrypt the
-private key:</p>
+<p>Run <a href="../../../reference/commands/init/"><code>chezmoi init --apply</code></a> to generate the chezmoi's config file
+and decrypt the private key:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply
 <span class="go">Enter passphrase:</span>
 </code></pre></div>
@@ -11459,12 +11399,14 @@ encryption, the following steps can be used:</p>
 <li>Update chezmoi configuration to use the new encryption method (examples:
    <a href="../../encryption/gpg/">gpg</a>, <a href="../../encryption/age/">age</a>, <a href="#how-do-i-configure-chezmoi-to-encrypt-files-but-only-request-a-passphrase-the-first-time-chezmoi-init-is-run">age with one-time
    passphrase</a>).</li>
-<li>Remove all encrypted files from the state via <code>chezmoi forget</code> or <code>chezmoi unmanage</code>.</li>
+<li>Remove all encrypted files from the state via <a href="../../../reference/commands/forget/"><code>chezmoi
+   forget</code></a> or <a href="../../../reference/commands/unmanage/"><code>chezmoi unmanage</code></a>.</li>
 <li>Add them back with <code>chezmoi add --encrypt</code>.</li>
 </ol>
 <h3 id="example-migrate-from-gpg-to-age">Example: Migrate from GPG to age</h3>
-<p>Update chezmoi configuration to use age encryption (with <code>chezmoi edit-config</code>
-or manually editing the corresponding template):</p>
+<p>Update chezmoi configuration to use age encryption (with <a href="../../../reference/commands/edit-config/"><code>chezmoi
+edit-config</code></a> or manually editing the corresponding
+template):</p>
 <div class="highlight"><pre><span></span><code><span class="gd">- encryption = &quot;gpg&quot;</span>
 <span class="gd">- [gpg]</span>
 <span class="gd">-     recipient = &quot;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;</span>

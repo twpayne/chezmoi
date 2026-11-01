@@ -4001,10 +4001,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5196,62 +5192,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11413,12 +11353,13 @@
 <h1 id="use-scripts-to-perform-actions">Use scripts to perform actions</h1>
 <h2 id="understand-how-scripts-work">Understand how scripts work</h2>
 <p>chezmoi supports scripts that are executed when you run <a href="../../reference/commands/apply/"><code>chezmoi
-apply</code></a>. These scripts can be configured to run every time, only when
-their contents have changed, or only if they haven't been run before.</p>
+apply</code></a>. These scripts can be configured to run every time, only
+when their contents have changed, or only if they haven't been run before.</p>
 <p>Scripts are any file in the source directory with the prefix <code>run_</code>, and
 they are executed in alphabetical order.</p>
 <ul>
-<li><strong><code>run_</code> scripts</strong>: These scripts are executed every time you run <code>chezmoi apply</code>.</li>
+<li><strong><code>run_</code> scripts</strong>: These scripts are executed every time you run <a href="../../reference/commands/apply/"><code>chezmoi
+  apply</code></a>.</li>
 <li><strong><code>run_onchange_</code> scripts</strong>: These scripts are only executed if their content
 has changed since the last time they were run successfully.</li>
 <li><strong><code>run_once_</code> scripts</strong>: These scripts are executed once for each unique
@@ -11435,8 +11376,8 @@ All scripts should be idempotent, including <code>run_onchange_</code> and <code
 To run scripts before or after the updates, use the <code>before_</code> or <code>after_</code>
 attributes, respectively, e.g., <code>run_once_before_install-password-manager.sh</code>.</p>
 <p>Scripts must be created manually in the source directory, typically by running
-<a href="../../reference/commands/cd/"><code>chezmoi cd</code></a> and then creating a file with a <code>run_</code> prefix. There is no
-need to set the executable bit on the script.</p>
+<a href="../../reference/commands/cd/"><code>chezmoi cd</code></a> and then creating a file with a <code>run_</code> prefix. There
+is no need to set the executable bit on the script.</p>
 <p>Scripts with the <code>.tmpl</code> suffix are treated as templates, with the usual
 template variables available. If the template resolves to only whitespace
 or an empty string, the script will not be executed, which is useful for
@@ -11480,9 +11421,10 @@ environment variable to <code>my_value</code>, specify:</p>
 <p>chezmoi sets a number of environment variables when running scripts, including
 <code>CHEZMOI=1</code> and common template data like <code>CHEZMOI_OS</code> and <code>CHEZMOI_ARCH</code>.</p>
 <h2 id="dont-show-scripts-that-would-run-in-chezmoi-diffchezmoi-status">Don't show scripts that would run in <code>chezmoi diff</code>/<code>chezmoi status</code></h2>
-<p>By default, <code>chezmoi diff</code> will print the contents of scripts that would be run
-by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezmoi diff</code>, set
-<code>diff.exclude</code> in your configuration file, for example:</p>
+<p>By default, <a href="../../reference/commands/diff/"><code>chezmoi diff</code></a> will print the contents of scripts
+that would be run by <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a>. To exclude scripts from
+the output of <code>chezmoi diff</code>, set <code>diff.exclude</code> in your configuration file, for
+example:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">TOML</label><label for="__tabbed_2_2">YAML</label><label for="__tabbed_2_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -11508,9 +11450,9 @@ by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezm
 </div>
 </div>
 </div>
-<p>Similarly, <code>chezmoi status</code> will print the names of the scripts that it will
-execute with the status <code>R</code>. This can similarly disabled by setting
-<code>status.exclude</code> to <code>["scripts"]</code> in your configuration file.</p>
+<p>Similarly, <a href="../../reference/commands/status/"><code>chezmoi status</code></a> will print the names of the
+scripts that it will execute with the status <code>R</code>. This can similarly disabled by
+setting <code>status.exclude</code> to <code>["scripts"]</code> in your configuration file.</p>
 <h2 id="install-packages-with-scripts">Install packages with scripts</h2>
 <p>Change to the source directory and create a file called
 <code>run_onchange_install-packages.sh</code>. In this file create your package
@@ -11518,10 +11460,10 @@ installation script, e.g.</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ripgrep
 </code></pre></div>
-<p>The next time you run <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a> or <a href="../../reference/commands/update/"><code>chezmoi update</code></a>
-this script will be run. As it has the <code>run_onchange_</code> prefix, it will not be
-run again unless its contents change, for example if you add more packages to be
-installed.</p>
+<p>The next time you run [<code>chezmoi apply</code>][apply] or <a href="../../reference/commands/update/"><code>chezmoi
+update</code></a> this script will be run. As it has the <code>run_onchange_</code>
+prefix, it will not be run again unless its contents change, for example if you
+add more packages to be installed.</p>
 <p>This script can also be a template. For example, if you create
 <code>run_onchange_install-packages.sh.tmpl</code> with the contents:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/run_onchange_install-packages.sh.tmpl</span><pre><span></span><code>{{ if eq .chezmoi.os &quot;linux&quot; -}}
@@ -11534,15 +11476,15 @@ brew install ripgrep
 </code></pre></div>
 <p>This will install <code>ripgrep</code> on both Debian/Ubuntu Linux systems and macOS.</p>
 <h2 id="run-a-script-when-the-contents-of-another-file-changes">Run a script when the contents of another file changes</h2>
-<p>chezmoi's <code>run_</code> scripts are run every time you run <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a>,
+<p>chezmoi's <code>run_</code> scripts are run every time you run [<code>chezmoi apply</code>][apply],
 whereas <code>run_onchange_</code> scripts are run only when their contents have changed,
 after executing them as templates. You can use this to cause a <code>run_onchange_</code>
 script to run when the contents of another file has changed by including
 a checksum of the other file's contents in the script.</p>
 <p>For example, if your <a href="https://wiki.gnome.org/Projects/dconf">dconf</a> settings are stored in <code>dconf.ini</code> in your
-source directory then you can make <code>chezmoi apply</code> only load them when the
-contents of <code>dconf.ini</code> has changed by adding the following script as
-<code>run_onchange_dconf-load.sh.tmpl</code>:</p>
+source directory then you can make <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a> only load
+them when the contents of <code>dconf.ini</code> has changed by adding the following script
+as <code>run_onchange_dconf-load.sh.tmpl</code>:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/run_onchange_dconf-load.sh.tmpl</span><pre><span></span><code>#!/bin/bash
 
 # dconf.ini hash: {{ include &quot;dconf.ini&quot; | sha256sum }}

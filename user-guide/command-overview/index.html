@@ -3979,10 +3979,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5174,62 +5170,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11370,44 +11310,42 @@
 <h2 id="getting-started">Getting started</h2>
 <ul>
 <li>
-<p><a href="../../reference/commands/doctor/"><code>chezmoi doctor</code></a> checks for common problems.
-  If you encounter something unexpected, run this first.</p>
+<p><a href="../../reference/commands/doctor/"><code>chezmoi doctor</code></a> checks for common problems. If you
+  encounter something unexpected, run this first.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/init/"><code>chezmoi init</code></a> creates chezmoi's source
-  directory and a git repo on a new machine.</p>
+<p><a href="../../reference/commands/init/"><code>chezmoi init</code></a> creates chezmoi's source directory and a git
+  repo on a new machine.</p>
 </li>
 </ul>
 <h2 id="daily-commands">Daily commands</h2>
 <ul>
 <li>
-<p><a href="../../reference/commands/add/"><code>chezmoi add $FILE</code></a> adds <code>$FILE</code>from your home
-  directory to the source directory.</p>
+<p><a href="../../reference/commands/add/"><code>chezmoi add $FILE</code></a> adds <code>$FILE</code>from your home directory to the
+  source directory.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/edit/"><code>chezmoi edit $FILE</code></a> opens your editor with
-  the file in the source directory that corresponds to <code>$FILE</code>.</p>
+<p><a href="../../reference/commands/edit/"><code>chezmoi edit $FILE</code></a> opens your editor with the file in the
+  source directory that corresponds to <code>$FILE</code>.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/status/"><code>chezmoi status</code></a> gives a quick summary of
-  what files would change if you ran <code>chezmoi apply</code>.</p>
+<p><a href="../../reference/commands/status/"><code>chezmoi status</code></a> gives a quick summary of what files would
+  change if you ran <code>chezmoi apply</code>.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/diff/"><code>chezmoi diff</code></a> shows the changes that
-  <code>chezmoi apply</code> would make to your home directory.</p>
+<p><a href="../../reference/commands/diff/"><code>chezmoi diff</code></a> shows the changes that <code>chezmoi apply</code> would
+  make to your home directory.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/apply/"><code>chezmoi apply</code></a> updates your dotfiles from
-  the source directory.</p>
-</li>
-<li>
-<p><a href="../../reference/commands/edit/"><code>chezmoi edit --apply $FILE</code></a> is like
-  <code>chezmoi
-  edit $FILE</code> but also runs <code>chezmoi apply $FILE</code> afterwards.</p>
-</li>
-<li>
-<p><a href="../../reference/commands/cd/"><code>chezmoi cd</code></a> opens a subshell in the source
+<p><a href="../../reference/commands/apply/"><code>chezmoi apply</code></a> updates your dotfiles from the source
   directory.</p>
+</li>
+<li>
+<p><a href="../../reference/commands/edit/"><code>chezmoi edit --apply $FILE</code></a> is like <code>chezmoi edit $FILE</code> but
+  also runs <code>chezmoi apply $FILE</code> afterwards.</p>
+</li>
+<li>
+<p><a href="../../reference/commands/cd/"><code>chezmoi cd</code></a> opens a subshell in the source directory.</p>
 </li>
 </ul>
 <pre class="mermaid"><code>sequenceDiagram
@@ -11425,18 +11363,16 @@
 <h2 id="using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</h2>
 <ul>
 <li>
-<p><a href="../../reference/commands/init/"><code>chezmoi init $GITHUB_USERNAME</code></a> clones your
-  dotfiles from GitHub into the source directory.</p>
+<p><a href="../../reference/commands/init/"><code>chezmoi init $YOUR_GITHUB_USERNAME</code></a> clones your dotfiles from
+  GitHub into the source directory.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/init/"><code>chezmoi init --apply $GITHUB_USERNAME</code></a> clones
-  your dotfiles from GitHub into the source directory and runs
-  <code>chezmoi
-  apply</code>.</p>
+<p><a href="../../reference/commands/init/"><code>chezmoi init --apply $YOUR_GITHUB_USERNAME</code></a> clones your
+  dotfiles from GitHub into the source directory and runs <code>chezmoi apply</code>.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/update/"><code>chezmoi update</code></a> pulls the latest changes
-  from your remote repo and runs <code>chezmoi apply</code>.</p>
+<p><a href="../../reference/commands/update/"><code>chezmoi update</code></a> pulls the latest changes from your remote
+  repo and runs <code>chezmoi apply</code>.</p>
 </li>
 <li>
 <p>Use normal git commands to add, commit, and push changes to your remote repo.</p>
@@ -11447,28 +11383,26 @@
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R-&gt;&gt;W: chezmoi init $GITHUB_USERNAME
-    R-&gt;&gt;H: chezmoi init --apply $GITHUB_USERNAME
-    R-&gt;&gt;H: chezmoi update $GITHUB_USERNAME
+    R-&gt;&gt;W: chezmoi init $YOUR_GITHUB_USERNAME
+    R-&gt;&gt;H: chezmoi init --apply $YOUR_GITHUB_USERNAME
+    R-&gt;&gt;H: chezmoi update $YOUR_GITHUB_USERNAME
     W-&gt;&gt;L: git commit
     L-&gt;&gt;R: git push</code></pre>
 <h2 id="working-with-templates">Working with templates</h2>
 <ul>
 <li>
-<p><a href="../../reference/commands/data/"><code>chezmoi data</code></a> prints the available template
-  data.</p>
+<p><a href="../../reference/commands/data/"><code>chezmoi data</code></a> prints the available template data.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/add/"><code>chezmoi add --template $FILE</code></a> adds <code>$FILE</code> as
-  a template.</p>
+<p><a href="../../reference/commands/add/"><code>chezmoi add --template $FILE</code></a> adds <code>$FILE</code> as a template.</p>
 </li>
 <li>
 <p><a href="../../reference/commands/chattr/"><code>chezmoi chattr +template $FILE</code></a> makes an
   existing file a template.</p>
 </li>
 <li>
-<p><a href="../../reference/commands/cat/"><code>chezmoi cat $FILE</code></a> prints the target contents
-  of <code>$FILE</code>, without changing <code>$FILE</code>.</p>
+<p><a href="../../reference/commands/cat/"><code>chezmoi cat $FILE</code></a> prints the target contents of <code>$FILE</code>,
+  without changing <code>$FILE</code>.</p>
 </li>
 <li>
 <p><a href="../../reference/commands/execute-template/"><code>chezmoi execute-template</code></a> is

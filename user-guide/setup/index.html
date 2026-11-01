@@ -3990,10 +3990,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5185,62 +5181,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11408,12 +11348,12 @@ of your choice (e.g. <a href="https://bitbucket.org">Bitbucket</a>, <a href="htt
 <a href="https://gitlab.com">GitLab</a>; many people call their repo <code>dotfiles</code>) and push the repo in
 the source directory here. For example:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span><span class="nb">cd</span>
-git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>origin<span class="w"> </span>https://github.com/<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>main
 <span class="nb">exit</span>
 </code></pre></div>
 <p>On another machine you can checkout this repo:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>https://github.com/<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>You can then see what would be changed:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>diff
@@ -11423,7 +11363,7 @@ git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span
 </code></pre></div>
 <p>The above commands can be combined into a single command to initialize,
 checkout, and apply:</p>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>--verbose<span class="w"> </span>https://github.com/<span class="nv">$GITHUB_USERNAME</span>/dotfiles.git
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span>--verbose<span class="w"> </span>https://github.com/<span class="nv">$YOUR_GITHUB_USERNAME</span>/dotfiles.git
 </code></pre></div>
 <p>These commands are summarized in this sequence diagram:</p>
 <pre class="mermaid"><code>sequenceDiagram
@@ -11451,11 +11391,11 @@ password you will need to enter a <a href="https://docs.github.com/en/github/aut
 more information on these changes, read the <a href="https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/">GitHub blog post on Token
 authentication requirements for Git operations</a>.</p>
 <h2 id="create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</h2>
-<p><code>chezmoi init</code> can also create a config file automatically, if one does not
-already exist. If your repo contains a file called <code>.chezmoi.$FORMAT.tmpl</code> where
-<code>$FORMAT</code> is one of the supported config file formats (<code>json</code>, <code>jsonc</code>, <code>toml</code>,
-or <code>yaml</code>) then <code>chezmoi init</code> will execute that template to generate your
-initial config file.</p>
+<p><a href="../../reference/commands/init/"><code>chezmoi init</code></a> can also create a config file automatically, if
+one does not already exist. If your repo contains a file called
+<code>.chezmoi.$FORMAT.tmpl</code> where <code>$FORMAT</code> is one of the supported config file
+formats (<code>json</code>, <code>jsonc</code>, <code>toml</code>, or <code>yaml</code>) then <code>chezmoi init</code> will execute
+that template to generate your initial config file.</p>
 <p>Specifically, if you have <code>.chezmoi.toml.tmpl</code> that looks like this:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.toml.tmpl</span><pre><span></span><code>{{- $email := promptStringOnce . &quot;email&quot; &quot;Email address&quot; -}}
 
@@ -11465,7 +11405,8 @@ initial config file.</p>
 <p>Then <code>chezmoi init</code> will create an initial <code>chezmoi.toml</code> using this template.
 <code>promptStringOnce</code> is a special function that prompts the user (you) for a value
 if it is not already set in your <code>data</code>.</p>
-<p>To test this template, use <code>chezmoi execute-template</code> with the <code>--init</code> and
+<p>To test this template, use [<code>chezmoi
+execute-template</code>][execute-template-command] with the <code>--init</code> and
 <code>--promptString</code> flags, for example:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span>--init<span class="w"> </span>--promptString<span class="w"> </span><span class="s2">&quot;Email address=me@home.org&quot;</span><span class="w"> </span>&lt;<span class="w"> </span>~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre></div>

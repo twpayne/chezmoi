@@ -3868,10 +3868,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5063,62 +5059,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11268,7 +11208,7 @@
 
 <h1 id="chezmoi">chezmoi</h1>
 <p>Manage your dotfiles across multiple diverse machines, securely.</p>
-<p>The latest version of chezmoi is 2.73.3 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.73.3">release notes</a>,
+<p>The latest version of chezmoi is 2.74.0 (<a href="https://github.com/twpayne/chezmoi/releases/tag/v2.74.0">release notes</a>,
 <a href="reference/release-history/">release history</a>).</p>
 <h2 id="what-does-chezmoi-do">What does chezmoi do?</h2>
 <p>chezmoi, pronounced /ʃeɪ mwa/ (shay-mwa) (listen <a href="voice_30-04-2025_09-20-13.ogx">1</a> <a href="voice_30-04-2025_09-20-48.ogx">2</a>
@@ -11285,15 +11225,19 @@ including:</p>
 </ul>
 <p>You can install chezmoi and your dotfiles from your GitHub
 dotfiles repo on a new, empty machine with a single command:</p>
-<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
 </code></pre></div>
 <p>As well as the <code>curl | sh</code> installation, you can <a href="install/">install chezmoi with your
 favorite package manager</a>.</p>
-<p>Updating your dotfiles on any machine is a single command (assuming chezmoi's installation directory is <a href="install/#installation-path">on your <code>PATH</code></a>):</p>
+<p>Updating your dotfiles on any machine is a single command (assuming chezmoi's
+installation directory is <a href="install/#installation-path">in your <code>PATH</code></a>):</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>update
 </code></pre></div>
+<p>Get started quickly with chezmoi's <a href="user-guide/command-overview/">command overview</a> and
+<a href="user-guide/daily-operations/">daily operations</a>.</p>
 <p>chezmoi runs on all popular operating systems, is distributed as a single
-statically-linked binary with no dependencies, and does not require root access.</p>
+statically-linked binary with no dependencies (not even git or Python), and does
+not require root access.</p>
 <h2 id="how-do-i-start-with-chezmoi">How do I start with chezmoi?</h2>
 <p><a href="install/">Install chezmoi</a> then read the <a href="quick-start/">quick start guide</a>. The
 <a href="user-guide/setup/">user guide</a> covers most common tasks. For a full description, consult

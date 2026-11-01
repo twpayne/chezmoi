@@ -1220,10 +1220,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#by-passing-a-dictionary" class="md-nav__link">
+  <a href="#bypassing-a-dictionary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        By passing a dictionary
+        Bypassing a dictionary
       
     </span>
   </a>
@@ -4174,10 +4174,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5369,62 +5365,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11716,10 +11656,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#by-passing-a-dictionary" class="md-nav__link">
+  <a href="#bypassing-a-dictionary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        By passing a dictionary
+        Bypassing a dictionary
       
     </span>
   </a>
@@ -11835,10 +11775,11 @@ editor, use the <code>--apply</code> option, for example:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span>~/.zshrc
 </code></pre></div>
 <h2 id="testing-templates">Testing templates</h2>
-<p>Templates can be tested and debugged with <code>chezmoi execute-template</code>,
-which treats each of its arguments as a template and executes it.
-The templates are interpreted and the results are output to standard
-output, making it useful for testing small template fragments:</p>
+<p>Templates can be tested and debugged with <a href="../../reference/commands/execute-template/"><code>chezmoi
+execute-template</code></a>, which treats each of its arguments
+as a template and executes it. The templates are interpreted and the results are
+output to standard output, making it useful for testing small template
+fragments:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>execute-template<span class="w"> </span><span class="s1">&#39;{{ .chezmoi.hostname }}&#39;</span>
 </code></pre></div>
 <p>Without arguments, <code>chezmoi execute-template</code> will read the template from
@@ -12045,7 +11986,7 @@ directory <code>.chezmoitemplates</code> are interpreted as templates.</p>
 <div class="highlight"><pre><span></span><code>{{- template &quot;alacritty&quot; 18 -}}
 </code></pre></div>
 <p>Here we're calling the shared <code>alacritty</code> template with the font size as the
-<code>.</code> value passed in. You can test this with <code>chezmoi cat</code>:</p>
+<code>.</code> value passed in. You can test this with <a href="../../reference/commands/cat/"><code>chezmoi cat</code></a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>cat<span class="w"> </span>~/small-font.yml
 <span class="go">some: config</span>
 <span class="go">fontsize: 12</span>
@@ -12114,7 +12055,7 @@ more: config
 </code></pre></div>
 <p>At the moment, this means that you'll have to duplicate the alacritty data in
 the config file on every machine, but a feature will be added to avoid this.</p>
-<h4 id="by-passing-a-dictionary">By passing a dictionary</h4>
+<h4 id="bypassing-a-dictionary">Bypassing a dictionary</h4>
 <p>Using the same alacritty configuration as above, you can pass the arguments to
 it with a dictionary, for example <code>~/.local/share/chezmoi/small-font.yml.tmpl</code>:</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/small-font.yml.tmpl</span><pre><span></span><code>{{- template &quot;alacritty&quot; dict &quot;fontsize&quot; 12 &quot;font&quot; &quot;DejaVu Sans Mono&quot; -}}

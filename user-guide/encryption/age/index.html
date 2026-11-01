@@ -3968,10 +3968,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5163,62 +5159,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11346,7 +11286,7 @@
 
 <h1 id="age">age</h1>
 <p>chezmoi supports encrypting files with <a href="https://age-encryption.org/">age</a>.</p>
-<p>Generate a key using <code>chezmoi age-keygen</code>:</p>
+<p>Generate a key using <a href="../../../reference/commands/age-keygen/"><code>chezmoi age-keygen</code></a>:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi<span class="w"> </span>age-keygen<span class="w"> </span>--output<span class="o">=</span><span class="nv">$HOME</span>/key.txt
 <span class="go">Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p</span>
 </code></pre></div>
@@ -11483,9 +11423,10 @@ symmetric encryption in your config file, for example:</p>
 </div>
 </div>
 </div>
-<p>You will be prompted for the passphrase whenever you run <code>chezmoi add
---encrypt</code> and whenever chezmoi needs to decrypt the file, for example when you
-run <code>chezmoi apply</code>, <code>chezmoi diff</code>, or <code>chezmoi status</code>.</p>
+<p>You will be prompted for the passphrase whenever you run <a href="../../../reference/commands/add/"><code>chezmoi add
+--encrypt</code></a> and whenever chezmoi needs to decrypt the file, for
+example when you run <a href="../../../reference/commands/apply/"><code>chezmoi apply</code></a>, <a href="../../../reference/commands/diff/"><code>chezmoi
+diff</code></a>, or <a href="../../../reference/commands/status/"><code>chezmoi status</code></a>.</p>
 <h2 id="builtin-age-encryption">Builtin age encryption</h2>
 <p>chezmoi has builtin support for age encryption which is automatically used if
 the <code>age</code> command is not found in <code>$PATH</code>.</p>

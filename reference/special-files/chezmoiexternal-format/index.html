@@ -3892,10 +3892,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5090,62 +5086,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11441,12 +11381,13 @@ will be executable.</p>
 <p>If <code>type</code> is <code>archive</code> then the target is a directory with the contents of the
 archive at <code>url</code>. The optional boolean field <code>exact</code> may be set, in which case
 the directory and all subdirectories will be treated as exact directories, i.e.
-<code>chezmoi apply</code> will remove entries not present in the archive. The optional
-integer field <code>stripComponents</code> will remove leading path components from the
-members of archive. The optional string field <code>format</code> sets the archive format.
-The supported archive formats are <code>tar</code>, <code>tar.gz</code>, <code>tgz</code>, <code>tar.bz2</code>, <code>tbz2</code>,
-<code>xz</code>, <code>.tar.zst</code>, and <code>zip</code>. If <code>format</code> is not specified then chezmoi will
-guess the format using firstly the path of the URL and secondly its contents.</p>
+<a href="../../commands/apply/"><code>chezmoi apply</code></a> will remove entries not present in the archive.
+The optional integer field <code>stripComponents</code> will remove leading path components
+from the members of archive. The optional string field <code>format</code> sets the archive
+format. The supported archive formats are <code>tar</code>, <code>tar.gz</code>, <code>tgz</code>, <code>tar.bz2</code>,
+<code>tbz2</code>, <code>xz</code>, <code>.tar.zst</code>, and <code>zip</code>. If <code>format</code> is not specified then chezmoi
+will guess the format using firstly the path of the URL and secondly its
+contents.</p>
 <p>When <code>type</code> is <code>archive</code> or <code>archive-file</code>, the optional setting
 <code>archive.extractAppleDouble</code> controls whether <a href="https://en.wikipedia.org/wiki/AppleSingle_and_AppleDouble_formats">AppleDouble</a> files
 are extracted. It is <code>false</code> by default, so AppleDouble files will not be

@@ -3898,10 +3898,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5093,62 +5089,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11236,8 +11176,8 @@
 <h1 id="install-your-password-manager-on-init">Install your password manager on init</h1>
 <p>If you use a password manager to store your secrets then you may need to install
 your password manager after you have run <code>chezmoi init</code> on a new machine but
-before <code>chezmoi init --apply</code> or <code>chezmoi apply</code> executes your <code>run_before_</code>
-scripts.</p>
+before <a href="../../../reference/commands/init/"><code>chezmoi init --apply</code></a> or <a href="../../../reference/commands/apply/"><code>chezmoi
+apply</code></a> executes your <code>run_before_</code> scripts.</p>
 <p>chezmoi provides a <code>hooks.read-source-state.pre</code> hook that allows you to modify your
 system after <code>chezmoi init</code> has cloned your dotfile repo but before chezmoi has
 read the source state. This is the perfect time to install your password manager

@@ -4128,10 +4128,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5323,62 +5319,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11669,17 +11609,17 @@
 <p>There are five popular approaches:</p>
 <ol>
 <li>
-<p>Use <code>chezmoi edit $FILE</code>. This will open the source file for <code>$FILE</code> in your
-   editor, including opening the template if the file is templated and
-   transparently decrypting and re-encrypting it if it is encrypted. For extra
-   ease, use <code>chezmoi edit --apply $FILE</code> to apply the changes when you quit
-   your editor, and <code>chezmoi edit --watch $FILE</code> to apply the changes whenever
-   you save the file.</p>
+<p>Use <a href="../../../reference/commands/edit/"><code>chezmoi edit $FILE</code></a>. This will open the source file for
+   <code>$FILE</code> in your editor, including opening the template if the file is
+   templated and transparently decrypting and re-encrypting it if it is
+   encrypted. For extra ease, use <code>chezmoi edit --apply $FILE</code> to apply the
+   changes when you quit your editor, and <code>chezmoi edit --watch $FILE</code> to apply
+   the changes whenever you save the file.</p>
 </li>
 <li>
-<p>Use <code>chezmoi cd</code> and edit the files in the source directory directly. Run
-   <code>chezmoi diff</code> to see what changes would be made, and <code>chezmoi apply</code> to make
-   the changes.</p>
+<p>Use <a href="../../../reference/commands/cd/"><code>chezmoi cd</code></a> and edit the files in the source directory
+   directly. Run <a href="../../../reference/commands/diff/"><code>chezmoi diff</code></a> to see what changes would be
+   made, and <a href="../../../reference/commands/apply/"><code>chezmoi apply</code></a> to make the changes.</p>
 </li>
 <li>
 <p>If your editor supports opening directories, run <code>chezmoi edit</code> with no
@@ -11699,39 +11639,40 @@
 </li>
 </ol>
 <h2 id="what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of "bare" modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</h2>
-<p>Until you run <code>chezmoi apply</code> your modified <code>~/.zshrc</code> will remain in place.
-When you run <code>chezmoi apply</code> chezmoi will detect that <code>~/.zshrc</code> has changed
-since chezmoi last wrote it and prompt you what to do. You can resolve
-differences with a merge tool by running <code>chezmoi merge ~/.zshrc</code>.</p>
+<p>Until you run <a href="../../../reference/commands/apply/"><code>chezmoi apply</code></a> your modified <code>~/.zshrc</code> will
+remain in place. When you run <code>chezmoi apply</code> chezmoi will detect that
+<code>~/.zshrc</code> has changed since chezmoi last wrote it and prompt you what to do.
+You can resolve differences with a merge tool by running <a href="../../../reference/commands/merge/"><code>chezmoi merge
+~/.zshrc</code></a>.</p>
 <h2 id="how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</h2>
-<p><code>chezmoi unmanaged</code> will list everything not managed by chezmoi. You can add
-entire directories with <code>chezmoi add</code>.</p>
+<p><a href="../../../reference/commands/unmanaged/"><code>chezmoi unmanaged</code></a> will list everything not managed by
+chezmoi. You can add entire directories with <a href="../../../reference/commands/add/"><code>chezmoi add</code></a>.</p>
 <h2 id="how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">How can I tell what dotfiles in my home directory are currently managed by chezmoi?</h2>
-<p><code>chezmoi managed</code> will list everything managed by chezmoi.</p>
+<p><a href="../../../reference/commands/managed/"><code>chezmoi managed</code></a> will list everything managed by chezmoi.</p>
 <h2 id="if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</h2>
 <p>By default, chezmoi ignores everything that you haven't explicitly added. If you
 have files in your source directory that you don't want added to your
-destination directory when you run <code>chezmoi apply</code> add their names to a file
-called <code>.chezmoiignore</code> in the source state.</p>
+destination directory when you run <a href="../../../reference/commands/apply/"><code>chezmoi apply</code></a> add their
+names to a file called <code>.chezmoiignore</code> in the source state.</p>
 <p>Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the
 <a href="../../../reference/special-files/chezmoiignore/">reference manual</a>.</p>
 <h2 id="if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</h2>
-<p>Yes. Running <code>chezmoi add</code> will update the source state with the target. To see
-diffs of what would change, without actually changing anything, use <code>chezmoi
-diff</code>.</p>
+<p>Yes. Running <a href="../../../reference/commands/add/"><code>chezmoi add</code></a> will update the source state with the
+target. To see diffs of what would change, without actually changing anything,
+use <a href="../../../reference/commands/diff/"><code>chezmoi diff</code></a>.</p>
 <h2 id="once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it">Once I've made a change to the source directory, how do I commit it?</h2>
 <p>You have several options:</p>
 <ul>
 <li>
-<p><code>chezmoi cd</code> opens a shell in the source directory, where you can run your
-  usual version control commands, like <code>git add</code> and <code>git commit</code>.</p>
+<p><a href="../../../reference/commands/cd/"><code>chezmoi cd</code></a> opens a shell in the source directory, where you
+  can run your usual version control commands, like <code>git add</code> and <code>git commit</code>.</p>
 </li>
 <li>
-<p><code>chezmoi git</code> runs <code>git</code> in the source
-  directory and pass extra arguments to the command. If you're passing any
-  flags, you'll need to use <code>--</code> to prevent chezmoi from consuming them, for
-  example <code>chezmoi git -- commit -m "Update dotfiles"</code>.</p>
+<p><a href="../../../reference/commands/git/"><code>chezmoi git</code></a> runs <code>git</code> in the source directory and pass extra
+  arguments to the command. If you're passing any flags, you'll need to use <code>--</code>
+  to prevent chezmoi from consuming them, for example <code>chezmoi git -- commit -m
+  "Update dotfiles"</code>.</p>
 </li>
 <li>
 <p>You can configure chezmoi to automatically commit and push changes to your
@@ -11821,8 +11762,8 @@ echo &quot;new week&quot;
 your package manager then the shell completion should already be installed. For
 PowerShell, you need to manually add the completion script to your profile.
 Please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue</a> if this is not working correctly.</p>
-<p>chezmoi provides a <a href="../../../reference/commands/completion/"><code>completion</code></a> command and
-a <a href="../../../reference/templates/functions/completion/"><code>completion</code></a> template function which return the shell
+<p>chezmoi provides a <a href="../../../reference/commands/completion/"><code>completion</code></a> command and a
+<a href="../../../reference/templates/functions/completion/"><code>completion</code></a> template function which return the shell
 completions for the given shell. These can be used either as a one-off or as
 part of your dotfiles repo. The details of how to use these depend on your
 shell.</p>

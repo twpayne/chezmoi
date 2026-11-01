@@ -4001,10 +4001,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5196,62 +5192,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../reference/commands/rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11416,15 +11356,16 @@
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span><span class="nv">$FILENAME</span>
 </code></pre></div>
 <p>This will edit <code>$FILENAME</code>'s source file in your source directory. chezmoi will
-not make any changes to the actual dotfile until you run <code>chezmoi apply</code>.</p>
+not make any changes to the actual dotfile until you run <a href="../../reference/commands/apply/"><code>chezmoi
+apply</code></a>.</p>
 <p>To automatically run <code>chezmoi apply</code> when you quit your editor, run:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$FILENAME</span>
 </code></pre></div>
 <p>To automatically run <code>chezmoi apply</code> whenever you save the file in your editor, run:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>edit<span class="w"> </span>--watch<span class="w"> </span><span class="nv">$FILENAME</span>
 </code></pre></div>
-<p>You don't have to use <code>chezmoi edit</code> to edit your dotfiles. For more
-information, see <a href="../frequently-asked-questions/usage/#how-do-i-edit-my-dotfiles-with-chezmoi">Do I have to use <code>chezmoi edit</code> to edit my
+<p>You don't have to use <a href="../../reference/commands/edit/"><code>chezmoi edit</code></a> to edit your dotfiles. For
+more information, see <a href="../frequently-asked-questions/usage/#how-do-i-edit-my-dotfiles-with-chezmoi">Do I have to use <code>chezmoi edit</code> to edit my
 dotfiles?</a>.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant H as home directory
@@ -11471,10 +11412,10 @@ source directory and the actual state.</p>
 command:</p>
 <div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>push
 </code></pre></div>
-<p>By default, <code>chezmoi push</code> will generate a commit message based on the files
-changed. You can override this by setting the <code>git.commitMessageTemplate</code>
-configuration variable. For example, to have chezmoi prompt you for a commit
-message each time, use:</p>
+<p>By default, <a href="../../reference/commands/push/"><code>chezmoi push</code></a> will generate a commit message based
+on the files changed. You can override this by setting the
+<code>git.commitMessageTemplate</code> configuration variable. For example, to have chezmoi
+prompt you for a commit message each time, use:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">TOML</label><label for="__tabbed_1_2">YAML</label><label for="__tabbed_1_3">JSON</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -11574,12 +11515,12 @@ public repo.</p>
     W-&gt;&gt;L: autoCommit
     W-&gt;&gt;R: autoPush</code></pre>
 <h2 id="install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">Install chezmoi and your dotfiles on a new machine with a single command</h2>
-<p>chezmoi's install script can run <code>chezmoi init</code> for you by passing extra
-arguments to the newly installed chezmoi binary. If your dotfiles repo is
-<code>github.com/$GITHUB_USERNAME/dotfiles</code> then installing chezmoi, running
-<code>chezmoi init</code>, and running <code>chezmoi apply</code> can be done in a single line of
-shell:</p>
-<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<p>chezmoi's install script can run <a href="../../reference/commands/init/"><code>chezmoi init</code></a> for you by
+passing extra arguments to the newly installed chezmoi binary. If your dotfiles
+repo is <code>github.com/$YOUR_GITHUB_USERNAME/dotfiles</code> then installing chezmoi,
+running <code>chezmoi init</code>, and running <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a> can be done
+in a single line of shell:</p>
+<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--apply<span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
 </code></pre></div>
 <p>If your dotfiles repo has a different name to <code>dotfiles</code>, or if you host your
 dotfiles on a different service, then see the <a href="../../reference/commands/init/">reference manual for <code>chezmoi
@@ -11588,16 +11529,16 @@ init</code></a>.</p>
 can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:</p>
-<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>sh<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>curl<span class="w"> </span>-fsLS<span class="w"> </span>https://get.chezmoi.io<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>--<span class="w"> </span>init<span class="w"> </span>--one-shot<span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
 </code></pre></div>
 <pre class="mermaid"><code>sequenceDiagram
     participant H as home directory
     participant W as working copy
     participant L as local repo
     participant R as remote repo
-    R-&gt;&gt;W: chezmoi init $GITHUB_USERNAME
-    R-&gt;&gt;H: chezmoi init --apply $GITHUB_USERNAME
-    R-&gt;&gt;H: chezmoi init --one-shot $GITHUB_USERNAME</code></pre>
+    R-&gt;&gt;W: chezmoi init $YOUR_GITHUB_USERNAME
+    R-&gt;&gt;H: chezmoi init --apply $YOUR_GITHUB_USERNAME
+    R-&gt;&gt;H: chezmoi init --one-shot $YOUR_GITHUB_USERNAME</code></pre>
 
 
 

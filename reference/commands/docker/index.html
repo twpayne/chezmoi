@@ -3884,10 +3884,6 @@
       
         
       
-        
-      
-        
-      
     
     
     
@@ -5267,62 +5263,6 @@
     
   
     re-add
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../remove/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    remove
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../rm/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    rm
   
 
     
@@ -11561,10 +11501,6 @@
 <h1 id="docker"><code>docker</code></h1>
 <!-- markdownlint-disable no-duplicate-heading -->
 
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><code>docker</code> is an experimental command.</p>
-</div>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
 <p>To use <a href="https://podman.io/">podman</a> instead of Docker, set the
@@ -11572,12 +11508,12 @@
 use the <a href="../podman/"><code>chezmoi podman</code> command</a> instead of
 <code>chezmoi docker</code>.</p>
 </div>
-<p>Install chezmoi, run <code>chezmoi init --apply</code>, and optionally execute your shell
-in <a href="https://docker.com/">Docker</a> containers.</p>
+<p>Install chezmoi, run <a href="../init/"><code>chezmoi init --apply</code></a>, and optionally
+execute your shell in <a href="https://docker.com/">Docker</a> containers.</p>
 <h2 id="subcommands">Subcommands</h2>
 <h3 id="exec-container-id-init-args"><code>exec</code> <em>container-id</em> <em>init-args</em>...</h3>
-<p>Install chezmoi, run <code>chezmoi init --apply *init-args*</code>, and execute your shell
-in the existing Docker container <em>container-id</em>.</p>
+<p>Install chezmoi, run <a href="../init/"><code>chezmoi init --apply *init-args*</code></a>, and
+execute your shell in the existing Docker container <em>container-id</em>.</p>
 <h4 id="flags">Flags</h4>
 <h5 id="-i-interactive"><code>-i</code>, <code>--interactive</code></h5>
 <p>Keep stdin open even if not attached.</p>
@@ -11592,7 +11528,7 @@ then install them with <em>package-manager</em>.</p>
 is the default.</p>
 <h3 id="run-image-id-init-args"><code>run</code> <em>image-id</em> <em>init-args</em>...</h3>
 <p>Create a new Docker container using <em>image-id</em>, and in it, install chezmoi, run
-<code>chezmoi init --apply *init-args*</code>, and execute your shell.</p>
+<a href="../init/"><code>chezmoi init --apply *init-args*</code></a>, and execute your shell.</p>
 <h4 id="flags_1">Flags</h4>
 <h5 id="-p-package-manager-package-manager_1"><code>-p</code>, <code>--package-manager</code> <em>package-manager</em></h5>
 <p>Install chezmoi using <em>package-manager</em>, if possible. Valid values for
@@ -11601,8 +11537,8 @@ is the default.</p>
 to <code>curl</code> or <code>wget</code> installation. If neither <code>curl</code> nor <code>wget</code> are installed
 then install them with <em>package-manager</em>.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="nv">$CONTAINER_ID</span><span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
-chezmoi<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span>apk<span class="w"> </span>alpine:latest<span class="w"> </span><span class="nv">$GITHUB_USERNAME</span>
+<div class="highlight"><pre><span></span><code>chezmoi<span class="w"> </span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span><span class="nv">$CONTAINER_ID</span><span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
+chezmoi<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span>apk<span class="w"> </span>alpine:latest<span class="w"> </span><span class="nv">$YOUR_GITHUB_USERNAME</span>
 </code></pre></div>
 
 
