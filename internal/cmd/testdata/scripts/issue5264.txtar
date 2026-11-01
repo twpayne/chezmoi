@@ -1,0 +1,18 @@
+httpd www
+
+exec chezmoi add $HOME${/}dir/regular
+exec chezmoi chattr +exact $HOME${/}dir
+exists $CHEZMOISOURCEDIR/exact_dir/regular
+cp golden/.chezmoiexternal.toml.tmpl $CHEZMOISOURCEDIR
+exec chezmoi apply
+exec chezmoi re-add $HOME${/}dir/regular
+exec chezmoi status
+
+-- golden/.chezmoiexternal.toml.tmpl --
+["dir/external_file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/README.md"
+-- home/user/dir/regular --
+# contents of dir/regular
+-- www/README.md --
+# contents of README.md
