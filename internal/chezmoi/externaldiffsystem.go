@@ -270,7 +270,7 @@ func (s *ExternalDiffSystem) RunDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	// Swallow exit status 1 errors if the entries differ and there are actual
 	// differences between the entries as diff commands traditionally exit with
 	// code 1 in this case.
-	if exitError := (&exec.ExitError{}); errors.As(diffCmdErr, &exitError) && exitError.ExitCode() == 1 {
+	if exitError, ok := errors.AsType[*exec.ExitError](diffCmdErr); ok && exitError.ExitCode() == 1 {
 		switch entriesDiffer, err := s.entriesDiffer(destAbsPath, targetAbsPath); {
 		case err != nil:
 			return err

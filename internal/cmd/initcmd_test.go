@@ -116,8 +116,8 @@ func TestIssue2137(t *testing.T) {
 		},
 	}, func(fileSystem vfs.FS) {
 		err := newTestConfig(t, fileSystem).execute([]string{"init"})
-		tooOldError := &chezmoi.TooOldError{}
-		assert.True(t, errors.As(err, &tooOldError))
+		_, ok := errors.AsType[*chezmoi.TooOldError](err)
+		assert.True(t, ok)
 	})
 }
 
