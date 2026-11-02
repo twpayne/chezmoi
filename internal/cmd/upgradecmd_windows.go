@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io/fs"
 	"os"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v72/github"
+	"github.com/tailscale/hujson"
 	vfs "github.com/twpayne/go-vfs/v5"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
@@ -60,14 +62,26 @@ func isWinGetInstall(fileSystem vfs.Stater, executableAbsPath string) (bool, err
 		os.ExpandEnv(`${LOCALAPPDATA}\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\settings.json`),
 		os.ExpandEnv(`${LOCALAPPDATA}\Microsoft\WinGet\Settings\settings.json`),
 	}
+SETTINGS_PATH:
 	for _, settingsPath := range settingsPaths {
-		if _, err := os.Stat(settingsPath); err == nil {
-			winGetSettingsContents, err := os.ReadFile(settingsPath)
-			if err == nil {
-				if err := chezmoi.FormatJSONC.Unmarshal(winGetSettingsContents, &winGetSettings); err != nil {
-					return false, err
-				}
+		switch winGetSettingsContents, err := os.ReadFile(settingsPath); {
+		case errors.Is(err, fs.ErrNotExist):
+			// Do nothing.
+		case err != nil:
+			return false, err
+		default:
+			// We can't use chezmoi.FormatJSONC to read the contents because it
+			// does not allow unknown fields whereas we're only interested in a
+			// couple of fields. Instead, call hujson.Standardize and
+			// json.Unmarshal directly.
+			jsonData, err := hujson.Standardize(winGetSettingsContents)
+			if err != nil {
+				return false, err
 			}
+			if err := json.Unmarshal(jsonData, &winGetSettings); err != nil {
+				return false, err
+			}
+			break SETTINGS_PATH
 		}
 	}
 	for _, path := range winGetSettings.InstallBehavior.Values() {
