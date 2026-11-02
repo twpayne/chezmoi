@@ -56,8 +56,8 @@ func Main(versionInfo VersionInfo, args []string) int {
 	}
 
 	if err := runMain(versionInfo, args); err != nil {
-		if errExitCode := chezmoi.ExitCodeError(0); errors.As(err, &errExitCode) {
-			return int(errExitCode)
+		if errExitCode := chezmoi.NewExitWithCodeError(0); errors.As(err, &errExitCode) {
+			return errExitCode.ExitCode()
 		}
 		fmt.Fprintf(os.Stderr, "chezmoi: %s\n", deDuplicateError(err))
 		return 1

@@ -468,7 +468,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	if worstResult > checkResultWarning {
-		return chezmoi.ExitCodeError(1)
+		return chezmoi.NewExitWithCodeError(1)
 	}
 
 	return nil
