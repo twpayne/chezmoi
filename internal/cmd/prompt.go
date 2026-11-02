@@ -353,7 +353,7 @@ func runCancelableModel[M cancelableModel](initModel M) (M, error) {
 	case err != nil:
 		return finalModel, err
 	case finalModel.Canceled():
-		return finalModel, chezmoi.ExitCodeError(0)
+		return finalModel, chezmoi.NewExitWithCodeError(0)
 	default:
 		return finalModel, nil
 	}

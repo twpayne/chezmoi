@@ -175,7 +175,7 @@ TARGET_REL_PATH:
 					c.Interactive = false
 					break FOR
 				case choice == "quit":
-					return chezmoi.ExitCodeError(0)
+					return chezmoi.NewExitWithCodeError(0)
 				default:
 					panic(choice + ": unexpected choice")
 				}

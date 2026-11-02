@@ -5,7 +5,7 @@ import (
 )
 
 func (c *Config) exitInitTemplateFunc(code int) string {
-	panic(chezmoi.ExitCodeError(code))
+	panic(chezmoi.NewExitWithCodeError(code))
 }
 
 func (c *Config) writeToStdout(args ...string) string {

@@ -179,7 +179,7 @@ func runReadHTTPResponse(model cancelableModel, resp *http.Response) ([]byte, er
 	if model, err := program.Run(); err != nil {
 		return nil, err
 	} else if model.(cancelableModel).Canceled() { //nolint:forcetypeassert
-		return nil, chezmoi.ExitCodeError(0)
+		return nil, chezmoi.NewExitWithCodeError(0)
 	}
 
 	return data, err

@@ -8,12 +8,24 @@ import (
 	"github.com/coreos/go-semver/semver"
 )
 
-// An ExitCodeError indicates the main program should exit with the given
+// An ExitWithCodeError indicates the main program should exit with the given
 // code.
-type ExitCodeError int
+type ExitWithCodeError struct {
+	exitCode int
+}
 
-func (e ExitCodeError) Error() string {
-	return fmt.Sprintf("exit status %d", int(e))
+func NewExitWithCodeError(exitCode int) *ExitWithCodeError {
+	return &ExitWithCodeError{
+		exitCode: exitCode,
+	}
+}
+
+func (e *ExitWithCodeError) Error() string {
+	return fmt.Sprintf("exit status %d", e.exitCode)
+}
+
+func (e *ExitWithCodeError) ExitCode() int {
+	return e.exitCode
 }
 
 // A TooOldError is returned when the source state requires a newer version of

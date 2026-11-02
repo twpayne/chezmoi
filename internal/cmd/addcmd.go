@@ -112,7 +112,7 @@ func (c *Config) defaultPreAddFunc(
 			c.errorf("%s:%d: %s\n", absPath, finding.StartLine, finding.Description)
 		}
 		if !c.force && c.Add.Secrets.String() == severityError && len(findings) > 0 {
-			return chezmoi.ExitCodeError(1)
+			return chezmoi.NewExitWithCodeError(1)
 		}
 	}
 
@@ -131,7 +131,7 @@ func (c *Config) defaultPreAddFunc(
 		case choice == "no":
 			return fs.SkipDir
 		case choice == "quit":
-			return chezmoi.ExitCodeError(0)
+			return chezmoi.NewExitWithCodeError(0)
 		case choice == "yes":
 			return nil
 		default:
@@ -182,7 +182,7 @@ func (c *Config) defaultReplaceFunc(
 		case choice == "no":
 			return fs.SkipDir
 		case choice == "quit":
-			return chezmoi.ExitCodeError(0)
+			return chezmoi.NewExitWithCodeError(0)
 		case choice == "yes":
 			return nil
 		default:

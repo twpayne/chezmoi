@@ -39,7 +39,7 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 }
 
 func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
-	errorOnWriteSystem := chezmoi.NewErrorOnWriteSystem(c.destSystem, chezmoi.ExitCodeError(1))
+	errorOnWriteSystem := chezmoi.NewErrorOnWriteSystem(c.destSystem, chezmoi.NewExitWithCodeError(1))
 	return c.applyArgs(cmd.Context(), errorOnWriteSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		cmd:        cmd,
 		filter:     chezmoi.NewEntryTypeFilter(c.Verify.include.Bits(), c.Verify.Exclude.Bits()),
