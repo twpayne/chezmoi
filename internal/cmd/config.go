@@ -2967,7 +2967,7 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 
 func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error) {
 	relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath)
-	if notInAbsDirError := (&chezmoi.NotInAbsDirError{}); errors.As(err, &notInAbsDirError) {
+	if _, ok := errors.AsType[*chezmoi.NotInAbsDirError](err); ok {
 		return chezmoi.EmptyRelPath, fmt.Errorf("%s: not in destination directory (%s)", absPath, c.DestDirAbsPath)
 	}
 	return relPath, err

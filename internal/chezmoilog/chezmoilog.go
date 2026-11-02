@@ -56,8 +56,8 @@ func (err OSExecExitLogValuerError) LogValuer() slog.Value {
 	attrs := []slog.Attr{
 		slog.Any("processState", OSProcessStateLogValuer{err.ProcessState}),
 	}
-	if osExecExitError := (&exec.ExitError{}); errors.As(err, &osExecExitError) {
-		attrs = append(attrs, Bytes("stderr", err.Stderr))
+	if exitError, ok := errors.AsType[*exec.ExitError](err); ok {
+		attrs = append(attrs, Bytes("stderr", exitError.Stderr))
 	}
 	return slog.GroupValue(attrs...)
 }
@@ -84,21 +84,21 @@ func (p OSProcessStateLogValuer) LogValue() slog.Value {
 }
 
 func AppendExitErrorAttrs(attrs []slog.Attr, err error) []slog.Attr {
-	var execExitError *exec.ExitError
-	if !errors.As(err, &execExitError) {
+	exitError, ok := errors.AsType[*exec.ExitError](err)
+	if !ok {
 		return append(attrs, slog.Any("err", err))
 	}
 
-	if execExitError.ProcessState != nil {
-		if execExitError.Exited() {
-			attrs = append(attrs, slog.Int("exitCode", execExitError.ExitCode()))
+	if exitError.ProcessState != nil {
+		if exitError.Exited() {
+			attrs = append(attrs, slog.Int("exitCode", exitError.ExitCode()))
 		} else {
-			attrs = append(attrs, slog.Int("pid", execExitError.Pid()))
+			attrs = append(attrs, slog.Int("pid", exitError.Pid()))
 		}
-		if userTime := execExitError.UserTime(); userTime != 0 {
+		if userTime := exitError.UserTime(); userTime != 0 {
 			attrs = append(attrs, slog.Duration("userTime", userTime))
 		}
-		if systemTime := execExitError.SystemTime(); systemTime != 0 {
+		if systemTime := exitError.SystemTime(); systemTime != 0 {
 			attrs = append(attrs, slog.Duration("systemTime", systemTime))
 		}
 	}
