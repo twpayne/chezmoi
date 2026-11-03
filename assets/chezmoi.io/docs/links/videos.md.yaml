@@ -102,3 +102,8 @@ videos:
   version: 2.73.3
   title: Mise and Chezmoi Will Change Your Life (for the better)
   url: https://www.youtube.com/watch?v=pS9mOSGWIsw
+- date: '2026-10-29'
+  version: 2.73.3
+  lang: IT
+  title: 'Dotfiles: comprenderli, organizzarli e ... distribuirli? @ Linux Day Cesena 2026'
+  url: https://www.youtube.com/watch?v=lRzJuE4ODwM&t=1280s
