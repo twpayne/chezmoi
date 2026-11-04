@@ -59,6 +59,8 @@ func (c *Config) newMackupCmd() *cobra.Command {
 }
 
 func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+	ctx := cmd.Context()
+
 	mackupApplicationsDir, err := c.mackupApplicationsDir()
 	if err != nil {
 		return err
@@ -101,6 +103,7 @@ func (c *Config) runMackupAddCmd(cmd *cobra.Command, args []string, sourceState 
 	}
 
 	return sourceState.Add(
+		ctx,
 		c.sourceSystem,
 		c.persistentState,
 		c.destSystem,
