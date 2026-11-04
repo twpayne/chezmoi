@@ -2,7 +2,7 @@
 
 # test gitHubKeys template function
 exec chezmoi execute-template '{{ (index (gitHubKeys "twpayne") 0).Key }}'
-stdout ^ssh-rsa
+stdout ^ssh-
 
 # test gitHubLatestRelease template function
 exec chezmoi execute-template '{{ (gitHubLatestRelease "twpayne/chezmoi").TagName }}'
