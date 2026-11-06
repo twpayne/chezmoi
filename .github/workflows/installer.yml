@@ -44,7 +44,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: reviewdog/action-misspell@840bfbe9f804da9afb0bd739dc4689012f3fdd2d   # v1.30.4
+    - uses: reviewdog/action-misspell@f424fed50ff8c448c1100c2d35d5d72a8ad08e49   # v1.30.5
       with:
         locale: US
         ignore: importas,Produktive

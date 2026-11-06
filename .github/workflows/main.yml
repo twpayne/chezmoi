@@ -66,10 +66,10 @@ jobs:
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
-    - uses: github/codeql-action/init@0fda7a646fd14a20daf520829ca1ae8847000819   # codeql-bundle-v2.27.3
+    - uses: github/codeql-action/init@52cf1852265d99e9bea071b03366fc777a602909   # codeql-bundle-v2.27.4
       with:
         languages: go
-    - uses: github/codeql-action/analyze@0fda7a646fd14a20daf520829ca1ae8847000819   # codeql-bundle-v2.27.3
+    - uses: github/codeql-action/analyze@52cf1852265d99e9bea071b03366fc777a602909   # codeql-bundle-v2.27.4
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -78,7 +78,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: reviewdog/action-misspell@840bfbe9f804da9afb0bd739dc4689012f3fdd2d   # v1.30.4
+    - uses: reviewdog/action-misspell@f424fed50ff8c448c1100c2d35d5d72a8ad08e49   # v1.30.5
       with:
         locale: US
         ignore: importas,Produktive
@@ -497,7 +497,7 @@ jobs:
       with:
         cache-prefix: release-go
         go-version: ${{ needs.versions.outputs.go-version }}
-    - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6   # v4.1.2
+    - uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532   # v4.1.3
       with:
         cosign-release: v${{ needs.versions.outputs.cosign-version }}
     - name: create-syso
