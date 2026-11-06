@@ -55,6 +55,8 @@ const (
 	gitStatusError           gitStatus = "error"
 )
 
+var versionRegexpFunc = chezmoiregexp.MustCompileOnce(`^(\d+\.\d+\.\d+)`)
+
 // A check is an individual check.
 type check interface {
 	Name() string                             // Name returns the check's name.
@@ -341,7 +343,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:          checkResultWarning,
 			ifNotExist:        checkResultInfo,
 			versionArgs:       []string{"--version"},
-			versionRegexpFunc: chezmoiregexp.MustCompileOnce(`^(\d+\.\d+\.\d+)`),
+			versionRegexpFunc: versionRegexpFunc,
 		},
 		&binaryCheck{
 			name:              "doppler-command",
@@ -366,7 +368,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:          checkResultWarning,
 			ifNotExist:        checkResultInfo,
 			versionArgs:       []string{"--version"},
-			versionRegexpFunc: chezmoiregexp.MustCompileOnce(`^(\d+\.\d+\.\d+)`),
+			versionRegexpFunc: versionRegexpFunc,
 			minVersion:        &keepassxcMinVersion,
 		},
 		&fileCheck{
@@ -406,7 +408,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:          checkResultWarning,
 			ifNotExist:        checkResultInfo,
 			versionArgs:       []string{"--version"},
-			versionRegexpFunc: chezmoiregexp.MustCompileOnce(`^(\d+\.\d+\.\d+)`),
+			versionRegexpFunc: versionRegexpFunc,
 			minVersion:        &passholeMinVersion,
 		},
 		&binaryCheck{
