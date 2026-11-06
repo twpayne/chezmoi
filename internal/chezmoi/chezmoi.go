@@ -73,13 +73,13 @@ const (
 )
 
 var (
-	dirPrefixRxFn  = chezmoiregexp.MustCompileRegexpOnce(`\A(dot|exact|literal|readonly|private)_`)
-	filePrefixRxFn = chezmoiregexp.MustCompileRegexpOnce(
+	dirPrefixRxFunc  = chezmoiregexp.MustCompileRegexpOnce(`\A(dot|exact|literal|readonly|private)_`)
+	filePrefixRxFunc = chezmoiregexp.MustCompileRegexpOnce(
 		`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|readonly|remove|run|symlink)_`,
 	)
-	fileSuffixRxFn = chezmoiregexp.MustCompileRegexpOnce(`\.(literal|tmpl)\z`)
+	fileSuffixRxFunc = chezmoiregexp.MustCompileRegexpOnce(`\.(literal|tmpl)\z`)
 
-	WhitespaceRxFn = chezmoiregexp.MustCompileRegexpOnce(`\s+`)
+	WhitespaceRxFunc = chezmoiregexp.MustCompileRegexpOnce(`\s+`)
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
@@ -312,7 +312,7 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 LINE:
 	for line := range bytes.Lines(contents) {
 		line, _, _ = bytes.Cut(bytes.TrimSpace(line), []byte{'#'})
-		fields := WhitespaceRxFn().Split(string(line), -1)
+		fields := WhitespaceRxFunc().Split(string(line), -1)
 		if len(fields) < 2 {
 			continue
 		}
