@@ -18,7 +18,7 @@ import (
 	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
-var formatIndentRxFunc = chezmoiregexp.MustCompileRegexpOnce(`[ \t]*`)
+var formatIndentRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`[ \t]*`)
 
 // A Template extends [text/template.Template] with support for directives.
 type Template struct {
@@ -47,7 +47,7 @@ func ParseTemplate(name string, data []byte, options TemplateOptions) (*Template
 	}
 	funcs := options.Funcs
 	if options.FormatIndent != "" {
-		if !formatIndentRxFunc().MatchString(options.FormatIndent) {
+		if !formatIndentRegexpFunc().MatchString(options.FormatIndent) {
 			return nil, fmt.Errorf("%s: invalid format-indent", options.FormatIndent)
 		}
 		funcs = maps.Clone(funcs)
@@ -138,14 +138,14 @@ func (t *Template) ExecuteString(data any) (string, error) {
 // and returns data with the lines containing directives removed. The lines are
 // removed so that any delimiters do not break template parsing.
 func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) ([]byte, error) {
-	directiveMatches := templateDirectiveRxFunc().FindAllSubmatchIndex(data, -1)
+	directiveMatches := templateDirectiveRegexpFunc().FindAllSubmatchIndex(data, -1)
 	if directiveMatches == nil {
 		return data, nil
 	}
 
 	// Parse options from directives.
 	for _, directiveMatch := range directiveMatches {
-		keyValuePairMatches := templateDirectiveKeyValuePairRxFunc().FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
+		keyValuePairMatches := templateDirectiveKeyValuePairRegexpFunc().FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
 		for _, keyValuePairMatch := range keyValuePairMatches {
 			key := string(keyValuePairMatch[1])
 			value := maybeUnquote(string(keyValuePairMatch[2]))
@@ -219,7 +219,7 @@ func replaceLineEndings(s, lineEnding string) string {
 	if lineEnding == "" {
 		return s
 	}
-	return lineEndingRxFunc().ReplaceAllString(s, lineEnding)
+	return lineEndingRegexpFunc().ReplaceAllString(s, lineEnding)
 }
 
 // stringWidth returns the width of s. s is assumed to contain only space and

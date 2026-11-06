@@ -36,7 +36,7 @@ import (
 var (
 	templateDataFilename = flag.String("data", "", "data filename")
 	outputFilename       = flag.String("output", "", "output filename")
-	nonLetterRx          = regexp.MustCompile(`[^a-z]+`)
+	nonLetterRegexp      = regexp.MustCompile(`[^a-z]+`)
 )
 
 type gitHubClient struct {
@@ -91,7 +91,7 @@ func (c *gitHubClient) gitHubListReleases(ownerRepo string) []*github.Repository
 
 func slugify(s string) string {
 	s = strings.ToLower(s)
-	s = nonLetterRx.ReplaceAllString(s, "-")
+	s = nonLetterRegexp.ReplaceAllString(s, "-")
 	s = strings.Trim(s, "-")
 	return s
 }

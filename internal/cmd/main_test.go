@@ -34,9 +34,9 @@ import (
 )
 
 var (
-	envConditionRx   = regexp.MustCompile(`\Aenv:(\w+)\z`)
-	envVarRx         = regexp.MustCompile(`\$\w+`)
-	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
+	envConditionRegexp   = regexp.MustCompile(`\Aenv:(\w+)\z`)
+	envVarRegexp         = regexp.MustCompile(`\$\w+`)
+	umaskConditionRegexp = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 
 	filterRegex = flag.String("filter", "", "regex to filter test scripts")
 
@@ -158,10 +158,10 @@ func TestScript(t *testing.T) {
 			if result, valid := goosCondition(cond); valid {
 				return result, nil
 			}
-			if m := envConditionRx.FindStringSubmatch(cond); m != nil {
+			if m := envConditionRegexp.FindStringSubmatch(cond); m != nil {
 				return os.Getenv(m[1]) != "", nil
 			}
-			if m := umaskConditionRx.FindStringSubmatch(cond); m != nil {
+			if m := umaskConditionRegexp.FindStringSubmatch(cond); m != nil {
 				umask, _ := strconv.ParseInt(m[1], 8, 64)
 				return chezmoitest.Umask == fs.FileMode(umask), nil
 			}
@@ -272,7 +272,7 @@ func cmdExpandEnv(ts *testscript.TestScript, neg bool, args []string) {
 		if err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}
-		data = envVarRx.ReplaceAllFunc(data, func(key []byte) []byte {
+		data = envVarRegexp.ReplaceAllFunc(data, func(key []byte) []byte {
 			if value := ts.Getenv(string(bytes.TrimPrefix(key, []byte{'$'}))); value != "" {
 				return []byte(value)
 			}
@@ -636,9 +636,9 @@ func cmdMockCommand(ts *testscript.TestScript, neg bool, args []string) {
 	case "windows":
 		templateName = "mockcommand.cmd.tmpl"
 		templateText = mockcommandCmdTmplText
-		escapeCharsRx := regexp.MustCompile(`[\\&|><^]`)
+		escapeCharsRegexp := regexp.MustCompile(`[\\&|><^]`)
 		escapeChars := func(s string) string {
-			return escapeCharsRx.ReplaceAllString(s, "^$0")
+			return escapeCharsRegexp.ReplaceAllString(s, "^$0")
 		}
 		renderResponseFunc = func(r response) string {
 			var builder strings.Builder

@@ -162,7 +162,7 @@ func (da DirAttr) SourceName() string {
 	switch {
 	case strings.HasPrefix(da.TargetName, "."):
 		sourceName += dotPrefix + da.TargetName[len("."):]
-	case dirPrefixRxFunc().MatchString(da.TargetName):
+	case dirPrefixRegexpFunc().MatchString(da.TargetName):
 		sourceName += literalPrefix + da.TargetName
 	default:
 		sourceName += da.TargetName
@@ -374,12 +374,12 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 	switch {
 	case strings.HasPrefix(fa.TargetName, "."):
 		sourceName += dotPrefix + fa.TargetName[len("."):]
-	case filePrefixRxFunc().MatchString(fa.TargetName):
+	case filePrefixRegexpFunc().MatchString(fa.TargetName):
 		sourceName += literalPrefix + fa.TargetName
 	default:
 		sourceName += fa.TargetName
 	}
-	if fileSuffixRxFunc().MatchString(fa.TargetName) {
+	if fileSuffixRegexpFunc().MatchString(fa.TargetName) {
 		sourceName += literalSuffix
 	}
 	if fa.Template {

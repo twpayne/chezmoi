@@ -26,7 +26,7 @@ const readSourceStateHookName = "read-source-state"
 var (
 	noArgs = []string(nil)
 
-	deDuplicateErrorRxFunc = chezmoiregexp.MustCompileRegexpOnce(`:\s+`)
+	deDuplicateErrorRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`:\s+`)
 
 	chezmoiDev = make(map[string]string)
 )
@@ -68,7 +68,7 @@ func Main(versionInfo VersionInfo, args []string) int {
 // deDuplicateError returns err's human-readable string with duplicate
 // components removed.
 func deDuplicateError(err error) string {
-	components := deDuplicateErrorRxFunc().Split(err.Error(), -1)
+	components := deDuplicateErrorRegexpFunc().Split(err.Error(), -1)
 	seenComponents := chezmoiset.NewWithCapacity[string](len(components))
 	uniqueComponents := make([]string, 0, len(components))
 	for _, component := range components {

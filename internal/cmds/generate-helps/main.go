@@ -32,10 +32,10 @@ type help struct {
 }
 
 var (
-	unwantedEscapeSequenceRx = regexp.MustCompile(`\x1b\[[01]m`)
-	linkRx                   = regexp.MustCompile(`(?m)\[(.*?)]\[(.*?)]`)
-	helpFlagsRx              = regexp.MustCompile("^### (?:`-([0-9A-Za-z])`, )?`--([-0-9A-Za-z]+)`")
-	trailingSpaceRx          = regexp.MustCompile(` +\n`)
+	unwantedEscapeSequenceRegexp = regexp.MustCompile(`\x1b\[[01]m`)
+	linkRegexp                   = regexp.MustCompile(`(?m)\[(.*?)]\[(.*?)]`)
+	helpFlagsRegexp              = regexp.MustCompile("^### (?:`-([0-9A-Za-z])`, )?`--([-0-9A-Za-z]+)`")
+	trailingSpaceRegexp          = regexp.MustCompile(` +\n`)
 
 	output = flag.String("o", "", "output")
 )
@@ -191,11 +191,11 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 	for line := range strings.SplitSeq(string(data), "\n") {
 		switch state {
 		case stateReadTitle:
-			titleRx, err := regexp.Compile("# `" + command + "`")
+			titleRegexp, err := regexp.Compile("# `" + command + "`")
 			if err != nil {
 				return nil, err
 			}
-			if !titleRx.MatchString(line) {
+			if !titleRegexp.MatchString(line) {
 				return nil, fmt.Errorf("expected title for '%s'", command)
 			}
 			state = stateInLongHelp
@@ -214,7 +214,7 @@ func extractHelp(command string, data []byte, longHelpTermRenderer, exampleTermR
 			}
 		case stateInOptions:
 			if !stateChange(line, &state) {
-				if m := helpFlagsRx.FindStringSubmatch(line); m != nil {
+				if m := helpFlagsRegexp.FindStringSubmatch(line); m != nil {
 					if m[1] != "" {
 						shortFlags.Add(m[1])
 					}
@@ -248,7 +248,7 @@ func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, er
 	// Replace links with their anchor text only. This should be possible by
 	// using Conceal in the style, but this currently has no effect. See
 	// https://github.com/charmbracelet/glamour/issues/389.
-	in = linkRx.ReplaceAllString(in, "$1")
+	in = linkRegexp.ReplaceAllString(in, "$1")
 	// For some reason, the above regular expression does not work if the link
 	// spans multiple lines. Fix this with a horrible hack for upgrade.md.
 	in = strings.ReplaceAll(in, "[rate\nlimiting][rate]", "rate limiting")
@@ -258,8 +258,8 @@ func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, er
 	}
 	// For some reason, glamour adds escape sequences for the first data line of
 	// each table. Remove these.
-	renderedLines = unwantedEscapeSequenceRx.ReplaceAllString(renderedLines, "")
-	renderedLines = trailingSpaceRx.ReplaceAllString(renderedLines, "\n")
+	renderedLines = unwantedEscapeSequenceRegexp.ReplaceAllString(renderedLines, "")
+	renderedLines = trailingSpaceRegexp.ReplaceAllString(renderedLines, "\n")
 	renderedLines = strings.Trim(renderedLines, "\n")
 	return renderedLines, nil
 }
