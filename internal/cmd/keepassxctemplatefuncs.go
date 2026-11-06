@@ -50,16 +50,18 @@ type keepassxcConfig struct {
 }
 
 var (
-	keepassxcAnyResponseRxFunc                   = chezmoiregexp.MustCompileRegexpOnce(`(?m)\A.*\r\n`)
-	keepassxcEnterPasswordToUnlockDatabaseRxFunc = chezmoiregexp.MustCompileRegexpOnce(`^Enter password to unlock .*: `)
-	keepassxcMinVersion                          = semver.Version{Major: 2, Minor: 7, Patch: 0}
-	keepassxcPairRxFunc                          = chezmoiregexp.MustCompileRegexpOnce(
+	keepassxcAnyResponseRegexpFunc                   = chezmoiregexp.MustCompileRegexpOnce(`(?m)\A.*\r\n`)
+	keepassxcEnterPasswordToUnlockDatabaseRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
+		`^Enter password to unlock .*: `,
+	)
+	keepassxcMinVersion     = semver.Version{Major: 2, Minor: 7, Patch: 0}
+	keepassxcPairRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
 		`\A([A-Z]\w*):\s*(.*?)\r?\n\z`,
 	)
-	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRxFunc = chezmoiregexp.MustCompileRegexpOnce(
+	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
 		"^Please present or touch your \\S+ to continue\\.\r\n",
 	)
-	keepassxcPromptRxFunc = chezmoiregexp.MustCompileRegexpOnce(`^.*> `)
+	keepassxcPromptRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`^.*> `)
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
@@ -232,16 +234,16 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 		if c.Keepassxc.Prompt {
 			// Expect the password or YubiKey response.
 			response, err := console.Expect(
-				expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRxFunc()),
-				expect.Regexp(keepassxcPleasePresentOrTouchYourYubiKeyToContinueRxFunc()),
-				expect.Regexp(keepassxcAnyResponseRxFunc()),
+				expect.Regexp(keepassxcEnterPasswordToUnlockDatabaseRegexpFunc()),
+				expect.Regexp(keepassxcPleasePresentOrTouchYourYubiKeyToContinueRegexpFunc()),
+				expect.Regexp(keepassxcAnyResponseRegexpFunc()),
 			)
 			if err != nil {
 				return nil, err
 			}
 
 			switch {
-			case keepassxcEnterPasswordToUnlockDatabaseRxFunc().MatchString(response):
+			case keepassxcEnterPasswordToUnlockDatabaseRegexpFunc().MatchString(response):
 				// Read the password from the user, if necessary.
 				var password string
 				if c.Keepassxc.password != "" {
@@ -262,7 +264,7 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 				if _, err := console.ExpectString("\r\n"); err != nil {
 					return nil, err
 				}
-			case keepassxcPleasePresentOrTouchYourYubiKeyToContinueRxFunc().MatchString(response):
+			case keepassxcPleasePresentOrTouchYourYubiKeyToContinueRegexpFunc().MatchString(response):
 				if _, err := console.ExpectString("\r\n"); err != nil {
 					return nil, err
 				}
@@ -276,19 +278,19 @@ func (c *Config) keepassxcOutputOpen(command string, args ...string) ([]byte, er
 
 		// Read the response, e.g "Passwords> ", so we can expect it later.
 		response, err := console.Expect(
-			expect.Regexp(keepassxcPromptRxFunc()),
-			expect.Regexp(keepassxcAnyResponseRxFunc()),
+			expect.Regexp(keepassxcPromptRegexpFunc()),
+			expect.Regexp(keepassxcAnyResponseRegexpFunc()),
 		)
 		if err != nil {
 			return nil, err
 		}
-		if !keepassxcPromptRxFunc().MatchString(response) {
+		if !keepassxcPromptRegexpFunc().MatchString(response) {
 			return nil, fmt.Errorf("%q: unexpected response", response)
 		}
 
 		c.Keepassxc.cmd = cmd
 		c.Keepassxc.console = console
-		c.Keepassxc.promptStr = keepassxcPromptRxFunc().FindString(response)
+		c.Keepassxc.promptStr = keepassxcPromptRegexpFunc().FindString(response)
 	}
 
 	// Build the command line. Strings with spaces and other non-word characters
@@ -329,7 +331,7 @@ func keepassxcParseOutput(output []byte) map[string]string {
 	data := make(map[string]string)
 	var key string
 	for line := range bytes.Lines(output) {
-		switch match := keepassxcPairRxFunc().FindSubmatch(line); {
+		switch match := keepassxcPairRegexpFunc().FindSubmatch(line); {
 		case match != nil:
 			key = string(match[1])
 			data[key] = string(match[2])

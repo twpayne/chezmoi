@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var commitRx = regexp.MustCompile(`\A([0-9a-f]{40}) (chore(?:\([\w\-]+\))?|docs|feat|fix): ([A-Z]|bump)`)
+var commitRegexp = regexp.MustCompile(`\A([0-9a-f]{40}) (chore(?:\([\w\-]+\))?|docs|feat|fix): ([A-Z]|bump)`)
 
 func run() error {
 	args := append([]string{"-c", "log.abbrevcommit=false", "log", "--format=oneline"}, os.Args[1:]...)
@@ -27,7 +27,7 @@ func run() error {
 	scanner := bufio.NewScanner(bytes.NewReader(output))
 	for scanner.Scan() {
 		commitMessage := scanner.Text()
-		if !commitRx.MatchString(commitMessage) {
+		if !commitRegexp.MatchString(commitMessage) {
 			invalidCommitMessages = append(invalidCommitMessages, commitMessage)
 		}
 	}

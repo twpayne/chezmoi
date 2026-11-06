@@ -1636,7 +1636,7 @@ func (c *Config) getDiffPagerCmd() (*exec.Cmd, error) {
 	// that it is a full shell command to be executed via the user's shell.
 	// Otherwise, execute it directly.
 	var pagerCmd *exec.Cmd
-	if runtime.GOOS != "windows" && chezmoi.WhitespaceRxFunc().MatchString(pager) {
+	if runtime.GOOS != "windows" && chezmoi.WhitespaceRegexpFunc().MatchString(pager) {
 		shellCommand, _ := shell.CurrentUserShell()
 		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
 		if err != nil {
@@ -3375,7 +3375,7 @@ func parseCommand(command string, args []string) (string, []string, error) {
 	}
 
 	// Otherwise, if the command contains spaces, parse it as a shell command.
-	if chezmoi.WhitespaceRxFunc().MatchString(command) {
+	if chezmoi.WhitespaceRegexpFunc().MatchString(command) {
 		var words []*syntax.Word
 		for word, err := range syntax.NewParser().WordsSeq(strings.NewReader(command)) {
 			if err != nil {

@@ -66,9 +66,9 @@ func (e invalidPathTypeError) Error() string {
 // errEmptyPath is returned when a path is empty.
 var errEmptyPath = errors.New("empty path")
 
-// needsQuoteRxFunc matches any string that contains non-printable characters,
-// double quotes, or a backslash.
-var needsQuoteRxFunc = chezmoiregexp.MustCompileRegexpOnce(`[^\x21\x23-\x5b\x5d-\x7e]`)
+// needsQuoteRegexpFunc matches any string that contains non-printable
+// characters, double quotes, or a backslash.
+var needsQuoteRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`[^\x21\x23-\x5b\x5d-\x7e]`)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
 	var builder strings.Builder
@@ -845,7 +845,7 @@ func needsQuote(s string) bool {
 	if s == "" {
 		return true
 	}
-	if needsQuoteRxFunc().MatchString(s) {
+	if needsQuoteRegexpFunc().MatchString(s) {
 		return true
 	}
 	if _, err := strconv.ParseBool(s); err == nil {

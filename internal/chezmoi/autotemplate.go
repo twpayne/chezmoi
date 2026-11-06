@@ -15,7 +15,7 @@ type TemplateVariable struct {
 	Components []string
 }
 
-var templateMarkerRxFunc = chezmoiregexp.MustCompileRegexpOnce(`\{{2,}|\}{2,}`)
+var templateMarkerRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\{{2,}|\}{2,}`)
 
 // autoTemplate converts contents into a template by escaping template markers
 // and replacing values in data with their keys. It returns the template and if
@@ -25,7 +25,7 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	replacements := false
 
 	// Replace template markers.
-	replacedTemplateMarkersStr := templateMarkerRxFunc().ReplaceAllString(contentsStr, `{{ "$0" }}`)
+	replacedTemplateMarkersStr := templateMarkerRegexpFunc().ReplaceAllString(contentsStr, `{{ "$0" }}`)
 	if replacedTemplateMarkersStr != contentsStr {
 		contentsStr = replacedTemplateMarkersStr
 		replacements = true

@@ -37,7 +37,7 @@ const (
 )
 
 var (
-	checksumRxFunc              = chezmoiregexp.MustCompileRegexpOnce(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
+	checksumRegexpFunc          = chezmoiregexp.MustCompileRegexpOnce(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
 	errUnsupportedUpgradeMethod = errors.New("unsupported upgrade method")
 )
 
@@ -192,7 +192,7 @@ func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease)
 
 	checksums := make(map[string][]byte)
 	for line := range bytes.Lines(data) {
-		m := checksumRxFunc().FindSubmatch(line)
+		m := checksumRegexpFunc().FindSubmatch(line)
 		if m == nil {
 			return nil, fmt.Errorf("%q: cannot parse checksum", line)
 		}

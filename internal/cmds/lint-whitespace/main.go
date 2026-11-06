@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	ignoreRxs = []*regexp.Regexp{
+	ignoreRegexp = []*regexp.Regexp{
 		regexp.MustCompile(`\.svg\z`),
 		regexp.MustCompile(`\A\.git\z`),
 		regexp.MustCompile(`\A\.idea\z`),
@@ -29,8 +29,8 @@ var (
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
 		regexp.MustCompile(`\Adist\z`),
 	}
-	crlfLineEndingRx     = regexp.MustCompile(`\r\z`)
-	trailingWhitespaceRx = regexp.MustCompile(`\s+\z`)
+	crlfLineEndingRegexp     = regexp.MustCompile(`\r\z`)
+	trailingWhitespaceRegexp = regexp.MustCompile(`\s+\z`)
 )
 
 func lintData(filename string, data []byte) error {
@@ -44,9 +44,9 @@ func lintData(filename string, data []byte) error {
 
 	for i, line := range lines {
 		switch {
-		case crlfLineEndingRx.Match(line):
+		case crlfLineEndingRegexp.Match(line):
 			errs = append(errs, fmt.Errorf("::error file=%s,line=%d::CRLF line ending", filename, i+1))
-		case trailingWhitespaceRx.Match(line):
+		case trailingWhitespaceRegexp.Match(line):
 			errs = append(errs, fmt.Errorf("::error file=%s,line=%d::trailing whitespace", filename, i+1))
 		}
 	}
@@ -72,8 +72,8 @@ func run() error {
 		if err != nil {
 			return err
 		}
-		for _, rx := range ignoreRxs {
-			if rx.MatchString(path) {
+		for _, regexp := range ignoreRegexp {
+			if regexp.MatchString(path) {
 				if dirEntry.IsDir() {
 					return fs.SkipDir
 				}

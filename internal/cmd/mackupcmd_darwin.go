@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	mackupCommentRx  = regexp.MustCompile(`\A#.*\n\z`)
-	mackupKeyValueRx = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
-	mackupSectionRx  = regexp.MustCompile(`\A\[(.*)\]\n\z`)
+	mackupCommentRegexp  = regexp.MustCompile(`\A#.*\n\z`)
+	mackupKeyValueRegexp = regexp.MustCompile(`\A(\w+)\s*=\s*(.*)\z`)
+	mackupSectionRegexp  = regexp.MustCompile(`\A\[(.*)\]\n\z`)
 )
 
 type mackupApplicationApplicationConfig struct {
@@ -149,10 +149,10 @@ func parseMackupApplication(data []byte) (*mackupApplicationConfig, error) {
 	var config mackupApplicationConfig
 	var section string
 	for line := range strings.Lines(string(data)) {
-		if mackupCommentRx.MatchString(line) {
+		if mackupCommentRegexp.MatchString(line) {
 			continue
 		}
-		if m := mackupSectionRx.FindStringSubmatch(line); m != nil {
+		if m := mackupSectionRegexp.FindStringSubmatch(line); m != nil {
 			section = m[1]
 			continue
 		}
@@ -162,7 +162,7 @@ func parseMackupApplication(data []byte) (*mackupApplicationConfig, error) {
 		}
 		switch section {
 		case "application":
-			if m := mackupKeyValueRx.FindStringSubmatch(line); m != nil {
+			if m := mackupKeyValueRegexp.FindStringSubmatch(line); m != nil {
 				if m[1] == "name" {
 					config.Application.Name = m[2]
 				}
