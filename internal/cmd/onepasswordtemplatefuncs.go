@@ -31,8 +31,8 @@ const (
 )
 
 var (
-	onepasswordVersionRxFn = chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+\S*)`)
-	onepasswordMinVersion  = semver.Version{Major: 2}
+	onepasswordVersionRxFunc = chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+\S*)`)
+	onepasswordMinVersion    = semver.Version{Major: 2}
 )
 
 type onepasswordAccount struct {

@@ -17,10 +17,10 @@ import (
 
 var (
 	// chezmoi uses lpass show --json which was added in v1.3.0~6.
-	lastpassMinVersion    = semver.Version{Major: 1, Minor: 3, Patch: 0}
-	lastpassParseNoteRxFn = chezmoiregexp.MustCompileRegexpOnce(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
-	lastpassVersionArgs   = []string{"--version"}
-	lastpassVersionRxFn   = chezmoiregexp.MustCompileRegexpOnce(`^LastPass CLI v(\d+\.\d+\.\d+)`)
+	lastpassMinVersion      = semver.Version{Major: 1, Minor: 3, Patch: 0}
+	lastpassParseNoteRxFunc = chezmoiregexp.MustCompileRegexpOnce(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
+	lastpassVersionArgs     = []string{"--version"}
+	lastpassVersionRxFunc   = chezmoiregexp.MustCompileRegexpOnce(`^LastPass CLI v(\d+\.\d+\.\d+)`)
 )
 
 type lastpassConfig struct {
@@ -83,7 +83,7 @@ func lastpassParseNote(note string) map[string]string {
 	result := make(map[string]string)
 	key := ""
 	for line := range strings.Lines(note) {
-		if m := lastpassParseNoteRxFn().FindStringSubmatch(line); m != nil {
+		if m := lastpassParseNoteRxFunc().FindStringSubmatch(line); m != nil {
 			keyComponents := strings.Split(m[1], " ")
 			firstComponentRunes := []rune(keyComponents[0])
 			firstComponentRunes[0] = unicode.ToLower(firstComponentRunes[0])

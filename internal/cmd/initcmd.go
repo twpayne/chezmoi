@@ -37,49 +37,49 @@ type initCmdConfig struct {
 }
 
 var repoGuesses = []struct {
-	rxFn              func() *regexp.Regexp
+	rxFunc            func() *regexp.Regexp
 	httpRepoGuessRepl string
 	sshRepoGuessRepl  string
 }{
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\A([-0-9A-Za-z]+)\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\A([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://github.com/$1/dotfiles.git",
 		sshRepoGuessRepl:  "git@github.com:$1/dotfiles.git",
 	},
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\A([-0-9A-Za-z]+)/([-.0-9A-Z_a-z]+?)(\.git)?\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\A([-0-9A-Za-z]+)/([-.0-9A-Z_a-z]+?)(\.git)?\z`),
 		httpRepoGuessRepl: "https://github.com/$1/$2.git",
 		sshRepoGuessRepl:  "git@github.com:$1/$2.git",
 	},
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://$1/$2/dotfiles.git",
 		sshRepoGuessRepl:  "git@$1:$2/dotfiles.git",
 	},
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\A([-0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-.0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://$1/$2/$3.git",
 		sshRepoGuessRepl:  "git@$1:$2/$3.git",
 	},
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`),
 		httpRepoGuessRepl: "https://$1/$2/$3.git",
 		sshRepoGuessRepl:  "git@$1:$2/$3.git",
 	},
 	{
-		rxFn: chezmoiregexp.MustCompileRegexpOnce(
+		rxFunc: chezmoiregexp.MustCompileRegexpOnce(
 			`\A(https?://)([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)(\.git)?\z`,
 		),
 		httpRepoGuessRepl: "$1$2/$3/$4.git",
 		sshRepoGuessRepl:  "git@$2:$3/$4.git",
 	},
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\Asr\.ht/~([a-z_][a-z0-9_-]+)\z`),
 		httpRepoGuessRepl: "https://git.sr.ht/~$1/dotfiles",
 		sshRepoGuessRepl:  "git@git.sr.ht:~$1/dotfiles",
 	},
 	{
-		rxFn:              chezmoiregexp.MustCompileRegexpOnce(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
+		rxFunc:            chezmoiregexp.MustCompileRegexpOnce(`\Asr\.ht/~([a-z_][a-z0-9_-]+)/([-0-9A-Za-z]+)\z`),
 		httpRepoGuessRepl: "https://git.sr.ht/~$1/$2",
 		sshRepoGuessRepl:  "git@git.sr.ht:~$1/$2",
 	},
@@ -378,12 +378,12 @@ func (o gitCloneOptionsLogValuer) LogValue() slog.Value {
 func guessRepoURL(arg string, ssh bool) string {
 	for _, repoGuess := range repoGuesses {
 		switch {
-		case !repoGuess.rxFn().MatchString(arg):
+		case !repoGuess.rxFunc().MatchString(arg):
 			continue
 		case ssh && repoGuess.sshRepoGuessRepl != "":
-			return repoGuess.rxFn().ReplaceAllString(arg, repoGuess.sshRepoGuessRepl)
+			return repoGuess.rxFunc().ReplaceAllString(arg, repoGuess.sshRepoGuessRepl)
 		case !ssh && repoGuess.httpRepoGuessRepl != "":
-			return repoGuess.rxFn().ReplaceAllString(arg, repoGuess.httpRepoGuessRepl)
+			return repoGuess.rxFunc().ReplaceAllString(arg, repoGuess.httpRepoGuessRepl)
 		}
 	}
 	return arg
