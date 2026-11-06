@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	mackupCommentRegexpFunc  = chezmoiregexp.MustCompileRegexpOnce(`\A#.*\n\z`)
-	mackupKeyValueRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\A(\w+)\s*=\s*(.*)\z`)
-	mackupSectionRegexpFunc  = chezmoiregexp.MustCompileRegexpOnce(`\A\[(.*)\]\n\z`)
+	mackupCommentRegexpFunc  = chezmoiregexp.MustCompileOnce(`\A#.*\n\z`)
+	mackupKeyValueRegexpFunc = chezmoiregexp.MustCompileOnce(`\A(\w+)\s*=\s*(.*)\z`)
+	mackupSectionRegexpFunc  = chezmoiregexp.MustCompileOnce(`\A\[(.*)\]\n\z`)
 )
 
 type mackupApplicationApplicationConfig struct {

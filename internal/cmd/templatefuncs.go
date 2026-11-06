@@ -68,7 +68,7 @@ var errEmptyPath = errors.New("empty path")
 
 // needsQuoteRegexpFunc matches any string that contains non-printable
 // characters, double quotes, or a backslash.
-var needsQuoteRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`[^\x21\x23-\x5b\x5d-\x7e]`)
+var needsQuoteRegexpFunc = chezmoiregexp.MustCompileOnce(`[^\x21\x23-\x5b\x5d-\x7e]`)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
 	var builder strings.Builder

@@ -108,11 +108,11 @@ func (t *ExternalType) UnmarshalText(data []byte) error {
 }
 
 var (
-	commentRegexpFunc                       = chezmoiregexp.MustCompileRegexpOnce(`(?:\A|\s+)#.*(?:\r?\n)?$`)
-	lineEndingRegexpFunc                    = chezmoiregexp.MustCompileRegexpOnce(`(?m)(?:\r\n|\r|\n)`)
-	modifyTemplateRegexpFunc                = chezmoiregexp.MustCompileRegexpOnce(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
-	templateDirectiveRegexpFunc             = chezmoiregexp.MustCompileRegexpOnce(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
-	templateDirectiveKeyValuePairRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
+	commentRegexpFunc                       = chezmoiregexp.MustCompileOnce(`(?:\A|\s+)#.*(?:\r?\n)?$`)
+	lineEndingRegexpFunc                    = chezmoiregexp.MustCompileOnce(`(?m)(?:\r\n|\r|\n)`)
+	modifyTemplateRegexpFunc                = chezmoiregexp.MustCompileOnce(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
+	templateDirectiveRegexpFunc             = chezmoiregexp.MustCompileOnce(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
+	templateDirectiveKeyValuePairRegexpFunc = chezmoiregexp.MustCompileOnce(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 
 	// AppleDouble constants.
 	appleDoubleNamePrefix     = "._"

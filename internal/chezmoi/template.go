@@ -18,7 +18,7 @@ import (
 	"chezmoi.io/chezmoi/v2/internal/chezmoiregexp"
 )
 
-var formatIndentRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`[ \t]*`)
+var formatIndentRegexpFunc = chezmoiregexp.MustCompileOnce(`[ \t]*`)
 
 // A Template extends [text/template.Template] with support for directives.
 type Template struct {

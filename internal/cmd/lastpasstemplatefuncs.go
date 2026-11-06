@@ -18,9 +18,9 @@ import (
 var (
 	// chezmoi uses lpass show --json which was added in v1.3.0~6.
 	lastpassMinVersion          = semver.Version{Major: 1, Minor: 3, Patch: 0}
-	lastpassParseNoteRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
+	lastpassParseNoteRegexpFunc = chezmoiregexp.MustCompileOnce(`\A([ A-Za-z]*):(.*)(?:\r?\n)?\z`)
 	lastpassVersionArgs         = []string{"--version"}
-	lastpassVersionRegexpFunc   = chezmoiregexp.MustCompileRegexpOnce(`^LastPass CLI v(\d+\.\d+\.\d+)`)
+	lastpassVersionRegexpFunc   = chezmoiregexp.MustCompileOnce(`^LastPass CLI v(\d+\.\d+\.\d+)`)
 )
 
 type lastpassConfig struct {

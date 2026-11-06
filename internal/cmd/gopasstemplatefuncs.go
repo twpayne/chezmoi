@@ -30,7 +30,7 @@ var (
 	// chezmoi uses gopass show --password which was added in v1.6.1.
 	gopassMinVersion        = semver.Version{Major: 1, Minor: 6, Patch: 1}
 	gopassVersionArgs       = []string{"--version"}
-	gopassVersionRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`gopass\s+(\d+\.\d+\.\d+)`)
+	gopassVersionRegexpFunc = chezmoiregexp.MustCompileOnce(`gopass\s+(\d+\.\d+\.\d+)`)
 )
 
 type gopassConfig struct {
