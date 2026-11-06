@@ -8,7 +8,7 @@ import (
 
 // nonShellLiteralRegexpFunc is a regular expression that matches anything that
 // is not a shell literal.
-var nonShellLiteralRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`[^+\-./0-9=A-Z_a-z]`)
+var nonShellLiteralRegexpFunc = chezmoiregexp.MustCompileOnce(`[^+\-./0-9=A-Z_a-z]`)
 
 // shellQuote returns s quoted as a shell argument, if necessary.
 func shellQuote(s string) string {

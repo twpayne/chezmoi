@@ -73,13 +73,13 @@ const (
 )
 
 var (
-	dirPrefixRegexpFunc  = chezmoiregexp.MustCompileRegexpOnce(`\A(dot|exact|literal|readonly|private)_`)
-	filePrefixRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
+	dirPrefixRegexpFunc  = chezmoiregexp.MustCompileOnce(`\A(dot|exact|literal|readonly|private)_`)
+	filePrefixRegexpFunc = chezmoiregexp.MustCompileOnce(
 		`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|readonly|remove|run|symlink)_`,
 	)
-	fileSuffixRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\.(literal|tmpl)\z`)
+	fileSuffixRegexpFunc = chezmoiregexp.MustCompileOnce(`\.(literal|tmpl)\z`)
 
-	WhitespaceRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\s+`)
+	WhitespaceRegexpFunc = chezmoiregexp.MustCompileOnce(`\s+`)
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.

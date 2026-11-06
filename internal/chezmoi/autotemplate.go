@@ -15,7 +15,7 @@ type TemplateVariable struct {
 	Components []string
 }
 
-var templateMarkerRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`\{{2,}|\}{2,}`)
+var templateMarkerRegexpFunc = chezmoiregexp.MustCompileOnce(`\{{2,}|\}{2,}`)
 
 // autoTemplate converts contents into a template by escaping template markers
 // and replacing values in data with their keys. It returns the template and if

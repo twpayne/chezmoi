@@ -37,7 +37,7 @@ const (
 )
 
 var (
-	checksumRegexpFunc          = chezmoiregexp.MustCompileRegexpOnce(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
+	checksumRegexpFunc          = chezmoiregexp.MustCompileOnce(`\A([0-9a-f]{64})\s+(\S+)\n\z`)
 	errUnsupportedUpgradeMethod = errors.New("unsupported upgrade method")
 )
 

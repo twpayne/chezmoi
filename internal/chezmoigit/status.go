@@ -74,7 +74,7 @@ type Status struct {
 }
 
 var (
-	statusPorcelainV2ZOrdinaryRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`` +
+	statusPorcelainV2ZOrdinaryRegexpFunc = chezmoiregexp.MustCompileOnce(`` +
 		`^1 ` +
 		`([!\.\?ACDMRU])([!\.\?ACDMRU]) ` +
 		`(N\.\.\.|S[\.C][\.M][\.U]) ` +
@@ -86,7 +86,7 @@ var (
 		`(.*)` +
 		`$`,
 	)
-	statusPorcelainV2ZRenamedOrCopiedRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`` +
+	statusPorcelainV2ZRenamedOrCopiedRegexpFunc = chezmoiregexp.MustCompileOnce(`` +
 		`^2 ` +
 		`([!\.\?ACDMRU])([!\.\?ACDMRU]) ` +
 		`(N\.\.\.|S[\.C][\.M][\.U]) ` +
@@ -99,7 +99,7 @@ var (
 		`(.*?)\t(.*)` +
 		`$`,
 	)
-	statusPorcelainV2ZUnmergedRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`` +
+	statusPorcelainV2ZUnmergedRegexpFunc = chezmoiregexp.MustCompileOnce(`` +
 		`^u ` +
 		`([!\.\?ACDMRU])([!\.\?ACDMRU]) ` +
 		`(N\.\.\.|S[\.C][\.M][\.U]) ` +
@@ -113,12 +113,12 @@ var (
 		`(.*)` +
 		`$`,
 	)
-	statusPorcelainV2ZUntrackedRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`` +
+	statusPorcelainV2ZUntrackedRegexpFunc = chezmoiregexp.MustCompileOnce(`` +
 		`^\? ` +
 		`(.*)` +
 		`$`,
 	)
-	statusPorcelainV2ZIgnoredRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`` +
+	statusPorcelainV2ZIgnoredRegexpFunc = chezmoiregexp.MustCompileOnce(`` +
 		`^! ` +
 		`(.*)` +
 		`$`,

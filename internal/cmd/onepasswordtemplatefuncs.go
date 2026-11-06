@@ -31,7 +31,7 @@ const (
 )
 
 var (
-	onepasswordVersionRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`^(\d+\.\d+\.\d+\S*)`)
+	onepasswordVersionRegexpFunc = chezmoiregexp.MustCompileOnce(`^(\d+\.\d+\.\d+\S*)`)
 	onepasswordMinVersion        = semver.Version{Major: 2}
 )
 

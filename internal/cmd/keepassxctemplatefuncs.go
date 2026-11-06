@@ -50,18 +50,16 @@ type keepassxcConfig struct {
 }
 
 var (
-	keepassxcAnyResponseRegexpFunc                   = chezmoiregexp.MustCompileRegexpOnce(`(?m)\A.*\r\n`)
-	keepassxcEnterPasswordToUnlockDatabaseRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
+	keepassxcAnyResponseRegexpFunc                   = chezmoiregexp.MustCompileOnce(`(?m)\A.*\r\n`)
+	keepassxcEnterPasswordToUnlockDatabaseRegexpFunc = chezmoiregexp.MustCompileOnce(
 		`^Enter password to unlock .*: `,
 	)
-	keepassxcMinVersion     = semver.Version{Major: 2, Minor: 7, Patch: 0}
-	keepassxcPairRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
-		`\A([A-Z]\w*):\s*(.*?)\r?\n\z`,
-	)
-	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(
+	keepassxcMinVersion                                          = semver.Version{Major: 2, Minor: 7, Patch: 0}
+	keepassxcPairRegexpFunc                                      = chezmoiregexp.MustCompileOnce(`\A([A-Z]\w*):\s*(.*?)\r?\n\z`)
+	keepassxcPleasePresentOrTouchYourYubiKeyToContinueRegexpFunc = chezmoiregexp.MustCompileOnce(
 		"^Please present or touch your \\S+ to continue\\.\r\n",
 	)
-	keepassxcPromptRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`^.*> `)
+	keepassxcPromptRegexpFunc = chezmoiregexp.MustCompileOnce(`^.*> `)
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {

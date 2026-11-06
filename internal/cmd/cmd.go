@@ -26,7 +26,7 @@ const readSourceStateHookName = "read-source-state"
 var (
 	noArgs = []string(nil)
 
-	deDuplicateErrorRegexpFunc = chezmoiregexp.MustCompileRegexpOnce(`:\s+`)
+	deDuplicateErrorRegexpFunc = chezmoiregexp.MustCompileOnce(`:\s+`)
 
 	chezmoiDev = make(map[string]string)
 )
