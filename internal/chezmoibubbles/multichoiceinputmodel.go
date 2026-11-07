@@ -4,11 +4,12 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
-	"github.com/charmbracelet/bubbles/paginator"
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	"charm.land/bubbles/v2/help"
+	"charm.land/bubbles/v2/key"
+	"charm.land/bubbles/v2/paginator"
+	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
+	"charm.land/lipgloss/v2/compat"
 )
 
 // This is adapted from github.com/charmbracelet/gum/blob/main/choose/... for
@@ -75,8 +76,14 @@ var (
 
 func NewMultichoiceInputModel(prompt string, choices []string, defaultValue *[]string) MultichoiceInputModel {
 	var (
-		subduedStyle     = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#847A85", Dark: "#979797"})
-		verySubduedStyle = lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Light: "#DDDADA", Dark: "#3C3C3C"})
+		subduedStyle = lipgloss.NewStyle().Foreground(compat.AdaptiveColor{
+			Light: lipgloss.Color("#847A85"),
+			Dark:  lipgloss.Color("#979797"),
+		})
+		verySubduedStyle = lipgloss.NewStyle().Foreground(compat.AdaptiveColor{
+			Light: lipgloss.Color("#DDDADA"),
+			Dark:  lipgloss.Color("#3C3C3C"),
+		})
 	)
 
 	currentSelected := 0
@@ -248,9 +255,9 @@ func (m MultichoiceInputModel) Value() []string {
 	return out
 }
 
-func (m MultichoiceInputModel) View() string {
+func (m MultichoiceInputModel) View() tea.View {
 	if m.quitting {
-		return ""
+		return tea.NewView("")
 	}
 
 	var s strings.Builder
@@ -289,7 +296,7 @@ func (m MultichoiceInputModel) View() string {
 	}
 	parts = append(parts, s.String(), m.help.View(m.keymap))
 
-	return lipgloss.JoinVertical(lipgloss.Left, parts...)
+	return tea.NewView(lipgloss.JoinVertical(lipgloss.Left, parts...))
 }
 
 func (m MultichoiceInputModel) deselectAll() MultichoiceInputModel {

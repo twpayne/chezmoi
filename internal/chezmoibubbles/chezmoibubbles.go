@@ -1,3 +1,3 @@
 // Package chezmoibubbles provides text user interface components for chezmoi
-// using github.com/charmbracelet/bubbletea.
+// using charm.land/bubbles/v2.
 package chezmoibubbles

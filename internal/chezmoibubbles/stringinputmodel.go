@@ -1,8 +1,8 @@
 package chezmoibubbles
 
 import (
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
 )
 
 type StringInputModel struct {
@@ -34,12 +34,12 @@ func (m StringInputModel) Init() tea.Cmd {
 }
 
 func (m StringInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if keyMsg, ok := msg.(tea.KeyMsg); ok {
-		switch keyMsg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+	if keyMsg, ok := msg.(tea.KeyPressMsg); ok {
+		switch keyMsg.String() {
+		case "ctrl+c", "esc":
 			m.canceled = true
 			return m, tea.Quit
-		case tea.KeyEnter:
+		case "enter":
 			return m, tea.Quit
 		}
 	}
@@ -56,6 +56,6 @@ func (m StringInputModel) Value() string {
 	return value
 }
 
-func (m StringInputModel) View() string {
-	return m.textInput.View()
+func (m StringInputModel) View() tea.View {
+	return tea.NewView(m.textInput.View())
 }
