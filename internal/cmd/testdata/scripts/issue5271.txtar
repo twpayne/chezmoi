@@ -1,0 +1,19 @@
+[windows] skip 'UNIX only'
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+exec git -C repo init
+exec git -C repo add .
+exec git -C repo commit --message 'initial commit'
+
+# test that chezmoi init --apply sets template data from config
+exec chezmoi init --apply file://$WORK/repo
+stdout ^${HOME@R}/.ejson$
+
+-- repo/.chezmoi.toml.tmpl --
+[ejson]
+    keyDir = {{ joinPath .chezmoi.homeDir ".ejson" | toToml }}
+-- repo/run_once_after_script.sh.tmpl --
+#!/bin/sh
+echo {{ .chezmoi.config.ejson.keyDir | shellQuote }}

@@ -240,6 +240,9 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		if err := c.runHookPre("apply"); err != nil {
 			return err
 		}
+		// Recompute the template data to pick up any changes from the
+		// configuration.
+		c.templateData = c.newTemplateData(cmd)
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 			cmd:          cmd,
 			filter:       c.init.filter,
