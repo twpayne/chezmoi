@@ -142,7 +142,7 @@ func (c *Config) preRunInitCmd(cmd *cobra.Command, args []string) error {
 		revCount++
 	}
 	if revCount > 1 {
-		return errors.New("the --branch, --revision, and --tag flags are mutally exclusive")
+		return errors.New("the --branch, --revision, and --tag flags are mutually exclusive")
 	}
 
 	return nil
