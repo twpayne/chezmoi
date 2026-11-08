@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
+	"os"
+	"os/exec"
 	"regexp"
 	"strconv"
 
@@ -13,6 +15,7 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
@@ -234,25 +237,40 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// Apply. Explicitly run any apply pre or post hooks because the normal hook
-	// mechanism will only run init's hooks.
+	// Apply.
 	if c.init.apply {
-		if err := c.runHookPre("apply"); err != nil {
+		// Close the persistent state so that it's unlocked for chezmoi apply.
+		if err := c.persistentState.Close(); err != nil {
 			return err
 		}
-		// Recompute the template data to pick up any changes from the
-		// configuration.
-		c.templateData = c.newTemplateData(cmd)
-		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
-			cmd:          cmd,
-			filter:       c.init.filter,
-			recursive:    false,
-			umask:        c.Umask,
-			preApplyFunc: c.defaultPreApplyFunc,
-		}); err != nil {
+
+		// Find our executable.
+		executable, err := os.Executable()
+		if err != nil {
 			return err
 		}
-		if err := c.runHookPost("apply"); err != nil {
+
+		// Compute the flags to pass to chezmoi apply.
+		applyArgs := []string{"apply"}
+		allFlags := make([]*pflag.Flag, 0, cmd.Parent().Flags().NFlag()+2)
+		// Pass all flags from the parent command.
+		cmd.Parent().Flags().VisitAll(func(flag *pflag.Flag) {
+			allFlags = append(allFlags, flag)
+		})
+		// Only pass on the --exclude and --include flags from chezmoi init.
+		allFlags = append(allFlags, cmd.Flag("exclude"), cmd.Flag("include"))
+		for _, flag := range allFlags {
+			if flag.Changed {
+				applyArgs = append(applyArgs, "--"+flag.Name+"="+flag.Value.String())
+			}
+		}
+
+		// Run chezmoi apply.
+		cmd := exec.Command(executable, applyArgs...)
+		cmd.Stdin = c.stdin
+		cmd.Stdout = c.stdout
+		cmd.Stderr = c.stderr
+		if err := chezmoilog.LogCmdRun(c.logger, cmd); err != nil {
 			return err
 		}
 	}

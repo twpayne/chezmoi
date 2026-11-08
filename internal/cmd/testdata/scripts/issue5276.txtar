@@ -1,0 +1,42 @@
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+exec git -C repo init
+exec git -C repo add .
+exec git -C repo commit --message 'initial commit'
+
+# test that chezmoi init --apply uses the sourceDir from the config template
+exec chezmoi init --apply file://$WORK/repo
+cmp $HOME/.file $HOME/source/dot_file
+cmp $HOME/.dir/file $HOME/source/dot_dir/file
+
+chhome home2/user
+
+# test that chezmoi init --apply passes on --exclude flags
+exec chezmoi init --apply --exclude=files file://$WORK/repo
+! exists $HOME/.file
+isdir $HOME/.dir
+! exists $HOME/.dir/file
+issymlink $HOME/.symlink
+
+chhome home3/user
+
+# test that chezmoi init --apply passes on --mode=symlink
+exec chezmoi init --apply --mode=symlink file://$WORK/repo
+issymlink $HOME/.file
+
+-- home/user/source/dot_dir/file --
+# repo contents of .dir/file
+-- home/user/source/dot_file --
+# source contents of .file
+-- home2/user/source/dot_dir/file --
+# repo contents of .dir/file
+-- home2/user/source/symlink_dot_symlink --
+# target
+-- home3/user/source/dot_file --
+# source contents of .file
+-- repo/.chezmoi.toml.tmpl --
+sourceDir = {{ joinPath .chezmoi.homeDir "source" | toToml }}
+-- repo/dot_file --
+# repo contents of .file
