@@ -95,7 +95,7 @@ installation script, e.g.
 sudo apt install ripgrep
 ```
 
-The next time you run [`chezmoi apply`][apply] or [`chezmoi
+The next time you run [`chezmoi apply`][apply-command] or [`chezmoi
 update`][update-command] this script will be run. As it has the `run_onchange_`
 prefix, it will not be run again unless its contents change, for example if you
 add more packages to be installed.
@@ -117,7 +117,7 @@ This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 
 ## Run a script when the contents of another file changes
 
-chezmoi's `run_` scripts are run every time you run [`chezmoi apply`][apply],
+chezmoi's `run_` scripts are run every time you run [`chezmoi apply`][apply-command],
 whereas `run_onchange_` scripts are run only when their contents have changed,
 after executing them as templates. You can use this to cause a `run_onchange_`
 script to run when the contents of another file has changed by including
