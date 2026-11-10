@@ -11460,7 +11460,7 @@ installation script, e.g.</p>
 <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>ripgrep
 </code></pre></div>
-<p>The next time you run [<code>chezmoi apply</code>][apply] or <a href="../../reference/commands/update/"><code>chezmoi
+<p>The next time you run <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a> or <a href="../../reference/commands/update/"><code>chezmoi
 update</code></a> this script will be run. As it has the <code>run_onchange_</code>
 prefix, it will not be run again unless its contents change, for example if you
 add more packages to be installed.</p>
@@ -11476,7 +11476,7 @@ brew install ripgrep
 </code></pre></div>
 <p>This will install <code>ripgrep</code> on both Debian/Ubuntu Linux systems and macOS.</p>
 <h2 id="run-a-script-when-the-contents-of-another-file-changes">Run a script when the contents of another file changes</h2>
-<p>chezmoi's <code>run_</code> scripts are run every time you run [<code>chezmoi apply</code>][apply],
+<p>chezmoi's <code>run_</code> scripts are run every time you run <a href="../../reference/commands/apply/"><code>chezmoi apply</code></a>,
 whereas <code>run_onchange_</code> scripts are run only when their contents have changed,
 after executing them as templates. You can use this to cause a <code>run_onchange_</code>
 script to run when the contents of another file has changed by including
