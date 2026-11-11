@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"os"
 	"os/exec"
@@ -16,12 +17,38 @@ import (
 )
 
 type (
+	binShVersionCheck struct{}
 	// Check if hardlinks work between tempDir and sourceDir.
 	hardlinkCheck   struct{}
 	systeminfoCheck struct{ omittedCheck }
 	umaskCheck      struct{}
 	unameCheck      struct{}
 )
+
+func (c binShVersionCheck) Name() string {
+	return "bin-sh-version"
+}
+
+func (c binShVersionCheck) Run(config *Config) (checkResult, string) {
+	cmd := exec.Command("/bin/sh", "--version")
+	combinedOutput, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
+	if errors.Is(err, fs.ErrNotExist) {
+		return checkResultError, "/bin/sh not found"
+	}
+	var message string
+	if len(combinedOutput) == 0 {
+		message = "/bin/sh --version returned no output"
+	} else {
+		firstLine := string(bytes.TrimSpace(bytes.Split(combinedOutput, []byte{'\n'})[0]))
+		message = "/bin/sh --version returned " + firstLine
+	}
+	checkResult := checkResultOK
+	if err != nil {
+		checkResult = checkResultError
+		message += ", " + err.Error()
+	}
+	return checkResult, message
+}
 
 func (hardlinkCheck) Name() string {
 	return "hardlink"

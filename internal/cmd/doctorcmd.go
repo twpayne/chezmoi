@@ -235,6 +235,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		hardlinkCheck{},
 		symlinkCheck{},
 		umaskCheck{},
+		binShVersionCheck{},
 		&binaryCheck{
 			name:       "cd-command",
 			binaryName: cdCommand,

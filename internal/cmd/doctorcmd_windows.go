@@ -10,10 +10,11 @@ import (
 )
 
 type (
-	hardlinkCheck   struct{ omittedCheck }
-	systeminfoCheck struct{}
-	umaskCheck      struct{ omittedCheck }
-	unameCheck      struct{ omittedCheck }
+	binShVersionCheck struct{ omittedCheck }
+	hardlinkCheck     struct{ omittedCheck }
+	systeminfoCheck   struct{}
+	umaskCheck        struct{ omittedCheck }
+	unameCheck        struct{ omittedCheck }
 )
 
 func (systeminfoCheck) Name() string {
