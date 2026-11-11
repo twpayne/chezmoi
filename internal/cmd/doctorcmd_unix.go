@@ -18,17 +18,17 @@ import (
 
 type (
 	binShVersionCheck struct{}
-	// Check if hardlinks work between tempDir and sourceDir.
-	hardlinkCheck   struct{}
-	systeminfoCheck struct{ omittedCheck }
-	umaskCheck      struct{}
-	unameCheck      struct{}
+	hardlinkCheck     struct{}
+	systeminfoCheck   struct{ omittedCheck }
+	umaskCheck        struct{}
+	unameCheck        struct{}
 )
 
 func (c binShVersionCheck) Name() string {
 	return "bin-sh-version"
 }
 
+// Run checks the output of /bin/sh --version.
 func (c binShVersionCheck) Run(config *Config) (checkResult, string) {
 	cmd := exec.Command("/bin/sh", "--version")
 	combinedOutput, err := chezmoilog.LogCmdCombinedOutput(slog.Default(), cmd)
@@ -54,6 +54,7 @@ func (hardlinkCheck) Name() string {
 	return "hardlink"
 }
 
+// Run checks if hardlinks work between tempDir and sourceDir.
 func (hardlinkCheck) Run(config *Config) (checkResult, string) {
 	if !config.Edit.Hardlink {
 		return checkResultInfo, "edit.hardlink disabled"
