@@ -20,6 +20,7 @@ func (systeminfoCheck) Name() string {
 	return "systeminfo"
 }
 
+// Run returns the OS name and version from the systeminfo command.
 func (systeminfoCheck) Run(config *Config) (checkResult, string) {
 	cmd := exec.Command("systeminfo")
 	data, err := chezmoilog.LogCmdOutput(slog.Default(), cmd)

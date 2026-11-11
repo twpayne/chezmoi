@@ -36,9 +36,9 @@ import (
 type checkResult int
 
 const (
-	checkResultOmitted checkResult = -3 // The check was omitted.
-	checkResultFailed  checkResult = -2 // The check could not be completed.
-	checkResultSkipped checkResult = -1 // The check was skipped.
+	checkResultOmitted checkResult = -3 // The check was omitted, i.e. it is not relevant for this system.
+	checkResultFailed  checkResult = -2 // The check ran, but could not be completed.
+	checkResultSkipped checkResult = -1 // The check was skipped because a precondition was not met.
 	checkResultOK      checkResult = 0  // The check completed and did not find any problems.
 	checkResultInfo    checkResult = 1  // The check completed and found something interesting, but not a problem.
 	checkResultWarning checkResult = 2  // The check completed and found something that might indicate a problem.

@@ -16,7 +16,6 @@ import (
 )
 
 type (
-	// Check if hardlinks work between tempDir and sourceDir.
 	hardlinkCheck   struct{}
 	systeminfoCheck struct{ omittedCheck }
 	umaskCheck      struct{}
@@ -27,6 +26,7 @@ func (hardlinkCheck) Name() string {
 	return "hardlink"
 }
 
+// Run checks if hardlinks work between tempDir and sourceDir.
 func (hardlinkCheck) Run(config *Config) (checkResult, string) {
 	if !config.Edit.Hardlink {
 		return checkResultInfo, "edit.hardlink disabled"
