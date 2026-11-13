@@ -7,7 +7,10 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
+	"runtime"
 	"runtime/debug"
+	"runtime/pprof"
+	"runtime/trace"
 	"strconv"
 	"strings"
 
@@ -55,6 +58,34 @@ func Main(versionInfo VersionInfo, args []string) int {
 		chezmoiDev[key] = value
 	}
 
+	if chezmoiDev["cpuprofile"] != "" {
+		cpuProfileFile, err := os.Create(chezmoiDev["cpuprofile"])
+		if err == nil {
+			defer cpuProfileFile.Close()
+			err = pprof.StartCPUProfile(cpuProfileFile)
+		}
+		if err == nil {
+			defer pprof.StopCPUProfile()
+		}
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "chezmoi: cpuprofile: %s\n", err.Error())
+		}
+	}
+
+	if chezmoiDev["trace"] != "" {
+		traceFile, err := os.Create(chezmoiDev["trace"])
+		if err == nil {
+			defer traceFile.Close()
+			err = trace.Start(traceFile)
+		}
+		if err == nil {
+			defer trace.Stop()
+		}
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "chezmoi: trace: %s\n", err.Error())
+		}
+	}
+
 	if err := runMain(versionInfo, args); err != nil {
 		if exitWithCodeError, ok := errors.AsType[*chezmoi.ExitWithCodeError](err); ok {
 			return exitWithCodeError.ExitCode()
@@ -62,6 +93,19 @@ func Main(versionInfo VersionInfo, args []string) int {
 		fmt.Fprintf(os.Stderr, "chezmoi: %s\n", deDuplicateError(err))
 		return 1
 	}
+
+	if chezmoiDev["memprofile"] != "" {
+		memProfileFile, err := os.Create(chezmoiDev["memprofile"])
+		if err == nil {
+			defer memProfileFile.Close()
+			runtime.GC() //nolint:revive
+			err = pprof.Lookup("allocs").WriteTo(memProfileFile, 0)
+		}
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "chezmoi: memprofile: %s\n", err.Error())
+		}
+	}
+
 	return 0
 }
 

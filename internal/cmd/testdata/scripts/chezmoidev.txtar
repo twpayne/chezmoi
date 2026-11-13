@@ -1,0 +1,14 @@
+# test that CHEZMOIDEV=cpuprofile=cpuprofile.out writes a CPU profile
+env CHEZMOIDEV=cpuprofile=cpuprofile.out
+exec chezmoi --version
+exists cpuprofile.out
+
+# test that CHEZMOIDEV=memprofile=memprofile.out writes a memory profile
+env CHEZMOIDEV=memprofile=memprofile.out
+exec chezmoi --version
+exists memprofile.out
+
+# test that CHEZMOIDEV=trace=trace.out writes a trace
+env CHEZMOIDEV=trace=trace.out
+exec chezmoi --version
+exists trace.out
