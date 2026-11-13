@@ -364,6 +364,7 @@ nav:
   - Packaging: developer-guide/packaging.md
   - Security: developer-guide/security.md
   - Architecture: developer-guide/architecture.md
+  - Tools: developer-guide/tools.md
   - Building on top of chezmoi: developer-guide/building-on-top-of-chezmoi.md
 - Links:
   - Articles: links/articles.md
