@@ -1,8 +1,8 @@
+/*.out
 /.vagrant
 /COMMIT
 /chezmoi
 /chezmoi.exe
-/coverage.out
 /dist
 /resource_windows_*.syso
 /versioninfo.json
