@@ -157,6 +157,7 @@ type versionCheck struct {
 
 type doctorCmdConfig struct {
 	noNetwork bool
+	check     string
 }
 
 func (c *Config) newDoctorCmd() *cobra.Command {
@@ -177,11 +178,21 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 	}
 
 	doctorCmd.Flags().BoolVar(&c.doctor.noNetwork, "no-network", c.doctor.noNetwork, "do not use network connection")
+	doctorCmd.Flags().StringVar(&c.doctor.check, "check", c.doctor.check, "only run checks matching pattern")
 
 	return doctorCmd
 }
 
 func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
+	var checkRegexp *regexp.Regexp
+	if c.doctor.check != "" {
+		var err error
+		checkRegexp, err = regexp.Compile(c.doctor.check)
+		if err != nil {
+			return err
+		}
+	}
+
 	homeDirAbsPath, err := chezmoi.HomeDirAbsPath()
 	if err != nil {
 		return err
@@ -450,6 +461,10 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	for _, check := range checks {
+		if checkRegexp != nil && !checkRegexp.MatchString(check.Name()) {
+			continue
+		}
+
 		checkResult, message := check.Run(c)
 		if checkResult == checkResultOmitted {
 			continue
