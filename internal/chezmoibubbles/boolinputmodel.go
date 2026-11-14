@@ -3,8 +3,8 @@ package chezmoibubbles
 import (
 	"strconv"
 
-	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
+	"charm.land/bubbles/v2/textinput"
+	tea "charm.land/bubbletea/v2"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoi"
 )
@@ -45,12 +45,12 @@ func (m BoolInputModel) Init() tea.Cmd {
 }
 
 func (m BoolInputModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if keyMsg, ok := msg.(tea.KeyMsg); ok {
-		switch keyMsg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+	if keyMsg, ok := msg.(tea.KeyPressMsg); ok {
+		switch keyMsg.String() {
+		case "ctrl+c", "esc":
 			m.canceled = true
 			return m, tea.Quit
-		case tea.KeyEnter:
+		case "enter":
 			if m.defaultValue != nil {
 				m.textInput.SetValue(strconv.FormatBool(*m.defaultValue))
 				return m, tea.Quit
@@ -74,6 +74,6 @@ func (m BoolInputModel) Value() bool {
 	return value
 }
 
-func (m BoolInputModel) View() string {
-	return m.textInput.View()
+func (m BoolInputModel) View() tea.View {
+	return tea.NewView(m.textInput.View())
 }
