@@ -1,0 +1,4 @@
+# test that chezmoi --check only includes the specified checks
+exec chezmoi doctor '--check=^os-arch$'
+stdout os-arch
+! stdout build-info

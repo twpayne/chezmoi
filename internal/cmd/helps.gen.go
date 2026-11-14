@@ -300,6 +300,7 @@ var helps = map[string]*help{
 		example: "" +
 			"  chezmoi doctor",
 		longFlags: chezmoiset.New(
+			"check",
 			"no-network",
 		),
 	},
