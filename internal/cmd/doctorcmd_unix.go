@@ -6,9 +6,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"os"
 	"os/exec"
+	"strings"
 
 	"golang.org/x/sys/unix"
 
@@ -16,11 +18,59 @@ import (
 )
 
 type (
+	binShCheck      struct{}
 	hardlinkCheck   struct{}
 	systeminfoCheck struct{ omittedCheck }
 	umaskCheck      struct{}
 	unameCheck      struct{}
 )
+
+func (c binShCheck) Name() string {
+	return "bin-sh"
+}
+
+// Run checks /bin/sh.
+func (c binShCheck) Run(config *Config) (checkResult, string) {
+	const binSh = "/bin/sh"
+
+	var messages []string
+
+	// Firstly, check whether /bin/sh is a symlink to something else.
+	switch target, err := config.baseSystem.Readlink(binSh); {
+	case errors.Is(err, unix.EINVAL):
+		// Not a symlink; do nothing.
+	case errors.Is(err, fs.ErrNotExist):
+		return checkResultError, "not found"
+	case err != nil:
+		return checkResultError, err.Error()
+	default:
+		// A symlink to something else, report it.
+		messages = append(messages, "symlink to "+target)
+	}
+
+	// Secondly, check /bin/sh's environment variables. Report anything that
+	// contains "VERSION" or "version" in the key.
+	output := &bytes.Buffer{}
+	cmd := exec.Command(binSh, "-c", "set")
+	cmd.Stdout = output
+	switch err := config.baseSystem.RunCmd(cmd); {
+	case err != nil:
+		return checkResultError, err.Error()
+	default:
+		for line := range bytes.Lines(output.Bytes()) {
+			switch key, _, ok := bytes.Cut(line, []byte{'='}); {
+			case !ok:
+				// Do nothing.
+			case bytes.Contains(key, []byte("CHEZMOI")):
+				// Ignore chezmoi variables.
+			case bytes.Contains(bytes.ToUpper(key), []byte("VERSION")):
+				messages = append(messages, string(bytes.TrimSpace(line)))
+			}
+		}
+	}
+
+	return checkResultOK, strings.Join(messages, ", ")
+}
 
 func (hardlinkCheck) Name() string {
 	return "hardlink"
