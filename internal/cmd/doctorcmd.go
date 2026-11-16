@@ -55,7 +55,7 @@ const (
 	gitStatusError           gitStatus = "error"
 )
 
-var versionRegexpFunc = chezmoiregexp.MustCompileOnce(`^(\d+\.\d+\.\d+)`)
+var versionRegexpFunc = chezmoiregexp.MustCompileOnce(`(\d+\.\d+\.\d+\S*)`)
 
 // A check is an individual check.
 type check interface {
