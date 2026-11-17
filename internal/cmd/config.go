@@ -29,7 +29,8 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/bartventer/httpcache"
-	"github.com/betterleaks/betterleaks/detect"
+	betterleaksconfig "github.com/betterleaks/betterleaks/v2/config"
+	betterleaksscan "github.com/betterleaks/betterleaks/v2/scan"
 	"github.com/coreos/go-semver/semver"
 	"github.com/dustin/go-humanize/english"
 	"github.com/go-git/go-git/v5"
@@ -267,16 +268,16 @@ type Config struct {
 	logger                      *slog.Logger
 
 	// Computed configuration.
-	commandDirAbsPath      chezmoi.AbsPath
-	homeDirAbsPath         chezmoi.AbsPath
-	encryption             chezmoi.Encryption
-	sourceDirAbsPath       chezmoi.AbsPath
-	sourceDirAbsPathErr    error
-	sourceState            *chezmoi.SourceState
-	sourceStateErr         error
-	templateData           *templateData
-	betterleaksDetector    *detect.Detector
-	betterleaksDetectorErr error
+	commandDirAbsPath     chezmoi.AbsPath
+	homeDirAbsPath        chezmoi.AbsPath
+	encryption            chezmoi.Encryption
+	sourceDirAbsPath      chezmoi.AbsPath
+	sourceDirAbsPathErr   error
+	sourceState           *chezmoi.SourceState
+	sourceStateErr        error
+	templateData          *templateData
+	betterleaksScanner    *betterleaksscan.Scanner
+	betterleaksScannerErr error
 
 	stdin             io.Reader
 	stdout            io.Writer
@@ -1598,11 +1599,11 @@ func (c *Config) findConfigTemplate() (*configTemplate, error) {
 	}
 }
 
-func (c *Config) getBetterleaksDetector() (*detect.Detector, error) {
-	if c.betterleaksDetector == nil && c.betterleaksDetectorErr == nil {
-		c.betterleaksDetector, c.betterleaksDetectorErr = detect.NewDetectorDefaultConfig()
+func (c *Config) getBetterleaksScanner() (*betterleaksscan.Scanner, error) {
+	if c.betterleaksScanner == nil && c.betterleaksScannerErr == nil {
+		c.betterleaksScanner, c.betterleaksScannerErr = c.newBetterleaksScanner()
 	}
-	return c.betterleaksDetector, c.betterleaksDetectorErr
+	return c.betterleaksScanner, c.betterleaksScannerErr
 }
 
 func (c *Config) getConfigFileAbsPath() (chezmoi.AbsPath, error) {
@@ -1928,6 +1929,15 @@ func (c *Config) marshal(dataFormat string, data any) error {
 		return err
 	}
 	return c.writeOutput(marshaledData, 0o666)
+}
+
+// newBetterleaksScanner returns a new betterleaks scanner.
+func (c *Config) newBetterleaksScanner() (*betterleaksscan.Scanner, error) {
+	config, err := betterleaksconfig.Default()
+	if err != nil {
+		return nil, err
+	}
+	return betterleaksscan.New(config)
 }
 
 // newBuiltinDifSystem returns a new builtin diff system.
