@@ -1,0 +1,3 @@
+# test that chezmoi git status does not create the source directory
+! exec chezmoi git status
+! exists $CHEZMOISOURCEDIR

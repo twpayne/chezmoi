@@ -23,9 +23,7 @@ func (c *Config) newGitCmd() *cobra.Command {
 		Example: example("git"),
 		RunE:    c.runGitCmd,
 		Annotations: newAnnotations(
-			createSourceDirectoryIfNeeded,
 			persistentStateModeNone,
-			requiresWorkingTree,
 			runsCommands,
 		),
 	}
