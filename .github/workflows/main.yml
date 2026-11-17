@@ -66,10 +66,10 @@ jobs:
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
-    - uses: github/codeql-action/init@52cf1852265d99e9bea071b03366fc777a602909   # codeql-bundle-v2.27.4
+    - uses: github/codeql-action/init@55aa1d29038906879490fb63e58ae8bac369c88f   # codeql-bundle-v2.27.5
       with:
         languages: go
-    - uses: github/codeql-action/analyze@52cf1852265d99e9bea071b03366fc777a602909   # codeql-bundle-v2.27.4
+    - uses: github/codeql-action/analyze@55aa1d29038906879490fb63e58ae8bac369c88f   # codeql-bundle-v2.27.5
   misspell:
     runs-on: ubuntu-22.04
     permissions:
@@ -321,7 +321,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
-    - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2   # v10.3.3
+    - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d   # v10.4.0
       with:
         enable-cache: false
         version: ${{ needs.versions.outputs.uv-version }}
@@ -425,7 +425,7 @@ jobs:
       run: |
         go tool lint-commit-messages ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }}..${{ github.event.pull_request.head.sha }}
     - name: lint-markdown
-      uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34   # v25.0.0
+      uses: DavidAnson/markdownlint-cli2-action@3ce8f712b5d8f31acd8e201be6d97e3d2bb23eb7   # v25.1.0
   lint:
     name: lint-${{ matrix.runs-on }}
     strategy:
@@ -532,7 +532,7 @@ jobs:
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
-    - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2   # v10.3.3
+    - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d   # v10.4.0
       with:
         enable-cache: false
         version: ${{ needs.versions.outputs.uv-version }}
