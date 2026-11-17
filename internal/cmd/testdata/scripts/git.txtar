@@ -2,7 +2,6 @@
 [windows] unix2dos bin/git.cmd
 
 exec chezmoi git hello
-exists $CHEZMOISOURCEDIR
 stdout hello
 
 -- bin/git --
@@ -16,3 +15,4 @@ set out=%*
 set out=%out:\=%
 echo %out%
 endlocal
+-- home/user/.local/share/chezmoi/.keep --
