@@ -392,7 +392,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 }
 
 // A PreAddFunc is called before a new source state entry is added.
-type PreAddFunc func(targetRelPath RelPath, fileInfo fs.FileInfo, sourceStateEntry SourceStateEntry) error
+type PreAddFunc func(ctx context.Context, targetRelPath RelPath, fileInfo fs.FileInfo, sourceStateEntry SourceStateEntry) error
 
 // A ReplaceFunc is called before a source state entry is replaced.
 type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceStateEntry SourceStateEntry) error
@@ -440,6 +440,7 @@ func (o *AddOptions) shouldBeExact(targetRelPath RelPath) bool {
 
 // Add adds destAbsPathInfos to s.
 func (s *SourceState) Add(
+	ctx context.Context,
 	sourceSystem System,
 	persistentState PersistentState,
 	destSystem System,
@@ -609,7 +610,7 @@ DEST_ABS_PATH:
 		}
 
 		if options.PreAddFunc != nil && destAbsPathInfo != nil {
-			switch err := options.PreAddFunc(targetRelPath, destAbsPathInfo, newSourceStateEntry); {
+			switch err := options.PreAddFunc(ctx, targetRelPath, destAbsPathInfo, newSourceStateEntry); {
 			case errors.Is(err, fs.SkipDir):
 				continue DEST_ABS_PATH
 			case err != nil:

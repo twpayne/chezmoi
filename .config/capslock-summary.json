@@ -15,9 +15,7 @@
     "CAPABILITY_UNSAFE_POINTER"
   ],
   "chezmoi.io/chezmoi/v2/internal/chezmoi": [
-    "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
     "CAPABILITY_NETWORK",
     "CAPABILITY_SYSTEM_CALLS"
@@ -46,25 +44,27 @@
   "github.com/bartventer/httpcache/internal": [
     "CAPABILITY_NETWORK"
   ],
-  "github.com/betterleaks/betterleaks/detect": [
-    "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
-    "CAPABILITY_FILES",
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME",
-    "CAPABILITY_UNANALYZED"
-  ],
-  "github.com/betterleaks/betterleaks/internal/color": [
+  "github.com/betterleaks/betterleaks/v2/internal/color": [
     "CAPABILITY_FILES"
   ],
-  "github.com/betterleaks/betterleaks/internal/exprruntime": [
+  "github.com/betterleaks/betterleaks/v2/internal/exprruntime": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
-  "github.com/betterleaks/betterleaks/report": [
+  "github.com/betterleaks/betterleaks/v2/internal/logging": [
+    "CAPABILITY_CGO",
+    "CAPABILITY_EXEC",
+    "CAPABILITY_MODIFY_SYSTEM_STATE",
+    "CAPABILITY_OPERATING_SYSTEM",
+    "CAPABILITY_RUNTIME"
+  ],
+  "github.com/betterleaks/betterleaks/v2/report": [
     "CAPABILITY_FILES"
   ],
-  "github.com/betterleaks/betterleaks/sources": [
+  "github.com/betterleaks/betterleaks/v2/scan": [
+    "CAPABILITY_MODIFY_SYSTEM_STATE"
+  ],
+  "github.com/betterleaks/betterleaks/v2/sources": [
+    "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
@@ -128,16 +128,14 @@
   "github.com/gopasspw/gopass/internal/backend/crypto/age": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
   ],
-  "github.com/klauspost/compress/internal/cpuinfo": [
-    "CAPABILITY_ARBITRARY_EXECUTION"
+  "github.com/gopasspw/gopass/internal/backend/storage/fossilfs": [
+    "CAPABILITY_EXEC"
   ],
   "github.com/klauspost/compress/s2": [
     "CAPABILITY_ARBITRARY_EXECUTION"
   ],
-  "github.com/klauspost/compress/zstd": [
-    "CAPABILITY_ARBITRARY_EXECUTION"
-  ],
   "github.com/mholt/archives": [
+    "CAPABILITY_ARBITRARY_EXECUTION",
     "CAPABILITY_CGO",
     "CAPABILITY_EXEC",
     "CAPABILITY_MODIFY_SYSTEM_STATE",
@@ -145,18 +143,18 @@
     "CAPABILITY_RUNTIME",
     "CAPABILITY_UNANALYZED"
   ],
+  "github.com/minio/minlz": [
+    "CAPABILITY_ARBITRARY_EXECUTION"
+  ],
   "github.com/pete-woods/go-expect": [
     "CAPABILITY_OPERATING_SYSTEM"
   ],
-  "github.com/rs/zerolog": [
-    "CAPABILITY_CGO",
-    "CAPABILITY_EXEC",
-    "CAPABILITY_MODIFY_SYSTEM_STATE",
-    "CAPABILITY_OPERATING_SYSTEM",
-    "CAPABILITY_RUNTIME"
-  ],
   "github.com/spf13/cobra": [
     "CAPABILITY_MODIFY_SYSTEM_STATE"
+  ],
+  "github.com/spf13/pflag": [
+    "CAPABILITY_OPERATING_SYSTEM",
+    "CAPABILITY_RUNTIME"
   ],
   "github.com/twpayne/go-shell": [
     "CAPABILITY_ARBITRARY_EXECUTION",
