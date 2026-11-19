@@ -125,7 +125,7 @@ parse_args() {
 }
 
 get_goos() {
-	os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+	os="$(uname -s | sed -e y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/)"
 	case "${os}" in
 	cygwin_nt*) goos="windows" ;;
 	linux)
