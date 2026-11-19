@@ -767,3 +767,20 @@ articles:
   version: 2.73.3
   title: 'Dotfiles Management: chezmoi vs GNU Stow vs Bare Git Repositories (2026)'
   url: https://sachinsharma.dev/blogs/dotfiles-management-chezmoi-vs-stow-vs-bare-git-2026
+- date: '2026-11-13'
+  version: 2.74.1
+  title: 'A Shell I Can Rebuild in Five Minutes: zsh, Antidote, Starship, and chezmoi'
+  url: https://arcanex.cc/lab/shell-setup-chezmoi/
+- date: '2026-11-15'
+  version: 2.74.1
+  title: 'Setting Up a New Machine with One Command: Brewfile, WinGet Configuration, Runtime Versions with mise and Bootstrapping'
+  url: https://www.mertozen.com/en/blog/yeni-makineyi-tek-komutla-kurmak-brewfile-winget-configuration-mise
+- date: '2026-11-15'
+  version: 2.74.1
+  title: 'Dotfiles: Keeping Your Settings in Git, Syncing with chezmoi or Stow and Not Leaking Secrets'
+  url: https://www.mertozen.com/en/blog/dotfiles-ayarlari-gitte-tutmak-chezmoi-stow-secret
+- date: '2026-11-15'
+  version: 2.74.1
+  lang: JP
+  title: chezmoi で dotfiles 管理を始めた
+  url: https://kawachodev.hatenablog.jp/entry/dotfiles_chezmoi
