@@ -1884,11 +1884,8 @@ func (c *Config) gitCommitMessage(cmd *cobra.Command, status *chezmoigit.Status)
 	return commitMessageTmpl.Execute(templateDataMap)
 }
 
-// gitPush pushes all changes to the remote if status is not empty.
-func (c *Config) gitPush(status *chezmoigit.Status) error {
-	if status.IsEmpty() {
-		return nil
-	}
+// gitPush pushes all changes to the remote.
+func (c *Config) gitPush() error {
 	if err := c.runHookPre("git-auto-push"); err != nil {
 		return err
 	}
@@ -2381,8 +2378,8 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 				return err
 			}
 		}
-		if c.Git.AutoPush {
-			if err := c.gitPush(status); err != nil {
+		if c.Git.AutoPush && !status.IsEmpty() {
+			if err := c.gitPush(); err != nil {
 				return err
 			}
 		}

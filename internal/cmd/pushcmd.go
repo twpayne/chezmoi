@@ -31,5 +31,5 @@ func (c *Config) runPushCmd(cmd *cobra.Command, args []string) error {
 	if err := c.gitCommit(cmd, status); err != nil {
 		return err
 	}
-	return c.gitPush(status)
+	return c.gitPush()
 }
