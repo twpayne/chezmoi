@@ -92,10 +92,10 @@ main() {
 
 	# install binary
 	if [ ! -d "${BINDIR}" ]; then
-		install -d "${BINDIR}"
+		mkdir -p "${BINDIR}"
 	fi
 	BINARY="chezmoi${BINSUFFIX}"
-	install -- "${tmpdir}/${BINARY}" "${BINDIR}/"
+	cp "${tmpdir}/${BINARY}" "${BINDIR}/"
 	log_info "installed ${BINDIR}/${BINARY}"
 
 	if ! is_command chezmoi; then
