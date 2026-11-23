@@ -223,14 +223,16 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil || fs.FileMode(mode64).Perm() != fs.FileMode(mode64) {
 		ts.Fatalf("invalid mode: %s", args[0])
 	}
-	if runtime.GOOS == "windows" {
-		return
-	}
 	fileInfo, err := os.Stat(ts.MkAbs(args[1]))
 	if err != nil {
 		ts.Fatalf("%s: %v", args[1], err)
 	}
-	equal := fileInfo.Mode().Perm() == fs.FileMode(mode64)&^chezmoitest.Umask
+	comparedPerm := fs.FileMode(0o777)
+	if runtime.GOOS == "windows" {
+		// See https://pkg.go.dev/os#Chmod.
+		comparedPerm = 0o200
+	}
+	equal := fileInfo.Mode().Perm()&comparedPerm == fs.FileMode(mode64)&^chezmoitest.Umask&comparedPerm
 	if neg && equal {
 		ts.Fatalf("%s unexpectedly has mode %03o", args[1], fileInfo.Mode().Perm())
 	}

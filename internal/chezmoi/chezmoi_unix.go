@@ -31,3 +31,8 @@ func UserHomeDir() (string, error) {
 func findExecutableExtensions(path string) []string {
 	return []string{path}
 }
+
+// permsEqual returns if perm1 and perm2 are equal.
+func permsEqual(entryStateType EntryStateType, perm1, perm2 fs.FileMode) bool {
+	return perm1 == perm2
+}

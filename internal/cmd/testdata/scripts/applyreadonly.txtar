@@ -1,0 +1,54 @@
+# test that chezmoi apply makes a readonly_ file read-only
+exec chezmoi apply --force
+cmp $HOME/.file golden/.file
+cmpmod 444 $HOME/.file
+
+# test that chezmoi apply overwrites a read-only file whose contents changed
+edit $CHEZMOISOURCEDIR/readonly_dot_file
+exec chezmoi apply --force
+cmp $HOME/.file golden/.file-edited
+cmpmod 444 $HOME/.file
+
+# test that chezmoi verify fails when a readonly_ file was made writable
+chmod 666 $HOME/.file
+! exec chezmoi verify
+
+# test that chezmoi apply makes it read-only again
+exec chezmoi apply --force
+cmpmod 444 $HOME/.file
+exec chezmoi verify
+
+# test that chezmoi apply makes a file writable when it is no longer readonly_
+mv $CHEZMOISOURCEDIR/readonly_dot_file $CHEZMOISOURCEDIR/dot_file
+exec chezmoi apply --force
+cmpmod 666 $HOME/.file
+exec chezmoi verify
+
+# test that chezmoi apply removes a read-only file listed in .chezmoiremove
+cmpmod 444 $HOME/.removed
+rm $CHEZMOISOURCEDIR/readonly_dot_removed
+cp golden/.chezmoiremove $CHEZMOISOURCEDIR/.chezmoiremove
+exec chezmoi apply --force
+! exists $HOME/.removed
+
+# test that chezmoi apply replaces a read-only file with a directory
+cmpmod 444 $HOME/.replaced
+rm $CHEZMOISOURCEDIR/readonly_dot_replaced
+mkdir $CHEZMOISOURCEDIR/dot_replaced
+cp golden/.file $CHEZMOISOURCEDIR/dot_replaced/file
+exec chezmoi apply --force
+cmp $HOME/.replaced/file golden/.file
+
+-- golden/.chezmoiremove --
+.removed
+-- golden/.file --
+# contents of .file
+-- golden/.file-edited --
+# contents of .file
+# edited
+-- home/user/.local/share/chezmoi/readonly_dot_file --
+# contents of .file
+-- home/user/.local/share/chezmoi/readonly_dot_removed --
+# contents of .removed
+-- home/user/.local/share/chezmoi/readonly_dot_replaced --
+# contents of .replaced

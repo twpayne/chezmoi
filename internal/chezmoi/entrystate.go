@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/fs"
 	"log/slog"
-	"runtime"
 
 	"chezmoi.io/chezmoi/v2/internal/chezmoilog"
 )
@@ -81,7 +80,7 @@ func (s *EntryState) Equal(other *EntryState) bool {
 	if s.Type != other.Type {
 		return false
 	}
-	if runtime.GOOS != "windows" && s.Mode.Perm() != other.Mode.Perm() {
+	if !permsEqual(s.Type, s.Mode.Perm(), other.Mode.Perm()) {
 		return false
 	}
 	return bytes.Equal(s.ContentsSHA256, other.ContentsSHA256)
