@@ -62,3 +62,9 @@ func findExecutableExtensions(path string) []string {
 func isSlash(c byte) bool {
 	return c == '\\' || c == '/'
 }
+
+// permsEqual returns if perm1 and perm2 are equal. Only the read-only
+// attribute of files is compared, see https://pkg.go.dev/os#Chmod.
+func permsEqual(entryStateType EntryStateType, perm1, perm2 fs.FileMode) bool {
+	return entryStateType != EntryStateTypeFile || perm1&0o200 == perm2&0o200
+}

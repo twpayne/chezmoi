@@ -43,7 +43,7 @@ func NewRealSystem(fileSystem vfs.FS, options ...RealSystemOption) *RealSystem {
 
 // Chmod implements System.Chmod.
 func (s *RealSystem) Chmod(name AbsPath, mode fs.FileMode) error {
-	return nil
+	return s.fileSystem.Chmod(name.String(), mode)
 }
 
 // Readlink implements System.Readlink.
@@ -57,7 +57,24 @@ func (s *RealSystem) Readlink(name AbsPath) (string, error) {
 
 // WriteFile implements System.WriteFile.
 func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	return s.fileSystem.WriteFile(filename.String(), data, perm)
+	err := s.fileSystem.WriteFile(filename.String(), data, perm)
+	if errors.Is(err, fs.ErrPermission) {
+		fileInfo, statErr := s.fileSystem.Stat(filename.String())
+		if statErr != nil || fileInfo.Mode().Perm()&0o200 != 0 {
+			return err
+		}
+		if err := s.fileSystem.Chmod(filename.String(), 0o666); err != nil {
+			return err
+		}
+		err = s.fileSystem.WriteFile(filename.String(), data, perm)
+	}
+	if err != nil {
+		return err
+	}
+	if perm&0o200 != 0 {
+		return nil
+	}
+	return s.fileSystem.Chmod(filename.String(), perm)
 }
 
 // WriteSymlink implements System.WriteSymlink.
