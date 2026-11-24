@@ -152,7 +152,6 @@ func TestScript(t *testing.T) {
 			"rmdir":          cmdRmDir,
 			"rmfinalnewline": cmdRmFinalNewline,
 			"sleep":          cmdSleep,
-			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
 			if result, valid := goosCondition(cond); valid {
@@ -851,26 +850,6 @@ func cmdSleep(ts *testscript.TestScript, neg bool, args []string) {
 	time.Sleep(duration)
 }
 
-// cmdUNIX2DOS converts files from UNIX line endings to DOS line endings.
-func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
-	if neg {
-		ts.Fatalf("unsupported: ! unix2dos")
-	}
-	if len(args) < 1 {
-		ts.Fatalf("usage: unix2dos paths...")
-	}
-	for _, arg := range args {
-		filename := ts.MkAbs(arg)
-		data, err := os.ReadFile(filename)
-		ts.Check(err)
-		dosData, err := unix2DOS(data)
-		ts.Check(err)
-		if err := os.WriteFile(filename, dosData, 0o666); err != nil {
-			ts.Fatalf("%s: %v", filename, err)
-		}
-	}
-}
-
 // goosCondition evaluates cond as a logical OR of GOARCHes or GOOSes enclosed
 // in parentheses, returning true if any of them match.
 func goosCondition(cond string) (result, valid bool) {
@@ -1003,20 +982,6 @@ func setup(env *testscript.Env) error {
 	}
 
 	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
-}
-
-// unix2DOS returns data with UNIX line endings converted to DOS line endings.
-func unix2DOS(data []byte) ([]byte, error) {
-	builder := strings.Builder{}
-	for line := range bytes.Lines(data) {
-		if _, err := builder.Write(line); err != nil {
-			return nil, err
-		}
-		if _, err := builder.WriteString("\r\n"); err != nil {
-			return nil, err
-		}
-	}
-	return []byte(builder.String()), nil
 }
 
 func writeNewFile(filename string, data []byte, perm fs.FileMode) error {
