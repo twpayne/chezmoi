@@ -7,12 +7,11 @@ exec chezmoi dump
 cmp stdout golden/dump.json
 
 exec chezmoi managed --include=scripts
-cmpenv stdout golden/managed
+cmpenv -text stdout golden/managed
 
 exec chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
-[windows] unix2dos golden/archive
-cmp stdout golden/archive
+cmp -text stdout golden/archive
 
 -- golden/archive --
 script.cmd

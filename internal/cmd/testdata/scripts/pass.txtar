@@ -1,5 +1,4 @@
 mockcommand bin/pass
-[windows] unix2dos golden/pass-raw
 
 # test pass template function
 exec chezmoi execute-template '{{ pass "misc/example.com" }}'
@@ -11,7 +10,7 @@ stdout ^examplelogin$
 
 # test pass template function
 exec chezmoi execute-template '{{ passRaw "misc/example.com" }}'
-cmp stdout golden/pass-raw
+cmp -text stdout golden/pass-raw
 
 -- bin/pass.yaml --
 responses:

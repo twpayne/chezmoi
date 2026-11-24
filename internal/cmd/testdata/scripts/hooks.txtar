@@ -1,8 +1,6 @@
-[windows] unix2dos golden/stdout
-
 # test that chezmoi add runs pre and post hooks
 exec chezmoi add $HOME${/}.file
-cmp stdout golden/stdout
+cmp -text stdout golden/stdout
 
 # test that chezmoi does not run irrelevant hooks
 exec chezmoi help

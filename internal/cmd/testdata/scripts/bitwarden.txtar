@@ -1,6 +1,5 @@
 mockcommand bin/bw
 mockcommand bin/bws
-[windows] unix2dos golden/bitwarden-attachment
 
 # test bitwarden template function
 exec chezmoi execute-template '{{ (bitwarden "item" "example.com").login.password }}'
@@ -12,11 +11,11 @@ stdout ^hidden-value$
 
 # test bitwardenAttachment template function
 exec chezmoi execute-template '{{ (bitwardenAttachment "filename" "item-id") }}'
-cmp stdout golden/bitwarden-attachment
+cmp -text stdout golden/bitwarden-attachment
 
 # test bitwardenAttachmentByRef template function
 exec chezmoi execute-template '{{ (bitwardenAttachmentByRef "filename" "item" "example.com") }}'
-cmp stdout golden/bitwarden-attachment
+cmp -text stdout golden/bitwarden-attachment
 
 # test bitwardenSecrets template function
 exec chezmoi execute-template '{{ (bitwardenSecrets "be8e0ad8-d545-4017-a55a-b02f014d4158" "0.48c78342-1635-48a6-accd-afbe01336365.C0tMmQqHnAp1h0gL8bngprlPOYutt0:B3h5D+YgLvFiQhWkIq6Bow==").value }}'

@@ -2,22 +2,19 @@
 
 # test that chezmoi apply runs Batch scripts
 exec chezmoi apply
-unix2dos golden/stdout # normalize line endings before comparison
-cmp stdout golden/stdout
+cmp -text stdout golden/stdout
 
 chhome home2/user
 
 # test that chezmoi apply runs PowerShell scripts
 exec chezmoi apply
-unix2dos golden/stdout2 # normalize line endings before comparison
-cmp stdout golden/stdout2
+cmp -text stdout golden/stdout2
 
 chhome home3/user
 
 # test that interpreters can be overridden
 exec chezmoi apply
-unix2dos golden/stdout3 # normalize line endings before comparison
-cmp stdout golden/stdout3
+cmp -text stdout golden/stdout3
 
 -- bin/fake-python3.bat --
 @echo Hello from fake Python

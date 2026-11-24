@@ -1,5 +1,4 @@
 mockcommand bin/dcli
-[windows] unix2dos golden/dashlane-note
 
 # test dashlanePassword template function
 exec chezmoi execute-template '{{ (index (dashlanePassword "filter") 0).password }}'
@@ -7,7 +6,7 @@ stdout ^<password>$
 
 # test dashlaneNote template function
 exec chezmoi execute-template '{{ dashlaneNote "filter" }}'
-cmp stdout golden/dashlane-note
+cmp -text stdout golden/dashlane-note
 
 -- bin/dcli.yaml --
 responses:

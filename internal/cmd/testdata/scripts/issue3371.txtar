@@ -1,7 +1,5 @@
 [!exec:git] skip 'git not found in $PATH'
 
-[windows] unix2dos golden/.file
-
 mkgitconfig
 
 # create a dotfile repo with a config file template
@@ -13,7 +11,7 @@ chhome home2/user
 
 # test that chezmoi init --apply sets environment variables during apply from the config file
 exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-cmp $HOME/.file golden/.file
+cmp -text $HOME/.file golden/.file
 
 -- golden/.file --
 TEST_CONFIG_VAR=test_config_value

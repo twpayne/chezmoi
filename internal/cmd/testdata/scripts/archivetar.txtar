@@ -1,15 +1,13 @@
 mksourcedir
 
-[windows] unix2dos golden/archive-tar
-
 exec chezmoi archive --output=archive.tar
 exec tar -tf archive.tar
-[!openbsd] cmp stdout golden/archive-tar
+[!openbsd] cmp -text stdout golden/archive-tar
 [openbsd] cmp stdout golden/archive-tar-openbsd
 
 exec chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
-[!openbsd] cmp stdout golden/archive-tar
+[!openbsd] cmp -text stdout golden/archive-tar
 [openbsd] cmp stdout golden/archive-tar-openbsd
 
 -- golden/archive-tar --

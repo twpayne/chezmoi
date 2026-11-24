@@ -1,7 +1,5 @@
 [unix] skip 'Windows only'
 
-unix2dos golden/apply
-
 # test that chezmoi apply runs scripts in the correct order
 symlink home/user/.local/share/chezmoi/run_before_00-before.cmd -> .script.cmd
 symlink home/user/.local/share/chezmoi/run_before_99-before.cmd -> .script.cmd
@@ -10,7 +8,7 @@ symlink home/user/.local/share/chezmoi/run_99.cmd -> .script.cmd
 symlink home/user/.local/share/chezmoi/run_after_00-after.cmd -> .script.cmd
 symlink home/user/.local/share/chezmoi/run_after_99-after.cmd -> .script.cmd
 exec chezmoi apply --force
-cmp stdout golden/apply
+cmp -text stdout golden/apply
 
 -- golden/apply --
 00-before

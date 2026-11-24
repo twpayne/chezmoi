@@ -1,6 +1,4 @@
 mockcommand bin/gopass
-[windows] unix2dos golden/gopass-cat
-[windows] unix2dos golden/gopass-raw
 
 # test gopass template function
 exec chezmoi execute-template '{{ gopass "misc/example.com" }}'
@@ -8,11 +6,11 @@ stdout ^examplepassword$
 
 # test gopassCat template function
 exec chezmoi execute-template '{{ gopassCat "misc/example.com" }}'
-cmp stdout golden/gopass-cat
+cmp -text stdout golden/gopass-cat
 
 # test gopassRaw template function
 exec chezmoi execute-template '{{ gopassRaw "misc/example.com" }}'
-cmp stdout golden/gopass-raw
+cmp -text stdout golden/gopass-raw
 
 -- bin/gopass.yaml --
 responses:

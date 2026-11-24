@@ -239,3 +239,5 @@ exclude (
 )
 
 replace github.com/Masterminds/semver/v3 => github.com/twpayne/Masterminds-semver/v3 v3.0.0-20261015232208-6461e72e87c2 // https://github.com/Masterminds/semver/pull/325
+
+replace github.com/rogpeppe/go-internal => ../../rogpeppe/go-internal

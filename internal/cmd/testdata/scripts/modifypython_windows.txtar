@@ -3,8 +3,7 @@
 
 # test that chezmoi apply modifies a file with python3
 exec chezmoi apply
-unix2dos golden/modified
-cmp $HOME/.file golden/modified
+cmp -text $HOME/.file golden/modified
 
 -- golden/modified --
 # contents of .file
