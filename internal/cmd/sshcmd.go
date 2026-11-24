@@ -38,6 +38,7 @@ func (c *Config) runSSHCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			interactive:    true,
 			packageManager: c.ssh.packageManager,
 			shell:          c.ssh.shell,
+			quoteScript:    true,
 		},
 	)
 }

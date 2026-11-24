@@ -2836,6 +2836,20 @@ type runInstallInitShellOptions struct {
 	interactive    bool
 	packageManager string
 	shell          bool
+	quoteScript    bool
+}
+
+// installInitShellShArgs returns the arguments used to run the install script
+// with sh. When quoteScript is set, the script is shell quoted so that it
+// survives being re-parsed by the remote login shell: ssh concatenates its
+// command arguments with spaces and the remote shell parses them again, which
+// breaks scripts verbatim when that shell is not POSIX-compatible (for
+// example fish, which rejects inline environment assignments).
+func installInitShellShArgs(script string, quoteScript bool) []string {
+	if quoteScript {
+		script = shellQuote(script)
+	}
+	return []string{"sh", "-c", script}
 }
 
 func (c *Config) runInstallInitShellSh(
@@ -2859,7 +2873,7 @@ func (c *Config) runInstallInitShellSh(
 	}
 	allArgs := slices.Concat(
 		commandArgs,
-		[]string{"sh", "-c", string(script)},
+		installInitShellShArgs(string(script), options.quoteScript),
 	)
 	return c.run(chezmoi.EmptyAbsPath, command, allArgs)
 }
