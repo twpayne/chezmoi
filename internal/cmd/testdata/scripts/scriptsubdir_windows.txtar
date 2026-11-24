@@ -1,18 +1,15 @@
 [unix] skip 'Windows only'
 
-unix2dos golden/apply
-unix2dos golden/archive
-
 # test that scripts in subdirectories are run in the subdirectory
 exec chezmoi apply --force
-cmpenv stdout golden/apply
+cmpenv -text stdout golden/apply
 
 exec chezmoi dump
 cmp stdout golden/dump.json
 
 exec chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
-cmp stdout golden/archive
+cmp -text stdout golden/archive
 
 -- golden/apply --
 $HOME

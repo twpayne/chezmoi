@@ -2,7 +2,6 @@
 [unix] chmod 755 bin/generate-color-formats
 [unix] chmod 755 bin/ioreg
 [unix] chmod 755 bin/executable
-[windows] unix2dos bin/chezmoi-output-test.cmd
 
 symlink $HOME/symlink -> dir
 
