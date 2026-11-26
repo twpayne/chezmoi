@@ -410,6 +410,7 @@ jobs:
     #- name: actionlint
     #  run: |
     #    go tool actionlint
+    - uses: zizmorcore/zizmor-action@1b4550e929643b8b26a62303c6bd64814271a4f1   # v0.9.2
     - uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38   # 2.0.0
       with:
         ignore_paths: completions
