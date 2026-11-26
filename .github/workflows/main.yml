@@ -398,9 +398,10 @@ jobs:
       run: |
         make capslock
         # git diff --exit-code # FIXME re-enable
-    - name: actionlint
-      run: |
-        go tool actionlint
+    # FIXME re-enable when https://github.com/rhysd/actionlint/issues/711 is fixed
+    #- name: actionlint
+    #  run: |
+    #    go tool actionlint
     - uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38   # 2.0.0
       with:
         ignore_paths: completions
