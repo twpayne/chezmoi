@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   versions:
-    uses: ./.github/workflows/versions.yml
+    uses: $/.github/workflows/versions.yml
   govulncheck:
     needs: versions
     runs-on: ubuntu-22.04
@@ -25,7 +25,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
