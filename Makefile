@@ -119,7 +119,8 @@ capslock:
 
 .PHONY: lint
 lint: ensure-golangci-lint shellcheck
-	${GO} tool actionlint
+	# FIXME re-enable when https://github.com/rhysd/actionlint/issues/711 is fixed
+	# ${GO} tool actionlint
 	${GO} tool editorconfig-checker -config=.config/editorconfig-checker.json
 	./bin/golangci-lint run --config=.config/golangci.yml
 	${GO} tool lint-whitespace
