@@ -15,6 +15,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   versions:
+    permissions: {}
     uses: $/.github/workflows/versions.yml
   govulncheck:
     needs: versions
