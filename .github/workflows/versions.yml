@@ -1,4 +1,5 @@
 name: versions
+permissions: {}
 on:
   workflow_call:
     outputs:

@@ -1,4 +1,5 @@
 name: build-docs
+permissions: {}
 on:
   pull_request:
     branches:
@@ -17,7 +18,7 @@ env:
   NO_MKDOCS_2_WARNING: 1
 jobs:
   versions:
-    uses: ./.github/workflows/versions.yml
+    uses: $/.github/workflows/versions.yml
   build-docs:
     needs: versions
     runs-on: ubuntu-22.04
@@ -27,7 +28,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
@@ -37,8 +38,10 @@ jobs:
         version: ${{ needs.versions.outputs.uv-version }}
     - name: install-website-dependencies
       run: |
-        uv python install ${{ needs.versions.outputs.python-version }}
+        uv python install ${NEEDS_VERSIONS_OUTPUTS_PYTHON_VERSION}
         uv sync --locked
+      env:
+        NEEDS_VERSIONS_OUTPUTS_PYTHON_VERSION: ${{ needs.versions.outputs.python-version }}
     - name: build-website
       run: uv run -v task build-docs
       env:

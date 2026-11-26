@@ -18,7 +18,8 @@ env:
   NO_MKDOCS_2_WARNING: 1
 jobs:
   versions:
-    uses: ./.github/workflows/versions.yml
+    uses: $/.github/workflows/versions.yml
+    permissions: {}
   changes:
     needs: versions
     runs-on: ubuntu-22.04
@@ -62,7 +63,7 @@ jobs:
       with:
         fetch-depth: 1
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
@@ -143,7 +144,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
     - name: build
@@ -183,7 +184,7 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       with:
         go-version: oldstable
@@ -207,8 +208,8 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-    - uses: ./.github/actions/free-disk-space
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/free-disk-space
+    - uses: $/.github/actions/setup-go
       with:
         cache-prefix: release-go
         go-version: ${{ needs.versions.outputs.go-version }}
@@ -218,10 +219,12 @@ jobs:
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
         mkdir -p /opt/chocolatey
-        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${{ needs.versions.outputs.chocolately-version }}/chocolatey.v${{ needs.versions.outputs.chocolately-version }}.tar.gz" | tar -xz -C "/opt/chocolatey"
+        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${NEEDS_VERSIONS_OUTPUTS_CHOCOLATELY_VERSION}/chocolatey.v${NEEDS_VERSIONS_OUTPUTS_CHOCOLATELY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
         echo '#!/bin/bash' >> /usr/local/bin/choco
         echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
         chmod +x /usr/local/bin/choco
+      env:
+        NEEDS_VERSIONS_OUTPUTS_CHOCOLATELY_VERSION: ${{ needs.versions.outputs.chocolately-version }}
     - name: create-syso
       run: |
         make create-syso
@@ -275,7 +278,7 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
@@ -283,16 +286,20 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${{ needs.versions.outputs.age-version }}/age-v${{ needs.versions.outputs.age-version }}-linux-amd64.tar.gz" | tar xzf -
+        curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${NEEDS_VERSIONS_OUTPUTS_AGE_VERSION}/age-v${NEEDS_VERSIONS_OUTPUTS_AGE_VERSION}-linux-amd64.tar.gz" | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
+      env:
+        NEEDS_VERSIONS_OUTPUTS_AGE_VERSION: ${{ needs.versions.outputs.age-version }}
     - name: install-rage
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         cd "$(mktemp -d)"
-        curl -fsSL "https://github.com/str4d/rage/releases/download/v${{ needs.versions.outputs.rage-version }}/rage-v${{ needs.versions.outputs.rage-version }}-x86_64-linux.tar.gz" | tar xzf -
+        curl -fsSL "https://github.com/str4d/rage/releases/download/v${NEEDS_VERSIONS_OUTPUTS_RAGE_VERSION}/rage-v${NEEDS_VERSIONS_OUTPUTS_RAGE_VERSION}-x86_64-linux.tar.gz" | tar xzf -
         sudo install -m 755 rage/rage /usr/local/bin
         sudo install -m 755 rage/rage-keygen /usr/local/bin
+      env:
+        NEEDS_VERSIONS_OUTPUTS_RAGE_VERSION: ${{ needs.versions.outputs.rage-version }}
     - name: build
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true' || matrix.umask == '022'
       run: |
@@ -305,9 +312,8 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-        TEST_FLAGS: -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h
       run: |
-        go test ./... ${{ env.TEST_FLAGS }}
+        go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o${{ matrix.umask }}" -race -timeout=1h ./...
   test-website:
     needs: versions
     runs-on: ubuntu-22.04
@@ -317,7 +323,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
@@ -327,8 +333,10 @@ jobs:
         version: ${{ needs.versions.outputs.uv-version }}
     - name: install-website-dependencies
       run: |
-        uv python install ${{ needs.versions.outputs.python-version }}
+        uv python install ${NEEDS_VERSIONS_OUTPUTS_PYTHON_VERSION}
         uv sync --locked
+      env:
+        NEEDS_VERSIONS_OUTPUTS_PYTHON_VERSION: ${{ needs.versions.outputs.python-version }}
     - name: check-hooks
       run: uv run -v task pycheck
     - name: build-website
@@ -360,7 +368,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
     - name: build
@@ -386,7 +394,7 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
@@ -447,7 +455,7 @@ jobs:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
       with:
         persist-credentials: false
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         go-version: ${{ needs.versions.outputs.go-version }}
         upload-cache: false
@@ -481,10 +489,12 @@ jobs:
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
         mkdir -p /opt/chocolatey
-        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${{ needs.versions.outputs.chocolately-version }}/chocolatey.v${{ needs.versions.outputs.chocolately-version }}.tar.gz" | tar -xz -C "/opt/chocolatey"
+        wget -q -O - "https://github.com/chocolatey/choco/releases/download/${NEEDS_VERSIONS_OUTPUTS_CHOCOLATELY_VERSION}/chocolatey.v${NEEDS_VERSIONS_OUTPUTS_CHOCOLATELY_VERSION}.tar.gz" | tar -xz -C "/opt/chocolatey"
         echo '#!/bin/bash' >> /usr/local/bin/choco
         echo 'mono /opt/chocolatey/choco.exe $@' >> /usr/local/bin/choco
         chmod +x /usr/local/bin/choco
+      env:
+        NEEDS_VERSIONS_OUTPUTS_CHOCOLATELY_VERSION: ${{ needs.versions.outputs.chocolately-version }}
     - name: check-snapcraft-credentials
       run: snapcraft whoami
       env:
@@ -493,8 +503,8 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-    - uses: ./.github/actions/free-disk-space
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/free-disk-space
+    - uses: $/.github/actions/setup-go
       with:
         cache-prefix: release-go
         go-version: ${{ needs.versions.outputs.go-version }}
@@ -529,7 +539,7 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: true
-    - uses: ./.github/actions/setup-go
+    - uses: $/.github/actions/setup-go
       with:
         cache-prefix: website-go
         go-version: ${{ needs.versions.outputs.go-version }}
@@ -540,10 +550,11 @@ jobs:
     - name: prepare-chezmoi.io
       run: |
         uv sync --locked
-        uv python install ${{ needs.versions.outputs.python-version }}
+        uv python install ${NEEDS_VERSIONS_OUTPUTS_PYTHON_VERSION}
         uv run -v task build-docs
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        NEEDS_VERSIONS_OUTPUTS_PYTHON_VERSION: ${{ needs.versions.outputs.python-version }}
     - name: push-chezmoi.io
       run: |
         uv run -v task deploy-docs
