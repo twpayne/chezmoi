@@ -10,6 +10,47 @@ import (
 	"github.com/twpayne/go-vfs/v5"
 )
 
+func TestGetInstallPackageArgs(t *testing.T) {
+	for _, tc := range []struct {
+		name           string
+		packageType    string
+		packageAbsPath string
+		useSudo        bool
+		expected       []string
+	}{
+		{
+			name:           "apk",
+			packageType:    packageTypeAPK,
+			packageAbsPath: "/tmp/chezmoi.apk",
+			expected:       []string{"apk", "add", "--allow-untrusted", "/tmp/chezmoi.apk"},
+		},
+		{
+			name:           "apk with sudo",
+			packageType:    packageTypeAPK,
+			packageAbsPath: "/tmp/chezmoi.apk",
+			useSudo:        true,
+			expected:       []string{"sudo", "apk", "add", "--allow-untrusted", "/tmp/chezmoi.apk"},
+		},
+		{
+			name:           "deb",
+			packageType:    packageTypeDEB,
+			packageAbsPath: "/tmp/chezmoi.deb",
+			expected:       []string{"dpkg", "-i", "/tmp/chezmoi.deb"},
+		},
+		{
+			name:           "rpm",
+			packageType:    packageTypeRPM,
+			packageAbsPath: "/tmp/chezmoi.rpm",
+			expected:       []string{"rpm", "-U", "/tmp/chezmoi.rpm"},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actual := getInstallPackageArgs(tc.packageType, tc.packageAbsPath, tc.useSudo)
+			assert.Equal(t, tc.expected, actual)
+		})
+	}
+}
+
 func TestConfigGetPackageFilename(t *testing.T) {
 	for _, tc := range []struct {
 		packageType string
