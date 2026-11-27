@@ -16,7 +16,36 @@ If you want to make a more significant change, please first
 [open an issue][issue] to discuss the change that you want to make. Dave Cheney
 gives a [good rationale][rationale] as to why this is important.
 
-All changes are made via pull requests. In your pull request, please make sure
+## Commit messages
+
+chezmoi's release notes are [automatically generated][release-history-generator]
+from its commit messages. For this reason, chezmoi requires strictly-formatted
+commit messages, similar to, but not identical to, the [conventional commits
+specification][commits].
+
+Four commit message prefixes are permitted:
+
+  * `feat:` for extending an existing user-visible feature or adding a new feature
+  * `fix:` for user-visible bug fixes in chezmoi code
+  * `docs:` for adding to or updating the documentation
+  * `chore:` for user-irrelevant changes, e.g. fixing a typo, improving test/CI
+    infrastructure, or updating dependencies
+
+Commit message scopes are not allowed (e.g. `feat(cmd):` is invalid), and the
+first letter after the prefix must be uppercase.
+
+Example commit messages are:
+
+    feat: Add shellQuote and shellQuoteList template funcs
+    fix: Don't warn on secrets when re-adding encrypted files
+    docs: Add push command to daily operations
+    chore: Update dependencies
+
+More examples can be found in the [commit history][history].
+
+## Pull requests
+
+All changes are made via pull requests. In your pull request, please ensure
 that:
 
 * All existing tests pass. You can ensure this by running `make test`.
@@ -42,30 +71,6 @@ that:
 * The code passes [`golangci-lint`][golangci-lint]. You can ensure this by
   running `make lint`.
 
-* The commit messages adhere to the [conventional commits specification][commits],
-  with the following additional requirements:
-
-      * The first character of the commit message is uppercase, e.g:
-
-          ```text
-          chore: Fix typo in test
-          ```
-
-        The purpose of this is to maintain consistency in chezmoi's release
-        notes, which are generated directly from the commit messages.
-
-      * The commits do not have scopes (e.g. `chore(scope): Message` is invalid).
-
-    The following criteria can be used to determine the commit type:
-
-      * `fix`: bug fixes in chezmoi code
-      * `feat`: extending an existing feature or adding a new feature
-      * `docs`: adding to or updating the documentation
-      * `chore`: small changes, such as fixing a typo, correcting grammar
-        (including in documentation), or anything not covered by the above
-
-    Examples can be found in the [commit history][history].
-
 * Commits are logically separate, with no merge or "fixup" commits.
 
 * The branch applies cleanly to `master`.
@@ -78,3 +83,4 @@ that:
 [history]: https://github.com/twpayne/chezmoi/commits/master/
 [website]: /developer-guide/website.md
 [coc]: https://github.com/twpayne/chezmoi/blob/master/.github/CODE_OF_CONDUCT.md
+[release-history-generator]: https://github.com/twpayne/chezmoi/blob/master/assets/chezmoi.io/docs/reference/release-history.md.tmpl

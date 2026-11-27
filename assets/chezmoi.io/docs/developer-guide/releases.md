@@ -22,7 +22,7 @@ make test-release
 Publish a new release by creating and pushing a tag, for example:
 
 ```sh
-git tag v1.2.3
+git tag v2.50.1
 git push --tags
 ```
 
@@ -68,7 +68,7 @@ a few hours and open a pull request in
 If needed, the pull request can be created with:
 
 ```sh
-brew bump-formula-pr --tag=v1.2.3 chezmoi
+brew bump-formula-pr --tag=v2.50.1 chezmoi
 ```
 
 ### Scoop
