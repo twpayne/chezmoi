@@ -4,16 +4,18 @@ The [website][website] is generated with [Material for MkDocs][material] from
 the contents of the `assets/chezmoi.io/docs/` directory. It is hosted by
 [GitHub pages][pages] from the [`gh-pages` branch][branch].
 
-To build the website locally, Go 1.25 (or later) and [uv][uv] 0.5.0 (or later)
-must be installed. Python 3.10 (or later) is required, but may be installed with
+## Build
+
+To build the website locally, Go 1.26 (or later) and [uv][uv] 0.5.0 (or later)
+must be installed. Python 3.14 (or later) is required, but may be installed with
 `uv`:
 
 !!! note ""
 
-    If Python 3.10 (or later) is not currently installed, install it with `uv`:
+    If Python 3.14 (or later) is not currently installed, install it with `uv`:
 
     ```sh
-    uv python install 3.10
+    uv python install 3.14
     ```
 
 Install the dependencies (the `--frozen` is optional but recommended):
@@ -22,7 +24,9 @@ Install the dependencies (the `--frozen` is optional but recommended):
 uv sync --frozen
 ```
 
-Test the website locally by running:
+## Preview
+
+Preview the website locally by running:
 
 ```sh
 uv run task serve-docs
@@ -30,10 +34,11 @@ uv run task serve-docs
 
 and visiting [http://127.0.0.1:8000/][serve].
 
-## Maintainers
+## Deploy
 
 The website is automatically deployed when new releases are created, but manual
-deployments can be triggered by maintainers with appropriate access using:
+deployments can be triggered by maintainers with push access to the [`gh-pages`
+branch][gh-pages] using:
 
 ```sh
 uv run task deploy-docs
@@ -45,3 +50,4 @@ uv run task deploy-docs
 [branch]: https://github.com/twpayne/chezmoi/tree/gh-pages
 [uv]: https://docs.astral.sh/uv/getting-started/installation/
 [serve]: http://127.0.0.1:8000/
+[gh-pages]: https://github.com/twpayne/chezmoi/tree/gh-pages
