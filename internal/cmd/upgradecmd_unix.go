@@ -74,6 +74,24 @@ func (c *Config) getPackageFilename(packageType string, version *semver.Version,
 	}
 }
 
+// getInstallPackageArgs returns the command line arguments needed to install
+// a package from disk.
+func getInstallPackageArgs(packageType, packageAbsPath string, useSudo bool) []string {
+	var args []string
+	if useSudo {
+		args = append(args, "sudo")
+	}
+	switch packageType {
+	case packageTypeAPK:
+		args = append(args, "apk", "add", "--allow-untrusted", packageAbsPath)
+	case packageTypeDEB:
+		args = append(args, "dpkg", "-i", packageAbsPath)
+	case packageTypeRPM:
+		args = append(args, "rpm", "-U", packageAbsPath)
+	}
+	return args
+}
+
 func (c *Config) snapRefresh() error {
 	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", "chezmoi"})
 }
@@ -133,18 +151,7 @@ func (c *Config) upgradeUNIXPackage(
 		}
 
 		// Install the package from disk.
-		var args []string
-		if useSudo {
-			args = append(args, "sudo")
-		}
-		switch packageType {
-		case packageTypeAPK:
-			args = append(args, "apk", "--allow-untrusted", packageAbsPath.String())
-		case packageTypeDEB:
-			args = append(args, "dpkg", "-i", packageAbsPath.String())
-		case packageTypeRPM:
-			args = append(args, "rpm", "-U", packageAbsPath.String())
-		}
+		args := getInstallPackageArgs(packageType, packageAbsPath.String(), useSudo)
 		return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 	default:
 		return fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
